@@ -27,6 +27,7 @@
       visual-regexp
       css-eldoc
       diminish
+      transpose-frame
       flx
       flx-ido
       find-file-in-project
