@@ -92,6 +92,7 @@
 (require 'setup-smartparens)
 (require 'setup-visual-regexp)
 (require 'setup-magit)
+(require 'setup-gist)
 (require 'setup-yasnippet)
 (require 'setup-dash)
 (require 'setup-dired)
