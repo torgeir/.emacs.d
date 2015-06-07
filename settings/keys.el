@@ -117,7 +117,14 @@
 (eval-after-load "sgml-mode"
   '(progn
      (require 'tagedit)
-     (tagedit-add-paredit-like-keybindings)
-     (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))))
+     (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))
+     (define-key html-mode-map (kbd "C-<left>") 'tagedit-forward-barf-tag)
+     (define-key html-mode-map (kbd "C-<right>") 'tagedit-forward-slurp-tag)
+     (define-key html-mode-map (kbd "C-k") 'tagedit-kill)
+     (define-key html-mode-map (kbd "M-k") 'tagedit-kill-attribute)
+     (define-key html-mode-map (kbd "M-r") 'tagedit-raise-tag)
+     (define-key html-mode-map (kbd "M-s") 'tagedit-splice-tag)
+     (define-key html-mode-map (kbd "M-S") 'tagedit-split-tag)
+     (define-key html-mode-map (kbd "M-J") 'tagedit-join-tags)))
 
 (provide 'keys)
