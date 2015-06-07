@@ -143,6 +143,8 @@ Including indent-buffer, which should not be called automatically on save."
 (defun join-lines ()
   "join adjacent lines"
   (interactive)
-  (join-line -1))
+  (join-line -1)
+  (if (looking-at " ")
+      (delete-char 1)))
 
 (provide 'defuns)
