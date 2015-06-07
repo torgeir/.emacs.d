@@ -57,8 +57,8 @@
 (require 'sgml-mode)
 
 ;; reindent after deleting tag with C-c DEL
-(defadvice sgml-delete-tag (after reindent-buffer activate)
-  (cleanup-buffer))
+(defadvice sgml-delete-tag (after reindent activate)
+    (indent-region (point-min) (point-max)))
 
 (require 'simplezen)
 (defun --setup-simplezen ()
