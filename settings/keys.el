@@ -104,4 +104,6 @@
 
 (global-set-key (kbd "C-x C-o") 'find-file-in-project)
 
+(global-set-key (kbd "C-k") 'kill-and-join-forward)
+
 (provide 'keys)
