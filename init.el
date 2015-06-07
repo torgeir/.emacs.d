@@ -52,6 +52,7 @@
      simplezen
      smartparens
      smex
+     tagedit
      transpose-frame
      undo-tree
      visual-regexp

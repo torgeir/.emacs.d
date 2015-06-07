@@ -108,11 +108,16 @@
 
 (add-hook 'sgml-mode-hook
           (lambda ()
-            (require 'rename-sgml-tag)
             (define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)))
 
 (require 'change-inner)
 (global-set-key (kbd "M-i") 'change-inner)
 (global-set-key (kbd "M-o") 'change-outer)
+
+(eval-after-load "sgml-mode"
+  '(progn
+     (require 'tagedit)
+     (tagedit-add-paredit-like-keybindings)
+     (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))))
 
 (provide 'keys)
