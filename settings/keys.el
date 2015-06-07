@@ -111,4 +111,8 @@
             (require 'rename-sgml-tag)
             (define-key sgml-mode-map (kbd "C-c C-r") 'mc/mark-sgml-tag-pair)))
 
+(require 'change-inner)
+(global-set-key (kbd "M-i") 'change-inner)
+(global-set-key (kbd "M-o") 'change-outer)
+
 (provide 'keys)

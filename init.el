@@ -19,6 +19,7 @@
    '(better-defaults
      bash-completion
      browse-kill-ring
+     change-inner
      cider
      css-eldoc
      dash-at-point
