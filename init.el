@@ -65,7 +65,8 @@
       simplezen
       arduino-mode
       markdown-mode
-      js2-mode)))
+      js2-mode
+      less-css-mode)))
 
 (condition-case nil
     (install-packages)
