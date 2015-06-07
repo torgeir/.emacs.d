@@ -96,5 +96,6 @@
 (require 'setup-yasnippet)
 (require 'setup-dash)
 (require 'setup-dired)
+(require 'setup-hippie)
 
 (require 'setup-langs)
