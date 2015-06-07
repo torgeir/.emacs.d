@@ -147,4 +147,14 @@ Including indent-buffer, which should not be called automatically on save."
   (if (looking-at " ")
       (delete-char 1)))
 
+(defun kill-and-join-forward (&optional arg)
+  "kills line and joins the next line, without the whitespace"
+  (interactive "P")
+  (if (and (eolp) (not (bolp)))
+      (progn (forward-char 1)
+             (just-one-space 0)
+             (backward-char 1)
+             (kill-line arg))
+        (kill-line arg)))
+
 (provide 'defuns)
