@@ -1,4 +1,3 @@
-(require-package 'evil)
 (require 'evil)
 
 (setq evil-search-module 'evil-search
