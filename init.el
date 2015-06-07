@@ -36,6 +36,7 @@
      flycheck-pos-tip
      gist
      git-gutter
+     guide-key
      hackernews
      highlight-escape-sequences
      ido-at-point
@@ -89,6 +90,7 @@
 (eval-after-load 'ido
   '(require 'setup-ido))
 
+(require 'setup-guide-key)
 (require 'setup-evil)
 (require 'setup-shell)
 (require 'setup-paredit)
