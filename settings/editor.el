@@ -49,13 +49,11 @@
 
 (setq cursor-in-non-selected-windows nil)
 
-;; no scroll
+;; mouse, but no scroll
+(require 'mouse)
+(xterm-mouse-mode t)
+(defun trackp-mouse (e))
+(setq mouse-sel-mode t)
 (mouse-wheel-mode t)
-
-;; less jumpy scroll
-(setq mouse-wheel-scroll-amount '(2 ((shift) . 2))) ;; one line at a time
-(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
-(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
-(setq scroll-step 1) ;; keyboardscroll
 
 (provide 'editor)
