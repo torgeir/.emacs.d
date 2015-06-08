@@ -143,9 +143,7 @@ Including indent-buffer, which should not be called automatically on save."
 (defun join-lines ()
   "join adjacent lines"
   (interactive)
-  (join-line -1)
-  (if (looking-at " ")
-      (delete-char 1)))
+  (join-line -1))
 
 (defun kill-and-join-forward (&optional arg)
   "kills line and joins the next line, without the whitespace"
