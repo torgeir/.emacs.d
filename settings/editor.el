@@ -54,6 +54,7 @@
 (xterm-mouse-mode t)
 (defun trackp-mouse (e))
 (setq mouse-sel-mode t)
-(mouse-wheel-mode t)
+(when (require 'mwheel nil 'noerror)
+  (mouse-wheel-mode t))
 
 (provide 'editor)
