@@ -44,8 +44,9 @@
 (setq save-place-file (concat user-emacs-directory "places"))
 
 ;; all ~ in backups
-(setq backup-directory-alist `(("." . ,(concat user-emacs-directory
-                                               "backups"))))
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name
+                 (concat user-emacs-directory "backups")))))
 
 (setq cursor-in-non-selected-windows nil)
 
