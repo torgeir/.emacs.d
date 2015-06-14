@@ -3,6 +3,7 @@
 
 ;; highlight active line
 (global-hl-line-mode 1)
+(set-face-background 'hl-line "#222")
 
 ;; show matching parens
 (show-paren-mode 1)
