@@ -1,6 +1,13 @@
 (defun project-root (folder)
   "Sets the project root."
-  (setq ffip-project-root folder))
+  (setq ffip-project-root folder)
+  (message "project-root set to '%s'" folder))
+
+(defun set-project-root-to-symbol-at-point ()
+    "Sets project-root to the word under the cursor, e.g. from dired"
+    (interactive)
+    (let ((word (thing-at-point 'symbol t)))
+      (project-root word)))
 
 (defun open-line-above ()
   "Insert a newline above the current line and put point at beginning."

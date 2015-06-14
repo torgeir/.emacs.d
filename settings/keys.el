@@ -103,6 +103,7 @@
 (global-set-key (kbd "C-x C-y") 'browse-kill-ring)
 
 (global-set-key (kbd "C-x C-o") 'find-file-in-project)
+(global-set-key (kbd "C-x M-p") 'set-project-root-to-symbol-at-point)
 
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 
