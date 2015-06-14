@@ -49,8 +49,7 @@
 
 (global-set-key (kbd "C-c C-e") 'eval-and-replace)
 
-(when (and is-mac
-           (not window-system))
+(when is-mac
   ;; fix terminal shortcomings, remap them in iterm2, and bring them back here
   (define-key input-decode-map "\e[101" (kbd "C-SPC"))
   (define-key input-decode-map "\e[102" (kbd "C-M-SPC"))
