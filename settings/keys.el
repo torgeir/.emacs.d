@@ -22,6 +22,7 @@
 (global-set-key (kbd "M-p") 'backward-paragraph)
 (global-set-key (kbd "M-n") 'forward-paragraph)
 ;; bring back m-n in w3m
+(require 'w3m)
 (define-key w3m-mode-map (kbd "M-n") nil)
 
 (require 'expand-region)

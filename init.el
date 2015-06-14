@@ -11,7 +11,6 @@
 
 (package-initialize)
 
-(require 'appearance)
 (require 'setup-package)
 
 (defun install-packages ()
@@ -79,6 +78,8 @@
   (error
    (package-refresh-contents)
    (install-packages)))
+
+(require 'appearance)
 
 (load-theme 'gruvbox t)
 
