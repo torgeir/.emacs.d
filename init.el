@@ -46,12 +46,14 @@
      move-text
      multiple-cursors
      paredit
+     powerline
      rainbow-delimiters
      restclient
      s
      shell-command
      simplezen
      smartparens
+     smart-mode-line
      smex
      tagedit
      transpose-frame

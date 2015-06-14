@@ -58,4 +58,12 @@
 (when (require 'mwheel nil 'noerror)
   (mouse-wheel-mode t))
 
+;; powerline
+;;(require 'powerline)
+;;(powerline-default-theme)
+(require 'smart-mode-line)
+(setq sml/theme 'dark)
+(setq sml/no-confirm-load-theme t)
+(sml/setup)
+
 (provide 'editor)
