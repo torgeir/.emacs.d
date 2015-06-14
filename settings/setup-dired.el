@@ -9,4 +9,9 @@
 (define-key dired-mode-map (kbd "M-<up>") (lambda () (interactive) (find-alternate-file "..")))
 (define-key dired-mode-map (kbd "M-<down>") (lambda () (interactive) (dired-find-alternate-file)))
 
+;; Make dired less verbose
+(require 'dired-details)
+(setq-default dired-details-hidden-string "--- ")
+(dired-details-install)
+
 (provide 'setup-dired)
