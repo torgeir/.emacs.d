@@ -21,6 +21,8 @@
 (global-set-key [(shift meta m)] 'jump-char-backward)
 (global-set-key (kbd "M-p") 'backward-paragraph)
 (global-set-key (kbd "M-n") 'forward-paragraph)
+;; bring back m-n in w3m
+(define-key w3m-mode-map (kbd "M-n") nil)
 
 (require 'expand-region)
 (global-set-key (if is-mac (kbd "C-@") (kbd "C-'")) 'er/expand-region)

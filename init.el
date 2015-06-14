@@ -58,6 +58,7 @@
      undo-tree
      visual-regexp
      whitespace-cleanup-mode
+     w3m
      yasnippet
 
      arduino-mode
