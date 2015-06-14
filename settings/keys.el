@@ -19,11 +19,15 @@
 ;; ; to go forward and , to go back
 (global-set-key [(meta m)] 'jump-char-forward)
 (global-set-key [(shift meta m)] 'jump-char-backward)
+
+;; m-p and m-b bindings, and bring them back from various plugins
 (global-set-key (kbd "M-p") 'backward-paragraph)
 (global-set-key (kbd "M-n") 'forward-paragraph)
-;; bring back m-n in w3m
 (require 'w3m)
 (define-key w3m-mode-map (kbd "M-n") nil)
+(require 'markdown-mode)
+(define-key markdown-mode-map (kbd "M-p") nil)
+(define-key markdown-mode-map (kbd "M-n") nil)
 
 (require 'expand-region)
 (global-set-key (if is-mac (kbd "C-@") (kbd "C-'")) 'er/expand-region)
