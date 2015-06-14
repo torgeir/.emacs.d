@@ -55,22 +55,22 @@ If no START and END is provided, the current region-beginning and
 region-end is used."
   (interactive "p")
   (save-excursion
-   (let* ((start (or start (region-beginning)))
-          (end (or end (region-end)))
-          (region (buffer-substring start end)))
-     (goto-char end)
-     (dotimes (i num)
-       (insert region)))))
+    (let* ((start (or start (region-beginning)))
+           (end (or end (region-end)))
+           (region (buffer-substring start end)))
+      (goto-char end)
+      (dotimes (i num)
+        (insert region)))))
 
 (defun duplicate-current-line (&optional num)
   "Duplicate the current line NUM times."
   (interactive "p")
   (save-excursion
-   (when (eq (point-at-eol) (point-max))
-     (goto-char (point-max))
-     (newline)
-     (forward-char -1))
-   (duplicate-region num (point-at-bol) (1+ (point-at-eol)))))
+    (when (eq (point-at-eol) (point-max))
+      (goto-char (point-max))
+      (newline)
+      (forward-char -1))
+    (duplicate-region num (point-at-bol) (1+ (point-at-eol)))))
 
 (defun goto-line-with-feedback ()
   "Show line numbers temporarily, while prompting for the line number input"
@@ -160,6 +160,6 @@ Including indent-buffer, which should not be called automatically on save."
              (just-one-space 0)
              (backward-char 1)
              (kill-line arg))
-        (kill-line arg)))
+    (kill-line arg)))
 
 (provide 'defuns)
