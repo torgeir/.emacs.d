@@ -58,9 +58,7 @@
 (when (require 'mwheel nil 'noerror)
   (mouse-wheel-mode t))
 
-;; powerline
-;;(require 'powerline)
-;;(powerline-default-theme)
+;; fancy mode-line
 (require 'smart-mode-line)
 (setq sml/theme 'dark)
 (setq sml/no-confirm-load-theme t)
