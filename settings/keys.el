@@ -52,19 +52,25 @@
 
 (global-set-key (kbd "C-c C-e") 'eval-and-replace)
 
+;; make this run also after connecting with emacsclient
+;; https://groups.google.com/forum/#!topic/gnu.emacs.help/ZGu2MNkJGrI
 (when is-mac
-  ;; fix terminal shortcomings, remap them in iterm2, and bring them back here
-  (define-key input-decode-map "\e[101" (kbd "C-SPC"))
-  (define-key input-decode-map "\e[102" (kbd "C-M-SPC"))
-  (define-key input-decode-map "\e[103" (kbd "C-."))
-  (define-key input-decode-map "\e[104" (kbd "C-,"))
-  ;; c-æ on a norwegian mac keyboard IS the ansi escape character ^[
-  ;; for debugging run: (read-key-sequence "?")
-  (define-key input-decode-map "\e[100" (kbd "C-æ"))
-  ;; c-ø on a norwegian mac keyboard is ^\
-  (define-key input-decode-map (kbd "C-\\") (kbd "C-ø"))
-  ;; c-å on a norwegian mac keyboard is ^]
-  (define-key input-decode-map (kbd "C-]") (kbd "C-å")))
+  (defadvice terminal-init-xterm (after map-S-up-escape-sequence activate)
+    (progn
+      ;; fix terminal shortcomings, remap them in iterm2, and bring them back here
+      ;; unused keys are e.g. above f17 which is ^[[15;2~ in emacs that is \e[15;2\~
+      ;; http://aperiodic.net/phil/archives/Geekery/term-function-keys.html
+      (define-key input-decode-map "\e[15;2\~" (kbd "C-SPC"))
+      (define-key input-decode-map "\e[17;2\~" (kbd "C-M-SPC"))
+      (define-key input-decode-map "\e[18;2\~" (kbd "C-."))
+      (define-key input-decode-map "\e[19;2\~" (kbd "C-,"))
+      ;; c-æ on a norwegian mac keyboard IS the ansi escape character ^[
+      ;; for debugging run: (read-key-sequence "?")
+      (define-key input-decode-map "\e[20;2\~" (kbd "C-æ"))
+      ;; c-ø on a norwegian mac keyboard is ^\
+      (define-key input-decode-map (kbd "C-\\") (kbd "C-ø"))
+      ;; c-å on a norwegian mac keyboard is ^]
+      (define-key input-decode-map (kbd "C-]") (kbd "C-å")))))
 
 ;; Mark additional regions matching current region
 (global-set-key (kbd "M-æ") 'mc/mark-all-dwim)
