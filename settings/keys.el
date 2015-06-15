@@ -100,6 +100,8 @@
 
 (global-set-key (kbd "C-x C-y") 'browse-kill-ring)
 
+(global-set-key (kbd "C-x C-g") 'ffap)
+
 (global-set-key (kbd "C-x C-o") 'find-file-in-project)
 (global-set-key (kbd "C-x M-p") 'set-project-root-to-symbol-at-point)
 
