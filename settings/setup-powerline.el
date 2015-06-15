@@ -32,6 +32,8 @@
                           (face-grey (if active 'powerline-active-grey 'powerline-inactive))
                           (face-blue (if active 'powerline-active-blue 'powerline-inactive))
                           (face-green (if active 'powerline-active 'powerline-inactive))
+                          (evil-state-name (symbol-name evil-state))
+                          (evil-state-name-short (capitalize (substring evil-state-name 0 1)))
                           (separator-left
                            (intern (format "powerline-%s-%s"
                                            powerline-default-separator
@@ -40,24 +42,31 @@
                            (intern (format "powerline-%s-%s"
                                            powerline-default-separator
                                            (cdr powerline-default-separator-dir))))
-                          (lhs (list (powerline-raw "%*%*" face-grey 'l)
-                                     (powerline-buffer-id face-green 'l)
-                                     (when (and (boundp 'which-func-mode) which-func-mode)
-                                       (powerline-raw which-func-format face-grey 'l))
-                                     (when (boundp 'erc-modified-channels-object)
-                                       (powerline-raw erc-modified-channels-object face-grey 'l))
-                                     (powerline-major-mode face-grey 'l)
-                                     (powerline-process face-grey 'l)
-                                     (powerline-minor-modes face-grey 'l)
-                                     (powerline-narrow face-grey 'l)
-                                     (powerline-raw " " face-grey)
-                                     (powerline-vc face-blue 'r)))
-                          (rhs (list (powerline-raw global-mode-string face-grey 'r)
-                                     (powerline-raw "%l " face-grey)
-                                     (powerline-raw ": " face-grey)
-                                     (powerline-raw "%c " face-grey)
-                                     (powerline-raw "%p " face-grey)
-                                     (powerline-hud face-grey face-grey))))
+                          (lhs (list
+                                (when (not (string-equal "emacs" evil-state-name))
+                                  (powerline-raw evil-state-name-short face-green))
+                                (powerline-raw "%*%*" face-grey 'l)
+                                (powerline-buffer-id face-green 'l)
+                                (when (and (boundp 'which-func-mode) which-func-mode)
+                                  (powerline-raw which-func-format face-grey 'l))
+                                (when (boundp 'erc-modified-channels-object)
+                                  (powerline-raw erc-modified-channels-object face-grey 'l))))
+                          (rhs (list
+                                (powerline-raw global-mode-string face-grey 'r)
+                                (powerline-major-mode face-grey 'l)
+                                (powerline-process face-grey 'l)
+                                (powerline-minor-modes face-grey 'l)
+                                (powerline-narrow face-grey 'l)
+
+                                (powerline-raw " " face-grey)
+
+                                (powerline-vc face-blue 'r)
+
+                                (powerline-raw "%l " face-grey)
+                                (powerline-raw ": " face-grey)
+                                (powerline-raw "%c " face-grey)
+                                (powerline-raw "%p " face-grey)
+                                (powerline-hud face-grey face-grey))))
                      (concat (powerline-render lhs)
                              (powerline-fill face-grey (powerline-width rhs))
                              (powerline-render rhs)))))))
