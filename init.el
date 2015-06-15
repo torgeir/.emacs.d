@@ -91,20 +91,18 @@
 (require 'editor)
 (require 'keys)
 
-(eval-after-load 'ido
-  '(require 'setup-ido))
-
+(setq magit-last-seen-setup-instructions "1.4.0")
+(eval-after-load 'magit '(require 'setup-magit))
+(eval-after-load 'ido '(require 'setup-ido))
+(eval-after-load 'shell '(require 'setup-shell))
+(eval-after-load 'yasnippet '(require 'setup-yasnippet))
+(eval-after-load 'dired '(require 'setup-dired))
 (require 'setup-guide-key)
 (require 'setup-evil)
-(require 'setup-shell)
 (require 'setup-paredit)
 (require 'setup-smartparens)
 (require 'setup-visual-regexp)
-(require 'setup-magit)
 (require 'setup-gist)
-(require 'setup-yasnippet)
 (require 'setup-dash)
-(require 'setup-dired)
 (require 'setup-hippie)
-
 (require 'setup-langs)

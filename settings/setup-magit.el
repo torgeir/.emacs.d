@@ -1,9 +1,3 @@
-(require 'magit)
-(setq magit-last-seen-setup-instructions "1.4.0")
-
-(global-set-key (kbd "C-x m") 'magit-status)
-(autoload 'magit-status "magit")
-
 ;; make magit run full screen
 (defadvice magit-status (around magit-fullscreen activate)
   (window-configuration-to-register :magit-fullscreen)

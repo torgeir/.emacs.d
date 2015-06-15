@@ -50,6 +50,7 @@
 (eval-after-load "eldoc" '(diminish 'eldoc-mode))
 (eval-after-load "paredit" '(diminish 'paredit-mode))
 (eval-after-load "undo-tree" '(diminish 'undo-tree-mode))
+(eval-after-load "guide-key" '(diminish 'guide-key-mode))
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name

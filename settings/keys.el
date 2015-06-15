@@ -23,14 +23,19 @@
 ;; m-p and m-b bindings, and bring them back from various plugins
 (global-set-key (kbd "M-p") 'backward-paragraph)
 (global-set-key (kbd "M-n") 'forward-paragraph)
-(require 'w3m)
-(define-key w3m-mode-map (kbd "M-n") nil)
+(eval-after-load "w3m"
+  '(progn
+     (define-key w3m-mode-map (kbd "M-n") nil)))
+
 (require 'markdown-mode)
 (define-key markdown-mode-map (kbd "M-p") nil)
 (define-key markdown-mode-map (kbd "M-n") nil)
 
 (require 'expand-region)
 (global-set-key (if is-mac (kbd "C-@") (kbd "C-'")) 'er/expand-region)
+
+(global-set-key (kbd "C-x m") 'magit-status)
+(autoload 'magit-status "magit")
 
 ;; don't pop up font menu
 (global-set-key (kbd "s-t") '(lambda () (interactive)))
