@@ -62,4 +62,5 @@
                              (powerline-fill face-grey (powerline-width rhs))
                              (powerline-render rhs)))))))
 
+(powerline-theme)
 (provide 'setup-powerline)
