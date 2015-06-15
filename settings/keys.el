@@ -88,26 +88,7 @@
 (global-set-key (kbd "C-Æ") 'mc/mark-more-like-this-extended)
 (global-set-key (kbd "M-å") 'mc/mark-all-in-region)
 
-;; Symbol and word specific mark-more
-                                        ;(global-set-key (kbd "s-æ") 'mc/mark-next-word-like-this)
-                                        ;(global-set-key (kbd "s-å") 'mc/mark-previous-word-like-this)
-                                        ;(global-set-key (kbd "M-s-ä") 'mc/mark-all-words-like-this)
-
 (global-set-key (kbd "<C-S-mouse-1>") 'mc/add-cursor-on-click)
-
-;; Experimental multiple-cursors
-;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-;; (global-set-key (kbd "C-S-c C-e") 'mc/edit-ends-of-lines)
-;; (global-set-key (kbd "C-S-c C-a") 'mc/edit-beginnings-of-lines)
-
-;; (global-set-key (kbd "s-Æ") 'mc/mark-next-symbol-like-this)
-;; (global-set-key (kbd "s-Å") 'mc/mark-previous-symbol-like-this)
-;; (global-set-key (kbd "M-s-Æ") 'mc/mark-all-symbols-like-this)
-
-;; Extra multiple cursors stuff
-;; (global-set-key (kbd "C-~") 'mc/reverse-regions)
-;; (global-set-key (kbd "M-~") 'mc/sort-regions)
-;; (global-set-key (kbd "H-~") 'mc/insert-numbers)
 
 ;; Set anchor to start rectangular-region-mode
 (global-set-key (kbd "C-M-SPC") 'set-rectangular-region-anchor)
