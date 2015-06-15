@@ -106,3 +106,4 @@
 (require 'setup-dash)
 (require 'setup-hippie)
 (require 'setup-langs)
+(require 'setup-powerline)
