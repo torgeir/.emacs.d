@@ -44,7 +44,7 @@
                                            (cdr powerline-default-separator-dir))))
                           (lhs (list
                                 (when (not (string-equal "emacs" evil-state-name))
-                                  (powerline-raw evil-state-name-short face-green))
+                                  (powerline-raw (concat " " evil-state-name-short) face-green))
                                 (powerline-raw "%*%*" face-grey 'l)
                                 (powerline-buffer-id face-green 'l)
                                 (when (and (boundp 'which-func-mode) which-func-mode)
