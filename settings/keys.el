@@ -129,4 +129,9 @@
      (define-key html-mode-map (kbd "M-S") 'tagedit-split-tag)
      (define-key html-mode-map (kbd "M-J") 'tagedit-join-tags)))
 
+(eval-after-load "cider"
+  '(progn
+     (define-key cider-repl-mode-map (kbd "C-,") 'complete-symbol)
+     (define-key cider-mode-map (kbd "C-,") 'complete-symbol)))
+
 (provide 'keys)
