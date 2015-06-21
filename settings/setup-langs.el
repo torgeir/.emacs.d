@@ -80,6 +80,10 @@
 (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
 (add-to-list 'auto-mode-alist '("\\.cljs.*$" . clojure-mode))
 
+;; stop nagging about saving
+(defadvice clojure-test-run-tests (before save-first activate) (save-buffer))
+(defadvice nrepl-load-current-buffer (before save-first activate) (save-buffer))
+
 ;; more syntax hilighting
 (require 'clojure-mode-extra-font-locking)
 
