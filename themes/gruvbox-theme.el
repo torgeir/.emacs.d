@@ -236,6 +236,9 @@
    `(helm-source-header                        ((t ( :foreground ,gruvbox-light2 ))))
    `(helm-visible-mark                         ((t ( :foreground ,gruvbox-black         :background ,gruvbox-light3       ))))
 
+   ;; Popup
+   `(popup-tip-face                    ((t (:background ,gruvbox-dark1 :foreground ,gruvbox-neutral_yellow))))
+
    ;; Term
    `(term-color-black                  ((t (:foreground ,gruvbox-dark1))))
    `(term-color-blue                   ((t (:foreground ,gruvbox-neutral_blue))))
