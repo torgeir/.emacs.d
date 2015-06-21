@@ -129,9 +129,10 @@
      (define-key html-mode-map (kbd "M-S") 'tagedit-split-tag)
      (define-key html-mode-map (kbd "M-J") 'tagedit-join-tags)))
 
-(eval-after-load "cider"
-  '(progn
-     (define-key cider-repl-mode-map (kbd "C-,") 'complete-symbol)
-     (define-key cider-mode-map (kbd "C-,") 'complete-symbol)))
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "M-n") nil)
+  (define-key company-active-map (kbd "M-p") nil)
+  (define-key company-active-map (kbd "C-n") #'company-select-next)
+  (define-key company-active-map (kbd "C-p") #'company-select-previous))
 
 (provide 'keys)

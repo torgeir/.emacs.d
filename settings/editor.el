@@ -58,4 +58,6 @@
 (when (require 'mwheel nil 'noerror)
   (mouse-wheel-mode t))
 
+(add-hook 'after-init-hook 'global-company-mode)
+
 (provide 'editor)

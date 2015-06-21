@@ -62,6 +62,12 @@
      w3m
      yasnippet
 
+     company
+     company-quickhelp
+     company-restclient
+     company-tern
+     company-web
+
      arduino-mode
      clojure-mode
      clojure-mode-extra-font-locking
