@@ -33,7 +33,7 @@
                       '(javascript-jshint)))
 (setq-default flycheck-disabled-checkers
               (append flycheck-disabled-checkers
-                          '(json-jsonlist)))
+                      '(json-jsonlist)))
 
 ;; js2-mode steals TAB, let's steal it back for yasnippet
 (require 'yasnippet)
@@ -58,7 +58,7 @@
 
 ;; reindent after deleting tag with C-c DEL
 (defadvice sgml-delete-tag (after reindent activate)
-    (indent-region (point-min) (point-max)))
+  (indent-region (point-min) (point-max)))
 
 (require 'simplezen)
 (defun --setup-simplezen ()
