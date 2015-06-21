@@ -140,8 +140,8 @@
      (define-key git-gutter+-mode-map (kbd "C-x n") 'git-gutter+-next-hunk)
      (define-key git-gutter+-mode-map (kbd "C-x p") 'git-gutter+-previous-hunk)
      (define-key git-gutter+-mode-map (kbd "C-x v =") 'git-gutter+-show-hunk)
-     (define-key git-gutter+-mode-map (kbd "C-x r") 'git-gutter+-revert-hunks)
-     (define-key git-gutter+-mode-map (kbd "C-x s") 'git-gutter+-stage-hunks)
-     (define-key git-gutter+-mode-map (kbd "C-x c") 'git-gutter+-commit)))
+     (define-key git-gutter+-mode-map (kbd "C-x v r") 'git-gutter+-revert-hunks)
+     (define-key git-gutter+-mode-map (kbd "C-x v s") 'git-gutter+-stage-hunks)
+     (define-key git-gutter+-mode-map (kbd "C-x v c") 'git-gutter+-commit)))
 
 (provide 'keys)
