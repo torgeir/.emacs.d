@@ -80,28 +80,25 @@
 (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
 (add-to-list 'auto-mode-alist '("\\.cljs.*$" . clojure-mode))
 
-;; paredit
-(add-hook 'clojure-mode-hook 'enable-paredit-mode)
-
-;; match camel-case tokens
-(add-hook 'clojure-mode-hook 'subword-mode)
-
 ;; more syntax hilighting
 (require 'clojure-mode-extra-font-locking)
 
 ;; go to repl on connect
-(setq cider-repl-pop-to-buffer-on-connect t)
+(setq cider-repl-pop-to-buffer-on-connect nil)
 
 ;; minibuffer doc in repl
 (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-
-;; paredit in repl
+(add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
 (add-hook 'cider-repl-mode-hook 'paredit-mode)
+
+;; match camel-case tokens
+(add-hook 'clojure-mode-hook 'subword-mode)
+(add-hook 'clojure-mode-hook 'enable-paredit-mode)
 
 ;; flycheck and pos-tip
 (require 'flycheck-clojure)
 (add-hook 'cider-mode-hook (lambda () (flycheck-mode 1)))
-;(eval-after-load 'flycheck '(add-to-list 'flycheck-checkers 'clojure-cider-eastwood))
-;(eval-after-load 'flycheck '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+(eval-after-load 'flycheck '(add-to-list 'flycheck-checkers 'clojure-cider-eastwood))
+(eval-after-load 'flycheck '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
 (provide 'setup-langs)
