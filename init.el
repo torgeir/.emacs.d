@@ -34,7 +34,7 @@
      flycheck-clojure
      flycheck-pos-tip
      gist
-     git-gutter
+     git-gutter+
      guide-key
      hackernews
      highlight-escape-sequences

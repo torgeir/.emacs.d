@@ -60,6 +60,6 @@
 
 (add-hook 'after-init-hook 'global-company-mode)
 
-(global-git-gutter-mode t)
+(global-git-gutter+-mode t)
 
 (provide 'editor)
