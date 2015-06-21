@@ -98,7 +98,11 @@
 ;; flycheck and pos-tip
 (require 'flycheck-clojure)
 (add-hook 'cider-mode-hook (lambda () (flycheck-mode 1)))
-(eval-after-load 'flycheck '(add-to-list 'flycheck-checkers 'clojure-cider-eastwood))
-(eval-after-load 'flycheck '(setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+(eval-after-load 'flycheck
+  '(add-to-list 'flycheck-checkers
+                'clojure-cider-eastwood))
+(eval-after-load 'flycheck
+  '(setq flycheck-display-errors-function
+         #'flycheck-pos-tip-error-messages))
 
 (provide 'setup-langs)
