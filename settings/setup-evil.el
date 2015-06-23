@@ -6,5 +6,6 @@
 
 (evil-mode t)
 (setq evil-default-state 'emacs)
+(evil-emacs-state t)
 
 (provide 'setup-evil)
