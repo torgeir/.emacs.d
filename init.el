@@ -113,3 +113,4 @@
 (require 'setup-hippie)
 (require 'setup-langs)
 (require 'setup-powerline)
+(require 'setup-org)
