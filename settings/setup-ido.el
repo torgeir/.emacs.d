@@ -23,7 +23,7 @@
 (ido-everywhere 1)
 
 (autoload 'ido-at-point-mode "ido-at-point")
-(ido-at-point-mode)
+(ido-at-point-mode 1)
 
 (require 'ido-ubiquitous)
 (ido-ubiquitous-mode 1)
