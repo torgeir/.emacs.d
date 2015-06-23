@@ -27,7 +27,7 @@
 (setq font-lock-maximum-decoration t)
 
 ;; show active region
-(transient-mark-mode 1)
+(transient-mark-mode 0)
 (make-variable-buffer-local 'transient-mark-mode)
 (put 'transient-mark-mode 'permanent-local t)
 (setq-default transient-mark-mode t)
