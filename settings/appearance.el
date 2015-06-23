@@ -60,4 +60,9 @@
 (rename-modeline "js2-mode" js2-mode "JS2")
 (rename-modeline "clojure-mode" clojure-mode "Clj")
 
+;; highlight TODOs
+(defface todo-face '((t (:foreground "white" :background "green" :bold t)))
+  "Face used for highlighting todos" :group 'basic-faces)
+(add-hook 'prog-mode-hook (lambda () (font-lock-add-keywords nil '(("\\(TODO\\|FIXME\\|BUG\\)" 1 'todo-face t)))))
+
 (provide 'appearance)
