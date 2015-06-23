@@ -8,7 +8,7 @@
 
 ;; tab-completion
 (require 'shell-command)
-(shell-command-completion-mode)
+(shell-command-completion-mode 1)
 
 ;; C-d to kill buffer if process is dead
 (defun comint-delchar-or-eof-or-kill-buffer (arg)
