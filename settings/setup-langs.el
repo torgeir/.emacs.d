@@ -70,7 +70,6 @@
 (define-key html-mode-map (kbd "TAB") 'simplezen-expand-or-indent-for-tab)
 
 ;; nxml
-
 (add-hook 'nxml-mode-hook (setq nxml-child-indent 4))
 
 ;; clojure
