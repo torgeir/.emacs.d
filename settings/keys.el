@@ -50,9 +50,11 @@
 ;; smarter m-x
 (require 'smex)
 (smex-initialize)
+(global-set-key (kbd "M-x") nil)
+(global-set-key (kbd "M-X") nil)
 (global-set-key (kbd "C-x C-m") 'smex)
 (global-set-key (kbd "C-c C-m") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+(global-set-key (kbd "C-c C-M") 'smex-major-mode-commands)
 
 (windmove-default-keybindings)
 
