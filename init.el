@@ -35,6 +35,8 @@
      flycheck-pos-tip
      gist
      git-gutter+
+     gitconfig-mode
+     gitignore-mode
      guide-key
      hackernews
      highlight-escape-sequences
