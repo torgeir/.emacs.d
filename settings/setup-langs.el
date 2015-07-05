@@ -1,8 +1,10 @@
+(setq indent 2)
+
 ;; css
 (add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
 (autoload 'turn-on-css-eldoc "css-eldoc")
 
-(setq css-indent-offset 2)
+(setq css-indent-offset indent)
 
 (add-hook 'css-mode-hook 'turn-on-css-eldoc)
 (add-hook 'css-mode-hook 'turn-on-smartparens-mode)
@@ -49,9 +51,9 @@
 (eval-after-load 'js2-mode
   '(define-key js2-mode-map (kbd "M-j") 'nil))
 
-(setq-default js2-basic-offset 2)
 (setq js2-highlight-level 3)
-(setq js-indent-level 2)
+(setq-default js2-basic-offset indent)
+(setq js-indent-level indent)
 
 ;; html
 (require 'sgml-mode)
@@ -76,6 +78,7 @@
 (require 'clojure-mode)
 
 (add-to-list 'auto-mode-alist '("\\.edn$" . clojure-mode))
+
 (add-to-list 'auto-mode-alist '("\\.boot$" . clojure-mode))
 (add-to-list 'auto-mode-alist '("\\.cljs.*$" . clojure-mode))
 
