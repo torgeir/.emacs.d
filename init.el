@@ -46,6 +46,7 @@
      magit
      move-text
      multiple-cursors
+     neotree
      paredit
      powerline
      rainbow-delimiters
