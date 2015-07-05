@@ -7,6 +7,9 @@
 (global-set-key (kbd "<S-return>") 'open-line-below)
 (global-set-key (kbd "<C-S-return>") 'open-line-above)
 (global-set-key (kbd "<s-backspace>") 'kill-whole-line)
+(global-set-key (kbd "C-w") 'backward-kill-word)
+(global-set-key (kbd "C-x C-k") 'kill-region)
+(global-set-key (kbd "C-c C-k") 'kill-region)
 
 (global-set-key (kbd "<C-S-up>") 'move-text-up)
 (global-set-key (kbd "<C-S-down>") 'move-text-down)
