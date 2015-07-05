@@ -25,9 +25,8 @@
       trash-directory "~/.Trash/emacs")
 
 ;; env vars from user shell
-(when is-mac
-  (require-package 'exec-path-from-shell)
-  (exec-path-from-shell-initialize))
+(require-package 'exec-path-from-shell)
+(exec-path-from-shell-initialize)
 
 (add-to-list 'ido-ignore-files "\\.DS_Store")
 
