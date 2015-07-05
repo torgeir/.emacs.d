@@ -62,4 +62,7 @@
 
 (global-git-gutter+-mode t)
 
+(require 'volatile-highlights)
+(volatile-highlights-mode t)
+
 (provide 'editor)
