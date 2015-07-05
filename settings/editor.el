@@ -67,4 +67,7 @@
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
 
+(guru-global-mode +1)
+(setq guru-warn-only t)
+
 (provide 'editor)

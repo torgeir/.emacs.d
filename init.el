@@ -38,6 +38,7 @@
      gitconfig-mode
      gitignore-mode
      guide-key
+     guru-mode
      hackernews
      highlight-escape-sequences
      ido-at-point
