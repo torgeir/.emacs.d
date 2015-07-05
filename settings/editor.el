@@ -62,6 +62,8 @@
 
 (global-git-gutter+-mode t)
 
+(require 'neotree)
+
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
 
