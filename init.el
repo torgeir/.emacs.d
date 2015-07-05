@@ -61,6 +61,7 @@
      transpose-frame
      undo-tree
      visual-regexp
+     volatile-highlights
      whitespace-cleanup-mode
      w3m
      yasnippet
