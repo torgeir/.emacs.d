@@ -1,3 +1,15 @@
+(defun open-in-desktop ()
+  "Show current file in desktop (OS's file manager).
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2015-06-12"
+  (interactive)
+  (cond
+   ((string-equal system-type "windows-nt")
+    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
+   ((string-equal system-type "darwin") (shell-command "open ."))
+   ((string-equal system-type "gnu/linux")
+    (shell-command "xdg-open ."))))
+
 (defun new-empty-buffer ()
   "Open a new empty buffer.
    URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
