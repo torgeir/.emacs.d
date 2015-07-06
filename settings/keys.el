@@ -2,15 +2,14 @@
 (require 'defuns)
 
 (global-set-key (kbd "C-o") 'open-line-below)
-(global-set-key (kbd "M-O") 'open-line-above)
 
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 
-(global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
-
 (global-set-key (kbd "<C-S-up>") 'move-text-up)
 (global-set-key (kbd "<C-S-down>") 'move-text-down)
+
+(global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
 
 ;; M-g M-g
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
