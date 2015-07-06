@@ -116,3 +116,4 @@
 (require 'setup-langs)
 (require 'setup-powerline)
 (require 'setup-org)
+(require 'setup-gitgutter)
