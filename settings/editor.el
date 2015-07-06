@@ -68,7 +68,6 @@
 (volatile-highlights-mode t)
 
 (guru-global-mode +1)
-(setq guru-warn-only t)
 
 ;; don't show highlights
 (transient-mark-mode 0)
