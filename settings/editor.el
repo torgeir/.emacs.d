@@ -64,9 +64,6 @@
 
 (require 'neotree)
 
-(require 'volatile-highlights)
-(volatile-highlights-mode t)
-
 (guru-global-mode +1)
 
 ;; don't show highlights
