@@ -35,8 +35,6 @@
      flycheck-pos-tip
      gist
      git-gutter+
-     gitconfig-mode
-     gitignore-mode
      guide-key
      guru-mode
      hackernews
