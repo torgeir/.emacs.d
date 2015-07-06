@@ -1,15 +1,14 @@
 (require 'util)
 (require 'defuns)
 
-(global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
-
 (global-set-key (kbd "C-o") 'open-line-below)
-(global-set-key (kbd "<S-return>") 'open-line-below)
-(global-set-key (kbd "<C-S-return>") 'open-line-above)
-(global-set-key (kbd "<s-backspace>") 'kill-whole-line)
+(global-set-key (kbd "M-O") 'open-line-above)
+
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-x C-k") 'kill-region)
 (global-set-key (kbd "C-c C-k") 'kill-region)
+
+(global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
 
 (global-set-key (kbd "<C-S-up>") 'move-text-up)
 (global-set-key (kbd "<C-S-down>") 'move-text-down)
@@ -88,11 +87,12 @@
       (define-key input-decode-map (kbd "C-]") (kbd "C-å")))))
 
 ;; Mark additional regions matching current region
-(global-set-key (kbd "M-æ") 'mc/mark-all-dwim)
-(global-set-key (kbd "C-å") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-æ") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-Æ") 'mc/mark-more-like-this-extended)
-(global-set-key (kbd "M-å") 'mc/mark-all-in-region)
+(global-set-key (kbd "M-ø") 'mc/mark-all-dwim)
+(global-set-key (kbd "M-Ø") 'mc/mark-more-like-this-extended)
+(global-set-key (kbd "M-å") 'mc/mark-previous-like-this)
+(global-set-key (kbd "M-æ") 'mc/mark-next-like-this)
+(global-set-key (kbd "M-Å") 'mc/mark-all-in-region)
+(if is-cygwin (global-set-key (kbd "M-'") 'er/expand-region) (global-set-key (kbd "M-@") 'er/expand-region))
 
 (global-set-key (kbd "<C-S-mouse-1>") 'mc/add-cursor-on-click)
 
