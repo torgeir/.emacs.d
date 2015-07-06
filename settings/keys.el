@@ -85,9 +85,9 @@
 ;; Mark additional regions matching current region
 (global-set-key (kbd "M-ø") 'mc/mark-all-dwim)
 (global-set-key (kbd "M-Ø") 'mc/mark-more-like-this-extended)
+(global-set-key (kbd "M-Å") 'mc/mark-all-in-region)
 (global-set-key (kbd "M-å") 'mc/mark-previous-like-this)
 (global-set-key (kbd "M-æ") 'mc/mark-next-like-this)
-(global-set-key (kbd "M-Å") 'mc/mark-all-in-region)
 (require 'expand-region)
 (if is-mac (global-set-key (kbd "M-@") 'er/expand-region) (global-set-key (kbd "M-'") 'er/expand-region))
 
