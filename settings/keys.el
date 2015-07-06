@@ -6,7 +6,6 @@
 
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-x C-k") 'kill-region)
-(global-set-key (kbd "C-c C-k") 'kill-region)
 
 (global-set-key (kbd "C-c d") 'duplicate-current-line-or-region)
 
@@ -43,8 +42,8 @@
 (global-set-key (kbd "s-t") '(lambda () (interactive)))
 
 ;; rename and delete file
-(global-set-key (kbd "C-x C-r") 'rename-current-buffer-file)
-(global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
+(global-set-key (kbd "C-c C-r") 'rename-current-buffer-file)
+(global-set-key (kbd "C-c C-k") 'delete-current-buffer-file)
 
 ;; smarter m-x
 (require 'smex)
