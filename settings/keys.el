@@ -32,9 +32,6 @@
 (define-key markdown-mode-map (kbd "M-p") nil)
 (define-key markdown-mode-map (kbd "M-n") nil)
 
-(require 'expand-region)
-(global-set-key (if is-mac (kbd "C-@") (kbd "C-'")) 'er/expand-region)
-
 (global-set-key (kbd "C-x m") 'magit-status)
 (autoload 'magit-status "magit")
 
@@ -91,7 +88,8 @@
 (global-set-key (kbd "M-å") 'mc/mark-previous-like-this)
 (global-set-key (kbd "M-æ") 'mc/mark-next-like-this)
 (global-set-key (kbd "M-Å") 'mc/mark-all-in-region)
-(if is-cygwin (global-set-key (kbd "M-'") 'er/expand-region) (global-set-key (kbd "M-@") 'er/expand-region))
+(require 'expand-region)
+(if is-mac (global-set-key (kbd "M-@") 'er/expand-region) (global-set-key (kbd "M-'") 'er/expand-region))
 
 (global-set-key (kbd "<C-S-mouse-1>") 'mc/add-cursor-on-click)
 
