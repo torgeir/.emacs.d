@@ -94,8 +94,8 @@
 
 (require 'util)
 
-(when is-mac
-  (require 'mac))
+(when is-mac (require 'mac))
+(when is-cygwin (require 'cygwin))
 
 (require 'editor)
 (require 'keys)
