@@ -22,6 +22,8 @@
 (add-hook 'js2-mode-hook 'turn-on-smartparens-mode)
 (add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
 
+(setq-default js2-global-externs '("module" "require" "sinon" "assert" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
+
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . javascript-mode))
