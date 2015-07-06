@@ -36,7 +36,6 @@
      gist
      git-gutter+
      guide-key
-     guru-mode
      hackernews
      highlight-escape-sequences
      ido-at-point
