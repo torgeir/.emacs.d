@@ -73,6 +73,8 @@
 
 (define-key html-mode-map (kbd "TAB") 'simplezen-expand-or-indent-for-tab)
 
+;; sgml
+(set (make-local-variable 'sgml-basic-offset) 4)
 ;; nxml
 (add-hook 'nxml-mode-hook (setq nxml-child-indent 4))
 
