@@ -50,12 +50,18 @@
 
 (setq cursor-in-non-selected-windows nil)
 
-;; mouse, but no scroll
+;; mouse, with scroll
 (require 'mouse)
 (xterm-mouse-mode t)
 (defun trackp-mouse (e))
 (setq mouse-sel-mode t)
 (when (require 'mwheel nil 'noerror)
+  (global-set-key [mouse-4] '(lambda ()
+                               (interactive)
+                               (scroll-down 1)))
+  (global-set-key [mouse-5] '(lambda ()
+                               (interactive)
+                               (scroll-up 1)))
   (mouse-wheel-mode t))
 
 (add-hook 'after-init-hook 'global-company-mode)
