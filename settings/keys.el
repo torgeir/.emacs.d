@@ -152,10 +152,11 @@
 (global-set-key (kbd "C-x c i") (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
 (global-set-key (kbd "C-x c k") (lambda () (interactive) (find-file "~/.emacs.d/settings/keys.el")))
 (global-set-key (kbd "C-x c e") (lambda () (interactive) (find-file "~/.emacs.d/settings/editor.el")))
-(global-set-key (kbd "C-x c a") (lambda () (interactive) (find-file "~/.emacs.d/settings/appearence.el")))
+(global-set-key (kbd "C-x c a") (lambda () (interactive) (find-file "~/.emacs.d/settings/appearance.el")))
 (global-set-key (kbd "C-x c m") (lambda () (interactive) (find-file "~/.emacs.d/settings/mac.el")))
 (global-set-key (kbd "C-x c d") (lambda () (interactive) (find-file "~/.emacs.d/settings/defuns.el")))
 (global-set-key (kbd "C-x c l") (lambda () (interactive) (find-file "~/.emacs.d/settings/setup-langs.el")))
 (global-set-key (kbd "C-x c s") (lambda () (interactive) (find-file "~/.emacs.d/snippets/")))
+
 
 (provide 'keys)
