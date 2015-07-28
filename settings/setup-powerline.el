@@ -1,7 +1,7 @@
 (require 'powerline)
 
 (defface powerline-active-grey
-  '((t (:foreground "#444" :background "#333" :weight bold :inherit mode-line)))
+  '((t (:foreground "#666" :background "#333" :weight bold :inherit mode-line)))
   "Powerline face 0."
   :group 'powerline)
 
