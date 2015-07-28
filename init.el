@@ -41,6 +41,7 @@
      highlight-escape-sequences
      ido-at-point
      ido-ubiquitous
+     ido-vertical-mode
      jump-char
      magit
      move-text
