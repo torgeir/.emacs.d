@@ -25,6 +25,10 @@
 (autoload 'ido-at-point-mode "ido-at-point")
 (ido-at-point-mode 1)
 
+(require 'ido-vertical-mode)
+(ido-vertical-mode)
+(setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
+
 (require 'ido-ubiquitous)
 (ido-ubiquitous-mode 1)
 
