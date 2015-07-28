@@ -64,6 +64,7 @@
                                (scroll-up 1)))
   (mouse-wheel-mode t))
 
+(setq company-idle-delay 0.2)
 (add-hook 'after-init-hook 'global-company-mode)
 
 (global-git-gutter+-mode t)
