@@ -119,3 +119,6 @@
 (require 'setup-powerline)
 (require 'setup-org)
 (require 'setup-gitgutter)
+
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
