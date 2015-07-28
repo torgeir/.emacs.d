@@ -18,18 +18,27 @@
 
 (require 'js2-mode)
 (autoload 'js2-mode "js2-mode" nil t)
-(add-hook 'js-mode-hook 'js2-minor-mode)
+
 (add-hook 'js2-mode-hook 'turn-on-smartparens-mode)
 (add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
+
+;; ligatures: function -> f
+(add-hook 'js2-mode-hook
+          (lambda ()
+            (push '("function" . ?ƒ) prettify-symbols-alist)
+            (prettify-symbols-mode)))
 
 (setq-default js2-global-externs '("module" "require" "describe" "it" "sinon" "assert" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
 
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx$" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.json$" . javascript-mode))
-(add-to-list 'auto-mode-alist '("\\.jshintrc$" . javascript-mode))
-(add-to-list 'auto-mode-alist '("\\.eslintrc$" . javascript-mode))
 (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
+
+(require 'json-mode)
+(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
+(add-to-list 'auto-mode-alist '("\\.jshintrc$" . json-mode))
+(add-to-list 'auto-mode-alist '("\\.eslintrc$" . json-mode))
+;;(define-key json-mode-map (kbd "C-c C-b") 'json-mode-beautify)
 
 (require 'flycheck)
 (setq-default flycheck-disabled-checkers
@@ -38,6 +47,17 @@
 (setq-default flycheck-disabled-checkers
               (append flycheck-disabled-checkers
                       '(json-jsonlist)))
+
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+
+;; jsx
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+(add-hook 'web-mode-hook ; http://web-mode.org/
+          (lambda ()
+            (setq web-mode-markup-indent-offset indent)
+            (setq web-mode-css-indent-offset indent)
+            (setq web-mode-code-indent-offset indent)))
 
 ;; js2-mode steals TAB, let's steal it back for yasnippet
 (require 'yasnippet)

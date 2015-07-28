@@ -76,10 +76,12 @@
      css-mode
      gitconfig-mode
      gitignore-mode
+     json-mode
      js2-mode
      less-css-mode
      markdown-mode
-     rainbow-mode)))
+     rainbow-mode
+     web-mode)))
 
 (condition-case nil
     (install-packages)
