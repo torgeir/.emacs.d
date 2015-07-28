@@ -62,8 +62,6 @@
 
 (global-git-gutter+-mode t)
 
-(require 'neotree)
-
 (guru-global-mode +1)
 
 ;; don't show highlights

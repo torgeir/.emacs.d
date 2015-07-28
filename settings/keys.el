@@ -158,5 +158,7 @@
 (global-set-key (kbd "C-x c l") (lambda () (interactive) (find-file "~/.emacs.d/settings/setup-langs.el")))
 (global-set-key (kbd "C-x c s") (lambda () (interactive) (find-file "~/.emacs.d/snippets/")))
 
+(require 'neotree)
+(global-set-key [f8] 'neotree-toggle)
 
 (provide 'keys)
