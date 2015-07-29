@@ -129,6 +129,7 @@
      (define-key html-mode-map (kbd "M-S") 'tagedit-split-tag)
      (define-key html-mode-map (kbd "M-J") 'tagedit-join-tags)))
 
+
 (with-eval-after-load 'company
   (define-key company-active-map (kbd "TAB") #'company-complete-selection)
   (define-key company-active-map (kbd "C-,") (lambda ()
@@ -164,6 +165,7 @@
 
 (add-hook 'ido-setup-hook (lambda ()
                             (define-key ido-completion-map (kbd "C-a") nil) ; remove silly ido-toggle-ignore binding to c-a
-                            (define-key ido-completion-map (kbd "C-i") 'ido-toggle-ignore)))
+                            (define-key ido-completion-map (kbd "C-i") 'ido-toggle-ignore)
+                            (define-key ido-completion-map (kbd "TAB") 'ido-exit-minibuffer)))
 
 (provide 'keys)
