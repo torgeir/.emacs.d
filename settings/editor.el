@@ -71,6 +71,9 @@
 
 (guru-global-mode +1)
 
+(require 'projectile)
+(projectile-global-mode)
+
 ;; don't show highlights
 (transient-mark-mode 0)
 

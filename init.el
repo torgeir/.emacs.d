@@ -27,7 +27,6 @@
      evil
      expand-region
      fill-column-indicator
-     find-file-in-project
      flx
      flx-ido
      flycheck
@@ -50,6 +49,7 @@
      neotree
      paredit
      powerline
+     projectile
      rainbow-delimiters
      restclient
      s

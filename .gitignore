@@ -8,3 +8,4 @@ smex-items*
 .mc-lists.el
 test-files
 var
+/projectile-bookmarks.eld

@@ -104,8 +104,6 @@
 
 (global-set-key (kbd "C-x C-g") 'ffap)
 
-(global-set-key (kbd "C-x C-o") 'find-file-in-project)
-(global-set-key (kbd "C-x M-p") 'set-project-root-to-symbol-at-point)
 (global-set-key (kbd "C-x M-n") 'new-empty-buffer)
 
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
