@@ -35,6 +35,7 @@
      flycheck-pos-tip
      gist
      git-gutter+
+     gruvbox-theme
      guide-key
      guru-mode
      hackernews
