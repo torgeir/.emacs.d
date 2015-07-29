@@ -1,3 +1,9 @@
+(defun ido-go-straight-home ()
+  (interactive)
+  (cond
+   ((looking-back "/") (insert "~/"))
+   (:else (call-interactively 'self-insert-command))))
+
 (defun open-in-desktop ()
   "Show current file in desktop (OS's file manager).
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'

@@ -166,6 +166,13 @@
 (add-hook 'ido-setup-hook (lambda ()
                             (define-key ido-completion-map (kbd "C-a") nil) ; remove silly ido-toggle-ignore binding to c-a
                             (define-key ido-completion-map (kbd "C-i") 'ido-toggle-ignore)
-                            (define-key ido-completion-map (kbd "TAB") 'ido-exit-minibuffer)))
+                            (define-key ido-completion-map (kbd "TAB") 'ido-exit-minibuffer)
+                            (define-key ido-file-completion-map (kbd "~") 'ido-go-straight-home)
+
+                            ;; c-w should go back up a dir - insert current file name with c-x c-w instead.
+                            (define-key ido-file-completion-map (kbd "C-w") 'ido-delete-backward-updir)
+                            (define-key ido-file-completion-map (kbd "C-x C-w") 'ido-copy-current-file-name)
+                            (define-key ido-file-dir-completion-map (kbd "C-w") 'ido-delete-backward-updir)
+                            (define-key ido-file-dir-completion-map (kbd "C-x C-w") 'ido-copy-current-file-name)))
 
 (provide 'keys)
