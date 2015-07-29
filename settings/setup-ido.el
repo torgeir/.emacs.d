@@ -45,4 +45,7 @@
 (add-to-list 'ido-ignore-directories "target")
 (add-to-list 'ido-ignore-directories "node_modules")
 
+;; allow alot of folders
+(setq ido-max-directory-size 100000)
+
 (provide 'setup-ido)
