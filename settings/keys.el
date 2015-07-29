@@ -161,7 +161,15 @@
 (global-set-key (kbd "C-x c s") (lambda () (interactive) (find-file "~/.emacs.d/snippets/")))
 
 (require 'neotree)
-(global-set-key [f8] 'neotree-toggle)
+(global-set-key [f6] 'neotree-toggle)
+
+(require 'undo-tree)
+(global-set-key [f7] (lambda ()
+                       "custom undo tree visualizer toggle"
+                       (interactive)
+                       (if (get-buffer undo-tree-visualizer-buffer-name)
+                           (undo-tree-visualizer-quit)
+                             (undo-tree-visualize))))
 
 (add-hook 'ido-setup-hook (lambda ()
                             (define-key ido-completion-map (kbd "C-a") nil) ; remove silly ido-toggle-ignore binding to c-a
