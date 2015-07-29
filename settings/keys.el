@@ -130,7 +130,7 @@
      (define-key html-mode-map (kbd "M-J") 'tagedit-join-tags)))
 
 (with-eval-after-load 'company
-  (define-key company-active-map [tab] #'company-complete-selection)
+  (define-key company-active-map (kbd "TAB") #'company-complete-selection)
   (define-key company-active-map (kbd "C-,") (lambda ()
                                                (interactive)
                                                (company-abort)
