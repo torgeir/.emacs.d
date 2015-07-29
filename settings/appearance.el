@@ -65,4 +65,7 @@
   "Face used for highlighting todos" :group 'basic-faces)
 (add-hook 'prog-mode-hook (lambda () (font-lock-add-keywords nil '(("\\(TODO\\|FIXME\\|BUG\\)" 1 'todo-face t)))))
 
+;; show trailing whitespace in red 
+(setq-default show-trailing-whitespace t)
+
 (provide 'appearance)

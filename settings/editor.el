@@ -77,4 +77,7 @@
 ;; don't show highlights
 (transient-mark-mode 0)
 
+;; don't force newline at end of files on visit
+(setq require-final-newline nil)
+
 (provide 'editor)
