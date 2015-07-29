@@ -131,6 +131,10 @@
 
 (with-eval-after-load 'company
   (define-key company-active-map [tab] #'company-complete-selection)
+  (define-key company-active-map (kbd "C-,") (lambda ()
+                                               (interactive)
+                                               (company-abort)
+                                               (completion-at-point)))
   (define-key company-active-map (kbd "C-n") #'company-select-next)
   (define-key company-active-map (kbd "C-p") #'company-select-previous))
 
@@ -157,5 +161,9 @@
 
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
+
+(add-hook 'ido-setup-hook (lambda ()
+                            (define-key ido-completion-map (kbd "C-a") nil) ; remove silly ido-toggle-ignore binding to c-a
+                            (define-key ido-completion-map (kbd "C-i") 'ido-toggle-ignore)))
 
 (provide 'keys)

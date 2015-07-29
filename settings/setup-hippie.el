@@ -1,4 +1,3 @@
-
 ;; lisp-friendly
 (setq hippie-expand-try-functions-list
       '(try-complete-file-name
@@ -9,7 +8,7 @@
         try-complete-lisp-symbol))
 
 (global-set-key (kbd "C-.") 'hippie-expand-no-case-fold)
-(global-set-key (kbd "C-,") 'company-complete)
+(global-set-key (kbd "C-,") 'completion-at-point)
 (global-set-key (kbd "C-S-.") 'hippie-expand-lines)
 
 (require 'company-restclient)

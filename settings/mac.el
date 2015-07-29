@@ -28,8 +28,6 @@
 (require-package 'exec-path-from-shell)
 (exec-path-from-shell-initialize)
 
-(add-to-list 'ido-ignore-files "\\.DS_Store")
-
 ;; clipboard
 (defun copy-to-osx (text &optional push)
   (let ((process-connection-type nil))
