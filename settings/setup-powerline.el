@@ -32,7 +32,7 @@
                           (face-grey (if active 'powerline-active-grey 'powerline-inactive))
                           (face-blue (if active 'powerline-active-blue 'powerline-inactive))
                           (face-green (if active 'powerline-active 'powerline-inactive))
-                          (evil-state-name (symbol-name evil-state))
+                          (evil-state-name (if (boundp 'evil-state) (symbol-name evil-state) "emacs")) ;; default to "emacs" if evil is not loaded
                           (evil-state-name-short (capitalize (substring evil-state-name 0 1)))
                           (separator-left
                            (intern (format "powerline-%s-%s"

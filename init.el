@@ -110,7 +110,7 @@
 (eval-after-load 'yasnippet '(require 'setup-yasnippet))
 (eval-after-load 'dired '(require 'setup-dired))
 (require 'setup-guide-key)
-(require 'setup-evil)
+;;(require 'setup-evil)
 (require 'setup-paredit)
 (require 'setup-smartparens)
 (require 'setup-visual-regexp)
