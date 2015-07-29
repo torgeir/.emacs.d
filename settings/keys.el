@@ -141,9 +141,9 @@
 
 (eval-after-load 'git-gutter+
   '(progn
-     (define-key git-gutter+-mode-map (kbd "C-x n") 'git-gutter+-next-hunk)
-     (define-key git-gutter+-mode-map (kbd "C-x p") 'git-gutter+-previous-hunk)
-     (define-key git-gutter+-mode-map (kbd "C-x C") 'git-gutter+-stage-and-commit)
+     (define-key git-gutter+-mode-map (kbd "C-x v n") 'git-gutter+-next-hunk)
+     (define-key git-gutter+-mode-map (kbd "C-x v p") 'git-gutter+-previous-hunk)
+     (define-key git-gutter+-mode-map (kbd "C-x v C") 'git-gutter+-stage-and-commit)
      (define-key git-gutter+-mode-map (kbd "C-x v =") 'git-gutter+-show-hunk)
      (define-key git-gutter+-mode-map (kbd "C-x v r") 'git-gutter+-revert-hunks)
      (define-key git-gutter+-mode-map (kbd "C-x v s") 'git-gutter+-stage-hunks)
@@ -160,10 +160,10 @@
 (global-set-key (kbd "C-x c l") (lambda () (interactive) (find-file "~/.emacs.d/settings/setup-langs.el")))
 (global-set-key (kbd "C-x c s") (lambda () (interactive) (find-file "~/.emacs.d/snippets/")))
 
-(require 'neotree)
-(global-set-key [f6] 'neotree-toggle)
+;; neo find file
+(global-set-key (kbd "C-x n f") 'neotree-find)
 
-(require 'undo-tree)
+(global-set-key [f6] 'neotree-toggle)
 (global-set-key [f7] (lambda ()
                        "custom undo tree visualizer toggle"
                        (interactive)

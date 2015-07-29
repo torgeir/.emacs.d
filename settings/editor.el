@@ -81,4 +81,11 @@
 (setq-default require-final-newline nil)
 (setq-default mode-require-final-newline nil)
 
+(require 'neotree)
+(setq neo-window-width 30)
+(setq neo-theme 'nerd)
+(setq neo-smart-open nil)
+
+(require 'undo-tree)
+
 (provide 'editor)
