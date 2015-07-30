@@ -22,10 +22,14 @@
 (add-hook 'js2-mode-hook 'turn-on-smartparens-mode)
 (add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
 
-;; ligatures: function -> f
+;; ligatures: function -> f, lambda -> λ
 (add-hook 'js2-mode-hook
           (lambda ()
             (push '("function" . ?ƒ) prettify-symbols-alist)
+            (prettify-symbols-mode)))
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (push '("lambda" . ?λ) prettify-symbols-alist)
             (prettify-symbols-mode)))
 
 (setq-default js2-global-externs '("module" "require" "describe" "it" "sinon" "assert" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
