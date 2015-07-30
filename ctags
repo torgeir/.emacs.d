@@ -1,4 +1,6 @@
 --exclude=.git
+--exclude=dist
+--exclude=target
 --exclude=node_modules
 
 --langdef=js
