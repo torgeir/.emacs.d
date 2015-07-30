@@ -1,3 +1,35 @@
+(defun build-tags ()
+  "build ctags file for projectile project, calls load-tags when done"
+  (interactive)
+  (message "building project tags..")
+  (let* ((root (projectile-project-root))
+         (ctags (expand-file-name "~/.emacs.d/ctags"))
+         (process (start-process-shell-command
+                  "build ctags asynchronously"
+                  "*ctags async*"
+                  (concat
+                   "ctags -e -R"       ; etags mode, recurse
+                   " --options=" ctags ; use global config
+                   " -f " root "TAGS " ; put it in project/TAGS
+                   root))))
+    (set-process-sentinel process 'load-tags)))
+
+(defun load-tags (process event)
+  "loads project tags into tag table"
+  (interactive)
+  (message "loading project tags..")
+  (let ((root (projectile-project-root)))
+    (visit-tags-table (concat root "TAGS"))
+    (message "project tags loaded")))
+
+(defun find-tag-at-point ()
+  "goes to tag at point, builds and/or loads project TAGS file first"
+  (interactive)
+  (if (file-exists-p (concat (projectile-project-root) "TAGS"))
+      (load-tags nil nil); TODO
+    (build-tags))
+  (etags-select-find-tag-at-point))
+
 (defun ido-go-straight-home ()
   (interactive)
   (cond

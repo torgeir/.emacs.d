@@ -71,7 +71,9 @@
 
 (define-key js2-mode-map (kbd "TAB") 'js2-tab-properly)
 (eval-after-load 'js2-mode
-  '(define-key js2-mode-map (kbd "M-j") 'nil))
+  '(progn
+     (define-key js2-mode-map (kbd "M-j") 'nil)
+     (define-key js2-mode-map (kbd "M-.") 'nil)))
 
 (setq js2-highlight-level 3)
 (setq-default js2-basic-offset indent)

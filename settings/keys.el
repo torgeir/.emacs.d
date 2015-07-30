@@ -169,7 +169,7 @@
                        (interactive)
                        (if (get-buffer undo-tree-visualizer-buffer-name)
                            (undo-tree-visualizer-quit)
-                             (undo-tree-visualize))))
+                         (undo-tree-visualize))))
 
 (add-hook 'ido-setup-hook (lambda ()
                             (define-key ido-completion-map (kbd "C-a") nil) ; remove silly ido-toggle-ignore binding to c-a
@@ -182,5 +182,11 @@
                             (define-key ido-file-completion-map (kbd "C-x C-w") 'ido-copy-current-file-name)
                             (define-key ido-file-dir-completion-map (kbd "C-w") 'ido-delete-backward-updir)
                             (define-key ido-file-dir-completion-map (kbd "C-x C-w") 'ido-copy-current-file-name)))
+
+;; tags
+(global-set-key (kbd "M-.") 'find-tag-at-point)
+(add-hook 'etags-select-mode-hook (lambda ()
+                                    (define-key etags-select-mode-map (kbd "RET") 'etags-select-goto-tag)
+                                    (define-key etags-select-mode-map (kbd "M-RET") 'etags-select-goto-tag-other-window)))
 
 (provide 'keys)
