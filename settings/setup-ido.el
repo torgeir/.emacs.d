@@ -48,4 +48,7 @@
 ;; allow alot of folders
 (setq ido-max-directory-size 100000)
 
+;; prioritize some file types
+(setq ido-file-extensions-order '())
+
 (provide 'setup-ido)
