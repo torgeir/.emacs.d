@@ -184,6 +184,7 @@
                             (define-key ido-file-dir-completion-map (kbd "C-x C-w") 'ido-copy-current-file-name)))
 
 ;; tags
+(global-set-key (kbd "M-?") 'ido-find-tag)
 (global-set-key (kbd "M-.") 'find-tag-at-point)
 (add-hook 'etags-select-mode-hook (lambda ()
                                     (define-key etags-select-mode-map (kbd "RET") 'etags-select-goto-tag)

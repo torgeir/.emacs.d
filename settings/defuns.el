@@ -31,6 +31,16 @@
     (if (file-exists-p tags) (load-tags tags) (build-tags))
     (etags-select-find-tag-at-point)))
 
+(defun ido-find-tag ()
+  "Find a tag using ido"
+  (interactive)
+  (tags-completion-table)
+  (let (tag-names)
+    (mapatoms (lambda (x)
+                (push (prin1-to-string x t) tag-names))
+              tags-completion-table)
+    (etags-select-find (ido-completing-read "Tag: " tag-names))))
+
 (defun ido-go-straight-home ()
   (interactive)
   (cond
