@@ -186,6 +186,7 @@
 ;; tags
 (global-set-key (kbd "M-?") 'ido-find-tag)
 (global-set-key (kbd "M-.") 'find-tag-at-point)
+(global-set-key (kbd "M-_") 'find-tag-other-window)
 (add-hook 'etags-select-mode-hook (lambda ()
                                     (define-key etags-select-mode-map (kbd "RET") 'etags-select-goto-tag)
                                     (define-key etags-select-mode-map (kbd "M-RET") 'etags-select-goto-tag-other-window)))
