@@ -24,6 +24,7 @@
      dash-at-point
      diminish
      dired-details
+     etags-select
      evil
      expand-region
      fill-column-indicator
