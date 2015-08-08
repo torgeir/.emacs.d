@@ -36,7 +36,8 @@
      gist
      git-gutter+
      gruvbox-theme
-     guide-key
+     ;; guide-key
+     which-key
      guru-mode
      hackernews
      highlight-escape-sequences
@@ -110,7 +111,7 @@
 (eval-after-load 'shell '(require 'setup-shell))
 (eval-after-load 'yasnippet '(require 'setup-yasnippet))
 (eval-after-load 'dired '(require 'setup-dired))
-(require 'setup-guide-key)
+(require 'setup-which-key)
 ;;(require 'setup-evil)
 (require 'setup-paredit)
 (require 'setup-smartparens)
