@@ -37,7 +37,6 @@
      gist
      git-gutter+
      gruvbox-theme
-     ;; guide-key
      which-key
      guru-mode
      hackernews
