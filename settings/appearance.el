@@ -54,6 +54,8 @@
 (eval-after-load "git-gutter+" '(diminish 'git-gutter+-mode))
 (eval-after-load "guru-mode" '(diminish 'guru-mode))
 (eval-after-load "company" '(diminish 'company-mode))
+(eval-after-load "yas-minor-mode" '(diminish 'yas-minor-mode))
+(eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name
