@@ -40,7 +40,7 @@
      guru-mode
      hackernews
      highlight-escape-sequences
-     ido-at-point
+     ;; ido-at-point ; the latest version from melpa is not working any longer?
      ido-ubiquitous
      ido-vertical-mode
      jump-char
