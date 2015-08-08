@@ -50,7 +50,10 @@
 (eval-after-load "eldoc" '(diminish 'eldoc-mode))
 (eval-after-load "paredit" '(diminish 'paredit-mode))
 (eval-after-load "undo-tree" '(diminish 'undo-tree-mode))
-(eval-after-load "guide-key" '(diminish 'guide-key-mode))
+(eval-after-load "which-key" '(diminish 'which-key-mode))
+(eval-after-load "git-gutter+" '(diminish 'git-gutter+-mode))
+(eval-after-load "guru-mode" '(diminish 'guru-mode))
+(eval-after-load "company" '(diminish 'company-mode))
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name
