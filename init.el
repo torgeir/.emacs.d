@@ -21,6 +21,7 @@
      change-inner
      cider
      css-eldoc
+     dash
      dash-at-point
      diminish
      dired-details
@@ -93,11 +94,10 @@
    (package-refresh-contents)
    (install-packages)))
 
+(require 'util)
 (require 'appearance)
 
 (load-theme 'gruvbox t)
-
-(require 'util)
 
 (when is-mac (require 'mac))
 (when is-cygwin (require 'cygwin))

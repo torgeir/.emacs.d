@@ -1,3 +1,4 @@
+(require 'dash)
 (require 's)
 (require 'transpose-frame)
 
