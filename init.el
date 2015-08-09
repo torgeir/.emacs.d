@@ -36,6 +36,7 @@
      flycheck-pos-tip
      gist
      git-gutter+
+     git-timemachine
      gruvbox-theme
      which-key
      guru-mode
