@@ -56,6 +56,8 @@
 (eval-after-load "company" '(diminish 'company-mode))
 (eval-after-load "yas-minor-mode" '(diminish 'yas-minor-mode))
 (eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
+(eval-after-load "flycheck" '(diminish 'flycheck-mode))
+(eval-after-load "smartparens" '(diminish 'smartparens-mode))
 
 (defmacro rename-modeline (package-name mode new-name)
   `(eval-after-load ,package-name
