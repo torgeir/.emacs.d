@@ -1,13 +1,18 @@
+(setq site-lisp-dir
+      (expand-file-name "site-lisp" user-emacs-directory))
 (setq settings-dir
       (expand-file-name "settings" user-emacs-directory))
 (setq vendor-dir
       (expand-file-name "vendor" user-emacs-directory))
-(setq themes-dir
-      (expand-file-name "themes" user-emacs-directory))
 
+(add-to-list 'load-path site-lisp-dir)
 (add-to-list 'load-path settings-dir)
 (add-to-list 'load-path vendor-dir)
-(add-to-list 'custom-theme-load-path themes-dir)
+
+;; Add external projects to load path
+(dolist (project (directory-files site-lisp-dir t "\\w+"))
+  (when (file-directory-p project)
+    (add-to-list 'load-path project)))
 
 (package-initialize)
 
@@ -123,6 +128,8 @@
 (require 'setup-powerline)
 (require 'setup-org)
 (require 'setup-gitgutter)
+
+(require 'remark-mode)
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
