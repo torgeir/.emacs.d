@@ -52,6 +52,9 @@
                                 (when (boundp 'erc-modified-channels-object)
                                   (powerline-raw erc-modified-channels-object face-grey 'l))))
                           (rhs (list
+                                (when (not is-cygwin)
+                                  (powerline-vc face-blue 'r))
+
                                 (powerline-raw global-mode-string face-grey 'r)
                                 (powerline-major-mode face-grey 'l)
                                 (powerline-process face-grey 'l)
@@ -59,8 +62,6 @@
                                 (powerline-narrow face-grey 'l)
 
                                 (powerline-raw " " face-grey)
-
-                                (powerline-vc face-blue 'r)
 
                                 (powerline-raw "%l " face-grey)
                                 (powerline-raw ": " face-grey)

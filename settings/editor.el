@@ -83,7 +83,7 @@
 
 (require 'neotree)
 (setq neo-window-width 30)
-(setq neo-theme 'nerd)
+(when is-mac (setq neo-theme 'nerd))
 (setq neo-smart-open nil)
 
 (require 'undo-tree)
