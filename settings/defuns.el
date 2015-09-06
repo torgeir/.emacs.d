@@ -1,3 +1,9 @@
+(defun json-format ()
+  "pretty prints json in selected region"
+  (interactive)
+  (save-excursion
+    (shell-command-on-region (mark) (point) "python -m json.tool" (buffer-name) t)))
+
 (defun build-tags ()
   "build ctags file for projectile project, calls load-tags when done"
   (interactive)
