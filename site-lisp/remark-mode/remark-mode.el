@@ -1,4 +1,16 @@
-(require 's)
+(defun remark-util-is-point-at-end-of-buffer ()
+  "checks if point is at end of file"
+  (= (point) (point-max)))
+
+(defun remark-util-replace-string (old new s)
+  "replaces old with new in s"
+  (replace-regexp-in-string (regexp-quote old) new s t t))
+
+(defun remark-util-file-as-string (file-path)
+  "get file contents as string"
+  (with-temp-buffer
+    (insert-file-contents file-path)
+    (buffer-string)))
 
 (defun remark-next-slide ()
   "skip to next slide"
@@ -15,13 +27,10 @@
       (move-beginning-of-line 1)
     (beginning-of-buffer)))
 
-(defun remark-is-at-end-of-buffer ()
-  (= (point) (point-max)))
-
 (defun remark-new-separator (sep)
   "adds separator at end of next slide"
   (remark-next-slide)
-  (if (remark-is-at-end-of-buffer)
+  (if (remark-util-is-point-at-end-of-buffer)
       (insert (concat "\n" sep "\n"))
     (progn
       (insert (concat sep "\n\n"))
@@ -32,8 +41,18 @@
   (interactive)
   (remark-new-separator "---"))
 
+(defun remark-create-note ()
+  "creates note for slide"
+  (interactive)
+  (remark-new-separator "???"))
+
+(defun remark-new-incremental-slide ()
+  "creates new incremental slide"
+  (interactive)
+  (remark-new-separator "--"))
+
 (defun remark-kill-slide ()
-  "kill slide"
+  "kills the current slide"
   (interactive)
   (remark-prev-slide)
   (let ((current-slide-start (point)))
@@ -46,58 +65,48 @@
                      (point-max)))
       (move-beginning-of-line nil))))
 
-(defun remark-create-note ()
-  "creates note for slide"
-  (interactive)
-  (remark-new-separator "???"))
+(defcustom remark-folder
+  (file-name-directory (locate-file "remark-mode.el" load-path))
+  "folder containing remark skeleton file remark.html"
+  :type 'string
+  :group 'remark)
 
-(defun remark-new-incremental-slide ()
-  "creates a new incremental slide"
-  (interactive)
-  (remark-new-separator "--"))
-
-(defun remark-file-string (file-path)
-  "get file as string"
-  (with-temp-buffer
-    (insert-file-contents file-path)
-    (buffer-string)))
-
-(defun remark-preview-in-browser ()
+(defun remark-reload-in-browser ()
   "preview slideshow in browser"
   (interactive)
-  (let* ((folder (file-name-directory buffer-file-name))
-         (remark-file (concat folder "remark.html"))
-         (template-content (remark-file-string remark-file))
-         (index-path (concat folder "index.html"))
-         (index-content (s-replace "</textarea>"
-                                   (concat (buffer-string) "</textarea>")
-                                   template-content)))
-    (write-region index-content nil index-path nil)))
+  (let* ((remark-file (concat remark-folder "remark.html"))
+         (template-content (remark-util-file-as-string remark-file))
+         (index-content (remark-util-replace-string
+                         "</textarea>"
+                         (concat (buffer-string) "</textarea>")
+                         template-content))
+         (index-file (concat remark-folder "index.html"))
+         (index-file-nosymlink (file-truename index-file)))
+    (write-region index-content nil index-file-nosymlink nil)
+    (shell-command "browser-sync reload")))
 
 (defun remark-connect-browser ()
   "serve folder with browsersync"
   (interactive)
-  (let ((folder (file-name-directory buffer-file-name)))
-    (async-shell-command
-     (concat "browser-sync start --files index.html --server "
-             (shell-quote-argument folder)
-             " --no-open --no-ui --no-online")
-     "*remark browser-sync*"
-     "*remark browser-sync error*")
-    (sit-for 1)
-    (message "remark browser-sync connected")
-    (shell-command "open http://localhost:3000")))
+  (async-shell-command
+   (concat "browser-sync start --server "
+           (shell-quote-argument (file-truename remark-folder))
+           " --no-open --no-ui --no-online")
+   "*remark browser-sync*"
+   "*remark browser-sync error*")
+  (sit-for 1)
+  (message "remark browser-sync connected")
+  (shell-command "open http://localhost:3000"))
 
 (defun remark-save ()
   "saves the file and reloads in browser"
   (interactive)
   (save-buffer)
   (if (get-buffer "*remark browser-sync*")
-      (remark-preview-in-browser)
+      (remark-reload-in-browser)
     (message
-     (concat "Wrote "
-             buffer-file-name
-             ". Use C-c C-s c to connect to a browser using browser-sync!"))))
+     (concat "Wrote " buffer-file-name ". "
+             "Use C-c C-s c to connect to a browser using browser-sync!"))))
 
 (defvar remark-mode-map
   (let ((map (make-sparse-keymap)))
