@@ -1,3 +1,33 @@
+(defun clean-mode-line ()
+  (interactive)
+  (loop for cleaner in mode-line-cleaner-alist
+        do (let* ((mode (car cleaner))
+                  (mode-str (cdr cleaner))
+                  (old-mode-str (cdr (assq mode minor-mode-alist))))
+             (when old-mode-str
+               (setcar old-mode-str mode-str))
+             ;; major mode
+             (when (eq mode major-mode)
+               (setq mode-name mode-str)))))
+
+(defun css-kill-value ()
+  "kills the attribute of a css property"
+  (interactive)
+  (let ((pos (point)))
+    (move-beginning-of-line 1)
+    (if (search-forward-regexp ": ?")
+        (progn
+          (when (not (looking-at-p ";"))
+            (kill-word 1)
+            (just-one-space)))
+      (move-to-column pos))))
+
+(defmacro rename-modeline (package-name mode new-name)
+  "per package modeline rename for mode"
+  `(eval-after-load ,package-name
+     '(defadvice ,mode (after rename-modeline activate)
+        (setq mode-name ,new-name))))
+
 (defun json-format ()
   "pretty prints json in selected region"
   (interactive)
@@ -59,21 +89,9 @@ URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2015-06-12"
   (interactive)
   (cond
-   ((string-equal system-type "windows-nt")
-    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
-   ((string-equal system-type "darwin") (shell-command "open ."))
-   ((string-equal system-type "gnu/linux")
-    (shell-command "xdg-open ."))))
-
-(defun new-empty-buffer ()
-  "Open a new empty buffer.
-   URL `http://ergoemacs.org/emacs/emacs_new_empty_buffer.html'
-   Version 2015-06-12"
-  (interactive)
-  (let ((ξbuf (generate-new-buffer "untitled")))
-    (switch-to-buffer ξbuf)
-    (funcall (and initial-major-mode))
-    (setq buffer-offer-save t)))
+   (is-win (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
+   (is-mac (shell-command "open ."))
+   (is-linux (shell-command "xdg-open ."))))
 
 (defun open-line-above ()
   "Insert a newline above the current line and put point at beginning."
@@ -184,7 +202,6 @@ region-end is used."
   (insert " ")
   (forward-char -1))
 
-
 (defun untabify-buffer ()
   "Remove tabs in buffer"
   (interactive)
@@ -195,7 +212,7 @@ region-end is used."
   (interactive)
   (indent-region (point-min) (point-max)))
 
-(defun cleanup-buffer ()
+(defun cleanup-buffer-whitespace-and-indent ()
   "Perform a bunch of operations on the whitespace content of a buffer.
 Including indent-buffer, which should not be called automatically on save."
   (interactive)
@@ -227,5 +244,14 @@ Including indent-buffer, which should not be called automatically on save."
              (backward-char 1)
              (kill-line arg))
     (kill-line arg)))
+
+(defun isearch-delete-me ()
+  (interactive)
+  (delete-char (- (length isearch-string))))
+
+(defun quit-other-window ()
+  (interactive)
+  (other-window 1)
+  (quit-window))
 
 (provide 'defuns)

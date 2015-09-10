@@ -1,17 +1,8 @@
-(autoload 'bash-completion-dynamic-complete
-  "bash-completion"
-  "BASH completion hook")
-(add-hook 'shell-dynamic-complete-functions
-          'bash-completion-dynamic-complete)
-(add-hook 'shell-command-complete-functions
-          'bash-completion-dynamic-complete)
-
-;; tab-completion
-(require 'shell-command)
-(shell-command-completion-mode 1)
-
-;; fix tab-completion in ansi-term
-(add-hook 'term-mode-hook (lambda () (setq yas-dont-activate t)))
+(use-package bash-completion
+  :commands (bash-completion-dynamic-complete)
+  :config
+  (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)
+  (add-hook 'shell-command-complete-functions 'bash-completion-dynamic-complete))
 
 ;; C-d to kill buffer if process is dead
 (defun comint-delchar-or-eof-or-kill-buffer (arg)
@@ -32,5 +23,18 @@
                             (when (string-match "\\(finished\\|exited\\)" change)
                               (kill-buffer (process-buffer proc))
                               (delete-window))))))
+
 (add-hook 'term-mode-hook 'ansi-term-handle-close)
+
+;; tab-completion
+(use-package shell-command
+  :config
+  (shell-command-completion-mode 1))
+
+;; fix tab-completion in ansi-term
+(add-hook 'term-mode-hook (lambda () (setq yas-dont-activate t)))
+
+;; ansi colors in shell
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
 (provide 'setup-shell)

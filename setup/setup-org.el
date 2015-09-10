@@ -1,6 +1,7 @@
-(eval-after-load "org"
+(use-package org
+  :defer t
+  :config
   '(progn
-
      ;; use cider instead of slime (default)
      (setq org-babel-clojure-backend 'cider)
      (eval-after-load "ob-clojure"
