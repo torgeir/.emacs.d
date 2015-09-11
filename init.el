@@ -418,6 +418,7 @@
         ag-project-root-function (lambda (d) (projectile-project-root))))
 
 (use-package wgrep)
+(use-package wgrep-ag)
 
 (use-package dired
   :ensure nil
