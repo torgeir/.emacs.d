@@ -53,8 +53,8 @@
 
 (use-package rainbow-mode
   :config
-  (dolist (hook '(prog-mode-hook css-mode-hook html-mode-hook))
-    (add-hook hook #'rainbow-mode)))
+  (dolist (mode-hook '(prog-mode-hook css-mode-hook html-mode-hook))
+    (add-hook mode-hook #'rainbow-mode)))
 
 (use-package rainbow-delimiters
   :defer t
@@ -67,17 +67,17 @@
 (use-package paredit
   :diminish paredit-mode
   :config
-  (add-hook 'emacs-lisp-mode-hook #'enable-paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-  (add-hook 'ielm-mode-hook #'enable-paredit-mode)
-  (add-hook 'lisp-mode-hook #'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-  (add-hook 'scheme-mode-hook #'enable-paredit-mode)
-
-  ;; load eldoc
-  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode))
+  (dolist (mode-hook '(emacs-lisp-mode-hook
+                       eval-expression-minibuffer-setup-hook
+                       ielm-mode-hook
+                       lisp-mode-hook
+                       lisp-interaction-mode-hook
+                       scheme-mode-hook))
+    (add-hook mode-hook #'enable-paredit-mode))
+  (dolist (mode-hook '(emacs-lisp-mode-hook
+                       lisp-interaction-mode-hook
+                       ielm-mode-hook))
+    (add-hook 'mode-hook 'turn-on-eldoc-mode)))
 
 (use-package eldoc
   :defer t
