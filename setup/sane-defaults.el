@@ -78,7 +78,7 @@
 
 ;; temp files in..
 (setq backup-directory-alist `(("." . ,(locate-user-emacs-file ".backups"))))
-(setq auto-save-list-file-prefix (locate-user-emacs-file ".auto-save-list"))
+(setq auto-save-list-file-prefix (locate-user-emacs-file ".auto-save-list/"))
 (setq recentf-save-file (locate-user-emacs-file ".recentf"))
 (setq save-place-file (locate-user-emacs-file ".places"))
 (setq save-place-forget-unreadable-files nil)
