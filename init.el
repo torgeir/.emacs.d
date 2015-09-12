@@ -99,6 +99,13 @@
   (which-key-mode 0)
   (which-key-mode))
 
+(use-package windmove
+  :ensure nil
+  :bind (("C-c w b" . windmove-left)
+         ("C-c w f" . windmove-right)
+         ("C-c w p" . windmove-up)
+         ("C-c w p" . windmove-down)))
+
 (use-package projectile
   :config (projectile-global-mode))
 
