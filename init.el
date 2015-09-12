@@ -182,6 +182,11 @@
     (jump-to-register :magit-fullscreen)
     (git-gutter+-refresh)))
 
+(use-package magit-gh-pulls
+  :ensure t
+  :defer t
+  :init (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls))
+
 (use-package undo-tree
   :diminish undo-tree-mode
   :config
