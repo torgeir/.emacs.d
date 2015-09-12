@@ -12,6 +12,7 @@
 (bind-key "C-c C-d" 'delete-current-buffer-file)
 (bind-key "C-c n" 'cleanup-buffer-whitespace-and-indent)
 (bind-key "C-c C-e" 'eval-and-replace)
+(bind-key "C-c C-y" #'insert-char-above-the-cursor)
 
 (bind-key "C-x C-g" 'ffap)
 (bind-key "C-x C-k" 'kill-region)
