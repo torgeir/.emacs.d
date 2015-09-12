@@ -134,11 +134,11 @@
   :config
   (add-hook 'neo-enter-hook
             '(lambda (one two three)
-              (define-key neotree-mode-map (kbd "M-n") 'neotree-change-root)
-              (define-key neotree-mode-map (kbd "M-p") (lambda ()
-                                                         (interactive)
-                                                         (neotree-select-up-node)
-                                                         (neotree-select-up-node))))))
+               (define-key neotree-mode-map (kbd "M-n") 'neotree-change-root)
+               (define-key neotree-mode-map (kbd "M-p") (lambda ()
+                                                          (interactive)
+                                                          (neotree-select-up-node)
+                                                          (neotree-select-up-node))))))
 
 (use-package git-gutter+
   :diminish git-gutter+-mode
