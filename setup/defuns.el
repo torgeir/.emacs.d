@@ -260,7 +260,8 @@ Including indent-buffer, which should not be called automatically on save."
 
 (defun isearch-delete-me ()
   (interactive)
-  (delete-char (- (length isearch-string))))
+  (delete-char (- (length isearch-string)))
+  (isearch-exit))
 
 (defun quit-other-window ()
   (interactive)
