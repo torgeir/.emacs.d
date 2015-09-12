@@ -208,7 +208,12 @@
   (smex-initialize))
 
 (use-package company
-  :init (setq company-idle-delay 0.2)
+  :init
+  (setq company-idle-delay 0.2
+        company-tooltip-align-annotations t
+        company-tooltip-flip-when-above t
+        ;; nav with m-<n>
+        company-show-numbers t)
   :config
   (global-company-mode)
   (bind-key "TAB" #'company-complete-selection company-active-map)
@@ -221,18 +226,32 @@
 
 (use-package company-web
   :defer t
-  :config
-  (add-to-list 'company-backends 'company-web-html))
+  :init
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-web-html)))
 
 (use-package company-restclient
   :defer t
-  :config
-  (add-to-list 'company-backends 'company-restclient))
+  :init
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-restclient)))
 
 (use-package company-tern
   :defer t
-  :config
-  (add-to-list 'company-backends 'company-tern))
+  :init
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-tern)))
+
+(use-package company-statistics
+  :defer t
+  :init
+  (with-eval-after-load 'company (company-statistics-mode)))
+
+(use-package company-emoji
+  :defer t
+  :init
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-emoji)))
 
 (use-package smartparens
   :diminish smartparens-mode
