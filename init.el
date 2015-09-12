@@ -245,6 +245,7 @@
 (use-package company-statistics
   :defer t
   :init
+  (setq company-statistics-file (locate-user-emacs-file ".company-statistics-cache.el"))
   (with-eval-after-load 'company (company-statistics-mode)))
 
 (use-package company-emoji
