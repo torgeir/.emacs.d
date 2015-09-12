@@ -125,7 +125,15 @@
   :init
   (setq neo-window-width 30)
   (setq neo-smart-open nil)
-  (when is-mac (setq neo-theme 'nerd)))
+  (when is-mac (setq neo-theme 'nerd))
+  :config
+  (add-hook 'neo-enter-hook
+            '(lambda (one two three)
+              (define-key neotree-mode-map (kbd "M-n") 'neotree-change-root)
+              (define-key neotree-mode-map (kbd "M-p") (lambda ()
+                                                         (interactive)
+                                                         (neotree-select-up-node)
+                                                         (neotree-select-up-node))))))
 
 (use-package git-gutter+
   :diminish git-gutter+-mode
