@@ -111,7 +111,7 @@
   :bind (("C-c w b" . windmove-left)
          ("C-c w f" . windmove-right)
          ("C-c w p" . windmove-up)
-         ("C-c w p" . windmove-down)))
+         ("C-c w n" . windmove-down)))
 
 (use-package projectile
   :config (projectile-global-mode))
@@ -170,7 +170,7 @@
 (use-package undo-tree
   :diminish undo-tree-mode
   :config
-  (bind-key [f7] (lambda ()
+  (bind-key [f5] (lambda ()
                    "custom undo tree visualizer toggle"
                    (interactive)
                    (if (get-buffer undo-tree-visualizer-buffer-name)
