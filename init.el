@@ -48,6 +48,7 @@
 (require 'defuns)
 
 (use-package exec-path-from-shell
+  :if is-mac
   :config
   (exec-path-from-shell-initialize))
 
