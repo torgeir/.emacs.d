@@ -11,6 +11,7 @@
 (bind-key "C-c d" 'duplicate-current-line-or-region)
 (bind-key "C-c n" 'cleanup-buffer-whitespace-and-indent)
 (bind-key "C-c w o" 'delete-other-windows)
+(bind-key "C-c f o" 'open-in-desktop)
 (bind-key "C-c C-r" 'revert-buffer)
 (bind-key "C-c C-d" 'delete-current-buffer-file)
 (bind-key "C-c C-e" 'eval-and-replace)
