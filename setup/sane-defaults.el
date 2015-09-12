@@ -76,10 +76,13 @@
 ;; more memory
 (setq gc-cons-threshold 20000000)
 
-;; temp files in.. /tmp/
-(setq backup-directory-alist `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
-(setq-default make-backup-files nil)
+;; temp files in..
+(setq backup-directory-alist `(("." . ,(locate-user-emacs-file ".backups"))))
+(setq auto-save-list-file-prefix (locate-user-emacs-file ".auto-save-list"))
+(setq recentf-save-file (locate-user-emacs-file ".recentf"))
+(setq save-place-file (locate-user-emacs-file ".places"))
+(setq save-place-forget-unreadable-files nil)
+
 
 ;; no cursor in other open windows
 (setq cursor-in-non-selected-windows nil)

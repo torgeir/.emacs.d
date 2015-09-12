@@ -1,6 +1,6 @@
-(setq dir-snippets (expand-file-name "snippets" user-emacs-directory))
-(setq dir-setup (expand-file-name "setup" user-emacs-directory))
-(setq dir-site-lisp (expand-file-name "site-lisp" user-emacs-directory))
+(setq dir-snippets (locate-user-emacs-file "snippets"))
+(setq dir-setup (locate-user-emacs-file "setup"))
+(setq dir-site-lisp (locate-user-emacs-file "site-lisp"))
 
 (add-to-list 'load-path dir-setup)
 (add-to-list 'load-path dir-site-lisp)
@@ -69,7 +69,7 @@
   :defer t
   :config
   ;; store auto-save files locally
-  (setq tramp-auto-save-directory (locate-user-emacs-file "tramp-auto-save")))
+  (setq tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
 
 (use-package paredit
   :diminish paredit-mode
@@ -114,6 +114,8 @@
          ("C-c w n" . windmove-down)))
 
 (use-package projectile
+  :init
+  (setq projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld"))
   :config (projectile-global-mode))
 
 (use-package neotree
@@ -183,6 +185,7 @@
          ("C-c C-M" . smex-major-mode-commands))
   :init
   (setq smex-flex-matching t)
+  (setq smex-save-file (locate-user-emacs-file ".smex-items"))
   :config
   (smex-initialize))
 
@@ -286,6 +289,8 @@
 
   ;; prioritize some file types
   (setq ido-file-extensions-order '())
+
+  (setq ido-save-directory-list-file (locate-user-emacs-file ".ido.last"))
 
   :config
   (ido-mode t)
