@@ -33,7 +33,9 @@
     (add-hook 'css-mode-hook fn)))
 
 (use-package css-eldoc
-  :commands turn-on-css-eldoc)
+  :commands turn-on-css-eldoc
+  :init
+  (add-hook 'css-mode-hook #'turn-on-css-eldoc))
 
 (use-package less-css-mode
   :config
