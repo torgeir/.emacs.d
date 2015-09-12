@@ -113,6 +113,11 @@
          ("C-c w p" . windmove-up)
          ("C-c w n" . windmove-down)))
 
+(use-package subword
+  :defer t
+  :ensure nil
+  :config (subword-mode))
+
 (use-package projectile
   :init
   (setq projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld"))
