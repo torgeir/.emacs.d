@@ -10,6 +10,7 @@
 
 (bind-key "C-c d" 'duplicate-current-line-or-region)
 (bind-key "C-c n" 'cleanup-buffer-whitespace-and-indent)
+(bind-key "C-c C-r" 'revert-buffer)
 (bind-key "C-c C-d" 'delete-current-buffer-file)
 (bind-key "C-c C-e" 'eval-and-replace)
 (bind-key "C-c C-y" #'insert-char-above-the-cursor)
