@@ -1,5 +1,3 @@
-(windmove-default-keybindings) ;; shift-arrows
-
 (bind-key [remap goto-line] 'goto-line-with-feedback) ;; m-g m-g
 
 (bind-key "M-j" 'join-lines)

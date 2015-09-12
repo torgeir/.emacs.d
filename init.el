@@ -83,6 +83,11 @@
   :defer t
   :diminish eldoc-mode)
 
+(use-package anzu
+  :diminish anzu-mode
+  :config
+  (global-anzu-mode))
+
 (use-package which-key
   :diminish which-key-mode
   :config
