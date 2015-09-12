@@ -64,6 +64,13 @@
 (use-package gruvbox-theme
   :config (load-theme 'gruvbox t))
 
+(use-package tramp
+  :ensure nil
+  :defer t
+  :config
+  ;; store auto-save files locally
+  (setq tramp-auto-save-directory (locate-user-emacs-file "tramp-auto-save")))
+
 (use-package paredit
   :diminish paredit-mode
   :config
