@@ -9,7 +9,7 @@ cd && git clone https://github.com/torgeir/.emacs.d
 ### os x
 
 ```
-brew install emacs --HEAD --use-git-head --with-cocoa --with-glib --with-librsvg --with-gnutls --with-ctags --with-imagemagick
+brew install emacs --with-cocoa --with-glib --with-librsvg --with-mailutils --with-gnutls --with-ctags --with-imagemagick
 ```
 
 ### ubuntu
