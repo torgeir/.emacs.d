@@ -85,7 +85,7 @@
   (dolist (mode-hook '(emacs-lisp-mode-hook
                        lisp-interaction-mode-hook
                        ielm-mode-hook))
-    (add-hook 'mode-hook 'turn-on-eldoc-mode)))
+    (add-hook mode-hook 'turn-on-eldoc-mode)))
 
 (use-package eldoc
   :defer t
