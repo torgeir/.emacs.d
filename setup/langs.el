@@ -52,6 +52,9 @@
         (if (looking-back "^\s*")
             (back-to-indentation))))))
 
+(use-package nodejs-repl
+  :defer t)
+
 ;; js2-mode steals TAB, let's steal it back for yasnippet
 (use-package js2-mode
   :commands  js2-mode
@@ -72,6 +75,7 @@
   (add-hook 'js2-mode-hook 'turn-on-smartparens-mode)
   (add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
 
+  (bind-key "C-x C-e" #'send-region-to-nodejs-repl-process js2-mode-map)
   (bind-key "M-j" 'nil js2-mode-map)
   (bind-key "M-." 'nil js2-mode-map)
   (bind-key "TAB" #'js2-tab-properly js2-mode-map))

@@ -1,3 +1,11 @@
+(defun send-region-to-nodejs-repl-process (start end)
+  "Send region to `nodejs-repl' process."
+  (interactive "r")
+  (save-selected-window
+    (save-excursion (nodejs-repl)))
+  (comint-send-region (get-process nodejs-repl-process-name)
+                      start end))
+
 (defun insert-char-above-the-cursor ()
   "repeats the character from the line above, like vims i_Ctrl-Y"
   (interactive)
