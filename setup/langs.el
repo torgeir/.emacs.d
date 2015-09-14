@@ -176,9 +176,9 @@
       (push lexical-tuple prettify-symbols-alist)
       (prettify-symbols-mode))))
 
-(add-hook 'emacs-lisp-mode-hook (ligature '("lambda" . ?λ)))
+(add-hook 'emacs-lisp-mode-hook (ligature '("lambda" . ?l)))
 (dolist (hook '(js2-mode-hook web-mode-hook))
-  (add-hook hook (ligature '("function" . ?ƒ))))
+  (add-hook hook (ligature '("function" . ?f))))
 
 (defvar mode-line-cleaner-alist
   `((eldoc-mode . "")
