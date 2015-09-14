@@ -41,6 +41,31 @@
   :config
   (bind-key "M-k" 'css-kill-value css-mode-map))
 
+(use-package flycheck
+  :defer t
+  :diminish flycheck-mode
+  :config
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers '(javascript-jshint)))
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers '(json-jsonlist)))
+  (flycheck-add-mode 'javascript-eslint 'web-mode))
+
+(use-package flycheck-pos-tip
+  :defer t
+  :init
+  (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
+
+;; flycheck
+(use-package flycheck-clojure
+  :commands flycheck-mode
+  :defer t
+  :init
+  (add-hook 'cider-mode-hook (lambda () (flycheck-mode 1)))
+
+  :config
+  (add-to-list 'flycheck-checkers 'clojure-cider-eastwood))
+
 (use-package yasnippet
   :defer 1
   :config
@@ -141,31 +166,6 @@
   ;; match camel-case tokens
   (add-hook 'clojure-mode-hook 'subword-mode)
   (add-hook 'clojure-mode-hook 'enable-paredit-mode))
-
-(use-package flycheck
-  :defer t
-  :diminish flycheck-mode
-  :config
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers '(javascript-jshint)))
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers '(json-jsonlist)))
-  (flycheck-add-mode 'javascript-eslint 'web-mode))
-
-(use-package flycheck-pos-tip
-  :defer t
-  :init
-  (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
-
-;; flycheck
-(use-package flycheck-clojure
-  :commands flycheck-mode
-  :defer t
-  :init
-  (add-hook 'cider-mode-hook (lambda () (flycheck-mode 1)))
-
-  :config
-  (add-to-list 'flycheck-checkers 'clojure-cider-eastwood))
 
 ;; ligatures
 (require 'cl)
