@@ -62,6 +62,14 @@
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
+;; (use-package atom-one-dark-theme
+;;   :if window-system
+;;   :config (load-theme 'atom-one-dark t))
+
+;; (use-package atom-dark-theme
+;;   :if window-system
+;;   :config (load-theme 'atom-dark t))
+
 (use-package gruvbox-theme
   :config (load-theme 'gruvbox t))
 
