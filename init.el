@@ -541,6 +541,18 @@
 
 (use-package whitespace-cleanup-mode)
 
+(use-package geeknote
+  :if is-mac
+  :init
+  (setq geeknote-command "python /usr/local/bin/geeknote")
+  :config
+  (global-set-key (kbd "C-c g c") 'geeknote-create)
+  (global-set-key (kbd "C-c g e") 'geeknote-edit)
+  (global-set-key (kbd "C-c g f") 'geeknote-find)
+  (global-set-key (kbd "C-c g s") 'geeknote-show)
+  (global-set-key (kbd "C-c g r") 'geeknote-remove)
+  (global-set-key (kbd "C-c g m") 'geeknote-move))
+
 (require 'setup-shell)
 (require 'setup-org)
 (require 'setup-powerline)
