@@ -39,6 +39,7 @@
 (setq is-cygwin (equal system-type 'cygwin))
 (setq is-linux (equal system-type 'gnu/linux))
 (setq is-win (equal system-type 'windows-nt))
+(setq has-gui (display-graphic-p))
 
 (use-package dash)
 (use-package s)
@@ -71,6 +72,7 @@
 ;;   :config (load-theme 'atom-dark t))
 
 (use-package gruvbox-theme
+  :if (not has-gui)
   :config (load-theme 'gruvbox t))
 
 (use-package tramp
@@ -561,3 +563,8 @@
 (require 'langs)
 (when is-mac (require 'mac))
 (when is-cygwin (require 'cygwin))
+
+(when (and is-mac
+           has-gui
+           (not (server-running-p)))
+  (server-start))
