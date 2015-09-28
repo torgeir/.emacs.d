@@ -63,13 +63,9 @@
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-;; (use-package atom-one-dark-theme
-;;   :if window-system
-;;   :config (load-theme 'atom-one-dark t))
-
-;; (use-package atom-dark-theme
-;;   :if window-system
-;;   :config (load-theme 'atom-dark t))
+(use-package atom-one-dark-theme
+  :if (and is-mac has-gui)
+  :config (load-theme 'atom-one-dark t))
 
 (use-package gruvbox-theme
   :if (not has-gui)
