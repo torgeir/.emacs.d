@@ -16,6 +16,11 @@
 (bind-key "C-c C-d" 'delete-current-buffer-file)
 (bind-key "C-c C-e" 'eval-and-replace)
 (bind-key "C-c C-y" #'insert-char-above-the-cursor)
+(evil-leader/set-key
+  "ff" 'helm-do-ag-this-file
+  "fo" 'open-in-desktop
+  "fr" 'revert-buffer
+  "fd" 'delete-current-buffer-file)
 
 (bind-key "C-x C-g" 'ffap)
 (bind-key "C-x C-k" 'kill-region)
@@ -29,6 +34,29 @@
 (bind-key "C-x c m" (lambda () (interactive) (find-file "~/.emacs.d/setup/mac.el")))
 (bind-key "C-x c l" (lambda () (interactive) (find-file "~/.emacs.d/setup/langs.el")))
 (bind-key "C-x c s" (lambda () (interactive) (find-file "~/.emacs.d/snippets/")))
+(evil-leader/set-key
+  "Cr" (lambda () (interactive) (load-file "~/.emacs.d/init.el"))
+  "Ci" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
+  "Ce" (lambda () (interactive) (find-file "~/.emacs.d/setup/sane-defaults.el"))
+  "Cd" (lambda () (interactive) (find-file "~/.emacs.d/setup/defuns.el"))
+  "Ck" (lambda () (interactive) (find-file "~/.emacs.d/setup/keys.el"))
+  "Cm" (lambda () (interactive) (find-file "~/.emacs.d/setup/mac.el"))
+  "Cl" (lambda () (interactive) (find-file "~/.emacs.d/setup/langs.el"))
+  "Cs" (lambda () (interactive) (find-file "~/.emacs.d/snippets/")))
+
+;; help
+(evil-leader/set-key
+  "hav" 'apropos-variable
+  "ham" 'apropos-mode
+  "had" 'apropos-documentation
+  "hb" 'helm-descbinds
+  "hf" 'describe-function
+  "hk" 'describe-key-briefly
+  "hK" 'describe-key
+  "hv" 'describe-variable
+  "hm" 'describe-mode
+  "hM" 'describe-minor-mode
+  "hp" 'describe-package)
 
 ;; lisp-friendly
 (setq hippie-expand-try-functions-list

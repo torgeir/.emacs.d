@@ -1,22 +1,22 @@
 (use-package powerline
   :config
   (defface powerline-active-grey
-    '((t (:foreground "#666" :background "#333" :weight bold :inherit mode-line)))
+    '((t (:foreground "#666" :weight bold :inherit mode-line)))
     "Powerline face 0."
     :group 'powerline)
 
   (defface powerline-active-blue
-    '((t (:foreground "#98bcbd" :background "#333" :weight normal :inherit mode-line)))
+    '((t (:foreground "#98bcbd" :weight normal :inherit mode-line)))
     "Powerline face 0."
     :group 'powerline)
 
   (defface powerline-active
-    '((t (:foreground "#bcba00" :background "#333" :weight bold :inherit mode-line)))
+    '((t (:foreground "#bcba00" :weight bold :inherit mode-line)))
     "Powerline face 1."
     :group 'powerline)
 
   (defface powerline-inactive
-    '((t (:foreground "#444" :background "#333" :weight bold :inherit mode-line-inactive)))
+    '((t (:foreground "#444" :weight bold :inherit mode-line-inactive)))
     "Powerline face 0."
     :group 'powerline)
 
@@ -46,7 +46,7 @@
                                              (cdr powerline-default-separator-dir))))
                             (lhs (list
                                   (when (not (string-equal "emacs" evil-state-name))
-                                    (powerline-raw (concat " " evil-state-name-short) face-green))
+                                    (powerline-raw (concat " " evil-state-name-short) face-blue))
                                   (powerline-raw "%*%*" face-grey 'l)
                                   (powerline-buffer-id face-green 'l)
                                   (when (and (boundp 'which-func-mode) which-func-mode)

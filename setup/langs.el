@@ -77,9 +77,6 @@
         (if (looking-back "^\s*")
             (back-to-indentation))))))
 
-(use-package nodejs-repl
-  :defer t)
-
 ;; js2-mode steals TAB, let's steal it back for yasnippet
 (use-package js2-mode
   :commands  js2-mode
@@ -100,26 +97,34 @@
   (add-hook 'js2-mode-hook 'turn-on-smartparens-mode)
   (add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
 
-  (bind-key "C-x C-e" #'send-region-to-nodejs-repl-process js2-mode-map)
+  (use-package nodejs-repl
+    :defer t
+    :config
+    (bind-key "C-x C-e" #'send-region-to-nodejs-repl-process js2-mode-map)
+    (evil-leader/set-key-for-mode 'js2-mode
+      "mer" #'send-region-to-nodejs-repl-process))
+
   (bind-key "M-j" 'nil js2-mode-map)
   (bind-key "M-." 'nil js2-mode-map)
-  (bind-key "TAB" #'js2-tab-properly js2-mode-map))
+  (bind-key "TAB" #'js2-tab-properly js2-mode-map)
 
-;; jsx
-(use-package web-mode
-  :mode "\\.\\(jsx\\)$"
-  :config
-  (bind-key "TAB" #'js2-tab-properly web-mode-map)
-  (add-hook 'web-mode-hook ; http://web-mode.org/
-            (lambda ()
-              (dolist (mode '(js-mode html-mode css-mode))
-                (yas-activate-extra-mode mode))
-              (setq web-mode-markup-indent-offset indent)
-              (setq web-mode-css-indent-offset indent)
-              (setq web-mode-code-indent-offset indent))))
+  ;; jsx
+  (use-package web-mode
+    :mode "\\.\\(jsx\\)$"
+    :config
+    (bind-key "TAB" #'js2-tab-properly web-mode-map)
+    (add-hook 'web-mode-hook ; http://web-mode.org/
+              (lambda ()
+                (dolist (mode '(js-mode html-mode css-mode))
+                  (yas-activate-extra-mode mode))
+                (setq web-mode-markup-indent-offset indent)
+                (setq web-mode-css-indent-offset indent)
+                (setq web-mode-code-indent-offset indent))))
 
-(use-package json-mode
-  :mode "\\.\\(json\\|jshintrc\\|eslintrc\\)$")
+  (use-package json-mode
+    :mode "\\.\\(json\\|jshintrc\\|eslintrc\\)$"
+    :config
+    (use-package json-reformat)))
 
 ;; html
 (use-package sgml-mode
@@ -166,6 +171,14 @@
   ;; match camel-case tokens
   (add-hook 'clojure-mode-hook 'subword-mode)
   (add-hook 'clojure-mode-hook 'enable-paredit-mode))
+
+;; elisp
+(evil-leader/set-key-for-mode 'emacs-lisp-mode
+  "meb" 'eval-buffer
+  "mec" 'eval-current-buffer
+  "mee" 'eval-last-sexp
+  "mef" 'eval-defun
+  "mer" 'eval-region)
 
 ;; ligatures
 (require 'cl)

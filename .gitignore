@@ -10,3 +10,5 @@
 /var
 /.projectile-bookmarks.eld
 /.company-statistics-cache.el
+.hl-save
+ido.last

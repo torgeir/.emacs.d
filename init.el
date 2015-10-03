@@ -47,6 +47,7 @@
 
 (require 'sane-defaults)
 (require 'defuns)
+(require 'setup-evil)
 
 (use-package exec-path-from-shell
   :if is-mac
@@ -63,13 +64,8 @@
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-(use-package atom-one-dark-theme
-  :if (and is-mac has-gui)
-  :config (load-theme 'atom-one-dark t))
-
-(use-package gruvbox-theme
-  :if (not has-gui)
-  :config (load-theme 'gruvbox t))
+(use-package spacemacs-theme
+  :init (load-theme 'spacemacs-dark t))
 
 (use-package tramp
   :ensure nil
@@ -118,7 +114,13 @@
   :bind (("C-c w b" . windmove-left)
          ("C-c w f" . windmove-right)
          ("C-c w p" . windmove-up)
-         ("C-c w n" . windmove-down)))
+         ("C-c w n" . windmove-down))
+  :config
+  (evil-leader/set-key
+    "wh" 'windmove-left
+    "wl" 'windmove-right
+    "wk" 'windmove-up
+    "wj" 'windmove-down))
 
 (use-package subword
   :defer t
@@ -127,8 +129,17 @@
 
 (use-package projectile
   :init
-  (setq projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld"))
-  :config (projectile-global-mode))
+  (setq projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
+        projectile-completion-system 'helm)
+  :config
+  (projectile-global-mode)
+  (evil-leader/set-key
+    "t"  'projectile-find-file-dwim
+    "pg" 'helm-projectile-ag
+    "pf" 'projectile-find-file
+    "pd" 'projectile-find-dir
+    "pt" 'projectile-find-test-file
+    "pk" 'projectile-kill-buffers))
 
 (use-package neotree
   :commands neotree
@@ -138,14 +149,23 @@
   (setq neo-window-width 30)
   (setq neo-smart-open nil)
   (when is-mac (setq neo-theme 'nerd))
+  (evil-leader/set-key "fl" 'neotree-find)
   :config
-  (add-hook 'neo-enter-hook
-            '(lambda (one two three)
-               (define-key neotree-mode-map (kbd "M-n") 'neotree-change-root)
-               (define-key neotree-mode-map (kbd "M-p") (lambda ()
-                                                          (interactive)
-                                                          (neotree-select-up-node)
-                                                          (neotree-select-up-node))))))
+  (add-hook 'neotree-mode-hook
+            '(lambda ()
+               (defun neotree-change-root-up ()
+                 (interactive)
+                 (neotree-select-up-node)
+                 (neotree-select-up-node))
+               (bind-key "C-n" 'neotree-next-line evil-normal-state-local-map)
+               (bind-key "C-p" 'neotree-previous-line evil-normal-state-local-map)
+               (bind-key "j" 'neotree-next-line evil-normal-state-local-map)
+               (bind-key "j" 'neotree-next-line evil-normal-state-local-map)
+               (bind-key "k" 'neotree-previous-line evil-normal-state-local-map)
+               (bind-key "u" 'neotree-change-root-up evil-normal-state-local-map)
+               (bind-key "q" 'neotree-hide evil-normal-state-local-map)
+               (bind-key "RET" 'neotree-enter evil-normal-state-local-map)
+               (bind-key "C" 'neotree-change-root evil-normal-state-map))))
 
 (use-package git-gutter+
   :diminish git-gutter+-mode
@@ -154,27 +174,41 @@
   (setq git-gutter+-added-sign "+ ")
   (setq git-gutter+-deleted-sign "- ")
   (global-git-gutter+-mode t)
-  (bind-key "C-x v n" 'git-gutter+-next-hunk git-gutter+-mode-map)
-  (bind-key "C-x v p" 'git-gutter+-previous-hunk git-gutter+-mode-map)
-  (bind-key "C-x v C" 'git-gutter+-stage-and-commit git-gutter+-mode-map)
-  (bind-key "C-x v =" 'git-gutter+-show-hunk git-gutter+-mode-map)
-  (bind-key "C-x v r" 'git-gutter+-revert-hunks git-gutter+-mode-map)
-  (bind-key "C-x v s" 'git-gutter+-stage-hunks git-gutter+-mode-map)
-  (bind-key "C-x v c" 'git-gutter+-commit git-gutter+-mode-map))
+  (evil-leader/set-key
+    "ghj" 'git-gutter+-next-hunk
+    "ghp" 'git-gutter+-previous-hunk
+    "ghC" 'git-gutter+-stage-and-commit
+    "gh=" 'git-gutter+-show-hunk
+    "ghr" 'git-gutter+-revert-hunks
+    "ghs" 'git-gutter+-stage-hunks
+    "ghc" 'git-gutter+-commit))
 
 (use-package git-timemachine
   :commands git-timemachine
   :defer t
-  :bind ("C-x v t" . git-timemachine-toggle))
+  :init
+  (evil-leader/set-key "vt" 'git-timemachine-toggle))
 
 (use-package gist
-  :commands gist-list
-  :bind ("C-x g" . gist-list))
+  :init
+  (evil-leader/set-key
+    "ggl" 'gist-list
+    "ggb" 'gist-buffer
+    "ggB" 'gist-buffer-private
+    "ggr" 'gist-region
+    "ggR" 'gist-region-private))
+
+(use-package ace-jump-mode)
 
 (use-package magit
   :commands magit-status
   :defer t
-  :bind ("C-x m" . magit-status)
+  :init
+  (evil-leader/set-key
+    "gs" 'magit-status
+    "gb" 'magit-blame-mode
+    "gl" 'magit-log
+    "gC" 'magit-commit)
   :config
   (bind-key "q" #'magit-quit-session magit-status-mode-map)
   (defadvice magit-status (around magit-fullscreen activate)
@@ -186,13 +220,12 @@
     "Restores the previous window configuration and kills the magit buffer"
     (interactive)
     (kill-buffer)
-    (jump-to-register :magit-fullscreen)
-    (git-gutter+-refresh)))
+    (git-gutter+-refresh))
 
-(use-package magit-gh-pulls
-  :ensure t
-  :defer t
-  :init (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls))
+  (use-package magit-gh-pulls
+    :ensure t
+    :defer t
+    :init (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls)))
 
 (use-package undo-tree
   :diminish undo-tree-mode
@@ -224,6 +257,8 @@
   :config
   (global-company-mode)
   (bind-key "TAB" #'company-complete-selection company-active-map)
+  (bind-key "C-j" #'company-select-next company-active-map)
+  (bind-key "C-k" #'company-select-previous company-active-map)
   (bind-key "C-n" #'company-select-next company-active-map)
   (bind-key "C-p" #'company-select-previous company-active-map)
   (bind-key "C-," (lambda ()
@@ -255,6 +290,12 @@
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-emoji)))
 
+(use-package ibuffer
+  :init
+  (progn
+    (bind-key "j" 'evil-next-line ibuffer-mode-map)
+    (bind-key "k" 'evil-previous-line ibuffer-mode-map)))
+
 (use-package smartparens
   :diminish smartparens-mode
   :config
@@ -268,23 +309,11 @@
 
 (use-package writeroom-mode)
 
-(use-package remark-mode
-  :load-path "site-lisp/remark-mode/"
-  :commands remark-mode)
-
 (use-package w3m
   :commands w3m
   :defer t
   :config
   (bind-key "M-n" nil w3m-mode-map))
-
-(use-package browse-kill-ring
-  :commands browse-kill
-  :bind ("C-x C-y" . browse-kill))
-
-(use-package change-inner
-  :bind (("M-i" . change-inner)
-         ("M-o" . change-outer)))
 
 (use-package tagedit
   :config
@@ -300,73 +329,38 @@
   (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))
   (add-hook 'sgml-mode-hook (lambda () (bind-key "C-c C-r" 'mc/mark-sgml-tag-pair sgml-mode-map))))
 
-(use-package ido
+(use-package helm
+  :diminish helm-mode
+  :bind (("C-x b" . helm-buffers-list)
+         ("C-x C-m" . helm-M-x)
+         ("C-x C-f" . helm-find-files)
+         ("M-y" . helm-show-kill-ring))
   :init
-  ;; match arbitrary substrings
-  (setq ido-enable-prefix nil)
+  (require 'helm-config)
+  (setq-default helm-display-header-line nil
+                helm-M-x-fuzzy-match t
+                helm-buffers-fuzzy-matching t
+                helm-recentf-fuzzy-match t
+                helm-apropos-fuzzy-match t
+                helm-completion-in-region-fuzzy-match t
 
-  ;; ignore case when searching for buffers and file names
-  (setq ido-case-fold t)
-
-  ;; always new buffers if no buffer matches substring
-  (setq ido-create-new-buffer 'always)
-
-  ;; partial matches
-  (setq ido-enable-flex-matching t)
-
-  ;; only match in the current directory
-  ;; (setq ido-auto-merge-work-directories-length -1)
-
-  ;; show recently open files
-  (setq ido-use-virtual-buffers t)
-
-  ;; disable ido faces to see flx highlights
-  (setq ido-use-faces nil)
-
-  ;; allow alot of folders
-  (setq ido-max-directory-size 100000)
-
-  ;; prioritize some file types
-  (setq ido-file-extensions-order '())
-
-  (setq ido-save-directory-list-file (locate-user-emacs-file ".ido.last"))
-
+                helm-ff-skip-boring-files t
+                helm-quick-update t
+                helm-M-x-requires-pattern nil)
+  (helm-mode)
+  (set-face-attribute 'helm-source-header nil :height 1)
   :config
-  (ido-mode t)
+  (progn
 
-  ;; in all contexts
-  (ido-everywhere 1)
+    (bind-key "C-w" 'backward-kill-word helm-map)
 
-  ;; ignores
-  (add-to-list 'ido-ignore-files "\\.DS_Store")
-  (add-to-list 'ido-ignore-directories "target")
-  (add-to-list 'ido-ignore-directories "node_modules")
-  (add-hook 'ido-setup-hook '(lambda ()
-                               ;; remove silly ido-toggle-ignore binding to c-a
-                               (bind-key "C-a" nil ido-completion-map)
-                               (bind-key "C-," 'ido-toggle-ignore ido-completion-map)
-                               (bind-key "TAB" 'ido-exit-minibuffer ido-completion-map)
+    (use-package helm-ag)
 
-                               ;; c-w should go back up a dir - insert current file name with c-x c-w instead.
-                               (bind-key "C-w" 'ido-delete-backward-updir ido-file-completion-map)
-                               (bind-key "C-x C-w" 'ido-copy-current-file-name ido-file-completion-map)
+    (use-package helm-projectile)
 
-                               (bind-key "C-w" 'ido-delete-backward-updir ido-file-dir-completion-map)
-                               (bind-key "C-x C-w" 'ido-copy-current-file-name ido-file-dir-completion-map))))
-
-(use-package flx-ido
-  :config (flx-ido-mode 1))
-
-(use-package ido-vertical-mode
-  :init (setq ido-vertical-define-keys 'C-n-C-p-up-down-left-right)
-  :config (ido-vertical-mode))
-
-(use-package ido-ubiquitous
-  :config (ido-ubiquitous-mode 1))
-
-(use-package ido-at-point
-  :load-path "setup/" ;; the one on melpa is borked?
-  :config (ido-at-point-mode 1))
+    (use-package helm-descbinds
+      :init
+      (helm-descbinds-mode))))
 
 (use-package visual-regexp
   :bind ("M-%" . vr/query-replace))
@@ -378,23 +372,6 @@
 (use-package fancy-battery
   :if is-mac
   :config (fancy-battery-mode))
-
-(use-package evil
-  :commands evil-mode
-  :init
-  (setq evil-default-state 'emacs)
-  (bind-key "C-'" '(lambda ()
-                     (interactive)
-                     (if (and (boundp 'evil-state)
-                              (not (string-equal evil-state "emacs")))
-                         (evil-emacs-state)
-                       (progn
-                         (evil-mode)
-                         (evil-exit-emacs-state)))))
-  :config
-  (evil-mode 1)
-  (evil-set-initial-state 'help-mode 'emacs)
-  (message "evil"))
 
 (use-package move-text
   :bind (("<C-S-up>" . move-text-up)
@@ -430,9 +407,10 @@
          ("M-." . find-tag-at-point)
          ("M-_" . find-tag-other-window))
   :config
-  (add-hook 'etags-select-mode-hook (lambda ()
-                                      (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)
-                                      (bind-key "M-RET" 'etags-select-goto-tag-other-window etags-select-mode-map))))
+  (add-hook 'etags-select-mode-hook
+            (lambda ()
+              (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)
+              (bind-key "M-RET" 'etags-select-goto-tag-other-window etags-select-mode-map))))
 
 (use-package yasnippet
   :diminish yas-minor-mode
@@ -490,8 +468,11 @@
   (put 'dired-find-alternate-file 'disabled nil)
   (setq wdired-allow-to-change-permissions t)
   :config
+  (bind-key "C-j" 'dired-next-line dired-mode-map)
+  (bind-key "C-k" 'dired-previous-line dired-mode-map)
   (bind-key "C-x C-j" 'dired-jump)
   (bind-key "C-x M-j" '(lambda () (interactive) (dired-jump 1)))
+  (bind-key "u" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
   (bind-key "M-<up>" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
   (bind-key "M-p" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
   (bind-key "M-<down>" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map)
@@ -515,20 +496,17 @@
   :init
   (setq highlight-symbol-idle-delay 0.2)
   :config
-  ;; TODO gruvbox colors
   (set-face-background 'highlight-symbol-face "#333")
   (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
-  (bind-key "C-c s h" 'highlight-symbol)
-  (bind-key "C-c s o" 'highlight-symbol-occur)
-  (bind-key "C-c s n" 'highlight-symbol-next)
-  (bind-key "C-c s p" 'highlight-symbol-prev)
-  (bind-key "C-c s %" 'highlight-symbol-query-replace))
+  (evil-leader/set-key
+    "hc" 'highlight-symbol-remove-all
+    "hh" 'highlight-symbol-at-point
+    "hn" 'highlight-symbol-next
+    "hN" 'highlight-symbol-prev))
 
 (use-package highlight-numbers
   :config
   (highlight-numbers-mode))
-
-(use-package json-reformat)
 
 (use-package restclient
   :mode "\\.http$")
@@ -540,7 +518,6 @@
 (use-package whitespace-cleanup-mode)
 
 (use-package geeknote
-  :if is-mac
   :init
   (setq geeknote-command "python /usr/local/bin/geeknote")
   :config
@@ -549,7 +526,18 @@
   (global-set-key (kbd "C-c g f") 'geeknote-find)
   (global-set-key (kbd "C-c g s") 'geeknote-show)
   (global-set-key (kbd "C-c g r") 'geeknote-remove)
-  (global-set-key (kbd "C-c g m") 'geeknote-move))
+  (global-set-key (kbd "C-c g m") 'geeknote-move)
+
+  (evil-leader/set-key
+    "gnc" 'geeknote-create
+    "gne" 'geeknote-edit
+    "gnf" 'geeknote-find
+    "gns" 'geeknote-show
+    "gnr" 'geeknote-remove
+    "gnm" 'geeknote-move))
+
+;; minibuffer
+(bind-key "C-w" 'backward-kill-word minibuffer-local-map)
 
 (require 'setup-shell)
 (require 'setup-org)
@@ -560,7 +548,4 @@
 (when is-mac (require 'mac))
 (when is-cygwin (require 'cygwin))
 
-(when (and is-mac
-           has-gui
-           (not (server-running-p)))
-  (server-start))
+(when (not (server-running-p)) (server-start))

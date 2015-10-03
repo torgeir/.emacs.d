@@ -41,6 +41,11 @@
 (global-set-key (kbd "s->") 'next-multiframe-window)
 (global-set-key (kbd "s-<") 'previous-multiframe-window)
 
+;; font size adjustment
+(global-set-key (kbd "s-+") '(lambda () (interactive) (text-scale-increase 1)))
+(global-set-key (kbd "s--") '(lambda () (interactive) (text-scale-decrease 1)))
+(global-set-key (kbd "s-0") '(lambda () (interactive) (text-scale-adjust "=")))
+
  ;; don't pop up font menu, makes new tab work in iterm2
 (global-set-key (kbd "s-t") '(lambda () (interactive)))
 
