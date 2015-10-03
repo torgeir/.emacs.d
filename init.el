@@ -175,8 +175,8 @@
   (setq git-gutter+-deleted-sign "- ")
   (global-git-gutter+-mode t)
   (evil-leader/set-key
-    "ghj" 'git-gutter+-next-hunk
-    "ghp" 'git-gutter+-previous-hunk
+    "ghn" 'git-gutter+-next-hunk
+    "ghN" 'git-gutter+-previous-hunk
     "ghC" 'git-gutter+-stage-and-commit
     "gh=" 'git-gutter+-show-hunk
     "ghr" 'git-gutter+-revert-hunks
