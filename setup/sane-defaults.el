@@ -103,4 +103,11 @@
   (bind-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
   (mouse-wheel-mode t))
 
+;; utf-8 ffs
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+
 (provide 'sane-defaults)
