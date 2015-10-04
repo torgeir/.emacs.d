@@ -53,11 +53,6 @@
 
         (evil-leader/set-leader "SPC")
 
-        (evil-leader/set-key
-          "jj" 'ace-jump-mode
-          "jc" 'ace-jump-char-mode
-          "jl" 'ace-jump-line-mode
-          "jw" 'ace-jump-word-mode)
 
         (evil-leader/set-key
           "re" 'evil-show-registers)

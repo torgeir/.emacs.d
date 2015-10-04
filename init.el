@@ -201,8 +201,13 @@
 (use-package ace-jump-mode
   :init
   (setq ace-jump-mode-gray-background nil
-        ace-jump-mode-move-keys (loop for i from ?a to ?z collect i)
-        ace-jump-mode-case-fold t))
+        ace-jump-mode-case-fold t)
+  (evil-leader/set-key
+    "jj" 'ace-jump-mode
+    "jc" 'ace-jump-char-mode
+    "jl" 'ace-jump-line-mode
+    "jw" 'ace-jump-word-mode))
+
 
 (use-package magit
   :commands magit-status
