@@ -198,7 +198,11 @@
     "ggr" 'gist-region
     "ggR" 'gist-region-private))
 
-(use-package ace-jump-mode)
+(use-package ace-jump-mode
+  :init
+  (setq ace-jump-mode-gray-background nil
+        ace-jump-mode-move-keys (loop for i from ?a to ?z collect i)
+        ace-jump-mode-case-fold t))
 
 (use-package magit
   :commands magit-status
