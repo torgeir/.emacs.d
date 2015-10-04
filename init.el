@@ -565,4 +565,15 @@
 (when is-mac (require 'mac))
 (when is-cygwin (require 'cygwin))
 
-(when (not (server-running-p)) (server-start))
+(when (display-graphic-p)
+  (require 'server)
+  (unless (server-running-p) (server-mode)))
+(evil-leader/set-key "rq" 'save-buffers-kill-terminal)
+(bind-key "C-x r q" 'save-buffers-kill-terminal)
+(bind-key "C-x C-c" 'delete-frame)
+(eval-after-load "evil"
+  '(progn
+     (defadvice evil-quit (around advice-for-evil-quit activate) (message "really?"))
+     (defadvice evil-quit-all (around advice-for-evil-quit-all activate) (message "really?"))))
+
+
