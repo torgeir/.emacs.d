@@ -536,6 +536,14 @@
     "gnr" 'geeknote-remove
     "gnm" 'geeknote-move))
 
+(use-package spotify
+  :ensure nil
+  :load-path "site-lisp/spotify/"
+  :commands helm-spotify
+  :init
+  (evil-leader/set-key
+    "os" 'helm-spotify))
+
 ;; minibuffer
 (bind-key "C-w" 'backward-kill-word minibuffer-local-map)
 
