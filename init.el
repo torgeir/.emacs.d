@@ -31,6 +31,7 @@
 (require 'bind-key)
 
 (use-package benchmark-init
+  :if nil
   :ensure nil)
 
 ;; packages
