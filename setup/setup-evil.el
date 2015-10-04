@@ -10,14 +10,7 @@
           evil-insert-state-cursor '("gray" bar)
           evil-motion-state-cursor '("gray" box))
 
-    (bind-key "C-'" '(lambda ()
-                       (interactive)
-                       (if (and (boundp 'evil-state)
-                                (not (string-equal evil-state "emacs")))
-                           (evil-emacs-state)
-                         (progn
-                           (evil-mode)
-                           (evil-exit-emacs-state))))))
+    (bind-key "C-'" 'evil-mode))
 
   :config
   (progn
