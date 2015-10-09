@@ -136,6 +136,7 @@
   (projectile-global-mode)
   (evil-leader/set-key
     "t"  'projectile-find-file-dwim
+    "pc" 'projectile-switch-project
     "pg" 'helm-projectile-ag
     "pf" 'projectile-find-file
     "pd" 'projectile-find-dir
