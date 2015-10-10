@@ -51,6 +51,7 @@
     (evil-leader/set-leader ",")
 
     (evil-leader/set-key
+      "xk" 'ido-kill-buffer
       "xm" 'helm-M-x
       "xM" 'smex-major-mode-commands)
 
