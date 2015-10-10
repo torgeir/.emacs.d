@@ -121,7 +121,8 @@
     "pf" 'projectile-find-file
     "pd" 'projectile-find-dir
     "pt" 'projectile-find-test-file
-    "pk" 'projectile-kill-buffers))
+    "pk" 'projectile-kill-buffers
+    "po" 'open-in-desktop))
 
 (use-package neotree
   :commands neotree
