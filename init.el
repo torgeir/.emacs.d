@@ -65,9 +65,6 @@
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-(use-package spacemacs-theme
-  :init (load-theme 'spacemacs-dark t))
-
 (use-package tramp
   :ensure nil
   :defer t
@@ -578,4 +575,5 @@
      (defadvice evil-quit (around advice-for-evil-quit activate) (message "really?"))
      (defadvice evil-quit-all (around advice-for-evil-quit-all activate) (message "really?"))))
 
-
+(use-package spacemacs-theme
+  :init (load-theme 'spacemacs-dark t))
