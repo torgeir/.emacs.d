@@ -87,10 +87,6 @@
                        ielm-mode-hook))
     (add-hook mode-hook 'turn-on-eldoc-mode)))
 
-(use-package eldoc
-  :defer t
-  :diminish eldoc-mode)
-
 (use-package anzu
   :diminish anzu-mode
   :config
@@ -106,19 +102,6 @@
   (setq which-key-idle-delay 0.8)
   (which-key-mode 0)
   (which-key-mode))
-
-(use-package windmove
-  :ensure nil
-  :bind (("C-c w b" . windmove-left)
-         ("C-c w f" . windmove-right)
-         ("C-c w p" . windmove-up)
-         ("C-c w n" . windmove-down))
-  :config
-  (evil-leader/set-key
-    "wh" 'windmove-left
-    "wl" 'windmove-right
-    "wk" 'windmove-up
-    "wj" 'windmove-down))
 
 (use-package subword
   :defer t
@@ -142,8 +125,7 @@
 
 (use-package neotree
   :commands neotree
-  :bind (("C-x n f" . neotree-find)
-         ([f6] . neotree-toggle))
+  :bind (([f6] . neotree-toggle))
   :init
   (setq neo-window-width 30)
   (setq neo-smart-open nil)
@@ -158,9 +140,6 @@
                  (neotree-select-up-node))
                (bind-key "C-n" 'neotree-next-line evil-normal-state-local-map)
                (bind-key "C-p" 'neotree-previous-line evil-normal-state-local-map)
-               (bind-key "j" 'neotree-next-line evil-normal-state-local-map)
-               (bind-key "j" 'neotree-next-line evil-normal-state-local-map)
-               (bind-key "k" 'neotree-previous-line evil-normal-state-local-map)
                (bind-key "u" 'neotree-change-root-up evil-normal-state-local-map)
                (bind-key "q" 'neotree-hide evil-normal-state-local-map)
                (bind-key "RET" 'neotree-enter evil-normal-state-local-map)
@@ -247,7 +226,6 @@
 
 (use-package smex
   :bind (("C-x C-m" . smex)
-         ("C-c C-m" . smex)
          ("C-c C-M" . smex-major-mode-commands))
   :init
   (setq smex-flex-matching t)
@@ -265,8 +243,6 @@
   :config
   (global-company-mode)
   (bind-key "TAB" #'company-complete-selection company-active-map)
-  (bind-key "C-j" #'company-select-next company-active-map)
-  (bind-key "C-k" #'company-select-previous company-active-map)
   (bind-key "C-n" #'company-select-next company-active-map)
   (bind-key "C-p" #'company-select-previous company-active-map)
   (bind-key "C-," (lambda ()
@@ -297,12 +273,6 @@
   :init
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-emoji)))
-
-(use-package ibuffer
-  :init
-  (progn
-    (bind-key "j" 'evil-next-line ibuffer-mode-map)
-    (bind-key "k" 'evil-previous-line ibuffer-mode-map)))
 
 (use-package smartparens
   :diminish smartparens-mode
@@ -401,15 +371,6 @@
 (use-package transpose-frame
   :commands transpose-frame)
 
-(use-package jump-char
-  :init
-  (setq jump-char-forward-key "m")
-  (setq jump-char-backward-key "M")
-  :config
-  ;; ; to go forward and , to go back
-  (global-set-key [(meta m)] 'jump-char-forward)
-  (global-set-key [(shift meta m)] 'jump-char-backward))
-
 (use-package etags-select
   :bind (("M-?" . ido-find-tag)
          ("M-." . find-tag-at-point)
@@ -476,8 +437,6 @@
   (put 'dired-find-alternate-file 'disabled nil)
   (setq wdired-allow-to-change-permissions t)
   :config
-  (bind-key "C-j" 'dired-next-line dired-mode-map)
-  (bind-key "C-k" 'dired-previous-line dired-mode-map)
   (bind-key "C-x C-j" 'dired-jump)
   (bind-key "C-x M-j" '(lambda () (interactive) (dired-jump 1)))
   (bind-key "u" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)

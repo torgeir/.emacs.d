@@ -37,6 +37,10 @@
   :init
   (add-hook 'css-mode-hook #'turn-on-css-eldoc))
 
+(use-package eldoc
+  :defer t
+  :diminish eldoc-mode)
+
 (use-package less-css-mode
   :config
   (bind-key "M-k" 'css-kill-value css-mode-map))
