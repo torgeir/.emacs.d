@@ -121,7 +121,9 @@
   (global-evil-surround-mode 1))
 
 (use-package evil-visualstar
-  :defer t)
+  :defer t
+  :config
+  (global-evil-visualstar-mode))
 
 (use-package evil-nerd-commenter
   :config
