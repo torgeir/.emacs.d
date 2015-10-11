@@ -1,24 +1,39 @@
+
 (use-package powerline
   :config
-  (defface powerline-active-grey
-    '((t (:foreground "#666" :background "#333" :weight bold :inherit mode-line)))
-    "Powerline face 0."
-    :group 'powerline)
 
-  (defface powerline-active-blue
-    '((t (:foreground "#98bcbd" :background "#333" :weight normal :inherit mode-line)))
-    "Powerline face 0."
-    :group 'powerline)
+  (defvar color-bg "#333")
+  (defvar color-text-inactive "#444")
+  (defvar color-text-active "#666")
 
-  (defface powerline-active
-    '((t (:foreground "#bcba00" :background "#333" :weight bold :inherit mode-line)))
-    "Powerline face 1."
-    :group 'powerline)
+  (defvar color-red "#f44")
+  (defvar color-orange "#f94")
+  (defvar color-yellow "#ff4")
+  (defvar color-green "#bcba00")
 
-  (defface powerline-inactive
-    '((t (:foreground "#444" :background "#333" :weight bold :inherit mode-line-inactive)))
-    "Powerline face 0."
-    :group 'powerline)
+  (defface powerline-active `((t (:foreground ,color-text-active :background ,color-bg :weight bold :inherit mode-line)))
+    "Powerline face 0." :group 'powerline)
+  (defface powerline-inactive `((t (:foreground ,color-text-inactive :background ,color-bg :weight bold :inherit mode-line-inactive)))
+    "Powerline face 0." :group 'powerline)
+  (defface powerline-active-blue `((t (:foreground "#98bcbd" :background ,color-bg :weight normal :inherit mode-line)))
+    "Powerline face 0." :group 'powerline)
+  (defface powerline-active-green `((t (:foreground ,color-green :background ,color-bg :weight bold :inherit mode-line)))
+    "Powerline face 1." :group 'powerline)
+
+  (defface powerline-flycheck-error-face   `((t . (:background ,color-red)))    "Powerline flycheck error face")
+  (defface powerline-flycheck-warning-face `((t . (:background ,color-orange))) "Powerline flycheck warning face")
+  (defface powerline-flycheck-info-face    `((t . (:background ,color-yellow)))  "Powerline flycheck info face")
+  (defface powerline-flycheck-success-face `((t . (:background ,color-green)))  "Powerline flycheck success face")
+
+  (defun powerline-flycheck-status ()
+    (when (boundp 'flycheck-mode)
+      (require 'flycheck)
+      (powerline-raw " "
+                     (cond ((flycheck-has-current-errors-p 'error) powerline-flycheck-error-face)
+                           ((flycheck-has-current-errors-p 'warning) powerline-flycheck-warning-face)
+                           ((flycheck-has-current-errors-p 'info) powerline-flycheck-info-face)
+                           (t powerline-flycheck-success-face))
+                     'r)))
 
   (defun powerline-theme ()
     "Customisation of the default powerline theme"
@@ -29,9 +44,9 @@
                      (let* (
                             (active (powerline-selected-window-active))
                             (mode-line (if active 'mode-line 'mode-line-inactive))
-                            (face-grey (if active 'powerline-active-grey 'powerline-inactive))
+                            (face-grey (if active 'powerline-active 'powerline-inactive))
                             (face-blue (if active 'powerline-active-blue 'powerline-inactive))
-                            (face-green (if active 'powerline-active 'powerline-inactive))
+                            (face-green (if active 'powerline-active-green 'powerline-inactive))
                             (evil-state-name (if (and (boundp 'evil-state)
                                                       evil-state)
                                                  (symbol-name evil-state) "emacs")) ;; default to "emacs" if evil is not loaded
@@ -69,6 +84,7 @@
                                   (powerline-raw ": " face-grey)
                                   (powerline-raw "%c " face-grey)
                                   (powerline-raw "%p " face-grey)
+                                  (powerline-flycheck-status)
                                   (powerline-hud face-grey face-grey))))
                        (concat (powerline-render lhs)
                                (powerline-fill face-grey (powerline-width rhs))
