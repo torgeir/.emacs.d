@@ -70,6 +70,10 @@
 ;; undo and redo window config
 (winner-mode 1)
 
+;; above what sizes can the window split
+(setq split-height-threshold 40
+      split-width-threshold 40)
+
 ;; spaces
 (setq tab-width 2)
 
