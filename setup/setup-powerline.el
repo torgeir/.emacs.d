@@ -20,13 +20,12 @@
     "Powerline face 1." :group 'powerline)
 
   (defun powerline-flycheck-status ()
+    (require 'flycheck)
     (when flycheck-mode
       (defvar powerline-flycheck-error-face   `((t . (:background ,color-red))))
       (defvar powerline-flycheck-warning-face `((t . (:background ,color-orange))))
       (defvar powerline-flycheck-info-face    `((t . (:background ,color-yellow))))
       (defvar powerline-flycheck-success-face `((t . (:background ,color-green))))
-
-      (require 'flycheck)
       (powerline-raw " "
                      (cond ((flycheck-has-current-errors-p 'error) powerline-flycheck-error-face)
                            ((flycheck-has-current-errors-p 'warning) powerline-flycheck-warning-face)
