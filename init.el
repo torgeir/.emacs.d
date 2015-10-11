@@ -323,6 +323,7 @@
   (require 'helm-config)
   (setq-default helm-display-header-line nil
                 helm-M-x-fuzzy-match t
+                helm-mode-fuzzy-match t
                 helm-buffers-fuzzy-matching t
                 helm-recentf-fuzzy-match t
                 helm-apropos-fuzzy-match t
