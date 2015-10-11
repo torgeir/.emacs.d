@@ -98,6 +98,15 @@
       "hM" 'describe-minor-mode
       "hp" 'describe-package)
 
+    ;; errors
+    (evil-leader/set-key
+      "ec" 'flycheck-clear-errors
+      "ep" 'flycheck-previous-error
+      "en" 'flycheck-next-error
+      "el" 'flycheck-list-errors
+      "ev" 'flycheck-verify-setup
+      "et" 'flycheck-mode)
+
     (defun spacemacs/evil-yank-to-end-of-line ()
       "Yank from point to end of line."
       (interactive)
