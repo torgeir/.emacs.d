@@ -240,7 +240,10 @@
         company-tooltip-align-annotations t
         company-tooltip-flip-when-above t
         ;; nav with m-<n>
-        company-show-numbers t)
+        company-show-numbers t
+        company-selection-wrap-around t
+        company-require-match nil)
+
   :config
   (global-company-mode)
   (bind-key "TAB" #'company-complete-selection company-active-map)
