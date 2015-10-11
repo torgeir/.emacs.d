@@ -288,6 +288,16 @@
                   ruby-mode
                   mark-down-mode))
     (add-hook hook 'turn-on-smartparens-mode)))
+  (sp-with-modes '(java-mode
+                   restclient-mode
+                   ruby-mode
+                   mark-down-mode
+                   c-mode c++-mode
+                   js-mode js2-mode)
+    (sp-local-pair "[" nil :post-handlers
+                   '((sp--create-newline-and-enter-sexp "RET")))
+    (sp-local-pair "{" nil :post-handlers
+                   '((sp--create-newline-and-enter-sexp "RET")))))
 
 (use-package writeroom-mode
   :commands writeroom-mode

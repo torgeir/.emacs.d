@@ -295,4 +295,11 @@ Including indent-buffer, which should not be called automatically on save."
     (and (= oldpos (point))
          (beginning-of-line))))
 
+(defun sp--create-newline-and-enter-sexp (&rest _ignored)
+  "Open a new brace or bracket expression, with relevant newlines and indent. thx @bodil"
+  (newline)
+  (indent-according-to-mode)
+  (forward-line -1)
+  (indent-according-to-mode))
+
 (provide 'defuns)
