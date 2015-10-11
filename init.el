@@ -315,10 +315,7 @@
 
 (use-package helm
   :diminish helm-mode
-  :bind (("C-x b" . helm-buffers-list)
-         ("C-x C-m" . helm-M-x)
-         ("C-x C-f" . helm-find-files)
-         ("M-y" . helm-show-kill-ring))
+  :bind (("C-y" . helm-show-kill-ring))
   :init
   (require 'helm-config)
   (setq-default helm-display-header-line nil
