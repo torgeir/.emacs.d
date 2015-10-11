@@ -20,7 +20,8 @@
     (bind-key "C-l" 'evil-window-right evil-normal-state-map)
 
     (dolist (mode-map '((help-mode . emacs)
-                        (fundamental-mode . emacs)
+                        (compilation-mode . emacs)
+                        (special-mode . emacs)
                         (diff-mode . emacs)))
       (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))))
 
