@@ -115,12 +115,12 @@
   :config
   (projectile-global-mode)
   (evil-leader/set-key
-    "t"  'projectile-find-file-dwim
+    "t"  'helm-projectile
     "pc" 'projectile-switch-project
-    "pg" 'helm-projectile-ag
-    "pf" 'projectile-find-file
+    "pa" 'helm-projectile-ag
+    "pt" 'projectile-find-file-dwim
+    "pT" 'projectile-find-test-file
     "pd" 'projectile-find-dir
-    "pt" 'projectile-find-test-file
     "pk" 'projectile-kill-buffers
     "po" 'open-in-desktop))
 
