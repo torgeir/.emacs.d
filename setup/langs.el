@@ -205,6 +205,8 @@
     (company-mode . "")
     (yas-minor-mode . "")
     (undo-tree-mode . "")
+    (evil-escape-mode . "")
+    (ethan-wspace-mode . "")
     (rainbow-delimiters-mode . "")
     (html-mode . "html")
     (js2-mode . "js2")
