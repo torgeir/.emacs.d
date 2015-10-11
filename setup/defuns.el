@@ -238,7 +238,7 @@ region-end is used."
 Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (untabify-buffer)
-  (delete-trailing-whitespace)
+  (ethan-wspace-clean-all)
   (indent-buffer))
 
 (defun eval-and-replace ()
