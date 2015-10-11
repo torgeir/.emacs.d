@@ -319,7 +319,6 @@
 
 (use-package helm
   :diminish helm-mode
-  :bind (("C-y" . helm-show-kill-ring))
   :init
   (require 'helm-config)
   (setq-default helm-display-header-line nil
