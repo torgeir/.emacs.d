@@ -287,7 +287,22 @@
                   restclient-mode-hook
                   ruby-mode
                   mark-down-mode))
-    (add-hook hook 'turn-on-smartparens-mode)))
+    (add-hook hook 'turn-on-smartparens-mode))
+
+  (require 'smartparens-config)
+  (bind-key "<delete>" 'sp-delete-char sp-keymap)
+  (bind-key "C-<right>" 'sp-forward-slurp-sexp sp-keymap)
+  (bind-key "C-<left>" 'sp-forward-barf-sexp sp-keymap)
+  (bind-key "C-S-<right>" 'sp-backward-barf-sexp sp-keymap)
+  (bind-key "C-S-<left>" 'sp-backward-slurp-sexp sp-keymap)
+  (bind-key "M-s" 'sp-unwrap-sexp sp-keymap)
+  (bind-key "M-S-s" 'sp-raise-sexp sp-keymap)
+  (bind-key "M-i" 'sp-split-sexp sp-keymap)
+  (bind-key "M-S-i" 'sp-join-sexp sp-keymap)
+  (bind-key "M-t" 'sp-transpose-sexp sp-keymap)
+  (bind-key "M-S-<left>" 'sp-backward-sexp sp-keymap)
+  (bind-key "M-S-<right>" 'sp-forward-sexp sp-keymap)
+
   (sp-with-modes '(java-mode
                    restclient-mode
                    ruby-mode
