@@ -339,9 +339,11 @@
 
     (bind-key "C-w" 'backward-kill-word helm-map)
 
-    (use-package helm-ag)
+    (use-package helm-ag
+      :defer t)
 
-    (use-package helm-projectile)
+    (use-package helm-projectile
+      :defer t)
 
     (use-package helm-descbinds
       :init
