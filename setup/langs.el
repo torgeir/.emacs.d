@@ -88,9 +88,15 @@
   :interpreter "node"
   :init
   ;; Let flycheck handle parse errors
-  (setq-default js2-show-parse-errors nil)
-  (setq-default js2-strict-missing-semi-warning nil)
-  (setq-default js2-strict-trailing-comma-warning t) ;; jshint does not warn about this now for some reason
+  (setq-default js2-show-parse-errors nil
+                js2-strict-missing-semi-warning nil
+                js2-strict-inconsistent-return-warning nil
+                js2-strict-var-hides-function-arg-warning nil
+                js2-strict-missing-semi-warning nil
+                js2-strict-trailing-comma-warning nil
+                js2-strict-cond-assign-warning nil
+                js2-strict-var-redeclaration-warning nil
+                js2-strict-trailing-comma-warning t) ;; jshint does not warn about this now for some reason
   (setq-default js2-global-externs '("module" "require" "describe" "it" "sinon" "assert" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
 
   (setq js2-highlight-level 3)
@@ -100,7 +106,7 @@
   :config
   (add-hook 'js2-mode-hook 'turn-on-smartparens-mode)
   (add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
-  (add-hook 'js2-mode-hook (lambda () (tern-mode)))
+  (add-hook 'js2-mode-hook 'tern-mode)
 
   (use-package nodejs-repl
     :defer t
@@ -109,6 +115,7 @@
     (evil-leader/set-key-for-mode 'js2-mode
       "mer" #'send-region-to-nodejs-repl-process))
 
+  ;; don't steel keys
   (bind-key "M-j" 'nil js2-mode-map)
   (bind-key "M-." 'nil js2-mode-map)
   (bind-key "TAB" #'js2-tab-properly js2-mode-map)
