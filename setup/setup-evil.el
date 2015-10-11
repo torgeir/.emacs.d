@@ -97,7 +97,7 @@
 
     ;; errors
     (evil-leader/set-key
-      "ec" 'flycheck-clear-errors
+      "ec" 'flycheck-clear
       "ep" 'flycheck-previous-error
       "en" 'flycheck-next-error
       "el" 'flycheck-list-errors
