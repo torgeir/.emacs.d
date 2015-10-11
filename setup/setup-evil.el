@@ -121,12 +121,6 @@
     "cp" 'evilnc-comment-or-uncomment-paragraphs
     "cy" 'evilnc-copy-and-comment-lines))
 
-;; learn these
-(bind-key "j" (lambda () (interactive) (message "c-n")) evil-normal-state-map)
-(bind-key "h" (lambda () (interactive) (message "c-b")) evil-normal-state-map)
-(bind-key "k" (lambda () (interactive) (message "c-p")) evil-normal-state-map)
-(bind-key "l" (lambda () (interactive) (message "c-f")) evil-normal-state-map)
-
 ;; some emacs stuff is useful, in terminals etc
 (bind-key "\C-e" 'evil-end-of-line evil-normal-state-map)
 (bind-key "\C-e" 'end-of-line evil-insert-state-map)
