@@ -324,6 +324,7 @@
                 helm-buffers-fuzzy-matching t
                 helm-recentf-fuzzy-match t
                 helm-apropos-fuzzy-match t
+                helm-projectile-fuzzy-match t
                 helm-completion-in-region-fuzzy-match t
 
                 helm-ff-skip-boring-files t
