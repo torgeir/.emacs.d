@@ -514,9 +514,6 @@
   (evil-leader/set-key
     "os" 'helm-spotify))
 
-;; minibuffer
-(bind-key "C-w" 'backward-kill-word minibuffer-local-map)
-
 (require 'setup-shell)
 (require 'setup-org)
 (require 'setup-powerline)

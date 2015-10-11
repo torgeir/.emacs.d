@@ -5,6 +5,7 @@
 
 (bind-key "C-o" 'open-line-below)
 (bind-key "C-w" 'backward-kill-word)
+(bind-key "C-w" 'backward-kill-word minibuffer-local-map) ; minibuffer
 (bind-key "C-M-q" 'quit-other-window)
 
 (bind-key "C-c d" 'duplicate-current-line-or-region)
