@@ -313,6 +313,10 @@
   (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))
   (add-hook 'sgml-mode-hook (lambda () (bind-key "C-c C-r" 'mc/mark-sgml-tag-pair sgml-mode-map))))
 
+(use-package discover-my-major
+  :defer t
+  :commands (discover-my-major discover-my-mode))
+
 (use-package helm
   :diminish helm-mode
   :bind (("C-y" . helm-show-kill-ring))
