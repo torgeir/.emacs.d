@@ -123,10 +123,6 @@
 
 ;; some emacs stuff is useful, in terminals etc
 ;; http://stackoverflow.com/a/16226006
-(bind-key "C-a" 'evil-beginning-of-line evil-normal-state-map)
-(bind-key "C-a" 'beginning-of-line evil-insert-state-map)
-(bind-key "C-a" 'evil-beginning-of-line evil-visual-state-map)
-(bind-key "C-a" 'evil-beginning-of-line evil-motion-state-map)
 (bind-key "C-e" 'evil-end-of-line evil-normal-state-map)
 (bind-key "C-e" 'end-of-line evil-insert-state-map)
 (bind-key "C-e" 'evil-end-of-line evil-visual-state-map)
@@ -154,6 +150,12 @@
 (bind-key "C-k" 'kill-line evil-visual-state-map)
 (bind-key "Q" 'call-last-kbd-macro evil-normal-state-map)
 (bind-key "Q" 'call-last-kbd-macro evil-visual-state-map)
+
+;; smarter c-a
+(bind-key "C-a" 'smart-beginning-of-line evil-normal-state-map)
+(bind-key "C-a" 'smart-beginning-of-line evil-insert-state-map)
+(bind-key "C-a" 'smart-beginning-of-line evil-visual-state-map)
+(bind-key "C-a" 'smart-beginning-of-line evil-motion-state-map)
 
 ;; cycle after pasting with p
 (bind-key "\M-y" 'evil-paste-pop evil-normal-state-map)
