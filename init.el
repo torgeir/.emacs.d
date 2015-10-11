@@ -492,8 +492,6 @@
   :commands hackernews
   :defer t)
 
-(use-package whitespace-cleanup-mode)
-
 (use-package geeknote
   :init
   (setq geeknote-command "python /usr/local/bin/geeknote")
