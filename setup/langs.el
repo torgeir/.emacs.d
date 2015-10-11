@@ -129,7 +129,9 @@
   (use-package json-mode
     :mode "\\.\\(json\\|jshintrc\\|eslintrc\\)$"
     :config
-    (use-package json-reformat)))
+    (use-package json-reformat
+      :defer t
+      :commands json-reformat)))
 
 ;; html
 (use-package sgml-mode
