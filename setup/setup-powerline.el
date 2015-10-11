@@ -1,7 +1,6 @@
 
 (use-package powerline
   :config
-
   (defvar color-bg "#333")
   (defvar color-text-inactive "#444")
   (defvar color-text-active "#666")
@@ -20,13 +19,13 @@
   (defface powerline-active-green `((t (:foreground ,color-green :background ,color-bg :weight bold :inherit mode-line)))
     "Powerline face 1." :group 'powerline)
 
-  (defface powerline-flycheck-error-face   `((t . (:background ,color-red)))    "Powerline flycheck error face")
-  (defface powerline-flycheck-warning-face `((t . (:background ,color-orange))) "Powerline flycheck warning face")
-  (defface powerline-flycheck-info-face    `((t . (:background ,color-yellow)))  "Powerline flycheck info face")
-  (defface powerline-flycheck-success-face `((t . (:background ,color-green)))  "Powerline flycheck success face")
-
   (defun powerline-flycheck-status ()
-    (when (boundp 'flycheck-mode)
+    (when flycheck-mode
+      (defvar powerline-flycheck-error-face   `((t . (:background ,color-red))))
+      (defvar powerline-flycheck-warning-face `((t . (:background ,color-orange))))
+      (defvar powerline-flycheck-info-face    `((t . (:background ,color-yellow))))
+      (defvar powerline-flycheck-success-face `((t . (:background ,color-green))))
+
       (require 'flycheck)
       (powerline-raw " "
                      (cond ((flycheck-has-current-errors-p 'error) powerline-flycheck-error-face)
@@ -38,6 +37,7 @@
   (defun powerline-theme ()
     "Customisation of the default powerline theme"
     (interactive)
+
     (setq-default mode-line-format
                   '("%e"
                     (:eval
