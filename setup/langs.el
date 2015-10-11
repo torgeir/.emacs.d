@@ -100,6 +100,7 @@
   :config
   (add-hook 'js2-mode-hook 'turn-on-smartparens-mode)
   (add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
+  (add-hook 'js2-mode-hook (lambda () (tern-mode)))
 
   (use-package nodejs-repl
     :defer t
