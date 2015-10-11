@@ -22,6 +22,7 @@
     (dolist (mode-map '((help-mode . emacs)
                         (compilation-mode . emacs)
                         (special-mode . emacs)
+                        (flycheck-error-list-mode . emacs)
                         (diff-mode . emacs)))
       (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))))
 
