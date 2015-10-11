@@ -9,6 +9,7 @@
           evil-insert-state-cursor '("gray" bar)
           evil-motion-state-cursor '("gray" box))
 
+    (setq evil-toggle-key "C-'")
     (bind-key "C-'" 'evil-mode))
 
   :config
@@ -48,12 +49,25 @@
   :config
   (progn
 
-    (evil-leader/set-leader ",")
+    (evil-leader/set-leader "SPC")
+
+    ;; clear highlights
+    (evil-leader/set-key
+      "SPC" (lambda () (interactive)
+              (evil-ex-nohighlight)
+              (highlight-symbol-remove-all)))
 
     (evil-leader/set-key
+      "xb" 'helm-buffers-list
       "xk" 'ido-kill-buffer
       "xm" 'helm-M-x
       "xM" 'smex-major-mode-commands)
+
+    (evil-leader/set-key
+      "xtc" 'transpose-chars
+      "xtw" 'transpose-words
+      "xtl" 'transpose-lines
+      "xtf" 'transpose-frame)
 
     (evil-leader/set-key
       "re" 'evil-show-registers)
@@ -61,6 +75,27 @@
     (evil-leader/set-key
       "bw" 'save-buffer
       "bq" 'kill-buffer)
+
+    ;; files
+    (evil-leader/set-key
+      "ff" 'helm-do-ag-this-file
+      "fo" 'open-in-desktop
+      "fr" 'revert-buffer
+      "fd" 'delete-current-buffer-file)
+
+    ;; help
+    (evil-leader/set-key
+      "hav" 'apropos-variable
+      "ham" 'apropos-mode
+      "had" 'apropos-documentation
+      "hb" 'helm-descbinds
+      "hf" 'describe-function
+      "hk" 'describe-key-briefly
+      "hK" 'describe-key
+      "hv" 'describe-variable
+      "hm" 'describe-mode
+      "hM" 'describe-minor-mode
+      "hp" 'describe-package)
 
     (defun spacemacs/evil-yank-to-end-of-line ()
       "Yank from point to end of line."

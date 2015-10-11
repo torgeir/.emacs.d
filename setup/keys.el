@@ -1,5 +1,4 @@
 (bind-key [remap goto-line] 'goto-line-with-feedback) ;; m-g m-g
-
 (bind-key "M-j" 'join-lines)
 (bind-key "M-p" 'backward-paragraph)
 (bind-key "M-n" 'forward-paragraph)
@@ -16,11 +15,6 @@
 (bind-key "C-c C-d" 'delete-current-buffer-file)
 (bind-key "C-c C-e" 'eval-and-replace)
 (bind-key "C-c C-y" #'insert-char-above-the-cursor)
-(evil-leader/set-key
-  "ff" 'helm-do-ag-this-file
-  "fo" 'open-in-desktop
-  "fr" 'revert-buffer
-  "fd" 'delete-current-buffer-file)
 
 (bind-key "C-x C-g" 'ffap)
 (bind-key "C-x C-k" 'kill-region)
@@ -43,20 +37,6 @@
   "Cm" (lambda () (interactive) (find-file "~/.emacs.d/setup/mac.el"))
   "Cl" (lambda () (interactive) (find-file "~/.emacs.d/setup/langs.el"))
   "Cs" (lambda () (interactive) (find-file "~/.emacs.d/snippets/")))
-
-;; help
-(evil-leader/set-key
-  "hav" 'apropos-variable
-  "ham" 'apropos-mode
-  "had" 'apropos-documentation
-  "hb" 'helm-descbinds
-  "hf" 'describe-function
-  "hk" 'describe-key-briefly
-  "hK" 'describe-key
-  "hv" 'describe-variable
-  "hm" 'describe-mode
-  "hM" 'describe-minor-mode
-  "hp" 'describe-package)
 
 ;; lisp-friendly
 (setq hippie-expand-try-functions-list

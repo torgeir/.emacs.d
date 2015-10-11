@@ -476,7 +476,7 @@
   (set-face-background 'highlight-symbol-face "#333")
   (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
   (evil-leader/set-key
-    "hc" 'highlight-symbol-remove-all
+    ;; leader leader clears all highlights
     "hh" 'highlight-symbol-at-point
     "hn" 'highlight-symbol-next
     "hN" 'highlight-symbol-prev))
