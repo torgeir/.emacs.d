@@ -289,7 +289,9 @@
                   mark-down-mode))
     (add-hook hook 'turn-on-smartparens-mode)))
 
-(use-package writeroom-mode)
+(use-package writeroom-mode
+  :commands writeroom-mode
+  :defer t)
 
 (use-package w3m
   :commands w3m
@@ -432,8 +434,10 @@
         ag-highlight-search t
         ag-project-root-function (lambda (d) (projectile-project-root))))
 
-(use-package wgrep)
-(use-package wgrep-ag)
+(use-package wgrep
+  :defer t)
+(use-package wgrep-ag
+  :defer t)
 
 (use-package dired
   :ensure nil
@@ -455,13 +459,14 @@
   :init (setq-default dired-details-hidden-string "")
   :config (dired-details-install))
 
-(use-package fill-column-indicator)
+(use-package fill-column-indicator
+  :defer t)
 
 (use-package highlight-escape-sequences
   :config
-  (hes-mode)
   (put 'hes-escape-backslash-face 'face-alias 'font-lock-comment-face)
-  (put 'hes-escape-sequence-face 'face-alias 'font-lock-comment-face))
+  (put 'hes-escape-sequence-face 'face-alias 'font-lock-comment-face)
+  (hes-mode))
 
 (use-package highlight-symbol
   :diminish highlight-symbol-mode
