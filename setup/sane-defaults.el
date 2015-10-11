@@ -112,4 +112,7 @@
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
+;; one space between sentences
+(setq sentence-end-double-space nil)
+
 (provide 'sane-defaults)
