@@ -110,7 +110,8 @@
   :init
   (global-evil-surround-mode 1))
 
-(use-package evil-visualstar)
+(use-package evil-visualstar
+  :defer t)
 
 (use-package evil-nerd-commenter
   :config
