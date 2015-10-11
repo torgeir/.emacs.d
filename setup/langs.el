@@ -189,7 +189,6 @@
 ;; elisp
 (evil-leader/set-key-for-mode 'emacs-lisp-mode
   "meb" 'eval-buffer
-  "mec" 'eval-current-buffer
   "mee" 'eval-last-sexp
   "mef" 'eval-defun
   "mer" 'eval-region)
