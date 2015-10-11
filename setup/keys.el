@@ -1,4 +1,4 @@
-(bind-key [remap goto-line] 'goto-line-with-feedback) ;; m-g m-g
+(bind-key [remap goto-line] 'goto-line-with-feedback) ; m-g m-g
 (bind-key "M-j" 'join-lines)
 (bind-key "M-p" 'backward-paragraph)
 (bind-key "M-n" 'forward-paragraph)
