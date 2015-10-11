@@ -447,6 +447,9 @@
   :init
   (put 'dired-find-alternate-file 'disabled nil)
   (setq wdired-allow-to-change-permissions t)
+  ;; auto-refresh, silently
+  (setq global-auto-revert-non-file-buffers t)
+  (setq auto-revert-verbose nil)
   :config
   (bind-key "C-x C-j" 'dired-jump)
   (bind-key "C-x M-j" '(lambda () (interactive) (dired-jump 1)))
