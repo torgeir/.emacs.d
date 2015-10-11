@@ -122,6 +122,10 @@
     "cy" 'evilnc-copy-and-comment-lines))
 
 ;; some emacs stuff is useful, in terminals etc
+(bind-key "\C-a" 'evil-beginning-of-line evil-normal-state-map)
+(bind-key "\C-a" 'beginning-of-line evil-insert-state-map)
+(bind-key "\C-a" 'evil-beginning-of-line evil-visual-state-map)
+(bind-key "\C-a" 'evil-beginning-of-line evil-motion-state-map)
 (bind-key "\C-e" 'evil-end-of-line evil-normal-state-map)
 (bind-key "\C-e" 'end-of-line evil-insert-state-map)
 (bind-key "\C-e" 'evil-end-of-line evil-visual-state-map)
