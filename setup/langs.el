@@ -186,6 +186,18 @@
   (add-hook 'clojure-mode-hook 'subword-mode)
   (add-hook 'clojure-mode-hook 'enable-paredit-mode))
 
+;; lisp
+(evil-leader/set-key-for-mode 'lisp-interaction-mode
+  "meb" 'eval-buffer
+  "mee" 'eval-last-sexp
+  "mef" 'eval-defun
+  "mer" 'eval-region)
+(evil-leader/set-key-for-mode 'lisp-mode
+  "meb" 'eval-buffer
+  "mee" 'eval-last-sexp
+  "mef" 'eval-defun
+  "mer" 'eval-region)
+
 ;; elisp
 (evil-leader/set-key-for-mode 'emacs-lisp-mode
   "meb" 'eval-buffer
@@ -202,6 +214,8 @@
       (push lexical-tuple prettify-symbols-alist)
       (prettify-symbols-mode))))
 
+(add-hook 'lisp-mode-hook (ligature '("lambda" . ?l)))
+(add-hook 'lisp-interaction-mode (ligature '("lambda" . ?l)))
 (add-hook 'emacs-lisp-mode-hook (ligature '("lambda" . ?l)))
 (dolist (hook '(js2-mode-hook web-mode-hook))
   (add-hook hook (ligature '("function" . ?f))))
