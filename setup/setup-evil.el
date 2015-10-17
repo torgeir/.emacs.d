@@ -4,10 +4,10 @@
     (setq evil-default-state 'normal
           evil-search-module 'evil-search
           evil-emacs-state-cursor  '("orange" box)
-          evil-normal-state-cursor '("gray" box)
-          evil-visual-state-cursor '("gray" box)
-          evil-insert-state-cursor '("gray" bar)
-          evil-motion-state-cursor '("gray" box))
+          evil-normal-state-cursor '("green" box)
+          evil-visual-state-cursor '("green" box)
+          evil-insert-state-cursor '("green" bar)
+          evil-motion-state-cursor '("green" box))
 
     (setq evil-toggle-key "C-'")
     (bind-key "C-'" 'evil-mode))
