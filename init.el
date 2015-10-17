@@ -182,6 +182,10 @@
     "ggr" 'gist-region
     "ggR" 'gist-region-private))
 
+(use-package linum-relative
+  :config
+  (linum-relative-mode))
+
 (use-package ace-jump-mode
   :init
   (setq ace-jump-mode-gray-background nil
