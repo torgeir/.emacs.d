@@ -160,7 +160,11 @@
     "gh=" 'git-gutter+-show-hunk
     "ghr" 'git-gutter+-revert-hunks
     "ghs" 'git-gutter+-stage-hunks
-    "ghc" 'git-gutter+-commit))
+    "ghc" 'git-gutter+-commit)
+  (use-package git-gutter-fringe+
+    :if has-gui
+    :config
+    (git-gutter+-enable-fringe-display-mode)))
 
 (use-package git-timemachine
   :commands git-timemachine
