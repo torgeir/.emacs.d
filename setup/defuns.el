@@ -302,4 +302,11 @@ Including indent-buffer, which should not be called automatically on save."
   (forward-line -1)
   (indent-according-to-mode))
 
+(defun delete-frame-or-hide-last-remaining-frame ()
+  "Delete the selected frame. If the last one, hide it instead."
+  (interactive)
+  (condition-case nil
+      (delete-frame)
+    (error (ns-do-hide-emacs))))
+
 (provide 'defuns)
