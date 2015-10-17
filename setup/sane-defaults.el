@@ -24,6 +24,9 @@
 (put 'transient-mark-mode 'permanent-local t)
 (setq-default transient-mark-mode t)
 
+;; show parens
+(show-paren-mode t)
+
 ;; no splash
 (setq inhibit-startup-message t)
 
