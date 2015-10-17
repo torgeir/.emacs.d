@@ -20,7 +20,6 @@
 (bind-key "C-x C-g" 'ffap)
 (bind-key "C-x C-k" 'kill-region)
 (bind-key "C-x C-k" 'isearch-delete-me isearch-mode-map)
-(bind-key [remap delete-frame] 'delete-frame-or-hide-last-remaining-frame)
 
 (bind-key "C-x c r" (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
 (bind-key "C-x c i" (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
