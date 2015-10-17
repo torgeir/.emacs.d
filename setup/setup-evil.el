@@ -134,6 +134,7 @@
     "ci" 'evilnc-comment-or-uncomment-lines
     "cc" 'evilnc-comment-or-uncomment-lines
     "cp" 'evilnc-comment-or-uncomment-paragraphs
+    "cap" 'evilnc-comment-or-uncomment-paragraphs
     "cy" 'evilnc-copy-and-comment-lines))
 
 ;; some emacs stuff is useful, in terminals etc
