@@ -552,7 +552,7 @@
 (when is-mac (require 'mac))
 (when is-cygwin (require 'cygwin))
 
-(when (display-graphic-p)
+(progn
   (require 'server)
   (unless (server-running-p) (server-mode)))
 (evil-leader/set-key "rq" 'save-buffers-kill-terminal)

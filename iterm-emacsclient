@@ -15,4 +15,4 @@ if [[ $1 == "+" ]]; then
   shift
 fi
 
-/usr/local/bin/emacsclient -q $1 $2 &
+/usr/local/bin/emacsclient -q -n -a /Users/torgeir/Application/Emacs.app/Contents/MacOS/Emacs $1 $2 &
