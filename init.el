@@ -134,17 +134,17 @@
   (evil-leader/set-key "fl" 'neotree-find)
   :config
   (add-hook 'neotree-mode-hook
-            '(lambda ()
-               (defun neotree-change-root-up ()
-                 (interactive)
-                 (neotree-select-up-node)
-                 (neotree-select-up-node))
-               (bind-key "C-n" 'neotree-next-line evil-normal-state-local-map)
-               (bind-key "C-p" 'neotree-previous-line evil-normal-state-local-map)
-               (bind-key "u" 'neotree-change-root-up evil-normal-state-local-map)
-               (bind-key "q" 'neotree-hide evil-normal-state-local-map)
-               (bind-key "RET" 'neotree-enter evil-normal-state-local-map)
-               (bind-key "C" 'neotree-change-root evil-normal-state-map))))
+            (lambda ()
+              (defun neotree-change-root-up ()
+                (interactive)
+                (neotree-select-up-node)
+                (neotree-select-up-node))
+              (bind-key "C-n" 'neotree-next-line evil-normal-state-local-map)
+              (bind-key "C-p" 'neotree-previous-line evil-normal-state-local-map)
+              (bind-key "u" 'neotree-change-root-up evil-normal-state-local-map)
+              (bind-key "q" 'neotree-hide evil-normal-state-local-map)
+              (bind-key "RET" 'neotree-enter evil-normal-state-local-map)
+              (bind-key "C" 'neotree-change-root evil-normal-state-map))))
 
 (use-package git-gutter+
   :diminish git-gutter+-mode
