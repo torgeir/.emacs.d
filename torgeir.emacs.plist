@@ -6,7 +6,7 @@
   <string>torgeir.emacs.plist</string>
   <key>ProgramArguments</key>
   <array>
-    <string>/Users/torgeir/Applications/Emacs.app/Contents/MacOS/Emacs</string>
+    <string>/usr/local/opt/emacs/Emacs.app/Contents/MacOS/Emacs</string>
   </array>
   <key>RunAtLoad</key>
   <true/>
