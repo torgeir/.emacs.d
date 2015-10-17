@@ -5,10 +5,6 @@
 (add-to-list 'load-path dir-setup)
 (add-to-list 'load-path dir-site-lisp)
 
-;; custom-settings in separate file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(load custom-file)
-
 ;; add folders inside site-lisp as well
 (dolist (project (directory-files dir-site-lisp t "\\w+"))
   (when (file-directory-p project)
@@ -579,3 +575,7 @@
 
 (use-package spacemacs-theme
   :init (load-theme 'spacemacs-dark t))
+
+;; custom-settings in separate file
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
