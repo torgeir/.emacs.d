@@ -1,4 +1,4 @@
-(setq initial-frame-alist '((top . 100) (left . 200) (width . 110) (height . 30)))
+(setq initial-frame-alist '((top . 100) (left . 200) (width . 150) (height . 40)))
 
 ;; update screen immediately
 (setq redisplay-dont-pause t)
