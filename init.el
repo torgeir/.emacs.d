@@ -166,7 +166,12 @@
   :commands git-timemachine
   :defer t
   :init
-  (evil-leader/set-key "vt" 'git-timemachine-toggle))
+  (evil-leader/set-key "gT" 'git-timemachine-toggle)
+  :config
+  (defadvice git-timemachine-mode (after toggle-evil activate)
+    (when git-timemachine-mode
+      (bind-key "C-n" 'git-timemachine-show-next-revision evil-normal-state-local-map)
+      (bind-key "C-p" 'git-timemachine-show-previous-revision evil-normal-state-local-map))))
 
 (use-package gist
   :init
