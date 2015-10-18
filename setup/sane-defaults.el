@@ -112,6 +112,8 @@
   (bind-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
   (mouse-wheel-mode t))
 
+(use-package smooth-scrolling)
+
 ;; utf-8 ffs
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
