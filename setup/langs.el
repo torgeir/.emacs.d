@@ -186,24 +186,32 @@
   (add-hook 'clojure-mode-hook 'subword-mode)
   (add-hook 'clojure-mode-hook 'enable-paredit-mode))
 
-;; lisp
-(evil-leader/set-key-for-mode 'lisp-interaction-mode
-  "meb" 'eval-buffer
-  "mee" 'eval-last-sexp
-  "mef" 'eval-defun
-  "mer" 'eval-region)
-(evil-leader/set-key-for-mode 'lisp-mode
-  "meb" 'eval-buffer
-  "mee" 'eval-last-sexp
-  "mef" 'eval-defun
-  "mer" 'eval-region)
+(declare-prefix "m" "Mode")
 
-;; elisp
-(evil-leader/set-key-for-mode 'emacs-lisp-mode
-  "meb" 'eval-buffer
-  "mee" 'eval-last-sexp
-  "mef" 'eval-defun
-  "mer" 'eval-region)
+;; lisp
+(declare-prefix-for-mode
+ 'lisp-interaction-mode
+ "me" "Evaluate"
+ "b" 'eval-buffer
+ "e" 'eval-last-sexp
+ "f" 'eval-defun
+ "r" 'eval-region)
+
+(declare-prefix-for-mode
+ 'lisp-mode
+ "me" "Evaluate"
+ "b" 'eval-buffer
+ "e" 'eval-last-sexp
+ "f" 'eval-defun
+ "r" 'eval-region)
+
+(declare-prefix-for-mode
+ 'emacs-lisp-mode
+ "me" "Evaluate"
+ "b" 'eval-buffer
+ "e" 'eval-last-sexp
+ "f" 'eval-defun
+ "r" 'eval-region)
 
 ;; ligatures
 (require 'cl)

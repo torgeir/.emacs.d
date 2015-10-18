@@ -16,8 +16,13 @@
   (progn
     (bind-key "C-h" 'evil-window-left evil-normal-state-map)
     (bind-key "C-j" 'evil-window-down evil-normal-state-map)
-    (bind-key "C-k" 'evil-window-up evil-normal-state-map)
     (bind-key "C-l" 'evil-window-right evil-normal-state-map)
+
+    (declare-prefix "w" "Windows"
+                    "h" 'evil-window-left
+                    "j" 'evil-window-down
+                    "k" 'evil-window-up
+                    "l" 'evil-window-right)
 
     (dolist (mode-map '((help-mode . emacs)
                         (compilation-mode . emacs)
@@ -42,67 +47,20 @@
   (global-evil-matchit-mode 1))
 
 (use-package evil-leader
-  :commands (evil-leader-mode)
-  :init (global-evil-leader-mode)
+  :init
+  (global-evil-leader-mode)
   :config
   (progn
 
     (evil-leader/set-leader "SPC")
 
+    (defun clear-all-highlights ()
+      (interactive)
+      (evil-ex-nohighlight)
+      (highlight-symbol-remove-all))
+
     ;; clear highlights
-    (evil-leader/set-key
-      "SPC" (lambda () (interactive)
-              (evil-ex-nohighlight)
-              (highlight-symbol-remove-all)))
-
-    (evil-leader/set-key
-      "xb" 'helm-buffers-list
-      "xk" 'ido-kill-buffer
-      "xm" 'helm-M-x
-      "xM" 'smex-major-mode-commands)
-
-    (evil-leader/set-key
-      "xtc" 'transpose-chars
-      "xtw" 'transpose-words
-      "xtl" 'transpose-lines
-      "xtf" 'transpose-frame)
-
-    (evil-leader/set-key
-      "re" 'evil-show-registers)
-
-    (evil-leader/set-key
-      "bw" 'save-buffer
-      "bq" 'kill-buffer)
-
-    ;; files
-    (evil-leader/set-key
-      "ff" 'helm-do-ag-this-file
-      "fo" 'open-in-desktop
-      "fr" 'revert-buffer
-      "fd" 'delete-current-buffer-file)
-
-    ;; help
-    (evil-leader/set-key
-      "hav" 'apropos-variable
-      "ham" 'apropos-mode
-      "had" 'apropos-documentation
-      "hb" 'helm-descbinds
-      "hf" 'describe-function
-      "hk" 'describe-key-briefly
-      "hK" 'describe-key
-      "hv" 'describe-variable
-      "hm" 'describe-mode
-      "hM" 'describe-minor-mode
-      "hp" 'describe-package)
-
-    ;; errors
-    (evil-leader/set-key
-      "ec" 'flycheck-clear
-      "ep" 'flycheck-previous-error
-      "en" 'flycheck-next-error
-      "el" 'flycheck-list-errors
-      "ev" 'flycheck-verify-setup
-      "et" 'flycheck-mode)
+    (evil-leader/set-key "SPC" 'clear-all-highlights)
 
     (defun spacemacs/evil-yank-to-end-of-line ()
       "Yank from point to end of line."
@@ -130,12 +88,12 @@
 
 (use-package evil-nerd-commenter
   :config
-  (evil-leader/set-key
-    "ci" 'evilnc-comment-or-uncomment-lines
-    "cc" 'evilnc-comment-or-uncomment-lines
-    "cp" 'evilnc-comment-or-uncomment-paragraphs
-    "cap" 'evilnc-comment-or-uncomment-paragraphs
-    "cy" 'evilnc-copy-and-comment-lines))
+  (declare-prefix "c" "Comments"
+                  "i" 'evilnc-comment-or-uncomment-lines
+                  "c" 'evilnc-comment-or-uncomment-lines
+                  "p" 'evilnc-comment-or-uncomment-paragraphs
+                  "ap" 'evilnc-comment-or-uncomment-paragraphs
+                  "y" 'evilnc-copy-and-comment-lines))
 
 ;; some emacs stuff is useful, in terminals etc
 ;; http://stackoverflow.com/a/16226006
@@ -188,6 +146,58 @@
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-completion-map)
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
+
+(evil-leader/set-key "b" 'helm-buffers-list)
+
+(declare-prefix
+ "x" "Text manipulation"
+ "k" 'ido-kill-buffer
+ "m" 'helm-M-x
+ "x" 'smex-major-mode-commands)
+
+(declare-prefix
+ "xt" "Transpose"
+ "c" 'transpose-chars
+ "w" 'transpose-words
+ "l" 'transpose-lines
+ "f" 'transpose-frame)
+
+(declare-prefix
+ "r" "Registers"
+ "e" 'evil-show-registers)
+
+(declare-prefix
+ "f" "Files"
+ "f" 'helm-do-ag-this-file
+ "o" 'open-in-desktop
+ "r" 'revert-buffer
+ "d" 'delete-current-buffer-file)
+
+(declare-prefix
+ "h" "Help"
+ "b" 'helm-descbinds
+ "f" 'describe-function
+ "k" 'describe-key-briefly
+ "K" 'describe-key
+ "v" 'describe-variable
+ "m" 'describe-mode
+ "M" 'describe-minor-mode
+ "p" 'describe-package)
+
+(declare-prefix
+ "ha" "Help apropos"
+ "v" 'apropos-variable
+ "m" 'apropos-mode
+ "d" 'apropos-documentation)
+
+(declare-prefix
+ "e" "Errors"
+ "c" 'flycheck-clear
+ "p" 'flycheck-previous-error
+ "n" 'flycheck-next-error
+ "l" 'flycheck-list-errors
+ "v" 'flycheck-verify-setup
+ "t" 'flycheck-mode)
 
 (evil-mode 1)
 

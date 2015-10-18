@@ -309,4 +309,25 @@ Including indent-buffer, which should not be called automatically on save."
       (delete-frame)
     (error (ns-do-hide-emacs))))
 
+(defun declare-prefix (prefix name &optional key fn &rest bindings)
+  "Declares which-key `prefix' and a display `name' for the prefix.
+   Sets up keybindings for the prefix."
+  (which-key-declare-prefixes (concat "SPC " prefix) name)
+  (let ((init-prefix prefix))
+    (while key
+      (evil-leader/set-key (concat init-prefix key) fn)
+      (setq key (pop bindings)
+            fn (pop bindings)))))
+
+(defun declare-prefix-for-mode (mode prefix name &optional key fn &rest bindings)
+  "Declares which-key `prefix' and a display `name' for the prefix only in `mode`.
+   Sets up keybindings for the prefix."
+  (pp `(which-key-declare-prefixes-for-mode ,mode ,(concat "SPC " prefix) ,name))
+  (which-key-declare-prefixes-for-mode mode (concat "SPC " prefix) name)
+  (let ((init-prefix prefix))
+    (while key
+      (evil-leader/set-key-for-mode mode (concat init-prefix key) fn)
+      (setq key (pop bindings)
+            fn (pop bindings)))))
+
 (provide 'defuns)
