@@ -408,9 +408,9 @@
 
     (use-package helm-descbinds
       :init
-      (helm-descbinds-mode)))
+      (helm-descbinds-mode))
 
-    (use-package helm-swoop))
+    (use-package helm-swoop)))
 
 (use-package visual-regexp
   :bind ("M-%" . vr/query-replace))
