@@ -173,28 +173,28 @@
 
 (declare-prefix "f" "Files"
                 "f" 'helm-find-files
-                "k" 'kill-buffer
-                "s" 'save-buffer
-                "S" 'save-some-buffers
-                "o" 'open-in-desktop
+                "D" 'delete-current-buffer-file
                 "R" 'revert-buffer
+                "S" 'save-some-buffers
+                "k" 'kill-buffer
+                "o" 'open-in-desktop
                 "r" 'helm-recentf
-                "d" 'delete-current-buffer-file)
+                "s" 'save-buffer)
 
 (declare-prefix "h" "Help"
+                "K" 'describe-key
+                "M" 'describe-minor-mode
                 "b" 'helm-descbinds
                 "f" 'describe-function
                 "k" 'describe-key-briefly
-                "K" 'describe-key
-                "v" 'describe-variable
                 "m" 'describe-mode
-                "M" 'describe-minor-mode
-                "p" 'describe-package)
+                "p" 'describe-package
+                "v" 'describe-variable)
 
 (declare-prefix "ha" "Help apropos"
-                "v" 'apropos-variable
+                "d" 'apropos-documentation
                 "m" 'apropos-mode
-                "d" 'apropos-documentation)
+                "v" 'apropos-variable)
 
 (declare-prefix "e" "Errors"
                 "c" 'flycheck-clear
