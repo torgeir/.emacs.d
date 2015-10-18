@@ -131,14 +131,14 @@
                   (yas-activate-extra-mode mode))
                 (setq web-mode-markup-indent-offset indent)
                 (setq web-mode-css-indent-offset indent)
-                (setq web-mode-code-indent-offset indent))))
+                (setq web-mode-code-indent-offset indent)))))
 
-  (use-package json-mode
-    :mode "\\.\\(json\\|jshintrc\\|eslintrc\\)$"
-    :config
-    (use-package json-reformat
-      :defer t
-      :commands json-reformat)))
+(use-package json-mode
+  :mode "\\.\\(json\\|jshintrc\\|eslintrc\\)$"
+  :config
+  (use-package json-reformat
+    :defer t
+    :commands json-reformat))
 
 ;; html
 (use-package sgml-mode
