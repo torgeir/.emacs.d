@@ -1,4 +1,3 @@
-(bind-key [remap goto-line] 'goto-line-with-feedback) ; m-g m-g
 (bind-key "M-j" 'join-lines)
 (bind-key "M-p" 'backward-paragraph)
 (bind-key "M-n" 'forward-paragraph)
@@ -10,14 +9,7 @@
 
 (bind-key "C-c d" 'duplicate-current-line-or-region)
 (bind-key "C-c n" 'cleanup-buffer-whitespace-and-indent)
-(bind-key "C-c w o" 'delete-other-windows)
-(bind-key "C-c f o" 'open-in-desktop)
-(bind-key "C-c C-r" 'revert-buffer)
-(bind-key "C-c C-d" 'delete-current-buffer-file)
-(bind-key "C-c C-e" 'eval-and-replace)
-(bind-key "C-c C-y" #'insert-char-above-the-cursor)
 
-(bind-key "C-x C-g" 'ffap)
 (bind-key "C-x C-k" 'kill-region)
 (bind-key "C-x C-k" 'isearch-delete-me isearch-mode-map)
 

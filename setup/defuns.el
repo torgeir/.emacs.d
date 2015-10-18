@@ -6,19 +6,6 @@
   (comint-send-region (get-process nodejs-repl-process-name)
                       start end))
 
-(defun insert-char-above-the-cursor ()
-  "repeats the character from the line above, like vims i_Ctrl-Y"
-  (interactive)
-  (save-excursion
-    (let ((column (current-column)))
-      (forward-line -1)
-      (move-to-column column)
-      (let* ((char (thing-at-point 'char)))
-        (forward-line 1)
-        (move-to-column column)
-        (insert char))))
-  (forward-char 1))
-
 (defun clean-mode-line ()
   (interactive)
   (loop for cleaner in mode-line-cleaner-alist
