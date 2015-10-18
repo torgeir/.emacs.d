@@ -2,6 +2,8 @@
 (setq indent 2)
 (setq indent-xml 4)
 
+(declare-prefix "m" "Mode")
+
 (use-package arduino-mode
   :defer t)
 
@@ -204,8 +206,6 @@
   ;; match camel-case tokens
   (add-hook 'clojure-mode-hook 'subword-mode)
   (add-hook 'clojure-mode-hook 'enable-paredit-mode))
-
-(declare-prefix "m" "Mode")
 
 ;; lisp
 (declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"
