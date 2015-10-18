@@ -77,10 +77,6 @@
 (setq split-height-threshold 40
       split-width-threshold 40)
 
-(defadvice split-window (after move-point-to-new-window activate)
-  "moves the point to the newly created window after splitting"
-  (other-window 1))
-
 ;; spaces
 (setq tab-width 2)
 
