@@ -173,6 +173,7 @@
 
 (declare-prefix "f" "Files"
                 "a" 'helm-do-ag-this-file
+                "f" 'helm-find-files
                 "k" 'kill-buffer
                 "s" 'save-buffer
                 "S" 'save-some-buffers
