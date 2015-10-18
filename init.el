@@ -397,7 +397,11 @@
     (bind-key "C-w" 'backward-kill-word helm-map)
 
     (use-package helm-ag
-      :defer t)
+      :defer t
+      :init
+      (setq helm-ag-fuzzy-match t
+            ;; save edited buffers on completion
+            helm-ag-edit-save t))
 
     (use-package helm-projectile
       :defer t)
