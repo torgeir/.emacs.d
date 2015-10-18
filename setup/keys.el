@@ -44,6 +44,7 @@
         try-expand-list
         try-expand-line))
 
+;; completion
 (bind-key "C-." 'hippie-expand-no-case-fold)
 (bind-key "C-," 'completion-at-point)
 (bind-key "C-S-." 'hippie-expand-lines)
