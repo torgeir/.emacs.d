@@ -14,16 +14,6 @@
 
   :config
   (progn
-    (bind-key "C-h" 'evil-window-left evil-normal-state-map)
-    (bind-key "C-j" 'evil-window-down evil-normal-state-map)
-    (bind-key "C-l" 'evil-window-right evil-normal-state-map)
-
-    (declare-prefix "w" "Windows"
-                    "h" 'evil-window-left
-                    "j" 'evil-window-down
-                    "k" 'evil-window-up
-                    "l" 'evil-window-right)
-
     (dolist (mode-map '((help-mode . emacs)
                         (compilation-mode . emacs)
                         (special-mode . emacs)
@@ -210,6 +200,13 @@
                 "v" 'flycheck-verify-setup
                 "t" 'flycheck-mode)
 
+(declare-prefix "w" "Windows"
+                "n" 'make-frame-command
+                "c" 'delete-frame
+                "h" 'evil-window-left
+                "j" 'evil-window-down
+                "k" 'evil-window-up
+                "l" 'evil-window-right)
 (evil-mode 1)
 
 (provide 'setup-evil)
