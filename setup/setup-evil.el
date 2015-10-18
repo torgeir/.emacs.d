@@ -157,6 +157,7 @@
                 "R" 'revert-buffer)
 
 (declare-prefix "x" "Text manipulation"
+                "a" 'align-regexp
                 "f" 'ido-find-file
                 "k" 'ido-kill-buffer
                 "m" 'helm-M-x
