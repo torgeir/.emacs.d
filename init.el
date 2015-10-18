@@ -572,7 +572,7 @@
 (when is-mac (require 'mac))
 (when is-cygwin (require 'cygwin))
 
-(progn
+(when (display-graphic-p)
   (require 'server)
   (unless (server-running-p) (server-mode)))
 
