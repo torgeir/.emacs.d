@@ -219,9 +219,19 @@
                 "p" 'helm-projectile-ag)
 
 (declare-prefix "ss" "Helm Swoop"
-                "s" 'helm-swoop
+                "a" 'helm-multi-swoop-all
                 "m" 'helm-multi-swoop
-                "a" 'helm-multi-swoop-all)
+                "s" 'helm-swoop
+                "w" (lambda ()
+                      (interactive)
+                      (setq-local helm-ag-insert-at-point 'word)
+                      (helm-projectile-ag)
+                      (setq-local helm-ag-insert-at-point nil))
+                "W" (lambda ()
+                      (interactive)
+                      (setq-local helm-ag-insert-at-point 'symbol)
+                      (helm-projectile-ag)
+                      (setq-local helm-ag-insert-at-point nil)))
 
 (declare-prefix "sw" "Search Web"
                 "g" 'helm-google-suggest
