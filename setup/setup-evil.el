@@ -218,6 +218,10 @@
                 "f" 'helm-ag-this-file
                 "p" 'helm-projectile-ag)
 
+(declare-prefix "sw" "Search Web"
+                "g" 'helm-google-suggest
+                "w" 'helm-wikipedia-suggest)
+
 (evil-mode 1)
 
 (provide 'setup-evil)
