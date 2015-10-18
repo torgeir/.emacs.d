@@ -151,6 +151,11 @@
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
 
+(declare-prefix "E" "Emacs"
+                "t" 'load-theme
+                "l" 'linum-mode
+                "b" 'fancy-battery-mode)
+
 (declare-prefix "b" "Buffers"
                 "w" 'save-buffer
                 "k" 'kill-buffer
