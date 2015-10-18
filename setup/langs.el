@@ -133,6 +133,25 @@
                 (setq web-mode-css-indent-offset indent)
                 (setq web-mode-code-indent-offset indent)))))
 
+(declare-prefix "mr" "Refactor")
+
+(use-package js2-refactor
+  :config
+  (declare-prefix "mr" "Refactor"
+                  "ef" 'js2r-extract-function
+                  "em" 'js2r-extract-method
+                  "ev" 'js2r-extract-var
+                  "ip" 'js2r-introduce-parameter
+                  "iv" 'js2r-inline-var
+                  "rv" 'js2r-rename-var
+
+                  "ao" 'js2r-arguments-to-object
+                  "co" 'js2r-contract-object
+                  "eo" 'js2r-expand-object
+                  "lp" 'js2r-localize-parameter
+                  "tf" 'js2r-toggle-function-expression-and-declaration
+                  "vt" 'js2r-var-to-this))
+
 (use-package json-mode
   :mode "\\.\\(json\\|jshintrc\\|eslintrc\\)$"
   :config
