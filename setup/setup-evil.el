@@ -159,7 +159,8 @@
 (declare-prefix "b" "Buffers"
                 "w" 'save-buffer
                 "k" 'kill-buffer
-                "b" 'helm-buffers-list)
+                "b" 'helm-buffers-list
+                "R" 'revert-buffer)
 
 (declare-prefix "x" "Text manipulation"
                 "k" 'ido-kill-buffer
