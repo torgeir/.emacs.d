@@ -13,7 +13,7 @@
 (setq visible-bell t)
 
 ;; show keystrokes
-(setq echo-keystrokes 0.1)
+(setq echo-keystrokes 0.01)
 
 ;; gaudiest possible look
 (setq font-lock-maximum-decoration t)
