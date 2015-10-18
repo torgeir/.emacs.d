@@ -169,7 +169,7 @@
                 "e" 'evil-show-registers)
 
 (declare-prefix "f" "Files"
-                "f" 'helm-do-ag-this-file
+                "a" 'helm-do-ag-this-file
                 "k" 'kill-buffer
                 "s" 'save-buffer
                 "S" 'save-some-buffers
