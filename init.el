@@ -99,7 +99,7 @@
   (setq which-key-side-window-max-height 0.5)
 
   ;; time to wait before display
-  (setq which-key-idle-delay 0)
+  (setq which-key-idle-delay 0.2)
   (which-key-mode nil)
   (which-key-mode))
 
