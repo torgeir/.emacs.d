@@ -119,11 +119,14 @@
   (evil-leader/set-key "t" 'helm-projectile)
   (declare-prefix "p" "Project"
                   "c" 'projectile-switch-project
-                  "t" 'projectile-find-file-dwim
-                  "T" 'projectile-find-test-file
-                  "d" 'projectile-find-dir
                   "k" 'projectile-kill-buffers
-                  "o" 'open-in-desktop))
+                  "o" 'open-in-desktop)
+
+  (declare-prefix "pf" "Project find"
+                  "f" 'projectile-find-file-dwim
+                  "t" 'projectile-find-test-file
+                  "p" 'projectile-find-file-in-known-projects
+                  "d" 'projectile-find-dir))
 
 (use-package neotree
   :commands neotree
