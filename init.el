@@ -117,7 +117,6 @@
   (evil-leader/set-key "t" 'helm-projectile)
   (declare-prefix "p" "Project"
                   "c" 'projectile-switch-project
-                  "a" 'helm-projectile-ag
                   "t" 'projectile-find-file-dwim
                   "T" 'projectile-find-test-file
                   "d" 'projectile-find-dir
@@ -393,7 +392,9 @@
 
     (use-package helm-descbinds
       :init
-      (helm-descbinds-mode))))
+      (helm-descbinds-mode)))
+
+    (use-package helm-swoop))
 
 (use-package visual-regexp
   :bind ("M-%" . vr/query-replace))

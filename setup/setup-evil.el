@@ -172,7 +172,6 @@
                 "e" 'evil-show-registers)
 
 (declare-prefix "f" "Files"
-                "a" 'helm-do-ag-this-file
                 "f" 'helm-find-files
                 "k" 'kill-buffer
                 "s" 'save-buffer
@@ -217,6 +216,11 @@
                 "b" 'helm-ag-buffers
                 "f" 'helm-ag-this-file
                 "p" 'helm-projectile-ag)
+
+(declare-prefix "ss" "Helm Swoop"
+                "s" 'helm-swoop
+                "m" 'helm-multi-swoop
+                "a" 'helm-multi-swoop-all)
 
 (declare-prefix "sw" "Search Web"
                 "g" 'helm-google-suggest
