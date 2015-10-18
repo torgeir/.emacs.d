@@ -72,7 +72,11 @@
 
 (use-package evil-surround
   :init
-  (global-evil-surround-mode 1))
+  (global-evil-surround-mode 1)
+  :config
+  ;; the opposite of vim, like spacemacs
+  (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
+  (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region))
 
 (use-package evil-paredit
   :config
