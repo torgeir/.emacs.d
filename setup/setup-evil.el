@@ -212,6 +212,12 @@
                 "j" 'evil-window-down
                 "k" 'evil-window-up
                 "l" 'evil-window-right)
+
+(declare-prefix "s" "Search"
+                "b" 'helm-ag-buffers
+                "f" 'helm-ag-this-file
+                "p" 'helm-projectile-ag)
+
 (evil-mode 1)
 
 (provide 'setup-evil)
