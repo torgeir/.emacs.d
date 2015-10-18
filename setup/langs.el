@@ -212,19 +212,22 @@
                          "b" 'eval-buffer
                          "e" 'eval-last-sexp
                          "f" 'eval-defun
-                         "r" 'eval-region)
+                         "r" 'eval-region
+                         "R" 'eval-and-replace)
 
 (declare-prefix-for-mode 'lisp-mode "me" "Evaluate"
                          "b" 'eval-buffer
                          "e" 'eval-last-sexp
                          "f" 'eval-defun
-                         "r" 'eval-region)
+                         "r" 'eval-region
+                         "R" 'eval-and-replace)
 
 (declare-prefix-for-mode 'emacs-lisp-mode "me" "Evaluate"
                          "b" 'eval-buffer
                          "e" 'eval-last-sexp
                          "f" 'eval-defun
-                         "r" 'eval-region)
+                         "r" 'eval-region
+                         "R" 'eval-and-replace)
 
 ;; ligatures
 (require 'cl)
