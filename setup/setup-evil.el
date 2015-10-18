@@ -147,7 +147,10 @@
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
 
-(evil-leader/set-key "b" 'helm-buffers-list)
+(declare-prefix "b" "Buffers"
+                "w" 'save-buffer
+                "k" 'kill-buffer
+                "b" 'helm-buffers-list)
 
 (declare-prefix
  "x" "Text manipulation"
@@ -169,6 +172,9 @@
 (declare-prefix
  "f" "Files"
  "f" 'helm-do-ag-this-file
+ "k" 'kill-buffer
+ "s" 'save-buffer
+ "S" 'save-some-buffers
  "o" 'open-in-desktop
  "r" 'revert-buffer
  "d" 'delete-current-buffer-file)
