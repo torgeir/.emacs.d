@@ -42,15 +42,15 @@
   :config
   (progn
 
-    (evil-leader/set-leader "SPC")
+    (evil-leader/set-leader leader)
 
     (defun clear-all-highlights ()
       (interactive)
       (evil-ex-nohighlight)
       (highlight-symbol-remove-all))
 
-    ;; clear highlights
-    (evil-leader/set-key "SPC" 'clear-all-highlights)
+    ;; clear highlights with leader leader
+    (evil-leader/set-key leader 'clear-all-highlights)
 
     (defun spacemacs/evil-yank-to-end-of-line ()
       "Yank from point to end of line."

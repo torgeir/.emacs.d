@@ -42,6 +42,8 @@
 (setq is-win (equal system-type 'windows-nt))
 (setq has-gui (display-graphic-p))
 
+(defvar leader "SPC")
+
 (use-package dash)
 (use-package s)
 (use-package better-defaults)

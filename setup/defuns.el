@@ -314,10 +314,14 @@ Including indent-buffer, which should not be called automatically on save."
       (delete-frame)
     (error (ns-do-hide-emacs))))
 
+(defun prefix-with-leader (key)
+  "Prefixes `key' with `leader' and a space, e.g. 'SPC m'"
+  (concat leader " " key))
+
 (defun declare-prefix (prefix name &optional key fn &rest bindings)
   "Declares which-key `prefix' and a display `name' for the prefix.
    Sets up keybindings for the prefix."
-  (which-key-declare-prefixes (concat "SPC " prefix) name)
+  (which-key-declare-prefixes (prefix-with-leader prefix) name)
   (let ((init-prefix prefix))
     (while key
       (evil-leader/set-key (concat init-prefix key) fn)
@@ -327,8 +331,7 @@ Including indent-buffer, which should not be called automatically on save."
 (defun declare-prefix-for-mode (mode prefix name &optional key fn &rest bindings)
   "Declares which-key `prefix' and a display `name' for the prefix only in `mode`.
    Sets up keybindings for the prefix."
-  (pp `(which-key-declare-prefixes-for-mode ,mode ,(concat "SPC " prefix) ,name))
-  (which-key-declare-prefixes-for-mode mode (concat "SPC " prefix) name)
+  (which-key-declare-prefixes-for-mode mode (prefix-with-leader prefix) name)
   (let ((init-prefix prefix))
     (while key
       (evil-leader/set-key-for-mode mode (concat init-prefix key) fn)
