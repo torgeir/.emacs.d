@@ -21,23 +21,24 @@
 (bind-key "C-x C-k" 'kill-region)
 (bind-key "C-x C-k" 'isearch-delete-me isearch-mode-map)
 
-(bind-key "C-x c r" (lambda () (interactive) (load-file "~/.emacs.d/init.el")))
-(bind-key "C-x c i" (lambda () (interactive) (find-file "~/.emacs.d/init.el")))
-(bind-key "C-x c e" (lambda () (interactive) (find-file "~/.emacs.d/setup/sane-defaults.el")))
-(bind-key "C-x c d" (lambda () (interactive) (find-file "~/.emacs.d/setup/defuns.el")))
-(bind-key "C-x c k" (lambda () (interactive) (find-file "~/.emacs.d/setup/keys.el")))
-(bind-key "C-x c m" (lambda () (interactive) (find-file "~/.emacs.d/setup/mac.el")))
-(bind-key "C-x c l" (lambda () (interactive) (find-file "~/.emacs.d/setup/langs.el")))
-(bind-key "C-x c s" (lambda () (interactive) (find-file "~/.emacs.d/snippets/")))
-(evil-leader/set-key
-  "Cr" (lambda () (interactive) (load-file "~/.emacs.d/init.el"))
-  "Ci" (lambda () (interactive) (find-file "~/.emacs.d/init.el"))
-  "Ce" (lambda () (interactive) (find-file "~/.emacs.d/setup/sane-defaults.el"))
-  "Cd" (lambda () (interactive) (find-file "~/.emacs.d/setup/defuns.el"))
-  "Ck" (lambda () (interactive) (find-file "~/.emacs.d/setup/keys.el"))
-  "Cm" (lambda () (interactive) (find-file "~/.emacs.d/setup/mac.el"))
-  "Cl" (lambda () (interactive) (find-file "~/.emacs.d/setup/langs.el"))
-  "Cs" (lambda () (interactive) (find-file "~/.emacs.d/snippets/")))
+(defun config-reload () (interactive) (load-file "~/.emacs.d/init.el"))
+(defun config-edit-init () (interactive) (find-file "~/.emacs.d/init.el"))
+(defun config-edit-sane-defaults () (interactive) (find-file "~/.emacs.d/setup/sane-defaults.el"))
+(defun config-edit-defuns () (interactive) (find-file "~/.emacs.d/setup/defuns.el"))
+(defun config-edit-keys () (interactive) (find-file "~/.emacs.d/setup/keys.el"))
+(defun config-edit-mac () (interactive) (find-file "~/.emacs.d/setup/mac.el"))
+(defun config-edit-langs () (interactive) (find-file "~/.emacs.d/setup/langs.el"))
+(defun config-edit-snippets () (interactive) (find-file "~/.emacs.d/snippets/"))
+
+(declare-prefix "C" "Edit config"
+                "r" 'config-reload
+                "i" 'config-edit-init
+                "e" 'config-edit-sane-defaults
+                "d" 'config-edit-defuns
+                "k" 'config-edit-keys
+                "m" 'config-edit-mac
+                "l" 'config-edit-langs
+                "s" 'config-edit-snippets)
 
 ;; lisp-friendly
 (setq hippie-expand-try-functions-list
