@@ -174,7 +174,8 @@
                 "s" 'save-buffer
                 "S" 'save-some-buffers
                 "o" 'open-in-desktop
-                "r" 'revert-buffer
+                "R" 'revert-buffer
+                "r" 'helm-recentf
                 "d" 'delete-current-buffer-file)
 
 (declare-prefix "h" "Help"
