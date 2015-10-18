@@ -146,6 +146,9 @@
                 "l" 'linum-mode
                 "b" 'fancy-battery-mode)
 
+(declare-prefix "Ep" "Packages"
+                "i" 'package-install)
+
 (declare-prefix "b" "Buffers"
                 "w" 'save-buffer
                 "k" 'kill-buffer
