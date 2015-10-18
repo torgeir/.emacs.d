@@ -156,58 +156,51 @@
                 "k" 'kill-buffer
                 "b" 'helm-buffers-list)
 
-(declare-prefix
- "x" "Text manipulation"
- "k" 'ido-kill-buffer
- "m" 'helm-M-x
- "x" 'smex-major-mode-commands)
+(declare-prefix "x" "Text manipulation"
+                "k" 'ido-kill-buffer
+                "m" 'helm-M-x
+                "x" 'smex-major-mode-commands)
 
-(declare-prefix
- "xt" "Transpose"
- "c" 'transpose-chars
- "w" 'transpose-words
- "l" 'transpose-lines
- "f" 'transpose-frame)
+(declare-prefix "xt" "Transpose"
+                "c" 'transpose-chars
+                "w" 'transpose-words
+                "l" 'transpose-lines
+                "f" 'transpose-frame)
 
-(declare-prefix
- "r" "Registers"
- "e" 'evil-show-registers)
+(declare-prefix "r" "Registers"
+                "e" 'evil-show-registers)
 
-(declare-prefix
- "f" "Files"
- "f" 'helm-do-ag-this-file
- "k" 'kill-buffer
- "s" 'save-buffer
- "S" 'save-some-buffers
- "o" 'open-in-desktop
- "r" 'revert-buffer
- "d" 'delete-current-buffer-file)
+(declare-prefix "f" "Files"
+                "f" 'helm-do-ag-this-file
+                "k" 'kill-buffer
+                "s" 'save-buffer
+                "S" 'save-some-buffers
+                "o" 'open-in-desktop
+                "r" 'revert-buffer
+                "d" 'delete-current-buffer-file)
 
-(declare-prefix
- "h" "Help"
- "b" 'helm-descbinds
- "f" 'describe-function
- "k" 'describe-key-briefly
- "K" 'describe-key
- "v" 'describe-variable
- "m" 'describe-mode
- "M" 'describe-minor-mode
- "p" 'describe-package)
+(declare-prefix "h" "Help"
+                "b" 'helm-descbinds
+                "f" 'describe-function
+                "k" 'describe-key-briefly
+                "K" 'describe-key
+                "v" 'describe-variable
+                "m" 'describe-mode
+                "M" 'describe-minor-mode
+                "p" 'describe-package)
 
-(declare-prefix
- "ha" "Help apropos"
- "v" 'apropos-variable
- "m" 'apropos-mode
- "d" 'apropos-documentation)
+(declare-prefix "ha" "Help apropos"
+                "v" 'apropos-variable
+                "m" 'apropos-mode
+                "d" 'apropos-documentation)
 
-(declare-prefix
- "e" "Errors"
- "c" 'flycheck-clear
- "p" 'flycheck-previous-error
- "n" 'flycheck-next-error
- "l" 'flycheck-list-errors
- "v" 'flycheck-verify-setup
- "t" 'flycheck-mode)
+(declare-prefix "e" "Errors"
+                "c" 'flycheck-clear
+                "p" 'flycheck-previous-error
+                "n" 'flycheck-next-error
+                "l" 'flycheck-list-errors
+                "v" 'flycheck-verify-setup
+                "t" 'flycheck-mode)
 
 (evil-mode 1)
 
