@@ -386,6 +386,8 @@
                 helm-projectile-fuzzy-match t
                 helm-completion-in-region-fuzzy-match t
 
+                ;; keep follow mode on, after on once
+                helm-follow-mode-persistent t
                 helm-ff-skip-boring-files t
                 helm-quick-update t
                 helm-M-x-requires-pattern nil)
