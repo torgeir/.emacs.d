@@ -164,6 +164,7 @@
                 "R" 'revert-buffer)
 
 (declare-prefix "x" "Text manipulation"
+                "f" 'ido-find-file
                 "k" 'ido-kill-buffer
                 "m" 'helm-M-x
                 "x" 'smex-major-mode-commands)
