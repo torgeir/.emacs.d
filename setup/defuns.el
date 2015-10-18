@@ -186,6 +186,11 @@ region-end is used."
         (goto-line (read-number "Goto line: ")))
     (linum-mode -1)))
 
+(defun kill-other-buffers ()
+      "Kill all other buffers."
+      (interactive)
+      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
 (defun rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
   (interactive)
