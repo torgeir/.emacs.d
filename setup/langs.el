@@ -1,8 +1,12 @@
-;; intents
+;; indents
 (setq indent 2)
 (setq indent-xml 4)
 
-(t/declare-prefix "m" "Mode")
+(let ((langs-extra-file (locate-user-emacs-file "langs-extra.el")))
+  (when (file-exists-p langs-extra-file)
+    (require 'langs-extra langs-extra-file)))
+
+(declare-prefix "m" "Mode")
 
 (use-package arduino-mode
   :defer t)

@@ -12,3 +12,5 @@
 /.company-statistics-cache.el
 .hl-save
 *.elc
+/langs-extra.el
+/proxy.el
