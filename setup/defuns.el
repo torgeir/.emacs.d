@@ -91,6 +91,14 @@
    ((looking-back "/") (insert "~/"))
    (:else (call-interactively 'self-insert-command))))
 
+(defun copy-to-clipboard (text &optional push)
+  "Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses builtin pbcopy."
+  (let* ((process-connection-type nil)
+         (copy-cmd (if is-cygwin "putclip" "pbcopy"))
+         (proc (start-process copy-cmd "*Messages*" copy-cmd)))
+    (process-send-string proc text)
+    (process-send-eof proc)))
+
 (defun t/open-in-desktop ()
   "Show current file in desktop (OS's file manager).
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'

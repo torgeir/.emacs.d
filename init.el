@@ -50,8 +50,8 @@
 
 (eval-when-compile (require 'cl)) ;; lexical-let
 
-(require 'sane-defaults)
 (require 'defuns)
+(require 'sane-defaults)
 (require 'setup-evil)
 
 (use-package paradox
