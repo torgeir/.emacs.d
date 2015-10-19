@@ -229,6 +229,12 @@
                          "r" 'eval-region
                          "R" 'eval-and-replace)
 
+(use-package cloudformation-mode
+  :ensure nil
+  :load-path "site-lisp/cloudformation/"
+  :commands cloudformation-mode
+  :defer t)
+
 ;; ligatures
 (require 'cl)
 (defun ligature (tuple)
