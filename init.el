@@ -373,6 +373,10 @@
   :defer t
   :commands (discover-my-major discover-my-mode))
 
+(use-package remark-mode
+  :commands remark-mode
+  :defer t)
+
 (use-package helm
   :diminish helm-mode
   :init
