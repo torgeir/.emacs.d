@@ -23,7 +23,7 @@
 (defun config-edit-snippets () (interactive) (find-file "~/.emacs.d/snippets/"))
 
 (declare-prefix "C" "Edit config"
-                "r" 'config-reload
+                "R" 'config-reload
                 "i" 'config-edit-init
                 "e" 'config-edit-sane-defaults
                 "d" 'config-edit-defuns
