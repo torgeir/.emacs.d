@@ -621,7 +621,8 @@
 (when is-mac (require 'mac))
 (when is-cygwin (require 'cygwin))
 
-(when (display-graphic-p)
+(when (or is-cygwin
+          (display-graphic-p))
   (require 'server)
   (unless (server-running-p) (server-mode)))
 
