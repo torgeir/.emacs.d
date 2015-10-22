@@ -52,6 +52,11 @@
 (require 'defuns)
 (require 'setup-evil)
 
+(use-package paradox
+  :init
+  (progn
+    (setq paradox-execute-asynchronously t)))
+
 (use-package exec-path-from-shell
   :if is-mac
   :config
