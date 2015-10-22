@@ -306,6 +306,14 @@ Including indent-buffer, which should not be called automatically on save."
       (delete-frame)
     (error (ns-do-hide-emacs))))
 
+(defun copy-buffer-file-name ()
+  (interactive)
+  (add-string-to-kill-ring (file-name-nondirectory (buffer-file-name))))
+
+(defun copy-buffer-file-path ()
+  (interactive)
+  (add-string-to-kill-ring (file-relative-name (buffer-file-name) (projectile-project-root))))
+
 (defun prefix-with-leader (key)
   "Prefixes `key' with `leader' and a space, e.g. 'SPC m'"
   (concat leader " " key))
