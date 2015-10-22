@@ -210,21 +210,21 @@
 ;; lisp
 (declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"
                          "b" 'eval-buffer
-                         "e" 'eval-last-sexp
+                         "e" 'eval-region-or-last-sexp
                          "f" 'eval-defun
                          "r" 'eval-region
                          "R" 'eval-and-replace)
 
 (declare-prefix-for-mode 'lisp-mode "me" "Evaluate"
                          "b" 'eval-buffer
-                         "e" 'eval-last-sexp
+                         "e" 'eval-region-or-last-sexp
                          "f" 'eval-defun
                          "r" 'eval-region
                          "R" 'eval-and-replace)
 
 (declare-prefix-for-mode 'emacs-lisp-mode "me" "Evaluate"
                          "b" 'eval-buffer
-                         "e" 'eval-last-sexp
+                         "e" 'eval-region-or-last-sexp
                          "f" 'eval-defun
                          "r" 'eval-region
                          "R" 'eval-and-replace)

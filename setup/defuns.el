@@ -233,6 +233,11 @@ Including indent-buffer, which should not be called automatically on save."
   (ethan-wspace-clean-all)
   (indent-buffer))
 
+(defun eval-region-or-last-sexp ()
+  (interactive)
+  (if (region-active-p) (call-interactively 'eval-region)
+    (call-interactively 'eval-last-sexp)))
+
 (defun eval-and-replace ()
   "Evaluate and replace the preceding sexp with its value."
   (interactive)
