@@ -161,10 +161,12 @@
 (t/declare-prefix "b" "Buffers"
                 "d" 'delete-window
                 "S" 'save-some-buffers
-                "w" 'save-buffer
+                "s" 'save-buffer
                 "k" 'kill-this-buffer
-                "K" 'kill-other-buffers
+                "t" 'kill-other-buffers
                 "b" 'helm-buffers-list
+                "N" 'previous-buffer
+                "n" 'next-buffer
                 "R" 'revert-buffer)
 
 (t/declare-prefix "x" "Text manipulation"
