@@ -153,7 +153,7 @@
 
 (declare-prefix "b" "Buffers"
                 "w" 'save-buffer
-                "k" 'kill-buffer
+                "k" 'kill-this-buffer
                 "K" 'kill-other-buffers
                 "b" 'helm-buffers-list
                 "R" 'revert-buffer)
