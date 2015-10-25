@@ -165,7 +165,7 @@
                   "S" 'save-some-buffers
                   "s" 'save-buffer
                   "k" 'kill-this-buffer
-                  "t" 'kill-other-buffers
+                  "K" 'kill-other-buffers
                   "b" 'helm-buffers-list
                   "N" 'previous-buffer
                   "n" 'next-buffer
