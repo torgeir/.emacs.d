@@ -462,14 +462,7 @@
   :bind (("<C-S-up>" . move-text-up)
          ("<C-S-down>" . move-text-down)))
 
-(use-package multiple-cursors
-  :bind (("M-ø" . mc/mark-all-dwim)
-         ("M-Ø" . mc/mark-more-like-this-extended)
-         ("M-Å" . mc/mark-all-in-region)
-         ("M-å" . mc/mark-previous-like-this)
-         ("M-æ" . mc/mark-next-like-this)
-         ("<C-S-mouse-1>" . mc/add-cursor-on-click)
-         ("C-M-SPC" . set-rectangular-region-anchor)))
+(use-package multiple-cursors)
 
 (use-package expand-region
   :config
