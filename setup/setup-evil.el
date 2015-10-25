@@ -141,10 +141,16 @@
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
 
-(t/declare-prefix "E" "Emacs"
-                "t" 'load-theme
+(t/declare-prefix "E" "Editor"
+                "t" 'load-theme)
+
+(t/declare-prefix "T" "Toggle"
                 "l" 'linum-mode
-                "b" 'fancy-battery-mode)
+                "L" 'linum-relative-toggle
+                "b" 'fancy-battery-mode
+                "g" 'git-gutter+-toggle-fringe
+                "r" 'rainbow-mode
+                "p" 'rainbow-delimiters-mode)
 
 (t/declare-prefix "Ep" "Packages"
                 "i" 'package-install
