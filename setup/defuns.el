@@ -295,7 +295,9 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (condition-case nil
       (delete-frame)
-    (error (ns-do-hide-emacs))))
+    (error (if (window-system)
+               (ns-do-hide-emacs)
+             "in terminal, use c-z instead"))))
 
 (defun t/copy-buffer-file-name ()
   (interactive)
