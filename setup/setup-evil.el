@@ -10,7 +10,7 @@
           evil-motion-state-cursor '("green" box))
 
     (setq evil-toggle-key "C-'")
-    (bind-key "C-'" 'evil-mode))
+    (bind-key "C-'" 'evil-local-mode))
 
   :config
   (progn
