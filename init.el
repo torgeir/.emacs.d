@@ -296,6 +296,12 @@
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-web-html)))
 
+(use-package company-ansible
+  :defer t
+  :init
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-ansible)))
+
 (use-package company-restclient
   :defer t
   :init
