@@ -33,7 +33,7 @@
 
 ;; paredit specials
 (define-key key-translation-map (kbd "s-(") 'paredit-wrap-round)
-(define-key key-translation-map (kbd "s-)") 'paredit-wrap-round-from-behind)
+(define-key key-translation-map (kbd "s-)") 't/paredit-wrap-round-from-behind)
 (define-key key-translation-map (kbd "M-s-(") 'paredit-wrap-curly)
 (define-key key-translation-map (kbd "M-s-[") 'paredit-wrap-square)
 

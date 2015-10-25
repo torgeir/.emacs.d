@@ -2,7 +2,7 @@
 (setq indent 2)
 (setq indent-xml 4)
 
-(declare-prefix "m" "Mode")
+(t/declare-prefix "m" "Mode")
 
 (use-package arduino-mode
   :defer t)
@@ -28,7 +28,7 @@
   :init
   (setq css-indent-offset indent)
   :config
-  (bind-key "M-k" 'css-kill-value css-mode-map)
+  (bind-key "M-k" 't/css-kill-value css-mode-map)
   (dolist (fn '(turn-on-css-eldoc
                 turn-on-smartparens-mode
                 rainbow-mode))
@@ -45,7 +45,7 @@
 
 (use-package less-css-mode
   :config
-  (bind-key "M-k" 'css-kill-value css-mode-map))
+  (bind-key "M-k" 't/css-kill-value css-mode-map))
 
 (use-package flycheck
   :defer t
@@ -113,9 +113,9 @@
   (use-package nodejs-repl
     :defer t
     :config
-    (bind-key "C-x C-e" #'send-region-to-nodejs-repl-process js2-mode-map)
+    (bind-key "C-x C-e" #'t/send-region-to-nodejs-repl-process js2-mode-map)
     (evil-leader/set-key-for-mode 'js2-mode
-      "mer" #'send-region-to-nodejs-repl-process))
+      "mer" #'t/send-region-to-nodejs-repl-process))
 
   ;; don't steel keys
   (bind-key "M-j" 'nil js2-mode-map)
@@ -135,11 +135,11 @@
                 (setq web-mode-css-indent-offset indent)
                 (setq web-mode-code-indent-offset indent)))))
 
-(declare-prefix "mr" "Refactor")
+(t/declare-prefix "mr" "Refactor")
 
 (use-package js2-refactor
   :config
-  (declare-prefix "mr" "Refactor"
+  (t/declare-prefix "mr" "Refactor"
                   "ef" 'js2r-extract-function
                   "em" 'js2r-extract-method
                   "ev" 'js2r-extract-var
@@ -208,26 +208,26 @@
   (add-hook 'clojure-mode-hook 'enable-paredit-mode))
 
 ;; lisp
-(declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"
+(t/declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"
                          "b" 'eval-buffer
-                         "e" 'eval-region-or-last-sexp
+                         "e" 't/eval-region-or-last-sexp
                          "f" 'eval-defun
                          "r" 'eval-region
-                         "R" 'eval-and-replace)
+                         "R" 't/eval-and-replace)
 
-(declare-prefix-for-mode 'lisp-mode "me" "Evaluate"
+(t/declare-prefix-for-mode 'lisp-mode "me" "Evaluate"
                          "b" 'eval-buffer
-                         "e" 'eval-region-or-last-sexp
+                         "e" 't/eval-region-or-last-sexp
                          "f" 'eval-defun
                          "r" 'eval-region
-                         "R" 'eval-and-replace)
+                         "R" 't/eval-and-replace)
 
-(declare-prefix-for-mode 'emacs-lisp-mode "me" "Evaluate"
+(t/declare-prefix-for-mode 'emacs-lisp-mode "me" "Evaluate"
                          "b" 'eval-buffer
-                         "e" 'eval-region-or-last-sexp
+                         "e" 't/eval-region-or-last-sexp
                          "f" 'eval-defun
                          "r" 'eval-region
-                         "R" 'eval-and-replace)
+                         "R" 't/eval-and-replace)
 
 (use-package cloudformation-mode
   :ensure nil
@@ -269,8 +269,8 @@
     (markdown-mode . "md")
     (emacs-lisp-mode . "el")
     (python-mode . "python"))
-  "Alist for `clean-mode-line'. Modeline replacements")
+  "Alist for `t/clean-mode-line'. Modeline replacements")
 
-(add-hook 'after-change-major-mode-hook 'clean-mode-line)
+(add-hook 'after-change-major-mode-hook 't/clean-mode-line)
 
 (provide 'langs)

@@ -82,7 +82,7 @@
 
 (use-package evil-nerd-commenter
   :config
-  (declare-prefix "c" "Comments"
+  (t/declare-prefix "c" "Comments"
                   "i" 'evilnc-comment-or-uncomment-lines
                   "c" 'evilnc-comment-or-uncomment-lines
                   "p" 'evilnc-comment-or-uncomment-paragraphs
@@ -120,10 +120,10 @@
 (bind-key "Q" 'call-last-kbd-macro evil-visual-state-map)
 
 ;; smarter c-a
-(bind-key "C-a" 'smart-beginning-of-line evil-normal-state-map)
-(bind-key "C-a" 'smart-beginning-of-line evil-insert-state-map)
-(bind-key "C-a" 'smart-beginning-of-line evil-visual-state-map)
-(bind-key "C-a" 'smart-beginning-of-line evil-motion-state-map)
+(bind-key "C-a" 't/smart-beginning-of-line evil-normal-state-map)
+(bind-key "C-a" 't/smart-beginning-of-line evil-insert-state-map)
+(bind-key "C-a" 't/smart-beginning-of-line evil-visual-state-map)
+(bind-key "C-a" 't/smart-beginning-of-line evil-motion-state-map)
 
 ;; cycle after pasting with p
 (bind-key "\M-y" 'evil-paste-pop evil-normal-state-map)
@@ -141,42 +141,42 @@
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
 
-(declare-prefix "E" "Emacs"
+(t/declare-prefix "E" "Emacs"
                 "t" 'load-theme
                 "l" 'linum-mode
                 "b" 'fancy-battery-mode)
 
-(declare-prefix "Ep" "Packages"
+(t/declare-prefix "Ep" "Packages"
                 "i" 'package-install
                 "l" 'paradox-list-packages
                 "U" 'paradox-upgrade-packages)
 
-(declare-prefix "b" "Buffers"
+(t/declare-prefix "b" "Buffers"
                 "w" 'save-buffer
                 "k" 'kill-this-buffer
                 "K" 'kill-other-buffers
                 "b" 'helm-buffers-list
                 "R" 'revert-buffer)
 
-(declare-prefix "x" "Text manipulation"
+(t/declare-prefix "x" "Text manipulation"
                 "a" 'align-regexp
                 "f" 'ido-find-file
                 "k" 'ido-kill-buffer
                 "m" 'helm-M-x
                 "x" 'smex-major-mode-commands)
 
-(declare-prefix "xt" "Transpose"
+(t/declare-prefix "xt" "Transpose"
                 "c" 'transpose-chars
                 "w" 'transpose-words
                 "l" 'transpose-lines
                 "f" 'transpose-frame)
 
-(declare-prefix "r" "Registers"
+(t/declare-prefix "r" "Registers"
                 "e" 'evil-show-registers)
 
-(declare-prefix "f" "Files"
+(t/declare-prefix "f" "Files"
                 "f" 'helm-find-files
-                "D" 'delete-current-buffer-file
+                "D" 't/delete-current-buffer-file
                 "R" 'revert-buffer
                 "S" 'save-some-buffers
                 "k" 'kill-buffer
@@ -184,7 +184,7 @@
                 "r" 'helm-recentf
                 "s" 'save-buffer)
 
-(declare-prefix "h" "Help"
+(t/declare-prefix "h" "Help"
                 "K" 'describe-key
                 "M" 'describe-minor-mode
                 "b" 'helm-descbinds
@@ -194,12 +194,12 @@
                 "p" 'describe-package
                 "v" 'describe-variable)
 
-(declare-prefix "ha" "Help apropos"
+(t/declare-prefix "ha" "Help apropos"
                 "d" 'apropos-documentation
                 "m" 'apropos-mode
                 "v" 'apropos-variable)
 
-(declare-prefix "e" "Errors"
+(t/declare-prefix "e" "Errors"
                 "c" 'flycheck-clear
                 "p" 'flycheck-previous-error
                 "n" 'flycheck-next-error
@@ -207,9 +207,9 @@
                 "v" 'flycheck-verify-setup
                 "t" 'flycheck-mode)
 
-(declare-prefix "w" "Windows"
+(t/declare-prefix "w" "Windows"
                 "n" 'make-frame-command
-                "c" 'delete-frame-or-hide-last-remaining-frame
+                "c" 't/delete-frame-or-hide-last-remaining-frame
                 "d" 'delete-window
                 "t" 'delete-other-windows
                 "o" 't/previous-window
@@ -220,12 +220,12 @@
                 "k" 'evil-window-up
                 "l" 'evil-window-right)
 
-(declare-prefix "s" "Search"
+(t/declare-prefix "s" "Search"
                 "b" 'helm-ag-buffers
                 "f" 'helm-ag-this-file
                 "p" 'helm-projectile-ag)
 
-(declare-prefix "ss" "Helm Swoop"
+(t/declare-prefix "ss" "Helm Swoop"
                 "a" 'helm-multi-swoop-all
                 "m" 'helm-multi-swoop
                 "s" 'helm-swoop
@@ -240,7 +240,7 @@
                       (helm-projectile-ag)
                       (setq-local helm-ag-insert-at-point nil)))
 
-(declare-prefix "sw" "Search Web"
+(t/declare-prefix "sw" "Search Web"
                 "g" 'helm-google-suggest
                 "w" 'helm-wikipedia-suggest)
 

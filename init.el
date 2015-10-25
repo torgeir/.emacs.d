@@ -122,19 +122,19 @@
   :config
   (projectile-global-mode)
   (evil-leader/set-key "t" 'helm-projectile)
-  (declare-prefix "p" "Project"
+  (t/declare-prefix "p" "Project"
                   "c" 'projectile-switch-project
                   "d" 'projectile-dired
                   "k" 'projectile-kill-buffers
-                  "o" 'open-in-desktop
+                  "o" 't/open-in-desktop
                   "R" 'projectile-replace
                   "s" 'projectile-save-project-buffers)
 
-  (declare-prefix "pr" "Project run"
+  (t/declare-prefix "pr" "Project run"
                   "a" 'projectile-run-async-shell-command-in-root
                   "s" 'projectile-run-shell-command-in-root)
 
-  (declare-prefix "pf" "Project find"
+  (t/declare-prefix "pf" "Project find"
                   "d" 'projectile-find-dir
                   "f" 'projectile-find-file-dwim
                   "p" 'projectile-find-file-in-known-projects
@@ -171,7 +171,7 @@
               (bind-key "RET" 'neotree-enter evil-normal-state-local-map)
               (bind-key "C" 'neotree-change-root evil-normal-state-map))))
 
-(declare-prefix "g" "Git")
+(t/declare-prefix "g" "Git")
 
 (use-package git-gutter+
   :diminish git-gutter+-mode
@@ -180,7 +180,7 @@
   (setq git-gutter+-added-sign "+ ")
   (setq git-gutter+-deleted-sign "- ")
   (global-git-gutter+-mode t)
-  (declare-prefix "gh" "Hunk"
+  (t/declare-prefix "gh" "Hunk"
                   "n" 'git-gutter+-next-hunk
                   "N" 'git-gutter+-previous-hunk
                   "C" 'git-gutter+-stage-and-commit
@@ -206,7 +206,7 @@
 
 (use-package gist
   :init
-  (declare-prefix "gg" "Gist"
+  (t/declare-prefix "gg" "Gist"
                   "l" 'gist-list
                   "b" 'gist-buffer
                   "B" 'gist-buffer-private
@@ -221,7 +221,7 @@
   :init
   (setq ace-jump-mode-gray-background nil
         ace-jump-mode-case-fold t)
-  (declare-prefix "j" "Jump"
+  (t/declare-prefix "j" "Jump"
                   "j" 'ace-jump-mode
                   "c" 'ace-jump-char-mode
                   "l" 'ace-jump-line-mode
@@ -232,7 +232,7 @@
   :commands magit-status
   :defer t
   :init
-  (declare-prefix "g" "Git"
+  (t/declare-prefix "g" "Git"
                   "s" 'magit-status
                   "b" 'magit-blame-mode
                   "l" 'magit-log
@@ -356,9 +356,9 @@
                    c-mode c++-mode
                    js-mode js2-mode)
     (sp-local-pair "[" nil :post-handlers
-                   '((sp--create-newline-and-enter-sexp "RET")))
+                   '((t/sp--create-newline-and-enter-sexp "RET")))
     (sp-local-pair "{" nil :post-handlers
-                   '((sp--create-newline-and-enter-sexp "RET")))))
+                   '((t/sp--create-newline-and-enter-sexp "RET")))))
 
 (use-package writeroom-mode
   :commands writeroom-mode
@@ -465,8 +465,8 @@
   :commands transpose-frame)
 
 (use-package etags-select
-  :bind (("M-?" . ido-find-tag)
-         ("M-." . find-tag-at-point)
+  :bind (("M-?" . t/ido-find-tag)
+         ("M-." . t/find-tag-at-point)
          ("M-_" . find-tag-other-window))
   :config
   (add-hook 'etags-select-mode-hook
@@ -564,7 +564,7 @@
   :config
   (set-face-background 'highlight-symbol-face "#333")
   (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
-  (declare-prefix "h" "Highlight"
+  (t/declare-prefix "h" "Highlight"
                   ;; leader leader clears all highlights
                   "h" 'highlight-symbol-at-point
                   "n" 'highlight-symbol-next
@@ -585,7 +585,7 @@
   :init
   (setq geeknote-command "python /usr/local/bin/geeknote")
   :config
-  (declare-prefix "gn" "Geeknote"
+  (t/declare-prefix "gn" "Geeknote"
                   "c" 'geeknote-create
                   "e" 'geeknote-edit
                   "f" 'geeknote-find
@@ -598,7 +598,7 @@
   :load-path "site-lisp/spotify/"
   :commands helm-spotify
   :init
-  (declare-prefix "o" "Other"
+  (t/declare-prefix "o" "Other"
                   "s" 'helm-spotify))
 
 (require 'setup-shell)
@@ -616,7 +616,7 @@
 
 (evil-leader/set-key "rq" 'save-buffers-kill-terminal)
 (bind-key "C-x r q" 'save-buffers-kill-terminal)
-(bind-key "C-x C-c" 'delete-frame-or-hide-last-remaining-frame)
+(bind-key "C-x C-c" 't/delete-frame-or-hide-last-remaining-frame)
 (eval-after-load "evil"
   '(progn
      (defadvice evil-quit (around advice-for-evil-quit activate) (message "really?"))

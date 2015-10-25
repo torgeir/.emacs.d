@@ -1,4 +1,4 @@
-(defun send-region-to-nodejs-repl-process (start end)
+(defun t/send-region-to-nodejs-repl-process (start end)
   "Send region to `nodejs-repl' process."
   (interactive "r")
   (save-selected-window
@@ -6,7 +6,7 @@
   (comint-send-region (get-process nodejs-repl-process-name)
                       start end))
 
-(defun clean-mode-line ()
+(defun t/clean-mode-line ()
   (interactive)
   (loop for cleaner in mode-line-cleaner-alist
         do (let* ((mode (car cleaner))
@@ -18,7 +18,7 @@
              (when (eq mode major-mode)
                (setq mode-name mode-str)))))
 
-(defun css-kill-value ()
+(defun t/css-kill-value ()
   "kills the attribute of a css property"
   (interactive)
   (let ((pos (point)))
@@ -30,19 +30,19 @@
             (just-one-space)))
       (move-to-column pos))))
 
-(defmacro rename-modeline (package-name mode new-name)
+(defmacro t/rename-modeline (package-name mode new-name)
   "per package modeline rename for mode"
   `(eval-after-load ,package-name
-     '(defadvice ,mode (after rename-modeline activate)
+     '(defadvice ,mode (after t/rename-modeline activate)
         (setq mode-name ,new-name))))
 
-(defun json-format ()
+(defun t/json-format ()
   "pretty prints json in selected region"
   (interactive)
   (save-excursion
     (shell-command-on-region (mark) (point) "python -m json.tool" (buffer-name) t)))
 
-(defun build-tags ()
+(defun t/build-tags ()
   "build ctags file for projectile project, calls load-tags when done"
   (interactive)
   (message "building project tags..")
@@ -59,23 +59,23 @@
                   " -f " tags " " ; put it in project/TAGS
                   root))))
     (set-process-sentinel process (lambda (process event)
-                                    (load-tags tags)))))
+                                    (t/load-tags tags)))))
 
-(defun load-tags (tags)
+(defun t/load-tags (tags)
   "loads project tags into tag table"
   (message "loading project tags..")
   (visit-tags-table tags)
   (message "project tags loaded"))
 
-(defun find-tag-at-point ()
+(defun t/find-tag-at-point ()
   "goes to tag at point, builds and/or loads project TAGS file first"
   (interactive)
   (let* ((root (projectile-project-root))
          (tags (concat root "TAGS")))
-    (if (file-exists-p tags) (load-tags tags) (build-tags))
+    (if (file-exists-p tags) (load-tags tags) (t/build-tags))
     (etags-select-find-tag-at-point)))
 
-(defun ido-find-tag ()
+(defun t/ido-find-tag ()
   "Find a tag using ido"
   (interactive)
   (tags-completion-table)
@@ -85,13 +85,13 @@
               tags-completion-table)
     (etags-select-find (ido-completing-read "Tag: " tag-names))))
 
-(defun ido-go-straight-home ()
+(defun t/ido-go-straight-home ()
   (interactive)
   (cond
    ((looking-back "/") (insert "~/"))
    (:else (call-interactively 'self-insert-command))))
 
-(defun open-in-desktop ()
+(defun t/open-in-desktop ()
   "Show current file in desktop (OS's file manager).
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
 Version 2015-06-12"
@@ -101,7 +101,7 @@ Version 2015-06-12"
    (is-mac (shell-command "open ."))
    (is-linux (shell-command "xdg-open ."))))
 
-(defun open-line-above ()
+(defun t/open-line-above ()
   "Insert a newline above the current line and put point at beginning."
   (interactive)
   (unless (bolp)
@@ -110,38 +110,38 @@ Version 2015-06-12"
   (forward-line -1)
   (indent-according-to-mode))
 
-(defun open-line-below ()
+(defun t/open-line-below ()
   "Insert a newline below the current line and put point at beginning."
   (interactive)
   (unless (eolp)
     (end-of-line))
   (newline-and-indent))
 
-(defun hippie-expand-no-case-fold ()
+(defun t/hippie-expand-no-case-fold ()
   (interactive)
   (let ((case-fold-search nil))
     (hippie-expand nil)))
 
-(defun hippie-expand-lines ()
+(defun t/hippie-expand-lines ()
   (interactive)
   (let ((hippie-expand-try-functions-list '(try-expand-line-all-buffers)))
     (end-of-line)
     (hippie-expand nil)))
 
-(defun duplicate-current-line-or-region (arg)
+(defun t/duplicate-current-line-or-region (arg)
   "Duplicates the current line or region ARG times.
 If there's no region, the current line will be duplicated."
   (interactive "p")
   (if (region-active-p)
       (let ((beg (region-beginning))
             (end (region-end)))
-        (duplicate-region arg beg end)
-        (one-shot-keybinding "d" (λ (duplicate-region 1 beg end))))
-    (duplicate-current-line arg)
-    (one-shot-keybinding "d" 'duplicate-current-line))
+        (t/duplicate-region arg beg end)
+        (one-shot-keybinding "d" (λ (t/duplicate-region 1 beg end))))
+    (t/duplicate-current-line arg)
+    (one-shot-keybinding "d" 't/duplicate-current-line))
   (forward-line 1))
 
-(defun duplicate-region (&optional num start end)
+(defun t/duplicate-region (&optional num start end)
   "Duplicates the region bounded by START and END NUM times.
 If no START and END is provided, the current region-beginning and
 region-end is used."
@@ -154,7 +154,7 @@ region-end is used."
       (dotimes (i num)
         (insert region)))))
 
-(defun duplicate-current-line (&optional num)
+(defun t/duplicate-current-line (&optional num)
   "Duplicate the current line NUM times."
   (interactive "p")
   (save-excursion
@@ -164,12 +164,12 @@ region-end is used."
       (forward-char -1))
     (t/duplicate-region num (point-at-bol) (1+ (point-at-eol)))))
 
-(defun kill-other-buffers ()
+(defun t/kill-other-buffers ()
       "Kill all other buffers."
       (interactive)
       (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
-(defun rename-current-buffer-file ()
+(defun t/rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
   (interactive)
   (let ((name (buffer-name))
@@ -186,7 +186,7 @@ region-end is used."
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
-(defun delete-current-buffer-file ()
+(defun t/delete-current-buffer-file ()
   "Removes file connected to current buffer and kills buffer."
   (interactive)
   (let ((filename (buffer-file-name))
@@ -199,37 +199,37 @@ region-end is used."
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
-(defun paredit-wrap-round-from-behind (ignore)
+(defun t/paredit-wrap-round-from-behind (ignore)
   (interactive)
   (forward-sexp -1)
   (paredit-wrap-round)
   (insert " ")
   (forward-char -1))
 
-(defun untabify-buffer ()
+(defun t/untabify-buffer ()
   "Remove tabs in buffer"
   (interactive)
   (untabify (point-min) (point-max)))
 
-(defun indent-buffer ()
+(defun t/indent-buffer ()
   "Correctly indents a buffer"
   (interactive)
   (indent-region (point-min) (point-max)))
 
-(defun cleanup-buffer-whitespace-and-indent ()
+(defun t/cleanup-buffer-whitespace-and-indent ()
   "Perform a bunch of operations on the whitespace content of a buffer.
 Including indent-buffer, which should not be called automatically on save."
   (interactive)
-  (untabify-buffer)
+  (t/untabify-buffer)
   (ethan-wspace-clean-all)
-  (indent-buffer))
+  (t/indent-buffer))
 
-(defun eval-region-or-last-sexp ()
+(defun t/eval-region-or-last-sexp ()
   (interactive)
   (if (region-active-p) (call-interactively 'eval-region)
     (call-interactively 'eval-last-sexp)))
 
-(defun eval-and-replace ()
+(defun t/eval-and-replace ()
   "Evaluate and replace the preceding sexp with its value."
   (interactive)
   (backward-kill-sexp)
@@ -239,12 +239,12 @@ Including indent-buffer, which should not be called automatically on save."
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 
-(defun join-lines ()
+(defun t/join-lines ()
   "join adjacent lines"
   (interactive)
   (join-line -1))
 
-(defun kill-and-join-forward (&optional arg)
+(defun t/kill-and-join-forward (&optional arg)
   "kills line and joins the next line, without the whitespace"
   (interactive "P")
   (if (and (eolp) (not (bolp)))
@@ -254,17 +254,17 @@ Including indent-buffer, which should not be called automatically on save."
              (kill-line arg))
     (kill-line arg)))
 
-(defun isearch-delete-me ()
+(defun t/isearch-delete-me ()
   (interactive)
   (delete-char (- (length isearch-string)))
   (isearch-exit))
 
-(defun quit-other-window ()
+(defun t/quit-other-window ()
   (interactive)
   (other-window 1)
   (quit-window))
 
-(defun lorem ()
+(defun t/lorem ()
   "Insert a lorem ipsum."
   (interactive)
   (insert "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do "
@@ -275,7 +275,7 @@ Including indent-buffer, which should not be called automatically on save."
           "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in "
           "culpa qui officia deserunt mollit anim id est laborum."))
 
-(defun smart-beginning-of-line ()
+(defun t/smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line."
   (interactive "^")
   (let ((oldpos (point)))
@@ -283,25 +283,25 @@ Including indent-buffer, which should not be called automatically on save."
     (and (= oldpos (point))
          (beginning-of-line))))
 
-(defun sp--create-newline-and-enter-sexp (&rest _ignored)
+(defun t/sp--create-newline-and-enter-sexp (&rest _ignored)
   "Open a new brace or bracket expression, with relevant newlines and indent. thx @bodil"
   (newline)
   (indent-according-to-mode)
   (forward-line -1)
   (indent-according-to-mode))
 
-(defun delete-frame-or-hide-last-remaining-frame ()
+(defun t/delete-frame-or-hide-last-remaining-frame ()
   "Delete the selected frame. If the last one, hide it instead."
   (interactive)
   (condition-case nil
       (delete-frame)
     (error (ns-do-hide-emacs))))
 
-(defun copy-buffer-file-name ()
+(defun t/copy-buffer-file-name ()
   (interactive)
   (add-string-to-kill-ring (file-name-nondirectory (buffer-file-name))))
 
-(defun copy-buffer-file-path ()
+(defun t/copy-buffer-file-path ()
   (interactive)
   (add-string-to-kill-ring (file-relative-name (buffer-file-name) (projectile-project-root))))
 
@@ -310,24 +310,24 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (other-window -1))
 
-(defun prefix-with-leader (key)
+(defun t/prefix-with-leader (key)
   "Prefixes `key' with `leader' and a space, e.g. 'SPC m'"
   (concat leader " " key))
 
-(defun declare-prefix (prefix name &optional key fn &rest bindings)
+(defun t/declare-prefix (prefix name &optional key fn &rest bindings)
   "Declares which-key `prefix' and a display `name' for the prefix.
    Sets up keybindings for the prefix."
-  (which-key-declare-prefixes (prefix-with-leader prefix) name)
+  (which-key-declare-prefixes (t/prefix-with-leader prefix) name)
   (let ((init-prefix prefix))
     (while key
       (evil-leader/set-key (concat init-prefix key) fn)
       (setq key (pop bindings)
             fn (pop bindings)))))
 
-(defun declare-prefix-for-mode (mode prefix name &optional key fn &rest bindings)
+(defun t/declare-prefix-for-mode (mode prefix name &optional key fn &rest bindings)
   "Declares which-key `prefix' and a display `name' for the prefix only in `mode`.
    Sets up keybindings for the prefix."
-  (which-key-declare-prefixes-for-mode mode (prefix-with-leader prefix) name)
+  (which-key-declare-prefixes-for-mode mode (t/prefix-with-leader prefix) name)
   (let ((init-prefix prefix))
     (while key
       (evil-leader/set-key-for-mode mode (concat init-prefix key) fn)
