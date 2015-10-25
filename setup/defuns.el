@@ -336,4 +336,17 @@ Including indent-buffer, which should not be called automatically on save."
       (setq key (pop bindings)
             fn (pop bindings)))))
 
+(defun declare-state (prefix name &optional key fn &rest bindings)
+  (lexical-let* ((keymap (make-sparse-keymap))
+                 (init-prefix prefix))
+    (while key
+      (bind-key key fn keymap)
+      (setq key (pop bindings)
+            fn (pop bindings)))
+    (evil-leader/set-key
+      (concat init-prefix key)
+      (lambda ()
+        (interactive)
+        (set-temporary-overlay-map keymap t)))))
+
 (provide 'defuns)
