@@ -1,13 +1,14 @@
 (use-package evil
   :init
   (progn
+    (setq cursor-color-emacs "tomato2" cursor-color-evil "green3")
     (setq evil-default-state 'normal
           evil-search-module 'evil-search
-          evil-emacs-state-cursor  '("orange" box)
-          evil-normal-state-cursor '("green" box)
-          evil-visual-state-cursor '("green" box)
-          evil-insert-state-cursor '("green" bar)
-          evil-motion-state-cursor '("green" box))
+          evil-emacs-state-cursor  `(,cursor-color-emacs box)
+          evil-normal-state-cursor `(,cursor-color-evil box)
+          evil-visual-state-cursor `(,cursor-color-evil box)
+          evil-insert-state-cursor `(,cursor-color-evil bar)
+          evil-motion-state-cursor `(,cursor-color-evil box))
 
     (setq evil-toggle-key "C-'")
     (bind-key "C-'" 'evil-local-mode))
