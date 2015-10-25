@@ -189,7 +189,7 @@
                 "f" 'helm-find-files
                 "l" 'neotree-find
                 "D" 't/delete-current-buffer-file
-                "o" 'open-in-desktop
+                "o" 't/open-in-desktop
                 "r" 'helm-recentf)
 
 (t/declare-prefix "h" "Help"
