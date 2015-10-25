@@ -123,22 +123,22 @@
   (projectile-global-mode)
   (evil-leader/set-key "t" 'helm-projectile)
   (t/declare-prefix "p" "Project"
-                  "c" 'projectile-switch-project
-                  "d" 'projectile-dired
-                  "k" 'projectile-kill-buffers
-                  "o" 't/open-in-desktop
-                  "R" 'projectile-replace
-                  "s" 'projectile-save-project-buffers)
+                    "c" 'projectile-switch-project
+                    "d" 'projectile-dired
+                    "k" 'projectile-kill-buffers
+                    "o" 't/open-in-desktop
+                    "R" 'projectile-replace
+                    "s" 'projectile-save-project-buffers)
 
   (t/declare-prefix "pr" "Project run"
-                  "a" 'projectile-run-async-shell-command-in-root
-                  "s" 'projectile-run-shell-command-in-root)
+                    "a" 'projectile-run-async-shell-command-in-root
+                    "s" 'projectile-run-shell-command-in-root)
 
   (t/declare-prefix "pf" "Project find"
-                  "d" 'projectile-find-dir
-                  "f" 'projectile-find-file-dwim
-                  "p" 'projectile-find-file-in-known-projects
-                  "t" 'projectile-find-test-file))
+                    "d" 'projectile-find-dir
+                    "f" 'projectile-find-file-dwim
+                    "p" 'projectile-find-file-in-known-projects
+                    "t" 'projectile-find-test-file))
 
 (use-package neotree
   :commands neotree
@@ -180,13 +180,13 @@
   (setq git-gutter+-deleted-sign "- ")
   (global-git-gutter+-mode t)
   (t/declare-prefix "gh" "Hunk"
-                  "n" 'git-gutter+-next-hunk
-                  "N" 'git-gutter+-previous-hunk
-                  "C" 'git-gutter+-stage-and-commit
-                  "=" 'git-gutter+-show-hunk
-                  "r" 'git-gutter+-revert-hunks
-                  "s" 'git-gutter+-stage-hunks
-                  "c" 'git-gutter+-commit)
+                    "n" 'git-gutter+-next-hunk
+                    "N" 'git-gutter+-previous-hunk
+                    "C" 'git-gutter+-stage-and-commit
+                    "=" 'git-gutter+-show-hunk
+                    "r" 'git-gutter+-revert-hunks
+                    "s" 'git-gutter+-stage-hunks
+                    "c" 'git-gutter+-commit)
   (use-package git-gutter-fringe+
     :if has-gui
     :config
@@ -206,38 +206,51 @@
 (use-package gist
   :init
   (t/declare-prefix "gg" "Gist"
-                  "l" 'gist-list
-                  "b" 'gist-buffer
-                  "B" 'gist-buffer-private
-                  "r" 'gist-region
-                  "R" 'gist-region-private))
+                    "l" 'gist-list
+                    "b" 'gist-buffer
+                    "B" 'gist-buffer-private
+                    "r" 'gist-region
+                    "R" 'gist-region-private))
 
 (use-package linum-relative
   :config
   (linum-relative-mode))
 
+(use-package ace-window
+  :init
+  (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)
+        aw-background t)
+  :config
+  (t/declare-prefix "j" "Jump to"
+                    "w" 'ace-window))
+
 (use-package ace-jump-mode
   :init
-  (setq ace-jump-mode-gray-background nil
+  (setq ace-jump-mode-gray-background t
         ace-jump-mode-case-fold t)
-  (t/declare-prefix "j" "Jump"
-                  "j" 'ace-jump-mode
-                  "c" 'ace-jump-char-mode
-                  "l" 'ace-jump-line-mode
-                  "w" 'ace-jump-word-mode))
-
+  (t/declare-prefix "j" "Jump to"
+                    "j" 'ace-jump-mode
+                    "c" 'ace-jump-char-mode
+                    "l" 'ace-jump-line-mode
+                    "W" 'ace-jump-word-mode))
 
 (use-package magit
   :commands magit-status
   :defer t
   :init
   (t/declare-prefix "g" "Git"
-                  "s" 'magit-status
-                  "b" 'magit-blame-mode
-                  "l" 'magit-log
-                  "C" 'magit-commit)
+                    "s" 'magit-status
+                    "b" 'magit-blame
+                    "l" 'magit-log
+                    "C" 'magit-commit)
   :config
   (bind-key "q" #'magit-quit-session magit-status-mode-map)
+
+  (defadvice magit-blame-mode (after switch-to-emacs-mode activate)
+    (if magit-blame-mode
+        (evil-emacs-state 1)
+      (evil-normal-state 1)))
+
   (defadvice magit-status (around magit-fullscreen activate)
     (window-configuration-to-register :magit-fullscreen)
     ad-do-it
@@ -564,10 +577,10 @@
   (set-face-background 'highlight-symbol-face "#333")
   (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
   (t/declare-prefix "h" "Highlight"
-                  ;; leader leader clears all highlights
-                  "h" 'highlight-symbol-at-point
-                  "n" 'highlight-symbol-next
-                  "N" 'highlight-symbol-prev))
+                    ;; leader leader clears all highlights
+                    "h" 'highlight-symbol-at-point
+                    "n" 'highlight-symbol-next
+                    "N" 'highlight-symbol-prev))
 
 (use-package highlight-numbers
   :config
@@ -585,12 +598,12 @@
   (setq geeknote-command "python /usr/local/bin/geeknote")
   :config
   (t/declare-prefix "gn" "Geeknote"
-                  "c" 'geeknote-create
-                  "e" 'geeknote-edit
-                  "f" 'geeknote-find
-                  "s" 'geeknote-show
-                  "r" 'geeknote-remove
-                  "m" 'geeknote-move))
+                    "c" 'geeknote-create
+                    "e" 'geeknote-edit
+                    "f" 'geeknote-find
+                    "s" 'geeknote-show
+                    "r" 'geeknote-remove
+                    "m" 'geeknote-move))
 
 (use-package spotify
   :ensure nil
@@ -598,7 +611,7 @@
   :commands helm-spotify
   :init
   (t/declare-prefix "o" "Other"
-                  "s" 'helm-spotify))
+                    "s" 'helm-spotify))
 
 (require 'setup-shell)
 (require 'setup-org)
