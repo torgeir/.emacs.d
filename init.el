@@ -147,7 +147,6 @@
   (setq neo-window-width 30)
   (setq neo-smart-open nil)
   (when is-mac (setq neo-theme 'nerd))
-  (evil-leader/set-key "fl" 'neotree-find)
   :config
   (add-hook 'neotree-mode-hook
             (lambda ()

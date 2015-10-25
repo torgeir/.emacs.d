@@ -152,6 +152,8 @@
                 "U" 'paradox-upgrade-packages)
 
 (t/declare-prefix "b" "Buffers"
+                "d" 'delete-window
+                "S" 'save-some-buffers
                 "w" 'save-buffer
                 "k" 'kill-this-buffer
                 "K" 'kill-other-buffers
@@ -176,13 +178,10 @@
 
 (t/declare-prefix "f" "Files"
                 "f" 'helm-find-files
+                "l" 'neotree-find
                 "D" 't/delete-current-buffer-file
-                "R" 'revert-buffer
-                "S" 'save-some-buffers
-                "k" 'kill-buffer
                 "o" 'open-in-desktop
-                "r" 'helm-recentf
-                "s" 'save-buffer)
+                "r" 'helm-recentf)
 
 (t/declare-prefix "h" "Help"
                 "K" 'describe-key
