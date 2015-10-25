@@ -147,7 +147,9 @@
                 "b" 'fancy-battery-mode)
 
 (declare-prefix "Ep" "Packages"
-                "i" 'package-install)
+                "i" 'package-install
+                "l" 'paradox-list-packages
+                "U" 'paradox-upgrade-packages)
 
 (declare-prefix "b" "Buffers"
                 "w" 'save-buffer
