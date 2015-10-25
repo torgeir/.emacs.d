@@ -236,7 +236,6 @@
   :defer t)
 
 ;; ligatures
-(require 'cl)
 (defun ligature (tuple)
   "creates ligature"
   (lexical-let ((lexical-tuple tuple))
