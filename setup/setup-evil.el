@@ -84,11 +84,11 @@
 (use-package evil-nerd-commenter
   :config
   (t/declare-prefix "c" "Comments"
-                  "i" 'evilnc-comment-or-uncomment-lines
-                  "c" 'evilnc-comment-or-uncomment-lines
-                  "p" 'evilnc-comment-or-uncomment-paragraphs
-                  "ap" 'evilnc-comment-or-uncomment-paragraphs
-                  "y" 'evilnc-copy-and-comment-lines))
+                    "i" 'evilnc-comment-or-uncomment-lines
+                    "c" 'evilnc-comment-or-uncomment-lines
+                    "p" 'evilnc-comment-or-uncomment-paragraphs
+                    "ap" 'evilnc-comment-or-uncomment-paragraphs
+                    "y" 'evilnc-copy-and-comment-lines))
 
 ;; some emacs stuff is useful, in terminals etc
 ;; http://stackoverflow.com/a/16226006
@@ -143,111 +143,111 @@
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
 
 (t/declare-prefix "E" "Editor"
-                "t" 'load-theme)
+                  "t" 'load-theme)
 
 (t/declare-prefix "T" "Toggle"
-                "l" 'linum-mode
-                "L" 'linum-relative-toggle
-                "b" 'fancy-battery-mode
-                "g" 'git-gutter+-toggle-fringe
-                "r" 'rainbow-mode
-                "p" 'rainbow-delimiters-mode)
+                  "l" 'linum-mode
+                  "L" 'linum-relative-toggle
+                  "b" 'fancy-battery-mode
+                  "g" 'git-gutter+-toggle-fringe
+                  "r" 'rainbow-mode
+                  "p" 'rainbow-delimiters-mode)
 
 (t/declare-prefix "Ep" "Packages"
-                "i" 'package-install
-                "r" 'package-refresh-contents
-                "l" 'paradox-list-packages
-                "U" 'paradox-upgrade-packages)
+                  "i" 'package-install
+                  "r" 'package-refresh-contents
+                  "l" 'paradox-list-packages
+                  "U" 'paradox-upgrade-packages)
 
 (t/declare-prefix "b" "Buffers"
-                "d" 'delete-window
-                "S" 'save-some-buffers
-                "s" 'save-buffer
-                "k" 'kill-this-buffer
-                "t" 'kill-other-buffers
-                "b" 'helm-buffers-list
-                "N" 'previous-buffer
-                "n" 'next-buffer
-                "R" 'revert-buffer)
+                  "d" 'delete-window
+                  "S" 'save-some-buffers
+                  "s" 'save-buffer
+                  "k" 'kill-this-buffer
+                  "t" 'kill-other-buffers
+                  "b" 'helm-buffers-list
+                  "N" 'previous-buffer
+                  "n" 'next-buffer
+                  "R" 'revert-buffer)
 
 (t/declare-prefix "x" "Text manipulation"
-                "a" 'align-regexp
-                "f" 'ido-find-file
-                "k" 'ido-kill-buffer
-                "m" 'helm-M-x
-                "x" 'smex-major-mode-commands)
+                  "a" 'align-regexp
+                  "f" 'ido-find-file
+                  "k" 'ido-kill-buffer
+                  "m" 'helm-M-x
+                  "x" 'smex-major-mode-commands)
 
 (t/declare-prefix "xt" "Transpose"
-                "c" 'transpose-chars
-                "w" 'transpose-words
-                "l" 'transpose-lines
-                "f" 'transpose-frame)
+                  "c" 'transpose-chars
+                  "w" 'transpose-words
+                  "l" 'transpose-lines
+                  "f" 'transpose-frame)
 
 (t/declare-prefix "r" "Registers"
-                "e" 'evil-show-registers)
+                  "e" 'evil-show-registers)
 
 (t/declare-prefix "f" "Files"
-                "f" 'helm-find-files
-                "l" 'neotree-find
-                "D" 't/delete-current-buffer-file
-                "o" 't/open-in-desktop
-                "r" 'helm-recentf)
+                  "f" 'helm-find-files
+                  "l" 'neotree-find
+                  "D" 't/delete-current-buffer-file
+                  "o" 't/open-in-desktop
+                  "r" 'helm-recentf)
 
 (t/declare-prefix "h" "Help"
-                "K" 'describe-key
-                "M" 'describe-minor-mode
-                "b" 'helm-descbinds
-                "f" 'describe-function
-                "k" 'describe-key-briefly
-                "m" 'describe-mode
-                "p" 'describe-package
-                "v" 'describe-variable)
+                  "K" 'describe-key
+                  "M" 'describe-minor-mode
+                  "b" 'helm-descbinds
+                  "f" 'describe-function
+                  "k" 'describe-key-briefly
+                  "m" 'describe-mode
+                  "p" 'describe-package
+                  "v" 'describe-variable)
 
 (t/declare-prefix "ha" "Help apropos"
-                "d" 'apropos-documentation
-                "m" 'apropos-mode
-                "v" 'apropos-variable)
+                  "d" 'apropos-documentation
+                  "m" 'apropos-mode
+                  "v" 'apropos-variable)
 
 (t/declare-prefix "e" "Errors"
-                "c" 'flycheck-clear
-                "p" 'flycheck-previous-error
-                "n" 'flycheck-next-error
-                "l" 'flycheck-list-errors
-                "v" 'flycheck-verify-setup
-                "t" 'flycheck-mode)
+                  "c" 'flycheck-clear
+                  "p" 'flycheck-previous-error
+                  "n" 'flycheck-next-error
+                  "l" 'flycheck-list-errors
+                  "v" 'flycheck-verify-setup
+                  "t" 'flycheck-mode)
 
 (t/declare-prefix "w" "Windows"
-                "n" 'make-frame-command
-                "c" 't/delete-frame-or-hide-last-remaining-frame
-                "d" 'delete-window
-                "t" 'delete-other-windows
-                "o" 't/previous-window
-                "u" 'winner-undo
-                "R" 'winner-redo)
+                  "n" 'make-frame-command
+                  "c" 't/delete-frame-or-hide-last-remaining-frame
+                  "d" 'delete-window
+                  "t" 'delete-other-windows
+                  "o" 't/previous-window
+                  "u" 'winner-undo
+                  "R" 'winner-redo)
 
 (t/declare-prefix "s" "Search"
-                "b" 'helm-ag-buffers
-                "f" 'helm-ag-this-file
-                "p" 'helm-projectile-ag)
+                  "b" 'helm-ag-buffers
+                  "f" 'helm-ag-this-file
+                  "p" 'helm-projectile-ag)
 
 (t/declare-prefix "ss" "Helm Swoop"
-                "a" 'helm-multi-swoop-all
-                "m" 'helm-multi-swoop
-                "s" 'helm-swoop
-                "w" (lambda ()
-                      (interactive)
-                      (setq-local helm-ag-insert-at-point 'word)
-                      (helm-projectile-ag)
-                      (setq-local helm-ag-insert-at-point nil))
-                "W" (lambda ()
-                      (interactive)
-                      (setq-local helm-ag-insert-at-point 'symbol)
-                      (helm-projectile-ag)
-                      (setq-local helm-ag-insert-at-point nil)))
+                  "a" 'helm-multi-swoop-all
+                  "m" 'helm-multi-swoop
+                  "s" 'helm-swoop
+                  "w" (lambda ()
+                        (interactive)
+                        (setq-local helm-ag-insert-at-point 'word)
+                        (helm-projectile-ag)
+                        (setq-local helm-ag-insert-at-point nil))
+                  "W" (lambda ()
+                        (interactive)
+                        (setq-local helm-ag-insert-at-point 'symbol)
+                        (helm-projectile-ag)
+                        (setq-local helm-ag-insert-at-point nil)))
 
 (t/declare-prefix "sw" "Search Web"
-                "g" 'helm-google-suggest
-                "w" 'helm-wikipedia-suggest)
+                  "g" 'helm-google-suggest
+                  "w" 'helm-wikipedia-suggest)
 
 (evil-mode 1)
 
