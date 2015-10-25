@@ -148,6 +148,7 @@
 
 (t/declare-prefix "Ep" "Packages"
                 "i" 'package-install
+                "r" 'package-refresh-contents
                 "l" 'paradox-list-packages
                 "U" 'paradox-upgrade-packages)
 
