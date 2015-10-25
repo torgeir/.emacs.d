@@ -155,6 +155,8 @@
                 (interactive)
                 (neotree-select-up-node)
                 (neotree-select-up-node))
+              (bind-key "n" 'neotree-next-line evil-normal-state-local-map)
+              (bind-key "p" 'neotree-previous-line evil-normal-state-local-map)
               (bind-key "C-n" 'neotree-next-line evil-normal-state-local-map)
               (bind-key "C-p" 'neotree-previous-line evil-normal-state-local-map)
               (bind-key "c" 'neotree-create-node evil-normal-state-local-map)
