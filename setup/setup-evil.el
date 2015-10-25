@@ -213,6 +213,8 @@
                 "d" 'delete-window
                 "t" 'delete-other-windows
                 "o" 't/previous-window
+                "u" 'winner-undo
+                "R" 'winner-redo
                 "h" 'evil-window-left
                 "j" 'evil-window-down
                 "k" 'evil-window-up
