@@ -210,6 +210,9 @@
 (declare-prefix "w" "Windows"
                 "n" 'make-frame-command
                 "c" 'delete-frame-or-hide-last-remaining-frame
+                "d" 'delete-window
+                "t" 'delete-other-windows
+                "o" 't/previous-window
                 "h" 'evil-window-left
                 "j" 'evil-window-down
                 "k" 'evil-window-up

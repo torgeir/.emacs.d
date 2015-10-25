@@ -314,6 +314,11 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (add-string-to-kill-ring (file-relative-name (buffer-file-name) (projectile-project-root))))
 
+(defun t/previous-window ()
+  "Skip back to previous window"
+  (interactive)
+  (other-window -1))
+
 (defun prefix-with-leader (key)
   "Prefixes `key' with `leader' and a space, e.g. 'SPC m'"
   (concat leader " " key))
