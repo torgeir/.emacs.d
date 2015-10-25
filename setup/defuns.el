@@ -162,16 +162,7 @@ region-end is used."
       (goto-char (point-max))
       (newline)
       (forward-char -1))
-    (duplicate-region num (point-at-bol) (1+ (point-at-eol)))))
-
-(defun goto-line-with-feedback ()
-  "Show line numbers temporarily, while prompting for the line number input"
-  (interactive)
-  (unwind-protect
-      (progn
-        (linum-mode 1)
-        (goto-line (read-number "Goto line: ")))
-    (linum-mode -1)))
+    (t/duplicate-region num (point-at-bol) (1+ (point-at-eol)))))
 
 (defun kill-other-buffers ()
       "Kill all other buffers."
