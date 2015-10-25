@@ -222,11 +222,7 @@
                 "t" 'delete-other-windows
                 "o" 't/previous-window
                 "u" 'winner-undo
-                "R" 'winner-redo
-                "h" 'evil-window-left
-                "j" 'evil-window-down
-                "k" 'evil-window-up
-                "l" 'evil-window-right)
+                "R" 'winner-redo)
 
 (t/declare-prefix "s" "Search"
                 "b" 'helm-ag-buffers
