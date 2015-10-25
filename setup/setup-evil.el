@@ -150,8 +150,8 @@
                   "L" 'linum-relative-toggle
                   "b" 'fancy-battery-mode
                   "g" 'git-gutter+-toggle-fringe
-                  "r" 'rainbow-mode
-                  "p" 'rainbow-delimiters-mode)
+                  "c" 'rainbow-mode
+                  "r" 'rainbow-delimiters-mode)
 
 (t/declare-prefix "Ep" "Packages"
                   "i" 'package-install
