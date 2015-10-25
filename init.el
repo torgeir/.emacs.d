@@ -162,6 +162,8 @@
               (bind-key "c" 'neotree-create-node evil-normal-state-local-map)
               (bind-key "r" 'neotree-rename-node evil-normal-state-local-map)
               (bind-key "d" 'neotree-delete-node evil-normal-state-local-map)
+              (bind-key "i" 'neotree-enter-horizontal-split evil-normal-state-local-map)
+              (bind-key "s" 'neotree-enter-vertical-split evil-normal-state-local-map)
               (bind-key "g" 'neotree-refresh evil-normal-state-local-map)
               (bind-key "u" 'neotree-change-root-up evil-normal-state-local-map)
               (bind-key "I" 'neotree-hidden-file-toggle evil-normal-state-local-map)
