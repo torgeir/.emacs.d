@@ -48,6 +48,8 @@
 (use-package s)
 (use-package better-defaults)
 
+(eval-when-compile (require 'cl)) ;; lexical-let
+
 (require 'sane-defaults)
 (require 'defuns)
 (require 'setup-evil)
