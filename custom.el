@@ -4,6 +4,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(linum ((t (:background "#2a2b2e" :foreground "#44505c"))))
+ '(org-checkbox-statistics-todo ((t (:inherit org-todo))) t)
+ '(org-todo ((t (:background "#32322c" :foreground "#dc752f" :weight bold))))
  '(rainbow-delimiters-unmatched-face ((t (:foreground "#e0211d" :overline nil :underline t))))
  '(show-paren-match ((t (:background "#444")))))
 (custom-set-variables
