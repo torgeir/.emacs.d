@@ -110,6 +110,7 @@
   :config
   ;; percentage height
   (setq which-key-side-window-max-height 0.5)
+  (setq which-key-separator " ")
 
   ;; time to wait before display
   (setq which-key-idle-delay 0.2)
