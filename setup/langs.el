@@ -6,7 +6,7 @@
   (when (file-exists-p langs-extra-file)
     (require 'langs-extra langs-extra-file)))
 
-(declare-prefix "m" "Mode")
+(t/declare-prefix "m" "Mode")
 
 (use-package arduino-mode
   :defer t)
