@@ -41,18 +41,43 @@
 (global-set-key (kbd "s->") 'next-multiframe-window)
 (global-set-key (kbd "s-<") 'previous-multiframe-window)
 
-;; font size adjustment
-(global-set-key (kbd "s-+") '(lambda () (interactive) (text-scale-increase 1)))
-(global-set-key (kbd "s--") '(lambda () (interactive) (text-scale-decrease 1)))
-(global-set-key (kbd "s-0") '(lambda () (interactive) (text-scale-adjust "=")))
-
 ;; don't pop up font menu, makes new tab work in iterm2
 (global-set-key (kbd "s-t") '(lambda () (interactive)))
 
 ;; mac friendly font
-(when window-system
-  (setq torgeir/default-font "-apple-Monaco-medium-normal-normal-*-14-*-*-*-m-0-iso10646-1")
-  (set-face-attribute 'default nil :font torgeir/default-font))
+(defun torgeir/reload-font ()
+  (interactive)
+  (when window-system
+    (setq torgeir/default-font (concat "-apple-Monaco-medium-normal-normal-*-"
+                                       (number-to-string torgeir/default-font-size)
+                                       "-*-*-*-m-0-iso10646-1"))
+    (set-face-attribute 'default nil :font torgeir/default-font)))
+(defun torgeir/decrease-font-size ()
+  (interactive)
+  (setq torgeir/default-font-size (- torgeir/default-font-size 1))
+  (torgeir/reload-font))
+(defun torgeir/increase-font-size ()
+  (interactive)
+  (setq torgeir/default-font-size (+ torgeir/default-font-size 1))
+  (torgeir/reload-font))
+(defun torgeir/reset-font-size ()
+  (interactive)
+  (setq torgeir/default-font-size torgeir/initial-font-size)
+  (torgeir/reload-font)
+  (text-scale-set 0))
+
+(setq torgeir/initial-font-size 14)
+(torgeir/reset-font-size)
+
+;; buffer font size adjustment
+(global-set-key (kbd "s-?") '(lambda () (interactive) (text-scale-increase 1)))
+(global-set-key (kbd "s-_") '(lambda () (interactive) (text-scale-decrease 1)))
+(global-set-key (kbd "s-=") '(lambda () (interactive) (text-scale-set 0)))
+
+;; global font size adjustment
+(global-set-key (kbd "s-+") 'torgeir/increase-font-size)
+(global-set-key (kbd "s--") 'torgeir/decrease-font-size)
+(global-set-key (kbd "s-0") 'torgeir/reset-font-size)
 
 ;; trash
 (setq delete-by-moving-to-trash t
