@@ -260,6 +260,8 @@
                "q" (lambda () (interactive)
                      (multiple-cursors-mode 0)))
 
+;; TODO  micro-state.el?
+
 (defvar t/cursors-direction 'down
   "Direction of cursor movement operations.")
 (make-variable-buffer-local 't/cursors-direction)
