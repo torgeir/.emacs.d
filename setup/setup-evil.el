@@ -190,6 +190,7 @@
 (t/declare-prefix "f" "Files"
                   "f" 'helm-find-files
                   "l" 'neotree-find
+                  "g" 'ffap
                   "D" 't/delete-current-buffer-file
                   "o" 't/open-in-desktop
                   "r" 'helm-recentf)
