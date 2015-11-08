@@ -157,10 +157,7 @@
   :config
   (add-hook 'neotree-mode-hook
             (lambda ()
-              (defun neotree-change-root-up ()
-                (interactive)
-                (neotree-select-up-node)
-                (neotree-select-up-node))
+              (defun neotree-change-root-up () (interactive) (neotree-select-up-node))
               (bind-key "n" 'neotree-next-line evil-normal-state-local-map)
               (bind-key "p" 'neotree-previous-line evil-normal-state-local-map)
               (bind-key "C-n" 'neotree-next-line evil-normal-state-local-map)
