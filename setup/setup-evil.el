@@ -162,6 +162,8 @@
 
 (t/declare-prefix "b" "Buffers"
                   "d" 'delete-window
+                  "D" 't/delete-current-buffer-file
+                  "r" 't/rename-current-buffer-file
                   "S" 'save-some-buffers
                   "s" 'save-buffer
                   "k" 'kill-this-buffer
@@ -191,7 +193,6 @@
                   "f" 'helm-find-files
                   "l" 'neotree-find
                   "g" 'ffap
-                  "D" 't/delete-current-buffer-file
                   "o" 't/open-in-desktop
                   "r" 'helm-recentf)
 
