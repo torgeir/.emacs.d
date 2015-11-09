@@ -10,8 +10,8 @@
           evil-insert-state-cursor `(,cursor-color-evil bar)
           evil-motion-state-cursor `(,cursor-color-evil box))
 
-    (setq evil-toggle-key "C-'")
-    (bind-key "C-'" 'evil-local-mode))
+    (setq evil-toggle-key (if is-mac "C-'" "C-'"))
+    (bind-key evil-toggle-key 'evil-local-mode))
 
   :config
   (progn
