@@ -173,6 +173,10 @@
                   "n" 'next-buffer
                   "R" 'revert-buffer)
 
+(t/declare-prefix "d" "Doc"
+                  "d" 'dash-at-point
+                  "s" 'dash-at-point-docset)
+
 (t/declare-prefix "x" "Text manipulation"
                   "a" 'align-regexp
                   "f" 'ido-find-file
