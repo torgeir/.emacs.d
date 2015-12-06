@@ -227,6 +227,7 @@
                   "n" 'make-frame-command
                   "c" 't/delete-frame-or-hide-last-remaining-frame
                   "d" 'delete-window
+                  "k" 'delete-window
                   "t" 'delete-other-windows
                   "o" 't/previous-window
                   "=" 'balance-windows-area
