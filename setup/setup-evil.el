@@ -229,6 +229,7 @@
                   "d" 'delete-window
                   "t" 'delete-other-windows
                   "o" 't/previous-window
+                  "g" 'ffap
                   "u" 'winner-undo
                   "R" 'winner-redo)
 
