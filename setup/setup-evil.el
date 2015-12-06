@@ -20,7 +20,9 @@
                         (special-mode . emacs)
                         (git-rebase-mode . emacs)
                         (flycheck-error-list-mode . emacs)
-                        (diff-mode . emacs)))
+                        (diff-mode . emacs)
+                        (cider-stacktrace-mode . emacs)
+                        (cider-docview-mode . emacs)))
       (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))))
 
 (use-package evil-escape
