@@ -75,6 +75,7 @@
 (use-package evil-paredit
   :config
   (add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
+  (add-hook 'clojure-mode-hook 'evil-paredit-mode)
   ;; evil-surround support
   (add-to-list 'evil-surround-operator-alist '(evil-paredit-change . change))
   (add-to-list 'evil-surround-operator-alist '(evil-paredit-delete . delete)))
