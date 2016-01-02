@@ -235,6 +235,8 @@
                   "t" 'delete-other-windows
                   "o" 't/previous-window
                   "=" 'balance-windows-area
+                  "-" 'evil-window-decrease-width
+                  "+" 'evil-window-increase-width
                   "g" 'ffap
                   "u" 'winner-undo
                   "R" 'winner-redo)
