@@ -21,6 +21,7 @@
                         (git-rebase-mode . emacs)
                         (flycheck-error-list-mode . emacs)
                         (diff-mode . emacs)
+                        (fundamental-mode . emacs)
                         (cider-stacktrace-mode . emacs)
                         (cider-docview-mode . emacs)))
       (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))))
