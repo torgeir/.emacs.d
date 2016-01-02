@@ -546,6 +546,7 @@
   (setq global-auto-revert-non-file-buffers t)
   (setq auto-revert-verbose nil)
   :config
+  (bind-key "C-c C-e" 'dired-toggle-read-only)
   (bind-key "C-x C-j" 'dired-jump)
   (bind-key "C-x M-j" '(lambda () (interactive) (dired-jump 1)))
   (bind-key "u" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
