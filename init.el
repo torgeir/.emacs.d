@@ -574,7 +574,7 @@
   :init
   (setq highlight-symbol-idle-delay 0.2)
   :config
-  (set-face-background 'highlight-symbol-face "#333")
+  (set-face-background 'highlight-symbol-face "#383838")
   (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
   (t/declare-prefix "h" "Highlight"
                     ;; leader leader clears all highlights
