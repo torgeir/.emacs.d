@@ -69,10 +69,6 @@
 ;; 80 char lines
 (setq fill-column 80)
 
-;; save more recent files
-(recentf-mode 1)
-(setq recentf-max-saved-items 50)
-
 ;; undo and redo window config
 (winner-mode 1)
 
@@ -95,6 +91,10 @@
 (setq save-place-forget-unreadable-files nil)
 (setq create-lockfiles nil)
 (setq ido-save-directory-list-file (locate-user-emacs-file ".ido.last"))
+
+;; save more recent files
+(recentf-mode 1)
+(setq recentf-max-saved-items 50)
 
 ;; no cursor in other open windows
 (setq cursor-in-non-selected-windows nil)
