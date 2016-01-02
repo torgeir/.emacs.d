@@ -192,7 +192,46 @@
   :config
   ;; stop nagging about saving
   (defadvice clojure-test-run-tests (before save-first activate) (save-buffer))
-  (defadvice nrepl-load-current-buffer (before save-first activate) (save-buffer)))
+  (defadvice nrepl-load-current-buffer (before save-first activate) (save-buffer))
+  (t/declare-prefix "mr" "Refactor"
+                    ; https://github.com/clojure-emacs/clj-refactor.el/wiki
+                    "?" 'cljr-describe-refactoring
+
+                    "ar" 'cljr-add-require-to-ns
+                    "ap" 'cljr-add-project-dependency
+
+                    "cc" 'cljr-cycle-coll
+                    "ct" 'cljr-cycle-thread
+                    "ci" 'cljr-cycle-if
+
+                    "dk" 'cljr-destructure-keys
+
+                    "ec" 'cljr-extract-constant
+                    "ed" 'cljr-extract-def
+                    "el" 'cljr-expand-let
+                    "ef" 'cljr-extract-function
+
+                    "is" 'cljr-inline-symbol
+                    "il" 'cljr-introduce-let
+
+                    "rr" 'cljr-remove-unused-requires
+                    "rl" 'cljr-remove-let
+                    "rs" 'cljr-rename-symbol
+                    "ru" 'cljr-replace-use
+
+                    "sn" 'cljr-sort-ns
+                    "sp" 'cljr-sort-project-dependencies
+                    "sr" 'cljr-stop-referring
+
+                    "th" 'cljr-thread
+                    "tf" 'cljr-thread-first-all
+                    "tl" 'cljr-thread-last-all
+
+                    "ua" 'cljr-unwind-all
+                    "uw" 'cljr-unwind
+
+                    "ml" 'cljr-move-to-let
+                   ))
 
 
 (use-package clojure-mode-extra-font-locking) ;; more syntax hilighting
