@@ -144,19 +144,19 @@
 (use-package js2-refactor
   :config
   (t/declare-prefix "mr" "Refactor"
-                  "ef" 'js2r-extract-function
-                  "em" 'js2r-extract-method
-                  "ev" 'js2r-extract-var
-                  "ip" 'js2r-introduce-parameter
-                  "iv" 'js2r-inline-var
-                  "rv" 'js2r-rename-var
+                    "ef" 'js2r-extract-function
+                    "em" 'js2r-extract-method
+                    "ev" 'js2r-extract-var
+                    "ip" 'js2r-introduce-parameter
+                    "iv" 'js2r-inline-var
+                    "rv" 'js2r-rename-var
 
-                  "ao" 'js2r-arguments-to-object
-                  "co" 'js2r-contract-object
-                  "eo" 'js2r-expand-object
-                  "lp" 'js2r-localize-parameter
-                  "tf" 'js2r-toggle-function-expression-and-declaration
-                  "vt" 'js2r-var-to-this))
+                    "ao" 'js2r-arguments-to-object
+                    "co" 'js2r-contract-object
+                    "eo" 'js2r-expand-object
+                    "lp" 'js2r-localize-parameter
+                    "tf" 'js2r-toggle-function-expression-and-declaration
+                    "vt" 'js2r-var-to-this))
 
 (use-package json-mode
   :mode "\\.\\(json\\|jshintrc\\|eslintrc\\)$"
@@ -213,25 +213,25 @@
 
 ;; lisp
 (t/declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"
-                         "b" 'eval-buffer
-                         "e" 't/eval-region-or-last-sexp
-                         "f" 'eval-defun
-                         "r" 'eval-region
-                         "R" 't/eval-and-replace)
+                           "b" 'eval-buffer
+                           "e" 't/eval-region-or-last-sexp
+                           "f" 'eval-defun
+                           "r" 'eval-region
+                           "R" 't/eval-and-replace)
 
 (t/declare-prefix-for-mode 'lisp-mode "me" "Evaluate"
-                         "b" 'eval-buffer
-                         "e" 't/eval-region-or-last-sexp
-                         "f" 'eval-defun
-                         "r" 'eval-region
-                         "R" 't/eval-and-replace)
+                           "b" 'eval-buffer
+                           "e" 't/eval-region-or-last-sexp
+                           "f" 'eval-defun
+                           "r" 'eval-region
+                           "R" 't/eval-and-replace)
 
 (t/declare-prefix-for-mode 'emacs-lisp-mode "me" "Evaluate"
-                         "b" 'eval-buffer
-                         "e" 't/eval-region-or-last-sexp
-                         "f" 'eval-defun
-                         "r" 'eval-region
-                         "R" 't/eval-and-replace)
+                           "b" 'eval-buffer
+                           "e" 't/eval-region-or-last-sexp
+                           "f" 'eval-defun
+                           "r" 'eval-region
+                           "R" 't/eval-and-replace)
 
 (use-package cloudformation-mode
   :ensure nil
