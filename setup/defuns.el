@@ -358,4 +358,9 @@ Including indent-buffer, which should not be called automatically on save."
         (interactive)
         (set-temporary-overlay-map keymap t)))))
 
+(defun buffer-mode (buffer-or-string)
+  "Returns the major mode associated with a buffer."
+  (with-current-buffer buffer-or-string
+     major-mode))
+
 (provide 'defuns)
