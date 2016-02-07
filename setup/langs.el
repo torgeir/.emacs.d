@@ -151,197 +151,197 @@
               (setq web-mode-css-indent-offset indent)
               (setq web-mode-code-indent-offset indent))))
 
-  (t/declare-prefix "mr" "Refactor")
+(t/declare-prefix "mr" "Refactor")
 
-  (use-package js2-refactor
-    :commands js2-mode
+(use-package js2-refactor
+  :commands js2-mode
+  :config
+  (t/declare-prefix "mr" "Refactor"
+                    "ef" 'js2r-extract-function
+                    "em" 'js2r-extract-method
+                    "ev" 'js2r-extract-var
+                    "ip" 'js2r-introduce-parameter
+                    "iv" 'js2r-inline-var
+                    "rv" 'js2r-rename-var
+
+                    "ao" 'js2r-arguments-to-object
+                    "co" 'js2r-contract-object
+                    "eo" 'js2r-expand-object
+                    "lp" 'js2r-localize-parameter
+                    "tf" 'js2r-toggle-function-expression-and-declaration
+                    "vt" 'js2r-var-to-this))
+
+(use-package json-mode
+  :mode "\\(json\\|jshintrc\\|eslintrc\\)$"
+  :config
+  (use-package json-reformat
+    :defer t
+    :commands json-reformat))
+
+;; html
+(use-package sgml-mode
+  :ensure nil
+  :init
+  (set (make-local-variable 'sgml-basic-offset) indent-xml)
+
+  :config
+  ;; reindent after deleting tag with C-c DEL
+  (defadvice sgml-delete-tag (after reindent activate)
+    (indent-region (point-min) (point-max)))
+
+  ;; nxml
+  (add-hook 'nxml-mode-hook (setq nxml-child-indent indent-xml)))
+
+(use-package simplezen
+  :config
+  (add-hook 'sgml-mode-hook (lambda ()
+                              "make tab work, first try yasnippet, then simplezen"
+                              (set (make-local-variable 'yas/fallback-behavior)
+                                   '(apply simplezen-expand-or-indent-for-tab))))
+  (bind-key "TAB" 'simplezen-expand-or-indent-for-tab html-mode-map))
+
+(use-package clojure-mode
+  :mode "\\.\\(edn\\|boot\\|clj\\|cljs\\)$"
+  :config
+  ;; stop nagging about saving
+  (defadvice clojure-test-run-tests (before save-first activate) (save-buffer))
+  (defadvice nrepl-load-current-buffer (before save-first activate) (save-buffer))
+
+  (use-package clj-refactor
     :config
-    (t/declare-prefix "mr" "Refactor"
-                      "ef" 'js2r-extract-function
-                      "em" 'js2r-extract-method
-                      "ev" 'js2r-extract-var
-                      "ip" 'js2r-introduce-parameter
-                      "iv" 'js2r-inline-var
-                      "rv" 'js2r-rename-var
-
-                      "ao" 'js2r-arguments-to-object
-                      "co" 'js2r-contract-object
-                      "eo" 'js2r-expand-object
-                      "lp" 'js2r-localize-parameter
-                      "tf" 'js2r-toggle-function-expression-and-declaration
-                      "vt" 'js2r-var-to-this))
-
-  (use-package json-mode
-    :mode "\\(json\\|jshintrc\\|eslintrc\\)$"
-    :config
-    (use-package json-reformat
-      :defer t
-      :commands json-reformat))
-
-  ;; html
-  (use-package sgml-mode
-    :ensure nil
-    :init
-    (set (make-local-variable 'sgml-basic-offset) indent-xml)
-
-    :config
-    ;; reindent after deleting tag with C-c DEL
-    (defadvice sgml-delete-tag (after reindent activate)
-      (indent-region (point-min) (point-max)))
-
-    ;; nxml
-    (add-hook 'nxml-mode-hook (setq nxml-child-indent indent-xml)))
-
-  (use-package simplezen
-    :config
-    (add-hook 'sgml-mode-hook (lambda ()
-                                "make tab work, first try yasnippet, then simplezen"
-                                (set (make-local-variable 'yas/fallback-behavior)
-                                     '(apply simplezen-expand-or-indent-for-tab))))
-    (bind-key "TAB" 'simplezen-expand-or-indent-for-tab html-mode-map))
-
-  (use-package clojure-mode
-    :mode "\\.\\(edn\\|boot\\|clj\\|cljs\\)$"
-    :config
-    ;; stop nagging about saving
-    (defadvice clojure-test-run-tests (before save-first activate) (save-buffer))
-    (defadvice nrepl-load-current-buffer (before save-first activate) (save-buffer))
-
-    (use-package clj-refactor
-      :config
-      (add-hook 'clojure-mode-hook
-                (lambda ()
-                  (clj-refactor-mode 1)
-                  (dolist (mapping '(("maps" . "outpace.util.maps")
-                                     ("seqs" . "outpace.util.seqs")
-                                     ("string" . "clojure.string")
-                                     ("reflect" . "clojure.reflect")
-                                     ("edn" . "clojure.edn")
-                                     ("time" . "clj-time.core")))
-                    (add-to-list 'cljr-magic-require-namespaces mapping t))
-                  (t/declare-prefix "mr" "Refactor"
+    (add-hook 'clojure-mode-hook
+              (lambda ()
+                (clj-refactor-mode 1)
+                (dolist (mapping '(("maps" . "outpace.util.maps")
+                                   ("seqs" . "outpace.util.seqs")
+                                   ("string" . "clojure.string")
+                                   ("reflect" . "clojure.reflect")
+                                   ("edn" . "clojure.edn")
+                                   ("time" . "clj-time.core")))
+                  (add-to-list 'cljr-magic-require-namespaces mapping t))
+                (t/declare-prefix "mr" "Refactor"
                                         ; https://github.com/clojure-emacs/clj-refactor.el/wiki
-                                    "?" 'cljr-describe-refactoring
+                                  "?" 'cljr-describe-refactoring
 
-                                    "ar" 'cljr-add-require-to-ns
-                                    "ap" 'cljr-add-project-dependency
-                                    "am" 'cljr-add-missing-libspec
+                                  "ar" 'cljr-add-require-to-ns
+                                  "ap" 'cljr-add-project-dependency
+                                  "am" 'cljr-add-missing-libspec
 
-                                    "cc" 'cljr-cycle-coll
-                                    "ct" 'cljr-cycle-thread
-                                    "ci" 'cljr-cycle-if
+                                  "cc" 'cljr-cycle-coll
+                                  "ct" 'cljr-cycle-thread
+                                  "ci" 'cljr-cycle-if
 
-                                    "dk" 'cljr-destructure-keys
+                                  "dk" 'cljr-destructure-keys
 
-                                    "ec" 'cljr-extract-constant
-                                    "ed" 'cljr-extract-def
-                                    "el" 'cljr-expand-let
-                                    "ef" 'cljr-extract-function
+                                  "ec" 'cljr-extract-constant
+                                  "ed" 'cljr-extract-def
+                                  "el" 'cljr-expand-let
+                                  "ef" 'cljr-extract-function
 
-                                    "is" 'cljr-inline-symbol
-                                    "in" 'clojure-insert-ns-form
-                                    "un" 'clojure-update-ns
-                                    "il" 'cljr-introduce-let
+                                  "is" 'cljr-inline-symbol
+                                  "in" 'clojure-insert-ns-form
+                                  "un" 'clojure-update-ns
+                                  "il" 'cljr-introduce-let
 
-                                    "rr" 'cljr-remove-unused-requires
-                                    "rl" 'cljr-remove-let
-                                    "rs" 'cljr-rename-symbol
-                                    "ru" 'cljr-replace-use
+                                  "rr" 'cljr-remove-unused-requires
+                                  "rl" 'cljr-remove-let
+                                  "rs" 'cljr-rename-symbol
+                                  "ru" 'cljr-replace-use
 
-                                    "sn" 'cljr-sort-ns
-                                    "sp" 'cljr-sort-project-dependencies
-                                    "sr" 'cljr-stop-referring
+                                  "sn" 'cljr-sort-ns
+                                  "sp" 'cljr-sort-project-dependencies
+                                  "sr" 'cljr-stop-referring
 
-                                    "th" 'cljr-thread
-                                    "tf" 'cljr-thread-first-all
-                                    "tl" 'cljr-thread-last-all
+                                  "th" 'cljr-thread
+                                  "tf" 'cljr-thread-first-all
+                                  "tl" 'cljr-thread-last-all
 
-                                    "ua" 'cljr-unwind-all
-                                    "uw" 'cljr-unwind
+                                  "ua" 'cljr-unwind-all
+                                  "uw" 'cljr-unwind
 
-                                    "ml" 'cljr-move-to-let
-                                    )))))
+                                  "ml" 'cljr-move-to-let
+                                  )))))
 
 
-  (use-package clojure-mode-extra-font-locking) ;; more syntax hilighting
+(use-package clojure-mode-extra-font-locking) ;; more syntax hilighting
 
-  (use-package cider
-    :init
-    ;; go to repl on connect
-    (setq cider-repl-pop-to-buffer-on-connect nil)
-    :config
-    ;; minibuffer doc in repl
-    (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
-    (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
-    (add-hook 'cider-repl-mode-hook 'paredit-mode)
+(use-package cider
+  :init
+  ;; go to repl on connect
+  (setq cider-repl-pop-to-buffer-on-connect nil)
+  :config
+  ;; minibuffer doc in repl
+  (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
+  (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'cider-repl-mode-hook 'paredit-mode)
 
-    ;; match camel-case tokens
-    (add-hook 'clojure-mode-hook 'subword-mode)
-    (add-hook 'clojure-mode-hook 'enable-paredit-mode))
+  ;; match camel-case tokens
+  (add-hook 'clojure-mode-hook 'subword-mode)
+  (add-hook 'clojure-mode-hook 'enable-paredit-mode))
 
-  ;; lisp
-  (t/declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"
-                             "b" 'eval-buffer
-                             "e" 't/eval-region-or-last-sexp
-                             "f" 'eval-defun
-                             "r" 'eval-region
-                             "R" 't/eval-and-replace)
+;; lisp
+(t/declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"
+                           "b" 'eval-buffer
+                           "e" 't/eval-region-or-last-sexp
+                           "f" 'eval-defun
+                           "r" 'eval-region
+                           "R" 't/eval-and-replace)
 
-  (t/declare-prefix-for-mode 'lisp-mode "me" "Evaluate"
-                             "b" 'eval-buffer
-                             "e" 't/eval-region-or-last-sexp
-                             "f" 'eval-defun
-                             "r" 'eval-region
-                             "R" 't/eval-and-replace)
+(t/declare-prefix-for-mode 'lisp-mode "me" "Evaluate"
+                           "b" 'eval-buffer
+                           "e" 't/eval-region-or-last-sexp
+                           "f" 'eval-defun
+                           "r" 'eval-region
+                           "R" 't/eval-and-replace)
 
-  (t/declare-prefix-for-mode 'emacs-lisp-mode "me" "Evaluate"
-                             "b" 'eval-buffer
-                             "e" 't/eval-region-or-last-sexp
-                             "f" 'eval-defun
-                             "r" 'eval-region
-                             "R" 't/eval-and-replace)
+(t/declare-prefix-for-mode 'emacs-lisp-mode "me" "Evaluate"
+                           "b" 'eval-buffer
+                           "e" 't/eval-region-or-last-sexp
+                           "f" 'eval-defun
+                           "r" 'eval-region
+                           "R" 't/eval-and-replace)
 
-  (use-package cloudformation-mode
-    :ensure nil
-    :load-path "site-lisp/cloudformation/"
-    :commands cloudformation-mode
-    :defer t)
+(use-package cloudformation-mode
+  :ensure nil
+  :load-path "site-lisp/cloudformation/"
+  :commands cloudformation-mode
+  :defer t)
 
-  ;; ligatures
-  (defun ligature (tuple)
-    "creates ligature"
-    (lexical-let ((lexical-tuple tuple))
-      (lambda ()
-        (push lexical-tuple prettify-symbols-alist)
-        (prettify-symbols-mode))))
+;; ligatures
+(defun ligature (tuple)
+  "creates ligature"
+  (lexical-let ((lexical-tuple tuple))
+    (lambda ()
+      (push lexical-tuple prettify-symbols-alist)
+      (prettify-symbols-mode))))
 
-  (add-hook 'lisp-mode-hook (ligature '("lambda" . ?l)))
-  (add-hook 'lisp-interaction-mode (ligature '("lambda" . ?l)))
-  (add-hook 'emacs-lisp-mode-hook (ligature '("lambda" . ?l)))
-  (dolist (hook '(js2-mode-hook web-mode-hook))
-    (add-hook hook (ligature '("function" . ?f))))
+(add-hook 'lisp-mode-hook (ligature '("lambda" . ?l)))
+(add-hook 'lisp-interaction-mode (ligature '("lambda" . ?l)))
+(add-hook 'emacs-lisp-mode-hook (ligature '("lambda" . ?l)))
+(dolist (hook '(js2-mode-hook web-mode-hook))
+  (add-hook hook (ligature '("function" . ?f))))
 
-  (defvar mode-line-cleaner-alist
-    `((eldoc-mode . "")
-      (paredit-mode . "")
-      (rainbow-mode . "")
-      (company-mode . "")
-      (yas-minor-mode . "")
-      (undo-tree-mode . "")
-      (evil-escape-mode . "")
-      (ethan-wspace-mode . "")
-      (rainbow-delimiters-mode . "")
-      (linum-relative-mode . "")
-      (html-mode . "html")
-      (js2-mode . "js2")
-      (css-mode . "css")
-      (less-css-mode . "less")
-      (clojure-mode . "clj")
-      (markdown-mode . "md")
-      (emacs-lisp-mode . "el")
-      (python-mode . "python"))
-    "Alist for `t/clean-mode-line'. Modeline replacements")
+(defvar mode-line-cleaner-alist
+  `((eldoc-mode . "")
+    (paredit-mode . "")
+    (rainbow-mode . "")
+    (company-mode . "")
+    (yas-minor-mode . "")
+    (undo-tree-mode . "")
+    (evil-escape-mode . "")
+    (ethan-wspace-mode . "")
+    (rainbow-delimiters-mode . "")
+    (linum-relative-mode . "")
+    (html-mode . "html")
+    (js2-mode . "js2")
+    (css-mode . "css")
+    (less-css-mode . "less")
+    (clojure-mode . "clj")
+    (markdown-mode . "md")
+    (emacs-lisp-mode . "el")
+    (python-mode . "python"))
+  "Alist for `t/clean-mode-line'. Modeline replacements")
 
-  (add-hook 'after-change-major-mode-hook 't/clean-mode-line)
+(add-hook 'after-change-major-mode-hook 't/clean-mode-line)
 
-  (provide 'langs)
+(provide 'langs)
