@@ -21,7 +21,7 @@ var Item = component('Item', function ({item}) {
     // color: item.get('checked') ? 'green' : ''
   };
   return (
-      <label style={style}>
+    <label style={style}>
       <input type="checkbox" onChange={onChecked} checked={item.get('checked')} />
       {item.get('text')}
     </label>
@@ -31,18 +31,15 @@ var Item = component('Item', function ({item}) {
 Item = Item;
 
 var List = component('List', ({items}) =>
-                     <form>
-                     <ul>
-                     {items.toArray().map((item, i) =>
-                                          <li key={i}>
-                                          <Item item={item} />
-                                          </li>
-                                         )}
-                     </ul>
-                     </form>);
+  <form>
+    <ul>
+      {items.toArray().map((item, i) =>
+        <li key={i}>
+          <Item item={item} />
+        </li>
+       )}
+    </ul>
+  </form>);
 
 render();
 data.on('swap', render);
-
-
-
