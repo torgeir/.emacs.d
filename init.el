@@ -627,13 +627,7 @@
   (require 'server)
   (unless (server-running-p) (server-mode)))
 
-(evil-leader/set-key "rq" 'save-buffers-kill-terminal)
-(bind-key "C-x r q" 'save-buffers-kill-terminal)
 (bind-key "C-x C-c" 't/delete-frame-or-hide-last-remaining-frame)
-(eval-after-load "evil"
-  '(progn
-     (defadvice evil-quit (around advice-for-evil-quit activate) (message "really?"))
-     (defadvice evil-quit-all (around advice-for-evil-quit-all activate) (message "really?"))))
 
 (use-package spacemacs-theme
   :init (load-theme 'spacemacs-dark t))
