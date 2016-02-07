@@ -63,7 +63,7 @@
 
 (use-package flycheck-pos-tip
   :defer t
-  :init
+  :config
   (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
 ;; flycheck
