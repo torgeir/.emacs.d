@@ -31,6 +31,7 @@
   (require 'use-package)
   ;; fetch the ones missing
   (setq use-package-always-ensure t))
+(defvar use-package-verbose t)
 (require 'diminish)
 (require 'bind-key)
 
