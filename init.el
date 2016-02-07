@@ -63,8 +63,7 @@
 (use-package paradox
   :commands (paradox-list-packages paradox-upgrade-packages)
   :init
-  (progn
-    (setq paradox-execute-asynchronously t)))
+  (setq paradox-execute-asynchronously t))
 
 (use-package exec-path-from-shell
   :if is-mac
