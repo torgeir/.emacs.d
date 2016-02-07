@@ -6,7 +6,7 @@
   (defvar color-text-active "#666")
 
   (defvar color-red "#f44")
-  (defvar color-orange "#f94")
+  (defvar color-orange "#fa4")
   (defvar color-yellow "#ff4")
   (defvar color-green "#bcba00")
 
