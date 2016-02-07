@@ -70,11 +70,14 @@
   (exec-path-from-shell-initialize))
 
 (use-package rainbow-mode
+  :commands rainbow-mode
+  :defer t
   :config
   (dolist (mode-hook '(prog-mode-hook css-mode-hook html-mode-hook))
     (add-hook mode-hook #'rainbow-mode)))
 
 (use-package rainbow-delimiters
+  :commands rainbow-delimiters-mode
   :defer t
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
@@ -88,6 +91,7 @@
 
 (use-package paredit
   :diminish paredit-mode
+  :commands (enable-paredit-mode evil-paredit-mode)
   :config
   (dolist (mode-hook '(emacs-lisp-mode-hook
                        eval-expression-minibuffer-setup-hook
@@ -95,16 +99,12 @@
                        lisp-mode-hook
                        lisp-interaction-mode-hook
                        scheme-mode-hook))
-    (add-hook mode-hook #'enable-paredit-mode))
+    (add-hook mode-hook #'enable-paredit-mode)
+    (add-hook mode-hook #'evil-paredit-mode))
   (dolist (mode-hook '(emacs-lisp-mode-hook
                        lisp-interaction-mode-hook
                        ielm-mode-hook))
     (add-hook mode-hook 'turn-on-eldoc-mode)))
-
-(use-package anzu
-  :diminish anzu-mode
-  :config
-  (global-anzu-mode))
 
 (use-package which-key
   :diminish which-key-mode
@@ -127,6 +127,7 @@
   :init
   (setq projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
         projectile-completion-system 'helm)
+  :defer 2
   :config
   (projectile-global-mode)
   (evil-leader/set-key "t" 'helm-projectile)
@@ -149,7 +150,6 @@
                     "t" 'projectile-find-test-file))
 
 (use-package neotree
-  :commands neotree
   :bind (([f6] . neotree-toggle))
   :init
   (setq neo-window-width 30)
@@ -178,6 +178,7 @@
 (t/declare-prefix "g" "Git")
 
 (use-package git-gutter+
+  :defer 1
   :diminish git-gutter+-mode
   :config
   (setq git-gutter+-modified-sign "  ")
@@ -191,15 +192,16 @@
                     "=" 'git-gutter+-show-hunk
                     "r" 'git-gutter+-revert-hunks
                     "s" 'git-gutter+-stage-hunks
-                    "c" 'git-gutter+-commit)
-  (use-package git-gutter-fringe+
-    :if has-gui
-    :config
-    (git-gutter+-enable-fringe-display-mode)))
+                    "c" 'git-gutter+-commit))
+
+(use-package git-gutter-fringe+
+  :defer 1
+  :if has-gui
+  :config
+  (git-gutter+-enable-fringe-display-mode))
 
 (use-package git-timemachine
-  :commands git-timemachine
-  :defer t
+  :commands git-timemachine-toggle
   :init
   (evil-leader/set-key "gT" 'git-timemachine-toggle)
   :config
@@ -209,6 +211,7 @@
       (bind-key "C-p" 'git-timemachine-show-previous-revision evil-normal-state-local-map))))
 
 (use-package gist
+  :defer 2
   :init
   (t/declare-prefix "gg" "Gist"
                     "l" 'gist-list
@@ -218,10 +221,12 @@
                     "R" 'gist-region-private))
 
 (use-package linum-relative
+  :commands (linum-relative-mode linum-mode)
   :config
   (linum-relative-mode))
 
 (use-package ace-window
+  :commands ace-window
   :init
   (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)
         aw-background t)
@@ -230,6 +235,7 @@
                     "w" 'ace-window))
 
 (use-package ace-jump-mode
+  :commands (ace-jump-mode ace-jump-char-mode ace-jump-line-mode ace-jump-word-mode)
   :init
   (setq ace-jump-mode-gray-background t
         ace-jump-mode-case-fold t)
@@ -292,6 +298,8 @@
   (smex-initialize))
 
 (use-package company
+  :defer 2
+  :commands global-company-mode
   :init
   (setq company-idle-delay 0.2
         company-tooltip-align-annotations t
@@ -312,25 +320,25 @@
                     (completion-at-point)) company-active-map))
 
 (use-package company-web
-  :defer t
+  :defer 2
   :init
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-web-html)))
 
 (use-package company-ansible
-  :defer t
+  :defer 2
   :init
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-ansible)))
 
 (use-package company-restclient
-  :defer t
+  :defer 2
   :init
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-restclient)))
 
 (use-package company-tern
-  :defer t
+  :defer 2
   :init
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-tern))
@@ -338,13 +346,14 @@
   (setq tern-command (append tern-command '("--no-port-file"))))
 
 (use-package company-emoji
-  :defer t
+  :defer 2
   :init
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-emoji)))
 
 (use-package smartparens
   :diminish smartparens-mode
+  :commands turn-on-smartparens-mode
   :config
   (dolist (hook '(js2-mode-hook
                   js-mode-hook
@@ -437,6 +446,7 @@
     (bind-key "C-w" 'backward-kill-word helm-map)
 
     (use-package helm-ag
+      :commands helm-ag
       :defer t
       :init
       (setq helm-ag-fuzzy-match t
@@ -444,15 +454,18 @@
             helm-ag-edit-save t))
 
     (use-package helm-projectile
+      :commands helm-projectile
       :defer t)
 
     (use-package helm-descbinds
+      :commands helm-descbinds
       :init
       (helm-descbinds-mode))
 
     (use-package helm-swoop)))
 
 (use-package visual-regexp
+  :commands vr/query-replace
   :bind ("M-%" . vr/query-replace))
 
 (use-package dash-at-point
@@ -460,16 +473,19 @@
   :bind ("C-c C-j" . dash-at-point))
 
 (use-package fancy-battery
+  :defer 2
   :if is-mac
   :config (fancy-battery-mode))
 
 (use-package move-text
+  :commands (move-text-up move-text-down)
   :bind (("<C-S-up>" . move-text-up)
          ("<C-S-down>" . move-text-down)))
 
 (use-package multiple-cursors)
 
 (use-package expand-region
+  :commands er/expand-region
   :config
   (bind-key (if is-mac "M-@" "M-'") 'er/expand-region))
 
@@ -527,6 +543,7 @@
   (bind-key "C-a" 'yas/goto-start-of-active-field yas-keymap))
 
 (use-package ag
+  :commands ag
   :config
   (setq ag-reuse-buffers t
         ag-highlight-search t
@@ -588,6 +605,7 @@
   (highlight-numbers-mode))
 
 (use-package restclient
+  :commands restclient-mode
   :mode "\\.http$")
 
 (use-package hackernews

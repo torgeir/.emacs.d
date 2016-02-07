@@ -1,5 +1,6 @@
 (use-package org
   :defer t
+  :commands org-mode
   :config
   '(progn
      ;; use cider instead of slime (default)

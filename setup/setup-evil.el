@@ -339,6 +339,4 @@
         (mc/skip-to-previous-like-this)
         (t/cursors-message "skip"))))
 
-(evil-mode 1)
-
 (provide 'setup-evil)

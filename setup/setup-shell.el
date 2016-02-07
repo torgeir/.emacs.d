@@ -28,6 +28,7 @@
 
 ;; tab-completion
 (use-package shell-command
+  :defer t
   :config
   (shell-command-completion-mode 1))
 
