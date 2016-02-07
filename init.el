@@ -61,6 +61,7 @@
 (require 'setup-evil)
 
 (use-package paradox
+  :commands (paradox-list-packages paradox-upgrade-packages)
   :init
   (progn
     (setq paradox-execute-asynchronously t)))
@@ -93,6 +94,7 @@
 (use-package paredit
   :diminish paredit-mode
   :commands (enable-paredit-mode evil-paredit-mode)
+  :defer 1
   :config
   (dolist (mode-hook '(emacs-lisp-mode-hook
                        eval-expression-minibuffer-setup-hook

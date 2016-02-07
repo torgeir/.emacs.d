@@ -1,5 +1,5 @@
 (use-package org
-  :defer t
+  :defer 2
   :commands org-mode
   :config
   '(progn
