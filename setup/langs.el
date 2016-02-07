@@ -125,15 +125,18 @@
   ;; don't steel keys
   (bind-key "M-j" 'nil js2-mode-map)
   (bind-key "M-." 'nil js2-mode-map)
-  (bind-key "TAB" #'js2-tab-properly js2-mode-map))
+  (bind-key "TAB" #'js2-tab-properly js2-mode-map)
+
+  (t/declare-prefix-for-mode 'js2-mode
+                             "me" "Evaluate"
+                             "b" 't/send-buffer-to-nodejs-repl-process
+                             "r" 't/send-region-to-nodejs-repl-process))
 
 (use-package nodejs-repl
   :commands nodejs-repl
   :defer t
   :config
-  (bind-key "C-x C-e" #'t/send-region-to-nodejs-repl-process js2-mode-map)
-  (evil-leader/set-key-for-mode 'js2-mode
-    "mer" #'t/send-region-to-nodejs-repl-process))
+  (bind-key "C-x C-e" #'t/send-region-to-nodejs-repl-process js2-mode-map))
 
 (use-package web-mode
   :mode "\\.\\(jsx\\)$"

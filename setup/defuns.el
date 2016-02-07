@@ -6,6 +6,11 @@
   (comint-send-region (get-process nodejs-repl-process-name)
                       start end))
 
+(defun t/send-buffer-to-nodejs-repl-process ()
+  "Send buffer to `nodejs-repl process."
+  (interactive)
+  (t/send-region-to-nodejs-repl-process (point-min) (point-max)))
+
 (defun t/clean-mode-line ()
   (interactive)
   (loop for cleaner in mode-line-cleaner-alist
