@@ -30,7 +30,10 @@
 (eval-when-compile
   (require 'use-package)
   ;; fetch the ones missing
-  (setq use-package-always-ensure t))
+  (setq use-package-always-ensure t)
+
+  ;; lexical-let
+  (require 'cl))
 (defvar use-package-verbose t)
 (require 'diminish)
 (require 'bind-key)
@@ -53,8 +56,6 @@
 (use-package dash)
 (use-package s)
 (use-package better-defaults)
-
-(eval-when-compile (require 'cl)) ;; lexical-let
 
 (require 'defuns)
 (require 'sane-defaults)
