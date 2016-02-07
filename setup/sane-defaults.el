@@ -33,6 +33,9 @@
 ;; no splash
 (setq inhibit-startup-message t)
 
+;; remove menu
+(menu-bar-mode -1)
+
 ;; show empty lines after buffer end
 (set-default 'indicate-empty-lines t)
 
