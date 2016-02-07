@@ -648,8 +648,15 @@
 
 (bind-key "C-x C-c" 't/delete-frame-or-hide-last-remaining-frame)
 
-(use-package spacemacs-theme
-  :init (load-theme 'spacemacs-dark t))
+(if (daemonp)
+    (add-hook 'after-make-frame-functions
+              (lambda (frame)
+                (with-selected-frame frame
+                  (load-theme 'spacemacs-dark t)
+                  (torgeir/reset-font-size))))
+  (load-theme 'spacemacs-dark t))
+
+(evil-mode 1)
 
 ;; custom-settings in separate file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
