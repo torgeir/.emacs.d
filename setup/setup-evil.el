@@ -172,7 +172,7 @@
                   "s" 'save-buffer
                   "k" 'kill-this-buffer
                   "K" 'kill-other-buffers
-                  "b" 'helm-buffers-list
+                  "b" 'helm-mini
                   "N" 'previous-buffer
                   "n" 'next-buffer
                   "R" 'revert-buffer)
