@@ -26,16 +26,11 @@ Install from cygwin or https://ftp.gnu.org/gnu/emacs/windows/. Win gnu emacs see
 
 ### emacsclient - terminal and gui
 
-Keep emacs alive
-
-`launchctl load torgeir.emacs.plist`
-
-Use these aliases for both terminal and gui emacsen
+In a folder on your `PATH`:
 
 ```
-alias e="emacsclient -n -a /Users/torgeir/Applications/Emacs.app/Contents/MacOS/Emacs" # no wait, gui
-alias em="emacsclient -nw -a /Users/torgeir/Applications/Emacs.app/Contents/MacOS/Emacs" # frame in current terminal
-alias emn="emacsclient -n -c -a /Users/torgeir/Applications/Emacs.app/Contents/MacOS/Emacs" # no wait, new frame, gui
+ln -s emacsclient e
+ln -s emacsclient-terminal em
 ```
 
 ### deps
