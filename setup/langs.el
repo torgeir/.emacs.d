@@ -193,45 +193,61 @@
   ;; stop nagging about saving
   (defadvice clojure-test-run-tests (before save-first activate) (save-buffer))
   (defadvice nrepl-load-current-buffer (before save-first activate) (save-buffer))
-  (t/declare-prefix "mr" "Refactor"
-                    ; https://github.com/clojure-emacs/clj-refactor.el/wiki
-                    "?" 'cljr-describe-refactoring
 
-                    "ar" 'cljr-add-require-to-ns
-                    "ap" 'cljr-add-project-dependency
+  (use-package clj-refactor
+    :config
+    (add-hook 'clojure-mode-hook
+              (lambda ()
+                (clj-refactor-mode 1)
+                (dolist (mapping '(("maps" . "outpace.util.maps")
+                                   ("seqs" . "outpace.util.seqs")
+                                   ("string" . "clojure.string")
+                                   ("reflect" . "clojure.reflect")
+                                   ("edn" . "clojure.edn")
+                                   ("time" . "clj-time.core")))
+                  (add-to-list 'cljr-magic-require-namespaces mapping t))
+                (t/declare-prefix "mr" "Refactor"
+                                        ; https://github.com/clojure-emacs/clj-refactor.el/wiki
+                                  "?" 'cljr-describe-refactoring
 
-                    "cc" 'cljr-cycle-coll
-                    "ct" 'cljr-cycle-thread
-                    "ci" 'cljr-cycle-if
+                                  "ar" 'cljr-add-require-to-ns
+                                  "ap" 'cljr-add-project-dependency
+                                  "am" 'cljr-add-missing-libspec
 
-                    "dk" 'cljr-destructure-keys
+                                  "cc" 'cljr-cycle-coll
+                                  "ct" 'cljr-cycle-thread
+                                  "ci" 'cljr-cycle-if
 
-                    "ec" 'cljr-extract-constant
-                    "ed" 'cljr-extract-def
-                    "el" 'cljr-expand-let
-                    "ef" 'cljr-extract-function
+                                  "dk" 'cljr-destructure-keys
 
-                    "is" 'cljr-inline-symbol
-                    "il" 'cljr-introduce-let
+                                  "ec" 'cljr-extract-constant
+                                  "ed" 'cljr-extract-def
+                                  "el" 'cljr-expand-let
+                                  "ef" 'cljr-extract-function
 
-                    "rr" 'cljr-remove-unused-requires
-                    "rl" 'cljr-remove-let
-                    "rs" 'cljr-rename-symbol
-                    "ru" 'cljr-replace-use
+                                  "is" 'cljr-inline-symbol
+                                  "in" 'clojure-insert-ns-form
+                                  "un" 'clojure-update-ns
+                                  "il" 'cljr-introduce-let
 
-                    "sn" 'cljr-sort-ns
-                    "sp" 'cljr-sort-project-dependencies
-                    "sr" 'cljr-stop-referring
+                                  "rr" 'cljr-remove-unused-requires
+                                  "rl" 'cljr-remove-let
+                                  "rs" 'cljr-rename-symbol
+                                  "ru" 'cljr-replace-use
 
-                    "th" 'cljr-thread
-                    "tf" 'cljr-thread-first-all
-                    "tl" 'cljr-thread-last-all
+                                  "sn" 'cljr-sort-ns
+                                  "sp" 'cljr-sort-project-dependencies
+                                  "sr" 'cljr-stop-referring
 
-                    "ua" 'cljr-unwind-all
-                    "uw" 'cljr-unwind
+                                  "th" 'cljr-thread
+                                  "tf" 'cljr-thread-first-all
+                                  "tl" 'cljr-thread-last-all
 
-                    "ml" 'cljr-move-to-let
-                   ))
+                                  "ua" 'cljr-unwind-all
+                                  "uw" 'cljr-unwind
+
+                                  "ml" 'cljr-move-to-let
+                                  )))))
 
 
 (use-package clojure-mode-extra-font-locking) ;; more syntax hilighting
