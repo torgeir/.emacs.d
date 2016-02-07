@@ -35,9 +35,10 @@
 (require 'diminish)
 (require 'bind-key)
 
-(use-package benchmark-init
-  :if nil
-  :ensure nil)
+;; ;; benchmarks
+;; (use-package benchmark-init
+;;   :if t
+;;   :config (benchmark-init/activate))
 
 ;; packages
 
@@ -661,3 +662,7 @@
 ;; custom-settings in separate file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
+
+;; ;; benchmarks
+;; (benchmark-init/show-durations-tabulated)
+;; (benchmark-init/show-durations-tree)
