@@ -179,9 +179,9 @@ region-end is used."
     (t/duplicate-region num (point-at-bol) (1+ (point-at-eol)))))
 
 (defun t/kill-other-buffers ()
-      "Kill all other buffers."
-      (interactive)
-      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+  "Kill all other buffers."
+  (interactive)
+  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
 (defun t/rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
@@ -366,6 +366,6 @@ Including indent-buffer, which should not be called automatically on save."
 (defun buffer-mode (buffer-or-string)
   "Returns the major mode associated with a buffer."
   (with-current-buffer buffer-or-string
-     major-mode))
+    major-mode))
 
 (provide 'defuns)
