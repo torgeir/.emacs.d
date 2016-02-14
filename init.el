@@ -584,6 +584,14 @@
 (use-package fill-column-indicator
   :defer t)
 
+;; Enforce proper whitespace
+(use-package ethan-wspace
+  :init
+  (setq mode-require-final-newline nil)
+  (setq require-final-newline nil)
+  :config
+  (global-ethan-wspace-mode 1))
+
 (use-package highlight-escape-sequences
   :config
   (put 'hes-escape-backslash-face 'face-alias 'font-lock-comment-face)

@@ -130,12 +130,4 @@
 ;; one space between sentences
 (setq sentence-end-double-space nil)
 
-;; Enforce proper whitespace
-(use-package ethan-wspace
-  :init
-  (setq mode-require-final-newline nil)
-  (setq require-final-newline nil)
-  :config
-  (global-ethan-wspace-mode 1))
-
 (provide 'sane-defaults)
