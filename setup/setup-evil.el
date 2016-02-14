@@ -43,11 +43,9 @@
   (global-evil-matchit-mode 1))
 
 (use-package evil-leader
-  :init
-  (global-evil-leader-mode)
   :config
   (progn
-
+    (global-evil-leader-mode)
     (evil-leader/set-leader leader)
 
     (defun clear-all-highlights ()
