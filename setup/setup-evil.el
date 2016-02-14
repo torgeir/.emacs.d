@@ -65,9 +65,8 @@
     (bind-key (kbd "Y") 'spacemacs/evil-yank-to-end-of-line evil-motion-state-map)))
 
 (use-package evil-surround
-  :init
-  (global-evil-surround-mode 1)
   :config
+  (global-evil-surround-mode 1)
   ;; the opposite of vim, like spacemacs
   (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
   (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region))
