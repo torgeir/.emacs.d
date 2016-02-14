@@ -29,6 +29,7 @@
 (use-package evil-escape
   :init
   (setq-default evil-escape-key-sequence "jk")
+  (setq-default evil-escape-delay 0.08)
   (evil-escape-mode))
 
 (use-package evil-numbers
