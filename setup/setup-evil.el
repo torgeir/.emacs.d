@@ -87,7 +87,6 @@
 (use-package evil-nerd-commenter
   :config
   (t/declare-prefix "c" "Comments"
-                    "i" 'evilnc-comment-or-uncomment-lines
                     "c" 'evilnc-comment-or-uncomment-lines
                     "p" 'evilnc-comment-or-uncomment-paragraphs
                     "ap" 'evilnc-comment-or-uncomment-paragraphs
