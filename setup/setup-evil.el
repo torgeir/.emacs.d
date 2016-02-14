@@ -129,11 +129,11 @@
 (bind-key "C-a" 't/smart-beginning-of-line evil-motion-state-map)
 
 ;; cycle after pasting with p
-(bind-key "\M-y" 'evil-paste-pop evil-normal-state-map)
-(bind-key "\M-y" 'evil-paste-pop evil-visual-state-map)
+(bind-key "C-y" 'evil-paste-pop evil-normal-state-map)
+(bind-key "C-y" 'evil-paste-pop evil-visual-state-map)
 ;; show kill ring when not in insert mode, where c-y repeats text from above line
-(bind-key "C-y" 'helm-show-kill-ring evil-normal-state-map)
-(bind-key "C-y" 'helm-show-kill-ring evil-visual-state-map)
+(bind-key "\M-y" 'helm-show-kill-ring evil-normal-state-map)
+(bind-key "\M-y" 'helm-show-kill-ring evil-visual-state-map)
 
 ;;; esc ought to quit
 (bind-key [escape] 'keyboard-quit evil-normal-state-map)
