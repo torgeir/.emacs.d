@@ -151,7 +151,7 @@
                   "l" 'linum-mode
                   "L" 'linum-relative-toggle
                   "b" 'fancy-battery-mode
-                  "g" 'git-gutter+-toggle-fringe
+                  "g" 'git-gutter+-mode
                   "c" 'rainbow-mode
                   "r" 'rainbow-delimiters-mode)
 
