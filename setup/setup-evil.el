@@ -192,7 +192,7 @@
                   "f" 'transpose-frame)
 
 (t/declare-prefix "r" "Registers"
-                  "e" 'evil-show-registers)
+                  "r" 'evil-show-registers)
 
 (t/declare-prefix "f" "Files"
                   "f" 'helm-find-files
