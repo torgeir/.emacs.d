@@ -237,14 +237,12 @@
                   "R" 'winner-redo)
 
 (t/declare-prefix "s" "Search"
+                  "s" 'helm-swoop
                   "b" 'helm-ag-buffers
                   "f" 'helm-ag-this-file
-                  "p" 'helm-projectile-ag)
-
-(t/declare-prefix "ss" "Helm Swoop"
+                  "p" 'helm-projectile-ag
                   "a" 'helm-multi-swoop-all
                   "m" 'helm-multi-swoop
-                  "s" 'helm-swoop
                   "w" (lambda ()
                         (interactive)
                         (setq-local helm-ag-insert-at-point 'word)
@@ -256,7 +254,7 @@
                         (helm-projectile-ag)
                         (setq-local helm-ag-insert-at-point nil)))
 
-(t/declare-prefix "sw" "Search Web"
+(t/declare-prefix "si" "Search Internet"
                   "g" 'helm-google-suggest
                   "w" 'helm-wikipedia-suggest)
 
