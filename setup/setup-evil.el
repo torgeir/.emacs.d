@@ -226,7 +226,7 @@
 
 (t/declare-prefix "w" "Windows"
                   "n" 'make-frame-command
-                  "c" 't/delete-frame-or-hide-last-remaining-frame
+                  "K" 't/delete-frame-or-hide-last-remaining-frame
                   "k" 'delete-window
                   "t" 'delete-other-windows
                   "o" 't/previous-window
