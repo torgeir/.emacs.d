@@ -488,7 +488,6 @@
 (use-package multiple-cursors)
 
 (use-package expand-region
-  :commands er/expand-region
   :config
   (bind-key (if is-mac "M-@" "M-'") 'er/expand-region))
 
