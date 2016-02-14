@@ -489,7 +489,8 @@
 
 (use-package expand-region
   :config
-  (bind-key (if is-mac "M-@" "M-'") 'er/expand-region))
+  (bind-key (if is-mac "M-@" "M-'") 'er/expand-region)
+  (bind-key (if is-mac "M-*" "M-§") 'er/contract-region))
 
 (use-package transpose-frame
   :commands transpose-frame)
