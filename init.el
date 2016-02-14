@@ -663,8 +663,7 @@
     (add-hook 'after-make-frame-functions
               (lambda (frame)
                 (with-selected-frame frame
-                  (load-theme 'spacemacs-dark t)
-                  (torgeir/reset-font-size))))
+                  (load-theme 'spacemacs-dark t))))
   (load-theme 'spacemacs-dark t))
 
 (evil-mode 1)
