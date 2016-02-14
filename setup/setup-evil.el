@@ -233,7 +233,6 @@
                   "=" 'balance-windows-area
                   "-" 'evil-window-decrease-width
                   "+" 'evil-window-increase-width
-                  "g" 'ffap
                   "u" 'winner-undo
                   "R" 'winner-redo)
 
