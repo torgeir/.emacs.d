@@ -259,12 +259,22 @@
                   "w" 'helm-wikipedia-suggest)
 
 (t/declare-state "mc" "Multiple Cursors state"
+                 "in" 'mc/insert-numbers
+                 "il" 'mc/insert-letters
+                 "l" 'mc/edit-lines
+                 "d" 'mc/mark-all-like-this-dwim
+                 "m" 'mc/mark-all-dwim
                  "j" #'t/cursor-down
                  "J" #'t/cursor-down-skip
                  "K" #'t/cursor-up-skip
                  "k" #'t/cursor-up
+                 "p" 'mc/cycle-backward
+                 "n" 'mc/cycle-forward
                  "u" #'t/cursor-unmark
                  "q" (lambda () (interactive)
-                       (multiple-cursors-mode 0)))
+                       (multiple-cursors-mode 0)
+                       (keyboard-quit)))
+
+(global-set-key [M-S-down-mouse-1] 'mc/add-cursor-on-click)
 
 (provide 'setup-evil)
