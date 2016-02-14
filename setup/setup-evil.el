@@ -260,78 +260,12 @@
                   "g" 'helm-google-suggest
                   "w" 'helm-wikipedia-suggest)
 
-(declare-state "mc" "Multiple Cursors state"
-               "j" #'t/cursor-down
-               "J" #'t/cursor-down-skip
-               "K" #'t/cursor-up-skip
-               "k" #'t/cursor-up
-               "q" (lambda () (interactive)
-                     (multiple-cursors-mode 0)))
-
-;; TODO  micro-state.el?
-
-(defvar t/cursors-direction 'down
-  "Direction of cursor movement operations.")
-(make-variable-buffer-local 't/cursors-direction)
-
-(defun t/cursors-direction-is-up ()
-  "Returns t if the current cursor movement direction is 'up."
-  (eq t/cursors-direction 'up))
-(defun t/cursors-direction-is-down ()
-  "Returns t if the current cursor movement direction is 'down."
-  (eq t/cursors-direction 'down))
-
-(defun t/cursors-message (str)
-  "Print message with added `str' and cursor direction."
-  (message (concat "cursor " str ": " (symbol-name t/cursors-direction))))
-
-(defun t/cursor-down ()
-  "Marks `next-like-this' if the `t/cursors-direction' is 'down.
-   Sets `t/cursors-direction' to 'down if `t/cursors-direction' is 'up."
-  (interactive)
-  (if (t/cursors-direction-is-down)
-      (progn
-        (mc/mark-next-like-this 1)
-        (t/cursors-message "mark"))
-    (progn
-      (setq t/cursors-direction 'down)
-      (t/cursors-message "direction"))))
-
-(defun t/cursor-up ()
-  "Marks `previous-like-this' if the `t/cursors-direction' is 'up.
-   Sets `t/cursors-direction' to 'up if `t/cursors-direction' is 'down."
-  (interactive)
-  (if (t/cursors-direction-is-up)
-      (progn
-        (mc/mark-previous-like-this 1)
-        (t/cursors-message "mark"))
-    (progn
-      (setq t/cursors-direction 'up)
-      (t/cursors-message "direction"))))
-
-
-(defun t/cursor-down-skip ()
-  "Skips to `next-like-this' if `t/cursors-direction' is 'down.
-   Unmarks `previous-like-this' if `t/cursors-direction' is 'up"
-  (interactive)
-  (if (t/cursors-direction-is-up)
-      (progn
-        (mc/unmark-previous-like-this)
-        (t/cursors-message "unmark"))
-      (progn
-        (mc/skip-to-next-like-this)
-        (t/cursors-message "skip"))))
-
-(defun t/cursor-up-skip ()
-  "Skips to `previous-like-this' if `t/cursors-direction' is 'up.
-   Unmarks `next-like-this' if `t/cursors-direction' is 'down"
-  (interactive)
-  (if (t/cursors-direction-is-down)
-      (progn
-        (mc/unmark-next-like-this)
-        (t/cursors-message "unmark"))
-      (progn
-        (mc/skip-to-previous-like-this)
-        (t/cursors-message "skip"))))
+(t/declare-state "mc" "Multiple Cursors state"
+                 "j" #'t/cursor-down
+                 "J" #'t/cursor-down-skip
+                 "K" #'t/cursor-up-skip
+                 "k" #'t/cursor-up
+                 "q" (lambda () (interactive)
+                       (multiple-cursors-mode 0)))
 
 (provide 'setup-evil)
