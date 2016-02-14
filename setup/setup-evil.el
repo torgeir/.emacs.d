@@ -263,6 +263,7 @@
                  "J" #'t/cursor-down-skip
                  "K" #'t/cursor-up-skip
                  "k" #'t/cursor-up
+                 "u" #'t/cursor-unmark
                  "q" (lambda () (interactive)
                        (multiple-cursors-mode 0)))
 

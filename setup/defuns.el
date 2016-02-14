@@ -384,6 +384,17 @@ Including indent-buffer, which should not be called automatically on save."
   "Print message with added `str' and cursor direction."
   (message (concat "cursor " str ": " (symbol-name t/cursors-direction))))
 
+(defun t/cursor-unmark ()
+  ""
+  (interactive)
+  (if (t/cursors-direction-is-down)
+      (progn
+        (mc/unmark-next-like-this)
+        (t/cursors-message "unmark"))
+    (progn
+      (mc/unmark-previous-like-this)
+      (t/cursors-message "unmark"))))
+
 (defun t/cursor-down ()
   "Marks `next-like-this' if the `t/cursors-direction' is 'down.
    Sets `t/cursors-direction' to 'down if `t/cursors-direction' is 'up."
@@ -417,9 +428,9 @@ Including indent-buffer, which should not be called automatically on save."
       (progn
         (mc/unmark-previous-like-this)
         (t/cursors-message "unmark"))
-      (progn
-        (mc/skip-to-next-like-this)
-        (t/cursors-message "skip"))))
+    (progn
+      (mc/skip-to-next-like-this)
+      (t/cursors-message "skip"))))
 
 (defun t/cursor-up-skip ()
   "Skips to `previous-like-this' if `t/cursors-direction' is 'up.
@@ -429,8 +440,8 @@ Including indent-buffer, which should not be called automatically on save."
       (progn
         (mc/unmark-next-like-this)
         (t/cursors-message "unmark"))
-      (progn
-        (mc/skip-to-previous-like-this)
-        (t/cursors-message "skip"))))
+    (progn
+      (mc/skip-to-previous-like-this)
+      (t/cursors-message "skip"))))
 
 (provide 'defuns)
