@@ -147,6 +147,12 @@
 (t/declare-prefix "E" "Editor"
                   "t" 'load-theme)
 
+(t/declare-prefix "Ep" "Packages"
+                  "i" 'package-install
+                  "r" 'package-refresh-contents
+                  "l" 'paradox-list-packages
+                  "U" 'paradox-upgrade-packages)
+
 (t/declare-prefix "T" "Toggle"
                   "l" 'linum-mode
                   "L" 'linum-relative-toggle
@@ -154,12 +160,6 @@
                   "g" 'git-gutter+-mode
                   "c" 'rainbow-mode
                   "r" 'rainbow-delimiters-mode)
-
-(t/declare-prefix "Ep" "Packages"
-                  "i" 'package-install
-                  "r" 'package-refresh-contents
-                  "l" 'paradox-list-packages
-                  "U" 'paradox-upgrade-packages)
 
 (t/declare-prefix "b" "Buffers"
                   "d" 'delete-window
