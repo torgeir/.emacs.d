@@ -1,6 +1,6 @@
 (setq initial-frame-alist '((top . 25) (left . 80) (width . 140) (height . 38)))
 
-;; paste copies to os
+;; cut copies to os
 (setq interprogram-cut-function #'copy-to-clipboard)
 
 ;; update screen immediately
