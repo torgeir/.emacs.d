@@ -58,6 +58,12 @@
   :config
   (bind-key "M-k" 't/css-kill-value css-mode-map))
 
+(use-package sh-script
+  :mode ("\\.sh\\'" . sh-mode)
+  :init
+  (setq sh-indentation 2
+        sh-basic-offset 2))
+
 ;; flycheck
 (use-package flycheck
   :defer t
