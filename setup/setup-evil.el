@@ -203,6 +203,10 @@
                   "o" 't/open-in-desktop
                   "r" 'helm-recentf)
 
+(t/declare-prefix "fd" "Directories"
+                  "j" '(lambda () (interactive) (dired-jump 1))
+                  "J" 'dired-jump)
+
 (t/declare-prefix "h" "Help"
                   "K" 'describe-key
                   "M" 'describe-minor-mode
