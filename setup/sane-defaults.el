@@ -29,6 +29,7 @@
 
 ;; show parens
 (show-paren-mode t)
+(setq show-paren-delay 0)
 
 ;; no splash
 (setq inhibit-startup-message t)
