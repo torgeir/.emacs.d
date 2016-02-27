@@ -164,8 +164,12 @@
 (use-package neotree
   :bind (([f6] . neotree-toggle))
   :init
-  (setq neo-window-width 30)
-  (setq neo-smart-open nil)
+  (setq neo-window-width 30
+        neo-smart-open nil
+        neo-create-file-auto-open t
+        neo-show-updir-line nil
+        neo-dont-be-alone t
+        neo-auto-indent-point t)
   (when is-mac (setq neo-theme 'nerd))
   :config
   (add-hook 'neotree-mode-hook
