@@ -65,9 +65,6 @@
 ;; 80 char lines
 (setq fill-column 80)
 
-;; undo and redo window config
-(winner-mode 1)
-
 ;; above what sizes can the window split
 (setq split-height-threshold 40
       split-width-threshold 40)
@@ -99,9 +96,9 @@
 ;; no cursor in other open windows
 (setq cursor-in-non-selected-windows nil)
 
-(when (fboundp 'winner-mode)
-  ;; c-c <left> goes to previous window configuration
-  (winner-mode 1))
+(use-package winner
+  :ensure nil
+  :config (winner-mode 1))
 
 ;; add dirs to buffer names when not unique
 (use-package uniquify
