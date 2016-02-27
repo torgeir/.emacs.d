@@ -444,4 +444,14 @@ Including indent-buffer, which should not be called automatically on save."
       (mc/skip-to-previous-like-this)
       (t/cursors-message "skip"))))
 
+(defun t/split-window-right-and-move-there-dammit ()
+  (interactive)
+  (split-window-right)
+  (windmove-right))
+
+(defun t/split-window-below-and-move-there-dammit ()
+  (interactive)
+  (split-window-below)
+  (windmove-down))
+
 (provide 'defuns)

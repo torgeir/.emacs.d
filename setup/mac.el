@@ -40,6 +40,12 @@
 ;; ;; os x window movement
 (global-set-key (kbd "s->") 'next-multiframe-window)
 (global-set-key (kbd "s-<") 'previous-multiframe-window)
+(global-set-key (kbd "M-s-<up>") 'windmove-up)
+(global-set-key (kbd "M-s-<right>") 'windmove-right)
+(global-set-key (kbd "M-s-<down>") 'windmove-down)
+(global-set-key (kbd "M-s-<left>") 'windmove-left)
+(global-set-key (kbd "s-d") 't/split-window-right-and-move-there-dammit)
+(global-set-key (kbd "s-D") 't/split-window-below-and-move-there-dammit)
 
 ;; don't pop up font menu, makes new tab work in iterm2
 (global-set-key (kbd "s-t") '(lambda () (interactive)))
