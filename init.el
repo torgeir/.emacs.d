@@ -576,7 +576,7 @@
   (setq auto-revert-verbose nil
         global-auto-revert-non-file-buffers t)
   :config
-  (global-auto-revert-mode)
+  (global-auto-revert-mode 1)
   (when is-mac
     ;; file notifications aren't supported on os x
     (setq auto-revert-use-notify nil)))
