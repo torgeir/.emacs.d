@@ -115,6 +115,15 @@
   ;; percentage height
   (setq which-key-side-window-max-height 0.5)
   (setq which-key-separator " ")
+  (setq which-key-key-replacement-alist
+   '(("<\\([[:alnum:]-]+\\)>" . "\\1")
+     ("up"                    . "↑")
+     ("right"                 . "→")
+     ("down"                  . "↓")
+     ("left"                  . "←")
+     ("DEL"                   . "⌫")
+     ("deletechar"            . "⌦")
+     ("RET"                   . "⏎")))
 
   ;; time to wait before display
   (setq which-key-idle-delay 0.4)
