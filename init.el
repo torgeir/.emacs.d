@@ -676,6 +676,12 @@
   (t/declare-prefix "o" "Other"
                     "s" 'helm-spotify))
 
+(use-package calendar
+  :init
+  (setq calendar-week-start-day 1)
+  (t/declare-prefix "o" "Other"
+                    "c" 'calendar))
+
 (require 'setup-shell)
 (require 'setup-org)
 (require 'setup-powerline)
