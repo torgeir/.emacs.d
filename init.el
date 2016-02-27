@@ -459,6 +459,8 @@
   :config
   (progn
 
+    (add-hook 'helm-before-initialize-hook 'neotree-hide)
+
     (bind-key "C-w" 'backward-kill-word helm-map)
 
     (use-package helm-ag
