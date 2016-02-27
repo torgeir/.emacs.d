@@ -26,6 +26,8 @@
                         (cider-docview-mode . emacs)))
       (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))))
 
+(use-package evil-anzu)
+
 (use-package evil-escape
   :init
   (setq-default evil-escape-key-sequence "jk")
