@@ -583,6 +583,9 @@
   :init
   (put 'dired-find-alternate-file 'disabled nil)
   (setq wdired-allow-to-change-permissions t)
+  (setq dired-auto-revert-buffer t
+        dired-listing-switches "-alhF"
+        dired-ls-F-marks-symlinks "@")
   :config
   (bind-key "C-c C-e" 'dired-toggle-read-only)
   (bind-key "C-x C-j" 'dired-jump)
