@@ -117,7 +117,7 @@
   (setq which-key-separator " ")
 
   ;; time to wait before display
-  (setq which-key-idle-delay 0.2)
+  (setq which-key-idle-delay 0.4)
   (which-key-mode nil)
   (which-key-mode))
 
