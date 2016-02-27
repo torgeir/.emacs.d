@@ -89,8 +89,12 @@
 (setq ido-save-directory-list-file (locate-user-emacs-file ".ido.last"))
 
 ;; save more recent files
-(recentf-mode 1)
-(setq recentf-max-saved-items 50)
+(use-package recentf
+  :init
+  (setq recentf-max-saved-items 200
+        recentf-auto-cleanup 300)
+  :config
+  (recentf-mode 1))
 
 ;; no cursor in other open windows
 (setq cursor-in-non-selected-windows nil)
