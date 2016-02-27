@@ -104,7 +104,9 @@
   (winner-mode 1))
 
 ;; add dirs to buffer names when not unique
-(setq uniquify-buffer-name-style 'forward)
+(use-package uniquify
+  :init
+  (setq uniquify-buffer-name-style 'forward))
 
 ;; mouse, with scroll
 (xterm-mouse-mode t)
