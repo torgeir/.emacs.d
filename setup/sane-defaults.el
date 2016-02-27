@@ -105,6 +105,7 @@
 
 ;; add dirs to buffer names when not unique
 (use-package uniquify
+  :ensure nil
   :init
   (setq uniquify-buffer-name-style 'forward))
 
