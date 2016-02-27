@@ -197,7 +197,7 @@
   :defer 1
   :diminish git-gutter+-mode
   :config
-  (setq git-gutter+-modified-sign "  ")
+  (setq git-gutter+-modified-sign "~ ")
   (setq git-gutter+-added-sign "+ ")
   (setq git-gutter+-deleted-sign "- ")
   (global-git-gutter+-mode t)
