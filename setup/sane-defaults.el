@@ -59,13 +59,6 @@
 ;; Don't truncate lines
 (setq truncate-partial-width-windows nil)
 
-;; reflect file system
-(global-auto-revert-mode 1)
-
-;; silenced refresh of dired
-(setq global-auto-revert-non-file-buffers t)
-(setq auto-revert-verbose nil)
-
 ;; remove selected text when typing
 (delete-selection-mode 1)
 

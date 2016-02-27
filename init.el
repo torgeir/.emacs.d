@@ -557,15 +557,23 @@
 (use-package wgrep-ag
   :defer t)
 
+(use-package autorevert
+  :init
+  ;; silenced refresh of dired
+  (setq auto-revert-verbose nil
+        global-auto-revert-non-file-buffers t)
+  :config
+  (global-auto-revert-mode)
+  (when is-mac
+    ;; file notifications aren't supported on os x
+    (setq auto-revert-use-notify nil)))
+
 (use-package dired
   :ensure nil
   :commands dired-jump
   :init
   (put 'dired-find-alternate-file 'disabled nil)
   (setq wdired-allow-to-change-permissions t)
-  ;; auto-refresh, silently
-  (setq global-auto-revert-non-file-buffers t)
-  (setq auto-revert-verbose nil)
   :config
   (bind-key "C-c C-e" 'dired-toggle-read-only)
   (bind-key "C-x C-j" 'dired-jump)
