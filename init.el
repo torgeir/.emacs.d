@@ -639,7 +639,7 @@
 
 (use-package highlight-numbers
   :config
-  (highlight-numbers-mode))
+  (highlight-numbers-mode 1))
 
 (use-package restclient
   :commands restclient-mode
