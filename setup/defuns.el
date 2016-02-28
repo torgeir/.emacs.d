@@ -454,4 +454,28 @@ Including indent-buffer, which should not be called automatically on save."
   (split-window-below)
   (windmove-down))
 
+(defun t/decrease-frame-width ()
+  "Decrease emacs frame size horizontally"
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-width frame (- (frame-width frame) 4))))
+
+(defun t/increase-frame-width ()
+  "Increase emacs frame size horizontally"
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-width frame (+ (frame-width frame) 4))))
+
+(defun t/decrease-frame-height ()
+  "Decrease emacs frame size vertically"
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-height frame (- (frame-height frame) 2))))
+
+(defun t/increase-frame-height ()
+  "Increase emacs frame size vertically"
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-height frame (+ (frame-height frame) 2))))
+
 (provide 'defuns)

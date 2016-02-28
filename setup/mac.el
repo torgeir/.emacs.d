@@ -46,6 +46,10 @@
 (global-set-key (kbd "M-s-<left>") 'windmove-left)
 (global-set-key (kbd "s-d") 't/split-window-right-and-move-there-dammit)
 (global-set-key (kbd "s-D") 't/split-window-below-and-move-there-dammit)
+(global-set-key (kbd "C-s-<right>") 't/increase-frame-width)
+(global-set-key (kbd "C-s-<left>") 't/decrease-frame-width)
+(global-set-key (kbd "C-s-<down>") 't/increase-frame-height)
+(global-set-key (kbd "C-s-<up>") 't/decrease-frame-height)
 
 ;; don't pop up font menu, makes new tab work in iterm2
 (global-set-key (kbd "s-t") '(lambda () (interactive)))
