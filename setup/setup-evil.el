@@ -212,6 +212,7 @@
                   "J" 'dired-jump)
 
 (t/declare-prefix "h" "Help"
+                  "a" 'helm-apropos
                   "K" 'describe-key
                   "M" 'describe-minor-mode
                   "b" 'helm-descbinds
@@ -220,11 +221,6 @@
                   "m" 'describe-mode
                   "p" 'describe-package
                   "v" 'describe-variable)
-
-(t/declare-prefix "ha" "Help apropos"
-                  "d" 'apropos-documentation
-                  "m" 'apropos-mode
-                  "v" 'apropos-variable)
 
 (t/declare-prefix "e" "Errors"
                   "c" 'flycheck-clear
