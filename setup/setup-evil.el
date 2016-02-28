@@ -244,7 +244,7 @@
                   "r" 'transpose-frame)
 
 (t/declare-prefix "s" "Search"
-                  "s" 'helm-swoop
+                  "s" 'helm-swoop-same-face-at-point
                   "b" 'helm-ag-buffers
                   "f" 'helm-ag-this-file
                   "p" 'helm-projectile-ag
