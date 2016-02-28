@@ -207,6 +207,7 @@
                     "n" 'git-gutter+-next-hunk
                     "N" 'git-gutter+-previous-hunk
                     "C" 'git-gutter+-stage-and-commit
+                    "?" 'git-gutter+-show-hunk-inline-at-point
                     "=" 'git-gutter+-show-hunk
                     "r" 'git-gutter+-revert-hunks
                     "s" 'git-gutter+-stage-hunks
