@@ -478,6 +478,7 @@
       :defer t
       :init
       (setq helm-ag-fuzzy-match t
+            helm-ag-insert-at-point 'symbol
             ;; save edited buffers on completion
             helm-ag-edit-save t))
 
