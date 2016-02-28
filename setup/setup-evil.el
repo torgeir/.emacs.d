@@ -18,6 +18,7 @@
     (dolist (mode-map '((help-mode . emacs)
                         (compilation-mode . emacs)
                         (special-mode . emacs)
+                        (calendar-mode . emacs)
                         (git-rebase-mode . emacs)
                         (flycheck-error-list-mode . emacs)
                         (diff-mode . emacs)
