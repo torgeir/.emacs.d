@@ -1,7 +1,7 @@
 (use-package evil
   :init
   (progn
-    (setq cursor-color-emacs "tomato2" cursor-color-evil "green3")
+    (setq cursor-color-emacs "DarkOrange" cursor-color-evil "green3")
     (setq evil-default-state 'normal
           evil-search-module 'evil-search
           evil-emacs-state-cursor  `(,cursor-color-emacs box)
