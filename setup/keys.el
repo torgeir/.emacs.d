@@ -47,6 +47,6 @@
 ;; completion
 (bind-key "C-." 't/hippie-expand-no-case-fold)
 (bind-key "C-," 'completion-at-point)
-(bind-key "C-S-." 't/hippie-expand-lines)
+(bind-key "C-:" 't/hippie-expand-lines)
 
 (provide 'keys)
