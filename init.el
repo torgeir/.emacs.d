@@ -213,6 +213,12 @@
                     "s" 'git-gutter+-stage-hunks
                     "c" 'git-gutter+-commit))
 
+(use-package git-gutter-fringe+
+  :defer 1
+  :if has-gui
+  :config
+  (git-gutter+-enable-fringe-display-mode))
+
 (use-package helm-open-github
   :config
   (t/declare-prefix "go" "Open github"
@@ -220,12 +226,6 @@
                     "c" 'helm-open-github-from-commit
                     "f" 'helm-open-github-from-file
                     "p" 'helm-open-github-from-pull-requests))
-
-(use-package git-gutter-fringe+
-  :defer 1
-  :if has-gui
-  :config
-  (git-gutter+-enable-fringe-display-mode))
 
 (use-package git-timemachine
   :commands git-timemachine-toggle
