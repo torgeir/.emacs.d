@@ -144,6 +144,7 @@
   (projectile-global-mode)
   (evil-leader/set-key "t" 'helm-projectile)
   (t/declare-prefix "p" "Project"
+                    "b" 'helm-browse-project
                     "c" 'projectile-switch-project
                     "d" 'projectile-dired
                     "k" 'projectile-kill-buffers
