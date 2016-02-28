@@ -192,7 +192,10 @@
                   "c" 'transpose-chars
                   "w" 'transpose-words
                   "l" 'transpose-lines
-                  "f" 'transpose-frame)
+                  "f" 'transpose-frame
+                  "s" 'transpose-sexps
+                  "S" 'transpose-sentences
+                  "p" 'transpose-paragraphs)
 
 (t/declare-prefix "r" "Registers"
                   "r" 'evil-show-registers)
