@@ -240,7 +240,8 @@
                   "-" 'evil-window-decrease-width
                   "+" 'evil-window-increase-width
                   "u" 'winner-undo
-                  "R" 'winner-redo)
+                  "R" 'winner-redo
+                  "r" 'transpose-frame)
 
 (t/declare-prefix "s" "Search"
                   "s" 'helm-swoop
