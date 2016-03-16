@@ -227,6 +227,13 @@
                     "f" 'helm-open-github-from-file
                     "p" 'helm-open-github-from-pull-requests))
 
+(use-package git-link
+  :init
+  (setq git-link-open-in-browser t)
+  :config
+  (t/declare-prefix "go" "Open github"
+                    "l" 'git-link))
+
 (use-package git-timemachine
   :commands git-timemachine-toggle
   :init
