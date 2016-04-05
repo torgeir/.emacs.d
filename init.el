@@ -540,7 +540,6 @@
 
 (use-package yasnippet
   :diminish yas-minor-mode
-  :defer t
   :init
   ;; use custom snippets
   (setq yas-snippet-dirs '(dir-snippets))
