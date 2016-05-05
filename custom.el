@@ -17,5 +17,6 @@
  '(custom-safe-themes
    (quote
     ("badc4f9ae3ee82a5ca711f3fd48c3f49ebe20e6303bba1912d4e2d19dd60ec98" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "5d1434865473463d79ee0523c1ae60ecb731ab8d134a2e6f25c17a2b497dd459" default)))
+ '(magit-log-arguments (quote ("--graph" "--color" "--decorate" "-n256")))
  '(magit-pull-arguments nil)
  '(paradox-github-token t))
