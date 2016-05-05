@@ -591,11 +591,12 @@
 
 (use-package autorevert
   :init
+  (setq auto-revert-interval 1)
   ;; silenced refresh of dired
   (setq auto-revert-verbose nil
         global-auto-revert-non-file-buffers t)
   :config
-  (global-auto-revert-mode 1)
+  (global-auto-revert-mode)
   (when is-mac
     ;; file notifications aren't supported on os x
     (setq auto-revert-use-notify nil)))
