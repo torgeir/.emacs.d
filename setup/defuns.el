@@ -478,4 +478,13 @@ Including indent-buffer, which should not be called automatically on save."
   (let ((frame (selected-frame)))
     (set-frame-height frame (+ (frame-height frame) 2))))
 
+(defun config-reload () (interactive) (load-file "~/.emacs.d/init.el"))
+(defun config-edit-init () (interactive) (find-file "~/.emacs.d/init.el"))
+(defun config-edit-sane-defaults () (interactive) (find-file "~/.emacs.d/setup/sane-defaults.el"))
+(defun config-edit-defuns () (interactive) (find-file "~/.emacs.d/setup/defuns.el"))
+(defun config-edit-keys () (interactive) (find-file "~/.emacs.d/setup/keys.el"))
+(defun config-edit-mac () (interactive) (find-file "~/.emacs.d/setup/mac.el"))
+(defun config-edit-langs () (interactive) (find-file "~/.emacs.d/setup/langs.el"))
+(defun config-edit-snippets () (interactive) (find-file "~/.emacs.d/snippets/"))
+
 (provide 'defuns)

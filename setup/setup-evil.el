@@ -156,6 +156,16 @@
                   "l" 'paradox-list-packages
                   "U" 'paradox-upgrade-packages)
 
+(t/declare-prefix "Ec" "Edit config"
+                "R" 'config-reload
+                "i" 'config-edit-init
+                "d" 'config-edit-sane-defaults
+                "f" 'config-edit-defuns
+                "k" 'config-edit-keys
+                "m" 'config-edit-mac
+                "l" 'config-edit-langs
+                "s" 'config-edit-snippets)
+
 (t/declare-prefix "T" "Toggle"
                   "l" 'linum-mode
                   "L" 'linum-relative-toggle
