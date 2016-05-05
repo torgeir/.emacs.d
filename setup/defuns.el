@@ -487,4 +487,11 @@ Including indent-buffer, which should not be called automatically on save."
 (defun config-edit-langs () (interactive) (find-file "~/.emacs.d/setup/langs.el"))
 (defun config-edit-snippets () (interactive) (find-file "~/.emacs.d/snippets/"))
 
+(defmacro t/macro-helm-ag-insert (thing fn)
+  `(lambda ()
+    (interactive)
+    (setq-local helm-ag-insert-at-point ,thing)
+    (,fn)
+    (setq-local helm-ag-insert-at-point nil)))
+
 (provide 'defuns)
