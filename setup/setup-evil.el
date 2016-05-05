@@ -157,14 +157,14 @@
                   "U" 'paradox-upgrade-packages)
 
 (t/declare-prefix "Ec" "Edit config"
-                "R" 'config-reload
-                "i" 'config-edit-init
-                "d" 'config-edit-sane-defaults
-                "f" 'config-edit-defuns
-                "k" 'config-edit-keys
-                "m" 'config-edit-mac
-                "l" 'config-edit-langs
-                "s" 'config-edit-snippets)
+                  "R" 'config-reload
+                  "i" 'config-edit-init
+                  "d" 'config-edit-sane-defaults
+                  "f" 'config-edit-defuns
+                  "k" 'config-edit-keys
+                  "m" 'config-edit-mac
+                  "l" 'config-edit-langs
+                  "s" 'config-edit-snippets)
 
 (t/declare-prefix "T" "Toggle"
                   "l" 'linum-mode
@@ -176,13 +176,11 @@
 
 (t/declare-prefix "b" "Buffers"
                   "d" 'delete-window
-                  "D" 't/delete-current-buffer-file
-                  "r" 't/rename-current-buffer-file
                   "S" 'save-some-buffers
                   "s" 'save-buffer
                   "k" 'kill-this-buffer
                   "K" 'kill-other-buffers
-                  "b" 'helm-mini
+                  "b" 'helm-buffers-list
                   "N" 'previous-buffer
                   "n" 'next-buffer
                   "R" 'revert-buffer)
