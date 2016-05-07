@@ -253,21 +253,13 @@
 
 (t/declare-prefix "s" "Search"
                   "s" 'helm-swoop-same-face-at-point
-                  "b" 'helm-ag-buffers
-                  "f" 'helm-ag-this-file
+                  "b" (t/macro-helm-ag-insert 'word helm-ag-buffers)
+                  "f" (t/macro-helm-ag-insert 'word helm-ag-this-file)
                   "p" 'helm-projectile-ag
                   "a" 'helm-multi-swoop-all
                   "m" 'helm-multi-swoop
-                  "w" (lambda ()
-                        (interactive)
-                        (setq-local helm-ag-insert-at-point 'word)
-                        (helm-projectile-ag)
-                        (setq-local helm-ag-insert-at-point nil))
-                  "W" (lambda ()
-                        (interactive)
-                        (setq-local helm-ag-insert-at-point 'symbol)
-                        (helm-projectile-ag)
-                        (setq-local helm-ag-insert-at-point nil)))
+                  "w" (t/macro-helm-ag-insert 'word helm-projectile-ag)
+                  "W" (t/macro-helm-ag-insert 'symbol helm-projectile-ag))
 
 (t/declare-prefix "si" "Search Internet"
                   "g" 'helm-google-suggest
