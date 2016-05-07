@@ -44,6 +44,7 @@
 ;;   :config (benchmark-init/activate))
 
 ;; packages
+(use-package spacemacs-theme)
 
 (setq is-mac (equal system-type 'darwin))
 (setq is-cygwin (equal system-type 'cygwin))
@@ -82,6 +83,7 @@
   (which-key-mode))
 
 (require 'setup-evil)
+(evil-mode 1)
 
 (use-package paradox
   :commands (paradox-list-packages paradox-upgrade-packages)
@@ -695,8 +697,6 @@
   (t/declare-prefix "o" "Other"
                     "c" 'calendar))
 
-(use-package spacemacs-theme)
-
 (require 'setup-shell)
 (require 'setup-org)
 (require 'setup-powerline)
@@ -705,11 +705,6 @@
 (require 'langs)
 (when is-mac (require 'mac))
 (when is-cygwin (require 'cygwin))
-
-(when (or is-cygwin
-          (display-graphic-p))
-  (require 'server)
-  (unless (server-running-p) (server-mode)))
 
 (bind-key "C-x C-c" 't/delete-frame-or-hide-last-remaining-frame)
 
@@ -720,8 +715,6 @@
                   (load-theme 'spacemacs-dark t))))
   (load-theme 'spacemacs-dark t))
 
-(evil-mode 1)
-
 ;; custom-settings in separate file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
@@ -729,3 +722,8 @@
 ;; ;; benchmarks
 ;; (benchmark-init/show-durations-tabulated)
 ;; (benchmark-init/show-durations-tree)
+
+(when (or is-cygwin
+          (display-graphic-p))
+  (require 'server)
+  (unless (server-running-p) (server-mode)))
