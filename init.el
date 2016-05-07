@@ -59,6 +59,28 @@
 
 (require 'defuns)
 (require 'sane-defaults)
+
+(use-package which-key
+  :diminish which-key-mode
+  :config
+  ;; percentage height
+  (setq which-key-side-window-max-height 0.5)
+  (setq which-key-separator " ")
+  (setq which-key-key-replacement-alist
+        '(("<\\([[:alnum:]-]+\\)>" . "\\1")
+          ("up"                    . "↑")
+          ("right"                 . "→")
+          ("down"                  . "↓")
+          ("left"                  . "←")
+          ("DEL"                   . "⌫")
+          ("deletechar"            . "⌦")
+          ("RET"                   . "⏎")))
+
+  ;; time to wait before display
+  (setq which-key-idle-delay 0.4)
+  (which-key-mode nil)
+  (which-key-mode))
+
 (require 'setup-evil)
 
 (use-package paradox
@@ -108,27 +130,6 @@
                        lisp-interaction-mode-hook
                        ielm-mode-hook))
     (add-hook mode-hook 'turn-on-eldoc-mode)))
-
-(use-package which-key
-  :diminish which-key-mode
-  :config
-  ;; percentage height
-  (setq which-key-side-window-max-height 0.5)
-  (setq which-key-separator " ")
-  (setq which-key-key-replacement-alist
-        '(("<\\([[:alnum:]-]+\\)>" . "\\1")
-          ("up"                    . "↑")
-          ("right"                 . "→")
-          ("down"                  . "↓")
-          ("left"                  . "←")
-          ("DEL"                   . "⌫")
-          ("deletechar"            . "⌦")
-          ("RET"                   . "⏎")))
-
-  ;; time to wait before display
-  (setq which-key-idle-delay 0.4)
-  (which-key-mode nil)
-  (which-key-mode))
 
 (use-package subword
   :defer t
@@ -692,6 +693,8 @@
   (setq calendar-week-start-day 1)
   (t/declare-prefix "o" "Other"
                     "c" 'calendar))
+
+(use-package spacemacs-theme)
 
 (require 'setup-shell)
 (require 'setup-org)
