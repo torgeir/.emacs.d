@@ -375,9 +375,10 @@
 (use-package company-tern
   :defer 2
   :init
-  (setq tern-command (append tern-command '("--no-port-file")))
   (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-tern)))
+    (add-to-list 'company-backends 'company-tern))
+  :config
+  (setq tern-command (append tern-command '("--no-port-file"))))
 
 (use-package company-emoji
   :defer 2
