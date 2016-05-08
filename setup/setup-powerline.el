@@ -1,23 +1,9 @@
-
 (use-package powerline
   :config
-  (defvar color-bg "#333")
-  (defvar color-text-inactive "#444")
-  (defvar color-text-active "#666")
-
   (defvar color-red "#f44")
   (defvar color-orange "#fa4")
   (defvar color-yellow "#ff4")
-  (defvar color-green "#bcba00")
-
-  (defface powerline-active `((t (:foreground ,color-text-active :background ,color-bg :weight bold :inherit mode-line)))
-    "Powerline face 0." :group 'powerline)
-  (defface powerline-inactive `((t (:foreground ,color-text-inactive :background ,color-bg :weight bold :inherit mode-line-inactive)))
-    "Powerline face 0." :group 'powerline)
-  (defface powerline-active-blue `((t (:foreground "#98bcbd" :background ,color-bg :weight normal :inherit mode-line)))
-    "Powerline face 0." :group 'powerline)
-  (defface powerline-active-green `((t (:foreground ,color-green :background ,color-bg :weight bold :inherit mode-line)))
-    "Powerline face 1." :group 'powerline)
+  (defvar color-green "#acfa00")
 
   (defun powerline-flycheck-status ()
     (require 'flycheck)
@@ -33,62 +19,66 @@
                            (t powerline-flycheck-success-face))
                      'r)))
 
-  (defun powerline-theme ()
-    "Customisation of the default powerline theme"
+  (defun evil-state-name ()
+    ;; default to "emacs" if evil is not loaded
+    (let ((evil-state-name (if (and (boundp 'evil-state)
+                                    evil-state)
+                               (symbol-name evil-state)
+                             "e")))
+      (capitalize (substring evil-state-name 0 1))))
+
+  (defface powerline-active-blue `((t (:foreground "#98bcbd" :weight normal :inherit powerline-active1)))
+    "Custom highlight color used for some parts of the powerline" :group 'powerline)
+
+  (defun t/git-branch ()
+    (let ((has-git (vc-backend (buffer-file-name (current-buffer)))))
+      (when has-git
+        (let ((branch (vc-working-revision (buffer-file-name (current-buffer)))))
+          (powerline-raw branch face-blue 'l)))))
+
+  (defun t/create-powerline ()
+    '("%e"
+      (:eval
+       (let* ((active (powerline-selected-window-active))
+              (face-grey  (if active 'powerline-active1      'powerline-inactive1))
+              (face-blue  (if active 'powerline-active-blue  'powerline-inactive1))
+
+              (lhs (list
+                    (powerline-raw (format " %s" (evil-state-name)) face-blue)
+                    (powerline-raw "%*%*" face-grey 'l)
+                    (powerline-buffer-id face-grey 'l)
+                    (when (not is-cygwin) (powerline-raw (t/git-branch) face-blue 'l))
+                    (when (and (boundp 'which-function-mode) which-function-mode) (powerline-raw which-func-format face-grey 'l))
+                    ))
+
+              (rhs (list
+
+                    (powerline-raw global-mode-string face-grey 'r)
+                    (powerline-major-mode             face-grey 'l)
+                    (powerline-process                face-grey 'l)
+                    (powerline-minor-modes            face-grey 'l)
+                    (powerline-narrow                 face-grey 'l)
+
+                    (powerline-raw " "   face-grey)
+                    (powerline-raw "%l " face-grey)
+                    (powerline-raw ": "  face-grey)
+                    (powerline-raw "%c " face-grey)
+
+                    (powerline-flycheck-status)
+                    (powerline-hud 'cursor face-grey 1)
+                    )))
+
+         (concat (powerline-render lhs)
+                 (powerline-fill face-grey (powerline-width rhs))
+                 (powerline-render rhs))))))
+
+  (defun t/update-powerline ()
+    "powerline theme"
     (interactive)
+    (setq mode-line-format nil)
+    (setq mode-line-format (t/create-powerline))
+    (force-mode-line-update 1))
 
-    (setq-default mode-line-format
-                  '("%e"
-                    (:eval
-                     (let* (
-                            (active (powerline-selected-window-active))
-                            (mode-line (if active 'mode-line 'mode-line-inactive))
-                            (face-grey (if active 'powerline-active 'powerline-inactive))
-                            (face-blue (if active 'powerline-active-blue 'powerline-inactive))
-                            (face-green (if active 'powerline-active-green 'powerline-inactive))
-                            (evil-state-name (if (and (boundp 'evil-state)
-                                                      evil-state)
-                                                 (symbol-name evil-state) "emacs")) ;; default to "emacs" if evil is not loaded
-                            (evil-state-name-short (capitalize (substring evil-state-name 0 1)))
-                            (separator-left
-                             (intern (format "powerline-%s-%s"
-                                             powerline-default-separator
-                                             (car powerline-default-separator-dir))))
-                            (separator-right
-                             (intern (format "powerline-%s-%s"
-                                             powerline-default-separator
-                                             (cdr powerline-default-separator-dir))))
-                            (lhs (list
-                                  (when (not (string-equal "emacs" evil-state-name))
-                                    (powerline-raw (concat " " evil-state-name-short) face-blue))
-                                  (powerline-raw "%*%*" face-grey 'l)
-                                  (powerline-buffer-id face-green 'l)
-                                  (when (and (boundp 'which-func-mode) which-func-mode)
-                                    (powerline-raw which-func-format face-grey 'l))
-                                  (when (boundp 'erc-modified-channels-object)
-                                    (powerline-raw erc-modified-channels-object face-grey 'l))))
-                            (rhs (list
-                                  (when (not is-cygwin)
-                                    (powerline-vc face-blue 'r))
-
-                                  (powerline-raw global-mode-string face-grey 'r)
-                                  (powerline-major-mode face-grey 'l)
-                                  (powerline-process face-grey 'l)
-                                  (powerline-minor-modes face-grey 'l)
-                                  (powerline-narrow face-grey 'l)
-
-                                  (powerline-raw " " face-grey)
-
-                                  (powerline-raw "%l " face-grey)
-                                  (powerline-raw ": " face-grey)
-                                  (powerline-raw "%c " face-grey)
-                                  (powerline-raw "%p " face-grey)
-                                  (powerline-flycheck-status)
-                                  (powerline-hud face-grey face-grey))))
-                       (concat (powerline-render lhs)
-                               (powerline-fill face-grey (powerline-width rhs))
-                               (powerline-render rhs)))))))
-
-  (powerline-theme))
+  (setq-default mode-line-format (t/create-powerline)))
 
 (provide 'setup-powerline)

@@ -44,8 +44,6 @@
 ;;   :config (benchmark-init/activate))
 
 ;; packages
-(use-package spacemacs-theme)
-
 (setq is-mac (equal system-type 'darwin))
 (setq is-cygwin (equal system-type 'cygwin))
 (setq is-linux (equal system-type 'gnu/linux))
@@ -57,9 +55,11 @@
 (use-package dash)
 (use-package s)
 (use-package better-defaults)
+(use-package spacemacs-theme)
 
-(require 'defuns)
+(require 'setup-powerline)
 (require 'sane-defaults)
+(require 'defuns)
 
 (use-package which-key
   :diminish which-key-mode
@@ -83,6 +83,7 @@
   (which-key-mode))
 
 (require 'setup-evil)
+
 (evil-mode 1)
 
 (use-package paradox
@@ -698,7 +699,6 @@
 
 (require 'setup-shell)
 (require 'setup-org)
-(require 'setup-powerline)
 
 (require 'keys)
 (require 'langs)
