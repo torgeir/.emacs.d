@@ -494,4 +494,21 @@ Including indent-buffer, which should not be called automatically on save."
     (,fn)
     (setq-local helm-ag-insert-at-point nil)))
 
+(defun t/switch-theme (theme)
+  "Switch theme, disabling previously loaded"
+  (interactive
+   (list
+    (intern (completing-read "Load custom theme: "
+                             (mapcar 'symbol-name
+                                     (custom-available-themes))))))
+  (mapcar #'disable-theme custom-enabled-themes)
+  (load-theme theme t))
+
+(defun t/toggle-theme-dark-light ()
+  "Toggles between themes `spacemacs-dark' and `spacemacs-light'"
+  (interactive)
+  (let* ((enabled-theme (car custom-enabled-themes))
+         (next-theme (if (equal 'spacemacs-dark enabled-theme) 'spacemacs-light 'spacemacs-dark)))
+    (t/switch-theme next-theme)))
+
 (provide 'defuns)
