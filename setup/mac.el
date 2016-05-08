@@ -40,6 +40,8 @@
 ;; ;; os x window movement
 (global-set-key (kbd "s->") 'next-multiframe-window)
 (global-set-key (kbd "s-<") 'previous-multiframe-window)
+(global-set-key (kbd "s-<left>") 't/smart-beginning-of-line)
+(global-set-key (kbd "s-<right>") 'end-of-line)
 (global-set-key (kbd "M-s-<up>") 'windmove-up)
 (global-set-key (kbd "M-s-<right>") 'windmove-right)
 (global-set-key (kbd "M-s-<down>") 'windmove-down)
