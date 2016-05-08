@@ -150,6 +150,7 @@
   (bind-key "TAB" #'js2-tab-properly web-mode-map)
   (add-hook 'web-mode-hook ; http://web-mode.org/
             (lambda ()
+              (add-to-list 'company-dabbrev-code-modes 'web-mode)
               (if (equal web-mode-content-type "javascript") (web-mode-set-content-type "jsx"))
               (dolist (mode '(js-mode html-mode css-mode))
                 (yas-activate-extra-mode mode))
