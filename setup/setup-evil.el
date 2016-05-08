@@ -89,11 +89,15 @@
 
 (use-package evil-nerd-commenter
   :config
-  (t/declare-prefix "c" "Comments"
+  (t/declare-prefix "c" "Comment/Complete"
                     "c" 'evilnc-comment-or-uncomment-lines
                     "p" 'evilnc-comment-or-uncomment-paragraphs
                     "ap" 'evilnc-comment-or-uncomment-paragraphs
-                    "y" 'evilnc-copy-and-comment-lines))
+                    "y" 'evilnc-copy-and-comment-lines
+                    "l" 'evil-complete-next-line
+                    "L" 'evil-complete-previous-line
+                    "w" 'evil-complete-next
+                    "W" 'evil-complete-previous))
 
 ;; some emacs stuff is useful, in terminals etc
 ;; http://stackoverflow.com/a/16226006
