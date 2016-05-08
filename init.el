@@ -655,7 +655,7 @@
   (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
   (t/declare-prefix "h" "Highlight"
                     ;; leader leader clears all highlights
-                    "h" 'highlight-symbol-at-point
+                    "h" 'highlight-symbol
                     "n" 'highlight-symbol-next
                     "N" 'highlight-symbol-prev))
 
