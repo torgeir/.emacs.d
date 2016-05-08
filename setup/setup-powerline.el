@@ -20,7 +20,7 @@
                      'r)))
 
   (defun evil-state-name ()
-    ;; default to "emacs" if evil is not loaded
+    "Get single letter evil mode state string, or `e'"
     (let ((evil-state-name (if (and (boundp 'evil-state)
                                     evil-state)
                                (symbol-name evil-state)
@@ -28,15 +28,17 @@
       (capitalize (substring evil-state-name 0 1))))
 
   (defface powerline-active-blue `((t (:foreground "#98bcbd" :weight normal :inherit powerline-active1)))
-    "Custom highlight color used for some parts of the powerline" :group 'powerline)
+    "Custom color used for highlighted parts of the powerline" :group 'powerline)
 
   (defun t/git-branch ()
+    "Get the current git branch name"
     (let ((has-git (vc-backend (buffer-file-name (current-buffer)))))
       (when has-git
         (let ((branch (vc-working-revision (buffer-file-name (current-buffer)))))
           (powerline-raw branch face-blue 'l)))))
 
   (defun t/create-powerline ()
+    "Create the powerline mode line string"
     '("%e"
       (:eval
        (let* ((active (powerline-selected-window-active))
@@ -73,12 +75,13 @@
                  (powerline-render rhs))))))
 
   (defun t/update-powerline ()
-    "powerline theme"
+    "Sets cusrtom powerline as the mode-line and force updates it. For some reason this needs `setq'.."
     (interactive)
     (setq mode-line-format nil)
     (setq mode-line-format (t/create-powerline))
     (force-mode-line-update 1))
 
+  ;; ..while the initially set mode-line needs `setq-default'
   (setq-default mode-line-format (t/create-powerline)))
 
 (provide 'setup-powerline)
