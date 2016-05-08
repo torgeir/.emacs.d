@@ -494,6 +494,14 @@ Including indent-buffer, which should not be called automatically on save."
     (,fn)
     (setq-local helm-ag-insert-at-point nil)))
 
+(defun t/face-color-b (attr)
+  "Get `:background' color of `attr'"
+  (face-attribute attr :background))
+
+(defun t/face-color-f (attr)
+  "Get `:foreground' color of `attr'"
+  (face-attribute attr :foreground))
+
 (defun t/switch-theme (theme)
   "Switch theme, disabling previously loaded"
   (interactive
