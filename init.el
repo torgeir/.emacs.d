@@ -140,9 +140,12 @@
   :config (subword-mode))
 
 (use-package projectile
+  :diminish projectile-mode
   :init
-  (setq projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
-        projectile-completion-system 'helm)
+  (setq
+   projectile-mode-line '(:eval (format "[%s]" (projectile-project-name)))
+   projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
+   projectile-completion-system 'helm)
   :defer 2
   :config
   (projectile-global-mode)

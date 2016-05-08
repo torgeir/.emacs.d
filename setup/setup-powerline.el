@@ -49,9 +49,9 @@
                     (powerline-flycheck-status)
                     (powerline-raw (format " %s" (evil-state-name)) face-blue)
                     (powerline-raw "%*%*" face-grey 'l)
+                    (powerline-raw projectile-mode-line face-grey 'l)
                     (powerline-buffer-id face-grey 'l)
-                    (when (not is-cygwin) (powerline-raw (t/git-branch) face-blue 'l))
-                    (when (and (boundp 'which-function-mode) which-function-mode) (powerline-raw which-func-format face-grey 'l))
+                    (when (not is-cygwin) (powerline-raw (t/git-branch) face-blue nil))
                     ))
 
               (rhs (list
