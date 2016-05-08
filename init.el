@@ -148,6 +148,15 @@
    projectile-completion-system 'helm)
   :defer 2
   :config
+  (add-to-list 'projectile-globally-ignored-directories "node_modules")
+  (add-to-list 'projectile-globally-ignored-directories "target")
+  (add-to-list 'projectile-globally-ignored-directories "dist")
+  (add-to-list 'projectile-globally-ignored-files "**.bundle.js")
+  (add-to-list 'projectile-globally-ignored-files "**.build.js")
+  (add-to-list 'projectile-globally-ignored-files ".DS_Store")
+  (add-to-list 'grep-find-ignored-files "**.bundle.js")
+  (add-to-list 'grep-find-ignored-files "**.build.js")
+  (add-to-list 'grep-find-ignored-files ".DS_Store")
   (projectile-global-mode)
   (evil-leader/set-key "t" 'helm-projectile)
   (t/declare-prefix "p" "Project"
@@ -494,6 +503,7 @@
       :init
       (setq helm-ag-fuzzy-match t
             helm-ag-insert-at-point 'symbol
+            helm-ag-use-grep-ignore-list t
             ;; save edited buffers on completion
             helm-ag-edit-save t))
 
