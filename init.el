@@ -752,7 +752,6 @@
 
 (t/declare-prefix "x" "Text manipulation"
                   "a" 'align-regexp
-                  "f" 'helm-find-files
                   "k" 'ido-kill-buffer
                   "m" 'helm-M-x
                   "x" 'smex-major-mode-commands)
