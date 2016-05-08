@@ -27,7 +27,7 @@
                              "e")))
       (capitalize (substring evil-state-name 0 1))))
 
-  (defface powerline-active-blue `((t (:foreground "#98bcbd" :weight normal :inherit powerline-active1)))
+  (defface powerline-active-blue `((t (:foreground "#7bb" :weight normal :inherit powerline-active1)))
     "Custom color used for highlighted parts of the powerline" :group 'powerline)
 
   (defun t/git-branch ()
