@@ -3,7 +3,6 @@
 (bind-key "M-n" 'forward-paragraph)
 
 (bind-key "C-o" 't/open-line-below)
-(bind-key "C-w" 'backward-kill-word)
 (bind-key "C-w" 'backward-kill-word minibuffer-local-map) ; minibuffer
 (bind-key "C-M-q" 't/quit-other-window)
 
