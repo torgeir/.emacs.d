@@ -734,6 +734,7 @@
 (t/declare-prefix "Ec" "Edit config"
                   "R" 'config-reload
                   "i" 'config-edit-init
+                  "o" 'config-edit-org
                   "d" 'config-edit-sane-defaults
                   "f" 'config-edit-defuns
                   "k" 'config-edit-keys
