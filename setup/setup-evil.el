@@ -1,17 +1,17 @@
 (use-package evil
   :init
-  (progn
-    (setq cursor-color-emacs "DarkOrange" cursor-color-evil "green3")
-    (setq evil-default-state 'normal
-          evil-search-module 'evil-search
-          evil-emacs-state-cursor  `(,cursor-color-emacs box)
-          evil-normal-state-cursor `(,cursor-color-evil box)
-          evil-visual-state-cursor `(,cursor-color-evil box)
-          evil-insert-state-cursor `(,cursor-color-evil bar)
-          evil-motion-state-cursor `(,cursor-color-evil box))
+  (setq cursor-color-emacs "DarkOrange" cursor-color-evil "green3")
+  (setq evil-default-state 'normal
+        evil-search-module 'evil-search
+        evil-emacs-state-cursor  `(,cursor-color-emacs box)
+        evil-normal-state-cursor `(,cursor-color-evil box)
+        evil-visual-state-cursor `(,cursor-color-evil box)
+        evil-insert-state-cursor `(,cursor-color-evil bar)
+        evil-motion-state-cursor `(,cursor-color-evil box))
 
-    (setq evil-toggle-key (if is-mac "C-'" "C-'"))
-    (bind-key evil-toggle-key 'evil-local-mode))
+  (if is-mac
+    (bind-key "C-'" 'evil-local-mode)
+	(bind-key "C-|" 'evil-local-mode))
 
   :config
   (progn
@@ -35,16 +35,6 @@
   (setq-default evil-escape-delay 0.08)
   (evil-escape-mode))
 
-(use-package evil-numbers
-  :config
-  (evil-leader/set-key
-    "+" 'evil-numbers/inc-at-pt
-    "-" 'evil-numbers/dec-at-pt))
-
-(use-package evil-matchit
-  :init
-  (global-evil-matchit-mode 1))
-
 (use-package evil-leader
   :config
   (progn
@@ -66,6 +56,16 @@
 
     (bind-key (kbd "Y") 'spacemacs/evil-yank-to-end-of-line evil-normal-state-map)
     (bind-key (kbd "Y") 'spacemacs/evil-yank-to-end-of-line evil-motion-state-map)))
+
+(use-package evil-numbers
+  :config
+  (evil-leader/set-key
+    "+" 'evil-numbers/inc-at-pt
+    "-" 'evil-numbers/dec-at-pt))
+
+(use-package evil-matchit
+  :init
+  (global-evil-matchit-mode 1))
 
 (use-package evil-surround
   :config

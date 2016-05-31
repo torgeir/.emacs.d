@@ -48,6 +48,7 @@
 (setq is-cygwin (equal system-type 'cygwin))
 (setq is-linux (equal system-type 'gnu/linux))
 (setq is-win (equal system-type 'windows-nt))
+(setq is-ms (or is-cygwin is-win))
 (setq has-gui (display-graphic-p))
 
 (defvar leader "SPC")
@@ -151,9 +152,11 @@
   (add-to-list 'projectile-globally-ignored-directories "node_modules")
   (add-to-list 'projectile-globally-ignored-directories "target")
   (add-to-list 'projectile-globally-ignored-directories "dist")
+  (add-to-list 'projectile-globally-ignored-directories ".idea")
   (add-to-list 'projectile-globally-ignored-files "**.bundle.js")
   (add-to-list 'projectile-globally-ignored-files "**.build.js")
   (add-to-list 'projectile-globally-ignored-files ".DS_Store")
+  (add-to-list 'projectile-globally-ignored-files ".idea")
   (add-to-list 'grep-find-ignored-files "**.bundle.js")
   (add-to-list 'grep-find-ignored-files "**.build.js")
   (add-to-list 'grep-find-ignored-files ".DS_Store")
@@ -718,7 +721,10 @@
 (require 'keys)
 (require 'langs)
 (when is-mac (require 'mac))
-(when is-cygwin (require 'cygwin))
+(when is-ms (require 'cygwin))
+
+(setq t/initial-font-size 14)
+(t/reset-font-size)
 
 (bind-key "C-x C-c" 't/delete-frame-or-hide-last-remaining-frame)
 
@@ -875,7 +881,7 @@
 ;; (benchmark-init/show-durations-tabulated)
 ;; (benchmark-init/show-durations-tree)
 
-(when (or is-cygwin
+(when (or is-ms
           (display-graphic-p))
   (require 'server)
   (unless (server-running-p) (server-mode)))

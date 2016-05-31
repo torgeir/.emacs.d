@@ -89,6 +89,7 @@
                 (push (prin1-to-string x t) tag-names))
               tags-completion-table)
     (etags-select-find (ido-completing-read "Tag: " tag-names))))
+	
 
 (defun t/ido-go-straight-home ()
   (interactive)
@@ -99,7 +100,7 @@
 (defun copy-to-clipboard (text &optional push)
   "Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses builtin pbcopy."
   (let* ((process-connection-type nil)
-         (copy-cmd (if is-cygwin "putclip" "pbcopy"))
+         (copy-cmd (if is-mac "pbcopy" "putclip"))
          (proc (start-process copy-cmd "*Messages*" copy-cmd)))
     (process-send-string proc text)
     (process-send-eof proc)))
@@ -310,7 +311,7 @@ Including indent-buffer, which should not be called automatically on save."
   (condition-case nil
       (delete-frame)
     (error (if (window-system)
-               (ns-do-hide-emacs)
+               (when is-mac (ns-do-hide-emacs))
              "in terminal, use c-z instead"))))
 
 (defun t/copy-buffer-file-name ()
@@ -519,5 +520,30 @@ Including indent-buffer, which should not be called automatically on save."
   (let* ((enabled-theme (car custom-enabled-themes))
          (next-theme (if (equal 'spacemacs-dark enabled-theme) 'spacemacs-light 'spacemacs-dark)))
     (t/switch-theme next-theme)))
+
+;; mac/win friendly font
+(defun t/reload-font ()
+  (interactive)
+  (when window-system
+    (setq t/default-font (if is-mac
+                                   (concat "-apple-Monaco-medium-normal-normal-*-"
+                                           (number-to-string t/default-font-size)
+                                           "-*-*-*-m-0-iso10646-1")
+                                 (concat "Inconsolata-"
+                                         (number-to-string t/default-font-size))))
+    (set-face-attribute 'default nil :font t/default-font)))
+(defun t/decrease-font-size ()
+  (interactive)
+  (setq t/default-font-size (- t/default-font-size 1))
+  (t/reload-font))
+(defun t/increase-font-size ()
+  (interactive)
+  (setq t/default-font-size (+ t/default-font-size 1))
+  (t/reload-font))
+(defun t/reset-font-size ()
+  (interactive)
+  (setq t/default-font-size t/initial-font-size)
+  (t/reload-font)
+  (text-scale-set 0))
 
 (provide 'defuns)
