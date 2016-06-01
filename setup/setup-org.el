@@ -4,9 +4,9 @@
   (setq org-directory "~/Dropbox/org")
 
   (setq org-src-fontify-natively t
-        ;; follow links on tab and enter
-        org-tab-follows-link t
+        ;; follow links on enter, not tab
         org-return-follows-link t
+        org-tab-follows-link nil
         ;; ido where possible
         org-completion-use-ido t
         ;; don't run stuff automatically on export
