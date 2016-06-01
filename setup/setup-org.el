@@ -3,6 +3,9 @@
   :init
   (setq org-directory "~/Dropbox/org")
 
+  (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg"
+        org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org")
+
   (setq org-src-fontify-natively t
         ;; follow links on enter, not tab
         org-return-follows-link t
@@ -111,6 +114,8 @@
 (run-with-idle-timer 300 t 'jump-to-org-agenda)
 
 (t/declare-prefix "oo" "Org"
+                  "mp" 'org-mobile-push
+                  "mP" 'org-mobile-pull
                   "c" 'org-capture
                   "a" 'org-agenda
                   "i" 'org-info
