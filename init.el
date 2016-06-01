@@ -510,7 +510,9 @@
             helm-ag-insert-at-point 'symbol
             helm-ag-use-grep-ignore-list t
             ;; save edited buffers on completion
-            helm-ag-edit-save t))
+            helm-ag-edit-save t)
+      (when is-ms
+        (setq helm-ag-base-command "ag --nocolor --nogroup --vimgrep")))
 
     (use-package helm-projectile
       :commands helm-projectile
