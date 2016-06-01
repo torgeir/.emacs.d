@@ -178,6 +178,15 @@
                     "tf" 'js2r-toggle-function-expression-and-declaration
                     "vt" 'js2r-var-to-this))
 
+;; elm
+(use-package elm-mode)
+(use-package flycheck-elm
+  :config
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-web-html))
+  (with-eval-after-load 'flycheck
+      '(add-hook 'flycheck-mode-hook #'flycheck-elm-setup)))
+
 (use-package json-mode
   :mode "\\(json\\|jshintrc\\|eslintrc\\)$"
   :config
