@@ -10,6 +10,9 @@
                                 "c:/Users/torgth/Dropbox \(Personlig\)/Apps/MobileOrg")
         org-mobile-inbox-for-pull (concat org-directory "/inbox.org"))
 
+  (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg"
+        org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org")
+
   (setq org-src-fontify-natively t
         ;; follow links on enter, not tab
         org-return-follows-link t
@@ -127,6 +130,10 @@
                   "st" 'org-set-tags-to
                   "t" 'org-todo-list
                   "l" 'org-timeline)
+
+(t/declare-prefix "oom" "Mobile"
+                  "p" 'org-mobile-push
+                  "P" 'org-mobile-pull)
 
 (t/declare-prefix "oos" "Tags"
                   "a" 'org-archive-set-tag
