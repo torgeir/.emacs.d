@@ -1,7 +1,9 @@
 (use-package org
   :defer 2
   :init
-  (setq org-directory "~/Dropbox/org")
+  (setq org-directory (if is-mac
+                       "~/Dropbox/org"
+                       "c:/Users/torgth/Dropbox \(Personlig\)/org"))
 
   (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg"
         org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org")
@@ -21,19 +23,18 @@
         ;; Block parent TODOs if child is not completed
         org-enforce-todo-dependencies t
         ;; where to look for org files
-        org-agenda-files '("~/Dropbox/org"
-                           "~/Dropbox/org/todos")
+        org-agenda-files `(,org-directory
+                           ,(concat org-directory "/todos"))
         org-refile-targets '((nil :maxlevel . 2)
                              (org-agenda-files :maxlevel . 2))
         ;; tag position after headings
         org-tags-column -40
         ;; force utf-8
         org-export-coding-system 'utf-8
-        org-default-notes-file "~/Dropbox/org/tasks.org"
+        org-default-notes-file (concat org-directory "/tasks.org")
         ;; newest notes first
         org-reverse-note-order nil
         )
-
 
   (setq org-capture-templates
         '(("t" "Task"
@@ -42,8 +43,12 @@
            "* TODO %?\n  %i\n  %a")
           ("j" "Journal entry"
            entry
-           (file+datetree "~/Dropbox/org/journal.org")
+           (file+datetree (concat org-directory "/journal.org"))
            "**** %U %^{Title}\n     %?")))
+
+                                        ; select example
+                                        ;  " %^{Tidbit type|quote|zinger|one-liner}"
+
 
   :config
   ;; use cider instead of slime (default)
@@ -77,9 +82,6 @@
      (ruby . t)
      (js . t)
      (sh . t)))
-
-                                        ; select example
-                                        ;  " %^{Tidbit type|quote|zinger|one-liner}"
 
   (add-hook 'org-mode-hook
             (lambda ()
