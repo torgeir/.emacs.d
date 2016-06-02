@@ -125,7 +125,9 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
+(add-to-list 'file-coding-system-alist '("\\.org" . utf-8))
 (prefer-coding-system 'utf-8)
+(modify-coding-system-alist 'file "" 'utf-8)
 
 ;; one space between sentences
 (setq sentence-end-double-space nil)
