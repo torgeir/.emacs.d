@@ -103,7 +103,6 @@
 
 ;; js2-mode steals TAB, let's steal it back for yasnippet
 (use-package js2-mode
-  :commands  js2-mode
   :mode "\\.js$"
   :interpreter "node"
   :init
@@ -145,7 +144,7 @@
   (bind-key "C-x C-e" #'t/send-region-to-nodejs-repl-process js2-mode-map))
 
 (use-package web-mode
-  :mode "\\.\\(jsx\\)$"
+  :mode "\\.jsx$"
   :config
   (bind-key "TAB" #'js2-tab-properly web-mode-map)
   (add-hook 'web-mode-hook ; http://web-mode.org/
