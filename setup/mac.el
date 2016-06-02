@@ -70,4 +70,5 @@
 (setq delete-by-moving-to-trash t
       trash-directory "~/.Trash/emacs")
 
+(setq t/initial-font-size 14)
 (provide 'mac)
