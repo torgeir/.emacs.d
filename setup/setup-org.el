@@ -1,3 +1,4 @@
+(use-package org-alert)
 (use-package org
   :defer 2
   :init
