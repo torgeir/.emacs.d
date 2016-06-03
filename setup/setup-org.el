@@ -45,6 +45,13 @@
         org-reverse-note-order nil
         )
 
+  (setq org-modules '(org-mouse
+                      org-eval
+                      org-expiry
+                      org-bullets))
+  (eval-after-load 'org
+    '(org-load-modules-maybe t))
+
   (setq org-capture-templates
         '(("t" "Task"
            entry
