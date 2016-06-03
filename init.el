@@ -485,6 +485,7 @@
                 helm-apropos-fuzzy-match t
                 helm-projectile-fuzzy-match t
                 helm-completion-in-region-fuzzy-match t
+                helm-candidate-number-limit 100
 
                 ;; keep follow mode on, after on once
                 helm-follow-mode-persistent t
