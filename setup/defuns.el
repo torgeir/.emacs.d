@@ -97,7 +97,7 @@
    ((looking-back "/") (insert "~/"))
    (:else (call-interactively 'self-insert-command))))
 
-(defun copy-to-clipboard (text &optional push)
+(defun t/copy-to-clipboard (text &optional push)
   "Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses builtin pbcopy."
   (let* ((process-connection-type nil)
          (copy-cmd (if is-mac "pbcopy" "putclip"))
