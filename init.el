@@ -333,6 +333,9 @@
 
 (use-package undo-tree
   :diminish undo-tree-mode
+  :init
+  (setq undo-tree-visualizer-timestamps t
+        undo-tree-visualizer-diff t)
   :config
   (bind-key [f5] (lambda ()
                    "custom undo tree visualizer toggle"
