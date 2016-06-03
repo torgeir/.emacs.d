@@ -5,8 +5,10 @@
                        "~/Dropbox/org"
                        "c:/Users/torgth/Dropbox \(Personlig\)/org"))
 
-  (setq org-mobile-directory "~/Dropbox/Apps/MobileOrg"
-        org-mobile-inbox-for-pull "~/Dropbox/org/inbox.org")
+  (setq org-mobile-directory (if is-mac
+                                "~/Dropbox/Apps/MobileOrg"
+                                "c:/Users/torgth/Dropbox \(Personlig\)/Apps/MobileOrg")
+        org-mobile-inbox-for-pull (concat org-directory "/inbox.org"))
 
   (setq org-src-fontify-natively t
         ;; follow links on enter, not tab
