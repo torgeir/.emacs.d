@@ -1,4 +1,6 @@
 (use-package org-alert)
+(use-package org-mac-iCal)
+(use-package org-mac-link)
 (use-package org
   :defer 2
   :init
@@ -125,6 +127,7 @@
                   "mp" 'org-mobile-push
                   "mP" 'org-mobile-pull
                   "c" 'org-capture
+                  "g" 'org-mac-grab-link
                   "a" 'org-agenda
                   "i" 'org-info
                   "sa" 'org-archive-set-tag
