@@ -1,6 +1,10 @@
 (use-package org-alert)
 (use-package org-mac-iCal)
 (use-package org-mac-link)
+(use-package org-bullets
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
 (use-package org
   :defer 2
   :init
