@@ -1,6 +1,4 @@
-(let ((proxy-file (locate-user-emacs-file "proxy.el")))
-  (when (file-exists-p proxy-file)
-    (require 'proxy proxy-file)))
+(load (locate-user-emacs-file "proxy.el") t)
 
 (setq dir-snippets (locate-user-emacs-file "snippets"))
 (setq dir-setup (locate-user-emacs-file "setup"))
