@@ -60,6 +60,10 @@
 (require 'sane-defaults)
 (require 'defuns)
 
+(when is-mac (require 'mac))
+(when is-ms (require 'cygwin))
+(t/reset-font-size)
+
 (use-package which-key
   :diminish which-key-mode
   :config
@@ -731,9 +735,6 @@
 
 (require 'keys)
 (require 'langs)
-(when is-mac (require 'mac))
-(when is-ms (require 'cygwin))
-(t/reset-font-size)
 
 (bind-key "C-x C-c" 't/delete-frame-or-hide-last-remaining-frame)
 
