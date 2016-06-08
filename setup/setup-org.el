@@ -132,6 +132,8 @@
 (run-with-idle-timer 300 t 'jump-to-org-agenda)
 
 (t/declare-prefix "oo" "Org"
+                  "li" 'org-insert-link
+                  "ls" 'org-store-link
                   "mp" 'org-mobile-push
                   "mP" 'org-mobile-pull
                   "c" 'org-capture
