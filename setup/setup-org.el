@@ -49,6 +49,9 @@
   (eval-after-load 'org
     '(org-load-modules-maybe t))
 
+  (eval-after-load 'org
+    '(require 'ox-md nil t))
+
   (setq org-capture-templates
         '(("t" "Task"
            entry
