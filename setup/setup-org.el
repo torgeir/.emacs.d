@@ -34,12 +34,12 @@
         org-refile-targets '((nil :maxlevel . 2)
                              (org-agenda-files :maxlevel . 2))
         ;; tag position after headings
-        org-tags-column -40
+        org-tags-column -60
         ;; force utf-8
         org-export-coding-system 'utf-8
         org-default-notes-file (concat org-directory "/tasks.org")
         ;; newest notes first
-        org-reverse-note-order nil
+        org-reverse-note-order t
         )
 
   (setq org-modules '(org-mouse
