@@ -106,6 +106,12 @@
               (org-set-local 'yas/trigger-key [tab])
               (define-key yas/keymap [tab] 'yas/next-field-group)))
 
+  ;; fix completion dissapearing
+  (add-to-list 'company-backends 'company-capf)
+  (defun add-pcomplete-to-capf ()
+    (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+  (add-hook 'org-mode-hook #'add-pcomplete-to-capf)
+
   ;; show week numbers in calendar
   (copy-face font-lock-constant-face 'calendar-iso-week-face)
   (set-face-attribute 'calendar-iso-week-face nil :height 0.7 :foreground "VioletRed2")
