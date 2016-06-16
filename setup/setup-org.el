@@ -158,10 +158,7 @@
                   "a" 'org-agenda
                   "i" 'org-info
                   "sa" 'org-archive-set-tag
-                  "st" 'org-set-tags-to
-                  "t" 'org-todo-list
-                  "l" 'org-timeline)
-
+                  "st" 'org-set-tags-to)
 (t/declare-prefix "oom" "Mobile"
                   "p" 'org-mobile-push
                   "P" 'org-mobile-pull)
