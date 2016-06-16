@@ -29,8 +29,12 @@
         ;; Block parent TODOs if child is not completed
         org-enforce-todo-dependencies t
         ;; where to look for org files
-        org-agenda-files `(,org-directory
-                           ,(concat org-directory "/todos"))
+        org-agenda-files `(,(concat org-directory "/tasks.org")
+                           ,(concat org-directory "/todos/home.org")
+                           ,(concat org-directory "/todos/bekk.org")
+                           ,(concat org-directory "/todos/datainn.org"))
+        ;; default duration of events
+        org-agenda-default-appointment-duration 60
         org-refile-targets '((nil :maxlevel . 2)
                              (org-agenda-files :maxlevel . 2))
         ;; tag position after headings
@@ -154,6 +158,7 @@
                   "mp" 'org-mobile-push
                   "mP" 'org-mobile-pull
                   "c" 'org-capture
+                  "e" 'org-export-dispatch
                   "g" 'org-mac-grab-link
                   "a" 'org-agenda
                   "i" 'org-info
