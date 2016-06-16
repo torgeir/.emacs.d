@@ -104,7 +104,7 @@
               ;; yasnippet
               (make-variable-buffer-local 'yas/trigger-key)
               (org-set-local 'yas/trigger-key [tab])
-              (define-key yas/keymap [tab] 'yas/next-field-group)))
+              (define-key yas/keymap [tab] 'yas-next-field)))
 
   ;; fix completion dissapearing
   (add-to-list 'company-backends 'company-capf)
