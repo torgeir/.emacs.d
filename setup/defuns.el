@@ -557,4 +557,11 @@ Including indent-buffer, which should not be called automatically on save."
   (select-frame-by-name "remember")
   (org-capture))
 
+(defun t/refile-to (file headline)
+    "Move current headline to specified location"
+    (let ((pos (save-excursion
+                 (find-file file)
+                 (org-find-exact-headline-in-buffer headline))))
+      (org-refile nil nil (list headline file nil pos))))
+
 (provide 'defuns)
