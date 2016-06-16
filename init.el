@@ -509,7 +509,7 @@
       :defer t
       :init
       (setq helm-ag-fuzzy-match t
-            helm-ag-insert-at-point 'symbol
+            helm-ag-insert-at-point nil ; 'symbol
             helm-ag-use-grep-ignore-list t
             ;; save edited buffers on completion
             helm-ag-edit-save t)
