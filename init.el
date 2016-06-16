@@ -525,6 +525,8 @@
       :init
       (helm-descbinds-mode))
 
+    (use-package helm-dash)
+
     (use-package helm-swoop)))
 
 (use-package visual-regexp
