@@ -104,7 +104,18 @@
               ;; yasnippet
               (make-variable-buffer-local 'yas/trigger-key)
               (org-set-local 'yas/trigger-key [tab])
-              (define-key yas/keymap [tab] 'yas/next-field-group))))
+              (define-key yas/keymap [tab] 'yas/next-field-group)))
+
+  ;; show week numbers in calendar
+  (copy-face font-lock-constant-face 'calendar-iso-week-face)
+  (set-face-attribute 'calendar-iso-week-face nil :height 0.7 :foreground "VioletRed2")
+  (copy-face 'default 'calendar-iso-week-header-face)
+  (set-face-attribute 'calendar-iso-week-header-face nil :height 0.7 :foreground "VioletRed4")
+  (setq calendar-intermonth-text
+        '(propertize
+          (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
+          'font-lock-face 'calendar-iso-week-face)
+        calendar-intermonth-header (propertize "WK" 'font-lock-face 'calendar-iso-week-header-face)))
 
 (defun jump-to-org-agenda ()
   (interactive)
