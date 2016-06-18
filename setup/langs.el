@@ -333,6 +333,17 @@
   :commands cloudformation-mode
   :defer t)
 
+(use-package ensime
+  :commands ensime ensime-mode
+  :init
+  (add-hook 'scala-mode-hook 'ensime-mode)
+  (add-hook 'scala-mode-hook (lambda ()
+                               (require 'bind-key)
+                               ;; remove some keys that conflict
+                               (unbind-key "C-." evil-normal-state-map)
+                               (unbind-key "M-." evil-normal-state-map)))
+  (bind-key "M-." 'ensime-edit-definition scala-mode-map))
+
 ;; ligatures
 (defun ligature (tuple)
   "creates ligature"
