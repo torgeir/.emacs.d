@@ -285,6 +285,9 @@
   ;; go to repl on connect
   (setq cider-repl-pop-to-buffer-on-connect nil)
   :config
+  (t/declare-prefix-for-mode 'clojure-mode "m" "Mode"
+                             "j" 'cider-jack-in
+                             "k" 'cider-quit)
   ;; minibuffer doc in repl
   (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
@@ -344,6 +347,9 @@
                                (unbind-key "M-." evil-normal-state-map)))
   (bind-key "M-." 'ensime-edit-definition scala-mode-map)
   :config
+  (t/declare-prefix-for-mode 'scala-mode "m" "Mode"
+                             "j" 'ensime
+                             "k" 'ensime-shutdown)
   (t/declare-prefix-for-mode 'scala-mode "me" "Evaluate"
                              "b" #'t/send-buffer-to-scala-repl
                              "r" #'t/send-region-to-scala-repl))
