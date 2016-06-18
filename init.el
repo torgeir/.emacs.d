@@ -399,7 +399,12 @@
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-tern))
   :config
-  (setq tern-command (append tern-command '("--no-port-file"))))
+  (setq tern-command (append tern-command '("--no-port-file")))
+  (unbind-key "M-." tern-mode-keymap)
+  (unbind-key "M-," tern-mode-keymap)
+  (unbind-key "C-M-." tern-mode-keymap)
+  (bind-key "M-," 'pop-tag-mark)
+  (bind-key "C-M-." 'helm-etags-select))
 
 (use-package company-emoji
   :defer 2

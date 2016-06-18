@@ -77,7 +77,7 @@
   (interactive)
   (let* ((root (projectile-project-root))
          (tags (concat root "TAGS")))
-    (if (file-exists-p tags) (load-tags tags) (t/build-tags))
+    (if (file-exists-p tags) (t/load-tags tags) (t/build-tags))
     (etags-select-find-tag-at-point)))
 
 (defun t/ido-find-tag ()
