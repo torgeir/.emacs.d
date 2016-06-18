@@ -1,3 +1,23 @@
+(defun t/send-buffer-to-scala-repl ()
+  "Send buffer to ensime repl, starts it if its not running"
+  (interactive)
+  (if (ensime-inf-process-live-p ensime-inf-buffer-name)
+      (ensime-inf-eval-buffer)
+    (progn
+      (ensime-inf-switch)
+      (other-window -1)
+      (ensime-inf-eval-buffer))))
+
+(defun t/send-region-to-scala-repl (start end)
+  "Send region to ensime repl, starts it if its not running"
+  (interactive "r")
+  (if (ensime-inf-process-live-p ensime-inf-buffer-name)
+      (ensime-inf-eval-region start end)
+    (progn
+      (ensime-inf-switch)
+      (other-window -1)
+      (ensime-inf-eval-region start end))))
+
 (defun t/send-region-to-nodejs-repl-process (start end)
   "Send region to `nodejs-repl' process."
   (interactive "r")

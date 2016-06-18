@@ -342,8 +342,11 @@
                                ;; remove some keys that conflict
                                (unbind-key "C-." evil-normal-state-map)
                                (unbind-key "M-." evil-normal-state-map)))
-  (bind-key "M-." 'ensime-edit-definition scala-mode-map))
-
+  (bind-key "M-." 'ensime-edit-definition scala-mode-map)
+  :config
+  (t/declare-prefix-for-mode 'scala-mode "me" "Evaluate"
+                             "b" #'t/send-buffer-to-scala-repl
+                             "r" #'t/send-region-to-scala-repl))
 ;; ligatures
 (defun ligature (tuple)
   "creates ligature"
