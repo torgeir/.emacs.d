@@ -292,7 +292,8 @@
                              "k" 'cider-quit)
   (t/declare-prefix-for-mode 'clojure-mode "me" "Evaluate"
                            "b" 'cider-eval-buffer
-                           "r" 'cider-eval-region)
+                           "r" 'cider-eval-region
+                           "R" 'cider-eval-last-sexp-and-replace)
   ;; minibuffer doc in repl
   (add-hook 'cider-mode-hook 'eldoc-mode)
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
