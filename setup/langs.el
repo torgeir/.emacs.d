@@ -178,7 +178,17 @@
                     "vt" 'js2r-var-to-this))
 
 ;; elm
-(use-package elm-mode)
+(use-package elm-mode
+  :config
+  (t/declare-prefix-for-mode 'elm-mode "me" "Evaluate"
+                             "b" (lambda ()
+                                   (interactive)
+                                   (elm-repl-load)
+                                   (other-window -1))
+                             "r" (lambda (start end)
+                                   (interactive "r")
+                                   (elm-repl-push start end)
+                                   (other-window -1))))
 (use-package flycheck-elm
   :config
   (with-eval-after-load 'company
@@ -288,6 +298,9 @@
   (t/declare-prefix-for-mode 'clojure-mode "m" "Mode"
                              "j" 'cider-jack-in
                              "k" 'cider-quit)
+  (t/declare-prefix-for-mode 'clojure-mode "me" "Evaluate"
+                           "b" 'cider-eval-buffer
+                           "r" 'cider-eval-region)
   ;; minibuffer doc in repl
   (add-hook 'cider-mode-hook 'cider-turn-on-eldoc-mode)
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
