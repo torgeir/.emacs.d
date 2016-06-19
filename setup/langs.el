@@ -91,15 +91,7 @@
   (add-to-list 'flycheck-checkers 'clojure-cider-eastwood))
 
 (use-package yasnippet
-  :defer 1
-  :config
-  (defun js2-tab-properly ()
-    (interactive)
-    (let ((yas-fallback-behavior 'return-nil))
-      (unless (yas-expand)
-        (indent-for-tab-command)
-        (if (looking-back "^\s*")
-            (back-to-indentation))))))
+  :defer 1)
 
 ;; js2-mode steals TAB, let's steal it back for yasnippet
 (use-package js2-mode
@@ -130,7 +122,7 @@
   ;; don't steel keys
   (bind-key "M-j" 'nil js2-mode-map)
   (bind-key "M-." 'nil js2-mode-map)
-  (bind-key "TAB" #'js2-tab-properly js2-mode-map)
+  (bind-key "TAB" #'t/tab-properly js2-mode-map)
 
   (t/declare-prefix-for-mode 'js2-mode
                              "me" "Evaluate"
@@ -146,7 +138,7 @@
 (use-package web-mode
   :mode "\\.jsx$"
   :config
-  (bind-key "TAB" #'js2-tab-properly web-mode-map)
+  (bind-key "TAB" #'t/tab-properly web-mode-map)
   (add-hook 'web-mode-hook ; http://web-mode.org/
             (lambda ()
               (add-to-list 'company-dabbrev-code-modes 'web-mode)
@@ -342,6 +334,8 @@
                            "f" 'eval-defun
                            "r" 'eval-region
                            "R" 't/eval-and-replace)
+
+(bind-key "TAB" #'t/tab-properly emacs-lisp-mode-map)
 
 (use-package cloudformation-mode
   :ensure nil

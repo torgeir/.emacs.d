@@ -1,3 +1,11 @@
+(defun t/tab-properly ()
+  (interactive)
+  (let ((yas-fallback-behavior 'return-nil))
+    (unless (yas-expand)
+      (indent-for-tab-command)
+      (if (looking-back "^\s*")
+          (back-to-indentation)))))
+
 (defun t/send-buffer-to-scala-repl ()
   "Send buffer to ensime repl, starts it if its not running"
   (interactive)
