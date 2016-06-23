@@ -773,7 +773,7 @@
                   "S" 'save-some-buffers
                   "s" 'save-buffer
                   "k" 'kill-this-buffer
-                  "K" 'kill-other-buffers
+                  "K" 't/kill-other-buffers
                   "b" 'helm-buffers-list
                   "N" 'previous-buffer
                   "n" 'next-buffer
