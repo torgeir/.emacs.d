@@ -289,7 +289,7 @@
   :config
   (t/declare-prefix-for-mode 'clojure-mode "m" "Mode"
                              "j" 'cider-jack-in
-                             "k" 'cider-quit)
+                             "J" 'cider-quit)
   (t/declare-prefix-for-mode 'clojure-mode "me" "Evaluate"
                            "b" 'cider-eval-buffer
                            "r" 'cider-eval-region
@@ -358,7 +358,7 @@
   :config
   (t/declare-prefix-for-mode 'scala-mode "m" "Mode"
                              "j" 'ensime
-                             "k" 'ensime-shutdown)
+                             "J" 'ensime-shutdown)
   (t/declare-prefix-for-mode 'scala-mode "me" "Evaluate"
                              "b" #'t/send-buffer-to-scala-repl
                              "r" #'t/send-region-to-scala-repl))
