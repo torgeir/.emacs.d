@@ -94,8 +94,6 @@
                     "p" 'evilnc-comment-or-uncomment-paragraphs
                     "ap" 'evilnc-comment-or-uncomment-paragraphs
                     "y" 'evilnc-copy-and-comment-lines
-                    "l" 'evil-complete-next-line
-                    "L" 'evil-complete-previous-line
                     "w" 'evil-complete-next
                     "W" 'evil-complete-previous))
 

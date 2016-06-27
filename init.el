@@ -717,6 +717,13 @@
                     "r" 'geeknote-remove
                     "m" 'geeknote-move))
 
+(use-package helm-insert-line-from-project
+  :ensure nil
+  :load-path "site-lisp/helm-insert-line-from-project"
+  :config
+  (t/declare-prefix "c" "Comment/Complete"
+                    "l" 't/helm-find-and-insert-line-from-project))
+
 (use-package spotify
   :ensure nil
   :load-path "site-lisp/spotify/"
