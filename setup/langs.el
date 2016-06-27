@@ -344,6 +344,12 @@
   :commands cloudformation-mode
   :defer t)
 
+(use-package fsharp-mode
+  :mode "\\.fs[iylx]?$"
+  :config
+  (t/declare-prefix-for-mode 'fsharp-mode "me" "Evaluate"
+                             "r" 'fsharp-eval-region))
+
 (use-package ensime
   :commands ensime ensime-mode
   :init
