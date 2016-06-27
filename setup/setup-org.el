@@ -32,6 +32,7 @@
         org-agenda-files `(,(concat org-directory "/tasks.org")
                            ,(concat org-directory "/todos/home.org")
                            ,(concat org-directory "/todos/bekk.org")
+                           ,(concat org-directory "/todos/kom.org")
                            ,(concat org-directory "/todos/datainn.org"))
         ;; default duration of events
         org-agenda-default-appointment-duration 60
