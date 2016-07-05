@@ -14,6 +14,7 @@
 
 (use-package gitconfig-mode
   :commands gitconfig-mode
+  :mode "\\gitconfig$"
   :defer t)
 
 (use-package gitignore-mode
