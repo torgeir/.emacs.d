@@ -57,12 +57,13 @@
 (use-package spacemacs-theme)
 
 (require 'setup-powerline)
-(require 'sane-defaults)
 (require 'defuns)
 
 (when is-mac (require 'mac))
 (when is-ms (require 'cygwin))
 (t/reset-font-size)
+
+(require 'sane-defaults)
 
 (use-package which-key
   :diminish which-key-mode
