@@ -738,6 +738,9 @@
   (t/declare-prefix "o" "Other"
                     "c" 'calendar))
 
+(t/declare-prefix "o" "Other"
+                  "b" 'browse-url)
+
 (require 'setup-shell)
 (require 'setup-org)
 
