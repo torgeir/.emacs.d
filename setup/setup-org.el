@@ -111,7 +111,8 @@
               (define-key yas/keymap [tab] 'yas-next-field-or-maybe-expand)))
 
   ;; fix completion dissapearing
-  (add-to-list 'company-backends 'company-capf)
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-capf))
   (defun add-pcomplete-to-capf ()
     (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
   (add-hook 'org-mode-hook #'add-pcomplete-to-capf)
