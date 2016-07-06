@@ -3,6 +3,8 @@
 /.tramp-auto-save
 /.ido*.last
 /.places*
+/places*
+/backups
 /.recentf*
 /.smex-items*
 /.mc-lists.el
