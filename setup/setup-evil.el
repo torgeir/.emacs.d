@@ -26,19 +26,25 @@
                         (cider-docview-mode . emacs)))
       (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))))
 
-(use-package evil-anzu)
+(use-package evil-anzu
+  :after evil)
 
 (use-package evil-escape
+  :after evil
   :init
   (setq-default evil-escape-key-sequence "jk")
   (setq-default evil-escape-delay 0.08)
   (evil-escape-mode))
 
 (use-package evil-leader
+  :after evil
   :config
   (progn
-    (global-evil-leader-mode)
+    (setq evil-leader/in-all-states t)
     (evil-leader/set-leader leader)
+    (evil-mode nil)
+    (global-evil-leader-mode)
+    (evil-mode 1)
 
     (defun clear-all-highlights ()
       (interactive)
@@ -57,16 +63,21 @@
     (bind-key (kbd "Y") 'spacemacs/evil-yank-to-end-of-line evil-motion-state-map)))
 
 (use-package evil-numbers
-  :config
+  :commands (evil-numbers/inc-at-pt
+             evil-numbers/dec-at-pt)
+  :init
   (evil-leader/set-key
     "+" 'evil-numbers/inc-at-pt
     "-" 'evil-numbers/dec-at-pt))
 
 (use-package evil-matchit
-  :init
+  :after evil
+  :commands evilmi-jump-items
+  :config
   (global-evil-matchit-mode 1))
 
 (use-package evil-surround
+  :after evil
   :config
   (global-evil-surround-mode 1)
   ;; the opposite of vim, like spacemacs
@@ -74,6 +85,7 @@
   (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region))
 
 (use-package evil-paredit
+  :after evil
   :config
   (add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
   (add-hook 'clojure-mode-hook 'evil-paredit-mode)
@@ -81,13 +93,9 @@
   (add-to-list 'evil-surround-operator-alist '(evil-paredit-change . change))
   (add-to-list 'evil-surround-operator-alist '(evil-paredit-delete . delete)))
 
-(use-package evil-visualstar
-  :defer t
-  :config
-  (global-evil-visualstar-mode))
-
 (use-package evil-nerd-commenter
-  :config
+  :defer 2
+  :init
   (t/declare-prefix "c" "Comment/Complete"
                     "c" 'evilnc-comment-or-uncomment-lines
                     "p" 'evilnc-comment-or-uncomment-paragraphs
