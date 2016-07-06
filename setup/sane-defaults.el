@@ -63,7 +63,7 @@
 (setq truncate-partial-width-windows nil)
 
 ;; remove selected text when typing
-(delete-selection-mode 1)
+(delete-selection-mode t)
 
 ;; 80 char lines
 (setq fill-column 80)
@@ -90,6 +90,7 @@
 
 ;; save more recent files
 (use-package recentf
+  :defer 1
   :init
   (setq recentf-max-saved-items 200
         recentf-auto-cleanup 300)
@@ -118,7 +119,8 @@
   (bind-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
   (mouse-wheel-mode t))
 
-(use-package smooth-scrolling)
+(use-package smooth-scrolling
+  :defer 1)
 
 ;; utf-8 ffs
 (setq locale-coding-system 'utf-8)
@@ -131,5 +133,8 @@
 
 ;; one space between sentences
 (setq sentence-end-double-space nil)
+
+;; silence useless warnings, e.g. ad-handle-definition: `find-tag-noselect' got redefined
+(setq ad-redefinition-action 'accept)
 
 (provide 'sane-defaults)
