@@ -1,3 +1,5 @@
+;; credits spacemacs for all the clever stuff
+
 (load (locate-user-emacs-file "before.el") t)
 
 (setq dir-snippets (locate-user-emacs-file "snippets"))
@@ -36,10 +38,14 @@
 (require 'diminish)
 (require 'bind-key)
 
-;; ;; benchmarks
-;; (use-package benchmark-init
-;;   :if t
-;;   :config (benchmark-init/activate))
+(defvar t-debug-init nil "Debug/time startup")
+(when t-debug-init
+  (message "t: timing init")
+  (require 't-debug)
+
+  ;; benchmarks
+  (use-package benchmark-init
+    :config (benchmark-init/activate)))
 
 ;; packages
 (setq is-mac (equal system-type 'darwin))
@@ -102,20 +108,18 @@
 
 (use-package rainbow-mode
   :commands rainbow-mode
-  :defer t
-  :config
+  :init
   (dolist (mode-hook '(prog-mode-hook css-mode-hook html-mode-hook))
     (add-hook mode-hook #'rainbow-mode)))
 
 (use-package rainbow-delimiters
   :commands rainbow-delimiters-mode
-  :defer t
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (use-package tramp
   :ensure nil
-  :defer t
+  :defer 1
   :config
   ;; store auto-save files locally
   (setq tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
@@ -123,7 +127,6 @@
 (use-package paredit
   :diminish paredit-mode
   :commands (enable-paredit-mode evil-paredit-mode)
-  :defer 1
   :config
   (dolist (mode-hook '(emacs-lisp-mode-hook
                        eval-expression-minibuffer-setup-hook
@@ -136,21 +139,21 @@
   (dolist (mode-hook '(emacs-lisp-mode-hook
                        lisp-interaction-mode-hook
                        ielm-mode-hook))
-    (add-hook mode-hook 'turn-on-eldoc-mode)))
+    (add-hook mode-hook 'eldoc-mode)))
 
 (use-package subword
-  :defer t
+  :defer 1
   :ensure nil
   :config (subword-mode))
 
 (use-package projectile
   :diminish projectile-mode
+  :commands (projectile-mode helm-projectile)
   :init
-  (setq
-   projectile-mode-line '(:eval (format "[%s]" (projectile-project-name)))
-   projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
-   projectile-completion-system 'helm)
-  :defer 2
+  (setq projectile-mode-line '(:eval (format "[%s]" (projectile-project-name)))
+        projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
+        projectile-completion-system 'helm)
+  (evil-leader/set-key "t" 'helm-projectile)
   :config
   (add-to-list 'projectile-globally-ignored-directories "node_modules")
   (add-to-list 'projectile-globally-ignored-directories "target")
@@ -164,7 +167,6 @@
   (add-to-list 'grep-find-ignored-files "**.build.js")
   (add-to-list 'grep-find-ignored-files ".DS_Store")
   (projectile-global-mode)
-  (evil-leader/set-key "t" 'helm-projectile)
   (t/declare-prefix "p" "Project"
                     "b" 'helm-browse-project
                     "c" 'projectile-switch-project
@@ -238,12 +240,16 @@
                     "c" 'git-gutter+-commit))
 
 (use-package git-gutter-fringe+
-  :defer 1
+  :after git-gutter+
   :if has-gui
   :config
   (git-gutter+-enable-fringe-display-mode))
 
 (use-package helm-open-github
+  :commands (helm-open-github-from-issues
+             helm-open-github-from-commit
+             helm-open-github-from-file
+             helm-open-github-from-pull-requests)
   :config
   (t/declare-prefix "go" "Open github"
                     "i" 'helm-open-github-from-issues
@@ -252,9 +258,9 @@
                     "p" 'helm-open-github-from-pull-requests))
 
 (use-package git-link
+  :commands git-link
   :init
   (setq git-link-open-in-browser t)
-  :config
   (t/declare-prefix "go" "Open github"
                     "l" 'git-link))
 
@@ -269,7 +275,11 @@
       (bind-key "C-p" 'git-timemachine-show-previous-revision evil-normal-state-local-map))))
 
 (use-package gist
-  :defer 2
+  :commands (gist-list
+             gist-buffer
+             gist-buffer-private
+             gist-region
+             gist-region-private)
   :init
   (t/declare-prefix "gg" "Gist"
                     "l" 'gist-list
@@ -288,12 +298,14 @@
   :init
   (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)
         aw-background t)
-  :config
   (t/declare-prefix "j" "Jump to"
                     "w" 'ace-window))
 
 (use-package ace-jump-mode
-  :commands (ace-jump-mode ace-jump-char-mode ace-jump-line-mode ace-jump-word-mode)
+  :commands (ace-jump-mode
+             ace-jump-char-mode
+             ace-jump-line-mode
+             ace-jump-word-mode)
   :init
   (setq ace-jump-mode-gray-background t
         ace-jump-mode-case-fold t)
@@ -305,7 +317,6 @@
 
 (use-package magit
   :commands magit-status
-  :defer t
   :init
   (t/declare-prefix "g" "Git"
                     "s" 'magit-status
@@ -332,17 +343,17 @@
     (git-gutter+-refresh))
 
   (use-package magit-gh-pulls
+    :after magit
     :ensure t
-    :defer t
     :init (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls)))
 
 (use-package undo-tree
   :diminish undo-tree-mode
+  :commands undo-tree-visualize
   :init
   (setq undo-tree-visualizer-timestamps t
         undo-tree-visualizer-diff t)
-  :config
-  (bind-key [f5] (lambda ()
+  (bind-key [f7] (lambda ()
                    "custom undo tree visualizer toggle"
                    (interactive)
                    (if (get-buffer undo-tree-visualizer-buffer-name)
@@ -359,8 +370,7 @@
   (smex-initialize))
 
 (use-package company
-  :defer 2
-  :commands global-company-mode
+  :defer 1
   :init
   (setq company-idle-delay 0.2
         company-tooltip-align-annotations t
@@ -381,29 +391,24 @@
                     (completion-at-point)) company-active-map))
 
 (use-package company-web
-  :defer 2
-  :init
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-web-html)))
+  :after company
+  :config
+  (add-to-list 'company-backends 'company-web-html))
 
 (use-package company-ansible
-  :defer 2
-  :init
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-ansible)))
+  :after company
+  :config
+  (add-to-list 'company-backends 'company-ansible))
 
 (use-package company-restclient
-  :defer 2
-  :init
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-restclient)))
+  :after company
+  :config
+  (add-to-list 'company-backends 'company-restclient))
 
 (use-package company-tern
-  :defer 2
-  :init
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-tern))
+  :after company
   :config
+  (add-to-list 'company-backends 'company-tern)
   (setq tern-command (append tern-command '("--no-port-file")))
   (unbind-key "M-." tern-mode-keymap)
   (unbind-key "M-," tern-mode-keymap)
@@ -412,15 +417,14 @@
   (bind-key "C-M-." 'helm-etags-select))
 
 (use-package company-emoji
-  :defer 2
-  :init
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-emoji)))
+  :after company
+  :config
+  (add-to-list 'company-backends 'company-emoji))
 
 (use-package smartparens
   :diminish smartparens-mode
   :commands turn-on-smartparens-mode
-  :config
+  :init
   (dolist (hook '(js2-mode-hook
                   js-mode-hook
                   java-mode
@@ -428,7 +432,7 @@
                   ruby-mode
                   mark-down-mode))
     (add-hook hook 'turn-on-smartparens-mode))
-
+  :config
   (require 'smartparens-config)
   (bind-key "<delete>" 'sp-delete-char sp-keymap)
   (bind-key "C-<right>" 'sp-forward-slurp-sexp sp-keymap)
@@ -455,16 +459,18 @@
                    '((t/sp--create-newline-and-enter-sexp "RET")))))
 
 (use-package writeroom-mode
-  :commands writeroom-mode
-  :defer t)
+  :commands writeroom-mode)
 
 (use-package w3m
   :commands w3m
-  :defer t
   :config
   (bind-key "M-n" nil w3m-mode-map))
 
 (use-package tagedit
+  :commands tagedit-mode
+  :init
+  (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))
+  (add-hook 'sgml-mode-hook (lambda () (bind-key "C-c C-r" 'mc/mark-sgml-tag-pair sgml-mode-map)))
   :config
   (bind-key "C-<left>" 'tagedit-forward-barf-tag html-mode-map)
   (bind-key "C-<right>" 'tagedit-forward-slurp-tag html-mode-map)
@@ -473,50 +479,46 @@
   (bind-key "M-r" 'tagedit-raise-tag html-mode-map)
   (bind-key "M-s" 'tagedit-splice-tag html-mode-map)
   (bind-key "M-S" 'tagedit-split-tag html-mode-map)
-  (bind-key "M-J" 'tagedit-join-tags html-mode-map)
-
-  (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))
-  (add-hook 'sgml-mode-hook (lambda () (bind-key "C-c C-r" 'mc/mark-sgml-tag-pair sgml-mode-map))))
+  (bind-key "M-J" 'tagedit-join-tags html-mode-map))
 
 (use-package discover-my-major
-  :defer t
   :commands (discover-my-major discover-my-mode))
 
 (use-package remark-mode
-  :commands remark-mode
-  :defer t)
+  :commands remark-mode)
 
 (use-package helm
+  :commands (helm-projectile helm-projectile-ag)
   :diminish helm-mode
   :init
-  (require 'helm-config)
-  (setq-default helm-display-header-line nil
-                helm-M-x-fuzzy-match t
-                helm-mode-fuzzy-match t
-                helm-buffers-fuzzy-matching t
-                helm-recentf-fuzzy-match t
-                helm-apropos-fuzzy-match t
-                helm-projectile-fuzzy-match t
-                helm-completion-in-region-fuzzy-match t
-                helm-candidate-number-limit 100
+    (require 'helm-config)
+    (setq-default helm-display-header-line nil
+                  helm-M-x-fuzzy-match t
+                  helm-mode-fuzzy-match t
+                  helm-buffers-fuzzy-matching t
+                  helm-recentf-fuzzy-match t
+                  helm-apropos-fuzzy-match t
+                  helm-projectile-fuzzy-match t
+                  helm-completion-in-region-fuzzy-match t
+                  helm-candidate-number-limit 100
 
-                ;; keep follow mode on, after on once
-                helm-follow-mode-persistent t
-                helm-ff-skip-boring-files t
-                helm-quick-update t
-                helm-M-x-requires-pattern nil)
-  (helm-mode)
-  (set-face-attribute 'helm-source-header nil :height 1)
+                  ;; keep follow mode on, after on once
+                  helm-follow-mode-persistent t
+                  helm-ff-skip-boring-files t
+                  helm-quick-update t
+                  helm-M-x-requires-pattern nil)
   :config
   (progn
+    (helm-mode 1)
+    (set-face-attribute 'helm-source-header nil :height 1)
 
     (add-hook 'helm-before-initialize-hook 'neotree-hide)
 
     (bind-key "C-w" 'backward-kill-word helm-map)
 
     (use-package helm-ag
+      :after helm
       :commands helm-ag
-      :defer t
       :init
       (setq helm-ag-fuzzy-match t
             helm-ag-insert-at-point 'symbol
@@ -527,17 +529,22 @@
         (setq helm-ag-base-command "ag --nocolor --nogroup --vimgrep")))
 
     (use-package helm-projectile
-      :commands helm-projectile
-      :defer t)
+      :after helm
+      :commands helm-projectile)
 
     (use-package helm-descbinds
+      :after helm
       :commands helm-descbinds
       :init
       (helm-descbinds-mode))
 
-    (use-package helm-dash)
+    (use-package helm-dash
+      :after helm
+      :commands helm-dash)
 
-    (use-package helm-swoop)))
+    (use-package helm-swoop
+      :after helm
+      :commands helm-swoop)))
 
 (use-package visual-regexp
   :commands vr/query-replace
@@ -548,7 +555,7 @@
   :bind ("C-c C-j" . dash-at-point))
 
 (use-package fancy-battery
-  :defer 2
+  :defer 4
   :if is-mac
   :config (fancy-battery-mode))
 
@@ -557,10 +564,12 @@
   :bind (("<C-S-up>" . move-text-up)
          ("<C-S-down>" . move-text-down)))
 
-(use-package multiple-cursors)
+(use-package multiple-cursors
+  :commands (t/cursor-down t/cursor-up))
 
 (use-package expand-region
-  :config
+  :commands (er/expand-region er/contract-region)
+  :init
   (bind-key (if is-mac "M-@" "M-'") 'er/expand-region)
   (bind-key (if is-mac "M-*" "M-§") 'er/contract-region))
 
@@ -747,8 +756,6 @@
 (require 'keys)
 (require 'langs)
 
-(bind-key "C-x C-c" 't/delete-frame-or-hide-last-remaining-frame)
-
 (t/declare-prefix "E" "Editor"
                   "t" 'load-theme)
 
@@ -891,16 +898,22 @@
     (add-hook 'after-make-frame-functions
               (lambda (frame)
                 (with-selected-frame frame
-                  (load-theme 'spacemacs-dark t))))
-  (load-theme 'spacemacs-dark t))
+                  (progn
+                    (load-theme 'spacemacs-dark t)
+                    (t/tone-down-fringe-background-color)))))
+  (progn
+    (load-theme 'spacemacs-dark t)
+    (t/tone-down-fringe-background-color)))
 
 ;; custom-settings in separate file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
 ;; ;; benchmarks
-;; (benchmark-init/show-durations-tabulated)
-;; (benchmark-init/show-durations-tree)
+(when t-debug-init
+  (message "t: timing init complete")
+  (benchmark-init/show-durations-tabulated)
+  (benchmark-init/show-durations-tree))
 
 (when (or is-ms
           (display-graphic-p))
