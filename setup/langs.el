@@ -353,7 +353,8 @@
                                ;; remove some keys that conflict
                                (unbind-key "C-." evil-normal-state-map)
                                (unbind-key "M-." evil-normal-state-map)))
-  (bind-key "M-." 'ensime-edit-definition scala-mode-map)
+  (add-hook 'scala-mode-hook (lambda ()
+                               (bind-key "M-." 'ensime-edit-definition scala-mode-map)))
   :config
   (t/declare-prefix-for-mode 'scala-mode "m" "Mode"
                              "j" 'ensime
