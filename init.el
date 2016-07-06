@@ -1,4 +1,4 @@
-(load (locate-user-emacs-file "proxy.el") t)
+(load (locate-user-emacs-file "before.el") t)
 
 (setq dir-snippets (locate-user-emacs-file "snippets"))
 (setq dir-setup (locate-user-emacs-file "setup"))
