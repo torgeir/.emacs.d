@@ -1,5 +1,3 @@
-(provide 'cygwin)
-
 (global-set-key (kbd "C-+") 't/increase-font-size)
 (global-set-key (kbd "C--") 't/decrease-font-size)
 (global-set-key (kbd "C-0") 't/reset-font-size)
@@ -56,3 +54,5 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
 
       (expand-file-name
        (format "~/.save/#%s#%s#" buf-name (make-temp-name ""))))))
+	   
+(provide 'cygwin)
