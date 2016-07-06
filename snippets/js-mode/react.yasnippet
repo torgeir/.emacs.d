@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: react
+# key: React
+# --
+const React = require('react');
+
+const ${1:Component} = React.createClass({
+
+  render: function () {
+    return ${2:<div>$3</div>};
+  }
+
+});
+
+module.exports = $1;
