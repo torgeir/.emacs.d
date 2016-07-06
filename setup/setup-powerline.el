@@ -5,8 +5,8 @@
   (defvar color-yellow "#ff4")
   (defvar color-green "#acfa00")
 
+  (require 'flycheck)
   (defun powerline-flycheck-status ()
-    (require 'flycheck)
     (when flycheck-mode
       (defvar powerline-flycheck-error-face   `((t . (:background ,color-red))))
       (defvar powerline-flycheck-warning-face `((t . (:background ,color-orange))))
