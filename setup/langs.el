@@ -172,6 +172,7 @@
 
 ;; elm
 (use-package elm-mode
+  :mode "\\.elm$"
   :config
   (t/declare-prefix-for-mode 'elm-mode "me" "Evaluate"
                              "b" (lambda ()
@@ -211,6 +212,7 @@
   (add-hook 'nxml-mode-hook (setq nxml-child-indent indent-xml)))
 
 (use-package simplezen
+  :defer 1
   :config
   (add-hook 'sgml-mode-hook (lambda ()
                               "make tab work, first try yasnippet, then simplezen"
@@ -220,13 +222,15 @@
 
 (use-package clojure-mode
   :mode "\\.\\(edn\\|boot\\|clj\\|cljs\\)$"
+  :commands (clojure-mode)
   :config
   ;; stop nagging about saving
   (defadvice clojure-test-run-tests (before save-first activate) (save-buffer))
   (defadvice nrepl-load-current-buffer (before save-first activate) (save-buffer))
 
   (use-package clj-refactor
-    :config
+    :commands (clj-refactor-mode)
+    :init
     (add-hook 'clojure-mode-hook
               (lambda ()
                 (clj-refactor-mode 1)
@@ -281,9 +285,11 @@
                                   )))))
 
 
-(use-package clojure-mode-extra-font-locking) ;; more syntax hilighting
+(use-package clojure-mode-extra-font-locking
+  :commands (clojure-mode)) ;; more syntax hilighting
 
 (use-package cider
+  :commands (cider cider-connect cider-jack-in)
   :init
   ;; go to repl on connect
   (setq cider-repl-pop-to-buffer-on-connect nil)
