@@ -153,22 +153,21 @@
 (run-with-idle-timer 300 t 'jump-to-org-agenda)
 
 (t/declare-prefix "oo" "Org"
-                  "li" 'org-insert-link
-                  "ls" 'org-store-link
-                  "mp" 'org-mobile-push
-                  "mP" 'org-mobile-pull
                   "c" 'org-capture
                   "e" 'org-export-dispatch
                   "g" 'org-mac-grab-link
                   "a" 'org-agenda
-                  "i" 'org-info
-                  "sa" 'org-archive-set-tag
-                  "st" 'org-set-tags-to)
+                  "i" 'org-info)
+
 (t/declare-prefix "oom" "Mobile"
                   "p" 'org-mobile-push
                   "P" 'org-mobile-pull)
 
-(t/declare-prefix "oos" "Tags"
+(t/declare-prefix "ool" "Links"
+                  "s" 'org-store-link
+                  "i" 'org-insert-link)
+
+(t/declare-prefix "oot" "Tags"
                   "a" 'org-archive-set-tag
                   "t" 'org-set-tags-to)
 
