@@ -604,4 +604,11 @@ Including indent-buffer, which should not be called automatically on save."
                          (ido-read-file-name "Find file(as root): ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
+
+(defun t/tone-down-fringe-background-color ()
+  "Make fringe background-color the background-color"
+  (set-face-attribute 'fringe nil
+                      :foreground (face-foreground 'default)
+                      :background (face-background 'default)))
+
 (provide 'defuns)
