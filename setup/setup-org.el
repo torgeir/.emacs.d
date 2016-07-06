@@ -1,6 +1,7 @@
-(use-package org-alert)
-(use-package org-mac-iCal)
-(use-package org-mac-link)
+(use-package org-mac-iCal
+  :commands (org-mac-iCal))
+(use-package org-mac-link
+  :commands (org-mac-grab-link))
 
 (use-package org
   :defer 2
@@ -48,14 +49,15 @@
         )
 
   (setq org-modules '(org-mouse
-                      org-eval
-                      org-expiry
+                      ;; TODO error when loading these two
+                      ;org-eval
+                      ;org-expiry
                       ))
   (eval-after-load 'org
     '(org-load-modules-maybe t))
 
   (eval-after-load 'org
-    '(require 'ox-md nil t))
+    '(require 'ox-md))
 
   (setq org-capture-templates
         '(("t" "Task"
