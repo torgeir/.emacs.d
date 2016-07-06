@@ -11,7 +11,7 @@
 
   (if is-mac
     (bind-key "C-'" 'evil-local-mode)
-	(bind-key "C-|" 'evil-local-mode))
+    (bind-key "C-|" 'evil-local-mode))
 
   :config
   (progn
