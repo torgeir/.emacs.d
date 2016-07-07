@@ -117,7 +117,7 @@
                 (push (prin1-to-string x t) tag-names))
               tags-completion-table)
     (etags-select-find (ido-completing-read "Tag: " tag-names))))
-	
+
 
 (defun t/ido-go-straight-home ()
   (interactive)
@@ -519,10 +519,10 @@ Including indent-buffer, which should not be called automatically on save."
 
 (defmacro t/macro-helm-ag-insert (thing fn)
   `(lambda ()
-    (interactive)
-    (setq-local helm-ag-insert-at-point ,thing)
-    (,fn)
-    (setq-local helm-ag-insert-at-point nil)))
+     (interactive)
+     (setq-local helm-ag-insert-at-point ,thing)
+     (,fn)
+     (setq-local helm-ag-insert-at-point nil)))
 
 (defun t/face-color-b (attr)
   "Get `:background' color of `attr'"
@@ -554,11 +554,11 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (when window-system
     (setq t/default-font (if is-mac
-                                   (concat "-apple-Monaco-medium-normal-normal-*-"
-                                           (number-to-string t/default-font-size)
-                                           "-*-*-*-m-0-iso10646-1")
-                                 (concat "Inconsolata-"
-                                         (number-to-string t/default-font-size))))
+                             (concat "-apple-Monaco-medium-normal-normal-*-"
+                                     (number-to-string t/default-font-size)
+                                     "-*-*-*-m-0-iso10646-1")
+                           (concat "Inconsolata-"
+                                   (number-to-string t/default-font-size))))
     (set-face-attribute 'default nil :font t/default-font)))
 (defun t/decrease-font-size ()
   (interactive)
@@ -586,11 +586,11 @@ Including indent-buffer, which should not be called automatically on save."
   (org-capture))
 
 (defun t/refile-to (file headline)
-    "Move current headline to specified location"
-    (let ((pos (save-excursion
-                 (find-file file)
-                 (org-find-exact-headline-in-buffer headline))))
-      (org-refile nil nil (list headline file nil pos))))
+  "Move current headline to specified location"
+  (let ((pos (save-excursion
+               (find-file file)
+               (org-find-exact-headline-in-buffer headline))))
+    (org-refile nil nil (list headline file nil pos))))
 
 (defun t/sudo-edit (&optional arg)
   "Edit currently visited file as root.
