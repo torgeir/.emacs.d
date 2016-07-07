@@ -610,5 +610,34 @@ Including indent-buffer, which should not be called automatically on save."
   (set-face-attribute 'fringe nil
                       :foreground (face-foreground 'default)
                       :background (face-background 'default)))
+(defadvice evil-paste-before (around t/advice-indent-paste-before activate)
+  "Advice to intent text after pasting with `P'.
+   Use `c-u P' to prevent it."
+  (evil-start-undo-step)
+  (let* ((prefix current-prefix-arg)
+         (got-universal-prefix (equal '(4) prefix)))
+    (ad-set-arg 0 (unless got-universal-prefix prefix))
+    ad-do-it
+    (unless got-universal-prefix
+      (indent-region (region-beginning)
+                     (region-end))))
+  (evil-end-undo-step))
+
+(defadvice evil-paste-after (around t/advice-indent-paste-after activate)
+  "Advice to intent text after pasting with `p'.
+   Use `c-u p' to prevent it."
+  (evil-start-undo-step)
+  (let* ((prefix current-prefix-arg)
+         (got-universal-prefix (equal '(4) prefix)))
+    (ad-set-arg 0 (unless got-universal-prefix prefix))
+    ad-do-it
+    (unless got-universal-prefix
+      (indent-region (region-beginning)
+                     (region-end))))
+  (evil-end-undo-step))
+
+;; Remove an advice: disable it, then activate it?
+;; (ad-disable-advice 'evil-paste-after 'around 't/advice-paste-indent)
+;; (ad-activate 'evil-paste-after)
 
 (provide 'defuns)
