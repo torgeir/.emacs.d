@@ -33,6 +33,7 @@
 
 (defadvice load-theme (after t/advice-after-load-theme activate)
   "Tone down fringe after loading new themes"
-  (t/tone-down-fringe-bg-color))
+  (t/tone-down-fringe-bg-color)
+  (t/reset-font-size))
 
 (provide 't-load-theme)

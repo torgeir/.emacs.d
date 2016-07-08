@@ -68,7 +68,6 @@
 
 (when is-mac (require 'mac))
 (when is-ms (require 'cygwin))
-(t/reset-font-size)
 
 (require 'sane-defaults)
 
