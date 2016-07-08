@@ -604,6 +604,31 @@ Including indent-buffer, which should not be called automatically on save."
                          (ido-read-file-name "Find file(as root): ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
+(defadvice yank (around t/advice-indent-paste-before activate)
+  "Advice to intent text after pasting with `yank'.
+   Use `c-u yank' to prevent it."
+  (evil-start-undo-step)
+  (let* ((prefix current-prefix-arg)
+         (got-universal-prefix (equal '(4) prefix)))
+    (ad-set-arg 0 (unless got-universal-prefix prefix))
+    ad-do-it
+    (unless got-universal-prefix
+      (indent-region (region-beginning)
+                     (region-end))))
+  (evil-end-undo-step))
+
+(defadvice yank-pop (around t/advice-indent-paste-before activate)
+  "Advice to intent text after pasting with `yank-pop'.
+   Use `c-u yank-pop' to prevent it."
+  (evil-start-undo-step)
+  (let* ((prefix current-prefix-arg)
+         (got-universal-prefix (equal '(4) prefix)))
+    (ad-set-arg 0 (unless got-universal-prefix prefix))
+    ad-do-it
+    (unless got-universal-prefix
+      (indent-region (region-beginning)
+                     (region-end))))
+  (evil-end-undo-step))
 
 (defadvice evil-paste-before (around t/advice-indent-paste-before activate)
   "Advice to intent text after pasting with `P'.
