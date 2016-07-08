@@ -811,7 +811,7 @@
                   "s" 'config-edit-snippets)
 
 (t/declare-prefix "T" "Toggle"
-                  "t" 't/toggle-theme-dark-light
+                  "T" 't/toggle-theme-dark-light
                   "l" 'linum-mode
                   "L" 'linum-relative-toggle
                   "b" 'fancy-battery-mode
