@@ -1,5 +1,7 @@
 ;; credits spacemacs for all the clever stuff
 
+;; TODO a helm ag thingy that jumps to git hunks would be useful, look at the site-lisp/spotify package to se how
+
 (load (locate-user-emacs-file "before.el") t)
 
 (setq dir-snippets (locate-user-emacs-file "snippets"))
@@ -218,8 +220,6 @@
               (bind-key "C" 'neotree-change-root evil-normal-state-map))))
 
 (t/declare-prefix "g" "Git")
-
-;; TODO a helm ag thingy that jumps to git hunks would be useful, look at the site-lisp/spotify package to se how
 
 (use-package git-gutter+
   :defer 1
