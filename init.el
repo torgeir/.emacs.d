@@ -180,7 +180,6 @@
                     "k" 'projectile-kill-buffers
                     "o" 't/open-in-desktop
                     "p" 'projectile-find-file-in-known-projects
-                    "r" 'projectile-recentf
                     "R" 'projectile-replace
                     "S" 'projectile-save-project-buffers
                     "t" 'projectile-find-test-file)
