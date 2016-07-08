@@ -18,12 +18,12 @@
    'after-make-frame-functions
    (lambda (frame)
      (with-selected-frame frame
-       (t/load-theme-and-fix-fringe-bg)))))
+       (t/load-theme)))))
 
 (defadvice server-create-window-system-frame
     (after t/advice-after-init-display activate)
   "Wait until server created window system frame before loading the theme"
-  (t/load-theme-and-fix-fringe-bg)
+  (t/load-theme)
   (ad-disable-advice 'server-create-window-system-frame 'after 't/advice-after-init-display)
   (ad-activate 'server-create-window-system-frame))
 
