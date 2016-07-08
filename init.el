@@ -60,7 +60,6 @@
 (use-package dash)
 (use-package s)
 (use-package better-defaults)
-(use-package spacemacs-theme)
 
 (require 'setup-powerline)
 (require 'defuns)
@@ -894,16 +893,7 @@
 
 (global-set-key [M-S-down-mouse-1] 'mc/add-cursor-on-click)
 
-(if (daemonp)
-    (add-hook 'after-make-frame-functions
-              (lambda (frame)
-                (with-selected-frame frame
-                  (progn
-                    (load-theme 'spacemacs-dark t)
-                    (t/tone-down-fringe-background-color)))))
-  (progn
-    (load-theme 'spacemacs-dark t)
-    (t/tone-down-fringe-background-color)))
+(require 't-load-theme)
 
 ;; custom-settings in separate file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
