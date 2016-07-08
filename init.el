@@ -455,10 +455,10 @@
                    mark-down-mode
                    c-mode c++-mode
                    js-mode js2-mode)
-    (sp-local-pair "[" nil :post-handlers
-                   '((t/sp--create-newline-and-enter-sexp "RET")))
-    (sp-local-pair "{" nil :post-handlers
-                   '((t/sp--create-newline-and-enter-sexp "RET")))))
+                 (sp-local-pair "[" nil :post-handlers
+                                '((t/sp--create-newline-and-enter-sexp "RET")))
+                 (sp-local-pair "{" nil :post-handlers
+                                '((t/sp--create-newline-and-enter-sexp "RET")))))
 
 (use-package writeroom-mode
   :commands writeroom-mode)
@@ -936,7 +936,6 @@
   (benchmark-init/show-durations-tabulated)
   (benchmark-init/show-durations-tree))
 
-(when (or is-ms
-          (display-graphic-p))
-  (require 'server)
-  (unless (server-running-p) (server-mode)))
+(require 'server)
+(unless (server-running-p) (server-mode))
+(put 'narrow-to-page 'disabled nil)
