@@ -21,7 +21,6 @@
      (unless t-theme-did-load
        (setq t-theme-did-load t)
        (with-selected-frame frame (t/load-theme)))
-     (t/tone-down-fringe-bg-color)
      ;; for some reason opening in terminal gives menu bar
      (menu-bar-mode -1))))
 
@@ -30,7 +29,10 @@
   "Wait until server created window system frame before loading the theme"
   (unless t-theme-did-load
     (setq t-theme-did-load t)
-    (t/load-theme))
+    (t/load-theme)))
+
+(defadvice load-theme (after t/advice-after-load-theme activate)
+  "Tone down fringe after loading new themes"
   (t/tone-down-fringe-bg-color))
 
 (provide 't-load-theme)
