@@ -7,11 +7,23 @@
 ;; dont blink cursor
 (blink-cursor-mode -1)
 
+;; draw underline lower
+(setq x-underline-at-descent-line t)
+
 ;; no bell
 (setq ring-bell-function 'ignore)
 
 ;; visible bell
 (setq visible-bell t)
+
+;; focus help buffers
+(setq help-window-select 't)
+
+;; start *scratch* in text mode, loads emacs faster
+(setq initial-major-mode 'text-mode)
+
+;; clipboard contents into kill-ring before replace
+(setq save-interprogram-paste-before-kill t)
 
 ;; show keystrokes
 (setq echo-keystrokes 0.01)
@@ -90,10 +102,11 @@
 
 ;; save more recent files
 (use-package recentf
-  :defer 1
+  :defer t
   :init
-  (setq recentf-max-saved-items 200
-        recentf-auto-cleanup 300)
+  (setq recentf-max-saved-items 1000
+        recentf-auto-cleanup 'never
+        recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
   :config
   (recentf-mode 1))
 

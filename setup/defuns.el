@@ -604,6 +604,12 @@ Including indent-buffer, which should not be called automatically on save."
                          (ido-read-file-name "Find file(as root): ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
+
+;; remove other clients-has-the-file-open-prompt
+(defun server-remove-kill-buffer-hook ()
+  (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
+(add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
+
 (defadvice yank (around t/advice-indent-paste-before activate)
   "Advice to intent text after pasting with `yank'.
    Use `c-u yank' to prevent it."
@@ -659,5 +665,33 @@ Including indent-buffer, which should not be called automatically on save."
 ;; Remove an advice: disable it, then activate it?
 ;; (ad-disable-advice 'evil-paste-after 'around 't/advice-paste-indent)
 ;; (ad-activate 'evil-paste-after)
+
+(defun t/comint-clear-buffer ()
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
+
+(defun t/uniquify-lines ()
+  "Remove duplicate adjacent lines in region or current buffer"
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (let ((beg (if (region-active-p) (region-beginning) (point-min)))
+            (end (if (region-active-p) (region-end) (point-max))))
+        (goto-char beg)
+        (while (re-search-forward "^\\(.*\n\\)\\1+" end t)
+          (replace-match "\\1"))))))
+
+(defun t/sort-lines ()
+  "Sort lines in region or current buffer"
+  (interactive)
+  (let ((beg (if (region-active-p) (region-beginning) (point-min)))
+        (end (if (region-active-p) (region-end) (point-max))))
+    (sort-lines nil beg end)))
+
+(defun t/switch-to-scratch-buffer ()
+  "Switch to the `*scratch*' buffer. Create it first if needed."
+  (interactive)
+  (switch-to-buffer (get-buffer-create "*scratch*")))
 
 (provide 'defuns)

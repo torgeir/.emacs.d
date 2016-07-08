@@ -84,6 +84,15 @@
   (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
   (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region))
 
+(use-package evil-visualstar
+  :commands (evil-visualstar/begin-search-forward
+             evil-visualstar/begin-search-backward)
+  :init
+  (define-key evil-visual-state-map (kbd "*")
+    'evil-visualstar/begin-search-forward)
+  (define-key evil-visual-state-map (kbd "#")
+    'evil-visualstar/begin-search-backward))
+
 (use-package evil-paredit
   :after evil
   :config
@@ -103,6 +112,16 @@
                     "y" 'evilnc-copy-and-comment-lines
                     "w" 'evil-complete-next
                     "W" 'evil-complete-previous))
+
+
+;; motions keys for help buffers
+(evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
+(evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
+(evil-define-key 'motion help-mode-map (kbd "]") 'help-go-forward)
+(evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
+(evil-define-key 'motion help-mode-map (kbd "[") 'help-go-back)
+(evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
+(evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)
 
 ;; some emacs stuff is useful, in terminals etc
 ;; http://stackoverflow.com/a/16226006

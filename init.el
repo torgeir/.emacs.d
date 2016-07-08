@@ -72,11 +72,17 @@
 
 (use-package which-key
   :diminish which-key-mode
-  :config
-  ;; percentage height
-  (setq which-key-side-window-max-height 0.5)
-  (setq which-key-separator " ")
-  (setq which-key-key-replacement-alist
+  :init
+  (setq which-key-special-keys nil
+        which-key-sort-order 'which-key-key-order-alpha
+        ;; percentage height
+        which-key-side-window-max-height 0.5
+        which-key-separator " "
+        ;; time to wait before display
+        which-key-idle-delay 0.4
+        which-key-use-C-h-for-paging t
+        which-key-allow-evil-operators t
+        which-key-key-replacement-alist
         '(("<\\([[:alnum:]-]+\\)>" . "\\1")
           ("up"                    . "↑")
           ("right"                 . "→")
@@ -85,9 +91,6 @@
           ("DEL"                   . "⌫")
           ("deletechar"            . "⌦")
           ("RET"                   . "⏎")))
-
-  ;; time to wait before display
-  (setq which-key-idle-delay 0.4)
   (which-key-mode nil)
   (which-key-mode))
 
@@ -169,21 +172,20 @@
   (t/declare-prefix "p" "Project"
                     "b" 'helm-browse-project
                     "c" 'projectile-switch-project
-                    "d" 'projectile-dired
+                    "d" 'projectile-find-dir
+                    "f" 'projectile-find-file-dwim
+                    "G" 'projectile-regenerate-tags
                     "k" 'projectile-kill-buffers
                     "o" 't/open-in-desktop
+                    "p" 'projectile-find-file-in-known-projects
+                    "r" 'projectile-recentf
                     "R" 'projectile-replace
-                    "s" 'projectile-save-project-buffers)
+                    "S" 'projectile-save-project-buffers
+                    "t" 'projectile-find-test-file)
 
   (t/declare-prefix "pr" "Project run"
                     "a" 'projectile-run-async-shell-command-in-root
-                    "s" 'projectile-run-shell-command-in-root)
-
-  (t/declare-prefix "pf" "Project find"
-                    "d" 'projectile-find-dir
-                    "f" 'projectile-find-file-dwim
-                    "p" 'projectile-find-file-in-known-projects
-                    "t" 'projectile-find-test-file))
+                    "s" 'projectile-run-shell-command-in-root))
 
 (use-package neotree
   :bind (([f6] . neotree-toggle))
@@ -236,7 +238,8 @@
                     "=" 'git-gutter+-show-hunk
                     "r" 'git-gutter+-revert-hunks
                     "s" 'git-gutter+-stage-hunks
-                    "c" 'git-gutter+-commit))
+                    "cc" 'magit-commit
+                    "ca" 'magit-commit-amend))
 
 (use-package git-gutter-fringe+
   :after git-gutter+
@@ -487,25 +490,38 @@
   :commands remark-mode)
 
 (use-package helm
-  :commands (helm-projectile helm-projectile-ag)
+  :commands (helm-mini helm-projectile helm-projectile-ag)
   :diminish helm-mode
   :init
-    (require 'helm-config)
-    (setq-default helm-display-header-line nil
-                  helm-M-x-fuzzy-match t
-                  helm-mode-fuzzy-match t
-                  helm-buffers-fuzzy-matching t
-                  helm-recentf-fuzzy-match t
-                  helm-apropos-fuzzy-match t
-                  helm-projectile-fuzzy-match t
-                  helm-completion-in-region-fuzzy-match t
-                  helm-candidate-number-limit 100
+  (require 'helm-config)
+  (setq-default helm-display-header-line nil
+                helm-M-x-fuzzy-match t
+                helm-apropos-fuzzy-match t
+                helm-buffers-fuzzy-matching t
+                helm-completion-in-region-fuzzy-match t
+                helm-file-cache-fuzzy-match t
+                helm-lisp-fuzzy-completion t
+                helm-mode-fuzzy-match t
+                helm-projectile-fuzzy-match t
+                helm-recentf-fuzzy-match t
+                helm-candidate-number-limit 100
+                helm-prevent-escaping-from-minibuffer t
+                helm-always-two-windows t
+                helm-echo-input-in-header-line t
 
-                  ;; keep follow mode on, after on once
-                  helm-follow-mode-persistent t
-                  helm-ff-skip-boring-files t
-                  helm-quick-update t
-                  helm-M-x-requires-pattern nil)
+                ;; keep follow mode on, after on once
+                helm-follow-mode-persistent t
+                helm-ff-skip-boring-files t
+                helm-quick-update t
+                helm-M-x-requires-pattern nil)
+
+
+  (defun t/hide-cursor-in-helm-buffer ()
+    "Hide the cursor in helm buffers."
+    (with-helm-buffer
+      (setq cursor-in-non-selected-windows nil)))
+  (add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
+
   :config
   (progn
     (helm-mode 1)
@@ -535,7 +551,8 @@
       :after helm
       :commands helm-descbinds
       :init
-      (helm-descbinds-mode))
+      (helm-descbinds-mode)
+      (setq helm-descbinds-window-style 'split))
 
     (use-package helm-dash
       :after helm
@@ -732,6 +749,12 @@
   (t/declare-prefix "c" "Comment/Complete"
                     "l" 't/helm-find-and-insert-line-from-project))
 
+(t/declare-prefix "o" "Other"
+                  "C" 'calc-dispatch
+                  "d" 'dired
+                  "p" 'list-processes
+                  "P" 'proced)
+
 (use-package spotify
   :ensure nil
   :load-path "site-lisp/spotify/"
@@ -787,10 +810,10 @@
 (t/declare-prefix "b" "Buffers"
                   "d" 'delete-window
                   "S" 'save-some-buffers
-                  "s" 'save-buffer
+                  "s" 't/switch-to-scratch-buffer
                   "k" 'kill-this-buffer
                   "K" 't/kill-other-buffers
-                  "b" 'helm-buffers-list
+                  "b" 'helm-mini
                   "N" 'previous-buffer
                   "n" 'next-buffer
                   "R" 'revert-buffer)
@@ -803,7 +826,9 @@
                   "a" 'align-regexp
                   "k" 'ido-kill-buffer
                   "m" 'helm-M-x
-                  "x" 'smex-major-mode-commands)
+                  "x" 'smex-major-mode-commands
+                  "ls" 't/sort-lines
+                  "lu" 't/uniquify-lines)
 
 (t/declare-prefix "xt" "Transpose"
                   "c" 'transpose-chars
@@ -830,12 +855,17 @@
 
 (t/declare-prefix "h" "Help"
                   "a" 'helm-apropos
-                  "K" 'describe-key
-                  "M" 'describe-minor-mode
                   "b" 'helm-descbinds
                   "f" 'describe-function
                   "k" 'describe-key-briefly
+                  "K" 'describe-key
+                  "l" 'helm-locate-library
+                  "i" 'helm-info-at-point
+                  "c" 'describe-char
                   "m" 'describe-mode
+                  "M" 'describe-minor-mode
+                  "n" 'view-emacs-news
+                  "t" 'describe-theme
                   "p" 'describe-package
                   "v" 'describe-variable)
 
@@ -843,6 +873,7 @@
                   "c" 'flycheck-clear
                   "p" 'flycheck-previous-error
                   "n" 'flycheck-next-error
+                  "N" 'flycheck-previous-error
                   "l" 'flycheck-list-errors
                   "v" 'flycheck-verify-setup
                   "t" 'flycheck-mode)
