@@ -178,6 +178,7 @@
                     "f" 'projectile-find-file-dwim
                     "G" 'projectile-regenerate-tags
                     "k" 'projectile-kill-buffers
+                    "l" 'neotree-find-project-root
                     "o" 't/open-in-desktop
                     "p" 'projectile-find-file-in-known-projects
                     "R" 'projectile-replace
@@ -196,9 +197,19 @@
         neo-create-file-auto-open t
         neo-show-updir-line nil
         neo-dont-be-alone t
+        neo-show-hidden-files t
         neo-auto-indent-point t)
   (when is-mac (setq neo-theme 'nerd))
   :config
+
+  (defun neotree-find-project-root ()
+    (interactive)
+    (if (neo-global--window-exists-p)
+        (neotree-hide)
+      (let ((origin-buffer-file-name (buffer-file-name)))
+        (neotree-find (projectile-project-root))
+        (neotree-find origin-buffer-file-name))))
+
   (add-hook 'neotree-mode-hook
             (lambda ()
               (defun neotree-change-root-up () (interactive) (neotree-select-up-node))
@@ -215,8 +226,10 @@
               (bind-key "u" 'neotree-change-root-up evil-normal-state-local-map)
               (bind-key "I" 'neotree-hidden-file-toggle evil-normal-state-local-map)
               (bind-key "q" 'neotree-hide evil-normal-state-local-map)
+              (bind-key "q" 'neotree-hide evil-normal-state-local-map)
+              (bind-key "TAB" 'neotree-stretch-toggle evil-normal-state-local-map)
               (bind-key "RET" 'neotree-enter evil-normal-state-local-map)
-              (bind-key "C" 'neotree-change-root evil-normal-state-map))))
+              (bind-key "C" 'neotree-change-root evil-normal-state-local-map))))
 
 (t/declare-prefix "g" "Git")
 
