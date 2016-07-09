@@ -883,7 +883,6 @@
                   "c" 'describe-char
                   "m" 'describe-mode
                   "M" 'describe-minor-mode
-                  "n" 'view-emacs-news
                   "t" 'describe-theme
                   "p" 'describe-package
                   "v" 'describe-variable)
