@@ -766,6 +766,14 @@
                   "p" 'list-processes
                   "P" 'proced)
 
+(use-package helm-hunks
+  :ensure nil
+  :load-path "site-lisp/helm-hunks/"
+  :commands helm-hunks
+  :init
+  (t/declare-prefix "gh" "Hunk"
+                    "h" 'helm-hunks))
+
 (use-package spotify
   :ensure nil
   :load-path "site-lisp/spotify/"
