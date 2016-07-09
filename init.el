@@ -903,7 +903,7 @@
                   "r" 'transpose-frame)
 
 (t/declare-prefix "s" "Search"
-                  "s" 'helm-swoop-same-face-at-point
+                  "s" 'helm-swoop
                   "b" (t/macro-helm-ag-insert 'word helm-ag-buffers)
                   "f" (t/macro-helm-ag-insert 'word helm-ag-this-file)
                   "p" 'helm-projectile-ag
