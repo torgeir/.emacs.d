@@ -1,10 +1,5 @@
 ;; credits spacemacs for all the clever stuff
 
-;; TODO a helm ag thingy that jumps to git hunks would be useful, look at the site-lisp/spotify package to se how
-
-;; TODO helm hunks, stage hunk
-;; TODO helm hunks, kill hunk
-
 (load (locate-user-emacs-file "before.el") t)
 
 (setq dir-snippets (locate-user-emacs-file "snippets"))
