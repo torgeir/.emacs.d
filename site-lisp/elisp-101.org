@@ -1,5 +1,17 @@
 * Elisp 101
 
+** lookup property like a map from a property list
+
+   #+begin_src elisp
+     (equal
+       (let ((lst (list :key "value" :another-key "another-value")))
+         (plist-get lst :another-key))
+       "another-value")
+   #+end_src
+
+   #+RESULTS:
+   : t
+
 ** `dolist' with return value
 
    #+begin_src elisp
