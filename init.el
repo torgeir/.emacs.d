@@ -4,7 +4,6 @@
 
 ;; TODO helm hunks, stage hunk
 ;; TODO helm hunks, kill hunk
-;; TODO helm hunks, no hunks message
 
 (load (locate-user-emacs-file "before.el") t)
 
