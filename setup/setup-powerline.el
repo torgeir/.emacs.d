@@ -57,6 +57,7 @@
 
               (rhs (list
 
+                    (when debug-on-error (powerline-raw "debug" face-blue 'r))
                     (powerline-raw global-mode-string face-grey 'r)
                     (powerline-major-mode             face-grey 'l)
                     (powerline-process                face-grey 'l)

@@ -821,6 +821,7 @@
                   "s" 'config-edit-snippets)
 
 (t/declare-prefix "T" "Toggle"
+                  "d" 'toggle-debug-on-error
                   "T" 't/toggle-theme-dark-light
                   "l" 'linum-mode
                   "L" 'linum-relative-toggle
