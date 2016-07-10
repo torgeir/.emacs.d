@@ -1,0 +1,176 @@
+* Elisp 101
+
+** `dolist' with return value
+
+   #+begin_src elisp
+     (let ((return-value nil)) ; empty list
+       (dolist (n '(1 2 3) return-value)
+         (push (* n 2)
+               return-value))) ; returns list in reverse
+                               ; as push (cons) adds to front of list
+   #+end_src
+
+   #+RESULTS:
+   | 6 | 4 | 2 |
+
+** Quote, but evaluate one of the forms
+
+   #+begin_src elisp
+     (equal
+       `(1 2 ,(+ 2 2))
+       '(1 2 4))
+   #+end_src
+
+   #+RESULTS:
+   : t
+
+** Example async helm source
+
+   #+begin_src elisp
+     (defvar a-source
+       (helm-build-async-source "a source"
+         :candidates-process (lambda ()
+                               '(("One" . '(meta . "one meta data"))
+                                 ("Two" . '(meta . "two meta data"))))
+
+         :action (lambda (candidate)
+                   (let ((meta (cdr (assoc 'meta candidate))))
+                     (message "Choose: %s" meta)))
+
+         :persistent-action (lambda (candidate)
+                   (let ((meta (cdr (assoc 'meta candidate))))
+                     (message "Follow: %s" meta)))
+
+         :follow 1))
+
+      (helm :sources '(a-source))
+   #+end_src
+
+   #+RESULTS:
+   : Choose: one meta data
+
+** Check for nil
+
+   #+begin_src elisp
+     (equal
+       (seq-empty-p nil)
+       t)
+   #+end_src
+
+   #+RESULTS:
+   : t
+
+** Higher order functions with `funcall'
+
+   #+begin_src elisp
+     (defun add-2 (n) (+ 2 n))
+     (defun run-fn (fn arg) (funcall fn arg))
+     (equal
+       (run-fn 'add-2 2)
+       4)
+   #+end_src
+
+   #+RESULTS:
+   : t
+
+** Loop
+
+   Remember to require `cl-macs'
+
+   #+begin_src elisp
+     (require 'cl-macs)
+     (cl-loop for n in '(1 2 3)
+              for m in '(2 3 4)
+              collect (+ n m))
+   #+end_src
+
+   #+RESULTS:
+   | 3 | 5 | 7 |
+
+** Map
+
+   #+begin_src elisp
+     (mapcar
+       (lambda (item) (format "Item: %s" item))
+       '(1 2 3 4))
+   #+end_src
+
+   #+RESULTS:
+   | Item: 1 | Item: 2 | Item: 3 | Item: 4 |
+
+** Get shell script result
+
+   #+begin_src elisp
+     (shell-command-to-string "ls")
+   #+end_src
+
+   #+RESULTS:
+   : cloudformation
+   : elisp.org
+   : helm-hunks
+   : helm-insert-line-from-project
+   : spotify
+
+** Split a string
+
+   #+begin_src elisp
+     (equal
+       (split-string "one two" " ")
+       '("one" "two"))
+   #+end_src
+
+   #+RESULTS:
+   : t
+
+** Cons to create a list
+
+   #+begin_src elisp
+     (equal
+       (cons 1 2)
+       '(1 . 2))
+   #+end_src
+
+   #+RESULTS:
+   : t
+
+** Car & Cdr
+
+   #+begin_src elisp
+     (equal
+       (car '(1 2))
+       1)
+   #+end_src
+
+   #+RESULTS:
+   : t
+
+   #+begin_src elisp
+     (equal
+       (cdr '(1 2))
+       2)
+   #+end_src
+
+   #+RESULTS:
+   : t
+
+** `nil' is an empty list
+
+   #+begin_src elisp
+    (equal
+      nil
+      '())
+   #+end_src
+
+   #+RESULTS:
+   : t
+
+** Get keys out of a property list
+
+   #+begin_src elisp
+     (let ((l '(:one 1 :two 2)))
+       (format "The value of :one is %s"
+         (plist-get l :one)))
+   #+end_src
+
+   #+RESULTS:
+   : The value of :one is 1
