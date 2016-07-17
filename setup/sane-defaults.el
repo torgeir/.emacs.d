@@ -134,16 +134,6 @@
   (bind-key [mouse-5] '(lambda () (interactive) (scroll-up 2)))
   (mouse-wheel-mode t))
 
-(use-package smooth-scrolling
-  :defer 1
-  :init
-  (setq smooth-scroll-margin 10)
-  :config
-  (smooth-scrolling-mode)
-  (enable-smooth-scroll-for-function previous-line)
-  (enable-smooth-scroll-for-function next-line)
-  (enable-smooth-scroll-for-function isearch-repeat))
-
 ;; utf-8 ffs
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)

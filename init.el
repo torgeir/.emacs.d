@@ -674,6 +674,16 @@
     ;; file notifications aren't supported on os x
     (setq auto-revert-use-notify nil)))
 
+(use-package smooth-scrolling
+  :defer 1
+  :init
+  (setq smooth-scroll-margin 10)
+  :config
+  (smooth-scrolling-mode)
+  (enable-smooth-scroll-for-function previous-line)
+  (enable-smooth-scroll-for-function next-line)
+  (enable-smooth-scroll-for-function isearch-repeat))
+
 (use-package dired
   :ensure nil
   :commands dired-jump
