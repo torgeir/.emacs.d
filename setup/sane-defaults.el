@@ -128,8 +128,10 @@
 (defun trackp-mouse (e))
 (setq mouse-sel-mode t)
 (when (require 'mwheel nil 'noerror)
-  (bind-key [mouse-4] '(lambda () (interactive) (scroll-down 1)))
-  (bind-key [mouse-5] '(lambda () (interactive) (scroll-up 1)))
+  (bind-key [wheel-down] '(lambda () (interactive) (scroll-down 2)))
+  (bind-key [wheel-up] '(lambda () (interactive) (scroll-up 2)))
+  (bind-key [mouse-4] '(lambda () (interactive) (scroll-down 2)))
+  (bind-key [mouse-5] '(lambda () (interactive) (scroll-up 2)))
   (mouse-wheel-mode t))
 
 (use-package smooth-scrolling
