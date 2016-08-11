@@ -56,8 +56,17 @@
   (insert "exit")
   (eshell-send-input))
 
+(defun t/eshell-clear ()
+  "Clear the eshell buffer."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (eshell-send-input)))
+
 (add-hook 'eshell-mode-hook
           (lambda ()
+            (bind-key "C-l" 't/eshell-clear evil-insert-state-local-map)
+            (bind-key "C-l" 't/eshell-clear evil-normal-state-local-map)
             (bind-key "C-d" 't/eshell-quit evil-insert-state-local-map)
             (bind-key "C-d" 't/eshell-quit evil-normal-state-local-map)))
 
