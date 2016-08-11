@@ -89,4 +89,4 @@
 
 (t/update-powerline)
 
-(provide 'setup-powerline)
+(provide 't-powerline)

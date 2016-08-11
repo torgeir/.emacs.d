@@ -77,4 +77,4 @@
 ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
 (add-hook 'after-make-frame-functions 't/set-emoji-font)
 
-(provide 'mac)
+(provide 't-mac)

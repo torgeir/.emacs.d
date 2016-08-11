@@ -22,4 +22,4 @@
   (which-key-mode nil)
   (which-key-mode))
 
-(provide 'setup-which-key)
+(provide 't-which-key)

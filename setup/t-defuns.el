@@ -740,4 +740,4 @@ Repeated invocations toggle between the two most recently open buffers."
     ;; For Linux
     (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
 
-(provide 'defuns)
+(provide 't-defuns)

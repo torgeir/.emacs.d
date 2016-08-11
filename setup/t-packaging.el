@@ -26,4 +26,4 @@
 (require 'diminish)
 (require 'bind-key)
 
-(provide 'packaging)
+(provide 't-packaging)

@@ -23,4 +23,4 @@
 (bind-key "C-," 'completion-at-point)
 (bind-key "C-:" 't/hippie-expand-lines)
 
-(provide 'keys)
+(provide 't-keys)

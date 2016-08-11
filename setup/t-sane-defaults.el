@@ -9,8 +9,8 @@
 ;; sane defaults
 (use-package better-defaults)
 
-(when is-mac (require 'mac))
-(when is-ms (require 'cygwin))
+(when is-mac (require 't-mac))
+(when is-ms (require 't-cygwin))
 
 ;; cut copies to os
 (setq interprogram-cut-function #'t/copy-to-clipboard)
@@ -163,4 +163,4 @@
 ;; silence useless warnings, e.g. ad-handle-definition: `find-tag-noselect' got redefined
 (setq ad-redefinition-action 'accept)
 
-(provide 'sane-defaults)
+(provide 't-sane-defaults)

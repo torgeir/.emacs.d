@@ -437,4 +437,4 @@
 
 (add-hook 'after-change-major-mode-hook 't/clean-mode-line)
 
-(provide 'langs)
+(provide 't-langs)

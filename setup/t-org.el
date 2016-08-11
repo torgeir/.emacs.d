@@ -187,4 +187,4 @@
                   "i" 'org-clock-in
                   "o" 'org-clock-out)
 
-(provide 'setup-org)
+(provide 't-org)

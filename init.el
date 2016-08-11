@@ -1,6 +1,6 @@
 ;; credits spacemacs for all the clever stuff
 
-(load (locate-user-emacs-file "before.el") t)
+(load (locate-user-emacs-file "t-before.el") t)
 
 (setq *user-dir-snippets* (locate-user-emacs-file "snippets"))
 (setq *user-dir-setup* (locate-user-emacs-file "setup"))
@@ -14,7 +14,7 @@
   (when (file-directory-p project)
     (add-to-list 'load-path project)))
 
-(require 'packaging)
+(require 't-packaging)
 
 (defvar t-debug-init nil "Debug/time startup")
 (when t-debug-init
@@ -34,11 +34,11 @@
 
 (defvar *user-leader* "SPC")
 
-(require 'defuns)
-(require 'sane-defaults)
+(require 't-defuns)
+(require 't-sane-defaults)
 
-(require 'setup-which-key)
-(require 'setup-evil)
+(require 't-which-key)
+(require 't-evil)
 (evil-mode 1)
 
 (use-package paradox
@@ -751,12 +751,12 @@
 (t/declare-prefix "o" "Other"
                   "b" 'browse-url)
 
-(require 'setup-shell)
-(require 'setup-org)
+(require 't-shell)
+(require 't-org)
 
-(require 'keys)
-(require 'langs)
-(require 'setup-powerline)
+(require 't-keys)
+(require 't-langs)
+(require 't-powerline)
 
 (t/declare-prefix "o" "Other"
                   "e" 't/eshell)

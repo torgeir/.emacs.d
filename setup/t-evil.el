@@ -177,4 +177,4 @@
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
 
-(provide 'setup-evil)
+(provide 't-evil)
