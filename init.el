@@ -220,7 +220,8 @@
 (use-package git-timemachine
   :commands git-timemachine-toggle
   :init
-  (evil-leader/set-key "gT" 'git-timemachine-toggle)
+  (t/declare-prefix "g" "Git"
+                    "T" 'git-timemachine-toggle)
   :config
   (defadvice git-timemachine-mode (after toggle-evil activate)
     (when git-timemachine-mode
