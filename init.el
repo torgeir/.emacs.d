@@ -745,7 +745,8 @@
 
 (use-package calendar
   :init
-  (setq calendar-week-start-day 1)
+  (setq calendar-week-start-day 1
+        calendar-date-style 'iso)
   (t/declare-prefix "o" "Other"
                     "c" 'calendar))
 
