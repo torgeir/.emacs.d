@@ -630,7 +630,7 @@
 (use-package smooth-scrolling
   :defer 1
   :init
-  (setq smooth-scroll-margin 10)
+  (setq smooth-scroll-margin 5)
   :config
   (smooth-scrolling-mode)
   (enable-smooth-scroll-for-function previous-line)
