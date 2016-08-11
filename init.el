@@ -804,7 +804,7 @@
 
 (t/declare-prefix "d" "Doc"
                   "d" 'dash-at-point
-                  "s" 'dash-at-point-docset
+                  "s" 'dash-at-point-with-docset
                   "a" 'helm-apropos
                   "f" 'describe-function)
 
