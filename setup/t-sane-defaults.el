@@ -6,6 +6,9 @@
 ;; string helpers
 (use-package s)
 
+;; file helpers
+(use-package f)
+
 ;; sane defaults
 (use-package better-defaults)
 
