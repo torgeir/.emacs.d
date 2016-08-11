@@ -176,10 +176,10 @@
   :defer 1
   :diminish git-gutter+-mode
   :config
-  (setq git-gutter+-modified-sign "~")
-  (setq git-gutter+-added-sign "+")
-  (setq git-gutter+-deleted-sign "-")
-  (setq git-gutter+-separator-sign (if has-gui "" " "))
+  (setq git-gutter+-modified-sign "~"
+        git-gutter+-added-sign "+"
+        git-gutter+-deleted-sign "-"
+        git-gutter+-separator-sign (if has-gui "" " "))
   (global-git-gutter+-mode t)
   (t/declare-prefix "gh" "Hunk"
                     "n" 'git-gutter+-next-hunk
