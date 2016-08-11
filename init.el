@@ -478,7 +478,7 @@
   (defun t/hide-cursor-in-helm-buffer ()
     "Hide the cursor in helm buffers."
     (with-helm-buffer
-     (setq cursor-in-non-selected-windows nil)))
+      (setq cursor-in-non-selected-windows nil)))
   (add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
   :config
   (progn
