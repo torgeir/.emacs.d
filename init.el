@@ -293,12 +293,12 @@
     "Restores the previous window configuration and kills the magit buffer"
     (interactive)
     (kill-buffer)
-    (git-gutter+-refresh))
+    (git-gutter+-refresh)))
 
-  (use-package magit-gh-pulls
-    :after magit
-    :ensure t
-    :init (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls)))
+(use-package magit-gh-pulls
+  :after magit
+  :ensure t
+  :init (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls))
 
 (use-package undo-tree
   :diminish undo-tree-mode
