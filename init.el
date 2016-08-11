@@ -651,6 +651,7 @@
         dired-listing-switches "-alhF"
         dired-ls-F-marks-symlinks "@")
   :config
+  (bind-key "TAB" 'dired-details-toggle dired-mode-map)
   (bind-key "C-c C-e" 'dired-toggle-read-only)
   (bind-key "C-x C-j" 'dired-jump)
   (bind-key "C-x M-j" '(lambda () (interactive) (dired-jump 1)))
