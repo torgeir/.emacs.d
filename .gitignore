@@ -16,3 +16,4 @@
 *.elc
 /langs-extra.el
 /proxy.el
+/eshell/*
