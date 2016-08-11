@@ -553,7 +553,8 @@
 (use-package transpose-frame
   :commands transpose-frame)
 
-(use-package dockerfile-mode)
+(use-package dockerfile-mode
+  :mode "^Dockerfile$")
 
 (use-package etags-select
   :bind (("M-?" . t/ido-find-tag)
