@@ -691,8 +691,8 @@
                     "N" 'highlight-symbol-prev))
 
 (use-package highlight-numbers
-  :config
-  (highlight-numbers-mode 1))
+  :init
+  (add-hook 'prog-mode-hook 'highlight-numbers-mode))
 
 (use-package restclient
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
