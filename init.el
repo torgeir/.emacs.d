@@ -421,7 +421,8 @@
   :commands w3m
   :bind (:map
          w3m-mode-map
-         "M-n" . nil))
+         ("M-p" . backward-paragraph)
+         ("M-n" . forward-paragraph)))
 
 (use-package tagedit
   :commands tagedit-mode
@@ -749,7 +750,8 @@
                     "c" 'calendar))
 
 (t/declare-prefix "o" "Other"
-                  "b" 'browse-url)
+                  "b" 'browse-url
+                  "B" 'w3m)
 
 (require 't-shell)
 (require 't-org)
