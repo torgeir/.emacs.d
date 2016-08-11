@@ -41,8 +41,7 @@
 (defun t/eshell ()
   "Start, or switch to, `eshell' in the current working directory."
   (interactive)
-  (let ((path (file-name-directory
-               (or (buffer-file-name) "~/")))
+  (let ((path (file-name-directory (or (buffer-file-name) default-directory)))
         (hasfile (not (eq (buffer-file-name) nil))))
     (eshell)
     (if (and hasfile (eq eshell-process-list nil))
