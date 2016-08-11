@@ -38,4 +38,16 @@
 ;; ansi colors in shell
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
+(defun t/eshell ()
+  "Start, or switch to, `eshell' in the current working directory."
+  (interactive)
+  (let ((path (file-name-directory
+               (or (buffer-file-name) "~/")))
+        (hasfile (not (eq (buffer-file-name) nil))))
+    (eshell)
+    (if (and hasfile (eq eshell-process-list nil))
+        (progn
+          (eshell/cd path)
+          (eshell-reset)))))
+
 (provide 'setup-shell)
