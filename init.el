@@ -541,7 +541,7 @@
 
 (use-package multiple-cursors
   :commands (t/cursor-down t/cursor-up)
-  :config
+  :init
   (require 'mc-cycle-cursors))
 
 (use-package expand-region
