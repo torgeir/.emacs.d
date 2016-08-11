@@ -663,6 +663,14 @@
   :init (setq-default dired-details-hidden-string "")
   :config (dired-details-install))
 
+(use-package syslog-mode
+  :mode "\\.log$"
+  :init
+  (add-hook 'syslog-mode-hook
+            (lambda ()
+              (bind-key "f" 'syslog-filter-lines evil-normal-state-local-map)
+              (bind-key "F" 'hide-lines-show-all evil-normal-state-local-map))))
+
 (use-package fill-column-indicator
   :defer t)
 
