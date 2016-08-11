@@ -50,4 +50,16 @@
           (eshell/cd path)
           (eshell-reset)))))
 
+(defun t/eshell-quit ()
+  "Fake a terminal's C-d to quit eshell"
+  (interactive)
+  (end-of-buffer)
+  (insert "exit")
+  (eshell-send-input))
+
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (bind-key "C-d" 't/eshell-quit evil-insert-state-local-map)
+            (bind-key "C-d" 't/eshell-quit evil-normal-state-local-map)))
+
 (provide 'setup-shell)
