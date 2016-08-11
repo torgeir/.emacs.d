@@ -208,6 +208,7 @@
 ;; html
 (use-package sgml-mode
   :ensure nil
+  :mode "\\.\\(xml\\|svg\\|rss\\|xsd\\|xslt\\|plist\\)$"
   :init
   (set (make-local-variable 'sgml-basic-offset) indent-xml)
 
