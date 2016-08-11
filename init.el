@@ -448,6 +448,9 @@
 (use-package helm
   :commands (helm-mini helm-projectile helm-projectile-ag)
   :diminish helm-mode
+  :bind (:map
+         helm-map
+         ("C-w" . backward-kill-word))
   :init
   (require 'helm-config)
   (setq-default helm-display-header-line nil
@@ -477,50 +480,46 @@
     (with-helm-buffer
      (setq cursor-in-non-selected-windows nil)))
   (add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
-
   :config
   (progn
     (helm-mode 1)
     (set-face-attribute 'helm-source-header nil :height 1)
+    (add-hook 'helm-before-initialize-hook 'neotree-hide)))
 
-    (add-hook 'helm-before-initialize-hook 'neotree-hide)
+(use-package helm-ag
+  :after helm
+  :commands helm-ag
+  :init
+  (setq helm-ag-fuzzy-match t
+        helm-ag-insert-at-point 'symbol
+        helm-ag-use-grep-ignore-list t
+        ;; save edited buffers on completion
+        helm-ag-edit-save t)
+  (when is-ms
+    (setq helm-ag-base-command "ag --nocolor --nogroup --vimgrep")))
 
-    (bind-key "C-w" 'backward-kill-word helm-map)
+(use-package helm-projectile
+  :after helm
+  :commands helm-projectile)
 
-    (use-package helm-ag
-      :after helm
-      :commands helm-ag
-      :init
-      (setq helm-ag-fuzzy-match t
-            helm-ag-insert-at-point 'symbol
-            helm-ag-use-grep-ignore-list t
-            ;; save edited buffers on completion
-            helm-ag-edit-save t)
-      (when is-ms
-        (setq helm-ag-base-command "ag --nocolor --nogroup --vimgrep")))
+(use-package helm-descbinds
+  :after helm
+  :commands helm-descbinds
+  :init
+  (helm-descbinds-mode)
+  (setq helm-descbinds-window-style 'split))
 
-    (use-package helm-projectile
-      :after helm
-      :commands helm-projectile)
+(use-package helm-dash
+  :after helm
+  :commands helm-dash)
 
-    (use-package helm-descbinds
-      :after helm
-      :commands helm-descbinds
-      :init
-      (helm-descbinds-mode)
-      (setq helm-descbinds-window-style 'split))
-
-    (use-package helm-dash
-      :after helm
-      :commands helm-dash)
-
-    (use-package helm-swoop
-      :after helm
-      :commands helm-swoop
-      :bind (:map
-             helm-swoop-edit-map
-             ("C-c C-c" . helm-swoop--edit-complete)
-             ("C-c C-k" . helm-swoop--edit-cancel)))))
+(use-package helm-swoop
+  :after helm
+  :commands helm-swoop
+  :bind (:map
+         helm-swoop-edit-map
+         ("C-c C-c" . helm-swoop--edit-complete)
+         ("C-c C-k" . helm-swoop--edit-cancel)))
 
 (use-package visual-regexp
   :commands vr/query-replace
