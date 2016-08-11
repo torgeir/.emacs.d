@@ -35,7 +35,6 @@
 (defvar *user-leader* "SPC")
 
 (require 'defuns)
-(require 'setup-powerline)
 (require 'sane-defaults)
 
 (require 'setup-which-key)
@@ -759,6 +758,7 @@
 
 (require 'keys)
 (require 'langs)
+(require 'setup-powerline)
 
 (t/declare-prefix "o" "Other"
                   "e" 't/eshell)
