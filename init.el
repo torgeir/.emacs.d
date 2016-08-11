@@ -695,8 +695,7 @@
   (highlight-numbers-mode 1))
 
 (use-package restclient
-  :commands restclient-mode
-  :mode "\\.\\(http\\|rest\\)$")
+  :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
 
 (use-package hackernews
   :commands hackernews
