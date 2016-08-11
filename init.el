@@ -384,6 +384,7 @@
   (dolist (hook '(js2-mode-hook
                   js-mode-hook
                   java-mode
+                  text-mode-hook
                   restclient-mode-hook
                   ruby-mode
                   mark-down-mode))
@@ -403,12 +404,13 @@
   (bind-key "M-S-<left>" 'sp-backward-sexp sp-keymap)
   (bind-key "M-S-<right>" 'sp-forward-sexp sp-keymap)
 
-  (sp-with-modes '(java-mode
+  (sp-with-modes '(js2-mode
+                   js-mode
+                   java-mode
+                   text-mode
                    restclient-mode
                    ruby-mode
-                   mark-down-mode
-                   c-mode c++-mode
-                   js-mode js2-mode)
+                   mark-down-mode)
                  (sp-local-pair "[" nil :post-handlers
                                 '((t/sp--create-newline-and-enter-sexp "RET")))
                  (sp-local-pair "{" nil :post-handlers
