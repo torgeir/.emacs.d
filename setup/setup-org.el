@@ -34,6 +34,7 @@
                            ,(concat org-directory "/todos/home.org")
                            ,(concat org-directory "/todos/bekk.org")
                            ,(concat org-directory "/todos/kom.org")
+                           ,(concat org-directory "/todos/rsi.org")
                            ,(concat org-directory "/todos/datainn.org"))
         ;; default duration of events
         org-agenda-default-appointment-duration 60
@@ -47,6 +48,9 @@
         ;; newest notes first
         org-reverse-note-order t
         )
+
+  (setq org-todo-keywords
+        '((sequence "TODO" "|" "DONE" "CANCELLED")))
 
   (setq org-modules '(org-mouse
                       ;; TODO error when loading these two

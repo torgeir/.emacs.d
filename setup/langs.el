@@ -2,13 +2,10 @@
 (setq indent 2)
 (setq indent-xml 4)
 
-(let ((langs-extra-file (locate-user-emacs-file "langs-extra.el")))
-  (when (file-exists-p langs-extra-file)
-    (require 'langs-extra langs-extra-file)))
-
 (t/declare-prefix "m" "Mode")
 
 (use-package arduino-mode
+  :mode "\\.ino$"
   :commands arduino-mode
   :defer t)
 
@@ -25,29 +22,36 @@
   :commands yaml-mode
   :defer t)
 
+(use-package pug-mode
+  :defer t
+  :mode "\\.pug$")
+
 (use-package markdown-mode
   :defer t
   :mode "\\.\\(markdown\\|md\\)$"
-  :config
-  (bind-key "M-p" nil markdown-mode-map)
-  (bind-key "M-n" nil markdown-mode-map))
+  :bind (:map
+         markdown-mode-map
+         ("M-p" . nil)
+         ("M-n" . nil)))
 
 (use-package css-mode
   :ensure nil
   :mode "\\.css$"
+  :bind (:map
+         css-mode-map
+         ("M-k" . t/css-kill-value))
   :init
   (setq css-indent-offset indent)
   :config
-  (bind-key "M-k" 't/css-kill-value css-mode-map)
-  (dolist (fn '(turn-on-css-eldoc
+  (dolist (fn '(css-eldoc-enable
                 turn-on-smartparens-mode
                 rainbow-mode))
     (add-hook 'css-mode-hook fn)))
 
 (use-package css-eldoc
-  :commands turn-on-css-eldoc
+  :commands css-eldoc-enable
   :init
-  (add-hook 'css-mode-hook #'turn-on-css-eldoc))
+  (add-hook 'css-mode-hook #'css-eldoc-enable))
 
 (use-package eldoc
   :commands eldoc-mode
@@ -55,9 +59,11 @@
   :diminish eldoc-mode)
 
 (use-package less-css-mode
+  :mode "\\.less$"
   :commands less-css-mode
-  :config
-  (bind-key "M-k" 't/css-kill-value css-mode-map))
+  :bind (:map
+         css-mode-map
+         ("M-k" . t/css-kill-value)))
 
 (use-package sh-script
   :mode ("\\.sh\\'" . sh-mode)
@@ -83,6 +89,7 @@
   (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
 (use-package flycheck-clojure
+  :pin melpa-stable
   :commands flycheck-mode
   :defer t
   :init
@@ -104,8 +111,6 @@
                 js2-strict-missing-semi-warning nil
                 js2-strict-inconsistent-return-warning nil
                 js2-strict-var-hides-function-arg-warning nil
-                js2-strict-missing-semi-warning nil
-                js2-strict-trailing-comma-warning nil
                 js2-strict-cond-assign-warning nil
                 js2-strict-var-redeclaration-warning nil
                 js2-strict-trailing-comma-warning t) ;; jshint does not warn about this now for some reason
@@ -115,15 +120,17 @@
   (setq-default js2-basic-offset indent)
   (setq js-indent-level indent)
 
+  ;; don't steel keys
+  :bind (:map
+         js2-mode-map
+         ("M-j" . nil)
+         ("M-." . nil)
+         ("TAB" . t/tab-properly))
+
   :config
   (add-hook 'js2-mode-hook 'turn-on-smartparens-mode)
   (add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
   (add-hook 'js2-mode-hook 'tern-mode)
-
-  ;; don't steel keys
-  (bind-key "M-j" 'nil js2-mode-map)
-  (bind-key "M-." 'nil js2-mode-map)
-  (bind-key "TAB" #'t/tab-properly js2-mode-map)
 
   (t/declare-prefix-for-mode 'js2-mode
                              "me" "Evaluate"
@@ -133,8 +140,9 @@
 (use-package nodejs-repl
   :commands nodejs-repl
   :defer t
-  :config
-  (bind-key "C-x C-e" #'t/send-region-to-nodejs-repl-process js2-mode-map))
+  :bind (:map
+         js2-mode-map
+         ("C-x C-e" . t/send-region-to-nodejs-repl-process)))
 
 (use-package web-mode
   :mode "\\.jsx$"
@@ -188,14 +196,13 @@
   (with-eval-after-load 'company
     (add-to-list 'company-backends 'company-web-html))
   (with-eval-after-load 'flycheck
-      '(add-hook 'flycheck-mode-hook #'flycheck-elm-setup)))
+    '(add-hook 'flycheck-mode-hook #'flycheck-elm-setup)))
 
 (use-package json-mode
-  :mode "\\(json\\|jshintrc\\|eslintrc\\)$"
-  :config
-  (use-package json-reformat
-    :defer t
-    :commands json-reformat))
+  :mode "\\(json\\|jshintrc\\|eslintrc\\)$")
+
+(use-package json-reformat
+  :commands json-reformat)
 
 ;; html
 (use-package sgml-mode
@@ -209,26 +216,33 @@
     (indent-region (point-min) (point-max)))
 
   ;; nxml
-  (add-hook 'nxml-mode-hook (setq nxml-child-indent indent-xml)))
+  (add-hook 'nxml-mode-hook (lambda ()
+                              (setq nxml-child-indent indent-xml))))
 
 (use-package simplezen
   :defer 1
+  :bind (:map
+         html-mode-map
+         ("TAB" . simplezen-expand-or-indent-for-tab))
   :config
   (add-hook 'sgml-mode-hook (lambda ()
                               "make tab work, first try yasnippet, then simplezen"
                               (set (make-local-variable 'yas/fallback-behavior)
-                                   '(apply simplezen-expand-or-indent-for-tab))))
-  (bind-key "TAB" 'simplezen-expand-or-indent-for-tab html-mode-map))
+                                   '(apply simplezen-expand-or-indent-for-tab)))))
 
 (use-package clojure-mode
+  :pin melpa-stable
   :mode "\\.\\(edn\\|boot\\|clj\\|cljs\\)$"
   :commands (clojure-mode)
   :config
   ;; stop nagging about saving
-  (defadvice clojure-test-run-tests (before save-first activate) (save-buffer))
-  (defadvice nrepl-load-current-buffer (before save-first activate) (save-buffer))
+  (defadvice clojure-test-run-tests (before save-first activate)
+    (save-buffer))
+  (defadvice nrepl-load-current-buffer (before save-first activate)
+    (save-buffer))
 
   (use-package clj-refactor
+    :pin melpa-stable
     :commands (clj-refactor-mode)
     :init
     (add-hook 'clojure-mode-hook
@@ -286,21 +300,29 @@
 
 
 (use-package clojure-mode-extra-font-locking
-  :commands (clojure-mode)) ;; more syntax hilighting
+  :commands clojure-mode) ;; more syntax hilighting
 
 (use-package cider
+  :pin melpa-stable
   :commands (cider cider-connect cider-jack-in)
   :init
-  ;; go to repl on connect
   (setq cider-repl-pop-to-buffer-on-connect nil)
+  :bind (:map
+         cider-mode-map
+         ("C-M-." . cider-find-dwim))
   :config
+  (t/declare-prefix-for-mode 'clojure-mode "d" "Mode"
+                             "f" 'cider-doc
+                             "j" 'cider-javadoc
+                             "a" 'cider-apropos)
   (t/declare-prefix-for-mode 'clojure-mode "m" "Mode"
                              "j" 'cider-jack-in
                              "J" 'cider-quit)
   (t/declare-prefix-for-mode 'clojure-mode "me" "Evaluate"
-                           "b" 'cider-eval-buffer
-                           "r" 'cider-eval-region
-                           "R" 'cider-eval-last-sexp-and-replace)
+                             "b" 'cider-eval-buffer
+                             "r" 'cider-eval-region
+                             "f" 'cider-eval-defun-at-point
+                             "R" 'cider-eval-last-sexp-and-replace)
   ;; minibuffer doc in repl
   (add-hook 'cider-mode-hook 'eldoc-mode)
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
@@ -314,8 +336,8 @@
   (autoload 'cider--make-result-overlay "cider-overlays")
   (defun endless/eval-overlay (value point)
     (cider--make-result-overlay (format "%S" value)
-      :where point
-      :duration 'command)
+                                :where point
+                                :duration 'command)
     value) ; preserve the return value
   (advice-add 'eval-region :around (lambda (f beg end &rest r) (endless/eval-overlay (apply f beg end r) end)))
   (advice-add 'eval-last-sexp :filter-return (lambda (r) (endless/eval-overlay r (point))))
@@ -358,16 +380,18 @@
                              "r" 'fsharp-eval-region))
 
 (use-package ensime
-  :commands ensime ensime-mode
+  :pin melpa-stable
+  :commands (ensime ensime-mode)
   :init
+  (require 'ensime)
   (add-hook 'scala-mode-hook 'ensime-mode)
-  (add-hook 'scala-mode-hook (lambda ()
-                               (require 'bind-key)
-                               ;; remove some keys that conflict
-                               (unbind-key "C-." evil-normal-state-map)
-                               (unbind-key "M-." evil-normal-state-map)))
-  (add-hook 'scala-mode-hook (lambda ()
-                               (bind-key "M-." 'ensime-edit-definition scala-mode-map)))
+  :bind (:map
+         evil-normal-state-map
+         ("C-." . nil)
+         ("M-." . nil)
+         :map
+         scala-mode-map
+         ("M-." . ensime-edit-definition))
   :config
   (t/declare-prefix-for-mode 'scala-mode "m" "Mode"
                              "j" 'ensime

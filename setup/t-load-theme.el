@@ -1,5 +1,18 @@
-(defvar t-theme 'spacemacs-dark "Selected theme")
+(use-package darktooth-theme :defer t)
 (use-package spacemacs-theme :defer t)
+
+(defvar t-themes (list
+                  'darktooth
+                  'spacemacs-dark
+                  'spacemacs-light) "Themes to cycle")
+
+(defun t/cycle-theme ()
+  "Cycles themes in `t-themes'"
+  (interactive)
+  (let ((first (-take 1 t-themes))
+        (rest (-drop 1 t-themes)))
+    (setq t-themes (-concat rest first))
+    (car first)))
 
 (defun t/tone-down-fringe-bg-color ()
   "Make fringe background-color the same as the background-color"
@@ -7,9 +20,15 @@
                       :foreground (face-foreground 'default)
                       :background (face-background 'default)))
 
+(defun t/load-theme-cycle ()
+  "Cycles `t-themes' and loads first theme in list"
+  (interactive)
+  (t/switch-theme (t/cycle-theme)))
+
 (defun t/load-theme ()
   "Loads theme and fixes fringe bg color"
-  (load-theme t-theme t))
+  (interactive)
+  (t/switch-theme (nth 0 t-themes)))
 
 (setq t-theme-did-load nil)
 

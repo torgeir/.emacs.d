@@ -1,3 +1,17 @@
+;; list helpers
+(use-package dash
+  :config
+  (dash-enable-font-lock))
+
+;; string helpers
+(use-package s)
+
+;; sane defaults
+(use-package better-defaults)
+
+(when is-mac (require 'mac))
+(when is-ms (require 'cygwin))
+
 ;; cut copies to os
 (setq interprogram-cut-function #'t/copy-to-clipboard)
 

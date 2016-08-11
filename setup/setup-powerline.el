@@ -6,7 +6,7 @@
   (defvar color-green "#acfa00")
 
   (require 'flycheck)
-  (defun powerline-flycheck-status ()
+  (defun t/powerline-flycheck-status ()
     (when flycheck-mode
       (defvar powerline-flycheck-error-face   `((t . (:background ,color-red))))
       (defvar powerline-flycheck-warning-face `((t . (:background ,color-orange))))
@@ -19,7 +19,7 @@
                            (t powerline-flycheck-success-face))
                      'r)))
 
-  (defun evil-state-name ()
+  (defun t/evil-state-name ()
     "Get single letter evil mode state string, or `e'"
     (let ((evil-state-name (if (and (boundp 'evil-state)
                                     evil-state)
@@ -44,14 +44,17 @@
        (let* ((active (powerline-selected-window-active))
               (face-grey  (if active 'powerline-active1      'powerline-inactive1))
               (face-blue  (if active 'powerline-active-blue  'powerline-inactive1))
+              (is-special-buffer (equal "*" (substring (buffer-name) 0 1)))
 
               (lhs (list
-                    (powerline-flycheck-status)
-                    (powerline-raw (format " %s" (evil-state-name)) face-blue)
+                    (t/powerline-flycheck-status)
+                    (powerline-raw (format " %s" (t/evil-state-name)) face-blue)
                     (powerline-raw "%*%*" face-grey 'l)
                     (when (boundp 'projectile-mode)
                       (powerline-raw projectile-mode-line face-grey 'l))
-                    (powerline-buffer-id face-grey 'l)
+                    (when (not is-special-buffer)
+                      (powerline-raw (t/shorten-directory default-directory 20) face-grey 'l))
+                    (powerline-raw "%b" face-grey (if is-special-buffer 'l nil))
                     (when (not is-cygwin) (powerline-raw (t/git-branch) face-blue nil))
                     ))
 
@@ -85,5 +88,7 @@
 
   ;; ..while the initially set mode-line needs `setq-default'
   (setq-default mode-line-format (t/create-powerline)))
+
+(t/update-powerline)
 
 (provide 'setup-powerline)

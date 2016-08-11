@@ -82,7 +82,7 @@
   (lexical-let* ; so lambdas create closures
       ((root (projectile-project-root))
        (ctags (expand-file-name "~/.emacs.d/ctags"))
-       (tags (concat root "TAGS"))
+       (tags (shell-quote-argument (concat root "TAGS")))
        (process (start-process-shell-command
                  "build ctags asynchronously"
                  "*ctags async*"
@@ -104,9 +104,10 @@
   "goes to tag at point, builds and/or loads project TAGS file first"
   (interactive)
   (let* ((root (projectile-project-root))
-         (tags (concat root "TAGS")))
+         (tags (shell-quote-argument (concat root "TAGS"))))
     (if (file-exists-p tags) (t/load-tags tags) (t/build-tags))
-    (etags-select-find-tag-at-point)))
+    (when (find-tag-default)
+      (etags-select-find-tag-at-point))))
 
 (defun t/ido-find-tag ()
   "Find a tag using ido"
@@ -357,7 +358,7 @@ Including indent-buffer, which should not be called automatically on save."
 
 (defun t/prefix-with-leader (key)
   "Prefixes `key' with `leader' and a space, e.g. 'SPC m'"
-  (concat leader " " key))
+  (concat *user-leader* " " key))
 
 (defun t/declare-prefix (prefix name &optional key fn &rest bindings)
   "Declares which-key `prefix' and a display `name' for the prefix.
@@ -693,5 +694,44 @@ Including indent-buffer, which should not be called automatically on save."
   "Switch to the `*scratch*' buffer. Create it first if needed."
   (interactive)
   (switch-to-buffer (get-buffer-create "*scratch*")))
+
+(defun t/shorten-directory (dir max-length)
+  "Show up to `max-length' characters of a directory name `dir'."
+  (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
+        (output ""))
+    (when (and path (equal "" (car path)))
+      (setq path (cdr path)))
+    (while (and path (< (length output) (- max-length 4)))
+      (setq output (concat (car path) "/" output))
+      (setq path (cdr path)))
+    (when path
+      (setq output (concat ".../" output)))
+    output))
+
+(defun t/find-xml-path ()
+  "Display the hierarchy of XML elements the point is on as a path."
+  (interactive)
+  (let ((path nil))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
+                    (condition-case nil
+                        (progn
+                          (nxml-backward-up-element) ; always returns nil
+                          t)
+                      (error nil)))
+          (setq path (cons (xmltok-start-tag-local-name) path)))
+        (if (called-interactively-p t)
+            (message "/%s" (mapconcat 'identity path "/"))
+          (format "/%s" (mapconcat 'identity path "/")))))))
+
+(defun t/set-emoji-font (frame)
+  "Adjust the font settings of FRAME so Emacs can display emoji properly 🚀"
+  (if (eq system-type 'darwin)
+      ;; For NS/Cocoa
+      (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
+    ;; For Linux
+    (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
 
 (provide 'defuns)

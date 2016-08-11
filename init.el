@@ -2,41 +2,19 @@
 
 (load (locate-user-emacs-file "before.el") t)
 
-(setq dir-snippets (locate-user-emacs-file "snippets"))
-(setq dir-setup (locate-user-emacs-file "setup"))
-(setq dir-site-lisp (locate-user-emacs-file "site-lisp"))
+(setq *user-dir-snippets* (locate-user-emacs-file "snippets"))
+(setq *user-dir-setup* (locate-user-emacs-file "setup"))
+(setq *user-dir-site-lisp* (locate-user-emacs-file "site-lisp"))
 
-(add-to-list 'load-path dir-setup)
-(add-to-list 'load-path dir-site-lisp)
+(add-to-list 'load-path *user-dir-setup*)
+(add-to-list 'load-path *user-dir-site-lisp*)
 
 ;; add folders inside site-lisp as well
-(dolist (project (directory-files dir-site-lisp t "\\w+"))
+(dolist (project (directory-files *user-dir-site-lisp* t "\\w+"))
   (when (file-directory-p project)
     (add-to-list 'load-path project)))
 
-;; don't load outdated bytecode
-(setq load-prefer-newer t)
-
-(require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-
-(package-initialize)
-
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-
-(eval-when-compile
-  (require 'use-package)
-  ;; fetch the ones missing
-  (setq use-package-always-ensure t)
-
-  ;; lexical-let
-  (require 'cl))
-(defvar use-package-verbose t)
-(require 'diminish)
-(require 'bind-key)
+(require 'packaging)
 
 (defvar t-debug-init nil "Debug/time startup")
 (when t-debug-init
@@ -47,7 +25,6 @@
   (use-package benchmark-init
     :config (benchmark-init/activate)))
 
-;; packages
 (setq is-mac (equal system-type 'darwin))
 (setq is-cygwin (equal system-type 'cygwin))
 (setq is-linux (equal system-type 'gnu/linux))
@@ -55,46 +32,14 @@
 (setq is-ms (or is-cygwin is-win))
 (setq has-gui (display-graphic-p))
 
-(defvar leader "SPC")
+(defvar *user-leader* "SPC")
 
-(use-package dash)
-(use-package s)
-(use-package better-defaults)
-
-(require 'setup-powerline)
 (require 'defuns)
-
-(when is-mac (require 'mac))
-(when is-ms (require 'cygwin))
-
+(require 'setup-powerline)
 (require 'sane-defaults)
 
-(use-package which-key
-  :diminish which-key-mode
-  :init
-  (setq which-key-special-keys nil
-        which-key-sort-order 'which-key-key-order-alpha
-        ;; percentage height
-        which-key-side-window-max-height 0.5
-        which-key-separator " "
-        ;; time to wait before display
-        which-key-idle-delay 0.4
-        which-key-use-C-h-for-paging t
-        which-key-allow-evil-operators t
-        which-key-key-replacement-alist
-        '(("<\\([[:alnum:]-]+\\)>" . "\\1")
-          ("up"                    . "↑")
-          ("right"                 . "→")
-          ("down"                  . "↓")
-          ("left"                  . "←")
-          ("DEL"                   . "⌫")
-          ("deletechar"            . "⌦")
-          ("RET"                   . "⏎")))
-  (which-key-mode nil)
-  (which-key-mode))
-
+(require 'setup-which-key)
 (require 'setup-evil)
-
 (evil-mode 1)
 
 (use-package paradox
@@ -122,13 +67,12 @@
   :ensure nil
   :defer 1
   :config
-  ;; store auto-save files locally
   (setq tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
 
 (use-package paredit
   :diminish paredit-mode
   :commands (enable-paredit-mode evil-paredit-mode)
-  :config
+  :init
   (dolist (mode-hook '(emacs-lisp-mode-hook
                        eval-expression-minibuffer-setup-hook
                        ielm-mode-hook
@@ -418,14 +362,16 @@
 
 (use-package company-tern
   :after company
+  :bind (:map
+         tern-mode-keymap
+         ("M-." . nil)
+         ("M-," . nil)
+         ("C-M-." . nil)
+         ("M-," . pop-tag-mark)
+         ("C-M-." . helm-etags-select))
   :config
   (add-to-list 'company-backends 'company-tern)
-  (setq tern-command (append tern-command '("--no-port-file")))
-  (unbind-key "M-." tern-mode-keymap)
-  (unbind-key "M-," tern-mode-keymap)
-  (unbind-key "C-M-." tern-mode-keymap)
-  (bind-key "M-," 'pop-tag-mark)
-  (bind-key "C-M-." 'helm-etags-select))
+  (setq tern-command (append tern-command '("--no-port-file"))))
 
 (use-package company-emoji
   :after company
@@ -474,23 +420,25 @@
 
 (use-package w3m
   :commands w3m
-  :config
-  (bind-key "M-n" nil w3m-mode-map))
+  :bind (:map
+         w3m-mode-map
+         "M-n" . nil))
 
 (use-package tagedit
   :commands tagedit-mode
   :init
   (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))
   (add-hook 'sgml-mode-hook (lambda () (bind-key "C-c C-r" 'mc/mark-sgml-tag-pair sgml-mode-map)))
-  :config
-  (bind-key "C-<left>" 'tagedit-forward-barf-tag html-mode-map)
-  (bind-key "C-<right>" 'tagedit-forward-slurp-tag html-mode-map)
-  (bind-key "C-k" 'tagedit-kill html-mode-map)
-  (bind-key "M-k" 'tagedit-kill-attribute html-mode-map)
-  (bind-key "M-r" 'tagedit-raise-tag html-mode-map)
-  (bind-key "M-s" 'tagedit-splice-tag html-mode-map)
-  (bind-key "M-S" 'tagedit-split-tag html-mode-map)
-  (bind-key "M-J" 'tagedit-join-tags html-mode-map))
+  :bind (:map
+         html-mode-map
+         ("C-<left>" . tagedit-forward-barf-tag)
+         ("C-<right>" . tagedit-forward-slurp-tag)
+         ("C-k" . tagedit-kill)
+         ("M-k" . tagedit-kill-attribute)
+         ("M-r" . tagedit-raise-tag)
+         ("M-s" . tagedit-splice-tag)
+         ("M-S" . tagedit-split-tag)
+         ("M-J" . tagedit-join-tags)))
 
 (use-package discover-my-major
   :commands (discover-my-major discover-my-mode))
@@ -528,7 +476,7 @@
   (defun t/hide-cursor-in-helm-buffer ()
     "Hide the cursor in helm buffers."
     (with-helm-buffer
-      (setq cursor-in-non-selected-windows nil)))
+     (setq cursor-in-non-selected-windows nil)))
   (add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
 
   :config
@@ -569,7 +517,11 @@
 
     (use-package helm-swoop
       :after helm
-      :commands helm-swoop)))
+      :commands helm-swoop
+      :bind (:map
+             helm-swoop-edit-map
+             ("C-c C-c" . helm-swoop--edit-complete)
+             ("C-c C-k" . helm-swoop--edit-cancel)))))
 
 (use-package visual-regexp
   :commands vr/query-replace
@@ -590,7 +542,9 @@
          ("<C-S-down>" . move-text-down)))
 
 (use-package multiple-cursors
-  :commands (t/cursor-down t/cursor-up))
+  :commands (t/cursor-down t/cursor-up)
+  :config
+  (require 'mc-cycle-cursors))
 
 (use-package expand-region
   :commands (er/expand-region er/contract-region)
@@ -600,6 +554,8 @@
 
 (use-package transpose-frame
   :commands transpose-frame)
+
+(use-package dockerfile-mode)
 
 (use-package etags-select
   :bind (("M-?" . t/ido-find-tag)
@@ -615,7 +571,7 @@
   :diminish yas-minor-mode
   :init
   ;; use custom snippets
-  (setq yas-snippet-dirs '(dir-snippets))
+  (setq yas-snippet-dirs '(*user-dir-snippets*))
   ;; remove dropdowns
   (setq yas-prompt-functions '(yas-ido-prompt yas-completing-prompt))
   ;; silence
@@ -743,7 +699,7 @@
 
 (use-package restclient
   :commands restclient-mode
-  :mode "\\.http$")
+  :mode "\\.\\(http\\|rest\\)$")
 
 (use-package hackernews
   :commands hackernews
@@ -771,12 +727,11 @@
 (t/declare-prefix "o" "Other"
                   "C" 'calc-dispatch
                   "d" 'dired
+                  "h" 'hackernews
                   "p" 'list-processes
                   "P" 'proced)
 
 (use-package helm-hunks
-  :ensure nil
-  :load-path "site-lisp/helm-hunks/"
   :commands helm-hunks
   :init
   (t/declare-prefix "gh" "Hunk"
@@ -805,6 +760,9 @@
 (require 'keys)
 (require 'langs)
 
+(t/declare-prefix "o" "Other"
+                  "e" 't/eshell)
+
 (t/declare-prefix "E" "Editor"
                   "t" 'load-theme)
 
@@ -827,7 +785,7 @@
 
 (t/declare-prefix "T" "Toggle"
                   "d" 'toggle-debug-on-error
-                  "T" 't/toggle-theme-dark-light
+                  "T" 't/load-theme-cycle
                   "l" 'linum-mode
                   "L" 'linum-relative-toggle
                   "b" 'fancy-battery-mode
@@ -848,7 +806,9 @@
 
 (t/declare-prefix "d" "Doc"
                   "d" 'dash-at-point
-                  "s" 'dash-at-point-docset)
+                  "s" 'dash-at-point-docset
+                  "a" 'helm-apropos
+                  "f" 'describe-function)
 
 (t/declare-prefix "x" "Text manipulation"
                   "a" 'align-regexp
@@ -884,6 +844,7 @@
 (t/declare-prefix "h" "Help"
                   "a" 'helm-apropos
                   "b" 'helm-descbinds
+                  "d" 'dash-at-point
                   "f" 'describe-function
                   "k" 'describe-key-briefly
                   "K" 'describe-key

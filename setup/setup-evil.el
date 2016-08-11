@@ -41,7 +41,7 @@
   :config
   (progn
     (setq evil-leader/in-all-states t)
-    (evil-leader/set-leader leader)
+    (evil-leader/set-leader *user-leader*)
     (evil-mode nil)
     (global-evil-leader-mode)
     (evil-mode 1)
@@ -52,7 +52,7 @@
       (highlight-symbol-remove-all))
 
     ;; clear highlights with leader leader
-    (evil-leader/set-key leader 'clear-all-highlights)
+    (evil-leader/set-key *user-leader* 'clear-all-highlights)
 
     (defun spacemacs/evil-yank-to-end-of-line ()
       "Yank from point to end of line."

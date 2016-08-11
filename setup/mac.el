@@ -1,24 +1,23 @@
 ;; make this run also after connecting with emacsclient
 ;; https://groups.google.com/forum/#!topic/gnu.emacs.help/ZGu2MNkJGrI
-(when is-mac
-  (defadvice terminal-init-xterm (after map-S-up-escape-sequence activate)
-    (progn
-      ;; fix terminal shortcomings, remap them in iterm2, and bring tem back here
-      ;; unused keys are e.g. above f17 which is ^[[15;2~ in emacs that is \e[15;2\~
-      ;; http://aperiodic.net/phil/archives/Geekery/term-function-keys.html
-      (define-key input-decode-map "\e[15;2\~" (kbd "C-SPC"))
-      (define-key input-decode-map "\e[17;2\~" (kbd "C-M-SPC"))
-      (define-key input-decode-map "\e[18;2\~" (kbd "C-."))
-      (define-key input-decode-map "\e[19;2\~" (kbd "C-,"))
-      ;; c-æ on a norwegian mac keyboard IS the ansi escape character ^[
-      ;; for debugging run: (read-key-sequence "?")
-      (define-key input-decode-map "\e[20;2\~" (kbd "C-æ"))
-      ;; c-ø on a norwegian mac keyboard is ^\
-      (define-key input-decode-map (kbd "C-\\") (kbd "C-ø"))
-      ;; c-å on a norwegian mac keyboard is ^]
-      (define-key input-decode-map (kbd "C-]") (kbd "C-å"))
-      ;; skip \e21;2~, its f10? what
-      (define-key input-decode-map "\e[22;2\~" (kbd "C-'")))))
+(defadvice terminal-init-xterm (after map-S-up-escape-sequence activate)
+  (progn
+    ;; fix terminal shortcomings, remap them in iterm2, and bring tem back here
+    ;; unused keys are e.g. above f17 which is ^[[15;2~ in emacs that is \e[15;2\~
+    ;; http://aperiodic.net/phil/archives/Geekery/term-function-keys.html
+    (define-key input-decode-map "\e[15;2\~" (kbd "C-SPC"))
+    (define-key input-decode-map "\e[17;2\~" (kbd "C-M-SPC"))
+    (define-key input-decode-map "\e[18;2\~" (kbd "C-."))
+    (define-key input-decode-map "\e[19;2\~" (kbd "C-,"))
+    ;; c-æ on a norwegian mac keyboard IS the ansi escape character ^[
+    ;; for debugging run: (read-key-sequence "?")
+    (define-key input-decode-map "\e[20;2\~" (kbd "C-æ"))
+    ;; c-ø on a norwegian mac keyboard is ^\
+    (define-key input-decode-map (kbd "C-\\") (kbd "C-ø"))
+    ;; c-å on a norwegian mac keyboard is ^]
+    (define-key input-decode-map (kbd "C-]") (kbd "C-å"))
+    ;; skip \e21;2~, its f10? what
+    (define-key input-decode-map "\e[22;2\~" (kbd "C-'"))))
 
 ;; bind fn to H-
 (setq ns-function-modifier 'hyper)
@@ -72,17 +71,10 @@
 
 (setq t/initial-font-size 14)
 
-(defun t/--set-emoji-font (frame)
-  "Adjust the font settings of FRAME so Emacs can display emoji properly 🚀"
-  (if (eq system-type 'darwin)
-      ;; For NS/Cocoa
-      (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
-    ;; For Linux
-    (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
 ;; For when Emacs is started in GUI mode:
-(t/--set-emoji-font nil)
+(t/set-emoji-font nil)
 ;; Hook for when a frame is created with emacsclient
 ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
-(add-hook 'after-make-frame-functions 't/--set-emoji-font)
+(add-hook 'after-make-frame-functions 't/set-emoji-font)
 
 (provide 'mac)
