@@ -8,6 +8,9 @@
 
 (package-initialize)
 
+;; when checking signatures fail
+;;(setq package-check-signature nil)
+
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
