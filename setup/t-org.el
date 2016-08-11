@@ -112,6 +112,7 @@
 
   (add-hook 'org-mode-hook
             (lambda ()
+              (visual-line-mode 1)
               ;; yasnippet
               (make-variable-buffer-local 'yas/trigger-key)
               (org-set-local 'yas/trigger-key [tab])
