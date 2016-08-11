@@ -617,9 +617,9 @@
 
 (use-package autorevert
   :init
-  (setq auto-revert-interval 1)
-  ;; silenced refresh of dired
-  (setq auto-revert-verbose nil
+  (setq auto-revert-interval 1
+        ;; silenced refresh of dired
+        auto-revert-verbose nil
         global-auto-revert-non-file-buffers t)
   :config
   (global-auto-revert-mode)
