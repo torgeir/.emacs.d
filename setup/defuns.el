@@ -690,6 +690,12 @@ Including indent-buffer, which should not be called automatically on save."
         (end (if (region-active-p) (region-end) (point-max))))
     (sort-lines nil beg end)))
 
+(defun t/switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
 (defun t/switch-to-scratch-buffer ()
   "Switch to the `*scratch*' buffer. Create it first if needed."
   (interactive)

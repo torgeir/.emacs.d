@@ -797,6 +797,7 @@
                   "k" 'kill-this-buffer
                   "K" 't/kill-other-buffers
                   "b" 'helm-mini
+                  "o" 't/switch-to-previous-buffer
                   "N" 'previous-buffer
                   "n" 'next-buffer
                   "R" 'revert-buffer)
