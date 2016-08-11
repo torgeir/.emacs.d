@@ -69,14 +69,6 @@
           (eshell/cd path)
           (eshell-reset)))))
 
-(defun t/eshell-init ()
-  (setq-default eshell-history-size 10000
-                eshell-save-history-on-exit t
-                ;; announce terminal
-                eshell-term-name "eterm-color"))
-
-(t/eshell-init)
-
 (defun t/eshell-quit ()
   "Fake a terminal's C-d to quit eshell"
   (interactive)
