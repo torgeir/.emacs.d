@@ -568,14 +568,13 @@
 (use-package yasnippet
   :diminish yas-minor-mode
   :init
-  ;; use custom snippets
-  (setq yas-snippet-dirs '(*user-dir-snippets*))
-  ;; remove dropdowns
-  (setq yas-prompt-functions '(yas-ido-prompt yas-completing-prompt))
-  ;; silence
-  (setq yas-verbosity 1)
-  ;; wrap around region
-  (setq yas-wrap-around-region t)
+  (setq yas-snippet-dirs '(*user-dir-snippets*)
+        ;; remove dropdowns
+        yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
+        ;; silence
+        yas-verbosity 1
+        ;; wrap around region
+        yas-wrap-around-region t)
 
   :config
   ;; on for all buffers
