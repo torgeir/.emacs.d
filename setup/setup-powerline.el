@@ -51,26 +51,23 @@
                     (powerline-raw (format " %s" (t/evil-state-name)) face-blue)
                     (powerline-raw "%*%*" face-grey 'l)
                     (when (boundp 'projectile-mode)
-                      (powerline-raw projectile-mode-line face-grey 'l))
+                      (powerline-raw projectile-mode-line face-blue 'l))
                     (when (not is-special-buffer)
-                      (powerline-raw (t/shorten-directory default-directory 20) face-grey 'l))
+                      (powerline-raw (t/shorten-directory default-directory 15) face-grey 'l))
                     (powerline-raw "%b" face-grey (if is-special-buffer 'l nil))
                     (when (not is-cygwin) (powerline-raw (t/git-branch) face-blue nil))
                     ))
 
               (rhs (list
 
-                    (when debug-on-error (powerline-raw "debug" face-blue 'r))
-                    (powerline-raw global-mode-string face-grey 'r)
-                    (powerline-major-mode             face-grey 'l)
+                    (when debug-on-error (powerline-raw "debug" face-blue 'l))
+                    (powerline-raw global-mode-string face-grey 'l)
+                    (powerline-major-mode             face-blue 'l)
                     (powerline-process                face-grey 'l)
                     (powerline-minor-modes            face-grey 'l)
                     (powerline-narrow                 face-grey 'l)
 
-                    (powerline-raw " "   face-grey)
-                    (powerline-raw "%l " face-grey)
-                    (powerline-raw ": "  face-grey)
-                    (powerline-raw "%c " face-grey)
+                    (powerline-raw "%l:%c " face-grey 'l)
 
                     (powerline-hud 'cursor face-grey 1)
                     )))
@@ -78,6 +75,7 @@
          (concat (powerline-render lhs)
                  (powerline-fill face-grey (powerline-width rhs))
                  (powerline-render rhs))))))
+
 
   (defun t/update-powerline ()
     "Sets cusrtom powerline as the mode-line and force updates it. For some reason this needs `setq'.."

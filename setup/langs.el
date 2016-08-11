@@ -56,7 +56,8 @@
 (use-package eldoc
   :commands eldoc-mode
   :defer t
-  :diminish eldoc-mode)
+  ;;:diminish eldoc-mode
+  )
 
 (use-package less-css-mode
   :mode "\\.less$"
@@ -74,7 +75,7 @@
 ;; flycheck
 (use-package flycheck
   :defer t
-  :diminish flycheck-mode
+  ;; :diminish flycheck-mode
   :commands flycheck-mode
   :config
   (setq-default flycheck-disabled-checkers
@@ -413,15 +414,15 @@
   (add-hook hook (ligature '("function" . ?f))))
 
 (defvar mode-line-cleaner-alist
-  `((eldoc-mode . "")
-    (paredit-mode . "")
-    (rainbow-mode . "")
-    (company-mode . "")
-    (yas-minor-mode . "")
-    (undo-tree-mode . "")
+  `(;(eldoc-mode . "")
+    ;(paredit-mode . "")
+    ;(rainbow-mode . "")
+    ;(company-mode . "")
+    ;(yas-minor-mode . "")
+    ;(undo-tree-mode . "")
     (evil-escape-mode . "")
     (ethan-wspace-mode . "")
-    (rainbow-delimiters-mode . "")
+    ;(rainbow-delimiters-mode . "")
     (linum-relative-mode . "")
     (html-mode . "html")
     (js2-mode . "js2")
