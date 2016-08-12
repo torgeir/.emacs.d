@@ -223,10 +223,8 @@
 
 (use-package simplezen
   :defer 1
-  :bind (:map
-         html-mode-map
-         ("TAB" . simplezen-expand-or-indent-for-tab))
-  :config
+  :init
+  (add-hook 'html-mode-hook (lambda () (bind-key "TAB" 'simplezen-expand-or-indent-for-tab html-mode-map)))
   (add-hook 'sgml-mode-hook (lambda ()
                               "make tab work, first try yasnippet, then simplezen"
                               (set (make-local-variable 'yas/fallback-behavior)
