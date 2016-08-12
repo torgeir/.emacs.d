@@ -78,9 +78,18 @@
 
 (add-hook 'eshell-mode-hook
           (lambda ()
-            (bind-key "C-l" 't/eshell-clear evil-insert-state-local-map)
-            (bind-key "C-l" 't/eshell-clear evil-normal-state-local-map)
+            (bind-key "C-l" 't/eshell-clear eshell-mode-map)
+            (bind-key "C-a" 'eshell-bol eshell-mode-map)
+            (bind-key "C-a" 'eshell-bol evil-insert-state-local-map)
+            (bind-key "C-a" 'eshell-bol evil-normal-state-local-map)
+            (bind-key "C-d" 'eshell-life-is-too-much eshell-mode-map)
             (bind-key "C-d" 'eshell-life-is-too-much evil-insert-state-local-map)
-            (bind-key "C-d" 'eshell-life-is-too-much evil-normal-state-local-map)))
+            (bind-key "C-d" 'eshell-life-is-too-much evil-normal-state-local-map)
+            (defun t/eshell-kill-input--go-to-eol ()
+              "Go to end of line before killing input"
+              (end-of-line))
+            (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol)
+            (bind-key "C-u" 'eshell-kill-input eshell-mode-map)
+            (bind-key "C-c C-u" 'universal-argument eshell-mode-map)))
 
 (provide 't-shell)
