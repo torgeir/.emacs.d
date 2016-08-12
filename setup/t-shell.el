@@ -52,7 +52,7 @@
   (setq eshell-history-size 10000
         eshell-save-history-on-exit t
         eshell-visual-commands '("less" "tmux" "top" "bash")
-        eshell-visual-subcommands '(("git" "log" "diff" "show"))
+        eshell-visual-subcommands '(("git" "log" "df" "diff" "show"))
         ;; announce terminal
         eshell-term-name "eterm-color"))
 
