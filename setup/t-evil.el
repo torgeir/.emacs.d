@@ -1,17 +1,33 @@
+(setq t-evil-cursor-color-emacs "dark orange"
+      t-evil-cursor-color-evil "green2")
+
+(defun t/evil-update-cursor-color ()
+  (let* ((colors `((emacs . ,t-evil-cursor-color-emacs)
+                   (normal . ,t-evil-cursor-color-evil)
+                   (visual . ,t-evil-cursor-color-evil)
+                   (motion . ,t-evil-cursor-color-evil)
+                   (insert . ,t-evil-cursor-color-evil)))
+         (state-color (assoc evil-state colors)))
+    (set-cursor-color (if state-color (cdr state-color) t-evil-cursor-color-emacs))))
+
 (use-package evil
   :init
-  (setq cursor-color-emacs "DarkOrange" cursor-color-evil "green3")
   (setq evil-default-state 'normal
         evil-search-module 'evil-search
-        evil-emacs-state-cursor  `(,cursor-color-emacs box)
-        evil-normal-state-cursor `(,cursor-color-evil box)
-        evil-visual-state-cursor `(,cursor-color-evil box)
-        evil-insert-state-cursor `(,cursor-color-evil bar)
-        evil-motion-state-cursor `(,cursor-color-evil box))
+        ;; initial colors
+        evil-emacs-state-cursor `(,t-evil-cursor-color-emacs box)
+        evil-normal-state-cursor `(,t-evil-cursor-color-evil box)
+        evil-visual-state-cursor `(,t-evil-cursor-color-evil hollow))
+
+  (defun t/toggle-evil-local-mode ()
+    "Toggles evil-local-mode and updates the cursor. The `evil-*-state-cursor's seem to work by default, but not when toggling evil-local-mode (in emacsclients) off and on, so help it."
+    (interactive)
+    (evil-local-mode (if evil-local-mode 0 1))
+    (t/evil-update-cursor-color))
 
   (if is-mac
-      (bind-key "C-'" 'evil-local-mode)
-    (bind-key "C-|" 'evil-local-mode))
+      (bind-key "C-'" 't/toggle-evil-local-mode)
+    (bind-key "C-|" 't/toggle-evil-local-mode))
 
   :config
   (progn
