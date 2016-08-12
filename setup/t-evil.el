@@ -15,16 +15,20 @@
 
   :config
   (progn
-    (dolist (mode-map '((help-mode . emacs)
-                        (compilation-mode . emacs)
-                        (special-mode . emacs)
-                        (calendar-mode . emacs)
-                        (git-rebase-mode . emacs)
-                        (flycheck-error-list-mode . emacs)
-                        (diff-mode . emacs)
-                        (cider-stacktrace-mode . emacs)
-                        (cider-docview-mode . emacs)))
-      (evil-set-initial-state `,(car mode-map) `,(cdr mode-map)))))
+    (defvar t-evil-major-modes '(help-mode
+                                 compilation-mode
+                                 special-mode
+                                 calendar-mode
+                                 git-rebase-mode
+                                 flycheck-error-list-mode
+                                 diff-mode
+                                 cider-stacktrace-mode
+                                 cider-docview-mode)
+      "major modes that should trigger evil emacs state when changed to")
+    (add-hook 'after-change-major-mode-hook
+              (lambda ()
+                (when (member major-mode t-evil-major-modes)
+                  (evil-emacs-state))))))
 
 (use-package evil-anzu
   :after evil)
