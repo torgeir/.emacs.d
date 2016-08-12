@@ -10,7 +10,7 @@
         evil-motion-state-cursor `(,cursor-color-evil box))
 
   (if is-mac
-    (bind-key "C-'" 'evil-local-mode)
+      (bind-key "C-'" 'evil-local-mode)
     (bind-key "C-|" 'evil-local-mode))
 
   :config
