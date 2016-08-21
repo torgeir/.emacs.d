@@ -58,12 +58,19 @@
 
 (t/eshell-init)
 
+(defun t/eshell-buffer-id ()
+  "Next eshell buffer id."
+  (s-replace-all '(("*eshell*" . "")
+                   ("<" . "")
+                   (">" . ""))
+                 (generate-new-buffer-name "*eshell*")))
+
 (defun t/eshell ()
   "Start, or switch to, `eshell' in the current working directory."
   (interactive)
   (let ((path (file-name-directory (or (buffer-file-name) default-directory)))
         (hasfile (not (eq (buffer-file-name) nil))))
-    (eshell)
+    (eshell (t/eshell-buffer-id))
     (if (and hasfile (eq eshell-process-list nil))
         (progn
           (eshell/cd path)
