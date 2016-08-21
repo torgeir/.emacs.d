@@ -768,16 +768,15 @@ Repeated invocations toggle between the two most recently open buffers."
     ;; For Linux
     (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
 
-(defun t/sensible-window-split (&optional window)
+(defun t/split-window-sensibly (&optional window)
   (cond
    ((and (> (window-width window)
-            (window-height window))
+            (* 2 (window-height window)))
          (window-splittable-p window 'horizontal))
     (with-selected-window window
       (split-window-right)))
    ((window-splittable-p window)
     (with-selected-window window
       (split-window-below)))))
-
 
 (provide 't-defuns)

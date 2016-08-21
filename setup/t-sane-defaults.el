@@ -98,8 +98,9 @@
 (setq fill-column 80)
 
 ;; above what sizes can the window split
-(setq split-height-threshold 40
-      split-width-threshold 40)
+(setq split-height-threshold 0
+      split-width-threshold 0
+      split-window-preferred-function #'t/split-window-sensibly)
 
 ;; spaces
 (setq tab-width 2)
