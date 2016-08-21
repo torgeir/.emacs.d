@@ -417,7 +417,10 @@
                                 '((t/sp--create-newline-and-enter-sexp "RET")))))
 
 (use-package writeroom-mode
-  :commands writeroom-mode)
+  :commands writeroom-mode
+  :init
+  (t/declare-prefix "T" "Toggle"
+                    "w" 'writeroom-mode))
 
 (use-package w3m
   :commands w3m
