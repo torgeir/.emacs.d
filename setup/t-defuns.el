@@ -508,6 +508,34 @@ Including indent-buffer, which should not be called automatically on save."
   (let ((frame (selected-frame)))
     (set-frame-height frame (+ (frame-height frame) 2))))
 
+(defun t/move-frame-right ()
+  "Moves emacs frame right"
+  (interactive)
+  (let* ((frame (selected-frame))
+         (left (frame-parameter frame 'left)))
+    (set-frame-parameter frame 'left (+ left 20))))
+
+(defun t/move-frame-left ()
+  "Moves emacs frame left"
+  (interactive)
+  (let* ((frame (selected-frame))
+         (left (frame-parameter frame 'left)))
+    (set-frame-parameter frame 'left (- left 20))))
+
+(defun t/move-frame-up ()
+  "Moves emacs frame up"
+  (interactive)
+  (let* ((frame (selected-frame))
+         (top (frame-parameter frame 'left)'top)))
+    (set-frame-parameter frame 'top (- top 20)))
+
+(defun t/move-frame-down ()
+  "Moves emacs frame down"
+  (interactive)
+  (let* ((frame (selected-frame))
+         (top (frame-parameter frame 'top)))
+    (set-frame-parameter frame 'top (+ top 20)))
+
 (defun config-reload () (interactive) (load-file "~/.emacs.d/init.el"))
 (defun config-edit-init () (interactive) (find-file "~/.emacs.d/init.el"))
 (defun config-edit-org () (interactive) (find-file "~/.emacs.d/setup/setup-org.el"))
