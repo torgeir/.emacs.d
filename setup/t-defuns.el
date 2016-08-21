@@ -538,12 +538,12 @@ Including indent-buffer, which should not be called automatically on save."
 
 (defun config-reload () (interactive) (load-file "~/.emacs.d/init.el"))
 (defun config-edit-init () (interactive) (find-file "~/.emacs.d/init.el"))
-(defun config-edit-org () (interactive) (find-file "~/.emacs.d/setup/setup-org.el"))
-(defun config-edit-sane-defaults () (interactive) (find-file "~/.emacs.d/setup/sane-defaults.el"))
-(defun config-edit-defuns () (interactive) (find-file "~/.emacs.d/setup/defuns.el"))
-(defun config-edit-keys () (interactive) (find-file "~/.emacs.d/setup/keys.el"))
-(defun config-edit-mac () (interactive) (find-file "~/.emacs.d/setup/mac.el"))
-(defun config-edit-langs () (interactive) (find-file "~/.emacs.d/setup/langs.el"))
+(defun config-edit-org () (interactive) (find-file "~/.emacs.d/setup/t-org.el"))
+(defun config-edit-sane-defaults () (interactive) (find-file "~/.emacs.d/setup/t-sane-defaults.el"))
+(defun config-edit-defuns () (interactive) (find-file "~/.emacs.d/setup/t-defuns.el"))
+(defun config-edit-keys () (interactive) (find-file "~/.emacs.d/setup/t-keys.el"))
+(defun config-edit-mac () (interactive) (find-file "~/.emacs.d/setup/t-mac.el"))
+(defun config-edit-langs () (interactive) (find-file "~/.emacs.d/setup/t-langs.el"))
 (defun config-edit-snippets () (interactive) (find-file "~/.emacs.d/snippets/"))
 
 (defmacro t/macro-helm-ag-insert (thing fn)
