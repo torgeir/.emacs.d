@@ -526,15 +526,15 @@ Including indent-buffer, which should not be called automatically on save."
   "Moves emacs frame up"
   (interactive)
   (let* ((frame (selected-frame))
-         (top (frame-parameter frame 'left)'top)))
-    (set-frame-parameter frame 'top (- top 20)))
+         (top (frame-parameter frame 'left)'top))
+    (set-frame-parameter frame 'top (- top 20))))
 
 (defun t/move-frame-down ()
   "Moves emacs frame down"
   (interactive)
   (let* ((frame (selected-frame))
          (top (frame-parameter frame 'top)))
-    (set-frame-parameter frame 'top (+ top 20)))
+    (set-frame-parameter frame 'top (+ top 20))))
 
 (defun config-reload () (interactive) (load-file "~/.emacs.d/init.el"))
 (defun config-edit-init () (interactive) (find-file "~/.emacs.d/init.el"))
@@ -767,5 +767,17 @@ Repeated invocations toggle between the two most recently open buffers."
       (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
     ;; For Linux
     (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
+
+(defun t/sensible-window-split (&optional window)
+  (cond
+   ((and (> (window-width window)
+            (window-height window))
+         (window-splittable-p window 'horizontal))
+    (with-selected-window window
+      (split-window-right)))
+   ((window-splittable-p window)
+    (with-selected-window window
+      (split-window-below)))))
+
 
 (provide 't-defuns)
