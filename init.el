@@ -763,6 +763,12 @@
   (t/declare-prefix "o" "Other"
                     "c" 'calendar))
 
+(use-package suggest
+  :commands suggest
+  :init
+  (t/declare-prefix "o" "Other"
+                    "S" 'suggest))
+
 (t/declare-prefix "o" "Other"
                   "b" 'browse-url
                   "B" 'w3m)
