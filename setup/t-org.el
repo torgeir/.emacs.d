@@ -7,12 +7,12 @@
   :defer 2
   :init
   (setq org-directory (if is-mac
-                       "~/Dropbox/org"
-                       "c:/Users/torgth/Dropbox \(Personlig\)/org"))
+                          "~/Dropbox/org"
+                        "c:/Users/torgth/Dropbox \(Personlig\)/org"))
 
   (setq org-mobile-directory (if is-mac
-                                "~/Dropbox/Apps/MobileOrg"
-                                "c:/Users/torgth/Dropbox \(Personlig\)/Apps/MobileOrg")
+                                 "~/Dropbox/Apps/MobileOrg"
+                               "c:/Users/torgth/Dropbox \(Personlig\)/Apps/MobileOrg")
         org-mobile-inbox-for-pull (concat org-directory "/inbox.org"))
 
   (setq org-src-fontify-natively t
@@ -54,8 +54,8 @@
 
   (setq org-modules '(org-mouse
                       ;; TODO error when loading these two
-                      ;org-eval
-                      ;org-expiry
+                      ;;org-eval
+                      ;;org-expiry
                       ))
   (eval-after-load 'org
     '(org-load-modules-maybe t))
