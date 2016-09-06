@@ -300,6 +300,7 @@
                                   "ml" 'cljr-move-to-let
                                   )))))
 
+(use-package cljr-helm)
 
 (use-package clojure-mode-extra-font-locking
   :commands clojure-mode) ;; more syntax hilighting
