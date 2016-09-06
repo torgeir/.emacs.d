@@ -688,6 +688,15 @@
   :config
   (global-ethan-wspace-mode 1))
 
+(use-package highlight-parentheses
+  :init
+  (setq hl-paren-colors '("DeepPink1" "maroon1" "maroon2" "maroon3" "DeepPink3"
+                          "DeepPink4" "maroon4" "VioletRed4"
+                          "magenta1" "magenta2" "magenta3" "magenta4"
+                          "DarkOrchid1" "DarkOrchid3" "DarkOrchid4" "purple4"))
+  :config
+  (global-highlight-parentheses-mode))
+
 (use-package highlight-escape-sequences
   :config
   (put 'hes-escape-backslash-face 'face-alias 'font-lock-comment-face)
