@@ -47,7 +47,7 @@
         org-default-notes-file (concat org-directory "/tasks.org")
         ;; newest notes first
         org-reverse-note-order t
-        )
+        org-log-done t)
 
   (setq org-todo-keywords
         '((sequence "TODO" "|" "DONE" "CANCELLED")))
