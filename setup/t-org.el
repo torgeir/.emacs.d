@@ -63,6 +63,10 @@
   (eval-after-load 'org
     '(require 'ox-md))
 
+  (setq org-html-postamble t
+        org-html-postamble-format
+        '(("en" "<p class=\"author\">%a (%e)</p>\n<p class=\"date\">%T</p>")))
+
   (setq org-capture-templates
         '(("t" "Task"
            entry
