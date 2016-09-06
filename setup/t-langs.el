@@ -100,7 +100,9 @@
   (add-to-list 'flycheck-checkers 'clojure-cider-eastwood))
 
 (use-package yasnippet
-  :defer 1)
+  :defer 1
+  :config
+  (yas-global-mode 1))
 
 ;; js2-mode steals TAB, let's steal it back for yasnippet
 (use-package js2-mode
