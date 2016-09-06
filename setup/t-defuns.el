@@ -779,4 +779,37 @@ Repeated invocations toggle between the two most recently open buffers."
     (with-selected-window window
       (split-window-below)))))
 
+(defun t/date-time ()
+  "Insert current date-time string in full ISO 8601 format.
+Example: 2010-11-29T23:23:35-08:00"
+  (concat
+   (format-time-string "%Y-%m-%dT%T")
+   ((lambda (x) (concat (substring x 0 3) ":" (substring x 3 5)))
+    (format-time-string "%z"))))
+
+(defun t/date-time-for-filename ()
+  "Return date-time iso 8601 string suitable for filename"
+  (replace-regexp-in-string ":" "." (t/date-time)))
+
+(defun t/elpa-backup-directory ()
+  "Returns the directory name of an elpa backup that would run now."
+  (locate-user-emacs-file (format "elpa-backups/elpa-%s"
+                                  (t/date-time-for-filename))))
+
+(defun t/elpa-backup ()
+  "Backup the current elpa folder to elpa-backups."
+  (interactive)
+  (copy-directory
+   (locate-user-emacs-file "elpa")
+   (t/elpa-backup-directory)
+   t ;; keep last modified time
+   t ;; create parents
+   ))
+
+(defun t/upgrade-packages ()
+  "Upgrade packages after backing up the current elpa files."
+  (interactive)
+  (t/elpa-backup)
+  (paradox-upgrade-packages))
+
 (provide 't-defuns)

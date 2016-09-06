@@ -99,6 +99,7 @@
         projectile-completion-system 'helm)
   (evil-leader/set-key "t" 'helm-projectile)
   :config
+  (add-to-list 'projectile-globally-ignored-directories "elpa-backups")
   (add-to-list 'projectile-globally-ignored-directories "node_modules")
   (add-to-list 'projectile-globally-ignored-directories "target")
   (add-to-list 'projectile-globally-ignored-directories "dist")
@@ -790,7 +791,7 @@
                   "i" 'package-install
                   "r" 'package-refresh-contents
                   "l" 'paradox-list-packages
-                  "U" 'paradox-upgrade-packages)
+                  "U" 't/upgrade-packages)
 
 (t/declare-prefix "Ec" "Edit config"
                   "R" 'config-reload
