@@ -688,6 +688,8 @@
   :config
   (global-ethan-wspace-mode 1))
 
+(use-package highlight-indentation)
+
 (use-package highlight-parentheses
   :init
   (setq hl-paren-colors '("DeepPink1" "maroon1" "maroon2" "maroon3" "DeepPink3"
