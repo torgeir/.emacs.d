@@ -412,10 +412,10 @@
                    restclient-mode
                    ruby-mode
                    mark-down-mode)
-                 (sp-local-pair "[" nil :post-handlers
-                                '((t/sp--create-newline-and-enter-sexp "RET")))
-                 (sp-local-pair "{" nil :post-handlers
-                                '((t/sp--create-newline-and-enter-sexp "RET")))))
+    (sp-local-pair "[" nil :post-handlers
+                   '((t/sp--create-newline-and-enter-sexp "RET")))
+    (sp-local-pair "{" nil :post-handlers
+                   '((t/sp--create-newline-and-enter-sexp "RET")))))
 
 (use-package writeroom-mode
   :commands writeroom-mode
