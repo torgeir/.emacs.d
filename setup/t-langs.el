@@ -327,6 +327,7 @@
   (add-hook 'cider-mode-hook 'eldoc-mode)
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode)
+  (add-hook 'cider--debug-mode-hook (lambda () (interactive) (evil-local-mode 0)))
 
   ;; match camel-case tokens
   (add-hook 'clojure-mode-hook 'subword-mode)
