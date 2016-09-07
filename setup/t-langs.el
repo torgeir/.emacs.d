@@ -149,6 +149,13 @@
 
 (use-package web-mode
   :mode "\\.jsx$"
+  :init
+  (setq web-mode-auto-close-style 2
+        web-mode-enable-auto-quoting nil)
+  (setq web-mode-markup-indent-offset indent
+        web-mode-css-indent-offset indent
+        web-mode-code-indent-offset indent
+        web-mode-attr-indent-offset indent)
   :config
   (bind-key "TAB" #'t/tab-properly web-mode-map)
   (add-hook 'web-mode-hook ; http://web-mode.org/
@@ -156,10 +163,7 @@
               (add-to-list 'company-dabbrev-code-modes 'web-mode)
               (if (equal web-mode-content-type "javascript") (web-mode-set-content-type "jsx"))
               (dolist (mode '(js-mode html-mode css-mode))
-                (yas-activate-extra-mode mode))
-              (setq web-mode-markup-indent-offset indent)
-              (setq web-mode-css-indent-offset indent)
-              (setq web-mode-code-indent-offset indent))))
+                (yas-activate-extra-mode mode)))))
 
 (t/declare-prefix "mr" "Refactor")
 

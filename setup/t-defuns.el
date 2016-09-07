@@ -2,7 +2,7 @@
   (interactive)
   (let ((yas-fallback-behavior 'return-nil))
     (unless (yas-expand)
-      (indent-for-tab-command)
+      (simplezen-expand-or-indent-for-tab)
       (if (looking-back "^\s*")
           (back-to-indentation)))))
 
