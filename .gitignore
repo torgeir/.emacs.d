@@ -17,3 +17,9 @@
 /langs-extra.el
 /proxy.el
 /eshell/*
+/.nrepl-history
+/bookmarks
+/.DS_Store
+/.tern-port
+/test-files/.tern-port
+elpa-backups
