@@ -908,6 +908,13 @@
                   "R" 'winner-redo
                   "r" 'transpose-frame)
 
+(t/declare-prefix "z" "Folding"
+                  "z" 'hs-toggle-hiding
+                  "f" 'hs-hide-block
+                  "F" 'hs-hide-all
+                  "r" 'hs-show-block
+                  "R" 'hs-show-all)
+
 (t/declare-prefix "s" "Search"
                   "s" 'helm-swoop
                   "b" (t/macro-helm-ag-insert 'word helm-ag-buffers)

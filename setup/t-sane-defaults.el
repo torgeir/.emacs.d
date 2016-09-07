@@ -142,6 +142,8 @@
 (add-hook 'prog-mode-hook 'goto-address-prog-mode)
 ;; Highlight and follow bug references in comments and strings
 (add-hook 'prog-mode-hook 'bug-reference-prog-mode)
+;; Support folding
+(add-hook 'prog-mode-hook 'hs-minor-mode)
 
 ;; remove ellipsis from sexps in message buffer
 (setq eval-expression-print-length nil
