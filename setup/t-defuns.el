@@ -436,7 +436,7 @@ Including indent-buffer, which should not be called automatically on save."
     (turn-on-evil-mc-mode))
   (if (t/cursors-direction-is-up)
       (progn
-        (evil-mc-make-and-goto-prev-cursor)
+        (evil-mc-make-and-goto-prev-match)
         (t/cursors-message "mark"))
     (progn
       (setq t/cursors-direction 'up)
