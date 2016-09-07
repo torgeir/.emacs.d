@@ -12,7 +12,7 @@
   (let ((first (-take 1 t-themes))
         (rest (-drop 1 t-themes)))
     (setq t-themes (-concat rest first))
-    (car first)))
+    (car (-take 1 t-themes))))
 
 (defun t/tone-down-fringe-bg-color ()
   "Make fringe background-color the same as the background-color"
