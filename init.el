@@ -456,7 +456,10 @@
   :diminish helm-mode
   :bind (:map
          helm-map
-         ("C-w" . backward-kill-word))
+         ("C-w" . backward-kill-word)
+         ("C-u" . backward-kill-sentence)
+         ("C-c u" . universal-argument))
+
   :init
   (require 'helm-config)
   (setq-default helm-display-header-line nil
