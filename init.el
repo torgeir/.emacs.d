@@ -954,7 +954,10 @@
                        (turn-off-evil-mc-mode)
                        (keyboard-quit)))
 
-(global-set-key [M-S-down-mouse-1] 'mc/add-cursor-on-click)
+(global-set-key [M-S-mouse-1] '(lambda () (interactive)
+                                 (when (not evil-mc-mode)
+                                   (turn-on-evil-mc-mode))
+                                 (evil-mc-make-cursor-here)))
 
 (require 't-load-theme)
 
