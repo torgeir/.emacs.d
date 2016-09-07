@@ -933,8 +933,11 @@
                   "w" 'helm-wikipedia-suggest)
 
 (use-package evil-mc)
+(use-package evil-mc-extras)
 
 (t/declare-state "mc" "Multiple Cursors state"
+                 "+" 'evil-mc-inc-num-at-each-cursor
+                 "-" 'evil-mc-dec-num-at-each-cursor
                  "d" '(lambda () (interactive)
                         (when (not evil-mc-mode)
                           (turn-on-evil-mc-mode))
