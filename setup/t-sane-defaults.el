@@ -39,6 +39,9 @@
 ;; scroll compilation to first error
 (setq compilation-scroll-output 'first-error)
 
+;; resize windows proportionally
+(setq window-combination-resize t)
+
 ;; start *scratch* in text mode, loads emacs faster, and make it empty
 (setq initial-major-mode 'text-mode
       initial-scratch-message nil)
