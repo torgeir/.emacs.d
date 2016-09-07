@@ -70,16 +70,17 @@
 
 (use-package paredit
   :diminish paredit-mode
-  :commands (enable-paredit-mode evil-paredit-mode)
+  :commands (enable-paredit-mode evil-cleverparens-mode)
   :init
   (dolist (mode-hook '(emacs-lisp-mode-hook
+                       clojure-mode-hook
                        eval-expression-minibuffer-setup-hook
                        ielm-mode-hook
                        lisp-mode-hook
                        lisp-interaction-mode-hook
                        scheme-mode-hook))
     (add-hook mode-hook #'enable-paredit-mode)
-    (add-hook mode-hook #'evil-paredit-mode))
+    (add-hook mode-hook #'evil-cleverparens-mode))
   (dolist (mode-hook '(emacs-lisp-mode-hook
                        lisp-interaction-mode-hook
                        ielm-mode-hook))

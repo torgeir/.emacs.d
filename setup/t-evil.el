@@ -113,14 +113,7 @@
   (define-key evil-visual-state-map (kbd "#")
     'evil-visualstar/begin-search-backward))
 
-(use-package evil-paredit
-  :after evil
-  :config
-  (add-hook 'emacs-lisp-mode-hook 'evil-paredit-mode)
-  (add-hook 'clojure-mode-hook 'evil-paredit-mode)
-  ;; evil-surround support
-  (add-to-list 'evil-surround-operator-alist '(evil-paredit-change . change))
-  (add-to-list 'evil-surround-operator-alist '(evil-paredit-delete . delete)))
+(use-package evil-cleverparens)
 
 (use-package evil-nerd-commenter
   :defer 2
