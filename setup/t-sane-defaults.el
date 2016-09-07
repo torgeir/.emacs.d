@@ -36,6 +36,9 @@
 ;; focus help buffers
 (setq help-window-select 't)
 
+;; scroll compilation to first error
+(setq compilation-scroll-output 'first-error)
+
 ;; start *scratch* in text mode, loads emacs faster
 (setq initial-major-mode 'text-mode)
 
