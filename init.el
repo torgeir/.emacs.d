@@ -68,6 +68,9 @@
   :config
   (setq tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
 
+(use-package selectric-mode
+  :commands selectric-mode)
+
 (use-package paredit
   :diminish paredit-mode
   :commands (enable-paredit-mode evil-cleverparens-mode)
