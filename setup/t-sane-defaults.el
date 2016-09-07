@@ -39,8 +39,9 @@
 ;; scroll compilation to first error
 (setq compilation-scroll-output 'first-error)
 
-;; start *scratch* in text mode, loads emacs faster
-(setq initial-major-mode 'text-mode)
+;; start *scratch* in text mode, loads emacs faster, and make it empty
+(setq initial-major-mode 'text-mode
+      initial-scratch-message nil)
 
 ;; clipboard contents into kill-ring before replace
 (setq save-interprogram-paste-before-kill t)
