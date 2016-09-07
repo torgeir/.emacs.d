@@ -110,7 +110,8 @@
       split-window-preferred-function #'t/split-window-sensibly)
 
 ;; spaces
-(setq tab-width 2)
+(setq indent-tabs-mode nil
+      tab-width 2)
 
 ;; more memory
 (setq gc-cons-threshold 20000000)
