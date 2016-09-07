@@ -407,19 +407,20 @@
   (t/declare-prefix-for-mode 'scala-mode "me" "Evaluate"
                              "b" #'t/send-buffer-to-scala-repl
                              "r" #'t/send-region-to-scala-repl))
-;; ligatures
-(defun ligature (tuple)
-  "creates ligature"
-  (lexical-let ((lexical-tuple tuple))
-    (lambda ()
-      (push lexical-tuple prettify-symbols-alist)
-      (prettify-symbols-mode))))
+(progn
+  ;; ligatures
+  (defun t/ligature (tuple)
+    "creates ligature"
+    (lexical-let ((lexical-tuple tuple))
+      (lambda ()
+        (push lexical-tuple prettify-symbols-alist)
+        (prettify-symbols-mode))))
 
-(add-hook 'lisp-mode-hook (ligature '("lambda" . ?l)))
-(add-hook 'lisp-interaction-mode (ligature '("lambda" . ?l)))
-(add-hook 'emacs-lisp-mode-hook (ligature '("lambda" . ?l)))
-(dolist (hook '(js2-mode-hook web-mode-hook))
-  (add-hook hook (ligature '("function" . ?f))))
+  (add-hook 'lisp-mode-hook (t/ligature '("lambda" . ?l)))
+  (add-hook 'lisp-interaction-mode (t/ligature '("lambda" . ?l)))
+  (add-hook 'emacs-lisp-mode-hook (t/ligature '("lambda" . ?l)))
+  (dolist (hook '(js2-mode-hook web-mode-hook))
+    (add-hook hook (t/ligature '("function" . ?f)))))
 
 (defvar mode-line-cleaner-alist
   `(;(eldoc-mode . "")
