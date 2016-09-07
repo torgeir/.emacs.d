@@ -158,6 +158,7 @@
         web-mode-attr-indent-offset indent)
   :config
   (bind-key "TAB" #'t/tab-properly web-mode-map)
+  (add-hook 'web-mode-hook 'js2-minor-mode)
   (add-hook 'web-mode-hook ; http://web-mode.org/
             (lambda ()
               (add-to-list 'company-dabbrev-code-modes 'web-mode)
