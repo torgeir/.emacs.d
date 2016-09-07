@@ -31,7 +31,7 @@
 
   :config
   (progn
-    (defvar t-evil-major-modes '(help-mode
+    (defvar t-evil-major-modes '(;;help-mode
                                  compilation-mode
                                  special-mode
                                  calendar-mode
@@ -128,6 +128,7 @@
 
 
 ;; motions keys for help buffers
+(evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
 (evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
 (evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
 (evil-define-key 'motion help-mode-map (kbd "]") 'help-go-forward)
