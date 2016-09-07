@@ -652,7 +652,8 @@
   (setq wdired-allow-to-change-permissions t)
   (setq dired-auto-revert-buffer t
         dired-listing-switches "-alhF"
-        dired-ls-F-marks-symlinks "@")
+        dired-ls-F-marks-symlinks "@"
+        dired-dwim-target t)
   :config
   (bind-key "TAB" 'dired-details-toggle dired-mode-map)
   (bind-key "C-c C-e" 'dired-toggle-read-only)
