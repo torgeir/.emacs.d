@@ -142,6 +142,11 @@
 (add-hook 'prog-mode-hook 'goto-address-prog-mode)
 ;; Highlight and follow bug references in comments and strings
 (add-hook 'prog-mode-hook 'bug-reference-prog-mode)
+
+;; remove ellipsis from sexps in message buffer
+(setq eval-expression-print-length nil
+      eval-expression-print-level nil)
+
 ;; no cursor in other open windows
 (setq cursor-in-non-selected-windows nil)
 
