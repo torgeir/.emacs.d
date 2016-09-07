@@ -169,8 +169,8 @@
 (t/declare-prefix "mr" "Refactor")
 
 (use-package js2-refactor
-  :commands js2-mode
-  :config
+  :after js2-mode
+  :init
   (t/declare-prefix "mr" "Refactor"
                     "ef" 'js2r-extract-function
                     "em" 'js2r-extract-method
