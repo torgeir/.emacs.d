@@ -154,8 +154,7 @@
         web-mode-enable-auto-quoting nil)
   (setq web-mode-markup-indent-offset indent
         web-mode-css-indent-offset indent
-        web-mode-code-indent-offset indent
-        web-mode-attr-indent-offset indent)
+        web-mode-code-indent-offset indent)
   :config
   (bind-key "TAB" #'t/tab-properly web-mode-map)
   (add-hook 'web-mode-hook 'js2-minor-mode)
