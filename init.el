@@ -540,10 +540,8 @@
   :if is-mac
   :config (fancy-battery-mode))
 
-(use-package move-text
-  :commands (move-text-up move-text-down)
-  :bind (("<C-S-up>" . move-text-up)
-         ("<C-S-down>" . move-text-down)))
+(bind-key "<C-S-up>" 't/move-line-up)
+(bind-key "<C-S-down>" 't/move-line-down)
 
 (use-package expand-region
   :commands (er/expand-region er/contract-region)

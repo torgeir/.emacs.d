@@ -809,5 +809,61 @@ Example: 2010-11-29T23:23:35-08:00"
   (t/elpa-backup)
   (message "Backing up elpa/: done.")
   (paradox-upgrade-packages))
+(defun t/current-line-ends-in-comma ()
+  "Return whether the current line is suffixed with ','"
+  (save-excursion
+    (end-of-line)
+    (looking-back ",\s*")))
+
+(defun t/prev-line-ends-in-comma ()
+  "Return whether the current line is suffixed with ','"
+  (save-excursion
+    (forward-line -1)
+    (end-of-line)
+    (looking-back ",\s*")))
+
+(defun t/next-line-ends-in-comma ()
+  "Return whether the current line is suffixed with ','"
+  (save-excursion
+    (forward-line)
+    (end-of-line)
+    (looking-back ",\s*")))
+
+(defun t/move-line-up ()
+  "Move the current line up one line. Preserves trailing commas."
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (let ((handle-comma (and (t/prev-line-ends-in-comma)
+                               (not (t/current-line-ends-in-comma)))))
+        (transpose-lines 1)
+        (when handle-comma
+          (forward-line -2)
+          (end-of-line)
+          (insert ",")
+          (forward-line)
+          (end-of-line)
+          (delete-char -1))))
+    (forward-line -1)
+    (move-to-column col)))
+
+(defun t/move-line-down ()
+  "Move the current line down one line. Preserves trailing commas"
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (let ((handle-comma (and (t/current-line-ends-in-comma)
+                               (not (t/next-line-ends-in-comma)))))
+        (when handle-comma
+          (end-of-line)
+          (delete-char -1))
+        (forward-line)
+        (transpose-lines 1)
+        (when handle-comma
+          (forward-line -2)
+          (end-of-line)
+          (insert ","))))
+    (forward-line)
+    (move-to-column col)))
 
 (provide 't-defuns)
