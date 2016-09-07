@@ -809,7 +809,9 @@ Example: 2010-11-29T23:23:35-08:00"
 (defun t/upgrade-packages ()
   "Upgrade packages after backing up the current elpa files."
   (interactive)
+  (message "Backing up elpa/")
   (t/elpa-backup)
+  (message "Backing up elpa/: done.")
   (paradox-upgrade-packages))
 
 (provide 't-defuns)
