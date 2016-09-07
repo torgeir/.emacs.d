@@ -545,11 +545,6 @@
   :bind (("<C-S-up>" . move-text-up)
          ("<C-S-down>" . move-text-down)))
 
-(use-package multiple-cursors
-  :commands (t/cursor-down t/cursor-up)
-  :init
-  (require 'mc-cycle-cursors))
-
 (use-package expand-region
   :commands (er/expand-region er/contract-region)
   :init
@@ -925,21 +920,26 @@
                   "g" 'helm-google-suggest
                   "w" 'helm-wikipedia-suggest)
 
+(use-package evil-mc)
+
 (t/declare-state "mc" "Multiple Cursors state"
-                 "in" 'mc/insert-numbers
-                 "il" 'mc/insert-letters
-                 "l" 'mc/edit-lines
-                 "d" 'mc/mark-all-like-this-dwim
-                 "m" 'mc/mark-all-dwim
+                 "d" '(lambda () (interactive)
+                        (when (not evil-mc-mode)
+                          (turn-on-evil-mc-mode))
+                        (evil-mc-make-all-cursors))
+                 "h" '(lambda () (interactive)
+                        (when (not evil-mc-mode)
+                          (turn-on-evil-mc-mode))
+                        (evil-mc-make-cursor-here))
                  "j" #'t/cursor-down
                  "J" #'t/cursor-down-skip
                  "K" #'t/cursor-up-skip
                  "k" #'t/cursor-up
-                 "p" 'mc/cycle-backward
-                 "n" 'mc/cycle-forward
-                 "u" #'t/cursor-unmark
+                 "p" 'evil-mc-make-and-goto-prev-cursor
+                 "n" 'evil-mc-make-and-goto-next-cursor
                  "q" (lambda () (interactive)
-                       (multiple-cursors-mode 0)
+                       (evil-mc-undo-all-cursors)
+                       (turn-off-evil-mc-mode)
                        (keyboard-quit)))
 
 (global-set-key [M-S-down-mouse-1] 'mc/add-cursor-on-click)

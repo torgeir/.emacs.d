@@ -414,24 +414,15 @@ Including indent-buffer, which should not be called automatically on save."
   "Print message with added `str' and cursor direction."
   (message (concat "cursor " str ": " (symbol-name t/cursors-direction))))
 
-(defun t/cursor-unmark ()
-  ""
-  (interactive)
-  (if (t/cursors-direction-is-down)
-      (progn
-        (mc/unmark-next-like-this)
-        (t/cursors-message "unmark"))
-    (progn
-      (mc/unmark-previous-like-this)
-      (t/cursors-message "unmark"))))
-
 (defun t/cursor-down ()
   "Marks `next-like-this' if the `t/cursors-direction' is 'down.
    Sets `t/cursors-direction' to 'down if `t/cursors-direction' is 'up."
   (interactive)
+  (when (not evil-mc-mode)
+    (turn-on-evil-mc-mode))
   (if (t/cursors-direction-is-down)
       (progn
-        (mc/mark-next-like-this 1)
+        (evil-mc-make-and-goto-next-match)
         (t/cursors-message "mark"))
     (progn
       (setq t/cursors-direction 'down)
@@ -441,37 +432,42 @@ Including indent-buffer, which should not be called automatically on save."
   "Marks `previous-like-this' if the `t/cursors-direction' is 'up.
    Sets `t/cursors-direction' to 'up if `t/cursors-direction' is 'down."
   (interactive)
+  (when (not evil-mc-mode)
+    (turn-on-evil-mc-mode))
   (if (t/cursors-direction-is-up)
       (progn
-        (mc/mark-previous-like-this 1)
+        (evil-mc-make-and-goto-prev-cursor)
         (t/cursors-message "mark"))
     (progn
       (setq t/cursors-direction 'up)
       (t/cursors-message "direction"))))
 
-
 (defun t/cursor-down-skip ()
   "Skips to `next-like-this' if `t/cursors-direction' is 'down.
    Unmarks `previous-like-this' if `t/cursors-direction' is 'up"
   (interactive)
+  (when (not evil-mc-mode)
+    (turn-on-evil-mc-mode))
   (if (t/cursors-direction-is-up)
       (progn
-        (mc/unmark-previous-like-this)
+        (evil-mc-skip-and-goto-prev-cursor)
         (t/cursors-message "unmark"))
     (progn
-      (mc/skip-to-next-like-this)
+      (evil-mc-skip-and-goto-next-match)
       (t/cursors-message "skip"))))
 
 (defun t/cursor-up-skip ()
   "Skips to `previous-like-this' if `t/cursors-direction' is 'up.
    Unmarks `next-like-this' if `t/cursors-direction' is 'down"
   (interactive)
+  (when (not evil-mc-mode)
+    (turn-on-evil-mc-mode))
   (if (t/cursors-direction-is-down)
       (progn
-        (mc/unmark-next-like-this)
+        (evil-mc-skip-and-goto-next-cursor)
         (t/cursors-message "unmark"))
     (progn
-      (mc/skip-to-previous-like-this)
+      (evil-mc-skip-and-goto-prev-match)
       (t/cursors-message "skip"))))
 
 (defun t/split-window-right-and-move-there-dammit ()
