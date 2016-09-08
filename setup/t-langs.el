@@ -157,11 +157,15 @@
         web-mode-code-indent-offset indent)
   :config
   (bind-key "TAB" #'t/tab-properly web-mode-map)
-  (add-hook 'web-mode-hook 'js2-minor-mode)
+  (add-hook 'web-mode-hook (lambda ()
+                             (let ((is-jsx-file (not (null (string-match "\\.jsx$" (buffer-file-name))))))
+                               (when is-jsx-file
+                                 (js2-minor-mode)))))
   (add-hook 'web-mode-hook ; http://web-mode.org/
             (lambda ()
               (add-to-list 'company-dabbrev-code-modes 'web-mode)
-              (if (equal web-mode-content-type "javascript") (web-mode-set-content-type "jsx"))
+              (if (equal web-mode-content-type "javascript")
+                  (web-mode-set-content-type "jsx"))
               (dolist (mode '(js-mode html-mode css-mode))
                 (yas-activate-extra-mode mode)))))
 
