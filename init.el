@@ -434,21 +434,6 @@
          ("M-p" . backward-paragraph)
          ("M-n" . forward-paragraph)))
 
-(use-package tagedit
-  :commands tagedit-mode
-  :init
-  (add-hook 'sgml-mode-hook (lambda () (bind-key "C-c C-r" 'mc/mark-sgml-tag-pair sgml-mode-map)))
-  (add-hook 'html-mode-hook (lambda () (tagedit-mode 1)))
-  (add-hook 'html-mode-hook (lambda ()
-                              (bind-key "C-<left>"  'tagedit-forward-barf-tag html-mode-map)
-                              (bind-key "C-<right>" 'tagedit-forward-slurp-tag html-mode-map)
-                              (bind-key "C-k" 'tagedit-kill html-mode-map)
-                              (bind-key "M-k" 'tagedit-kill-attribute html-mode-map)
-                              (bind-key "M-r" 'tagedit-raise-tag html-mode-map)
-                              (bind-key "M-s" 'tagedit-splice-tag html-mode-map)
-                              (bind-key "M-S" 'tagedit-split-tag html-mode-map)
-                              (bind-key "M-J" 'tagedit-join-tags html-mode-map))))
-
 (use-package discover-my-major
   :commands (discover-my-major discover-my-mode))
 
