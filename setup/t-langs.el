@@ -215,6 +215,14 @@
 (use-package json-reformat
   :commands json-reformat)
 
+(use-package web-beautify
+  :defer t
+  :init
+  (t/declare-prefix-for-mode 'web-mode  "m" "Mode" "=" 'web-beautify-html)
+  (t/declare-prefix-for-mode 'css-mode  "m" "Mode" "=" 'web-beautify-js)
+  (t/declare-prefix-for-mode 'json-mode "m" "Mode" "=" 'web-beautify-js)
+  (t/declare-prefix-for-mode 'js2-mode  "m" "Mode" "=" 'web-beautify-js))
+
 ;; html
 (use-package sgml-mode
   :ensure nil
