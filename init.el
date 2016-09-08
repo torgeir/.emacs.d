@@ -714,18 +714,6 @@
   :commands hackernews
   :defer t)
 
-(use-package geeknote
-  :init
-  (setq geeknote-command "python /usr/local/bin/geeknote")
-  :config
-  (t/declare-prefix "gn" "Geeknote"
-                    "c" 'geeknote-create
-                    "e" 'geeknote-edit
-                    "f" 'geeknote-find
-                    "s" 'geeknote-show
-                    "r" 'geeknote-remove
-                    "m" 'geeknote-move))
-
 (use-package helm-insert-line-from-project
   :ensure nil
   :load-path "site-lisp/helm-insert-line-from-project"
