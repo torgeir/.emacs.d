@@ -287,7 +287,7 @@
                                    ("time" . "clj-time.core")))
                   (add-to-list 'cljr-magic-require-namespaces mapping t))
                 (t/declare-prefix "mr" "Refactor"
-                                        ; https://github.com/clojure-emacs/clj-refactor.el/wiki
+                                  ;; https://github.com/clojure-emacs/clj-refactor.el/wiki
                                   "?" 'cljr-describe-refactoring
 
                                   "ar" 'cljr-add-require-to-ns
