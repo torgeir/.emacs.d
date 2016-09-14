@@ -228,7 +228,7 @@
   :ensure nil
   :mode "\\.\\(xml\\|svg\\|rss\\|xsd\\|xslt\\|plist\\)$"
   :init
-  (set (make-local-variable 'sgml-basic-offset) indent-xml)
+  (setq sgml-basic-offset indent-xml)
 
   :config
   ;; reindent after deleting tag with C-c DEL
