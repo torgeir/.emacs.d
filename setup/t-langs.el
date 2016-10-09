@@ -223,8 +223,7 @@
   (t/declare-prefix-for-mode 'json-mode "m" "Mode" "=" 'web-beautify-js)
   (t/declare-prefix-for-mode 'js2-mode  "m" "Mode" "=" 'web-beautify-js))
 
-;; html
-(use-package sgml-mode
+(use-package nxml-mode
   :ensure nil
   :mode "\\.\\(xml\\|svg\\|rss\\|xsd\\|xslt\\|plist\\)$"
   :init
@@ -236,8 +235,7 @@
     (indent-region (point-min) (point-max)))
 
   ;; nxml
-  (add-hook 'nxml-mode-hook (lambda ()
-                              (setq nxml-child-indent indent-xml))))
+  (setq nxml-child-indent indent-xml))
 
 (use-package simplezen
   :init
