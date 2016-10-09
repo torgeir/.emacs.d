@@ -208,7 +208,7 @@
              helm-open-github-from-commit
              helm-open-github-from-file
              helm-open-github-from-pull-requests)
-  :config
+  :init
   (t/declare-prefix "go" "Open github"
                     "i" 'helm-open-github-from-issues
                     "c" 'helm-open-github-from-commit
