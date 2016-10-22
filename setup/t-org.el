@@ -30,12 +30,7 @@
         ;; Block parent TODOs if child is not completed
         org-enforce-todo-dependencies t
         ;; where to look for org files
-        org-agenda-files `(,(concat org-directory "/tasks.org")
-                           ,(concat org-directory "/todos/home.org")
-                           ,(concat org-directory "/todos/bekk.org")
-                           ,(concat org-directory "/todos/kom.org")
-                           ,(concat org-directory "/todos/rsi.org")
-                           ,(concat org-directory "/todos/datainn.org"))
+        org-agenda-files (t/find-org-file-recursively org-directory)
         ;; default duration of events
         org-agenda-default-appointment-duration 60
         org-refile-targets '((nil :maxlevel . 2)
