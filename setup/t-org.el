@@ -167,11 +167,47 @@
 
 (run-with-idle-timer 300 t 'jump-to-org-agenda)
 
+(use-package org-alert
+  :after org
+  :config
+  (setq alert-default-style 'osx-notifier)
+  (org-alert-enable)
+
+  (defun alert-osx-notifier-notify (info)
+    "Overriding this function of `org-alert' fixes `osx-notifier'."
+    (apply #'call-process "osascript" nil nil nil "-e" (list (format "display notification %S with title %S"
+                                                                     (alert-encode-string (plist-get info :message))
+                                                                     (alert-encode-string (plist-get info :title)))))
+    (alert-message-notify info)))
+
+(use-package org-bullets
+  :after org
+  :commands org-bullets-mode
+  :init
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+(use-package org-mac-iCal
+  :after org
+  :commands (org-mac-iCal))
+
+(use-package org-mac-link
+  :after org-plus-contrib
+  :ensure org-plus-contrib
+  :commands (org-mac-grab-link))
+
+(use-package weather-metno
+  :after org
+  :config
+  (setq weather-metno-location-name "Trondheim, Norway"
+        weather-metno-location-latitude 63.427
+        weather-metno-location-longitude 10.391))
+
 (t/declare-prefix "oo" "Org"
                   "c" 'org-capture
                   "e" 'org-export-dispatch
                   "g" 'org-mac-grab-link
                   "a" 'org-agenda
+                  "n" 'org-alert-check
                   "i" 'org-info)
 
 (t/declare-prefix "oom" "Mobile"
@@ -194,30 +230,5 @@
                   "i" 'org-clock-in
                   "o" 'org-clock-out)
 
-(use-package org-alert
-  :after org
-  :config
-  (setq alert-default-style 'osx-notifier)
-
-  (defun alert-osx-notifier-notify (info)
-    "Overriding this function of `org-alert' fixes `osx-notifier'."
-    (apply #'call-process "osascript" nil nil nil "-e" (list (format "display notification %S with title %S"
-                                                                     (alert-encode-string (plist-get info :message))
-                                                                     (alert-encode-string (plist-get info :title)))))
-    (alert-message-notify info)))
-
-(use-package org-bullets
-  :after org
-  :commands org-bullets-mode
-  :init
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
-(use-package org-mac-iCal
-  :after org
-  :commands (org-mac-iCal))
-
-(use-package org-mac-link
-  :after org
-  :commands (org-mac-grab-link))
 
 (provide 't-org)
