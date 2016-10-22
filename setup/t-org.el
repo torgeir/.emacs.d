@@ -105,6 +105,9 @@
                result
              (error result))))))
 
+  (use-package ob-restclient
+    :after org)
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
@@ -112,7 +115,8 @@
      (python . t)
      (ruby . t)
      (js . t)
-     (sh . t)))
+     (sh . t)
+     (restclient . t)))
 
   (add-hook 'org-mode-hook
             (lambda ()
