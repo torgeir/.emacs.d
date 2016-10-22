@@ -43,6 +43,7 @@
         org-default-notes-file (concat org-directory "/tasks.org")
         ;; newest notes first
         org-reverse-note-order t
+        ;; log when todos are completed
         org-log-done t)
 
   (setq org-todo-keywords
