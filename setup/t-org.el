@@ -47,6 +47,13 @@
         ;; log when todos are completed
         org-log-done t)
 
+  (setq org-agenda-custom-commands
+        `(
+          ("b" tags-todo "book" ((org-agenda-files ',(t/find-org-file-recursively org-directory))))
+          ("v" tags-todo "video" ((org-agenda-files ',(t/find-org-file-recursively org-directory))))
+          ("C" todo "CANCELLED" ((org-agenda-files ',(t/find-org-file-recursively org-directory))))
+          ))
+
   (setq org-todo-keywords
         '((sequence "TODO" "|" "DONE" "CANCELLED")))
 
