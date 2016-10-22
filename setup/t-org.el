@@ -17,6 +17,10 @@
         org-tab-follows-link nil
         ;; ido where possible
         org-completion-use-ido t
+        ;; newlines
+        org-blank-before-new-entry '((heading . t) (plain-list-item . t))
+        ;; number of empty lines after heading needed to show visible newline between headings
+        org-cycle-separator-lines 2
         ;; don't run stuff automatically on export
         org-export-babel-evaluate nil
         ;; don't prompt on every code run
