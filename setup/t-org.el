@@ -1,9 +1,5 @@
-(use-package org-mac-iCal
-  :commands (org-mac-iCal))
-(use-package org-mac-link
-  :commands (org-mac-grab-link))
-
 (use-package org
+  :ensure org-plus-contrib
   :defer 2
   :init
   (setq org-directory (if is-mac
@@ -195,5 +191,31 @@
 (t/declare-prefix "ooC" "Clock"
                   "i" 'org-clock-in
                   "o" 'org-clock-out)
+
+(use-package org-alert
+  :after org
+  :config
+  (setq alert-default-style 'osx-notifier)
+
+  (defun alert-osx-notifier-notify (info)
+    "Overriding this function of `org-alert' fixes `osx-notifier'."
+    (apply #'call-process "osascript" nil nil nil "-e" (list (format "display notification %S with title %S"
+                                                                     (alert-encode-string (plist-get info :message))
+                                                                     (alert-encode-string (plist-get info :title)))))
+    (alert-message-notify info)))
+
+(use-package org-bullets
+  :after org
+  :commands org-bullets-mode
+  :init
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+(use-package org-mac-iCal
+  :after org
+  :commands (org-mac-iCal))
+
+(use-package org-mac-link
+  :after org
+  :commands (org-mac-grab-link))
 
 (provide 't-org)
