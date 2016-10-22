@@ -31,6 +31,8 @@
         org-enforce-todo-dependencies t
         ;; where to look for org files
         org-agenda-files (t/find-org-file-recursively org-directory)
+        ;; prevent showing done scheduled items
+        org-agenda-skip-scheduled-if-done nil
         ;; default duration of events
         org-agenda-default-appointment-duration 60
         org-refile-targets '((nil :maxlevel . 2)
