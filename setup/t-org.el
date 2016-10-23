@@ -198,6 +198,19 @@
         weather-metno-location-latitude 63.427
         weather-metno-location-longitude 10.391))
 
+(use-package calendar-norway
+  :config
+  (setq calendar-holidays
+        (append calendar-norway-raude-dagar
+                calendar-norway-andre-merkedagar
+                calendar-norway-dst
+                '((holiday-fixed 3 17 "St. Patricksdag") ; extra non-no days
+                  (holiday-fixed 10 31 "Hallowe'en")
+                  (holiday-float 11 4 4 "Thanksgiving")
+                  (solar-equinoxes-solstices)))
+        calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
+        solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjegndøgn" "Vintersolherv")))
+
 (t/declare-prefix "oo" "Org"
                   "c" 'org-capture
                   "e" 'org-export-dispatch
