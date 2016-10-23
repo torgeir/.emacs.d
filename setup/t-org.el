@@ -87,12 +87,11 @@
          (let ((result-params (cdr (assoc :result-params params))))
            (setq result
                  (nrepl-dict-get
-                  (nrepl-sync-request:eval expanded)
+                  (nrepl-sync-request:eval expanded (cider-current-connection) (cider-current-session))
                   (if (or (member "output" result-params)
                           (member "pp" result-params))
                       "out"
                     "value"))))
-
          (org-babel-result-cond (cdr (assoc :result-params params))
            result
            (condition-case nil
