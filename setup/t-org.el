@@ -164,7 +164,8 @@
 (use-package org-alert
   :after org
   :config
-  (setq alert-default-style 'osx-notifier)
+  (setq alert-default-style 'osx-notifier
+        org-alert-interval 3600)
   (org-alert-enable)
 
   (defun alert-osx-notifier-notify (info)
