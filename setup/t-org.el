@@ -1,6 +1,9 @@
 (use-package org
   :ensure org-plus-contrib
   :defer 2
+  :bind (:map
+         org-src-mode-map
+         ("C-c C-c" . org-edit-src-exit))
   :init
   (setq org-directory (if is-mac
                           "~/Dropbox/org"
