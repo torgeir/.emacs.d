@@ -149,17 +149,15 @@
               (progn
                 (select-window (display-buffer buf t t))
                 (org-fit-window-to-buffer)
-                ;; (org-agenda-redo)
-                )
+                (org-agenda-redo))
             (with-selected-window (display-buffer buf)
               (org-fit-window-to-buffer)
-              ;; (org-agenda-redo)
-              )))
+              (org-agenda-redo))))
       (call-interactively 'org-agenda-list)))
-  ;;(let ((buf (get-buffer "*Calendar*")))
-  ;;  (unless (get-buffer-window buf)
-  ;;    (org-agenda-goto-calendar)))
-  )
+  (let ((buf (get-buffer "*Calendar*")))
+    (unless (get-buffer-window buf)
+      (org-agenda-goto-calendar)
+      (other-window 1))))
 
 (run-with-idle-timer 300 t 'jump-to-org-agenda)
 
