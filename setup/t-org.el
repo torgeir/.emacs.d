@@ -11,59 +11,46 @@
                                "c:/Users/torgth/Dropbox \(Personlig\)/Apps/MobileOrg")
         org-mobile-inbox-for-pull (concat org-directory "/inbox.org"))
 
-  (setq org-src-fontify-natively t
-        ;; follow links on enter, not tab
-        org-return-follows-link t
+  (setq org-return-follows-link t
         org-tab-follows-link nil
-        ;; ido where possible
+        org-hide-emphasis-markers t
         org-completion-use-ido t
-        ;; newlines
         org-blank-before-new-entry '((heading . t) (plain-list-item . t))
         ;; number of empty lines after heading needed to show visible newline between headings
         org-cycle-separator-lines 2
-        ;; don't run stuff automatically on export
-        org-export-babel-evaluate nil
-        ;; delete other windows when showing agenda
-        org-agenda-window-setup 'only-window
-        ;; don't prompt on every code run
-        org-confirm-babel-evaluate nil
-        ;; show invisibles on edit
         org-catch-invisible-edits 'show
-        ;; Block parent TODOs if child is not completed
-        org-enforce-todo-dependencies t
-        ;; where to look for org files
-        org-agenda-files (t/find-org-file-recursively org-directory)
-        ;; prevent showing done scheduled items
-        org-agenda-skip-scheduled-if-done nil
-        ;; default duration of events
-        org-agenda-default-appointment-duration 60
+        org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
         org-refile-targets '((nil :maxlevel . 2)
                              (org-agenda-files :maxlevel . 2))
-        ;; tag position after headings
-        org-tags-column -60
-        ;; force utf-8
+        org-tags-column -60 ; tag position after headings
         org-export-coding-system 'utf-8
         org-default-notes-file (concat org-directory "/tasks.org")
-        ;; newest notes first
-        org-reverse-note-order t
-        ;; log when todos are completed
-        org-log-done t)
 
-  (setq org-agenda-custom-commands
-        `(
-          ("b" tags-todo "book" ((org-agenda-files ',(t/find-org-file-recursively org-directory))))
-          ("v" tags-todo "video" ((org-agenda-files ',(t/find-org-file-recursively org-directory))))
-          ("C" todo "CANCELLED" ((org-agenda-files ',(t/find-org-file-recursively org-directory))))
-          ))
+        org-reverse-note-order t ; newest notes first
+        org-log-done t ; log when todos are completed
+        org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
 
-  (setq org-todo-keywords
-        '((sequence "TODO" "|" "DONE" "CANCELLED")))
+  (setq org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-confirm-babel-evaluate nil
+        org-export-babel-evaluate nil ; don't run stuff automatically on export
+        org-edit-src-content-indentation 0)
 
+  (setq org-agenda-default-appointment-duration 60
+        org-agenda-window-setup 'only-window ; delete other windows when showing agenda
+        org-agenda-files (t/find-org-file-recursively org-directory) ; where to look for org files
+        org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
+        org-agenda-custom-commands `(
+                                     ("b" tags-todo "book" ',(t/find-org-file-recursively org-directory))
+                                     ("v" tags-todo "video" ((org-agenda-files ',(t/find-org-file-recursively org-directory))))
+                                     ("C" todo "CANCELLED" ((org-agenda-files ',(t/find-org-file-recursively org-directory))))
+                                     ))
   (setq org-modules '(org-mouse
                       ;; TODO error when loading these two
                       ;;org-eval
                       ;;org-expiry
                       ))
+
   (eval-after-load 'org
     '(org-load-modules-maybe t))
 
