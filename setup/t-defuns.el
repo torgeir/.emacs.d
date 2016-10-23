@@ -887,4 +887,9 @@ If FILEXT is provided, return files with extension FILEXT instead."
                           org-file-list) ; add files found to result
           (add-to-list 'org-file-list org-file)))))))
 
+(defun t/org-fix-inline-images ()
+  "Fix redisplaying images after executing org babel code."
+  (when org-inline-image-overlays
+    (org-redisplay-inline-images)))
+
 (provide 't-defuns)

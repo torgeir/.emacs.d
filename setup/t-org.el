@@ -109,11 +109,14 @@
      (ruby . t)
      (js . t)
      (sh . t)
+     (dot . t)
      (restclient . t)))
 
+  (add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
   (add-hook 'org-mode-hook
             (lambda ()
-              (visual-line-mode 1)
+              (org-display-inline-images t t)
+              (visual-line-mode 1) ; wrap long lines
               ;; yasnippet
               (make-variable-buffer-local 'yas/trigger-key)
               (org-set-local 'yas/trigger-key [tab])
