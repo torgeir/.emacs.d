@@ -23,6 +23,8 @@
         org-cycle-separator-lines 2
         ;; don't run stuff automatically on export
         org-export-babel-evaluate nil
+        ;; delete other windows when showing agenda
+        org-agenda-window-setup 'only-window
         ;; don't prompt on every code run
         org-confirm-babel-evaluate nil
         ;; show invisibles on edit
