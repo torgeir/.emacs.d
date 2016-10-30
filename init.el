@@ -85,11 +85,7 @@
                        lisp-interaction-mode-hook
                        scheme-mode-hook))
     (add-hook mode-hook #'enable-paredit-mode)
-    (add-hook mode-hook #'evil-cleverparens-mode))
-  (dolist (mode-hook '(emacs-lisp-mode-hook
-                       lisp-interaction-mode-hook
-                       ielm-mode-hook))
-    (add-hook mode-hook 'eldoc-mode)))
+    (add-hook mode-hook #'evil-cleverparens-mode)))
 
 (use-package subword
   :defer 1

@@ -53,12 +53,6 @@
   :init
   (add-hook 'css-mode-hook #'css-eldoc-enable))
 
-(use-package eldoc
-  :commands eldoc-mode
-  :defer t
-  ;;:diminish eldoc-mode
-  )
-
 (use-package less-css-mode
   :mode "\\.less$"
   :commands less-css-mode
@@ -354,7 +348,6 @@
                              "f" 'cider-eval-defun-at-point
                              "R" 'cider-eval-last-sexp-and-replace)
   ;; minibuffer doc in repl
-  (add-hook 'cider-mode-hook 'eldoc-mode)
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode)
   (add-hook 'cider--debug-mode-hook (lambda () (interactive) (evil-local-mode 0)))

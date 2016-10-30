@@ -131,9 +131,9 @@
   :defer t
   :init
   (setq recentf-max-saved-items 1000
-        recentf-auto-cleanup 'never
-        recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
+        recentf-auto-cleanup 'never)
   :config
+  (setq recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
   (recentf-mode 1))
 
 ;; from spacemacs
