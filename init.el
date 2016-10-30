@@ -1,5 +1,7 @@
 ;; credits spacemacs for all the clever stuff
 
+;;(package-initialize)
+
 (load (locate-user-emacs-file "t-before.el") t)
 
 (setq *user-dir-snippets* (locate-user-emacs-file "snippets"))
