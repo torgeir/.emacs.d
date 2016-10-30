@@ -14,7 +14,8 @@
                                "c:/Users/torgth/Dropbox \(Personlig\)/Apps/MobileOrg")
         org-mobile-inbox-for-pull (concat org-directory "/inbox.org"))
 
-  (setq org-return-follows-link t
+  (setq org-startup-indented t ; turn on org-indent-mode
+        org-return-follows-link t
         org-tab-follows-link nil
         org-hide-emphasis-markers t
         org-completion-use-ido t
@@ -28,10 +29,12 @@
         org-tags-column -60 ; tag position after headings
         org-export-coding-system 'utf-8
         org-default-notes-file (concat org-directory "/tasks.org")
+        org-special-ctrl-k t ; don't clear tags, etc
+        org-adapt-indentation t ; move text to align with heading bullets
 
         org-reverse-note-order t ; newest notes first
         org-log-done t ; log when todos are completed
-        org-todo-keywords '((sequence "TODO" "|" "DONE" "CANCELLED")))
+        org-todo-keywords '((sequence "TODO" "STARTED" "|" "DONE" "CANCELLED")))
 
   (setq org-src-fontify-natively t
         org-src-tab-acts-natively t
@@ -81,6 +84,7 @@
   :config
   ;; use cider instead of slime (default)
   (setq org-babel-clojure-backend 'cider)
+  (defvar org-babel-clojure-nrepl-timeout 20)
   (eval-after-load "ob-clojure"
     '(defun org-babel-execute:clojure (body params)
        "Execute a block of Clojure code with Babel."
@@ -90,7 +94,8 @@
          (let ((result-params (cdr (assoc :result-params params))))
            (setq result
                  (nrepl-dict-get
-                  (nrepl-sync-request:eval expanded (cider-current-connection) (cider-current-session))
+                  (let ((nrepl-sync-request-timeout org-babel-clojure-nrepl-timeout))
+                    (nrepl-sync-request:eval expanded (cider-current-connection) (cider-current-session)))
                   (if (or (member "output" result-params)
                           (member "pp" result-params))
                       "out"
@@ -111,13 +116,17 @@
      (python . t)
      (ruby . t)
      (js . t)
+     (latex . t)
      (sh . t)
      (dot . t)
      (restclient . t)))
 
   (add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
+
   (add-hook 'org-mode-hook
             (lambda ()
+              (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
+              (bind-key "C-c C-k" 'org-edit-src-abort org-src-mode-map)
               (org-display-inline-images t t)
               (visual-line-mode 1) ; wrap long lines
               ;; yasnippet
