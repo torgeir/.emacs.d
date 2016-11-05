@@ -4,6 +4,10 @@
 
 (t/declare-prefix "m" "Mode")
 
+(use-package haskell-mode
+  :commands haskell-mode
+  :defer t)
+
 (use-package arduino-mode
   :mode "\\.ino$"
   :commands arduino-mode
