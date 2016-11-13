@@ -13,8 +13,9 @@
   (setq org-mobile-directory (t/user-dropbox-folder "Apps/MobileOrg")
         org-mobile-inbox-for-pull (t/org-directory "inbox.org"))
 
-  ;; fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html
-  (defun org-set-local (var val) (setq-local var val))
+  (defun org-set-local (var val)
+    "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
+    (setq-local var val))
 
   (setq org-startup-indented t ; turn on org-indent-mode
         org-return-follows-link t
