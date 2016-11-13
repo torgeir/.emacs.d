@@ -14,6 +14,10 @@
                                "c:/Users/torgth/Dropbox \(Personlig\)/Apps/MobileOrg")
         org-mobile-inbox-for-pull (concat org-directory "/inbox.org"))
 
+
+  ;; fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html
+  (defun org-set-local (var val) (setq-local var val))
+
   (setq org-startup-indented t ; turn on org-indent-mode
         org-return-follows-link t
         org-tab-follows-link nil
