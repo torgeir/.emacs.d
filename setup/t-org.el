@@ -90,10 +90,11 @@
                                      ("tc" todo "CANCELLED" ,(t/org-todos-by-tag-settings "CANCELLED tasks by tag"))
                                      ("td" todo "DONE" ,(t/org-todos-by-tag-settings "DONE tasks by tag"))
 
-                                     ("s" tags-todo "serie")
-                                     ("e" tags-todo "emacs")
-                                     ("b" tags-todo "book")
-                                     ("v" tags-todo "video")
+                                     ("h" . "Home")
+                                     ("hs" tags-todo "serie")
+                                     ("he" tags-todo "emacs")
+                                     ("hb" tags-todo "book")
+                                     ("hv" tags-todo "video")
 
                                      ("d" "Deadlines" agenda ""
                                       ((org-agenda-entry-types '(:deadline))
