@@ -1,5 +1,6 @@
 (use-package darktooth-theme :defer t)
 (use-package spacemacs-theme :defer t)
+(use-package gruvbox-theme :defer t)
 
 (defvar t-themes (list
                   'spacemacs-dark
