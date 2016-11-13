@@ -132,7 +132,8 @@
          (copy-cmd (if is-mac "pbcopy" "putclip"))
          (proc (start-process copy-cmd "*Messages*" copy-cmd)))
     (process-send-string proc text)
-    (process-send-eof proc)))
+    (process-send-eof proc))
+  text)
 
 (defun t/open-in-desktop ()
   "Show current file in desktop (OS's file manager).
