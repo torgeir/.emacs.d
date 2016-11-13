@@ -190,7 +190,12 @@
 ;; elm
 (use-package elm-mode
   :mode "\\.elm$"
+  :init
+  (setq elm-tags-on-save t
+        elm-format-on-save t)
   :config
+  (add-hook 'elm-mode-hook 'elm-oracle-setup-completion)
+  (add-to-list 'company-backends 'company-elm)
   (t/declare-prefix-for-mode 'elm-mode "me" "Evaluate"
                              "b" (lambda ()
                                    (interactive)
