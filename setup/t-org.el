@@ -63,7 +63,9 @@
         org-adapt-indentation t ; move text to align with heading bullets
 
         org-reverse-note-order t ; newest notes first
-        org-log-done t ; log when todos are completed
+        org-log-done 'time ; log when todos are completed
+        org-log-redeadline 'time ; log when deadline changes
+        org-log-reschedule 'time ; log when schedule changes
         org-todo-keywords '((sequence "TODO" "STARTED" "|" "DONE" "CANCELLED")))
 
   (setq org-src-fontify-natively t
