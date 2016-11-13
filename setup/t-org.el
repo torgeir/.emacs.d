@@ -297,7 +297,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 (t/declare-prefix "oot" "Tags"
                   "a" 'org-archive-set-tag
-                  "t" 'org-set-tags-to)
+                  "t" 'org-set-tags-command)
 
 (t/declare-prefix "ooT" "Table"
                   "Tg" 'org-table-toggle-coordinate-overlays
