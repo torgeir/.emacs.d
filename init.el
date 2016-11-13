@@ -532,9 +532,8 @@
   :bind ("C-c C-j" . dash-at-point))
 
 (use-package fancy-battery
-  :defer 4
-  :if is-mac
-  :config (fancy-battery-mode))
+  :defer t
+  :if is-mac)
 
 (bind-key "<C-S-up>" 't/move-line-up)
 (bind-key "<C-S-down>" 't/move-line-down)
