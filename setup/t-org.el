@@ -5,15 +5,13 @@
          org-src-mode-map
          ("C-c C-c" . org-edit-src-exit))
   :init
-  (setq org-directory (if is-mac
-                          "~/Dropbox/org"
-                        "c:/Users/torgth/Dropbox \(Personlig\)/org"))
-
-  (setq org-mobile-directory (if is-mac
-                                 "~/Dropbox/Apps/MobileOrg"
-                               "c:/Users/torgth/Dropbox \(Personlig\)/Apps/MobileOrg")
-        org-mobile-inbox-for-pull (concat org-directory "/inbox.org"))
-
+  (setq user-dropbox-folder (if is-mac "~/Dropbox"
+                              "c:/Users/torgth/Dropbox \(Personlig\)"))
+  (defun t/user-dropbox-folder (path) (concat user-dropbox-folder "/" path))
+  (setq org-directory (t/user-dropbox-folder "org"))
+  (defun t/org-directory (path) (concat org-directory "/" path))
+  (setq org-mobile-directory (t/user-dropbox-folder "Apps/MobileOrg")
+        org-mobile-inbox-for-pull (t/org-directory "inbox.org"))
 
   ;; fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html
   (defun org-set-local (var val) (setq-local var val))
@@ -32,7 +30,7 @@
                              (org-agenda-files :maxlevel . 2))
         org-tags-column -60 ; tag position after headings
         org-export-coding-system 'utf-8
-        org-default-notes-file (concat org-directory "/tasks.org")
+        org-default-notes-file (t/org-directory "tasks.org")
         org-special-ctrl-k t ; don't clear tags, etc
         org-adapt-indentation t ; move text to align with heading bullets
 
@@ -48,12 +46,12 @@
 
   (setq org-agenda-default-appointment-duration 60
         org-agenda-window-setup 'only-window ; delete other windows when showing agenda
-        org-agenda-files (t/find-org-file-recursively org-directory) ; where to look for org files
+        org-agenda-files (t/find-org-files-recursively org-directory) ; where to look for org files
         org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
         org-agenda-custom-commands `(
-                                     ("b" tags-todo "book" ',(t/find-org-file-recursively org-directory))
-                                     ("v" tags-todo "video" ((org-agenda-files ',(t/find-org-file-recursively org-directory))))
-                                     ("C" todo "CANCELLED" ((org-agenda-files ',(t/find-org-file-recursively org-directory))))
+                                     ("b" tags-todo "book" ',(t/find-org-files-recursively org-directory))
+                                     ("v" tags-todo "video" ((org-agenda-files ',(t/find-org-files-recursively org-directory))))
+                                     ("C" todo "CANCELLED" ((org-agenda-files ',(t/find-org-files-recursively org-directory))))
                                      ))
   (setq org-modules '(org-mouse
                       ;; TODO error when loading these two

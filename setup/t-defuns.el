@@ -867,7 +867,7 @@ Example: 2010-11-29T23:23:35-08:00"
     (forward-line)
     (move-to-column col)))
 
-(defun t/find-org-file-recursively (&optional directory filext)
+(defun t/find-org-files-recursively (&optional directory filext)
   "Return .org and .org_archive files recursively from DIRECTORY.
 If FILEXT is provided, return files with extension FILEXT instead."
   (interactive "DDirectory: ")
@@ -884,7 +884,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (if (string-match fileregex file-or-dir) ; org files
             (add-to-list 'org-file-list file-or-dir)))
        ((file-directory-p file-or-dir)
-        (dolist (org-file (t/find-org-file-recursively file-or-dir filext)
+        (dolist (org-file (t/find-org-files-recursively file-or-dir filext)
                           org-file-list) ; add files found to result
           (add-to-list 'org-file-list org-file)))))))
 
