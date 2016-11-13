@@ -116,18 +116,15 @@
         '(("en" "<p class=\"author\">%a (%e)</p>\n<p class=\"date\">%T</p>")))
 
   (setq org-capture-templates
-        '(("t" "Task"
+        `(("t" "Task"
            entry
            (file+headline org-default-notes-file "Tasks")
-           "* TODO %?\n  %i\n  %a")
+           "* TODO %? %^G\nSCHEDULED: %t\n%i\n%a")
+
           ("j" "Journal entry"
            entry
-           (file+datetree (concat org-directory "/journal.org"))
-           "**** %U %^{Title}\n     %?")))
-
-                                        ; select example
-                                        ;  " %^{Tidbit type|quote|zinger|one-liner}"
-
+           (file+datetree ,(t/org-directory "journal.org"))
+           "**** %U %^{Title}\n%?")))
 
   :config
   ;; use cider instead of slime (default)
