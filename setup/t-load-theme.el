@@ -2,8 +2,8 @@
 (use-package spacemacs-theme :defer t)
 
 (defvar t-themes (list
-                  'darktooth
                   'spacemacs-dark
+                  'darktooth
                   'spacemacs-light) "Themes to cycle")
 
 (defun t/cycle-theme ()
