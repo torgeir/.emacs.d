@@ -13,6 +13,33 @@
   (setq org-mobile-directory (t/user-dropbox-folder "Apps/MobileOrg")
         org-mobile-inbox-for-pull (t/org-directory "inbox.org"))
 
+  (defun t/org-todos-by-tag-settings (name)
+    `((org-agenda-remove-tags t)
+      (org-agenda-sorting-strategy '(tag-up priority-down))
+      (org-agenda-todo-keyword-format "")
+      (org-agenda-overriding-header ,(concat "\n" name "\n"))))
+
+  (defun t/org-day-summary (tags)
+    `((tags "PRIORITY=\"A\""
+            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+             (org-agenda-overriding-header "Pri")))
+      (agenda ,tags
+              ((org-agenda-span 'day)
+               (org-agenda-ndays 1)
+               (org-agenda-time-grid nil)))
+      (tags-todo ,tags
+                 ((org-agenda-overriding-header "Unscheduled")
+                  (org-agenda-skip-function
+                   '(or (t/org-skip-subtree-if-priority ?A)
+                        (org-agenda-skip-if nil '(scheduled deadline))))))
+      (tags-todo ,tags
+                 ((org-agenda-overriding-header "Scheduled")
+                  (org-agenda-skip-function
+                   '(or (t/org-skip-subtree-if-priority ?A)
+                        (org-agenda-skip-if nil '(notscheduled deadline))))
+                  (org-show-context-detail 'minimal)
+                  (org-agenda-view-columns-initially t)))))
+
   (defun org-set-local (var val)
     "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
     (setq-local var val))
@@ -49,11 +76,29 @@
         org-agenda-window-setup 'only-window ; delete other windows when showing agenda
         org-agenda-files (t/find-org-files-recursively org-directory) ; where to look for org files
         org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
-        org-agenda-custom-commands `(
-                                     ("b" tags-todo "book" ',(t/find-org-files-recursively org-directory))
-                                     ("v" tags-todo "video" ((org-agenda-files ',(t/find-org-files-recursively org-directory))))
-                                     ("C" todo "CANCELLED" ((org-agenda-files ',(t/find-org-files-recursively org-directory))))
-                                     ))
+        org-agenda-custom-commands `(("w" . "Work")
+                                     ("ww" "bekk" ,(t/org-day-summary "+bekk") ((org-agenda-remove-tags t)))
+                                     ("wd" "datainn" ,(t/org-day-summary "+bekk-sb1|+datainn-sb1") ((org-agenda-remove-tags t)))
+                                     ("ws" "sb1" ,(t/org-day-summary  "+bekk-datainn|+sb1-datainn") ((org-agenda-remove-tags t)))
+
+                                     ("t" . "Todos")
+                                     ("ta" alltodo)
+                                     ("tt" todo "TODO" ,(t/org-todos-by-tag-settings "TODO tasks by tag"))
+                                     ("ts" todo "STARTED" ,(t/org-todos-by-tag-settings "STARTED tasks by tag"))
+                                     ("tc" todo "CANCELLED" ,(t/org-todos-by-tag-settings "CANCELLED tasks by tag"))
+                                     ("td" todo "DONE" ,(t/org-todos-by-tag-settings "DONE tasks by tag"))
+
+                                     ("s" tags-todo "serie")
+                                     ("e" tags-todo "emacs")
+                                     ("b" tags-todo "book")
+                                     ("v" tags-todo "video")
+
+                                     ("d" "Deadlines" agenda ""
+                                      ((org-agenda-entry-types '(:deadline))
+                                       (org-agenda-ndays 1)
+                                       (org-deadline-warning-days 60)
+                                       (org-agenda-time-grid nil)))))
+
   (setq org-modules '(org-mouse
                       ;; TODO error when loading these two
                       ;;org-eval
@@ -155,7 +200,18 @@
           'font-lock-face 'calendar-iso-week-face)
         calendar-intermonth-header (propertize "WK" 'font-lock-face 'calendar-iso-week-header-face)))
 
-(defun jump-to-org-agenda ()
+(defun t/org-skip-subtree-if-priority (priority)
+  "Skip an agenda subtree if it has a priority of PRIORITY.
+
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+        (pri-value (* 1000 (- org-lowest-priority priority)))
+        (pri-current (org-get-priority (thing-at-point 'line t))))
+    (if (= pri-value pri-current)
+        subtree-end
+      nil)))
+
+(defun t/jump-to-org-agenda ()
   (interactive)
   (let ((buf (get-buffer "*Org Agenda*"))
         wind)
