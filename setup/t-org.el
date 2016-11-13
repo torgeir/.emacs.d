@@ -226,13 +226,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
             (with-selected-window (display-buffer buf)
               (org-fit-window-to-buffer)
               (org-agenda-redo))))
-      (call-interactively 'org-agenda-list)))
-  (let ((buf (get-buffer "*Calendar*")))
-    (unless (get-buffer-window buf)
-      (org-agenda-goto-calendar)
-      (other-window 1))))
+      (call-interactively 'org-agenda-list))))
 
-(run-with-idle-timer 300 t 'jump-to-org-agenda)
+(run-with-idle-timer 300 t #'t/jump-to-org-agenda)
 
 (use-package org-alert
   :after org
