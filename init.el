@@ -46,7 +46,8 @@
 (use-package paradox
   :commands (paradox-list-packages paradox-upgrade-packages)
   :init
-  (setq paradox-execute-asynchronously t))
+  (setq paradox-github-token t
+        paradox-execute-asynchronously t))
 
 (use-package exec-path-from-shell
   :if is-mac
@@ -280,6 +281,11 @@
                     "b" 'magit-blame
                     "l" 'magit-log
                     "C" 'magit-commit)
+
+  (setq magit-pull-arguments nil
+        magit-fetch-arguments '("--prune")
+        magit-rebase-arguments '("--interactive")
+        magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
   :config
   (bind-key "q" #'magit-quit-session magit-status-mode-map)
 

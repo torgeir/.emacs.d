@@ -334,7 +334,8 @@
   :pin melpa-stable
   :commands (cider cider-connect cider-jack-in)
   :init
-  (setq cider-repl-pop-to-buffer-on-connect nil)
+  (setq cider-boot-parameters "cider repl -s wait"
+        cider-repl-pop-to-buffer-on-connect nil)
   :bind (:map
          cider-mode-map
          ("C-M-." . cider-find-dwim))
