@@ -32,6 +32,10 @@
   ;; :bind (:map
   ;;        org-src-mode-map
   ;;        ("C-c C-c" . org-edit-src-exit))
+  :bind (:map
+         smartparens-mode-map
+         ("M-S-<right>" . nil)
+         ("M-S-<left>" . nil))
   :init
 
   (setq user-dropbox-folder (if is-mac "~/Dropbox"
