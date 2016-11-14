@@ -77,7 +77,9 @@
         org-export-babel-evaluate nil ; don't run stuff automatically on export
         org-edit-src-content-indentation 0)
 
-  (setq org-agenda-default-appointment-duration 60
+  (setq org-agenda-include-diary t
+        org-agenda-diary-file (t/org-directory "diary.org")
+        org-agenda-default-appointment-duration 60
         org-agenda-window-setup 'only-window ; delete other windows when showing agenda
         org-agenda-files (t/find-org-files-recursively org-directory) ; where to look for org files
         org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
