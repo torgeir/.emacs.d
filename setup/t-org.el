@@ -20,7 +20,9 @@
       (org-agenda-overriding-header ,(concat "\n" name "\n"))))
 
   (defun t/org-day-summary (tags)
-    `((tags "PRIORITY=\"A\""
+
+    `((tags ,(concat "PRIORITY=\"A\"&" ; wat lol
+                     (replace-regexp-in-string "|" "PRIORITY=\"A\"&" tags))
             ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
              (org-agenda-overriding-header "Pri")))
       (agenda ,tags
