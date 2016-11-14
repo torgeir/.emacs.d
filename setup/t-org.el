@@ -51,6 +51,7 @@
   (setq org-startup-indented t ; turn on org-indent-mode
         org-return-follows-link t
         org-tab-follows-link nil
+        org-hide-leading-stars t
         org-hide-emphasis-markers t
         org-completion-use-ido t
         ;; number of empty lines after heading needed to show visible newline between headings
@@ -249,11 +250,12 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                                                      (alert-encode-string (plist-get info :title)))))
     (alert-message-notify info)))
 
-(use-package org-bullets
-  :after org
-  :commands org-bullets-mode
-  :init
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+;; (use-package org-bullets
+;;   :after org
+;;   :commands org-bullets-mode
+;;   :init
+;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
 
 (use-package org-mac-iCal
   :after org
