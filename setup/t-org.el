@@ -53,7 +53,6 @@
         org-tab-follows-link nil
         org-hide-emphasis-markers t
         org-completion-use-ido t
-        org-blank-before-new-entry '((heading . t) (plain-list-item . t))
         ;; number of empty lines after heading needed to show visible newline between headings
         org-cycle-separator-lines 2
         org-catch-invisible-edits 'show
@@ -311,5 +310,42 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                   "i" 'org-clock-in
                   "o" 'org-clock-out)
 
+(progn
+  ;; blank line before new entries with text,
+  ;; but not headings following other headings (todolists)
+
+  (setq org-blank-before-new-entry
+        '((heading . always)
+          (plain-list-item . nil)))
+
+  (defun t/call-rebinding-org-blank-behaviour (fn)
+    (let ((org-blank-before-new-entry
+           (copy-tree org-blank-before-new-entry)))
+      (when (org-at-heading-p)
+        (rplacd (assoc 'heading org-blank-before-new-entry) nil))
+      (call-interactively fn)))
+
+  (defun t/org-meta-return-dwim ()
+    (interactive)
+    (t/call-rebinding-org-blank-behaviour 'org-meta-return))
+
+  (defun t/org-insert-todo-heading-dwim ()
+    (interactive)
+    (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading))
+
+  (defun t/org-insert-heading-respent-content-dwim ()
+    (interactive)
+    (t/call-rebinding-org-blank-behaviour 'org-insert-heading-respect-content))
+
+  (defun t/org-insert-todo-heading-respect-content-dwim ()
+    (interactive)
+    (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading-respect-content))
+
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (define-key org-mode-map (kbd "M-<return>") 't/org-meta-return-dwim)
+              (define-key org-mode-map (kbd "M-S-<return>") 't/org-insert-todo-heading-dwim)
+              (define-key org-mode-map (kbd "C-<return>") 't/org-insert-heading-respent-content-dwim)
+              (define-key org-mode-map (kbd "C-S-<return>") 't/org-insert-todo-heading-respect-content-dwim))))
 
 (provide 't-org)
