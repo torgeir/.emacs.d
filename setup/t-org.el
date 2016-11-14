@@ -1,3 +1,31 @@
+(defun t/org-todos-by-tag-settings (name)
+  `( (org-agenda-remove-tags t)
+     (org-agenda-sorting-strategy '(tag-up priority-down))
+     (org-agenda-todo-keyword-format "")
+     (org-agenda-overriding-header ,(concat "\n" name "\n"))))
+
+(defun t/org-day-summary (tags)
+  `((tags ,(concat "PRIORITY=\"A\"&" ;; wat lol
+                   (replace-regexp-in-string "|" "|PRIORITY=\"A\"&" tags))
+          ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+           (org-agenda-overriding-header "Pri")))
+    (agenda ,tags
+            ((org-agenda-span 'day)
+             (org-agenda-ndays 1)
+             (org-agenda-time-grid nil)))
+    (tags-todo ,tags
+               ((org-agenda-overriding-header "Unscheduled")
+                (org-agenda-skip-function
+                 '(or (t/org-skip-subtree-if-priority ?A)
+                      (org-agenda-skip-if nil '(scheduled deadline))))))
+    (tags-todo ,tags
+               ((org-agenda-overriding-header "Scheduled")
+                (org-agenda-skip-function
+                 '(or (t/org-skip-subtree-if-priority ?A)
+                      (org-agenda-skip-if nil '(notscheduled deadline))))
+                (org-show-context-detail 'minimal)
+                (org-agenda-view-columns-initially t)))))
+
 (use-package org
   :ensure org-plus-contrib
   :defer 2
@@ -5,42 +33,16 @@
   ;;        org-src-mode-map
   ;;        ("C-c C-c" . org-edit-src-exit))
   :init
+
   (setq user-dropbox-folder (if is-mac "~/Dropbox"
                               "c:/Users/torgth/Dropbox \(Personlig\)"))
+
   (defun t/user-dropbox-folder (path) (concat user-dropbox-folder "/" path))
-  (setq org-directory (t/user-dropbox-folder "org"))
   (defun t/org-directory (path) (concat org-directory "/" path))
+
+  (setq org-directory (t/user-dropbox-folder "org"))
   (setq org-mobile-directory (t/user-dropbox-folder "Apps/MobileOrg")
         org-mobile-inbox-for-pull (t/org-directory "inbox.org"))
-
-  (defun t/org-todos-by-tag-settings (name)
-    `((org-agenda-remove-tags t)
-      (org-agenda-sorting-strategy '(tag-up priority-down))
-      (org-agenda-todo-keyword-format "")
-      (org-agenda-overriding-header ,(concat "\n" name "\n"))))
-
-  (defun t/org-day-summary (tags)
-
-    `((tags ,(concat "PRIORITY=\"A\"&" ; wat lol
-                     (replace-regexp-in-string "|" "PRIORITY=\"A\"&" tags))
-            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-             (org-agenda-overriding-header "Pri")))
-      (agenda ,tags
-              ((org-agenda-span 'day)
-               (org-agenda-ndays 1)
-               (org-agenda-time-grid nil)))
-      (tags-todo ,tags
-                 ((org-agenda-overriding-header "Unscheduled")
-                  (org-agenda-skip-function
-                   '(or (t/org-skip-subtree-if-priority ?A)
-                        (org-agenda-skip-if nil '(scheduled deadline))))))
-      (tags-todo ,tags
-                 ((org-agenda-overriding-header "Scheduled")
-                  (org-agenda-skip-function
-                   '(or (t/org-skip-subtree-if-priority ?A)
-                        (org-agenda-skip-if nil '(notscheduled deadline))))
-                  (org-show-context-detail 'minimal)
-                  (org-agenda-view-columns-initially t)))))
 
   (defun org-set-local (var val)
     "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
