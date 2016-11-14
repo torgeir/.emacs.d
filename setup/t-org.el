@@ -74,7 +74,8 @@
         org-log-done 'time ; log when todos are completed
         org-log-redeadline 'time ; log when deadline changes
         org-log-reschedule 'time ; log when schedule changes
-        org-todo-keywords '((sequence "TODO" "STARTED" "|" "DONE" "CANCELLED")))
+        org-use-fast-todo-selection t
+        org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)")))
 
   (setq org-src-fontify-natively t
         org-src-tab-acts-natively t
