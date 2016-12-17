@@ -1,5 +1,6 @@
 ;; indents
 (setq indent 2)
+;;(setq indent 4)
 (setq indent-xml 4)
 
 (t/declare-prefix "m" "Mode")
