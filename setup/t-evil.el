@@ -113,7 +113,8 @@
   (define-key evil-visual-state-map (kbd "#")
     'evil-visualstar/begin-search-backward))
 
-(use-package evil-cleverparens)
+(use-package evil-cleverparens
+  :diminish evil-cleverparens-mode)
 
 (use-package evil-nerd-commenter
   :defer 2

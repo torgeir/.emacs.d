@@ -54,7 +54,12 @@
   :config
   (exec-path-from-shell-initialize))
 
+(use-package hideshow
+  :ensure nil
+  :diminish hs-minor-mode)
+
 (use-package rainbow-mode
+  :diminish rainbow-mode
   :commands rainbow-mode
   :init
   (dolist (mode-hook '(prog-mode-hook css-mode-hook html-mode-hook))
@@ -89,6 +94,7 @@
     (add-hook mode-hook #'evil-cleverparens-mode)))
 
 (use-package subword
+  :diminish subword-mode
   :defer 1
   :ensure nil
   :config (subword-mode))
@@ -333,6 +339,7 @@
   (smex-initialize))
 
 (use-package company
+  :diminish company-mode
   :defer 1
   :init
   (setq company-idle-delay 0.2
@@ -369,6 +376,7 @@
   (add-to-list 'company-backends 'company-restclient))
 
 (use-package company-tern
+  :diminish tern-mode
   :after company
   :bind (:map
          tern-mode-keymap
@@ -683,6 +691,7 @@
 (use-package highlight-indentation)
 
 (use-package highlight-parentheses
+  :diminish highlight-parentheses-mode
   :init
   (setq hl-paren-colors '("DeepPink1" "maroon1" "maroon2" "maroon3" "DeepPink3"
                           "DeepPink4" "maroon4" "VioletRed4"
