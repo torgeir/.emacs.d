@@ -46,9 +46,6 @@
                 (when (member major-mode t-evil-major-modes)
                   (evil-emacs-state))))))
 
-(use-package evil-anzu
-  :after evil)
-
 (use-package evil-escape
   :after evil
   :init

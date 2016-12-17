@@ -148,7 +148,7 @@
         neo-dont-be-alone t
         neo-show-hidden-files t
         neo-auto-indent-point t)
-  (when is-mac (setq neo-theme 'nerd))
+  (when is-mac (setq neo-theme 'icons))
   :config
 
   (defun neotree-find-project-root ()
@@ -779,7 +779,11 @@
 
 (require 't-keys)
 (require 't-langs)
-(require 't-powerline)
+
+;; try doom-modeline
+;(require 't-powerline)
+(require 'core-modeline)
+(setq mode-line-format (doom-modeline))
 
 (t/declare-prefix "o" "Other"
                   "e" 't/eshell)
@@ -951,6 +955,7 @@
                                  (evil-mc-make-cursor-here)))
 
 (require 't-load-theme)
+(t/load-theme)
 
 ;; custom-settings in separate file
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))

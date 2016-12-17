@@ -9,6 +9,9 @@
 ;; file helpers
 (use-package f)
 
+;; icons
+(use-package all-the-icons)
+
 ;; sane defaults
 (use-package better-defaults)
 

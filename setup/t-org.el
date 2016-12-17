@@ -70,6 +70,10 @@
         org-special-ctrl-k t ; don't clear tags, etc
         org-adapt-indentation t ; move text to align with heading bullets
 
+        org-fontify-whole-heading-line t
+        org-fontify-done-headline t
+        org-fontify-quote-and-verse-blocks t
+
         org-reverse-note-order t ; newest notes first
         org-log-done 'time ; log when todos are completed
         org-log-redeadline 'time ; log when deadline changes

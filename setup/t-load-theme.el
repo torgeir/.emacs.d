@@ -1,8 +1,16 @@
 (use-package darktooth-theme :defer t)
 (use-package spacemacs-theme :defer t)
 (use-package gruvbox-theme :defer t)
+(use-package doom-themes :defer t
+  :init
+  (add-hook 'find-file-hook 'doom-buffer-mode)
+  (add-hook 'minibuffer-setup-hook 'doom-brighten-minibuffer)
+  :config
+  (require 'doom-neotree)
+  (setq doom-neotree-enable-file-icons t))
 
 (defvar t-themes (list
+                  'doom-one
                   'spacemacs-dark
                   'darktooth
                   'spacemacs-light) "Themes to cycle")
