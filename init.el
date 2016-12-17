@@ -180,6 +180,20 @@
               (bind-key "RET" 'neotree-enter evil-normal-state-local-map)
               (bind-key "C" 'neotree-change-root evil-normal-state-local-map))))
 
+(use-package nlinum
+  :defer t
+  :config
+  (setq nlinum-format "%4d "
+        nlinum-highlight-current-line t))
+
+(use-package nlinum-relative
+  :init
+  (setq nlinum-relative-redisplay-delay 0
+        nlinum-relative-current-symbol "> ")
+  :config
+  (nlinum-relative-setup-evil))
+
+
 (t/declare-prefix "g" "Git")
 
 (use-package git-gutter+
@@ -206,7 +220,13 @@
   :after git-gutter+
   :if has-gui
   :config
-  (git-gutter+-enable-fringe-display-mode))
+  (git-gutter+-enable-fringe-display-mode)
+  (fringe-helper-define 'git-gutter-fr+-added nil
+    "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX.....")
+  (fringe-helper-define 'git-gutter-fr+-deleted nil
+    "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX.....")
+  (fringe-helper-define 'git-gutter-fr+-modified nil
+    "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....."))
 
 (use-package helm-open-github
   :commands (helm-open-github-from-issues
@@ -251,19 +271,6 @@
                     "B" 'gist-buffer-private
                     "r" 'gist-region
                     "R" 'gist-region-private))
-
-(use-package nlinum
-  :config
-  (setq nlinum-format "%4d "
-        nlinum-highlight-current-line t))
-
-(use-package nlinum-relative
-  :init
-  (setq nlinum-relative-redisplay-delay 0
-        nlinum-relative-current-symbol "> ")
-  :config
-  (nlinum-relative-setup-evil)
-  (add-hook 'prog-mode-hook 'nlinum-relative-mode))
 
 (use-package ace-window
   :commands ace-window
