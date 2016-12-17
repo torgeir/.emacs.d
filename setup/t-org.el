@@ -145,6 +145,23 @@
            "**** %U %^{Title}\n%?")))
 
   :config
+  (use-package ob-restclient
+    :after org)
+
+  (with-eval-after-load 'org
+    (require 'ob-clojure)
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (clojure . t)
+       (python . t)
+       (ruby . t)
+       (js . t)
+       (latex . t)
+       (sh . t)
+       (dot . t)
+       (restclient . t))))
+
   ;; use cider instead of slime (default)
   (setq org-babel-clojure-backend 'cider)
   (defvar org-babel-clojure-nrepl-timeout 20)
@@ -168,21 +185,6 @@
            (condition-case nil
                result
              (error result))))))
-
-  (use-package ob-restclient
-    :after org)
-
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (clojure . t)
-     (python . t)
-     (ruby . t)
-     (js . t)
-     (latex . t)
-     (sh . t)
-     (dot . t)
-     (restclient . t)))
 
   (add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
 
