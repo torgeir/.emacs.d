@@ -252,10 +252,18 @@
                     "r" 'gist-region
                     "R" 'gist-region-private))
 
-(use-package linum-relative
-  :commands (linum-relative-mode linum-mode)
+(use-package nlinum
   :config
-  (linum-relative-mode))
+  (setq nlinum-format "%4d "
+        nlinum-highlight-current-line t))
+
+(use-package nlinum-relative
+  :init
+  (setq nlinum-relative-redisplay-delay 0
+        nlinum-relative-current-symbol "> ")
+  :config
+  (nlinum-relative-setup-evil)
+  (add-hook 'prog-mode-hook 'nlinum-relative-mode))
 
 (use-package ace-window
   :commands ace-window
@@ -664,8 +672,15 @@
   (bind-key "M-<down>" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map)
   (bind-key "M-n" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map))
 
+
+(use-package all-the-icons-dired
+  :after dired
+  :init
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
 ;; less verbose dired
 (use-package dired-details
+  :after dired
   :init (setq-default dired-details-hidden-string "")
   :config (dired-details-install))
 
@@ -811,8 +826,8 @@
 (t/declare-prefix "T" "Toggle"
                   "d" 'toggle-debug-on-error
                   "T" 't/load-theme-cycle
-                  "l" 'linum-mode
-                  "L" 'linum-relative-toggle
+                  "l" 'nlinum-mode
+                  "L" 'nlinum-relative-toggle
                   "b" 'fancy-battery-mode
                   "g" 'git-gutter+-mode
                   "c" 'rainbow-mode
