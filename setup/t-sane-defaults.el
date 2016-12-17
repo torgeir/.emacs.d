@@ -16,7 +16,7 @@
 (when is-ms (require 't-cygwin))
 
 ;; cut copies to os
-(setq interprogram-cut-function #'t/copy-to-clipboard)
+;;(setq interprogram-cut-function #'t/copy-to-clipboard)
 
 ;; update screen immediately
 (setq redisplay-dont-pause t)
