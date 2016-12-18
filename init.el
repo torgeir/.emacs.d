@@ -4,9 +4,9 @@
 
 (load (locate-user-emacs-file "t-before.el") t)
 
-(setq *user-dir-snippets* (locate-user-emacs-file "snippets"))
-(setq *user-dir-setup* (locate-user-emacs-file "setup"))
-(setq *user-dir-site-lisp* (locate-user-emacs-file "site-lisp"))
+(setq *user-dir-snippets* (locate-user-emacs-file "snippets")
+      *user-dir-setup* (locate-user-emacs-file "setup")
+      *user-dir-site-lisp* (locate-user-emacs-file "site-lisp"))
 
 (add-to-list 'load-path *user-dir-setup*)
 (add-to-list 'load-path *user-dir-site-lisp*)
