@@ -100,7 +100,7 @@ active.")
   "Update (py|rb)env version string in `doom-ml--env-version', generated with
 `doom-ml--env-command'."
   (when doom-ml--env-command
-    (let* ((default-directory (projectile-project-root))
+    (let* ((default-directory (t/project-root))
            (s (shell-command-to-string doom-ml--env-command)))
       (setq doom-ml--env-version (if (string-match "[ \t\n\r]+\\'" s)
                                      (replace-match "" t t s)
@@ -140,7 +140,7 @@ cached the first time."
 project root). Excludes the file basename. See `doom-buffer-name' for that."
   (if buffer-file-name
       (let* ((default-directory (f-dirname buffer-file-name))
-             (buffer-path (f-relative buffer-file-name (projectile-project-root)))
+             (buffer-path (f-relative buffer-file-name (t/project-root)))
              (max-length (truncate (* (window-body-width) 0.4))))
         (when (and buffer-path (not (equal buffer-path ".")))
           (if (> (length buffer-path) max-length)
@@ -179,7 +179,7 @@ project root). Excludes the file basename. See `doom-buffer-name' for that."
              :face face
              :v-adjust -0.05
              :height 1.25)
-            (propertize (concat " " (abbreviate-file-name (doom/project-root)))
+            (propertize (concat " " (abbreviate-file-name (t/project-root)))
                         'face face))))
 
 (defun *buffer-info ()
