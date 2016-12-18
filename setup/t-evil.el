@@ -114,7 +114,7 @@
   :diminish evil-cleverparens-mode)
 
 (use-package evil-nerd-commenter
-  :defer 2
+  :defer 1
   :init
   (t/declare-prefix "c" "Comment/Complete"
                     "c" 'evilnc-comment-or-uncomment-lines

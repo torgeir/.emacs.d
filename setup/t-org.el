@@ -1,8 +1,8 @@
 (defun t/org-todos-by-tag-settings (name)
-  `( (org-agenda-remove-tags t)
-     (org-agenda-sorting-strategy '(tag-up priority-down))
-     (org-agenda-todo-keyword-format "")
-     (org-agenda-overriding-header ,(concat "\n" name "\n"))))
+  `((org-agenda-remove-tags t)
+    (org-agenda-sorting-strategy '(tag-up priority-down))
+    (org-agenda-todo-keyword-format "")
+    (org-agenda-overriding-header ,(concat "\n" name "\n"))))
 
 (defun t/org-day-summary (tags)
   `((tags ,(concat "PRIORITY=\"A\"&" ;; wat lol
@@ -28,7 +28,7 @@
 
 (use-package org
   :ensure org-plus-contrib
-  :defer 2
+  :commands (org-mode)
   ;; :bind (:map
   ;;        org-src-mode-map
   ;;        ("C-c C-c" . org-edit-src-exit))
@@ -37,7 +37,6 @@
          ("M-S-<right>" . nil)
          ("M-S-<left>" . nil))
   :init
-
   (setq user-dropbox-folder (if is-mac "~/Dropbox"
                               "c:/Users/torgth/Dropbox \(Personlig\)"))
 
@@ -116,19 +115,6 @@
                                        (org-agenda-ndays 1)
                                        (org-deadline-warning-days 60)
                                        (org-agenda-time-grid nil)))))
-
-  (setq org-modules '(org-mouse
-                      ;; TODO error when loading these two
-                      ;;org-eval
-                      ;;org-expiry
-                      ))
-
-  (eval-after-load 'org
-    '(org-load-modules-maybe t))
-
-  (eval-after-load 'org
-    '(require 'ox-md))
-
   (setq org-html-postamble t
         org-html-postamble-format
         '(("en" "<p class=\"author\">%a (%e)</p>\n<p class=\"date\">%T</p>")))
@@ -145,6 +131,18 @@
            "**** %U %^{Title}\n%?")))
 
   :config
+  (setq org-modules '(org-mouse
+                      ;; TODO error when loading these two
+                      ;;org-eval
+                      ;;org-expiry
+                      ))
+
+  (eval-after-load 'org
+    '(org-load-modules-maybe t))
+
+  (eval-after-load 'org
+    '(require 'ox-md))
+
   (use-package ob-restclient
     :after org)
 

@@ -110,7 +110,7 @@
 
 ;; save more recent files
 (use-package recentf
-  :defer t
+  :defer 1
   :init
   (setq recentf-max-saved-items 1000
         recentf-auto-cleanup 'never)
@@ -133,14 +133,5 @@
   '((t (:foreground "white" :background "green" :bold t)))
   "Face used for highlighting todos" :group 'basic-faces)
 (add-hook 'prog-mode-hook (lambda () (font-lock-add-keywords nil '(("\\(TODO\\)" 1 't-todo-face t)))))
-
-;; from spacemacs
-;; Highlight and allow to open http link at point in programming buffers
-;; goto-address-prog-mode only highlights links in strings and comments
-(add-hook 'prog-mode-hook 'goto-address-prog-mode)
-;; Highlight and follow bug references in comments and strings
-(add-hook 'prog-mode-hook 'bug-reference-prog-mode)
-;; Support folding
-(add-hook 'prog-mode-hook 'hs-minor-mode)
 
 (provide 't-sane-defaults)

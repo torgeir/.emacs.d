@@ -1,38 +1,30 @@
 ;; indents
-(setq indent 2)
-;;(setq indent 4)
-(setq indent-xml 4)
+(setq indent 2
+      indent-xml 4)
 
 (t/declare-prefix "m" "Mode")
 
 (use-package haskell-mode
-  :commands haskell-mode
-  :defer t)
+  :commands haskell-mode)
 
 (use-package arduino-mode
   :mode "\\.ino$"
-  :commands arduino-mode
-  :defer t)
+  :commands arduino-mode)
 
 (use-package gitconfig-mode
   :commands gitconfig-mode
-  :mode "\\gitconfig$"
-  :defer t)
+  :mode "\\gitconfig$")
 
 (use-package gitignore-mode
-  :commands gitignore-mode
-  :defer t)
+  :commands gitignore-mode)
 
 (use-package yaml-mode
-  :commands yaml-mode
-  :defer t)
+  :commands yaml-mode)
 
 (use-package pug-mode
-  :defer t
   :mode "\\.pug$")
 
 (use-package markdown-mode
-  :defer t
   :mode "\\.\\(markdown\\|md\\)$"
   :bind (:map
          markdown-mode-map
@@ -48,10 +40,10 @@
   :init
   (setq css-indent-offset indent)
   :config
-  (dolist (fn '(css-eldoc-enable
-                turn-on-smartparens-mode
-                rainbow-mode))
-    (add-hook 'css-mode-hook fn)))
+  (dolist (hook '(css-eldoc-enable
+                  turn-on-smartparens-mode
+                  rainbow-mode))
+    (add-hook 'css-mode-hook hook)))
 
 (use-package css-eldoc
   :commands css-eldoc-enable
@@ -73,8 +65,6 @@
 
 ;; flycheck
 (use-package flycheck
-  :defer t
-  ;; :diminish flycheck-mode
   :commands flycheck-mode
   :config
   (setq-default flycheck-disabled-checkers
@@ -84,14 +74,12 @@
   (flycheck-add-mode 'javascript-eslint 'web-mode))
 
 (use-package flycheck-pos-tip
-  :defer t
   :config
   (setq flycheck-display-errors-function #'flycheck-pos-tip-error-messages))
 
 (use-package flycheck-clojure
   :pin melpa-stable
   :commands flycheck-mode
-  :defer t
   :init
   (add-hook 'cider-mode-hook (lambda () (flycheck-mode 1)))
 
@@ -117,10 +105,9 @@
                 js2-strict-var-redeclaration-warning nil
                 js2-strict-trailing-comma-warning t) ;; jshint does not warn about this now for some reason
   (setq-default js2-global-externs '("module" "require" "describe" "it" "sinon" "assert" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
-
-  (setq js2-highlight-level 3)
-  (setq-default js2-basic-offset indent)
-  (setq js-indent-level indent)
+  (setq-default js2-highlight-level 3
+                js-indent-level indent
+                js2-basic-offset indent)
 
   ;; don't steel keys
   :bind (:map
@@ -130,9 +117,10 @@
          ("TAB" . t/tab-properly))
 
   :config
-  (add-hook 'js2-mode-hook 'turn-on-smartparens-mode)
-  (add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
-  (add-hook 'js2-mode-hook 'tern-mode)
+  (add-hook 'js2-mode-hook (lambda ()
+                             (flycheck-mode 1)
+                             (turn-on-smartparens-mode)
+                             (tern-mode)))
 
   (t/declare-prefix-for-mode 'js2-mode
                              "me" "Evaluate"
@@ -141,7 +129,6 @@
 
 (use-package nodejs-repl
   :commands nodejs-repl
-  :defer t
   :bind (:map
          js2-mode-map
          ("C-x C-e" . t/send-region-to-nodejs-repl-process)))
@@ -150,8 +137,8 @@
   :mode "\\.jsx$"
   :init
   (setq web-mode-auto-close-style 2
-        web-mode-enable-auto-quoting nil)
-  (setq web-mode-markup-indent-offset indent
+        web-mode-enable-auto-quoting nil
+        web-mode-markup-indent-offset indent
         web-mode-css-indent-offset indent
         web-mode-code-indent-offset indent)
   :config
@@ -220,10 +207,12 @@
   :commands json-reformat)
 
 (use-package web-beautify
-  :defer t
+  :commands (web-beautify-html
+             web-beautify-css
+             web-beautify-js)
   :init
   (t/declare-prefix-for-mode 'web-mode  "m" "Mode" "=" 'web-beautify-html)
-  (t/declare-prefix-for-mode 'css-mode  "m" "Mode" "=" 'web-beautify-js)
+  (t/declare-prefix-for-mode 'css-mode  "m" "Mode" "=" 'web-beautify-css)
   (t/declare-prefix-for-mode 'json-mode "m" "Mode" "=" 'web-beautify-js)
   (t/declare-prefix-for-mode 'js2-mode  "m" "Mode" "=" 'web-beautify-js))
 
@@ -331,7 +320,7 @@
                                   "ml" 'cljr-move-to-let
                                   )))))
 
-(use-package cljr-helm)
+;;(use-package cljr-helm)
 
 (use-package clojure-mode-extra-font-locking
   :commands clojure-mode) ;; more syntax hilighting
@@ -405,8 +394,7 @@
 (use-package cloudformation-mode
   :ensure nil
   :load-path "site-lisp/cloudformation/"
-  :commands cloudformation-mode
-  :defer t)
+  :commands cloudformation-mode)
 
 (use-package fsharp-mode
   :mode "\\.fs[iylx]?$"
@@ -450,14 +438,14 @@
 
 (defvar mode-line-cleaner-alist
   `(;(eldoc-mode . "")
-    ;(paredit-mode . "")
-    ;(rainbow-mode . "")
-    ;(company-mode . "")
-    ;(yas-minor-mode . "")
-    ;(undo-tree-mode . "")
+                                        ;(paredit-mode . "")
+                                        ;(rainbow-mode . "")
+                                        ;(company-mode . "")
+                                        ;(yas-minor-mode . "")
+                                        ;(undo-tree-mode . "")
     (evil-escape-mode . "")
     (ethan-wspace-mode . "")
-    ;(rainbow-delimiters-mode . "")
+                                        ;(rainbow-delimiters-mode . "")
     (linum-relative-mode . "")
     (html-mode . "html")
     (js2-mode . "js2")
