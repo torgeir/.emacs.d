@@ -799,8 +799,8 @@
 (require 't-langs)
 
 ;; try doom-modeline
-;(require 't-powerline)
-(require 'core-modeline)
+;;(require 't-powerline)
+(require 'doom-modeline)
 (setq mode-line-format (doom-modeline))
 
 (t/declare-prefix "o" "Other"

@@ -1,4 +1,4 @@
-;;; core-modeline.el
+;;; doom-modeline.el
 
 ;; This file tries to be an almost self-contained configuration of my mode-line.
 
@@ -537,5 +537,5 @@ Examples:
   (setq eldoc-in-minibuffer-show-fn 'doom-eldoc-show-in-mode-line)
   (eldoc-in-minibuffer-mode +1))
 
-(provide 'core-modeline)
-;;; core-modeline.el ends here
+(provide 'doom-modeline)
+;;; doom-modeline.el ends here
