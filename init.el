@@ -950,31 +950,6 @@
                   "g" 'helm-google-suggest
                   "w" 'helm-wikipedia-suggest)
 
-(use-package evil-mc)
-(use-package evil-mc-extras)
-
-(t/declare-state "mc" "Multiple Cursors state"
-                 "+" 'evil-mc-inc-num-at-each-cursor
-                 "-" 'evil-mc-dec-num-at-each-cursor
-                 "d" '(lambda () (interactive)
-                        (when (not evil-mc-mode)
-                          (turn-on-evil-mc-mode))
-                        (evil-mc-make-all-cursors))
-                 "h" '(lambda () (interactive)
-                        (when (not evil-mc-mode)
-                          (turn-on-evil-mc-mode))
-                        (evil-mc-make-cursor-here))
-                 "j" #'t/cursor-down
-                 "J" #'t/cursor-down-skip
-                 "K" #'t/cursor-up-skip
-                 "k" #'t/cursor-up
-                 "p" 'evil-mc-make-and-goto-prev-cursor
-                 "n" 'evil-mc-make-and-goto-next-cursor
-                 "q" (lambda () (interactive)
-                       (evil-mc-undo-all-cursors)
-                       (turn-off-evil-mc-mode)
-                       (keyboard-quit)))
-
 (global-set-key [M-S-mouse-1] '(lambda () (interactive)
                                  (when (not evil-mc-mode)
                                    (turn-on-evil-mc-mode))
