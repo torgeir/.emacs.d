@@ -73,7 +73,7 @@
 (setq delete-by-moving-to-trash t
       trash-directory "~/.Trash/emacs")
 
-(setq t/initial-font-size 14)
+(setq t/initial-font-size 17)
 
 ;; For when Emacs is started in GUI mode:
 (t/set-emoji-font nil)

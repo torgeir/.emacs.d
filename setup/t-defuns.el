@@ -579,7 +579,7 @@ Including indent-buffer, which should not be called automatically on save."
 (defun t/reload-font ()
   (interactive)
   (when window-system
-    (setq t/default-font (concat (if is-mac "Monaco-" "Inconsolata-")
+    (setq t/default-font (concat (if is-mac "Fira Code Retina-" "Inconsolata-")
                                  (number-to-string t/default-font-size)))
     (set-face-attribute 'default nil :font t/default-font)))
 (defun t/decrease-font-size ()
