@@ -600,10 +600,7 @@ Including indent-buffer, which should not be called automatically on save."
   "@torgeir: credits https://github.com/jjasghar/alfred-org-capture/blob/master/el/alfred-org-capture.el
   Create a new frame and run org-capture."
   (interactive)
-  (make-frame '((name . "remember") (width . 80) (height . 16)
-                (top . 400) (left . 300)
-                (font . "-apple-Monaco-medium-normal-normal-*-13-*-*-*-m-0-iso10646-1")
-                ))
+  (make-frame '((name . "remember") (width . 80) (height . 16) (top . 400) (left . 300)))
   (select-frame-by-name "remember")
   (org-capture))
 
