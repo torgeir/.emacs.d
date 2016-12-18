@@ -53,8 +53,7 @@
         eshell-save-history-on-exit t
         eshell-visual-commands '("less" "tmux" "top" "bash")
         eshell-visual-subcommands '(("git" "log" "df" "diff" "show"))
-        ;; announce terminal
-        eshell-term-name "eterm-color"))
+        eshell-term-name "eterm-color")) ; announce terminal
 
 (t/eshell-init)
 
