@@ -55,24 +55,29 @@
   (exec-path-from-shell-initialize))
 
 (use-package hideshow
+  :defer 2
   :ensure nil
-  :diminish hs-minor-mode)
+  :diminish hs-minor-mode
+  :config
+  (add-hook 'prog-mode-hook 'hs-minor-mode))
 
 (use-package rainbow-mode
+  :defer 2
   :diminish rainbow-mode
   :commands rainbow-mode
-  :init
+  :config
   (dolist (mode-hook '(prog-mode-hook css-mode-hook html-mode-hook))
     (add-hook mode-hook #'rainbow-mode)))
 
 (use-package rainbow-delimiters
+  :defer 2
   :commands rainbow-delimiters-mode
-  :init
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (use-package tramp
+  :defer 2
   :ensure nil
-  :defer 1
   :config
   (setq tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
 
@@ -82,7 +87,7 @@
 (use-package paredit
   :diminish paredit-mode
   :commands (enable-paredit-mode evil-cleverparens-mode)
-  :init
+  :config
   (dolist (mode-hook '(emacs-lisp-mode-hook
                        clojure-mode-hook
                        eval-expression-minibuffer-setup-hook
@@ -140,6 +145,10 @@
 
 (use-package neotree
   :bind (([f6] . neotree-toggle))
+  :commands (neotree-toggle
+             neotree-show
+             neotree-hide
+             neotree-find)
   :init
   (setq neo-window-width 30
         neo-smart-open nil
@@ -181,12 +190,13 @@
               (bind-key "C" 'neotree-change-root evil-normal-state-local-map))))
 
 (use-package nlinum
-  :defer t
+  :commands nlinum
   :config
   (setq nlinum-format "%4d "
         nlinum-highlight-current-line t))
 
 (use-package nlinum-relative
+  :after nlinum
   :init
   (setq nlinum-relative-redisplay-delay 0
         nlinum-relative-current-symbol "> ")
@@ -344,8 +354,8 @@
   :bind (("C-x C-m" . smex)
          ("C-c C-M" . smex-major-mode-commands))
   :init
-  (setq smex-flex-matching t)
-  (setq smex-save-file (locate-user-emacs-file ".smex-items"))
+  (setq smex-flex-matching t
+        smex-save-file (locate-user-emacs-file ".smex-items"))
   :config
   (smex-initialize))
 
@@ -356,8 +366,7 @@
   (setq company-idle-delay 0.2
         company-tooltip-align-annotations t
         company-tooltip-flip-when-above t
-        ;; nav with m-<n>
-        company-show-numbers t
+        company-show-numbers t ; nav with m-<n>
         company-selection-wrap-around t
         company-require-match nil)
 
@@ -550,10 +559,6 @@
   :commands dash-at-point
   :bind ("C-c C-j" . dash-at-point))
 
-(use-package fancy-battery
-  :defer t
-  :if is-mac)
-
 (bind-key "<C-S-up>" 't/move-line-up)
 (bind-key "<C-S-down>" 't/move-line-down)
 
@@ -581,6 +586,7 @@
 
 (use-package yasnippet
   :diminish yas-minor-mode
+  :defer 1
   :init
   (setq yas-snippet-dirs '(*user-dir-snippets*)
         ;; remove dropdowns
@@ -624,10 +630,8 @@
         ag-highlight-search t
         ag-project-root-function (lambda (d) (projectile-project-root))))
 
-(use-package wgrep
-  :defer t)
-(use-package wgrep-ag
-  :defer t)
+(use-package wgrep)
+(use-package wgrep-ag)
 
 (use-package autorevert
   :init
@@ -656,7 +660,8 @@
 
 (use-package dired
   :ensure nil
-  :commands dired-jump
+  :commands (dired
+             dired-jump)
   :init
   (put 'dired-find-alternate-file 'disabled nil)
   (setq wdired-allow-to-change-permissions t)
@@ -695,18 +700,13 @@
               (bind-key "f" 'syslog-filter-lines evil-normal-state-local-map)
               (bind-key "F" 'hide-lines-show-all evil-normal-state-local-map))))
 
-(use-package fill-column-indicator
-  :defer t)
-
 ;; Enforce proper whitespace
 (use-package ethan-wspace
   :init
-  (setq mode-require-final-newline nil)
-  (setq require-final-newline nil)
+  (setq mode-require-final-newline nil
+        require-final-newline nil)
   :config
   (global-ethan-wspace-mode 1))
-
-(use-package highlight-indentation)
 
 (use-package highlight-parentheses
   :diminish highlight-parentheses-mode
@@ -729,7 +729,7 @@
   :init
   (setq highlight-symbol-idle-delay 0.2)
   :config
-  (add-hook 'prog-mode-hook (lambda () (highlight-symbol-mode)))
+  (add-hook 'prog-mode-hook 'highlight-symbol-mode)
   (t/declare-prefix "h" "Highlight"
                     ;; leader leader clears all highlights
                     "h" 'highlight-symbol
@@ -737,20 +737,21 @@
                     "N" 'highlight-symbol-prev))
 
 (use-package highlight-numbers
-  :init
+  :defer 1
+  :config
   (add-hook 'prog-mode-hook 'highlight-numbers-mode))
 
 (use-package restclient
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
 
 (use-package hackernews
-  :commands hackernews
-  :defer t)
+  :commands hackernews)
 
 (use-package helm-insert-line-from-project
+  :defer 1
   :ensure nil
   :load-path "site-lisp/helm-insert-line-from-project"
-  :config
+  :init
   (t/declare-prefix "c" "Comment/Complete"
                     "l" 't/helm-find-and-insert-line-from-project))
 
@@ -791,6 +792,13 @@
 (t/declare-prefix "o" "Other"
                   "b" 'browse-url
                   "B" 'w3m)
+
+;; from spacemacs
+;; Highlight and allow to open http link at point in programming buffers
+;; goto-address-prog-mode only highlights links in strings and comments
+(add-hook 'prog-mode-hook 'goto-address-prog-mode)
+;; Highlight and follow bug references in comments and strings
+(add-hook 'prog-mode-hook 'bug-reference-prog-mode)
 
 (require 't-shell)
 (require 't-org)
