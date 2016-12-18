@@ -267,6 +267,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 ;;   :init
 ;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
+;; TODO ox-icalendar?
+(setq org-icalendar-use-scheduled '(event-if-todo))
 
 (use-package org-mac-iCal
   :after org
