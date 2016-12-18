@@ -962,12 +962,11 @@
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file)
 
-;; ;; benchmarks
+;; benchmarks
 (when t-debug-init
   (message "t: timing init complete")
   (benchmark-init/show-durations-tabulated)
   (benchmark-init/show-durations-tree))
 
-(require 'server)
+(unless (fboundp 'server-running-p) (require 'server))
 (unless (server-running-p) (server-mode))
-(put 'narrow-to-page 'disabled nil)
