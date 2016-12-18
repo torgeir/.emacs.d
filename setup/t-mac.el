@@ -56,6 +56,9 @@
 (global-set-key (kbd "C-s-S-<down>") 't/move-frame-down)
 (global-set-key (kbd "C-s-S-<up>") 't/move-frame-up)
 
+;; s-w quits like C-x C-w
+(global-set-key (kbd "s-w") #'t/delete-frame-or-hide-last-remaining-frame)
+
 ;; don't pop up font menu, makes new tab work in iterm2
 (global-set-key (kbd "s-t") '(lambda () (interactive)))
 
