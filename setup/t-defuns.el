@@ -886,4 +886,9 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (when org-inline-image-overlays
     (org-redisplay-inline-images)))
 
+(defun t/project-root ()
+  "Get project root without throwing"
+  (let (projectile-require-project-root strict-p)
+    (projectile-project-root)))
+
 (provide 't-defuns)
