@@ -218,15 +218,11 @@
 
 (use-package git-gutter-fringe+
   :after git-gutter+
-  :if has-gui
   :config
   (git-gutter+-enable-fringe-display-mode)
-  (fringe-helper-define 'git-gutter-fr+-added nil
-    "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX.....")
-  (fringe-helper-define 'git-gutter-fr+-deleted nil
-    "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX.....")
-  (fringe-helper-define 'git-gutter-fr+-modified nil
-    "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....." "....XXXX....."))
+  (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "....XXXX.....")
+  (fringe-helper-define 'git-gutter-fr+-deleted '(top repeat) "....XXXX.....")
+  (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "....XXXX....."))
 
 (use-package helm-open-github
   :commands (helm-open-github-from-issues

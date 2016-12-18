@@ -43,6 +43,7 @@
  truncate-partial-width-windows nil ; don't truncate lines
  indicate-empty-lines nil ; don't show empty lines after buffer
  indicate-buffer-boundaries nil ; don't show buffer start/end
+ fringes-outside-margins t       ; switches order of fringe and margin
  frame-title-format "%b (%f)"; full path in titlebar
  inhibit-startup-message t ; no splash
  sentence-end-double-space nil ; one space between sentences
