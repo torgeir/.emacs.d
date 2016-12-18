@@ -12,8 +12,8 @@
 /var
 /.projectile-bookmarks.eld
 /.company-statistics-cache.el
-.hl-save
-*.elc
+/.hl-save
+/*.elc
 /langs-extra.el
 /proxy.el
 /eshell/*
@@ -22,4 +22,4 @@
 /.DS_Store
 /.tern-port
 /test-files/.tern-port
-elpa-backups
+/elpa-backups
