@@ -57,9 +57,12 @@
         org-hide-leading-stars t
         org-hide-emphasis-markers t
         org-completion-use-ido t
-        ;; number of empty lines after heading needed to show visible newline between headings
-        org-cycle-separator-lines 2
-        org-catch-invisible-edits 'show
+        org-blank-before-new-entry '((heading . auto) (plain-list-item . t)) ; newlines
+        org-cycle-separator-lines 2 ; number of empty lines after heading needed to show visible newline between headings
+        org-list-empty-line-terminates-plain-lists t
+        org-export-babel-evaluate nil ; don't run stuff automatically on export
+        org-confirm-babel-evaluate nil ; don't prompt on every code run
+        org-catch-invisible-edits 'show ; show invisibles on edit
         org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
         org-refile-targets '((nil :maxlevel . 2)
                              (org-agenda-files :maxlevel . 2))
