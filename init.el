@@ -27,12 +27,12 @@
   (use-package benchmark-init
     :config (benchmark-init/activate)))
 
-(setq is-mac (equal system-type 'darwin))
-(setq is-cygwin (equal system-type 'cygwin))
-(setq is-linux (equal system-type 'gnu/linux))
-(setq is-win (equal system-type 'windows-nt))
-(setq is-ms (or is-cygwin is-win))
-(setq has-gui (display-graphic-p))
+(setq is-mac (equal system-type 'darwin)
+      is-cygwin (equal system-type 'cygwin)
+      is-linux (equal system-type 'gnu/linux)
+      is-win (equal system-type 'windows-nt)
+      is-ms (or is-cygwin is-win)
+      has-gui (display-graphic-p))
 
 (defvar *user-leader* "SPC")
 
