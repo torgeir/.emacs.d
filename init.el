@@ -1,7 +1,5 @@
 ;; credits spacemacs for all the clever stuff
 
-;;(package-initialize)
-
 (load (locate-user-emacs-file "t-before.el") t)
 
 (setq *user-dir-snippets* (locate-user-emacs-file "snippets")
@@ -16,6 +14,7 @@
   (when (file-directory-p project)
     (add-to-list 'load-path project)))
 
+;;(package-initialize)
 (require 't-packaging)
 
 (defvar t-debug-init nil "Debug/time startup")
@@ -24,8 +23,7 @@
   (require 't-debug)
 
   ;; benchmarks
-  (use-package benchmark-init
-    :config (benchmark-init/activate)))
+  (use-package benchmark-init :config (benchmark-init/activate)))
 
 (setq is-mac (equal system-type 'darwin)
       is-cygwin (equal system-type 'cygwin)
@@ -601,7 +599,7 @@
   (yas-global-mode 1)
 
   ;; jump to end of snippet definition
-  (define-key yas-keymap (kbd "<return>") 'yas-exit-all-snippets)
+  (bind-key "<return>" 'yas-exit-all-snippets yas-keymap)
 
   ;; inter-field navigation
   (defun yas/goto-end-of-active-field ()
@@ -949,11 +947,6 @@
 (t/declare-prefix "si" "Search Internet"
                   "g" 'helm-google-suggest
                   "w" 'helm-wikipedia-suggest)
-
-(global-set-key [M-S-mouse-1] '(lambda () (interactive)
-                                 (when (not evil-mc-mode)
-                                   (turn-on-evil-mc-mode))
-                                 (evil-mc-make-cursor-here)))
 
 (require 't-load-theme)
 (t/load-theme)

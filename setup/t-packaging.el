@@ -1,5 +1,4 @@
-;; don't load outdated bytecode
-(setq load-prefer-newer t)
+(setq load-prefer-newer t) ; don't load outdated bytecode
 
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -8,9 +7,7 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
 (package-initialize)
-
-;; when checking signatures fail
-;;(setq package-check-signature nil)
+;;(setq package-check-signature nil) ; when checking signatures fail
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -18,12 +15,10 @@
 
 (eval-when-compile
   (require 'use-package)
-  ;; fetch the ones missing
-  (setq use-package-always-ensure t)
+  (setq use-package-always-ensure t) ; fetch the ones missing
 
-  ;; lexical-let
-  (require 'cl))
-(defvar use-package-verbose t)
+  (require 'cl)) ; lexical-let
+(defvar use-package-verbose t-debug-init)
 (require 'diminish)
 (require 'bind-key)
 

@@ -38,6 +38,7 @@
                                  git-rebase-mode
                                  flycheck-error-list-mode
                                  diff-mode
+                                 term-mode
                                  cider-stacktrace-mode
                                  cider-docview-mode)
       "major modes that should trigger evil emacs state when changed to")
@@ -105,10 +106,8 @@
   :commands (evil-visualstar/begin-search-forward
              evil-visualstar/begin-search-backward)
   :init
-  (define-key evil-visual-state-map (kbd "*")
-    'evil-visualstar/begin-search-forward)
-  (define-key evil-visual-state-map (kbd "#")
-    'evil-visualstar/begin-search-backward))
+  (bind-key "*" 'evil-visualstar/begin-search-forward evil-visual-state-map)
+  (bind-key "#" 'evil-visualstar/begin-search-backward evil-visual-state-map))
 
 (use-package evil-cleverparens
   :diminish evil-cleverparens-mode)

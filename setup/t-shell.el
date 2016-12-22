@@ -13,7 +13,7 @@
 
 (add-hook 'shell-mode-hook
           (lambda ()
-            (define-key shell-mode-map (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)))
+            (bind-key "C-d" 'comint-delchar-or-eof-or-kill-buffer shell-mode-map)))
 
 (defun ansi-term-handle-close ()
   "Close current term buffer when `exit' or c-d from term buffer."
@@ -25,6 +25,9 @@
                               (delete-window))))))
 
 (add-hook 'term-mode-hook 'ansi-term-handle-close)
+(defvar t-term-name "/bin/zsh")
+(defadvice ansi-term (before force-bash) (interactive (list t-term-name)))
+(ad-activate 'ansi-term)
 
 ;; tab-completion
 (use-package shell-command
@@ -97,5 +100,10 @@
             (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol)
             (bind-key "C-u" 'eshell-kill-input eshell-mode-map)
             (bind-key "C-c C-u" 'universal-argument eshell-mode-map)))
+
+(defun t/shell ()
+  "Start a shell"
+  (interactive)
+  (ansi-term))
 
 (provide 't-shell)

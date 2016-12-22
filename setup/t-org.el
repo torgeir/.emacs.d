@@ -198,7 +198,8 @@
               ;; yasnippet
               (make-variable-buffer-local 'yas/trigger-key)
               (org-set-local 'yas/trigger-key [tab])
-              (define-key yas/keymap [tab] 'yas-next-field-or-maybe-expand)))
+              (bind-key [tab] 'yas-next-field-or-maybe-expand yas/keymap)))
+
 
   ;; fix completion dissapearing
   (with-eval-after-load 'company
@@ -361,9 +362,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
   (add-hook 'org-mode-hook
             (lambda ()
-              (define-key org-mode-map (kbd "M-<return>") 't/org-meta-return-dwim)
-              (define-key org-mode-map (kbd "M-S-<return>") 't/org-insert-todo-heading-dwim)
-              (define-key org-mode-map (kbd "C-<return>") 't/org-insert-heading-respent-content-dwim)
-              (define-key org-mode-map (kbd "C-S-<return>") 't/org-insert-todo-heading-respect-content-dwim))))
+              (bind-key "M-<return>" 't/org-meta-return-dwim org-mode-map)
+              (bind-key "M-S-<return>" 't/org-insert-todo-heading-dwim org-mode-map)
+              (bind-key "C-<return>" 't/org-insert-heading-respent-content-dwim org-mode-map)
+              (bind-key "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim org-mode-map))))
 
 (provide 't-org)

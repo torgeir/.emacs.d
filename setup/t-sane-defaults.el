@@ -1,19 +1,8 @@
-;; list helpers
-(use-package dash
-  :config
-  (dash-enable-font-lock))
-
-;; string helpers
-(use-package s)
-
-;; file helpers
-(use-package f)
-
-;; icons
-(use-package all-the-icons)
-
-;; sane defaults
-(use-package better-defaults)
+(use-package dash :config (dash-enable-font-lock)); list helpers
+(use-package s) ; string helpers
+(use-package f) ; file helpers
+(use-package all-the-icons) ; pretty icons
+(use-package better-defaults) ; rid the insanity
 
 (when is-mac (require 't-mac))
 (when is-ms (require 't-cygwin))

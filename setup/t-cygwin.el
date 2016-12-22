@@ -1,6 +1,6 @@
-(global-set-key (kbd "C-+") 't/increase-font-size)
-(global-set-key (kbd "C--") 't/decrease-font-size)
-(global-set-key (kbd "C-0") 't/reset-font-size)
+(bind-key "C-+" 't/increase-font-size)
+(bind-key "C--" 't/decrease-font-size)
+(bind-key "C-0" 't/reset-font-size)
 
 (setq t/initial-font-size 12)
 
