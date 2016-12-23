@@ -3,11 +3,9 @@
   :init
   (setq which-key-special-keys nil
         which-key-sort-order 'which-key-key-order-alpha
-        ;; percentage height
-        which-key-side-window-max-height 0.5
+        which-key-side-window-max-height 0.5 ; percentage height
         which-key-separator " "
-        ;; time to wait before display
-        which-key-idle-delay 0.4
+        which-key-idle-delay 0.4 ; time to wait before display
         which-key-use-C-h-for-paging t
         which-key-allow-evil-operators t
         which-key-key-replacement-alist

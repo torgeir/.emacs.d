@@ -1,14 +1,5 @@
-(setq t-evil-cursor-color-emacs "dark orange"
-      t-evil-cursor-color-evil "green2")
-
-(defun t/evil-update-cursor-color ()
-  (let* ((colors `((emacs . ,t-evil-cursor-color-emacs)
-                   (normal . ,t-evil-cursor-color-evil)
-                   (visual . ,t-evil-cursor-color-evil)
-                   (motion . ,t-evil-cursor-color-evil)
-                   (insert . ,t-evil-cursor-color-evil)))
-         (state-color (assoc evil-state colors)))
-    (set-cursor-color (if state-color (cdr state-color) t-evil-cursor-color-emacs))))
+(defvar t-evil-cursor-color-emacs "dark orange")
+(defvar t-evil-cursor-color-evil "green2")
 
 (use-package evil
   :init
@@ -18,6 +9,15 @@
         evil-emacs-state-cursor `(,t-evil-cursor-color-emacs box)
         evil-normal-state-cursor `(,t-evil-cursor-color-evil box)
         evil-visual-state-cursor `(,t-evil-cursor-color-evil hollow))
+
+  (defun t/evil-update-cursor-color ()
+    (let* ((colors `((emacs . ,t-evil-cursor-color-emacs)
+                     (normal . ,t-evil-cursor-color-evil)
+                     (visual . ,t-evil-cursor-color-evil)
+                     (motion . ,t-evil-cursor-color-evil)
+                     (insert . ,t-evil-cursor-color-evil)))
+           (state-color (assoc evil-state colors)))
+      (set-cursor-color (if state-color (cdr state-color) t-evil-cursor-color-emacs))))
 
   (defun t/toggle-evil-local-mode ()
     "Toggles evil-local-mode and updates the cursor. The `evil-*-state-cursor's seem to work by default, but not when toggling evil-local-mode (in emacsclients) off and on, so help it."
@@ -50,8 +50,8 @@
 (use-package evil-escape
   :after evil
   :init
-  (setq-default evil-escape-key-sequence "jk")
-  (setq-default evil-escape-delay 0.08)
+  (setq-default evil-escape-key-sequence "jk"
+                evil-escape-delay 0.08)
   (evil-escape-mode))
 
 (use-package evil-leader
@@ -77,8 +77,8 @@
       (interactive)
       (evil-yank (point) (point-at-eol)))
 
-    (bind-key (kbd "Y") 'spacemacs/evil-yank-to-end-of-line evil-normal-state-map)
-    (bind-key (kbd "Y") 'spacemacs/evil-yank-to-end-of-line evil-motion-state-map)))
+    (bind-key "Y" 'spacemacs/evil-yank-to-end-of-line evil-normal-state-map)
+    (bind-key "Y" 'spacemacs/evil-yank-to-end-of-line evil-motion-state-map)))
 
 (use-package evil-numbers
   :commands (evil-numbers/inc-at-pt
@@ -110,10 +110,11 @@
   (bind-key "#" 'evil-visualstar/begin-search-backward evil-visual-state-map))
 
 (use-package evil-cleverparens
+  :after evil
   :diminish evil-cleverparens-mode)
 
 (use-package evil-nerd-commenter
-  :defer 1
+  :after evil
   :init
   (t/declare-prefix "c" "Comment/Complete"
                     "c" 'evilnc-comment-or-uncomment-lines

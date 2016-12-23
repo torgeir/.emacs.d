@@ -1,0 +1,30 @@
+;; try doom-modeline
+;;(require 't-powerline)
+(require 'doom-modeline)
+(setq mode-line-format (doom-modeline))
+
+(defvar mode-line-cleaner-alist
+  `(;(eldoc-mode . "")
+                                        ;(paredit-mode . "")
+                                        ;(rainbow-mode . "")
+                                        ;(company-mode . "")
+                                        ;(yas-minor-mode . "")
+                                        ;(undo-tree-mode . "")
+    (evil-escape-mode . "")
+    (ethan-wspace-mode . "")
+                                        ;(rainbow-delimiters-mode . "")
+    (linum-relative-mode . "")
+    (html-mode . "html")
+    (js2-mode . "js2")
+    (css-mode . "css")
+    (less-css-mode . "less")
+    (clojure-mode . "clj")
+    (markdown-mode . "md")
+    (emacs-lisp-mode . "el")
+    (python-mode . "python")
+    (tern-mode . "tern"))
+  "Alist for `t/clean-mode-line'. Modeline replacements")
+
+(add-hook 'after-change-major-mode-hook 't/clean-mode-line)
+
+(provide 't-modeline)

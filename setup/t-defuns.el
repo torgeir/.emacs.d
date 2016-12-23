@@ -576,23 +576,24 @@ Including indent-buffer, which should not be called automatically on save."
     (t/switch-theme next-theme)))
 
 ;; mac/win friendly font
+(defvar *t-adjusted-font-size* t-font-size)
 (defun t/reload-font ()
   (interactive)
   (when window-system
     (setq t/default-font (concat (if is-mac "Fira Code Retina-" "Inconsolata-")
-                                 (number-to-string t/default-font-size)))
+                                 (number-to-string *t-adjusted-font-size*)))
     (set-face-attribute 'default nil :font t/default-font)))
 (defun t/decrease-font-size ()
   (interactive)
-  (setq t/default-font-size (- t/default-font-size 1))
+  (setq *t-adjusted-font-size* (- *t-adjusted-font-size* 1))
   (t/reload-font))
 (defun t/increase-font-size ()
   (interactive)
-  (setq t/default-font-size (+ t/default-font-size 1))
+  (setq *t-adjusted-font-size* (+ *t-adjusted-font-size* 1))
   (t/reload-font))
 (defun t/reset-font-size ()
   (interactive)
-  (setq t/default-font-size t/initial-font-size)
+  (setq *t-adjusted-font-size* t-font-size)
   (t/reload-font)
   (text-scale-set 0))
 

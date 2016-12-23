@@ -18,8 +18,14 @@
   (setq use-package-always-ensure t) ; fetch the ones missing
 
   (require 'cl)) ; lexical-let
-(defvar use-package-verbose t-debug-init)
+(defvar use-package-verbose *t-debug-init*)
 (require 'diminish)
 (require 'bind-key)
+
+(use-package paradox
+  :commands (paradox-list-packages paradox-upgrade-packages)
+  :init
+  (setq paradox-github-token t
+        paradox-execute-asynchronously t))
 
 (provide 't-packaging)

@@ -2,7 +2,7 @@
 (bind-key "C--" 't/decrease-font-size)
 (bind-key "C-0" 't/reset-font-size)
 
-(setq t/initial-font-size 12)
+(setq t-font-size 12)
 
 (defun make-auto-save-file-name ()
   "torgeir: copied this from ftp://ftp.gnu.org/old-gnu/emacs/windows/docs/faq8.html. Fixes an issue when in gui emacs on windows it cant save backup files.

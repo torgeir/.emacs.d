@@ -4,9 +4,6 @@
 (use-package all-the-icons) ; pretty icons
 (use-package better-defaults) ; rid the insanity
 
-(when is-mac (require 't-mac))
-(when is-ms (require 't-cygwin))
-
 ;; utf-8 ffs
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -96,31 +93,5 @@
       save-place-forget-unreadable-files nil
       create-lockfiles nil
       ido-save-directory-list-file (locate-user-emacs-file ".ido.last"))
-
-;; save more recent files
-(use-package recentf
-  :defer 1
-  :init
-  (setq recentf-max-saved-items 1000
-        recentf-auto-cleanup 'never)
-  :config
-  (setq recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
-  (recentf-mode 1))
-
-(use-package winner
-  :ensure nil
-  :config (winner-mode 1))
-
-;; add dirs to buffer names when not unique
-(use-package uniquify
-  :ensure nil
-  :init
-  (setq uniquify-buffer-name-style 'forward))
-
-;; highlight todos
-(defface t-todo-face
-  '((t (:foreground "white" :background "green" :bold t)))
-  "Face used for highlighting todos" :group 'basic-faces)
-(add-hook 'prog-mode-hook (lambda () (font-lock-add-keywords nil '(("\\(TODO\\)" 1 't-todo-face t)))))
 
 (provide 't-sane-defaults)
