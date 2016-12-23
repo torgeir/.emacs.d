@@ -23,3 +23,5 @@
 /.tern-port
 /test-files/.tern-port
 /elpa-backups
+/.org-id-locations
+/url

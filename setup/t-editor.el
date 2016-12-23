@@ -1,28 +1,11 @@
-(use-package yasnippet
-  :defer 1
-  :config
-  (yas-global-mode 1))
-
-(use-package hideshow
-  :defer 2
+(use-package winner
   :ensure nil
-  :diminish hs-minor-mode
-  :config
-  (add-hook 'prog-mode-hook 'hs-minor-mode))
+  :config (winner-mode 1))
 
-(use-package rainbow-mode
-  :defer 2
-  :diminish rainbow-mode
-  :commands rainbow-mode
-  :config
-  (dolist (mode-hook '(prog-mode-hook css-mode-hook html-mode-hook))
-    (add-hook mode-hook #'rainbow-mode)))
-
-(use-package rainbow-delimiters
-  :defer 2
-  :commands rainbow-delimiters-mode
-  :config
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+(use-package uniquify ; add dirs to buffer names when not unique
+  :ensure nil
+  :init
+  (setq uniquify-buffer-name-style 'forward))
 
 (use-package subword
   :diminish subword-mode
@@ -36,44 +19,61 @@
   :config
   (setq tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
 
-(use-package projectile
-  :diminish projectile-mode
-  :commands (projectile-mode helm-projectile)
-  :init
-  (setq projectile-mode-line '(:eval (format "[%s]" (projectile-project-name)))
-        projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
-        projectile-completion-system 'helm)
-  (evil-leader/set-key "t" 'helm-projectile)
+(use-package hideshow
+  :defer 2
+  :ensure nil
+  :diminish hs-minor-mode
   :config
-  (add-to-list 'projectile-globally-ignored-directories "elpa-backups")
-  (add-to-list 'projectile-globally-ignored-directories "node_modules")
-  (add-to-list 'projectile-globally-ignored-directories "target")
-  (add-to-list 'projectile-globally-ignored-directories "dist")
-  (add-to-list 'projectile-globally-ignored-directories ".idea")
-  (add-to-list 'projectile-globally-ignored-files "**.bundle.js")
-  (add-to-list 'projectile-globally-ignored-files "**.build.js")
-  (add-to-list 'projectile-globally-ignored-files ".DS_Store")
-  (add-to-list 'grep-find-ignored-files "**.bundle.js")
-  (add-to-list 'grep-find-ignored-files "**.build.js")
-  (add-to-list 'grep-find-ignored-files ".DS_Store")
-  (projectile-global-mode)
-  (t/declare-prefix "p" "Project"
-                    "b" 'helm-browse-project
-                    "c" 'projectile-switch-project
-                    "d" 'projectile-find-dir
-                    "f" 'projectile-find-file-dwim
-                    "G" 'projectile-regenerate-tags
-                    "k" 'projectile-kill-buffers
-                    "l" 'neotree-find-project-root
-                    "o" 't/open-in-desktop
-                    "p" 'projectile-find-file-in-known-projects
-                    "R" 'projectile-replace
-                    "S" 'projectile-save-project-buffers
-                    "t" 'projectile-find-test-file)
+  (add-hook 'prog-mode-hook 'hs-minor-mode))
 
-  (t/declare-prefix "pr" "Project run"
-                    "a" 'projectile-run-async-shell-command-in-root
-                    "s" 'projectile-run-shell-command-in-root))
+(use-package dired
+  :ensure nil
+  :commands (dired dired-jump)
+  :init
+  (put 'dired-find-alternate-file 'disabled nil)
+  (setq wdired-allow-to-change-permissions t)
+  (setq dired-auto-revert-buffer t
+        dired-listing-switches "-alhF"
+        dired-ls-F-marks-symlinks "@"
+        dired-dwim-target t)
+  :config
+  (bind-key "TAB" 'dired-details-toggle dired-mode-map)
+  (bind-key "C-c C-e" 'dired-toggle-read-only)
+  (bind-key "C-x C-j" 'dired-jump)
+  (bind-key "C-x M-j" '(lambda () (interactive) (dired-jump 1)))
+  (bind-key "u" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
+  (bind-key "M-<up>" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
+  (bind-key "M-p" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
+  (bind-key "M-<down>" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map)
+  (bind-key "M-n" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map))
+
+(use-package all-the-icons-dired
+  :after dired
+  :init
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+;; less verbose dired
+(use-package dired-details
+  :after dired
+  :init (setq-default dired-details-hidden-string "")
+  :config (dired-details-install))
+
+(use-package yasnippet
+  :commands yas-expand
+  :config
+  (yas-global-mode 1))
+
+(use-package rainbow-mode
+  :diminish rainbow-mode
+  :commands rainbow-mode
+  :config
+  (dolist (mode-hook '(prog-mode-hook css-mode-hook html-mode-hook))
+    (add-hook mode-hook #'rainbow-mode)))
+
+(use-package rainbow-delimiters
+  :commands rainbow-delimiters-mode
+  :config
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (use-package neotree
   :bind (([f6] . neotree-toggle))
@@ -90,8 +90,8 @@
         neo-show-hidden-files t
         neo-auto-indent-point t)
   (when is-mac (setq neo-theme 'icons))
-  :config
 
+  :config
   (defun neotree-find-project-root ()
     (interactive)
     (if (neo-global--window-exists-p)
@@ -328,9 +328,7 @@
                 helm-prevent-escaping-from-minibuffer t
                 helm-always-two-windows t
                 helm-echo-input-in-header-line t
-
-                ;; keep follow mode on, after on once
-                helm-follow-mode-persistent t
+                helm-follow-mode-persistent t ; keep follow mode on, after on once
                 helm-ff-skip-boring-files t
                 helm-quick-update t
                 helm-M-x-requires-pattern nil)
@@ -341,6 +339,7 @@
     (with-helm-buffer
       (setq cursor-in-non-selected-windows nil)))
   (add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
+
   :config
   (progn
     (helm-mode 1)
@@ -382,6 +381,14 @@
          ("C-c C-c" . helm-swoop--edit-complete)
          ("C-c C-k" . helm-swoop--edit-cancel)))
 
+(use-package helm-insert-line-from-project
+  :commands t/helm-find-and-insert-line-from-project
+  :ensure nil
+  :load-path "site-lisp/helm-insert-line-from-project"
+  :init
+  (t/declare-prefix "c" "Comment/Complete"
+                    "l" 't/helm-find-and-insert-line-from-project))
+
 (use-package visual-regexp
   :commands vr/query-replace
   :bind ("M-%" . vr/query-replace))
@@ -416,7 +423,7 @@
   :diminish yas-minor-mode
   :defer 1
   :init
-  (setq yas-snippet-dirs '(*user-dir-snippets*)
+  (setq yas-snippet-dirs '(t-dir-snippets)
         ;; remove dropdowns
         yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
         ;; silence
@@ -486,39 +493,6 @@
   (enable-smooth-scroll-for-function next-line)
   (enable-smooth-scroll-for-function isearch-repeat))
 
-(use-package dired
-  :ensure nil
-  :commands (dired
-             dired-jump)
-  :init
-  (put 'dired-find-alternate-file 'disabled nil)
-  (setq wdired-allow-to-change-permissions t)
-  (setq dired-auto-revert-buffer t
-        dired-listing-switches "-alhF"
-        dired-ls-F-marks-symlinks "@"
-        dired-dwim-target t)
-  :config
-  (bind-key "TAB" 'dired-details-toggle dired-mode-map)
-  (bind-key "C-c C-e" 'dired-toggle-read-only)
-  (bind-key "C-x C-j" 'dired-jump)
-  (bind-key "C-x M-j" '(lambda () (interactive) (dired-jump 1)))
-  (bind-key "u" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
-  (bind-key "M-<up>" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
-  (bind-key "M-p" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
-  (bind-key "M-<down>" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map)
-  (bind-key "M-n" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map))
-
-
-(use-package all-the-icons-dired
-  :after dired
-  :init
-  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
-;; less verbose dired
-(use-package dired-details
-  :after dired
-  :init (setq-default dired-details-hidden-string "")
-  :config (dired-details-install))
 
 (use-package syslog-mode
   :mode "\\.log$"
@@ -528,11 +502,7 @@
               (bind-key "f" 'syslog-filter-lines evil-normal-state-local-map)
               (bind-key "F" 'hide-lines-show-all evil-normal-state-local-map))))
 
-;; Enforce proper whitespace
-(use-package ethan-wspace
-  :init
-  (setq mode-require-final-newline nil
-        require-final-newline nil)
+(use-package ethan-wspace ; enforce proper whitespace
   :config
   (global-ethan-wspace-mode 1))
 
@@ -574,14 +544,6 @@
 
 (use-package hackernews
   :commands hackernews)
-
-(use-package helm-insert-line-from-project
-  :defer 1
-  :ensure nil
-  :load-path "site-lisp/helm-insert-line-from-project"
-  :init
-  (t/declare-prefix "c" "Comment/Complete"
-                    "l" 't/helm-find-and-insert-line-from-project))
 
 (t/declare-prefix "o" "Other"
                   "C" 'calc-dispatch
@@ -627,15 +589,47 @@
   (setq recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
   (recentf-mode 1))
 
-(use-package winner
-  :ensure nil
-  :config (winner-mode 1))
-
-;; add dirs to buffer names when not unique
-(use-package uniquify
-  :ensure nil
+(use-package projectile
+  :diminish projectile-mode
+  :commands (projectile-mode helm-projectile)
   :init
-  (setq uniquify-buffer-name-style 'forward))
+  (setq projectile-mode-line '(:eval (format "[%s]" (projectile-project-name)))
+        ;projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
+        projectile-require-project-root nil
+        shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
+        projectile-completion-system 'helm)
+  (evil-leader/set-key "t" 'helm-projectile)
+  :config
+  (add-to-list 'projectile-globally-ignored-directories "elpa-backups")
+  (add-to-list 'projectile-globally-ignored-directories "node_modules")
+  (add-to-list 'projectile-globally-ignored-directories "target")
+  (add-to-list 'projectile-globally-ignored-directories "dist")
+  (add-to-list 'projectile-globally-ignored-directories ".idea")
+  (add-to-list 'projectile-globally-ignored-files "**.bundle.js")
+  (add-to-list 'projectile-globally-ignored-files "**.build.js")
+  (add-to-list 'projectile-globally-ignored-files ".DS_Store")
+  (add-to-list 'grep-find-ignored-files "**.bundle.js")
+  (add-to-list 'grep-find-ignored-files "**.build.js")
+  (add-to-list 'grep-find-ignored-files ".DS_Store")
+  (projectile-global-mode)
+  (t/declare-prefix "p" "Project"
+                    "b" 'helm-browse-project
+                    "c" 'projectile-switch-project
+                    "d" 'projectile-find-dir
+                    "f" 'projectile-find-file-dwim
+                    "G" 'projectile-regenerate-tags
+                    "k" 'projectile-kill-buffers
+                    "l" 'neotree-find-project-root
+                    "o" 't/open-in-desktop
+                    "p" 'projectile-find-file-in-known-projects
+                    "R" 'projectile-replace
+                    "S" 'projectile-save-project-buffers
+                    "t" 'projectile-find-test-file)
+
+  (t/declare-prefix "pr" "Project run"
+                    "a" 'projectile-run-async-shell-command-in-root
+                    "s" 'projectile-run-shell-command-in-root))
+
 
 (t/declare-prefix "o" "Other"
                   "b" 'browse-url
@@ -650,7 +644,8 @@
 
 
 (t/declare-prefix "o" "Other"
-                  "e" 't/eshell)
+                  "e" 't/eshell
+                  "t" 't/shell)
 
 (t/declare-prefix "E" "Editor"
                   "t" 'load-theme)
@@ -773,6 +768,13 @@
                   "F" 'hs-hide-all
                   "r" 'hs-show-block
                   "R" 'hs-show-all)
+
+(defmacro t/macro-helm-ag-insert (thing fn)
+  `(lambda ()
+     (interactive)
+     (setq-local helm-ag-insert-at-point ,thing)
+     (,fn)
+     (setq-local helm-ag-insert-at-point nil)))
 
 (t/declare-prefix "s" "Search"
                   "s" 'helm-swoop

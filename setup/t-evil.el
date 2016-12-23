@@ -1,5 +1,5 @@
-(defvar t-evil-cursor-color-emacs "dark orange")
-(defvar t-evil-cursor-color-evil "green2")
+(defconst t-evil-cursor-color-emacs "dark orange")
+(defconst t-evil-cursor-color-evil "green2")
 
 (use-package evil
   :init
@@ -41,7 +41,7 @@
                                  term-mode
                                  cider-stacktrace-mode
                                  cider-docview-mode)
-      "major modes that should trigger evil emacs state when changed to")
+      "Major modes that should trigger evil emacs state when changed to.")
     (add-hook 'after-change-major-mode-hook
               (lambda ()
                 (when (member major-mode t-evil-major-modes)
@@ -59,7 +59,7 @@
   :config
   (progn
     (setq evil-leader/in-all-states t)
-    (evil-leader/set-leader *user-leader*)
+    (evil-leader/set-leader t-leader)
     (evil-mode nil)
     (global-evil-leader-mode)
     (evil-mode 1)
@@ -70,7 +70,7 @@
       (highlight-symbol-remove-all))
 
     ;; clear highlights with leader leader
-    (evil-leader/set-key *user-leader* 'clear-all-highlights)
+    (evil-leader/set-key t-leader 'clear-all-highlights)
 
     (defun spacemacs/evil-yank-to-end-of-line ()
       "Yank from point to end of line."
@@ -89,7 +89,6 @@
     "-" 'evil-numbers/dec-at-pt))
 
 (use-package evil-matchit
-  :after evil
   :commands evilmi-jump-items
   :config
   (global-evil-matchit-mode 1))
@@ -114,7 +113,12 @@
   :diminish evil-cleverparens-mode)
 
 (use-package evil-nerd-commenter
-  :after evil
+  :commands (evilnc-comment-or-uncomment-lines
+             evilnc-comment-or-uncomment-paragraphs
+             evilnc-comment-or-uncomment-paragraphs
+             evilnc-copy-and-comment-lines
+             evil-complete-next
+             evil-complete-previous)
   :init
   (t/declare-prefix "c" "Comment/Complete"
                     "c" 'evilnc-comment-or-uncomment-lines

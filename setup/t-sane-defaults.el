@@ -14,6 +14,8 @@
 (modify-coding-system-alist 'file "" 'utf-8)
 
 (setq-default
+ mode-require-final-newline nil ; don't require final newline
+ require-final-newline nil ; don't require final newline
  redisplay-dont-pause t ; update screen immediately
  x-underline-at-descent-line t ; draw underline lower
  help-window-select 't ; focus help buffers

@@ -1,64 +1,46 @@
-; credits spacemacs for all the clever stuff
+;;(package-initialize) stfu
+;; credits spacemacs for all the clever stuff
 (load (locate-user-emacs-file "t-before.el") t)
 
-(setq is-mac (equal system-type 'darwin)
-      is-cygwin (equal system-type 'cygwin)
-      is-linux (equal system-type 'gnu/linux)
-      is-win (equal system-type 'windows-nt)
-      is-ms (or is-cygwin is-win)
-      has-gui (display-graphic-p))
+(defun t/user-file (path) (expand-file-name (locate-user-emacs-file path)))
 
-(defvar *user-leader* "SPC")
-(defvar *user-dir-snippets* (locate-user-emacs-file "snippets"))
-(defvar *user-dir-setup* (locate-user-emacs-file "setup"))
-(defvar *user-dir-langs* (locate-user-emacs-file "langs"))
-(defvar *user-dir-site-lisp* (locate-user-emacs-file "site-lisp"))
-(defvar t-font-size 14)
-
-(add-to-list 'load-path *user-dir-setup*)
-(add-to-list 'load-path *user-dir-langs*)
-(add-to-list 'load-path *user-dir-site-lisp*)
-(dolist (project (directory-files *user-dir-site-lisp* t "\\w+")) ; add folders inside site-lisp as well
-  (when (file-directory-p project)
-    (add-to-list 'load-path project)))
-
-;;(package-initialize)
-(require 't-packaging)
+(defconst t-leader "SPC")
+(defconst t-dir-snippets (t/user-file "snippets"))
+(defconst t-dir-setup (t/user-file "setup"))
+(defconst t-dir-langs (t/user-file "langs"))
+(defconst t-dir-site-lisp (t/user-file "site-lisp"))
+(defconst t-file-autoloads (t/user-file "setup/autoloads.el"))
+(defconst t-font-size 20)
 
 (defvar *t-debug-init* nil "Debug/time startup")
-(when *t-debug-init*
-  (message "t: timing init")
-  (require 't-debug)
 
-  ;; benchmarks
-  (use-package benchmark-init :config (benchmark-init/activate)))
+(load (t/user-file "setup/t-bootstrap.el"))
+(require 't-packaging)
+(require 't-autoloads)
 
-(dolist (module `(t-defuns
-                  ,(when is-mac 't-mac)
+(t/timing-start)
+
+(dolist (module `(,(when is-mac 't-mac)
                   ,(when is-ms 't-cygwin)
                   t-sane-defaults
+                  t-custom
                   t-which-key
                   t-evil
-                  t-typography
-                  t-shell
-                  t-vc
-                  t-org
-                  t-keys
                   t-load-theme
+                  t-vc
+                  t-keys
+                  t-typography
                   t-editor
+                  t-shell
+                  t-org
                   t-modeline
                   t-langs))
   (when module
     (require module)))
 
+(t/load-theme)
+
 (unless (fboundp 'server-running-p) (require 'server))
 (unless (server-running-p) (server-mode))
 
-;; benchmarks
-(when *t-debug-init*
-  (message "t: timing init complete")
-  (benchmark-init/show-durations-tabulated)
-  (benchmark-init/show-durations-tree))
-
-(evil-mode 1)
-(t/load-theme)
+(t/timing-end)

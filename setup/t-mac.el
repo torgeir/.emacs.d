@@ -22,7 +22,11 @@
 ;; bind fn to H-
 (setq ns-function-modifier 'hyper)
 
-;; fix os x keybindings (bind-key "M-7" "|" key-translation-map)
+(use-package exec-path-from-shell
+  :config (exec-path-from-shell-initialize))
+
+;; fix os x keybindings
+(bind-key "M-7" "|" key-translation-map)
 (bind-key "M-/" "\\" key-translation-map)
 (bind-key "M-8" "[" key-translation-map)
 (bind-key "M-9" "]" key-translation-map)
@@ -71,20 +75,15 @@
 (bind-key "s--" 't/decrease-font-size)
 (bind-key "s-0" 't/reset-font-size)
 
-(use-package exec-path-from-shell
-  :config (exec-path-from-shell-initialize))
-
 ;; trash
 (setq delete-by-moving-to-trash t
       trash-directory "~/.Trash/emacs")
 
-(setq t-font-size 20)
-
 ;; For when Emacs is started in GUI mode:
-(t/set-emoji-font nil)
+;(t/set-emoji-font nil)
 ;; Hook for when a frame is created with emacsclient
 ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
-(add-hook 'after-make-frame-functions 't/set-emoji-font)
+;(add-hook 'after-make-frame-functions 't/set-emoji-font)
 
 
 (provide 't-mac)

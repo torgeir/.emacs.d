@@ -1,5 +1,6 @@
 ;; try doom-modeline
 ;;(require 't-powerline)
+(use-package powerline)
 (require 'doom-modeline)
 (setq mode-line-format (doom-modeline))
 

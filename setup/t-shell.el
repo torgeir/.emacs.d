@@ -1,45 +1,53 @@
 (use-package bash-completion
-  :commands (bash-completion-dynamic-complete)
-  :config
+  :commands bash-completion-dynamic-complete
+  :init
   (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)
   (add-hook 'shell-command-complete-functions 'bash-completion-dynamic-complete))
 
-;; C-d to kill buffer if process is dead
-(defun comint-delchar-or-eof-or-kill-buffer (arg)
-  (interactive "p")
-  (if (null (get-buffer-process (current-buffer)))
-      (kill-buffer)
-    (comint-delchar-or-maybe-eof arg)))
+(progn
+  ;; C-d to kill buffer if process is dead
+  (defun t/comint-delchar-or-eof-or-kill-buffer (arg)
+    (interactive "p")
+    (if (null (get-buffer-process (current-buffer)))
+        (kill-buffer)
+      (comint-delchar-or-maybe-eof arg)))
 
-(add-hook 'shell-mode-hook
-          (lambda ()
-            (bind-key "C-d" 'comint-delchar-or-eof-or-kill-buffer shell-mode-map)))
+  (add-hook 'shell-mode-hook
+            (lambda ()
+              (bind-key "C-d" 't/comint-delchar-or-eof-or-kill-buffer shell-mode-map))))
 
-(defun ansi-term-handle-close ()
-  "Close current term buffer when `exit' or c-d from term buffer."
-  (when (ignore-errors (get-buffer-process (current-buffer)))
-    (set-process-sentinel (get-buffer-process (current-buffer))
-                          (lambda (proc change)
-                            (when (string-match "\\(finished\\|exited\\)" change)
-                              (kill-buffer (process-buffer proc))
-                              (delete-window))))))
+(progn
+  ;; ansi-term
+  (defun ansi-term-handle-close ()
+    "Close current term buffer when `exit' or c-d from term buffer."
+    (when (ignore-errors (get-buffer-process (current-buffer)))
+      (set-process-sentinel
+       (get-buffer-process (current-buffer))
+       (lambda (proc change)
+         (when (string-match "\\(finished\\|exited\\)" change)
+           (kill-buffer (process-buffer proc))
+           (condition-case nil
+               (delete-window)
+             (error nil)))))))
 
-(add-hook 'term-mode-hook 'ansi-term-handle-close)
-(defvar t-term-name "/bin/zsh")
-(defadvice ansi-term (before force-bash) (interactive (list t-term-name)))
-(ad-activate 'ansi-term)
+  ;; exit for realz
+  (add-hook 'term-mode-hook 'ansi-term-handle-close)
 
-;; tab-completion
-(use-package shell-command
-  :defer 1
-  :config
-  (shell-command-completion-mode 1))
+  ;; stfu
+  (defconst t-term-name "/bin/zsh")
+  (defadvice ansi-term (before force-bash) (interactive (list t-term-name)))
+  (ad-activate 'ansi-term)
 
-;; fix tab-completion in ansi-term
-(add-hook 'term-mode-hook (lambda () (setq yas-dont-activate t)))
+  (defun t/shell ()
+    "Start a shell"
+    (interactive)
+    (ansi-term t-term-name))
 
-;; ansi colors in shell
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+  ;; fix tab-completion in ansi-term
+  (add-hook 'term-mode-hook (lambda () (setq yas-dont-activate t)))
+
+  ;; ansi colors in shell
+  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
 
 (defun t/eshell-init-smart ()
   "Init smart eshell"
@@ -100,10 +108,5 @@
             (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol)
             (bind-key "C-u" 'eshell-kill-input eshell-mode-map)
             (bind-key "C-c C-u" 'universal-argument eshell-mode-map)))
-
-(defun t/shell ()
-  "Start a shell"
-  (interactive)
-  (ansi-term))
 
 (provide 't-shell)

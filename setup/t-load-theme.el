@@ -9,11 +9,11 @@
   (require 'doom-neotree)
   (setq doom-neotree-enable-file-icons t))
 
-(defvar t-themes (list
-                  'doom-one
-                  'spacemacs-dark
-                  'darktooth
-                  'spacemacs-light) "Themes to cycle")
+(defconst t-themes (list
+                    'doom-one
+                    'spacemacs-dark
+                    'darktooth
+                    'spacemacs-light) "Themes to cycle")
 
 (defun t/cycle-theme ()
   "Cycles themes in `t-themes'"
@@ -40,9 +40,8 @@
   (interactive)
   (t/switch-theme (nth 0 t-themes)))
 
-(defvar *t-theme-did-load* nil)
-
 ;; load-theme after making the frame also when in terminal emacs
+(defvar *t-theme-did-load* nil)
 (when (daemonp)
   (add-hook
    'after-make-frame-functions

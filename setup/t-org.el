@@ -1,34 +1,7 @@
-(defun t/org-todos-by-tag-settings (name)
-  `((org-agenda-remove-tags t)
-    (org-agenda-sorting-strategy '(tag-up priority-down))
-    (org-agenda-todo-keyword-format "")
-    (org-agenda-overriding-header ,(concat "\n" name "\n"))))
-
-(defun t/org-day-summary (tags)
-  `((tags ,(concat "PRIORITY=\"A\"&" ;; wat lol
-                   (replace-regexp-in-string "|" "|PRIORITY=\"A\"&" tags))
-          ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-           (org-agenda-overriding-header "Pri")))
-    (agenda ,tags
-            ((org-agenda-span 'day)
-             (org-agenda-ndays 1)
-             (org-agenda-time-grid nil)))
-    (tags-todo ,tags
-               ((org-agenda-overriding-header "Unscheduled")
-                (org-agenda-skip-function
-                 '(or (t/org-skip-subtree-if-priority ?A)
-                      (org-agenda-skip-if nil '(scheduled deadline))))))
-    (tags-todo ,tags
-               ((org-agenda-overriding-header "Scheduled")
-                (org-agenda-skip-function
-                 '(or (t/org-skip-subtree-if-priority ?A)
-                      (org-agenda-skip-if nil '(notscheduled deadline))))
-                (org-show-context-detail 'minimal)
-                (org-agenda-view-columns-initially t)))))
-
 (use-package org
   :ensure org-plus-contrib
   :commands (org-mode)
+  :mode ("\\.org$" . org-mode)
   ;; :bind (:map
   ;;        org-src-mode-map
   ;;        ("C-c C-c" . org-edit-src-exit))
@@ -37,10 +10,10 @@
          ("M-S-<right>" . nil)
          ("M-S-<left>" . nil))
   :init
-  (setq user-dropbox-folder (if is-mac "~/Dropbox"
+  (defconst t-user-dropbox-folder (if is-mac "~/Dropbox"
                               "c:/Users/torgth/Dropbox \(Personlig\)"))
 
-  (defun t/user-dropbox-folder (path) (concat user-dropbox-folder "/" path))
+  (defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
   (defun t/org-directory (path) (concat org-directory "/" path))
 
   (setq org-directory (t/user-dropbox-folder "org"))
@@ -89,6 +62,35 @@
         org-export-babel-evaluate nil ; don't run stuff automatically on export
         org-edit-src-content-indentation 0)
 
+  :config
+  (defun t/org-todos-by-tag-settings (name)
+    `((org-agenda-remove-tags t)
+      (org-agenda-sorting-strategy '(tag-up priority-down))
+      (org-agenda-todo-keyword-format "")
+      (org-agenda-overriding-header ,(concat "\n" name "\n"))))
+
+  (defun t/org-day-summary (tags)
+    `((tags ,(concat "PRIORITY=\"A\"&" ;; wat lol
+                     (replace-regexp-in-string "|" "|PRIORITY=\"A\"&" tags))
+            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+             (org-agenda-overriding-header "Pri")))
+      (agenda ,tags
+              ((org-agenda-span 'day)
+               (org-agenda-ndays 1)
+               (org-agenda-time-grid nil)))
+      (tags-todo ,tags
+                 ((org-agenda-overriding-header "Unscheduled")
+                  (org-agenda-skip-function
+                   '(or (t/org-skip-subtree-if-priority ?A)
+                        (org-agenda-skip-if nil '(scheduled deadline))))))
+      (tags-todo ,tags
+                 ((org-agenda-overriding-header "Scheduled")
+                  (org-agenda-skip-function
+                   '(or (t/org-skip-subtree-if-priority ?A)
+                        (org-agenda-skip-if nil '(notscheduled deadline))))
+                  (org-show-context-detail 'minimal)
+                  (org-agenda-view-columns-initially t)))))
+
   (setq org-agenda-include-diary t
         org-agenda-diary-file (t/org-directory "diary.org")
         org-agenda-default-appointment-duration 60
@@ -133,7 +135,6 @@
            (file+datetree ,(t/org-directory "journal.org"))
            "**** %U %^{Title}\n%?")))
 
-  :config
   (setq org-modules '(org-mouse
                       ;; TODO error when loading these two
                       ;;org-eval
@@ -165,7 +166,7 @@
 
   ;; use cider instead of slime (default)
   (setq org-babel-clojure-backend 'cider)
-  (defvar org-babel-clojure-nrepl-timeout 20)
+  (defconst org-babel-clojure-nrepl-timeout 20)
   (eval-after-load "ob-clojure"
     '(defun org-babel-execute:clojure (body params)
        "Execute a block of Clojure code with Babel."
@@ -195,10 +196,11 @@
               (bind-key "C-c C-k" 'org-edit-src-abort org-src-mode-map)
               (org-display-inline-images t t)
               (visual-line-mode 1) ; wrap long lines
-              ;; yasnippet
-              (make-variable-buffer-local 'yas/trigger-key)
-              (org-set-local 'yas/trigger-key [tab])
-              (bind-key [tab] 'yas-next-field-or-maybe-expand yas/keymap)))
+              (progn
+                ;; yasnippet
+                (make-variable-buffer-local 'yas/trigger-key)
+                (org-set-local 'yas/trigger-key [tab])
+                (bind-key [tab] 'yas-next-field-or-maybe-expand yas/keymap))))
 
 
   ;; fix completion dissapearing
@@ -232,22 +234,23 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 (defun t/jump-to-org-agenda ()
   (interactive)
-  (let ((buf (get-buffer "*Org Agenda*"))
+  (let ((agenda-buffer (get-buffer "*Org Agenda*"))
         wind)
-    (if buf
-        (if (setq wind (get-buffer-window buf))
+    (if (and (not (equal agenda-buffer (current-buffer)))
+             agenda-buffer)
+        (if (setq wind (get-buffer-window agenda-buffer))
             (select-window wind)
           (if (called-interactively-p)
               (progn
-                (select-window (display-buffer buf t t))
+                (select-window (display-buffer agenda-buffer t t))
                 (org-fit-window-to-buffer)
                 (org-agenda-redo))
-            (with-selected-window (display-buffer buf)
+            (with-selected-window (display-buffer agenda-buffer)
               (org-fit-window-to-buffer)
               (org-agenda-redo))))
       (call-interactively 'org-agenda-list))))
 
-(run-with-idle-timer 300 t #'t/jump-to-org-agenda)
+(run-with-idle-timer (* 5 60) t #'t/jump-to-org-agenda)
 
 (use-package org-alert
   :after org

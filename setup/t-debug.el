@@ -1,5 +1,5 @@
-(defvar t-debug-timer-threshold 0.2 "Threshold value for when to debug load info")
-(defvar t-buffer-load-times "*load-times*" "Buffer name for the load times buffer")
+(defconst t-debug-timer-threshold 0.2 "Threshold value for when to debug load info")
+(defconst t-buffer-load-times "*load-times*" "Buffer name for the load times buffer")
 
 (when *t-debug-init*
 

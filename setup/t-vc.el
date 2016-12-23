@@ -2,12 +2,13 @@
 
 (use-package git-gutter+
   :diminish git-gutter+-mode
+  :init
+  (add-hook 'prog-mode-hook 'git-gutter+-mode)
   :config
   (setq git-gutter+-modified-sign "~"
         git-gutter+-added-sign "+"
         git-gutter+-deleted-sign "-"
         git-gutter+-separator-sign (if has-gui "" " "))
-  (global-git-gutter+-mode t)
   (t/declare-prefix "gh" "Hunk"
                     "n" 'git-gutter+-next-hunk
                     "N" 'git-gutter+-previous-hunk
@@ -21,9 +22,9 @@
 
 (use-package git-gutter-fringe+
   :config
-  (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "....XXXX.....")
-  (fringe-helper-define 'git-gutter-fr+-deleted '(top repeat) "....XXXX.....")
-  (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "....XXXX.....")
+  (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "...XXXX......")
+  (fringe-helper-define 'git-gutter-fr+-deleted '(top repeat) "...XXXX......")
+  (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "...XXXX......")
   (git-gutter+-enable-fringe-display-mode))
 
 (use-package helm-open-github
@@ -83,6 +84,7 @@
         magit-fetch-arguments '("--prune")
         magit-rebase-arguments '("--interactive")
         magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
+
   :config
   (bind-key "q" #'magit-quit-session magit-status-mode-map)
 
@@ -104,8 +106,6 @@
 
 (use-package magit-gh-pulls
   :after magit
-  :ensure t
   :init (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls))
-
 
 (provide 't-vc)
