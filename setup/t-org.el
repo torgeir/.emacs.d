@@ -299,7 +299,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                   (holiday-float 11 4 4 "Thanksgiving")
                   (solar-equinoxes-solstices)))
         calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
-        solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjegndøgn" "Vintersolherv")))
+        solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjevndøgn" "Vintersolherv")))
 
 (t/declare-prefix "oo" "Org"
                   "c" 'org-capture
