@@ -1,5 +1,8 @@
 (use-package winner
   :ensure nil
+  :commands (winner-undo winner-redo)
+  :bind (("C-c <left>" . winner-undo)
+         ("C-c <right>" . winner-undo))
   :config (winner-mode 1))
 
 (use-package uniquify ; add dirs to buffer names when not unique
@@ -181,7 +184,7 @@
 
 (use-package company
   :diminish company-mode
-  :defer 1
+  :commands company-mode
   :init
   (setq company-idle-delay 0.2
         company-tooltip-align-annotations t
@@ -189,9 +192,9 @@
         company-show-numbers t ; nav with m-<n>
         company-selection-wrap-around t
         company-require-match nil)
+  (add-hook 'prog-mode-hook 'company-mode)
 
   :config
-  (global-company-mode)
   (bind-key "TAB" #'company-complete-selection company-active-map)
   (bind-key "C-n" #'company-select-next company-active-map)
   (bind-key "C-p" #'company-select-previous company-active-map)
@@ -304,14 +307,16 @@
   :commands (discover-my-major discover-my-mode))
 
 (use-package helm
-  :commands (helm-mini helm-projectile helm-projectile-ag)
+  :commands (completion-at-point
+             helm-mini
+             helm-projectile
+             helm-projectile-ag)
   :diminish helm-mode
   :bind (:map
          helm-map
          ("C-w" . backward-kill-word)
          ("C-u" . backward-kill-sentence)
          ("C-c u" . universal-argument))
-
   :init
   (require 'helm-config)
   (setq-default helm-display-header-line nil
@@ -333,16 +338,14 @@
                 helm-quick-update t
                 helm-M-x-requires-pattern nil)
 
-
-  (defun t/hide-cursor-in-helm-buffer ()
-    "Hide the cursor in helm buffers."
-    (with-helm-buffer
-      (setq cursor-in-non-selected-windows nil)))
-  (add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
-
   :config
   (progn
     (helm-mode 1)
+    (defun t/hide-cursor-in-helm-buffer ()
+      "Hide the cursor in helm buffers."
+      (with-helm-buffer
+        (setq cursor-in-non-selected-windows nil)))
+    (add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
     (set-face-attribute 'helm-source-header nil :height 1)
     (add-hook 'helm-before-initialize-hook 'neotree-hide)))
 
@@ -365,7 +368,7 @@
 (use-package helm-descbinds
   :after helm
   :commands helm-descbinds
-  :init
+  :config
   (helm-descbinds-mode)
   (setq helm-descbinds-window-style 'split))
 
@@ -465,10 +468,13 @@
         ag-highlight-search t
         ag-project-root-function (lambda (d) (projectile-project-root))))
 
-(use-package wgrep)
-(use-package wgrep-ag)
+(use-package wgrep
+  :after ag)
+(use-package wgrep-ag
+  :after ag)
 
 (use-package autorevert
+  :defer t
   :init
   (setq auto-revert-interval 1
         ;; silenced refresh of dired
@@ -481,7 +487,7 @@
     (setq auto-revert-use-notify nil)))
 
 (use-package smooth-scrolling
-  :defer 1
+  :commands (previous-line next-line isearch-repeat)
   :init
   (setq smooth-scroll-margin 5
         mouse-wheel-scroll-amount '(2 ((shift) . 1)) ;; two lines at a time
@@ -503,27 +509,33 @@
               (bind-key "F" 'hide-lines-show-all evil-normal-state-local-map))))
 
 (use-package ethan-wspace ; enforce proper whitespace
+  :commands ethan-wspace-mode
+  :init
+  (add-hook 'prog-mode-hook 'ethan-wspace-mode)
   :config
   (global-ethan-wspace-mode 1))
 
 (use-package highlight-parentheses
   :diminish highlight-parentheses-mode
+  :commands highlight-parentheses-mode
   :init
   (setq hl-paren-colors '("DeepPink1" "maroon1" "maroon2" "maroon3" "DeepPink3"
                           "DeepPink4" "maroon4" "VioletRed4"
                           "magenta1" "magenta2" "magenta3" "magenta4"
                           "DarkOrchid1" "DarkOrchid3" "DarkOrchid4" "purple4"))
-  :config
-  (global-highlight-parentheses-mode))
+  (add-hook 'prog-mode-hook 'highlight-parentheses-mode))
 
 (use-package highlight-escape-sequences
+  :commands hes-mode
+  :init
+  (add-hook 'prog-mode-hook 'hes-mode)
   :config
   (put 'hes-escape-backslash-face 'face-alias 'font-lock-comment-face)
-  (put 'hes-escape-sequence-face 'face-alias 'font-lock-comment-face)
-  (hes-mode))
+  (put 'hes-escape-sequence-face 'face-alias 'font-lock-comment-face))
 
 (use-package highlight-symbol
   :diminish highlight-symbol-mode
+  :commands highlight-symbol-mode
   :init
   (setq highlight-symbol-idle-delay 0.2)
   :config
@@ -567,6 +579,7 @@
                     "s" 'helm-spotify))
 
 (use-package calendar
+  :commands calendar
   :init
   (setq calendar-week-start-day 1
         calendar-date-style 'iso)
@@ -591,7 +604,7 @@
 
 (use-package projectile
   :diminish projectile-mode
-  :commands (projectile-mode helm-projectile)
+  :commands (projectile-mode helm-projectile projectile-project-root)
   :init
   (setq projectile-mode-line '(:eval (format "[%s]" (projectile-project-name)))
         ;projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
@@ -611,7 +624,7 @@
   (add-to-list 'grep-find-ignored-files "**.bundle.js")
   (add-to-list 'grep-find-ignored-files "**.build.js")
   (add-to-list 'grep-find-ignored-files ".DS_Store")
-  (projectile-global-mode)
+  ;(projectile-global-mode)
   (t/declare-prefix "p" "Project"
                     "b" 'helm-browse-project
                     "c" 'projectile-switch-project

@@ -17,10 +17,7 @@
                                    (other-window -1))))
 
 (use-package flycheck-elm
-  :config
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-web-html))
-  (with-eval-after-load 'flycheck
-    '(add-hook 'flycheck-mode-hook #'flycheck-elm-setup)))
+  :defer t
+  :init (add-hook 'flycheck-mode-hook 'flycheck-elm-setup t))
 
 (provide 't-lang-elm)

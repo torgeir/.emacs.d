@@ -13,6 +13,7 @@
   (setq nxml-child-indent *t-indent-xml*))
 
 (use-package simplezen
+  :commands simplezen-expand-or-indent-for-tab
   :init
   (add-hook 'html-mode-hook (lambda ()
                               (bind-key "TAB" 't/tab-properly html-mode-map))))

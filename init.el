@@ -38,8 +38,6 @@
   (when module
     (require module)))
 
-(t/load-theme)
-
 (unless (fboundp 'server-running-p) (require 'server))
 (unless (server-running-p) (server-mode))
 

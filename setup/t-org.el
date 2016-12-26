@@ -33,8 +33,6 @@
         org-blank-before-new-entry '((heading . auto) (plain-list-item . t)) ; newlines
         org-cycle-separator-lines 2 ; number of empty lines after heading needed to show visible newline between headings
         org-list-empty-line-terminates-plain-lists t
-        org-export-babel-evaluate nil ; don't run stuff automatically on export
-        org-confirm-babel-evaluate nil ; don't prompt on every code run
         org-catch-invisible-edits 'show ; show invisibles on edit
         org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
         org-refile-targets '((nil :maxlevel . 2)
@@ -58,7 +56,7 @@
 
   (setq org-src-fontify-natively t
         org-src-tab-acts-natively t
-        org-confirm-babel-evaluate nil
+        org-confirm-babel-evaluate nil ; don't prompt on every code run
         org-export-babel-evaluate nil ; don't run stuff automatically on export
         org-edit-src-content-indentation 0)
 
@@ -140,53 +138,46 @@
                       ;;org-eval
                       ;;org-expiry
                       ))
+  (org-load-modules-maybe t)
 
-  (eval-after-load 'org
-    '(org-load-modules-maybe t))
+  (use-package ox-md :ensure nil)
+  (use-package ob-restclient :ensure nil)
+  (use-package ob-clojure
+    :ensure nil
+    :config
+    (setq org-babel-clojure-backend 'cider) ; use cider instead of slime (default)
+    (defconst org-babel-clojure-nrepl-timeout 20)
+    (defun org-babel-execute:clojure (body params)
+      "Execute a block of Clojure code with Babel."
+      (let ((expanded (org-babel-expand-body:clojure body params))
+            result)
+        (require 'cider)
+        (let ((result-params (cdr (assoc :result-params params))))
+          (setq result
+                (nrepl-dict-get
+                 (let ((nrepl-sync-request-timeout org-babel-clojure-nrepl-timeout))
+                   (nrepl-sync-request:eval expanded (cider-current-connection) (cider-current-session)))
+                 (if (or (member "output" result-params)
+                         (member "pp" result-params))
+                     "out"
+                   "value"))))
+        (org-babel-result-cond (cdr (assoc :result-params params))
+          result
+          (condition-case nil
+              result
+            (error result))))))
 
-  (eval-after-load 'org
-    '(require 'ox-md))
-
-  (use-package ob-restclient
-    :after org)
-
-  (with-eval-after-load 'org
-    (require 'ob-clojure)
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (clojure . t)
-       (python . t)
-       (ruby . t)
-       (js . t)
-       (latex . t)
-       (sh . t)
-       (dot . t)
-       (restclient . t))))
-
-  ;; use cider instead of slime (default)
-  (setq org-babel-clojure-backend 'cider)
-  (defconst org-babel-clojure-nrepl-timeout 20)
-  (eval-after-load "ob-clojure"
-    '(defun org-babel-execute:clojure (body params)
-       "Execute a block of Clojure code with Babel."
-       (let ((expanded (org-babel-expand-body:clojure body params))
-             result)
-         (require 'cider)
-         (let ((result-params (cdr (assoc :result-params params))))
-           (setq result
-                 (nrepl-dict-get
-                  (let ((nrepl-sync-request-timeout org-babel-clojure-nrepl-timeout))
-                    (nrepl-sync-request:eval expanded (cider-current-connection) (cider-current-session)))
-                  (if (or (member "output" result-params)
-                          (member "pp" result-params))
-                      "out"
-                    "value"))))
-         (org-babel-result-cond (cdr (assoc :result-params params))
-           result
-           (condition-case nil
-               result
-             (error result))))))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (clojure . t)
+     (python . t)
+     (ruby . t)
+     (js . t)
+     (latex . t)
+     (sh . t)
+     (dot . t)
+     (restclient . t)))
 
   (add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
 
@@ -204,10 +195,8 @@
 
 
   ;; fix completion dissapearing
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-capf))
-  (defun add-pcomplete-to-capf ()
-    (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+  (with-eval-after-load 'company (add-to-list 'company-backends 'company-capf))
+  (defun add-pcomplete-to-capf () (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
   (add-hook 'org-mode-hook #'add-pcomplete-to-capf)
 
   ;; show week numbers in calendar
@@ -219,79 +208,79 @@
         '(propertize
           (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
           'font-lock-face 'calendar-iso-week-face)
-        calendar-intermonth-header (propertize "WK" 'font-lock-face 'calendar-iso-week-header-face)))
+        calendar-intermonth-header (propertize "WK" 'font-lock-face 'calendar-iso-week-header-face))
 
-(defun t/org-skip-subtree-if-priority (priority)
-  "Skip an agenda subtree if it has a priority of PRIORITY.
+  (defun t/org-skip-subtree-if-priority (priority)
+    "Skip an agenda subtree if it has a priority of PRIORITY.
 
 PRIORITY may be one of the characters ?A, ?B, or ?C."
-  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-        (pri-value (* 1000 (- org-lowest-priority priority)))
-        (pri-current (org-get-priority (thing-at-point 'line t))))
-    (if (= pri-value pri-current)
-        subtree-end
-      nil)))
+    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+          (pri-value (* 1000 (- org-lowest-priority priority)))
+          (pri-current (org-get-priority (thing-at-point 'line t))))
+      (if (= pri-value pri-current)
+          subtree-end
+        nil)))
 
-(defun t/jump-to-org-agenda ()
-  (interactive)
-  (let ((agenda-buffer (get-buffer "*Org Agenda*"))
-        wind)
-    (if (and (not (equal agenda-buffer (current-buffer)))
-             agenda-buffer)
-        (if (setq wind (get-buffer-window agenda-buffer))
-            (select-window wind)
-          (if (called-interactively-p)
-              (progn
-                (select-window (display-buffer agenda-buffer t t))
+  (defun t/jump-to-org-agenda ()
+    (interactive)
+    (let ((agenda-buffer (get-buffer "*Org Agenda*"))
+          wind)
+      (if (and (not (equal agenda-buffer (current-buffer)))
+               agenda-buffer)
+          (if (setq wind (get-buffer-window agenda-buffer))
+              (select-window wind)
+            (if (called-interactively-p)
+                (progn
+                  (select-window (display-buffer agenda-buffer t t))
+                  (org-fit-window-to-buffer)
+                  (org-agenda-redo))
+              (with-selected-window (display-buffer agenda-buffer)
                 (org-fit-window-to-buffer)
-                (org-agenda-redo))
-            (with-selected-window (display-buffer agenda-buffer)
-              (org-fit-window-to-buffer)
-              (org-agenda-redo))))
-      (call-interactively 'org-agenda-list))))
+                (org-agenda-redo))))
+        (call-interactively 'org-agenda-list))))
 
-(run-with-idle-timer (* 5 60) t #'t/jump-to-org-agenda)
+  (run-with-idle-timer (* 5 60) t #'t/jump-to-org-agenda)
 
-(use-package org-alert
-  :after org
-  :config
-  (setq alert-default-style 'osx-notifier
-        org-alert-interval 3600)
-  (org-alert-enable)
+  (use-package org-alert
+    :config
+    (setq alert-default-style 'osx-notifier
+          org-alert-interval 3600)
+    (org-alert-enable)
 
-  (defun alert-osx-notifier-notify (info)
-    "Overriding this function of `org-alert' fixes `osx-notifier'."
-    (apply #'call-process "osascript" nil nil nil "-e" (list (format "display notification %S with title %S"
-                                                                     (alert-encode-string (plist-get info :message))
-                                                                     (alert-encode-string (plist-get info :title)))))
-    (alert-message-notify info)))
+    (defun alert-osx-notifier-notify (info)
+      "Overriding this function of `org-alert' fixes `osx-notifier'."
+      (apply #'call-process "osascript" nil nil nil "-e" (list (format "display notification %S with title %S"
+                                                                       (alert-encode-string (plist-get info :message))
+                                                                       (alert-encode-string (plist-get info :title)))))
+      (alert-message-notify info)))
 
-;; (use-package org-bullets
-;;   :after org
-;;   :commands org-bullets-mode
-;;   :init
-;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  ;; (use-package org-bullets
+  ;;   :after org
+  ;;   :commands org-bullets-mode
+  ;;   :init
+  ;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
 
-;; TODO ox-icalendar?
-(setq org-icalendar-use-scheduled '(event-if-todo))
+  ;; TODO ox-icalendar?
+  (setq org-icalendar-use-scheduled '(event-if-todo))
 
-(use-package org-mac-iCal
-  :after org
-  :commands (org-mac-iCal))
+  (use-package org-mac-iCal
+    :after org
+    :commands (org-mac-iCal))
 
-(use-package org-mac-link
-  :after org-plus-contrib
-  :ensure org-plus-contrib
-  :commands (org-mac-grab-link))
+  (use-package org-mac-link
+    :after org-plus-contrib
+    :ensure org-plus-contrib
+    :commands (org-mac-grab-link))
 
-(use-package weather-metno
-  :after org
-  :config
-  (setq weather-metno-location-name "Trondheim, Norway"
-        weather-metno-location-latitude 63.427
-        weather-metno-location-longitude 10.391))
+  (use-package weather-metno
+    :after org
+    :config
+    (setq weather-metno-location-name "Trondheim, Norway"
+          weather-metno-location-latitude 63.427
+          weather-metno-location-longitude 10.391)))
 
 (use-package calendar-norway
+  :after calendar
   :config
   (setq calendar-holidays
         (append calendar-norway-raude-dagar

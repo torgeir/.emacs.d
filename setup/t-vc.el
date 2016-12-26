@@ -2,6 +2,7 @@
 
 (use-package git-gutter+
   :diminish git-gutter+-mode
+  :defer t
   :init
   (add-hook 'prog-mode-hook 'git-gutter+-mode)
   :config
@@ -18,14 +19,14 @@
                     "r" 'git-gutter+-revert-hunks
                     "s" 'git-gutter+-stage-hunks
                     "cc" 'magit-commit
-                    "ca" 'magit-commit-amend))
+                    "ca" 'magit-commit-amend)
 
-(use-package git-gutter-fringe+
-  :config
-  (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "...XXXX......")
-  (fringe-helper-define 'git-gutter-fr+-deleted '(top repeat) "...XXXX......")
-  (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "...XXXX......")
-  (git-gutter+-enable-fringe-display-mode))
+  (use-package git-gutter-fringe+
+    :config
+    (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "...XXXX......")
+    (fringe-helper-define 'git-gutter-fr+-deleted '(top repeat) "...XXXX......")
+    (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "...XXXX......")
+    (git-gutter+-enable-fringe-display-mode)))
 
 (use-package helm-open-github
   :commands (helm-open-github-from-issues

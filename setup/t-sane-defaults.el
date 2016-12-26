@@ -1,11 +1,13 @@
-(use-package dash :config (dash-enable-font-lock)); list helpers
+(use-package dash); list helpers
 (use-package s) ; string helpers
 (use-package f) ; file helpers
 (use-package all-the-icons) ; pretty icons
 (use-package better-defaults) ; rid the insanity
 
 ;; utf-8 ffs
-(setq locale-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8
+      default-buffer-file-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)

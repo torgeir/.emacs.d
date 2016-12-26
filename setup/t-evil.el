@@ -4,11 +4,12 @@
 (use-package evil
   :init
   (setq evil-default-state 'normal
-        evil-search-module 'evil-search
-        ;; initial colors
-        evil-emacs-state-cursor `(,t-evil-cursor-color-emacs box)
-        evil-normal-state-cursor `(,t-evil-cursor-color-evil box)
-        evil-visual-state-cursor `(,t-evil-cursor-color-evil hollow))
+        evil-search-module 'evil-search)
+
+  (setq ; initial colors
+   evil-emacs-state-cursor `(,t-evil-cursor-color-emacs box)
+   evil-normal-state-cursor `(,t-evil-cursor-color-evil box)
+   evil-visual-state-cursor `(,t-evil-cursor-color-evil hollow))
 
   (defun t/evil-update-cursor-color ()
     (let* ((colors `((emacs . ,t-evil-cursor-color-emacs)
