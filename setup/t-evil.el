@@ -11,6 +11,9 @@
    evil-normal-state-cursor `(,t-evil-cursor-color-evil box)
    evil-visual-state-cursor `(,t-evil-cursor-color-evil hollow))
 
+  (add-hook 'git-commit-mode-hook 'evil-insert-state)
+  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+
   (defun t/evil-update-cursor-color ()
     (let* ((colors `((emacs . ,t-evil-cursor-color-emacs)
                      (normal . ,t-evil-cursor-color-evil)
