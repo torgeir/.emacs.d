@@ -808,11 +808,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;;;###autoload
 (defun t/set-emoji-font (frame)
   "Adjust the font settings of FRAME so Emacs can display emoji properly 🚀"
-  (if (eq system-type 'darwin)
-      ;; For NS/Cocoa
-      (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
-    ;; For Linux
-    (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
+  (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend))
 
 ;;;###autoload
 (defun t/split-window-sensibly (&optional window)

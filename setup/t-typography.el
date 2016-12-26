@@ -20,4 +20,8 @@
     "Face used for highlighting todos" :group 'basic-faces)
   (add-hook 'prog-mode-hook (lambda () (font-lock-add-keywords nil '(("\\(TODO\\)" 1 't-todo-face t))))))
 
+(progn
+  (t/set-emoji-font nil) ; for when Emacs is started in GUI mode
+  (add-hook 'after-make-frame-functions 't/set-emoji-font)) ; hook for when a frame is created with emacsclient
+
 (provide 't-typography)

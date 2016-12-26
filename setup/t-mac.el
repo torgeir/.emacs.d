@@ -79,11 +79,4 @@
 (setq delete-by-moving-to-trash t
       trash-directory "~/.Trash/emacs")
 
-;; For when Emacs is started in GUI mode:
-;(t/set-emoji-font nil)
-;; Hook for when a frame is created with emacsclient
-;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
-;(add-hook 'after-make-frame-functions 't/set-emoji-font)
-
-
 (provide 't-mac)
