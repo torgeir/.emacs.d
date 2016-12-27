@@ -568,10 +568,16 @@
                   "P" 'proced)
 
 (use-package helm-hunks
-  :commands helm-hunks
+  :commands (helm-hunks
+             helm-hunks-current-buffer
+             helm-hunks-staged
+             helm-hunks-staged-current-buffer)
   :init
   (t/declare-prefix "gh" "Hunk"
-                    "h" 'helm-hunks))
+                    "h" 'helm-hunks
+                    "H" 'helm-hunks-current-buffer
+                    "s" 'helm-hunks-staged
+                    "S" 'helm-hunks-staged-current-buffer))
 
 (use-package spotify
   :ensure nil
