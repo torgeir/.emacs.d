@@ -541,11 +541,12 @@ Get project root without throwing
 
 ;;;***
 
-;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
-;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
-;;;;;;  "t-mac.el" "t-modeline.el" "t-org.el" "t-packaging.el" "t-powerline.el"
-;;;;;;  "t-sane-defaults.el" "t-shell.el" "t-typography.el" "t-vc.el"
-;;;;;;  "t-which-key.el") (22621 2236 0 0))
+;;;### (autoloads nil nil ("t-autoloads.el" "t-bootstrap.el" "t-custom.el"
+;;;;;;  "t-cygwin.el" "t-debug.el" "t-editor.el" "t-evil.el" "t-keys.el"
+;;;;;;  "t-langs.el" "t-load-theme.el" "t-mac.el" "t-modeline.el"
+;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
+;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
+;;;;;;  (22626 21159 0 0))
 
 ;;;***
 
