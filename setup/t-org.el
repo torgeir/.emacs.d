@@ -140,8 +140,9 @@
                       ))
   (org-load-modules-maybe t)
 
+  (use-package ob-restclient)
+
   (use-package ox-md :ensure nil)
-  (use-package ob-restclient :ensure nil)
   (use-package ob-clojure
     :ensure nil
     :config
@@ -267,17 +268,17 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
     :after org
     :commands (org-mac-iCal))
 
-  (use-package org-mac-link
-    :after org-plus-contrib
-    :ensure org-plus-contrib
-    :commands (org-mac-grab-link))
-
   (use-package weather-metno
     :after org
     :config
     (setq weather-metno-location-name "Trondheim, Norway"
           weather-metno-location-latitude 63.427
           weather-metno-location-longitude 10.391)))
+
+(use-package org-mac-link
+  :after org-plus-contrib
+  :ensure org-plus-contrib
+  :commands (org-mac-grab-link))
 
 (use-package calendar-norway
   :after calendar
