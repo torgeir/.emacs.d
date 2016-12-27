@@ -4,7 +4,7 @@
   :diminish git-gutter+-mode
   :defer t
   :init
-  (add-hook 'prog-mode-hook 'git-gutter+-mode)
+  (add-hook 'after-init-hook 'global-git-gutter+-mode)
   :config
   (setq git-gutter+-modified-sign "~"
         git-gutter+-added-sign "+"
