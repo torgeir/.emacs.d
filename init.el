@@ -10,7 +10,7 @@
 (defconst t-dir-langs (t/user-file "langs"))
 (defconst t-dir-site-lisp (t/user-file "site-lisp"))
 (defconst t-file-autoloads (t/user-file "setup/autoloads.el"))
-(defconst t-font-size 20)
+(defconst t-font-size 17)
 
 (defvar *t-debug-init* nil "Debug/time startup")
 
