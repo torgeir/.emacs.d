@@ -535,16 +535,19 @@
 
 (use-package highlight-symbol
   :diminish highlight-symbol-mode
-  :commands highlight-symbol-mode
+  :commands (highlight-symbol-mode
+             highlight-symbol
+             highlight-symbol-next
+             highlight-symbol-prev)
   :init
   (setq highlight-symbol-idle-delay 0.2)
-  :config
-  (add-hook 'prog-mode-hook 'highlight-symbol-mode)
   (t/declare-prefix "h" "Highlight"
                     ;; leader leader clears all highlights
                     "h" 'highlight-symbol
                     "n" 'highlight-symbol-next
-                    "N" 'highlight-symbol-prev))
+                    "N" 'highlight-symbol-prev)
+  :config
+  (add-hook 'prog-mode-hook 'highlight-symbol-mode))
 
 (use-package highlight-numbers
   :defer 1
