@@ -568,6 +568,8 @@
                   "P" 'proced)
 
 (use-package helm-hunks
+  ;; :ensure nil
+  ;; :load-path "/Users/torgeir/Code/helm-hunks.el/"
   :commands (helm-hunks
              helm-hunks-current-buffer
              helm-hunks-staged
