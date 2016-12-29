@@ -958,4 +958,24 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (let (projectile-require-project-root strict-p)
     (projectile-project-root)))
 
+;;;###autoload
+(defun t/volatile-kill-buffer ()
+  "Kill current buffer unconditionally."
+  (interactive)
+  (setq-local kill-buffer-query-functions
+              (remq 'process-kill-buffer-query-function
+                    kill-buffer-query-functions))
+  (let ((buffer-modified-p nil))
+    (kill-this-buffer)))
+
+;;;###autoload
+(defun t/volatile-kill-buffer-and-window ()
+  "Kill current buffer and the window unconditionally."
+  (interactive)
+  (setq-local kill-buffer-query-functions
+              (remq 'process-kill-buffer-query-function
+                    kill-buffer-query-functions))
+  (let ((buffer-modified-p nil))
+    (kill-buffer-and-window)))
+
 (provide 't-defuns)

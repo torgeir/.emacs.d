@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22625 6532 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22628 24399 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -539,6 +539,16 @@ Get project root without throwing
 
 \(fn)" nil nil)
 
+(autoload 't/volatile-kill-buffer "t-defuns" "\
+Kill current buffer unconditionally.
+
+\(fn)" t nil)
+
+(autoload 't/volatile-kill-buffer-and-window "t-defuns" "\
+Kill current buffer and the window unconditionally.
+
+\(fn)" t nil)
+
 ;;;***
 
 ;;;### (autoloads nil nil ("t-autoloads.el" "t-bootstrap.el" "t-custom.el"
@@ -546,7 +556,7 @@ Get project root without throwing
 ;;;;;;  "t-langs.el" "t-load-theme.el" "t-mac.el" "t-modeline.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
 ;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
-;;;;;;  (22626 21159 0 0))
+;;;;;;  (22628 23753 0 0))
 
 ;;;***
 
