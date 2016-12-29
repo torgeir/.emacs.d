@@ -3,7 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-checkbox-statistics-todo ((t (:inherit org-todo))) t)
+ '(org-checkbox-statistics-todo ((t (:inherit org-todo))))
  '(org-todo ((t (:background "#32322c" :foreground "#dc752f" :weight bold))))
  '(rainbow-delimiters-unmatched-face ((t (:foreground "#e0211d" :overline nil :underline t)))))
 (custom-set-variables
