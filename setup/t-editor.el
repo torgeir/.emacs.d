@@ -203,6 +203,11 @@
                     (company-abort)
                     (completion-at-point)) company-active-map))
 
+(use-package company-flx
+  :after company
+  :config
+  (company-flx-mode +1))
+
 (use-package company-web
   :after company
   :config
