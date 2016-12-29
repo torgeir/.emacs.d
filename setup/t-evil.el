@@ -42,7 +42,7 @@
                                  git-rebase-mode
                                  flycheck-error-list-mode
                                  diff-mode
-                                 term-mode
+                                 ;;term-mode
                                  cider-stacktrace-mode
                                  cider-docview-mode)
       "Major modes that should trigger evil emacs state when changed to.")

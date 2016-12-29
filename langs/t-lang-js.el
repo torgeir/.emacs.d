@@ -58,6 +58,11 @@
   :commands nodejs-repl
   :bind (:map
          js2-mode-map
-         ("C-x C-e" . t/send-region-to-nodejs-repl-process)))
+         ("C-x C-e" . t/send-region-to-nodejs-repl-process))
+  :config
+  (add-hook 'nodejs-repl-mode-hook
+            (lambda ()
+              (bind-key "C-d" 't/volatile-kill-buffer-and-window evil-insert-state-local-map)
+              (bind-key "C-d" 't/volatile-kill-buffer-and-window evil-normal-state-local-map))))
 
 (provide 't-lang-js)

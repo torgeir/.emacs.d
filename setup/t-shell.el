@@ -33,6 +33,11 @@
   ;; exit for realz
   (add-hook 'term-mode-hook 'ansi-term-handle-close)
 
+  (add-hook 'term-mode-hook
+            (lambda ()
+              (bind-key "C-d" 't/volatile-kill-buffer evil-insert-state-local-map)
+              (bind-key "C-d" 't/volatile-kill-buffer evil-normal-state-local-map)))
+
   ;; stfu
   (defconst t-term-name "/bin/zsh")
   (defadvice ansi-term (before force-bash) (interactive (list t-term-name)))
