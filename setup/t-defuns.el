@@ -978,4 +978,17 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (let ((buffer-modified-p nil))
     (kill-buffer-and-window)))
 
+;;;###autoload
+(defun t/grab-chrome-url ()
+  "Grab the frontmost url out of chrome using `org-mac-grab-link'"
+  (when-let ((chrome-url (org-mac-chrome-get-frontmost-url))
+             (_ (string-match "\\\[\\\[\\(.*\\)\\\]\\\[" chrome-url)))
+    (match-string 1 chrome-url)))
+
+;;;###autoload
+(defun t/browse-chrome-url-in-w3m ()
+  "Open the frontmost chrome url in `w3m'. "
+  (interactive)
+  (w3m (t/grab-chrome-url)))
+
 (provide 't-defuns)
