@@ -62,7 +62,7 @@
   :config
   (add-hook 'nodejs-repl-mode-hook
             (lambda ()
-              (bind-key "C-d" 't/volatile-kill-buffer-and-window evil-insert-state-local-map)
-              (bind-key "C-d" 't/volatile-kill-buffer-and-window evil-normal-state-local-map))))
+              (bind-key "C-d" 't/volatile-kill-buffer evil-insert-state-local-map)
+              (bind-key "C-d" 't/volatile-kill-buffer evil-normal-state-local-map))))
 
 (provide 't-lang-js)

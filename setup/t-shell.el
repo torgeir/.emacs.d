@@ -18,20 +18,16 @@
 
 (progn
   ;; ansi-term
-  (defun ansi-term-handle-close ()
+  (defun t/ansi-term-handle-close ()
     "Close current term buffer when `exit' or c-d from term buffer."
     (when (ignore-errors (get-buffer-process (current-buffer)))
       (set-process-sentinel
        (get-buffer-process (current-buffer))
        (lambda (proc change)
          (when (string-match "\\(finished\\|exited\\)" change)
-           (kill-buffer (process-buffer proc))
-           (condition-case nil
-               (delete-window)
-             (error nil)))))))
+           (kill-buffer (process-buffer proc)))))))
 
-  ;; exit for realz
-  (add-hook 'term-mode-hook 'ansi-term-handle-close)
+  (add-hook 'term-mode-hook 't/ansi-term-handle-close)
 
   (add-hook 'term-mode-hook
             (lambda ()
@@ -49,10 +45,7 @@
     (ansi-term t-term-name))
 
   ;; fix tab-completion in ansi-term
-  (add-hook 'term-mode-hook (lambda () (setq yas-dont-activate t)))
-
-  ;; ansi colors in shell
-  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
+  (add-hook 'term-mode-hook (lambda () (setq yas-dont-activate t))))
 
 (defun t/eshell-init-smart ()
   "Init smart eshell"
