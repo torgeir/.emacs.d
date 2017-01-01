@@ -381,6 +381,9 @@
   :after helm
   :commands helm-dash)
 
+(use-package helm-google
+  :commands helm-google)
+
 (use-package helm-swoop
   :after helm
   :commands helm-swoop
@@ -816,7 +819,9 @@
                   "W" (t/macro-helm-ag-insert 'symbol helm-projectile-ag))
 
 (t/declare-prefix "si" "Search Internet"
-                  "g" 'helm-google-suggest
+                  "i" 'helm-google
+                  "g" 'helm-google
+                  "G" 'helm-google-suggest
                   "w" 'helm-wikipedia-suggest)
 
 (use-package selectric-mode ; lol
