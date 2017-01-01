@@ -747,11 +747,12 @@
 (t/declare-prefix "r" "Registers"
                   "r" 'evil-show-registers)
 
-(t/declare-prefix "f" "Files"
+(t/declare-prefix "f" "Files/Frame"
                   "f" 'helm-find-files
                   "l" 'neotree-find
                   "J" 'dired-jump
                   "j" 'dired-jump-other-window
+                  "k" 'delete-frame
                   "g" 'ffap
                   "o" 't/open-in-desktop
                   "r" 'helm-recentf)
