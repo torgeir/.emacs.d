@@ -29,6 +29,7 @@
         org-tab-follows-link nil
         org-hide-leading-stars t
         org-hide-emphasis-markers t
+        org-loop-over-headlines-in-active-region 'start-level ; org-archive with friends work on multiple items
         org-completion-use-ido t
         org-blank-before-new-entry '((heading . auto) (plain-list-item . t)) ; newlines
         org-cycle-separator-lines 2 ; number of empty lines after heading needed to show visible newline between headings
