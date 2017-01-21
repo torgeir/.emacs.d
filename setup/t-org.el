@@ -117,7 +117,7 @@
         org-agenda-custom-commands `(("w" . "Work")
                                      ("wh" "home" ,(t/org-day-summary "+home") ((org-agenda-remove-tags t)))
                                      ("ww" "bekk" ,(t/org-day-summary "+bekk") ((org-agenda-remove-tags t)))
-                                     ("wd" "datainn" ,(t/org-day-summary "+bekk-sb1|+datainn-sb1") ((org-agenda-remove-tags t)))
+                                     ("wd" "datainn" ,(t/org-day-summary "+bekk|+datainn") ((org-agenda-remove-tags t)))
 
 
                                      ("t" . "Todos")
@@ -301,7 +301,7 @@ Locally redefines org-agenda-files not to export all agenda files."
                                               "bekk/datainn.org")))))
         (org-icalendar-export-agenda-files)))
 
-    (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 1))
+    (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5))
 
   (use-package org-alert
     :config
