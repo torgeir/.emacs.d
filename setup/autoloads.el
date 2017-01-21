@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22628 24399 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22659 41535 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -549,6 +549,39 @@ Kill current buffer and the window unconditionally.
 
 \(fn)" t nil)
 
+(autoload 't/grab-chrome-url "t-defuns" "\
+Grab the frontmost url out of chrome using `org-mac-grab-link'
+
+\(fn)" nil nil)
+
+(autoload 't/browse-chrome-url-in-w3m "t-defuns" "\
+Open the frontmost chrome url in `w3m'.
+
+\(fn)" t nil)
+
+(autoload 't/post "t-defuns" "\
+
+
+\(fn RAW)" t nil)
+
+(autoload 't/sanitize-file-name "t-defuns" "\
+Make NAME safe for filenames.
+Removes any occurrence of parentheses (with their content),
+Trims the result,
+And transforms anything that's not alphanumeric into dashes.
+
+\(fn NAME)" nil nil)
+
+;;;***
+
+;;;### (autoloads nil "t-macros" "t-macros.el" (22659 41614 0 0))
+;;; Generated autoloads from t-macros.el
+
+(autoload 't/idle-timer "t-macros" "\
+Reloadable variant of run-with-idle-timer.
+
+\(fn NAME FN EVERY-MINUTE)" nil t)
+
 ;;;***
 
 ;;;### (autoloads nil nil ("t-autoloads.el" "t-bootstrap.el" "t-custom.el"
@@ -556,7 +589,7 @@ Kill current buffer and the window unconditionally.
 ;;;;;;  "t-langs.el" "t-load-theme.el" "t-mac.el" "t-modeline.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
 ;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
-;;;;;;  (22628 23753 0 0))
+;;;;;;  (22659 41500 0 0))
 
 ;;;***
 
