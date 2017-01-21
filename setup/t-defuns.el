@@ -886,43 +886,29 @@ Example: 2010-11-29T23:23:35-08:00"
     (looking-back ",\s*")))
 
 ;;;###autoload
-(defun t/move-line-up ()
-  "Move the current line up one line. Preserves trailing commas."
-  (interactive)
-  (let ((col (current-column)))
-    (save-excursion
-      (let ((handle-comma (and (t/prev-line-ends-in-comma)
-                               (not (t/current-line-ends-in-comma)))))
-        (transpose-lines 1)
-        (when handle-comma
-          (forward-line -2)
-          (end-of-line)
-          (insert ",")
-          (forward-line)
-          (end-of-line)
-          (delete-char -1))))
-    (forward-line -1)
-    (move-to-column col)))
+(defun t/move-line-up (arg)
+  "Move the current line(s) down one line."
+  (interactive "P")
+  (if (or (not arg) (>= arg 0))
+      (let ((reg-or-lin (if (region-active-p) "'<" "."))
+            (reactivate-region (if (region-active-p) "gv=gv" ""))
+            (num (if arg (+ arg 1) 2)))
+        (execute-kbd-macro
+         (concat ":m" reg-or-lin "-" (number-to-string num) (kbd "RET") reactivate-region)))
+    (move-line-or-region (- arg))))
 
 ;;;###autoload
-(defun t/move-line-down ()
-  "Move the current line down one line. Preserves trailing commas"
-  (interactive)
-  (let ((col (current-column)))
-    (save-excursion
-      (let ((handle-comma (and (t/current-line-ends-in-comma)
-                               (not (t/next-line-ends-in-comma)))))
-        (when handle-comma
-          (end-of-line)
-          (delete-char -1))
-        (forward-line)
-        (transpose-lines 1)
-        (when handle-comma
-          (forward-line -2)
-          (end-of-line)
-          (insert ","))))
-    (forward-line)
-    (move-to-column col)))
+(defun t/move-line-down (arg)
+  "Move the current line(s) down one line."
+  (interactive "P")
+  (if (or (not arg) (>= arg 0))
+      (let ((reg-or-lin (if (region-active-p) "'>" "."))
+            (reactivate-region (if (region-active-p) "gv=gv" ""))
+            (num (if arg arg 1)))
+        (execute-kbd-macro
+         (concat ":m" reg-or-lin "+" (number-to-string num) (kbd "RET") reactivate-region)))
+    (backward-move-line-or-region (- arg))))
+
 
 ;;;###autoload
 (defun t/find-org-files-recursively (&optional directory filext)

@@ -68,7 +68,6 @@
       "Hook run before saving org buffers"
       (when (eq major-mode 'org-mode)
         (t/org-mode-realign-all-tags)))
-    ;;:map org-src-mode-map
 
     (defun t/org-mode-realign-all-tags ()
       "Code to realign tags, stolen from org.el"
@@ -241,6 +240,25 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
       (if (= pri-value pri-current)
           subtree-end
         nil)))
+  (progn
+    ;; reselect visual when moving multiple lines
+    (setq t-org-move-tree-was-visual nil)
+    (defun t/org-visual-restore ()
+      (when t-org-move-tree-was-visual
+        (evil-normal-state)
+        (evil-visual-restore)
+        (setq t-org-move-tree-was-visual nil)))
+    (defadvice org-metaup   (before t/before-org-move-subtree-up activate) (setq t-org-move-tree-was-visual (region-active-p)))
+    (defadvice org-metadown (before t/before-org-move-subtree-down activate) (setq t-org-move-tree-was-visual (region-active-p)))
+    (defadvice org-metaup   (after t/after-org-move-subtree-up activate) (t/org-visual-restore))
+    (defadvice org-metadown (after t/after-org-move-subtree-down activate) (t/org-visual-restore)))
+
+  (progn
+    ;; save org mode buffers after refile
+    (defadvice
+        org-refile
+        (after t/after-org-refile activate)
+      (org-save-all-org-buffers)))
 
   (defun t/jump-to-org-agenda ()
     (interactive)
