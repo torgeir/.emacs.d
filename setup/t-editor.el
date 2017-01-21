@@ -619,7 +619,7 @@
   (setq recentf-max-saved-items 1000
         recentf-auto-cleanup 'never)
   :config
-  (setq recentf-auto-save-timer (run-with-idle-timer 600 t 'recentf-save-list))
+  (t/idle-timer recentf-auto-save-timer #'recentf-save-list 1)
   (recentf-mode 1))
 
 (use-package projectile
