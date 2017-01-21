@@ -288,15 +288,8 @@ Locally redefines org-agenda-files not to export all agenda files."
   (use-package org-alert
     :config
     (setq alert-default-style 'osx-notifier
-          org-alert-interval 3600)
-    (org-alert-enable)
-
-    (defun alert-osx-notifier-notify (info)
-      "Overriding this function of `org-alert' fixes `osx-notifier'."
-      (apply #'call-process "osascript" nil nil nil "-e" (list (format "display notification %S with title %S"
-                                                                       (alert-encode-string (plist-get info :message))
-                                                                       (alert-encode-string (plist-get info :title)))))
-      (alert-message-notify info)))
+          org-alert-interval (* 1 60 60))
+    (org-alert-enable))
 
   ;; (use-package org-bullets
   ;;   :after org
