@@ -1,17 +1,18 @@
 (use-package org
   :ensure org-plus-contrib
   :commands (org-mode)
-  :mode ("\\.org$" . org-mode)
-  ;; :bind (:map
-  ;;        org-src-mode-map
-  ;;        ("C-c C-c" . org-edit-src-exit))
-  :bind (:map
-         smartparens-mode-map
-         ("M-S-<right>" . nil)
-         ("M-S-<left>" . nil))
+  :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
+  :bind (:map org-mode-map
+              ("s-s" . org-save-all-org-buffers)
+              ("C-x C-s" . org-save-all-org-buffers)
+              ("C-c C-k" . org-edit-src-abort)
+              ;;("C-c C-c" . org-edit-src-exit)
+              :map smartparens-mode-map
+              ("M-S-<right>" . nil)
+              ("M-S-<left>" . nil))
   :init
   (defconst t-user-dropbox-folder (if is-mac "~/Dropbox"
-                              "c:/Users/torgth/Dropbox \(Personlig\)"))
+                                    "c:/Users/torgth/Dropbox \(Personlig\)"))
 
   (defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
   (defun t/org-directory (path) (concat org-directory "/" path))
@@ -62,6 +63,23 @@
         org-edit-src-content-indentation 0)
 
   :config
+  (progn
+    (defun t/org-mode-before-save ()
+      "Hook run before saving org buffers"
+      (when (eq major-mode 'org-mode)
+        (t/org-mode-realign-all-tags)))
+    ;;:map org-src-mode-map
+
+    (defun t/org-mode-realign-all-tags ()
+      "Code to realign tags, stolen from org.el"
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward org-outline-regexp-bol nil t)
+          (org-set-tags nil t)
+          (end-of-line))))
+
+    (add-hook 'before-save-hook #'t/org-mode-before-save))
+
   (defun t/org-todos-by-tag-settings (name)
     `((org-agenda-remove-tags t)
       (org-agenda-sorting-strategy '(tag-up priority-down))
@@ -94,12 +112,14 @@
         org-agenda-diary-file (t/org-directory "diary.org")
         org-agenda-default-appointment-duration 60
         org-agenda-window-setup 'only-window ; delete other windows when showing agenda
-        org-agenda-files (t/find-org-files-recursively org-directory) ; where to look for org files
+        org-agenda-files (t/find-org-files-recursively org-directory "org") ; where to look for org files
+        org-agenda-text-search-extra-files (t/find-org-files-recursively "~/Dropbox/org" "org_archive")
         org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
         org-agenda-custom-commands `(("w" . "Work")
+                                     ("wh" "home" ,(t/org-day-summary "+home") ((org-agenda-remove-tags t)))
                                      ("ww" "bekk" ,(t/org-day-summary "+bekk") ((org-agenda-remove-tags t)))
                                      ("wd" "datainn" ,(t/org-day-summary "+bekk-sb1|+datainn-sb1") ((org-agenda-remove-tags t)))
-                                     ("ws" "sb1" ,(t/org-day-summary  "+bekk-datainn|+sb1-datainn") ((org-agenda-remove-tags t)))
+
 
                                      ("t" . "Todos")
                                      ("ta" alltodo)
@@ -127,7 +147,7 @@
         `(("t" "Task"
            entry
            (file+headline org-default-notes-file "Tasks")
-           "* TODO %? %^G\nSCHEDULED: %t\n%i\n%a")
+           "* TODO %? %^G\n%i\n%a")
 
           ("j" "Journal entry"
            entry
@@ -185,15 +205,14 @@
 
   (add-hook 'org-mode-hook
             (lambda ()
-              (bind-key "C-c C-c" 'org-edit-src-exit org-src-mode-map)
-              (bind-key "C-c C-k" 'org-edit-src-abort org-src-mode-map)
               (org-display-inline-images t t)
               (visual-line-mode 1) ; wrap long lines
-              (progn
-                ;; yasnippet
-                (make-variable-buffer-local 'yas/trigger-key)
-                (org-set-local 'yas/trigger-key [tab])
-                (bind-key [tab] 'yas-next-field-or-maybe-expand yas/keymap))))
+              ;; (progn
+              ;;   ;; yasnippet
+              ;;   (make-variable-buffer-local 'yas/trigger-key)
+              ;;   (org-set-local 'yas/trigger-key [tab])
+              ;;   (bind-key [tab] 'yas-next-field-or-maybe-expand yas/keymap))
+              ))
 
 
   ;; fix completion dissapearing
@@ -235,13 +254,36 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                 (progn
                   (select-window (display-buffer agenda-buffer t t))
                   (org-fit-window-to-buffer)
-                  (org-agenda-redo))
+                  (org-agenda-redo t))
               (with-selected-window (display-buffer agenda-buffer)
                 (org-fit-window-to-buffer)
-                (org-agenda-redo))))
+                (org-agenda-redo t))))
         (call-interactively 'org-agenda-list))))
 
-  (run-with-idle-timer (* 5 60) t #'t/jump-to-org-agenda)
+  (progn
+    (defun t/org-idle-timer ()
+      "Timer to run when idle for syncing org."
+      (interactive)
+      (message "Syncing agenda...")
+      (org-save-all-org-buffers)
+      (t/org-export-calendars)
+      (org-mobile-pull)
+      (org-mobile-push)
+      (t/jump-to-org-agenda)
+      (message "Syncing agenda... done"))
+
+    (defun t/org-export-calendars ()
+      "Export given set of calendars to ical files, so you can subscribe to their dropbox links in ical.
+Locally redefines org-agenda-files not to export all agenda files."
+      (interactive)
+      (let ((org-agenda-files (cons org-default-notes-file
+                                    (mapcar #'t/org-directory
+                                            '("home.org"
+                                              "bekk/bekk.org"
+                                              "bekk/datainn.org")))))
+        (org-icalendar-export-agenda-files)))
+
+    (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 1))
 
   (use-package org-alert
     :config
