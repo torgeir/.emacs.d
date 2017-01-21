@@ -38,6 +38,7 @@
   (setq dired-auto-revert-buffer t
         dired-listing-switches "-alhF"
         dired-ls-F-marks-symlinks "@"
+        dired-use-ls-dired nil
         dired-dwim-target t)
   :config
   (bind-key "TAB" 'dired-details-toggle dired-mode-map)
