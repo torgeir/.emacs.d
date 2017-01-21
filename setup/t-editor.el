@@ -62,11 +62,6 @@
   :init (setq-default dired-details-hidden-string "")
   :config (dired-details-install))
 
-(use-package yasnippet
-  :commands yas-expand
-  :config
-  (yas-global-mode 1))
-
 (use-package rainbow-mode
   :diminish rainbow-mode
   :commands rainbow-mode
@@ -433,7 +428,7 @@
 
 (use-package yasnippet
   :diminish yas-minor-mode
-  :defer 1
+  :commands (org-cycle yas-expand t/tab-properly)
   :init
   (setq yas-snippet-dirs '(t-dir-snippets)
         ;; remove dropdowns
@@ -444,6 +439,9 @@
         yas-wrap-around-region t)
 
   :config
+  ;; make fundamental snippets global snippets
+  (add-hook 'yas-minor-mode-hook (lambda () (yas-activate-extra-mode 'fundamental-mode)))
+
   ;; on for all buffers
   (yas-global-mode 1)
 
