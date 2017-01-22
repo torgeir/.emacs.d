@@ -977,4 +977,20 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (interactive)
   (w3m (t/grab-chrome-url)))
 
+;;;###autoload
+(defun t/get-url (url)
+  "Get url synchronously."
+  (with-current-buffer (url-retrieve-synchronously url)
+    (buffer-string)))
+
+;;;###autoload
+(defun t/fetch (url)
+  "Insert url contents in current buffer. Drops headers and 2x empty lines before content."
+  (interactive)
+  (insert (t/get-url url))
+  (goto-char (point-min))
+  (kill-sentence)
+  (kill-line)
+  (kill-line))
+
 (provide 't-defuns)
