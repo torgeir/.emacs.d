@@ -404,8 +404,8 @@
   :commands dash-at-point
   :bind ("C-c C-j" . dash-at-point))
 
-(bind-key "<C-S-up>" 't/move-line-up)
-(bind-key "<C-S-down>" 't/move-line-down)
+(bind-key "<M-S-up>" 't/move-line-up)
+(bind-key "<M-S-down>" 't/move-line-down)
 
 (use-package expand-region
   :commands (er/expand-region er/contract-region)

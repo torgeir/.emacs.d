@@ -2,14 +2,18 @@
   :ensure org-plus-contrib
   :commands (org-mode)
   :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
-  :bind (:map org-mode-map
-              ("s-s" . org-save-all-org-buffers)
-              ("C-x C-s" . org-save-all-org-buffers)
-              ("C-c C-k" . org-edit-src-abort)
-              ;;("C-c C-c" . org-edit-src-exit)
-              :map smartparens-mode-map
-              ("M-S-<right>" . nil)
-              ("M-S-<left>" . nil))
+  :bind (:map
+         org-mode-map
+         ("s-s" . org-save-all-org-buffers)
+         ("C-x C-s" . org-save-all-org-buffers)
+         ("C-c C-k" . org-edit-src-abort)
+         ("M-p" . outline-previous-visible-heading)
+         ("M-n" . outline-next-visible-heading)
+         ;;("C-c C-c" . org-edit-src-exit)
+         :map
+         smartparens-mode-map
+         ("M-S-<right>" . nil)
+         ("M-S-<left>" . nil))
   :init
   (defconst t-user-dropbox-folder (if is-mac "~/Dropbox"
                                     "c:/Users/torgth/Dropbox \(Personlig\)"))
@@ -248,10 +252,10 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         (evil-normal-state)
         (evil-visual-restore)
         (setq t-org-move-tree-was-visual nil)))
-    (defadvice org-metaup   (before t/before-org-move-subtree-up activate) (setq t-org-move-tree-was-visual (region-active-p)))
-    (defadvice org-metadown (before t/before-org-move-subtree-down activate) (setq t-org-move-tree-was-visual (region-active-p)))
-    (defadvice org-metaup   (after t/after-org-move-subtree-up activate) (t/org-visual-restore))
-    (defadvice org-metadown (after t/after-org-move-subtree-down activate) (t/org-visual-restore)))
+    (defadvice org-metaup   (before t/before-org-metaup activate) (setq t-org-move-tree-was-visual (region-active-p)))
+    (defadvice org-metadown (before t/before-org-metadown activate) (setq t-org-move-tree-was-visual (region-active-p)))
+    (defadvice org-metaup   (after t/after-org-metaup activate) (t/org-visual-restore))
+    (defadvice org-metadown (after t/after-org-metadown activate) (t/org-visual-restore)))
 
   (progn
     ;; save org mode buffers after refile

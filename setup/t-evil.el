@@ -116,6 +116,10 @@
   :after evil
   :diminish evil-cleverparens-mode)
 
+
+(use-package org-evil
+  :after evil)
+
 (use-package evil-nerd-commenter
   :commands (evilnc-comment-or-uncomment-lines
              evilnc-comment-or-uncomment-paragraphs
