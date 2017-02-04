@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22659 41535 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22677 46978 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -514,14 +514,14 @@ Return whether the current line is suffixed with ','
 \(fn)" nil nil)
 
 (autoload 't/move-line-up "t-defuns" "\
-Move the current line up one line. Preserves trailing commas.
+Move the current line(s) down one line.
 
-\(fn)" t nil)
+\(fn ARG)" t nil)
 
 (autoload 't/move-line-down "t-defuns" "\
-Move the current line down one line. Preserves trailing commas
+Move the current line(s) down one line.
 
-\(fn)" t nil)
+\(fn ARG)" t nil)
 
 (autoload 't/find-org-files-recursively "t-defuns" "\
 Return .org and .org_archive files recursively from DIRECTORY.
@@ -552,25 +552,27 @@ Kill current buffer and the window unconditionally.
 (autoload 't/grab-chrome-url "t-defuns" "\
 Grab the frontmost url out of chrome using `org-mac-grab-link'
 
-\(fn)" nil nil)
+\(fn)" t nil)
 
 (autoload 't/browse-chrome-url-in-w3m "t-defuns" "\
 Open the frontmost chrome url in `w3m'.
 
 \(fn)" t nil)
 
-(autoload 't/post "t-defuns" "\
+(autoload 't/get-url "t-defuns" "\
+Get url synchronously.
 
+\(fn URL)" nil nil)
 
-\(fn RAW)" t nil)
+(autoload 't/fetch "t-defuns" "\
+Insert url contents in current buffer. Drops headers and 2x empty lines before content.
 
-(autoload 't/sanitize-file-name "t-defuns" "\
-Make NAME safe for filenames.
-Removes any occurrence of parentheses (with their content),
-Trims the result,
-And transforms anything that's not alphanumeric into dashes.
+\(fn URL)" t nil)
 
-\(fn NAME)" nil nil)
+(autoload 't/fetch-chrome-url "t-defuns" "\
+Insert contents of frontmost url of chrome in buffer.
+
+\(fn)" t nil)
 
 ;;;***
 
@@ -589,7 +591,7 @@ Reloadable variant of run-with-idle-timer.
 ;;;;;;  "t-langs.el" "t-load-theme.el" "t-mac.el" "t-modeline.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
 ;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
-;;;;;;  (22659 41500 0 0))
+;;;;;;  (22677 46841 0 0))
 
 ;;;***
 

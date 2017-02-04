@@ -969,6 +969,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/grab-chrome-url ()
   "Grab the frontmost url out of chrome using `org-mac-grab-link'"
+  (interactive)
   (when-let ((chrome-url (org-mac-chrome-get-frontmost-url))
              (_ (string-match "\\\[\\\[\\(.*\\)\\\]\\\[" chrome-url)))
     (match-string 1 chrome-url)))
@@ -988,11 +989,17 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/fetch (url)
   "Insert url contents in current buffer. Drops headers and 2x empty lines before content."
-  (interactive)
+  (interactive "sfetch url:")
   (insert (t/get-url url))
   (goto-char (point-min))
   (kill-sentence)
   (kill-line)
   (kill-line))
+
+;;;###autoload
+(defun t/fetch-chrome-url ()
+  "Insert contents of frontmost url of chrome in buffer."
+  (interactive)
+  (t/fetch (t/grab-chrome-url)))
 
 (provide 't-defuns)
