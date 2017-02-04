@@ -180,7 +180,7 @@
 
 (use-package company
   :diminish company-mode
-  :commands company-mode
+  :defer 1
   :init
   (setq company-idle-delay 0.2
         company-tooltip-align-annotations t
@@ -189,8 +189,8 @@
         company-selection-wrap-around t
         company-require-match nil)
   (add-hook 'prog-mode-hook 'company-mode)
-
   :config
+  (global-company-mode)
   (bind-key "TAB" #'company-complete-selection company-active-map)
   (bind-key "C-n" #'company-select-next company-active-map)
   (bind-key "C-p" #'company-select-previous company-active-map)
