@@ -1,3 +1,6 @@
+(defconst lat-trh 63.427)
+(defconst lon-trh 10.391)
+
 (use-package org
   :ensure org-plus-contrib
   :commands (org-mode)
@@ -113,7 +116,7 @@
 
   (setq org-agenda-include-diary t
         org-agenda-diary-file (t/org-directory "diary.org")
-        org-agenda-default-appointment-duration 60
+        org-agenda-default-appointment-duration nil
         org-agenda-window-setup 'only-window ; delete other windows when showing agenda
         org-agenda-files (t/find-org-files-recursively org-directory "org") ; where to look for org files
         org-agenda-text-search-extra-files (t/find-org-files-recursively "~/Dropbox/org" "org_archive")
@@ -122,7 +125,6 @@
                                      ("wh" "home" ,(t/org-day-summary "+home") ((org-agenda-remove-tags t)))
                                      ("ww" "bekk" ,(t/org-day-summary "+bekk") ((org-agenda-remove-tags t)))
                                      ("wd" "datainn" ,(t/org-day-summary "+bekk|+datainn") ((org-agenda-remove-tags t)))
-
 
                                      ("t" . "Todos")
                                      ("ta" alltodo)
@@ -330,13 +332,16 @@ Locally redefines org-agenda-files not to export all agenda files."
     :after org
     :config
     (setq weather-metno-location-name "Trondheim, Norway"
-          weather-metno-location-latitude 63.427
-          weather-metno-location-longitude 10.391)))
+          weather-metno-location-latitude lat-trh
+          weather-metno-location-longitude lon-trh
+          weather-metno-use-imagemagick t
+          weather-metno-get-image-props '(:width 20 :height 20 :ascent center))))
 
 (use-package org-mac-link
   :after org-plus-contrib
   :ensure org-plus-contrib
-  :commands (org-mac-grab-link))
+  :commands (org-mac-grab-link
+             org-mac-chrome-get-frontmost-url))
 
 (use-package calendar-norway
   :after calendar
@@ -350,7 +355,33 @@ Locally redefines org-agenda-files not to export all agenda files."
                   (holiday-float 11 4 4 "Thanksgiving")
                   (solar-equinoxes-solstices)))
         calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
-        solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjevndøgn" "Vintersolherv")))
+        solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjevndøgn" "Vintersolherv"))
+
+  (setq calendar-latitude lat-trh
+        calendar-longitude lon-trh
+        calendar-location-name "Trondheim, Norway")
+
+  (progn
+    ;; moons in agenda
+    (org-no-warnings (defvar date))
+    (defun t/org-lunar-phases ()
+      "Show lunar phase in Agenda buffer."
+      (require 'lunar)
+      (let* ((phase-list (lunar-phase-list (nth 0 date) (nth 2 date)))
+             (phase (cl-find-if (lambda (phase) (equal (car phase) date))
+                                phase-list)))
+        (when phase
+          (setq ret (concat (lunar-phase-name (nth 2 phase)) " "
+                            (substring (nth 1 phase) 0 5))))))
+
+    (defadvice lunar-phase-name (around sv-lunar-phase-name activate)
+      "Månefasenavn på norsk."
+      (setq ad-return-value
+            (let ((phase (ad-get-arg 0)))
+              (cond ((= 0 phase) "Nymåne ●")
+                    ((= 1 phase) "Månen i ny ☽")
+                    ((= 2 phase) "Fullmåne ○")
+                    ((= 3 phase) "Månen i ne ☾")))))))
 
 (t/declare-prefix "oo" "Org"
                   "c" 'org-capture
