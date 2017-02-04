@@ -935,8 +935,10 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/org-fix-inline-images ()
   "Fix redisplaying images after executing org babel code."
-  (when org-inline-image-overlays
-    (org-redisplay-inline-images)))
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (when (eq 'org-mode major-mode)
+        (org-redisplay-inline-images)))))
 
 ;;;###autoload
 (defun t/project-root ()
