@@ -9,7 +9,7 @@ cd && git clone https://github.com/torgeir/.emacs.d
 ### os x
 
 ```
-brew install emacs --with-cocoa --with-glib --with-librsvg --with-mailutils --with-gnutls --with-ctags --with-imagemagick
+brew install emacs --with-cocoa --with-ctags --with-gnutls --with-imagemagick --with-librsvg
 ```
 
 ### ubuntu
@@ -39,7 +39,10 @@ these need to exist on `PATH`:
 
 - git
 - w3m
+- eslint babel-eslint jsonlint eslint-plugin-react tern
 - browser-sync
+
+install `~/.emacs.d/Symbola.ttf` on the system
 
 
 
