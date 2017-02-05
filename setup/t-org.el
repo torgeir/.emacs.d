@@ -315,12 +315,6 @@ Locally redefines org-agenda-files not to export all agenda files."
           org-alert-interval (* 1 60 60))
     (org-alert-enable))
 
-  ;; (use-package org-bullets
-  ;;   :after org
-  ;;   :commands org-bullets-mode
-  ;;   :init
-  ;;   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
   ;; TODO ox-icalendar?
   (setq org-icalendar-use-scheduled '(event-if-todo))
 
