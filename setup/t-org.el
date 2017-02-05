@@ -152,7 +152,7 @@
         `(("t" "Task"
            entry
            (file+headline org-default-notes-file "Tasks")
-           "* TODO %? %^G\n%i\n%a")
+           "* TODO %? %^G\n%i")
 
           ("j" "Journal entry"
            entry
