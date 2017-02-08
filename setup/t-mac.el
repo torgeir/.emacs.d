@@ -75,6 +75,9 @@
 (bind-key "s--" 't/decrease-font-size)
 (bind-key "s-0" 't/reset-font-size)
 
+;; s-p print dialog kills emacs, so disable it..
+(bind-key "s-p" (lambda () (interactive)))
+
 ;; trash
 (setq delete-by-moving-to-trash t
       trash-directory "~/.Trash/emacs")
