@@ -264,6 +264,9 @@
                   ruby-mode
                   mark-down-mode))
     (add-hook hook 'turn-on-smartparens-mode))
+  (setq sp-highlight-pair-overlay nil
+        sp-highlight-wrap-overlay nil
+        sp-highlight-wrap-tag-overlay nil)
   :config
   (require 'smartparens-config)
   (bind-key "<delete>" 'sp-delete-char sp-keymap)
