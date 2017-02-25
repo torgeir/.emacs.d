@@ -181,6 +181,9 @@
 (use-package company
   :diminish company-mode
   :defer 1
+  :bind (:map
+         company-active-map
+         ("C-w" . evil-delete-backward-word))
   :init
   (setq company-idle-delay 0.2
         company-tooltip-align-annotations t
