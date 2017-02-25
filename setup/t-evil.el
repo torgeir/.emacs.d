@@ -97,6 +97,10 @@
   :config
   (global-evil-matchit-mode 1))
 
+(use-package evil-multiedit
+  :config
+  (evil-multiedit-default-keybinds))
+
 (use-package evil-surround
   :after evil
   :config
