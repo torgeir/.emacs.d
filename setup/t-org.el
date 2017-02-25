@@ -422,19 +422,23 @@ Locally redefines org-agenda-files not to export all agenda files."
 
   (defun t/org-meta-return-dwim ()
     (interactive)
-    (t/call-rebinding-org-blank-behaviour 'org-meta-return))
+    (t/call-rebinding-org-blank-behaviour 'org-meta-return)
+    (evil-cp-append 1))
 
   (defun t/org-insert-todo-heading-dwim ()
     (interactive)
-    (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading))
+    (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading)
+    (evil-cp-append 1))
 
   (defun t/org-insert-heading-respent-content-dwim ()
     (interactive)
-    (t/call-rebinding-org-blank-behaviour 'org-insert-heading-respect-content))
+    (t/call-rebinding-org-blank-behaviour 'org-insert-heading-respect-content)
+    (evil-cp-append 1))
 
   (defun t/org-insert-todo-heading-respect-content-dwim ()
     (interactive)
-    (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading-respect-content))
+    (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading-respect-content)
+    (evil-cp-append 1))
 
   (add-hook 'org-mode-hook
             (lambda ()
