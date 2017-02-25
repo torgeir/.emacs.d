@@ -672,6 +672,9 @@
                   "b" 'browse-url
                   "B" 'w3m)
 
+;; wrap text in text modes
+(add-hook 'text-mode-hook 'auto-fill-mode)
+
 ;; from spacemacs
 ;; Highlight and allow to open http link at point in programming buffers
 ;; goto-address-prog-mode only highlights links in strings and comments
