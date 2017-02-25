@@ -422,6 +422,7 @@ Locally redefines org-agenda-files not to export all agenda files."
 
   (defun t/org-meta-return-dwim ()
     (interactive)
+    (evil-end-of-line)
     (t/call-rebinding-org-blank-behaviour 'org-meta-return)
     (evil-cp-append 1))
 
