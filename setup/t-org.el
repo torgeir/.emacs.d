@@ -448,4 +448,19 @@ Locally redefines org-agenda-files not to export all agenda files."
               (bind-key "C-<return>" 't/org-insert-heading-respent-content-dwim org-mode-map)
               (bind-key "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim org-mode-map))))
 
+(defun yas/org-very-safe-expand ()
+  (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
+
+(defun yas/org-setup ()
+  ;; yasnippet (using the new org-cycle hooks)
+  (yas-global-mode 1)
+  (make-variable-buffer-local 'yas-trigger-key)
+  (setq yas-trigger-key [tab])
+  (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+  (define-key yas-keymap [tab] 'yas-next-field))
+
+;; See https://github.com/eschulte/emacs24-starter-kit/issues/80.
+(setq org-src-tab-acts-natively nil)
+
+(add-hook 'org-mode-hook #'yas/org-setup)
 (provide 't-org)
