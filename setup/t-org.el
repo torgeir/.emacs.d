@@ -463,4 +463,32 @@ Locally redefines org-agenda-files not to export all agenda files."
 (setq org-src-tab-acts-natively nil)
 
 (add-hook 'org-mode-hook #'yas/org-setup)
+
+(use-package elfeed
+  :commands (elfeed-search-mode elfeed-show-mode)
+  :init
+  (setq elfeed-db-directory "~/Dropbox/Apps/elfeed/db"
+        shr-use-fonts nil)
+
+  (with-eval-after-load 'evil
+    (progn
+      (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
+      (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)))
+
+  (t/declare-prefix "o" "Other"
+                    "r" 'elfeed))
+
+(use-package elfeed-goodies
+  :after elfeed
+  :config
+  (elfeed-goodies/setup))
+
+;; extracted stuff from feedly https://feedly.com/v3/subscriptions
+;; subscriptions.map(s => `** [[${s.id}][${s.title}]] :${(s.topics ||[]).map(t => t).join(':')}:`).join("\n")
+(use-package elfeed-org
+  :after elfeed
+  :config
+  (elfeed-org)
+  (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org")))
+
 (provide 't-org)
