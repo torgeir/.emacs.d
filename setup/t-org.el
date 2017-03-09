@@ -468,6 +468,7 @@ Locally redefines org-agenda-files not to export all agenda files."
   :commands (elfeed-search-mode elfeed-show-mode)
   :init
   (setq elfeed-db-directory "~/Dropbox/Apps/elfeed/db"
+        elfeed-search-filter "@6-months-ago +unread -old"
         shr-use-fonts nil)
 
   (with-eval-after-load 'evil
