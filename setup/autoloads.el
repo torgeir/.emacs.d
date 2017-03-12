@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22677 46978 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22724 65399 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -576,7 +576,7 @@ Insert contents of frontmost url of chrome in buffer.
 
 ;;;***
 
-;;;### (autoloads nil "t-macros" "t-macros.el" (22659 41614 0 0))
+;;;### (autoloads nil "t-macros" "t-macros.el" (22684 36450 0 0))
 ;;; Generated autoloads from t-macros.el
 
 (autoload 't/idle-timer "t-macros" "\
@@ -591,7 +591,7 @@ Reloadable variant of run-with-idle-timer.
 ;;;;;;  "t-langs.el" "t-load-theme.el" "t-mac.el" "t-modeline.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
 ;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
-;;;;;;  (22677 46841 0 0))
+;;;;;;  (22724 64193 0 0))
 
 ;;;***
 

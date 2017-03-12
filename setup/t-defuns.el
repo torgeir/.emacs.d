@@ -1002,4 +1002,23 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (interactive)
   (t/fetch (t/grab-chrome-url)))
 
+;;;###autoload
+(defun t/last-weekday-of-month-p ()
+  (let* ((day-of-week (calendar-day-of-week date))
+         (month (calendar-extract-month date))
+         (year (calendar-extract-year date))
+         (last-month-day (calendar-last-day-of-month month year))
+         (month-day (cadr date)))
+
+    (or
+     ;; it's the last day of the month & it is a weekday
+     (and (eq month-day last-month-day)
+          (memq day-of-week '(1 2 3 4 5)))
+
+     ;; it's a friday, and it's the last-but-one or last-but-two day
+     ;; of the month
+     (and (eq day-of-week 5)
+          (or (eq month-day (1- last-month-day))
+              (eq month-day (1- (1- last-month-day))))))))
+
 (provide 't-defuns)

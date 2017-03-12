@@ -328,8 +328,11 @@ Locally redefines org-agenda-files not to export all agenda files."
     (setq weather-metno-location-name "Trondheim, Norway"
           weather-metno-location-latitude lat-trh
           weather-metno-location-longitude lon-trh
-          weather-metno-use-imagemagick t
-          weather-metno-get-image-props '(:width 20 :height 20 :ascent center))))
+          ;; Emacs 25 doesn't play nice with image magick 7?
+          ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=25967
+          ;; weather-metno-use-imagemagick t
+          ;; weather-metno-get-image-props '(:width 20 :height 20 :ascent center)
+          )))
 
 (use-package org-mac-link
   :after org-plus-contrib
