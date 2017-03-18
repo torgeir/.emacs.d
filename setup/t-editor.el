@@ -575,7 +575,7 @@
 
 (t/declare-prefix "o" "Other"
                   "C" 'calc-dispatch
-                  "d" 'dired
+                  "d" 'dired-jump
                   "h" 'hackernews
                   "p" 'list-processes
                   "P" 'proced)
