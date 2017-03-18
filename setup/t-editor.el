@@ -833,6 +833,8 @@
                   "G" 'helm-google-suggest
                   "w" 'helm-wikipedia-suggest)
 
+(use-package try)
+
 (use-package selectric-mode ; lol
   :commands selectric-mode)
 

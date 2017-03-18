@@ -107,4 +107,10 @@
             (bind-key "C-u" 'eshell-kill-input eshell-mode-map)
             (bind-key "C-c C-u" 'universal-argument eshell-mode-map)))
 
+(use-package eshell-z
+  :defer t
+  :init
+  (with-eval-after-load 'eshell
+    (require 'eshell-z)))
+
 (provide 't-shell)

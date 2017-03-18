@@ -22,8 +22,14 @@
 (require 'diminish)
 (require 'bind-key)
 
+(use-package evil-use-package
+  :ensure nil
+  :load-path "site-lisp/evil-use-package/")
+
 (use-package paradox
   :commands (paradox-list-packages paradox-upgrade-packages)
+  :evil-state ((paradox-menu-mode . emacs)
+               (paradox-commit-list-mode . emacs))
   :init
   (setq paradox-github-token t
         paradox-execute-asynchronously t))
