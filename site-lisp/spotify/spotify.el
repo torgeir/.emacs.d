@@ -15,10 +15,11 @@
 (defun helm-spotify-search ()
   (mapcar (lambda (track)
             (cons (format-track-for-display track) track))
-          (cdr (assoc 'tracks spotify-results))))
+          (let ((tracks (assoc 'tracks spotify-results)))
+            (cdr (assoc 'items tracks)))))
 
 (defun helm-spotify-play-track (track)
-  (spotify-play-track (cdr (assoc 'href track))))
+  (spotify-play-track (cdr (assoc 'uri track))))
 
 (defvar helm-source-spotify
   '((name . "Spotify")
@@ -35,7 +36,7 @@
       (defun spotify-search (track)
         (with-current-buffer
             (url-retrieve-synchronously
-             (format "http://ws.spotify.com/search/1/track.json?q=%s" track))
+             (format "https://api.spotify.com/v1/search?type=track&q=%s" track))
           (goto-char (point-min))
           (re-search-forward "^$")
           (delete-region (+ 1 (point)) (point-min))
