@@ -1029,4 +1029,25 @@ If FILEXT is provided, return files with extension FILEXT instead."
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
+;;;###autoload
+(defun t/font-lock-test-faces ()
+  "Outputs test strings with all font lock faces to show colors."
+  (dolist (face `(font-lock-warning-face
+                  font-lock-function-name-face
+                  font-lock-variable-name-face
+                  font-lock-keyword-face
+                  font-lock-comment-face
+                  font-lock-comment-delimiter-face
+                  font-lock-type-face
+                  font-lock-constant-face
+                  font-lock-builtin-face
+                  font-lock-preprocessor-face
+                  font-lock-string-face
+                  font-lock-doc-face
+                  font-lock-negation-char-face))
+    (end-of-buffer)
+    (let ((current-string (concat "\n" (symbol-name face))))
+                                        ; (put-text-property 0 (length current-string) 'face face current-string)
+      (insert (propertize current-string 'face face)))))
+
 (provide 't-defuns)

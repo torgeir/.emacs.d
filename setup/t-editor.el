@@ -17,10 +17,11 @@
   :config (subword-mode))
 
 (use-package tramp
-  :defer 2
+  :defer t
   :ensure nil
   :config
-  (setq tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
+  (setq tramp-default-method "ssh"
+        tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
 
 (use-package hideshow
   :defer 2
@@ -41,6 +42,7 @@
         dired-use-ls-dired nil
         dired-dwim-target t)
   :config
+  (bind-key "e" 't/eshell dired-mode-map)
   (bind-key "TAB" 'dired-details-toggle dired-mode-map)
   (bind-key "C-c C-e" 'dired-toggle-read-only)
   (bind-key "C-x C-j" 'dired-jump)
