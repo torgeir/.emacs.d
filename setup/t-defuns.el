@@ -1021,4 +1021,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
           (or (eq month-day (1- last-month-day))
               (eq month-day (1- (1- last-month-day))))))))
 
+;;;###autoload
+(defun t/face-at-point (pos)
+  "Echo the face at point."
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+
 (provide 't-defuns)
