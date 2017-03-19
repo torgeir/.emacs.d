@@ -75,7 +75,7 @@
   :pin melpa-stable
   :commands (cider cider-connect cider-jack-in)
   :init
-  (setq cider-boot-parameters "cider repl -s wait"
+  (setq cider-boot-parameters "add-middleware repl -s wait"
         cider-repl-pop-to-buffer-on-connect nil
         cider-overlays-use-font-lock t
         nrepl-hide-special-buffers t
