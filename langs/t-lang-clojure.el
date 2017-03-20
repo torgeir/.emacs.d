@@ -100,6 +100,7 @@
   (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'cider-repl-mode-hook 'paredit-mode)
   (add-hook 'cider--debug-mode-hook (lambda () (interactive) (evil-local-mode 0)))
+  (add-hook 'cider-popup-buffer-mode-hook 'visual-line-mode)
 
   ;; company
   (add-hook 'cider-repl-mode-hook #'company-mode)
