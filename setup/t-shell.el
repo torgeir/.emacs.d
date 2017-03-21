@@ -74,6 +74,7 @@
   (eshell/alias "emacs" "find-file $1")
   (eshell/alias "e" "find-file $1")
   (eshell/alias "esudo" "find-file /sudo::/$1")
+  (eshell/alias "sudo" "*sudo $*")
   (eshell/alias "d" "dired $1")
   (eshell/alias "j" "z")
   (eshell/alias "md" "mkdir $1; cd $1")
