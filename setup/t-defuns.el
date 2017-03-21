@@ -1050,4 +1050,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
                                         ; (put-text-property 0 (length current-string) 'face face current-string)
       (insert (propertize current-string 'face face)))))
 
+;;;###autoload
+(defun t/find-file-check-make-large-file-read-only-hook ()
+  "If a file is over a given size, make the buffer read only."
+  (when (> (buffer-size) (* 1024 1024))
+    (setq buffer-read-only t)
+    (buffer-disable-undo)
+    (fundamental-mode)))
+
 (provide 't-defuns)

@@ -840,6 +840,8 @@
 (use-package selectric-mode ; lol
   :commands selectric-mode)
 
+(add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)
+
 (progn
   ;; inline evaled results when in elisp using cider
   (autoload 'cider--make-result-overlay "cider-overlays")
