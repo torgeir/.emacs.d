@@ -1074,4 +1074,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
            (shell-quote-argument (buffer-file-name))))
   (t/osascript-activate "IntelliJ IDEA"))
 
+;;;###autoload
+(defun t/propertize-read-only (str)
+  (propertize str
+              'read-only t
+              'front-sticky 'read-only
+              'rear-nonsticky 'read-only))
+
 (provide 't-defuns)

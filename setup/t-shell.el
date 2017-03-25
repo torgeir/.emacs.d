@@ -66,19 +66,29 @@
         eshell-error-if-no-glob t
         eshell-visual-commands '("less" "tmux" "top" "bash" "vim")
         eshell-visual-subcommands '(("git" "log" "df" "diff" "show"))
-        eshell-term-name "eterm-color")  ; announce terminal
+        eshell-term-name "eterm-color") ; announce terminal
   (require 'em-alias)
   (eshell/alias "gs" "magit-status")
   (eshell/alias "gd" "magit-diff-unstaged")
   (eshell/alias "gds" "magit-diff-staged")
   (eshell/alias "emacs" "find-file $1")
   (eshell/alias "e" "find-file $1")
+  (eshell/alias "grep" "grep --color=always $*")
   (eshell/alias "esudo" "find-file /sudo::/$1")
   (eshell/alias "sudo" "*sudo $*")
   (eshell/alias "d" "dired $1")
   (eshell/alias "j" "z")
   (eshell/alias "md" "mkdir $1; cd $1")
-  (eshell/alias "l" "ls -la"))
+  (eshell/alias "l" "ls -la")
+  (eshell/alias "ip" "dig +short myip.opendns.com @resolver1.opendns.com")
+  (eshell/alias "cleanupdsstore" "find . -name '*.DS_Store' -type f -ls -delete")
+  (eshell/alias "emptytrash" "sudo rm -rfv /Volumes/*/.Trashes; rm -rfv ~/.Trash")
+  (eshell/alias "hidedesktop" "defaults write com.apple.finder CreateDesktop -bool false && killall Finder")
+  (eshell/alias "showdesktop" "defaults write com.apple.finder CreateDesktop -bool true && killall Finder")
+  (eshell/alias "hidehidden" "defaults write com.apple.finder AppleShowAllFiles -boolean false && killall Finder")
+  (eshell/alias "showhidden" "defaults write com.apple.finder AppleShowAllFiles -boolean true && killall Finder")
+  (eshell/alias "flushyosemitedns" "sudo discoveryutil mdnsflushcache;sudo discoveryutil udnsflushcaches")
+  (eshell/alias "lout" "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend"))
 
 (defun eshell/gst (&rest args)
   (magit-status (pop args) nil))
@@ -90,10 +100,7 @@
 
 (defun t/eshell-buffer-id ()
   "Next eshell buffer id."
-  (s-replace-all '(("*eshell*" . "")
-                   ("<" . "")
-                   (">" . ""))
-                 (generate-new-buffer-name "*eshell*")))
+  (concat "*eshell: " (t/eshell-path-of-current-dir) "*"))
 
 (defun t/eshell-path-of-current-dir ()
   (file-name-directory (or (buffer-file-name) default-directory)))
@@ -105,13 +112,10 @@
         (hasfile (not (eq (buffer-file-name) nil))))
     (eshell (t/eshell-buffer-id))
     (when (and hasfile (eq eshell-process-list nil))
-      (t/eshell-buffer-init path))))
-
-(defun t/eshell-buffer-init (path)
-  (eshell/cd path)
-  (insert (propertize "ls" 'face 'font-lock-comment-face))
-  (eshell-send-input)
-  (setenv "PAGER" "cat"))
+      (goto-char (point-max))
+      (insert (propertize "ls" 'face 'font-lock-comment-face))
+      (eshell-send-input)
+      (setenv "PAGER" "cat"))))
 
 (defun t/eshell-clear ()
   "Clear the eshell buffer."
@@ -131,6 +135,7 @@
       (eshell-life-is-too-much)
     (delete-forward-char 1)))
 
+(add-hook 'eshell-directory-change-hook (lambda () (rename-buffer (t/eshell-buffer-id) t)))
 (add-hook 'eshell-mode-hook
           (lambda ()
             (paredit-mode 1)
@@ -215,14 +220,14 @@ PWD is not in a git repo (or the git command is not found)."
           (let* ((directory (split-directory-prompt (pwd-shorten-dirs (pwd-replace-home (eshell/pwd)))))
                  (parent (car directory))
                  (name (cadr directory))
-                 (branch (or (curr-dir-git-branch-string (eshell/pwd)) "")))
+                 (branch (or (curr-dir-git-branch-string (eshell/pwd)) ""))
 
-            (concat
-             (propertize parent 'face `font-lock-builtin-face)
-             (propertize name 'face `font-lock-constant-face)
-             (propertize branch 'face `font-lock-string-face)
-             (propertize " $" 'face `font-lock-comment-face)
-             (propertize " " 'face `font-lock-preprocessor-face))))))
-
+                 (prompt (concat
+                          (propertize parent 'face 'font-lock-builtin-face)
+                          (propertize name 'face 'font-lock-constant-face)
+                          (propertize branch 'face 'font-lock-string-face)
+                          (propertize " $" 'face (if (zerop eshell-last-command-status) 'font-lock-comment-face 'error))
+                          (propertize " " 'face 'font-lock-preprocessor-face))))
+            (t/propertize-read-only prompt)))))
 
 (provide 't-shell)
