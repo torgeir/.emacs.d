@@ -1058,4 +1058,20 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (buffer-disable-undo)
     (fundamental-mode)))
 
+;;;###autoload
+(defun t/osascript-activate (app)
+  "Run applescript to activate application."
+  (shell-command (format "osascript -e 'tell application \"%s\" to activate'" app)))
+
+;;;###autoload
+(defun t/open-in-intellij ()
+  "Opens current file in IntelliJ IDEA."
+  (interactive)
+  (shell-command
+   (format "/Applications/IntelliJ\\ IDEA.app/Contents/MacOS/idea %s --line %d %s"
+           (t/project-root)
+           (line-number-at-pos)
+           (shell-quote-argument (buffer-file-name))))
+  (t/osascript-activate "IntelliJ IDEA"))
+
 (provide 't-defuns)

@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22733 6717 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22736 58755 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -584,10 +584,25 @@ Echo the face at point.
 
 \(fn POS)" t nil)
 
-(autoload 't/all-faces-text "t-defuns" "\
+(autoload 't/font-lock-test-faces "t-defuns" "\
 Outputs test strings with all font lock faces to show colors.
 
 \(fn)" nil nil)
+
+(autoload 't/find-file-check-make-large-file-read-only-hook "t-defuns" "\
+If a file is over a given size, make the buffer read only.
+
+\(fn)" nil nil)
+
+(autoload 't/osascript-activate "t-defuns" "\
+Run applescript to activate application.
+
+\(fn APP)" nil nil)
+
+(autoload 't/open-in-intellij "t-defuns" "\
+Opens current file in IntelliJ IDEA.
+
+\(fn)" t nil)
 
 ;;;***
 
@@ -606,7 +621,7 @@ Reloadable variant of run-with-idle-timer.
 ;;;;;;  "t-langs.el" "t-load-theme.el" "t-mac.el" "t-modeline.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
 ;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
-;;;;;;  (22733 5597 0 0))
+;;;;;;  (22740 12783 0 0))
 
 ;;;***
 

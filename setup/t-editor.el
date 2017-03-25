@@ -686,6 +686,7 @@
 
 
 (t/declare-prefix "o" "Other"
+                  "i" 't/open-in-intellij
                   "e" 't/eshell
                   "t" 't/shell)
 
