@@ -33,6 +33,7 @@
     (setq-local var val))
 
   (setq org-startup-indented t ; turn on org-indent-mode
+        org-agenda-restore-windows-after-quit t
         org-return-follows-link t
         org-tab-follows-link nil
         org-hide-leading-stars t
