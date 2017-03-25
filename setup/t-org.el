@@ -286,16 +286,28 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         (call-interactively 'org-agenda-list))))
 
   (progn
+
+    (defvar t-org-file-save-since-last-idle nil)
+
+    (defun t/org-mode-before-save-since-last-idle ()
+      "Hook to remember if org files are saved since last idle timer."
+      (when (eq major-mode 'org-mode)
+        (setq t-org-file-save-since-last-idle t)))
+
+    (add-hook 'before-save-hook #'t/org-mode-before-save-since-last-idle)
+
     (defun t/org-idle-timer ()
       "Timer to run when idle for syncing org."
       (interactive)
-      (message "Syncing agenda...")
-      (org-save-all-org-buffers)
-      (t/org-export-calendars)
-      (org-mobile-pull)
-      (org-mobile-push)
-      (t/jump-to-org-agenda)
-      (message "Syncing agenda... done"))
+      (when t-org-file-save-since-last-idle
+        (message "Syncing agenda...")
+        (org-save-all-org-buffers)
+        (t/org-export-calendars)
+        (org-mobile-pull)
+        (org-mobile-push)
+        (setq t-org-file-save-since-last-idle nil)
+        (message "Syncing agenda... done"))
+      (t/jump-to-org-agenda))
 
     (defun t/org-export-calendars ()
       "Export given set of calendars to ical files, so you can subscribe to their dropbox links in ical.
