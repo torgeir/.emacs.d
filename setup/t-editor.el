@@ -238,6 +238,8 @@
   (add-to-list 'company-backends 'company-tern)
   (setq tern-command (append tern-command '("--no-port-file"))))
 
+(use-package helm-unicode)
+
 (use-package company-emoji
   :after company
   :config
