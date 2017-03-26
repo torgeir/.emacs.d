@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22736 58755 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22743 55948 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -604,9 +604,24 @@ Opens current file in IntelliJ IDEA.
 
 \(fn)" t nil)
 
+(autoload 't/propertize-read-only "t-defuns" "\
+
+
+\(fn STR)" nil nil)
+
+(autoload 't/strip-text-properties "t-defuns" "\
+
+
+\(fn TXT)" nil nil)
+
+(autoload 't/mobile-inbox-count "t-defuns" "\
+Counts the number of items in `org-mobile-inbox-for-pull'.
+
+\(fn)" nil nil)
+
 ;;;***
 
-;;;### (autoloads nil "t-macros" "t-macros.el" (22684 36450 0 0))
+;;;### (autoloads nil "t-macros" "t-macros.el" (22734 41384 0 0))
 ;;; Generated autoloads from t-macros.el
 
 (autoload 't/idle-timer "t-macros" "\
@@ -621,7 +636,7 @@ Reloadable variant of run-with-idle-timer.
 ;;;;;;  "t-langs.el" "t-load-theme.el" "t-mac.el" "t-modeline.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
 ;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
-;;;;;;  (22740 12783 0 0))
+;;;;;;  (22743 56935 0 0))
 
 ;;;***
 

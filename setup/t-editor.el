@@ -245,6 +245,36 @@
   :config
   (add-to-list 'company-backends 'company-emoji))
 
+(use-package emoji-cheat-sheet-plus
+  :commands (emoji-cheat-sheet-plus-insert)
+  :init
+  (global-set-key (kbd "C-c C-e") 'emoji-cheat-sheet-plus-insert)
+  :config
+  ;; make `emoji-cheat-sheet-plus'this insert unicodes 🎉
+  (defvar t-emoji-cheat-sheet-plus-use-unicode t)
+
+  (defun t/emoji-cheat-shet-plus--unicode-for-emoji-text (text)
+    (let* ((emojis (company-emoji-list-create))
+           (ret (-first
+                 (lambda (emoji)
+                   (let ((emoji-text (t/strip-text-properties emoji)))
+                     (equal emoji-text text)))
+                 emojis)))
+      (when ret
+        (get-text-property 0 :unicode ret))))
+
+  (defun emoji-cheat-sheet-plus--insert-selection (_)
+    "Override to insert the selected emojis into the buffer."
+    (let ((emojis (company-emoji-list-create)))
+      (dolist (c (helm-marked-candidates))
+        (save-match-data
+          (string-match "\:.+?\:" c)
+          (let ((emoji (match-string 0 c)))
+            (insert
+             (if emoji-cheat-sheet-plus-use-unicode
+                 (t/emoji-cheat-shet-plus--unicode-for-emoji-text emoji)
+               emoji))))))))
+
 (use-package paredit
   :diminish paredit-mode
   :commands (enable-paredit-mode evil-cleverparens-mode)
@@ -635,7 +665,7 @@
   :commands (projectile-mode helm-projectile projectile-project-root)
   :init
   (setq projectile-mode-line '(:eval (format "[%s]" (projectile-project-name)))
-        ;projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
+                                        ;projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
         projectile-require-project-root nil
         shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
         projectile-completion-system 'helm)
@@ -652,7 +682,7 @@
   (add-to-list 'grep-find-ignored-files "**.bundle.js")
   (add-to-list 'grep-find-ignored-files "**.build.js")
   (add-to-list 'grep-find-ignored-files ".DS_Store")
-  ;(projectile-global-mode)
+                                        ;(projectile-global-mode)
   (t/declare-prefix "p" "Project"
                     "b" 'helm-browse-project
                     "c" 'projectile-switch-project

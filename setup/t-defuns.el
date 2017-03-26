@@ -1082,6 +1082,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
               'rear-nonsticky 'read-only))
 
 ;;;###autoload
+(defun t/strip-text-properties (txt)
+  (with-temp-buffer
+    (insert txt)
+    (buffer-substring-no-properties (point-min) (point-max))))
+
+;;;###autoload
 (defun t/mobile-inbox-count ()
   "Counts the number of items in `org-mobile-inbox-for-pull'."
   (let ((inbox-file org-mobile-inbox-for-pull))
