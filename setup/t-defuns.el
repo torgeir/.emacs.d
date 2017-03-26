@@ -1081,4 +1081,14 @@ If FILEXT is provided, return files with extension FILEXT instead."
               'front-sticky 'read-only
               'rear-nonsticky 'read-only))
 
+;;;###autoload
+(defun t/mobile-inbox-count ()
+  "Counts the number of items in `org-mobile-inbox-for-pull'."
+  (let ((inbox-file org-mobile-inbox-for-pull))
+    (when (file-exists-p inbox-file)
+      (with-temp-buffer
+        (insert-file-contents inbox-file)
+        (let ((matches (count-matches "^\*+ " (point-min) (point-max))))
+          (when (> matches 0) matches))))))
+
 (provide 't-defuns)

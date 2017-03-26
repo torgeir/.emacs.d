@@ -409,6 +409,14 @@ lines are selected, or the NxM dimensions of a block selection."
          (let ((size (image-size (image-get-display-property) :pixels)))
            (format "  %dx%d  " (car size) (cdr size))))))
 
+(defun *org-inbox-count ()
+  (cond ((eq major-mode 'org-mode)
+         (when-let ((c (t/mobile-inbox-count)))
+           (propertize
+            (format "  📫 %d  " c)
+            'face
+            'error)))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun doom-modeline (&optional id)
@@ -440,7 +448,8 @@ lines are selected, or the NxM dimensions of a block selection."
                                      )))))
            (rhs ,(if id
                      '(list (*major-mode))
-                   '(list (*buffer-encoding)
+                   '(list (*org-inbox-count)
+                          (*buffer-encoding)
                           (*vc)
                           (*major-mode)
                           " "
@@ -490,7 +499,7 @@ Examples:
     `(progn ,@forms)))
 
 (add-hook! image-mode
-           (setq mode-line-format (doom-modeline 'media)))
+  (setq mode-line-format (doom-modeline 'media)))
 
 
 ;;
