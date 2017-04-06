@@ -154,6 +154,7 @@
       "md" "mkdir $1; cd $1"
       "showdesktop" "defaults write com.apple.finder CreateDesktop -bool true && killall Finder"
       "showhidden" "defaults write com.apple.finder AppleShowAllFiles -boolean true && killall Finder"
+      "serve" "python -m SimpleHTTPServer"
       "sudo" "*sudo $*"))
 
     (defun t/eshell-clear ()
@@ -217,14 +218,14 @@ PWD is not in a git repo (or the git command is not found)."
         (if (> (length p-lst) 2)
             (concat
              (mapconcat (lambda (elm) (if (zerop (length elm)) ""
-                                        (substring elm 0 1)))
+                                   (substring elm 0 1)))
                         (butlast p-lst 2)
                         "/")
              "/"
              (mapconcat (lambda (elm) elm)
                         (last p-lst 2)
                         "/"))
-          pwd)))  ;; Otherwise, we just return the PWD
+          pwd))) ;; Otherwise, we just return the PWD
 
     (defun split-directory-prompt (directory)
       (if (string-match-p ".*/.*" directory)
