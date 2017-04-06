@@ -72,6 +72,7 @@
     (eshell/alias "j" "z")
     (eshell/alias "md" "mkdir $1; cd $1")
     (eshell/alias "l" "ls -la")
+    (eshell/alias "serve" "python -m SimpleHTTPServer")
     (eshell/alias "ip" "dig +short myip.opendns.com @resolver1.opendns.com")
     (eshell/alias "cleanupdsstore" "find . -name '*.DS_Store' -type f -ls -delete")
     (eshell/alias "emptytrash" "sudo rm -rfv /Volumes/*/.Trashes; rm -rfv ~/.Trash")
