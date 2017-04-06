@@ -125,7 +125,7 @@
         org-agenda-custom-commands `(("w" . "Work")
                                      ("wh" "home" ,(t/org-day-summary "+home") ((org-agenda-remove-tags t)))
                                      ("ww" "bekk" ,(t/org-day-summary "+bekk") ((org-agenda-remove-tags t)))
-                                     ("wd" "datainn" ,(t/org-day-summary "+bekk|+datainn") ((org-agenda-remove-tags t)))
+                                     ("wd" "datainn" ,(t/org-day-summary "+datainn") ((org-agenda-remove-tags t)))
 
                                      ("t" . "Todos")
                                      ("ta" alltodo)
