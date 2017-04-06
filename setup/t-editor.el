@@ -626,7 +626,8 @@
                     "h" 'helm-hunks
                     "H" 'helm-hunks-current-buffer
                     "SS" 'helm-hunks-staged
-                    "SH" 'helm-hunks-staged-current-buffer))
+                    "SH" 'helm-hunks-staged-current-buffer)
+  (setq helm-hunks-preview-diffs t))
 
 (use-package spotify
   :ensure nil
