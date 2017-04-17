@@ -1,15 +1,23 @@
 ## .emacs.d
 
 ```
-cd && git clone https://github.com/torgeir/.emacs.d
+cd && git clone git@github.com:torgeir/.emacs.d.git
+ln -s ~/.emacs.d/.emacs
 ```
 
-### installing
+for spacemacs, add
+
+```
+cd && git clone https://github.com/syl20bnr/spacemacs
+ln -s ~/.emacs.d/.spacemacs
+```
+
+### installing emacs
 
 ### os x
 
 ```
-brew install emacs --with-cocoa --with-ctags --with-gnutls --with-imagemagick --with-librsvg
+brew install emacs --with-cocoa --wi th-ctags --with-gnutls --with-imagemagick@6 --with-librsvg
 ```
 
 ### ubuntu
@@ -26,11 +34,11 @@ Install from cygwin or https://ftp.gnu.org/gnu/emacs/windows/. Win gnu emacs see
 
 ### emacsclient - terminal and gui
 
-In a folder on your `PATH`:
+In a folder on your `PATH`, e.g. `~/bin`:
 
 ```
-ln -s emacsclient e
-ln -s emacsclient-terminal em
+ln -s ~/.emacs.d/emacsclient ~/bin/e
+ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
 ```
 
 ### deps
@@ -39,7 +47,7 @@ these need to exist on `PATH`:
 
 - git
 - w3m
-- eslint babel-eslint jsonlint eslint-plugin-react tern
+- eslint babel-eslint jsonlint eslint-plugin-react tern flow
 - browser-sync
 
 install `~/.emacs.d/Symbola.ttf` on the system

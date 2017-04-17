@@ -1,7 +1,8 @@
-(use-package json-mode
+(t/use-package json-mode
+  :only-standalone t
   :mode "\\(json\\|jshintrc\\|eslintrc\\)$")
 
-(use-package json-reformat
+(t/use-package json-reformat
   :commands json-reformat)
 
 (provide 't-lang-json)

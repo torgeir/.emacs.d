@@ -1,4 +1,4 @@
-(use-package gitconfig-mode
+(t/use-package gitconfig-mode
   :commands gitconfig-mode
   :mode "\\gitconfig$")
 

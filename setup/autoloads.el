@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22736 58755 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22780 40407 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -386,6 +386,11 @@ Toggles between themes `spacemacs-dark' and `spacemacs-light'
 
 \(fn)" t nil)
 
+(autoload 't/fix-fira-ligatures "t-defuns" "\
+
+
+\(fn)" nil nil)
+
 (autoload 't/decrease-font-size "t-defuns" "\
 
 
@@ -604,24 +609,60 @@ Opens current file in IntelliJ IDEA.
 
 \(fn)" t nil)
 
+(autoload 't/propertize-read-only "t-defuns" "\
+
+
+\(fn STR)" nil nil)
+
+(autoload 't/get-string-from-file "t-defuns" "\
+Return `file-path's file content.
+
+\(fn FILE-PATH)" nil nil)
+
+(autoload 't/re-seq "t-defuns" "\
+Get a list of all regexp matches (from the first group) in a string
+
+\(fn REGEXP STRING)" nil nil)
+
+(autoload 't/re-seq-in-file "t-defuns" "\
+
+
+\(fn REGEX FILE)" nil nil)
+
+(autoload 't/fn-prefix "t-defuns" "\
+
+
+\(fn PREFIX MODULE)" nil nil)
+
+(autoload 't/call-fns "t-defuns" "\
+
+
+\(fn FNS)" nil nil)
+
+(autoload 't/call-prefix "t-defuns" "\
+
+
+\(fn PREFIX MODULE)" nil nil)
+
+(autoload 't/call-init "t-defuns" "\
+
+
+\(fn PREFIX-FMT PKG)" nil nil)
+
 ;;;***
 
-;;;### (autoloads nil "t-macros" "t-macros.el" (22684 36450 0 0))
-;;; Generated autoloads from t-macros.el
-
-(autoload 't/idle-timer "t-macros" "\
-Reloadable variant of run-with-idle-timer.
-
-\(fn NAME FN EVERY-MINUTE)" nil t)
-
-;;;***
-
-;;;### (autoloads nil nil ("t-autoloads.el" "t-bootstrap.el" "t-custom.el"
-;;;;;;  "t-cygwin.el" "t-debug.el" "t-editor.el" "t-evil.el" "t-keys.el"
-;;;;;;  "t-langs.el" "t-load-theme.el" "t-mac.el" "t-modeline.el"
+;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
+;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-lang-arduino.el"
+;;;;;;  "t-lang-clojure.el" "t-lang-css.el" "t-lang-docker.el" "t-lang-elisp.el"
+;;;;;;  "t-lang-elm.el" "t-lang-flow.el" "t-lang-flycheck.el" "t-lang-fsharp.el"
+;;;;;;  "t-lang-gitconfig.el" "t-lang-gitignore.el" "t-lang-haskell.el"
+;;;;;;  "t-lang-html.el" "t-lang-js.el" "t-lang-json.el" "t-lang-markdown.el"
+;;;;;;  "t-lang-pug.el" "t-lang-remark.el" "t-lang-scala.el" "t-lang-sh.el"
+;;;;;;  "t-lang-web.el" "t-lang-yaml.el" "t-langs.el" "t-load-theme.el"
+;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
 ;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
-;;;;;;  (22740 12783 0 0))
+;;;;;;  (22780 50874 0 0))
 
 ;;;***
 

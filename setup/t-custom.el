@@ -1,5 +1,5 @@
 ;; custom-settings in separate file
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(setq custom-file (t/user-emacs-file "custom.el"))
 (load custom-file)
 
 (provide 't-custom)
