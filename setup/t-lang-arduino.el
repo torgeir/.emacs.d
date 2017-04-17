@@ -1,4 +1,4 @@
-(use-package arduino-mode
+(t/use-package arduino-mode
   :mode "\\.ino$"
   :commands arduino-mode)
 

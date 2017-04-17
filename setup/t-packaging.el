@@ -22,11 +22,9 @@
 (require 'diminish)
 (require 'bind-key)
 
-(use-package evil-use-package
-  :ensure nil
-  :load-path "site-lisp/evil-use-package/")
+(require 't-local)
 
-(use-package paradox
+(t/use-package paradox
   :commands (paradox-list-packages paradox-upgrade-packages)
   :evil-state ((paradox-menu-mode . emacs)
                (paradox-commit-list-mode . emacs))

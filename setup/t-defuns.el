@@ -3,9 +3,8 @@
   (interactive)
   (let ((yas-fallback-behavior 'return-nil))
     (unless (yas-expand)
-      (simplezen-expand-or-indent-for-tab)
-      (if (looking-back "^\s*")
-          (back-to-indentation)))))
+      (when (fboundp 'simplezen-expand-or-indent-for-tab) (simplezen-expand-or-indent-for-tab))
+      (when (looking-back "^\s*") (back-to-indentation)))))
 
 ;;;###autoload
 (defun t/send-buffer-to-scala-repl ()
@@ -270,7 +269,7 @@ region-end is used."
         (message "File '%s' successfully removed" filename)))))
 
 ;;;###autoload
-(defun t/paredit-wrap-round-from-behind (ignore)
+(defun t/paredit-wrap-round-from-behind ()
   (interactive)
   (forward-sexp -1)
   (paredit-wrap-round)
@@ -295,7 +294,7 @@ region-end is used."
 Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (t/untabify-buffer)
-  (ethan-wspace-clean-all)
+  (when (fboundp 'ethan-wspace-clean-all) (ethan-wspace-clean-all))
   (t/indent-buffer))
 
 ;;;###autoload
@@ -621,6 +620,38 @@ Including indent-buffer, which should not be called automatically on save."
     (setq t/default-font (concat (if is-mac "Fira Code Retina-" "Inconsolata-")
                                  (number-to-string *t-adjusted-font-size*)))
     (set-face-attribute 'default nil :font t/default-font)))
+
+;;;###autoload
+(defun t/fix-fira-ligatures ()
+  (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
+                 (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
+                 (36 . ".\\(?:>\\)")
+                 (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
+                 (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
+                 (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
+                 (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
+                 (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
+                 (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
+                 (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
+                 (48 . ".\\(?:x[a-zA-Z]\\)")
+                 (58 . ".\\(?:::\\|[:=]\\)")
+                 (59 . ".\\(?:;;\\|;\\)")
+                 (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
+                 (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
+                 (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
+                 (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
+                 (91 . ".\\(?:]\\)")
+                 (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
+                 (94 . ".\\(?:=\\)")
+                 (119 . ".\\(?:ww\\)")
+                 (123 . ".\\(?:-\\)")
+                 (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
+                 (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
+                 )
+               ))
+    (dolist (char-regexp alist)
+      (set-char-table-range composition-function-table (car char-regexp)
+                            `([,(cdr char-regexp) 0 font-shape-gstring])))))
 
 ;;;###autoload
 (defun t/decrease-font-size ()
@@ -1096,5 +1127,51 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (insert-file-contents inbox-file)
         (let ((matches (count-matches "^\*+ " (point-min) (point-max))))
           (when (> matches 0) matches))))))
+
+;;;###autoload
+(defun t/get-string-from-file (file-path)
+  "Return `file-path's file content."
+  (with-temp-buffer
+    (insert-file-contents file-path)
+    (buffer-string)))
+
+;;;###autoload
+(defun t/re-seq (regexp string)
+  "Get a list of all regexp matches (from the first group) in a string"
+  (save-match-data
+    (let ((pos 0)
+          matches)
+      (while (string-match regexp string pos)
+        (push (match-string 1 string) matches)
+        (setq pos (match-end 0)))
+      matches)))
+
+;;;###autoload
+(defun t/re-seq-in-file (regex file)
+  (t/re-seq regex (t/get-string-from-file (t/user-emacs-file file))))
+
+;;;###autoload
+(defun t/fn-prefix (prefix module)
+  (let ((module (if (stringp module) module (symbol-name module))))
+    (mapcar
+     (lambda (fn-name)
+       (intern fn-name))
+     (t/re-seq-in-file (concat "defun " "\\(" prefix "\\)" "[ \\)]")
+                       (concat "setup/" module ".el")))))
+
+;;;###autoload
+(defun t/call-fns (fns)
+  (mapcar 'funcall fns))
+
+;;;###autoload
+(defun t/call-prefix (prefix module)
+  (t/call-fns (t/fn-prefix prefix (symbol-name module))))
+
+;;;###autoload
+(defun t/call-init (prefix-fmt pkg)
+  (let ((fn (intern (format prefix-fmt pkg))))
+    (when (fboundp fn)
+      (message "t/call-init: %s" fn)
+      (funcall fn))))
 
 (provide 't-defuns)

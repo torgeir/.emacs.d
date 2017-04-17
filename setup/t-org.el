@@ -1,29 +1,15 @@
 (defconst lat-trh 63.427)
 (defconst lon-trh 10.391)
 
-(use-package org
-  :ensure org-plus-contrib
-  :commands (org-mode)
-  :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
-  :bind (:map
-         org-mode-map
-         ("s-s" . org-save-all-org-buffers)
-         ("C-x C-s" . org-save-all-org-buffers)
-         ("C-c C-k" . org-edit-src-abort)
-         ("M-p" . outline-previous-visible-heading)
-         ("M-n" . outline-next-visible-heading)
-         ;;("C-c C-c" . org-edit-src-exit)
-         :map
-         smartparens-mode-map
-         ("M-S-<right>" . nil)
-         ("M-S-<left>" . nil))
-  :init
-  (defconst t-user-dropbox-folder (if is-mac "~/Dropbox"
+(defun t-org/funcs ()
+  (defconst t-user-dropbox-folder (if is-mac
+                                      (t/user-file "/Dropbox")
                                     "c:/Users/torgth/Dropbox \(Personlig\)"))
 
   (defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
-  (defun t/org-directory (path) (concat org-directory "/" path))
+  (defun t/org-directory (path) (concat org-directory "/" path)))
 
+(defun t-org/vars ()
   (setq org-directory (t/user-dropbox-folder "org"))
   (setq org-mobile-directory (t/user-dropbox-folder "Apps/MobileOrg")
         org-mobile-inbox-for-pull (t/org-directory "inbox.org"))
@@ -32,7 +18,7 @@
     "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
     (setq-local var val))
 
-  (setq org-startup-indented t ; turn on org-indent-mode
+  (setq org-startup-indented t        ; turn on org-indent-mode
         org-agenda-restore-windows-after-quit t
         org-return-follows-link t
         org-tab-follows-link nil
@@ -47,20 +33,21 @@
         org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
         org-refile-targets '((nil :maxlevel . 2)
                              (org-agenda-files :maxlevel . 2))
-        org-tags-column -60 ; tag position after headings
+        org-tags-column -60           ; tag position after headings
         org-export-coding-system 'utf-8
         org-default-notes-file (t/org-directory "tasks.org")
-        org-special-ctrl-k t ; don't clear tags, etc
-        org-adapt-indentation t ; move text to align with heading bullets
+        org-special-ctrl-k t         ; don't clear tags, etc
+        org-adapt-indentation t      ; move text to align with heading bullets
 
+        ;; doom theme
         org-fontify-whole-heading-line t
         org-fontify-done-headline t
         org-fontify-quote-and-verse-blocks t
 
-        org-reverse-note-order t ; newest notes first
-        org-log-done 'time ; log when todos are completed
-        org-log-redeadline 'time ; log when deadline changes
-        org-log-reschedule 'time ; log when schedule changes
+        org-reverse-note-order t      ; newest notes first
+        org-log-done 'time            ; log when todos are completed
+        org-log-redeadline 'time      ; log when deadline changes
+        org-log-reschedule 'time      ; log when schedule changes
         org-use-fast-todo-selection t
         org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)")))
 
@@ -70,81 +57,6 @@
         org-export-babel-evaluate nil ; don't run stuff automatically on export
         org-edit-src-content-indentation 0)
 
-  :config
-  (progn
-    (defun t/org-mode-before-save ()
-      "Hook run before saving org buffers"
-      (when (eq major-mode 'org-mode)
-        (t/org-mode-realign-all-tags)))
-
-    (defun t/org-mode-realign-all-tags ()
-      "Code to realign tags, stolen from org.el"
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward org-outline-regexp-bol nil t)
-          (org-set-tags nil t)
-          (end-of-line))))
-
-    (add-hook 'before-save-hook #'t/org-mode-before-save))
-
-  (defun t/org-todos-by-tag-settings (name)
-    `((org-agenda-remove-tags t)
-      (org-agenda-sorting-strategy '(tag-up priority-down))
-      (org-agenda-todo-keyword-format "")
-      (org-agenda-overriding-header ,(concat "\n" name "\n"))))
-
-  (defun t/org-day-summary (tags)
-    `((tags ,(concat "PRIORITY=\"A\"&" ;; wat lol
-                     (replace-regexp-in-string "|" "|PRIORITY=\"A\"&" tags))
-            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-             (org-agenda-overriding-header "Pri")))
-      (agenda ,tags
-              ((org-agenda-span 'day)
-               (org-agenda-ndays 1)
-               (org-agenda-time-grid nil)))
-      (tags-todo ,tags
-                 ((org-agenda-overriding-header "Unscheduled")
-                  (org-agenda-skip-function
-                   '(or (t/org-skip-subtree-if-priority ?A)
-                        (org-agenda-skip-if nil '(scheduled deadline))))))
-      (tags-todo ,tags
-                 ((org-agenda-overriding-header "Scheduled")
-                  (org-agenda-skip-function
-                   '(or (t/org-skip-subtree-if-priority ?A)
-                        (org-agenda-skip-if nil '(notscheduled deadline))))
-                  (org-show-context-detail 'minimal)
-                  (org-agenda-view-columns-initially t)))))
-
-  (setq org-agenda-include-diary t
-        org-agenda-diary-file (t/org-directory "diary.org")
-        org-agenda-default-appointment-duration nil
-        org-agenda-window-setup 'only-window ; delete other windows when showing agenda
-        org-agenda-files (t/find-org-files-recursively org-directory "org") ; where to look for org files
-        org-agenda-text-search-extra-files (t/find-org-files-recursively "~/Dropbox/org" "org_archive")
-        org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
-        org-agenda-custom-commands `(("w" . "Work")
-                                     ("wh" "home" ,(t/org-day-summary "+home") ((org-agenda-remove-tags t)))
-                                     ("ww" "bekk" ,(t/org-day-summary "+bekk") ((org-agenda-remove-tags t)))
-                                     ("wd" "datainn" ,(t/org-day-summary "+datainn") ((org-agenda-remove-tags t)))
-
-                                     ("t" . "Todos")
-                                     ("ta" alltodo)
-                                     ("tt" todo "TODO" ,(t/org-todos-by-tag-settings "TODO tasks by tag"))
-                                     ("ts" todo "STARTED" ,(t/org-todos-by-tag-settings "STARTED tasks by tag"))
-                                     ("tc" todo "CANCELLED" ,(t/org-todos-by-tag-settings "CANCELLED tasks by tag"))
-                                     ("td" todo "DONE" ,(t/org-todos-by-tag-settings "DONE tasks by tag"))
-
-                                     ("h" . "Home")
-                                     ("hs" tags-todo "serie")
-                                     ("he" tags-todo "emacs")
-                                     ("hb" tags-todo "book")
-                                     ("hv" tags-todo "video")
-
-                                     ("d" "Deadlines" agenda ""
-                                      ((org-agenda-entry-types '(:deadline))
-                                       (org-agenda-ndays 1)
-                                       (org-deadline-warning-days 60)
-                                       (org-agenda-time-grid nil)))))
   (setq org-html-postamble t
         org-html-postamble-format
         '(("en" "<p class=\"author\">%a (%e)</p>\n<p class=\"date\">%T</p>")))
@@ -159,21 +71,50 @@
            entry
            (file+datetree ,(t/org-directory "journal.org"))
            "**** %U %^{Title}\n%?")))
+  )
 
-  (setq org-modules '(org-mouse
-                      ;; TODO error when loading these two
-                      ;;org-eval
-                      ;;org-expiry
-                      ))
-  (org-load-modules-maybe t)
+(t/use-package org
+  :ensure org-plus-contrib
+  :commands (org-mode)
+  :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
+  :bind (:map
+         org-mode-map
+         ("s-s" . org-save-all-org-buffers)
+         ("C-x C-s" . org-save-all-org-buffers)
+         ("C-c C-k" . org-edit-src-abort)
+         ("M-p" . outline-previous-visible-heading)
+         ("M-n" . outline-next-visible-heading)
+         ("C-o" . nil)
+         ;;("C-c C-c" . org-edit-src-exit)
+         :map
+         smartparens-mode-map
+         ("M-S-<right>" . nil)
+         ("M-S-<left>" . nil)))
 
-  (use-package ob-restclient)
+(defun t-org/config ()
 
-  (use-package ox-md :ensure nil)
-  (use-package ob-clojure
-    :ensure nil
-    :config
+  (with-eval-after-load 'org
+
+    (progn
+      ;; fix completion dissapearing
+
+      (with-eval-after-load 'company (add-to-list 'company-backends 'company-capf))
+      (defun add-pcomplete-to-capf () (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+      (add-hook 'org-mode-hook #'add-pcomplete-to-capf))
+
+    (progn
+      ;; modules
+      (setq org-modules '(org-mouse))
+      (org-load-modules-maybe t)))
+
+  (progn
+    ;; misc
+
+    ;;(require 'ox-md)
+    (require 'ob-clojure)
+
     (setq org-babel-clojure-backend 'cider) ; use cider instead of slime (default)
+
     (defconst org-babel-clojure-nrepl-timeout 20)
     (defun org-babel-execute:clojure (body params)
       "Execute a block of Clojure code with Babel."
@@ -193,60 +134,125 @@
           result
           (condition-case nil
               result
-            (error result))))))
+            (error result)))))
 
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (clojure . t)
-     (python . t)
-     (ruby . t)
-     (js . t)
-     (latex . t)
-     (sh . t)
-     (dot . t)
-     (restclient . t)))
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (clojure . t)
+       (python . t)
+       (ruby . t)
+       (js . t)
+       (latex . t)
+       (shell . t)
+       (dot . t)
+       (restclient . t)))
 
-  (add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
+    (add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
 
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (org-display-inline-images t t)
-              (visual-line-mode 1) ; wrap long lines
-              ;; (progn
-              ;;   ;; yasnippet
-              ;;   (make-variable-buffer-local 'yas/trigger-key)
-              ;;   (org-set-local 'yas/trigger-key [tab])
-              ;;   (bind-key [tab] 'yas-next-field-or-maybe-expand yas/keymap))
-              ))
+    (add-hook 'org-mode-hook
+              (lambda ()
+                (org-display-inline-images t t)
+                (visual-line-mode 1)    ; wrap long lines
+                ;; (progn
+                ;;   ;; yasnippet
+                ;;   (make-variable-buffer-local 'yas/trigger-key)
+                ;;   (org-set-local 'yas/trigger-key [tab])
+                ;;   (bind-key [tab] 'yas-next-field-or-maybe-expand yas/keymap))
+                )))
 
+  (progn
+    ;; agenda
 
-  ;; fix completion dissapearing
-  (with-eval-after-load 'company (add-to-list 'company-backends 'company-capf))
-  (defun add-pcomplete-to-capf () (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-  (add-hook 'org-mode-hook #'add-pcomplete-to-capf)
-
-  ;; show week numbers in calendar
-  (copy-face font-lock-constant-face 'calendar-iso-week-face)
-  (set-face-attribute 'calendar-iso-week-face nil :height 0.7 :foreground "VioletRed2")
-  (copy-face 'default 'calendar-iso-week-header-face)
-  (set-face-attribute 'calendar-iso-week-header-face nil :height 0.7 :foreground "VioletRed4")
-  (setq calendar-intermonth-text
-        '(propertize
-          (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
-          'font-lock-face 'calendar-iso-week-face)
-        calendar-intermonth-header (propertize "WK" 'font-lock-face 'calendar-iso-week-header-face))
-
-  (defun t/org-skip-subtree-if-priority (priority)
-    "Skip an agenda subtree if it has a priority of PRIORITY.
+    (defun t/org-skip-subtree-if-priority (priority)
+      "Skip an agenda subtree if it has a priority of PRIORITY.
 
 PRIORITY may be one of the characters ?A, ?B, or ?C."
-    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-          (pri-value (* 1000 (- org-lowest-priority priority)))
-          (pri-current (org-get-priority (thing-at-point 'line t))))
-      (if (= pri-value pri-current)
-          subtree-end
-        nil)))
+      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+            (pri-value (* 1000 (- org-lowest-priority priority)))
+            (pri-current (org-get-priority (thing-at-point 'line t))))
+        (if (= pri-value pri-current)
+            subtree-end
+          nil)))
+
+
+    (defun t/org-todos-by-tag-settings (name)
+      `((org-agenda-remove-tags t)
+        (org-agenda-sorting-strategy '(tag-up priority-down))
+        (org-agenda-todo-keyword-format "")
+        (org-agenda-overriding-header ,(concat "\n" name "\n"))))
+
+    (defun t/org-day-summary (tags)
+      `((tags ,(concat "PRIORITY=\"A\"&" ;; wat lol
+                       (replace-regexp-in-string "|" "|PRIORITY=\"A\"&" tags))
+              ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+               (org-agenda-overriding-header "Pri")))
+        (agenda ,tags
+                ((org-agenda-span 'day)
+                 (org-agenda-ndays 1)
+                 (org-agenda-time-grid nil)))
+        (tags-todo ,tags
+                   ((org-agenda-overriding-header "Unscheduled")
+                    (org-agenda-skip-function
+                     '(or (t/org-skip-subtree-if-priority ?A)
+                          (org-agenda-skip-if nil '(scheduled deadline))))))
+        (tags-todo ,tags
+                   ((org-agenda-overriding-header "Scheduled")
+                    (org-agenda-skip-function
+                     '(or (t/org-skip-subtree-if-priority ?A)
+                          (org-agenda-skip-if nil '(notscheduled deadline))))
+                    (org-show-context-detail 'minimal)
+                    (org-agenda-view-columns-initially t)))))
+
+    (setq org-agenda-include-diary t
+          org-agenda-diary-file (t/org-directory "diary.org")
+          org-agenda-default-appointment-duration nil
+          org-agenda-window-setup 'only-window ; delete other windows when showing agenda
+          org-agenda-files (t/find-org-files-recursively org-directory "org") ; where to look for org files
+          org-agenda-text-search-extra-files (t/find-org-files-recursively (t/user-file "/Dropbox/org") "org_archive")
+          org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
+          org-agenda-custom-commands `(("w" . "Work")
+                                       ("wh" "home" ,(t/org-day-summary "+home") ((org-agenda-remove-tags t)))
+                                       ("ww" "bekk" ,(t/org-day-summary "+bekk") ((org-agenda-remove-tags t)))
+                                       ("wd" "datainn" ,(t/org-day-summary "+datainn") ((org-agenda-remove-tags t)))
+
+                                       ("t" . "Todos")
+                                       ("ta" alltodo)
+                                       ("tt" todo "TODO" ,(t/org-todos-by-tag-settings "TODO tasks by tag"))
+                                       ("ts" todo "STARTED" ,(t/org-todos-by-tag-settings "STARTED tasks by tag"))
+                                       ("tc" todo "CANCELLED" ,(t/org-todos-by-tag-settings "CANCELLED tasks by tag"))
+                                       ("td" todo "DONE" ,(t/org-todos-by-tag-settings "DONE tasks by tag"))
+
+                                       ("h" . "Home")
+                                       ("hs" tags-todo "serie")
+                                       ("he" tags-todo "emacs")
+                                       ("hb" tags-todo "book")
+                                       ("hv" tags-todo "video")
+
+                                       ("d" "Deadlines" agenda ""
+                                        ((org-agenda-entry-types '(:deadline))
+                                         (org-agenda-ndays 1)
+                                         (org-deadline-warning-days 60)
+                                         (org-agenda-time-grid nil))))))
+
+  (progn
+    ;; realign tags
+
+    (defun t/org-mode-before-save ()
+      "Hook run before saving org buffers"
+      (when (eq major-mode 'org-mode)
+        (t/org-mode-realign-all-tags)))
+
+    (defun t/org-mode-realign-all-tags ()
+      "Code to realign tags, stolen from org.el"
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward org-outline-regexp-bol nil t)
+          (org-set-tags nil t)
+          (end-of-line))))
+
+    (add-hook 'before-save-hook #'t/org-mode-before-save))
+
   (progn
     ;; reselect visual when moving multiple lines
     (setq t-org-move-tree-was-visual nil)
@@ -267,77 +273,183 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         (after t/after-org-refile activate)
       (org-save-all-org-buffers)))
 
-  (defun t/jump-to-org-agenda ()
-    (interactive)
-    (let ((agenda-buffer (get-buffer "*Org Agenda*"))
-          wind)
-      (if (and (not (equal agenda-buffer (current-buffer)))
-               agenda-buffer)
-          (if (setq wind (get-buffer-window agenda-buffer))
-              (select-window wind)
-            (if (called-interactively-p)
-                (progn
-                  (select-window (display-buffer agenda-buffer t t))
-                  (org-fit-window-to-buffer)
-                  (org-agenda-redo t))
-              (with-selected-window (display-buffer agenda-buffer)
-                (org-fit-window-to-buffer)
-                (org-agenda-redo t))))
-        (call-interactively 'org-agenda-list))))
-
   (progn
+    ;; idle timer
 
-    (defvar t-org-file-save-since-last-idle nil)
-
-    (defun t/org-mode-before-save-since-last-idle ()
-      "Hook to remember if org files are saved since last idle timer."
-      (when (eq major-mode 'org-mode)
-        (setq t-org-file-save-since-last-idle t)))
-
-    (add-hook 'before-save-hook #'t/org-mode-before-save-since-last-idle)
-
-    (defun t/org-idle-timer ()
-      "Timer to run when idle for syncing org."
+    (defun t/jump-to-org-agenda ()
       (interactive)
-      (when t-org-file-save-since-last-idle
-        (message "Syncing agenda...")
-        (org-save-all-org-buffers)
-        (t/org-export-calendars)
-        (org-mobile-pull)
-        (org-mobile-push)
-        (setq t-org-file-save-since-last-idle nil)
-        (message "Syncing agenda... done"))
-      (t/jump-to-org-agenda))
+      (let ((agenda-buffer (get-buffer "*Org Agenda*"))
+            wind)
+        (if (and (not (equal agenda-buffer (current-buffer)))
+                 agenda-buffer)
+            (if (setq wind (get-buffer-window agenda-buffer))
+                (select-window wind)
+              (if (called-interactively-p)
+                  (progn
+                    (select-window (display-buffer agenda-buffer t t))
+                    (org-fit-window-to-buffer)
+                    (org-agenda-redo t))
+                (with-selected-window (display-buffer agenda-buffer)
+                  (org-fit-window-to-buffer)
+                  (org-agenda-redo t))))
+          (call-interactively 'org-agenda-list))))
 
-    (defun t/org-export-calendars ()
-      "Export given set of calendars to ical files, so you can subscribe to their dropbox links in ical.
+    (progn
+
+      (defvar t-org-file-save-since-last-idle nil)
+
+      (defun t/org-mode-before-save-since-last-idle ()
+        "Hook to remember if org files are saved since last idle timer."
+        (when (eq major-mode 'org-mode)
+          (setq t-org-file-save-since-last-idle t)))
+
+      (add-hook 'before-save-hook #'t/org-mode-before-save-since-last-idle)
+
+      (defun t/org-idle-timer ()
+        "Timer to run when idle for syncing org."
+        (interactive)
+        (when t-org-file-save-since-last-idle
+          (message "Syncing agenda...")
+          (org-save-all-org-buffers)
+          (t/org-export-calendars)
+          (org-mobile-pull)
+          (org-mobile-push)
+          (setq t-org-file-save-since-last-idle nil)
+          (message "Syncing agenda... done"))
+        (t/jump-to-org-agenda))
+
+      (defun t/org-export-calendars ()
+        "Export given set of calendars to ical files, so you can subscribe to their dropbox links in ical.
 Locally redefines org-agenda-files not to export all agenda files."
-      (interactive)
-      (let ((org-agenda-files (cons org-default-notes-file
-                                    (mapcar #'t/org-directory
-                                            '("home.org"
-                                              "bekk/bekk.org"
-                                              "bekk/datainn.org")))))
-        (org-icalendar-export-agenda-files)))
+        (interactive)
+        (let ((org-agenda-files (cons org-default-notes-file
+                                      (mapcar #'t/org-directory
+                                              '("home.org"
+                                                "bekk/bekk.org"
+                                                "bekk/datainn.org")))))
+          (org-icalendar-export-agenda-files)))
 
-    (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5))
+      (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5))
 
-  (use-package org-alert
-    :config
+    (progn
+      ;; show week numbers in calendar
+
+      (copy-face font-lock-constant-face 'calendar-iso-week-face)
+      (set-face-attribute 'calendar-iso-week-face nil :height 0.7 :foreground "VioletRed2")
+      (copy-face 'default 'calendar-iso-week-header-face)
+      (set-face-attribute 'calendar-iso-week-header-face nil :height 0.7 :foreground "VioletRed4")
+      (setq calendar-intermonth-text
+            '(propertize
+              (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
+              'font-lock-face 'calendar-iso-week-face)
+            calendar-intermonth-header (propertize "WK" 'font-lock-face 'calendar-iso-week-header-face)))
+
+    (t/declare-prefix "oo" "Org"
+                      "c" 'org-capture
+                      "e" 'org-export-dispatch
+                      "g" 'org-mac-grab-link
+                      "a" 'org-agenda
+                      "n" 'org-alert-check
+                      "i" 'org-info)
+
+    (t/declare-prefix "oom" "Mobile"
+                      "p" 'org-mobile-push
+                      "P" 'org-mobile-pull)
+
+    (t/declare-prefix "ool" "Links"
+                      "s" 'org-store-link
+                      "i" 'org-insert-link)
+
+    (t/declare-prefix "oot" "Tags"
+                      "a" 'org-archive-set-tag
+                      "t" 'org-set-tags-command)
+
+    (t/declare-prefix "ooT" "Table"
+                      "Tg" 'org-table-toggle-coordinate-overlays
+                      "Tf" 'org-table-formula)
+
+    (t/declare-prefix "ooC" "Clock"
+                      "i" 'org-clock-in
+                      "o" 'org-clock-out)
+
+    (progn
+      ;; blank line before new entries with text,
+      ;; but not headings following other headings (todolists)
+
+      (setq org-blank-before-new-entry
+            '((heading . always)
+              (plain-list-item . nil)))
+
+      (defun t/call-rebinding-org-blank-behaviour (fn)
+        (let ((org-blank-before-new-entry
+               (copy-tree org-blank-before-new-entry)))
+          (when (org-at-heading-p)
+            (rplacd (assoc 'heading org-blank-before-new-entry) nil))
+          (call-interactively fn)))
+
+      (defun t/org-meta-return-dwim ()
+        (interactive)
+        (evil-end-of-line)
+        (t/call-rebinding-org-blank-behaviour 'org-meta-return)
+        (evil-cp-append 1))
+
+      (defun t/org-insert-todo-heading-dwim ()
+        (interactive)
+        (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading)
+        (evil-cp-append 1))
+
+      (defun t/org-insert-heading-respent-content-dwim ()
+        (interactive)
+        (t/call-rebinding-org-blank-behaviour 'org-insert-heading-respect-content)
+        (evil-cp-append 1))
+
+      (defun t/org-insert-todo-heading-respect-content-dwim ()
+        (interactive)
+        (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading-respect-content)
+        (evil-cp-append 1))
+
+      (add-hook 'org-mode-hook
+                (lambda ()
+                  (bind-key "C-w" 'org-refile org-mode-map)
+                  (bind-key "M-<return>" 't/org-meta-return-dwim org-mode-map)
+                  (bind-key "M-S-<return>" 't/org-insert-todo-heading-dwim org-mode-map)
+                  (bind-key "C-<return>" 't/org-insert-heading-respent-content-dwim org-mode-map)
+                  (bind-key "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim org-mode-map))))
+
+    (defun yas/org-very-safe-expand ()
+      (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
+
+    (defun yas/org-setup ()
+      ;; yasnippet (using the new org-cycle hooks)
+      (yas-global-mode 1)
+      (make-variable-buffer-local 'yas-trigger-key)
+      (setq yas-trigger-key [tab])
+      (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+      (define-key yas-keymap [tab] 'yas-next-field))
+
+    ;; See https://github.com/eschulte/emacs24-starter-kit/issues/80.
+    (setq org-src-tab-acts-natively nil)
+
+    (add-hook 'org-mode-hook #'yas/org-setup)))
+
+(t/use-package ob-restclient
+  :after org)
+
+(t/use-package org-alert
+  :config
+  (progn
     (setq alert-default-style 'osx-notifier
           org-alert-interval (* 1 60 60))
-    (org-alert-enable))
+    (org-alert-enable)))
 
-  ;; TODO ox-icalendar?
-  (setq org-icalendar-use-scheduled '(event-if-todo))
+(t/use-package org-mac-iCal
+  :after org
+  :commands (org-mac-iCal))
 
-  (use-package org-mac-iCal
-    :after org
-    :commands (org-mac-iCal))
-
-  (use-package weather-metno
-    :after org
-    :config
+(t/use-package weather-metno
+  :after org
+  :config
+  (progn
     (setq weather-metno-location-name "Trondheim, Norway"
           weather-metno-location-latitude lat-trh
           weather-metno-location-longitude lon-trh
@@ -347,165 +459,83 @@ Locally redefines org-agenda-files not to export all agenda files."
           ;; weather-metno-get-image-props '(:width 20 :height 20 :ascent center)
           )))
 
-(use-package org-mac-link
+(t/use-package org-mac-link
   :after org-plus-contrib
   :ensure org-plus-contrib
   :commands (org-mac-grab-link
              org-mac-chrome-get-frontmost-url))
 
-(use-package calendar-norway
+(t/use-package calendar-norway
   :after calendar
   :config
-  (setq calendar-holidays
-        (append calendar-norway-raude-dagar
-                calendar-norway-andre-merkedagar
-                calendar-norway-dst
-                '((holiday-fixed 3 17 "St. Patricksdag") ; extra non-no days
-                  (holiday-fixed 10 31 "Hallowe'en")
-                  (holiday-float 11 4 4 "Thanksgiving")
-                  (solar-equinoxes-solstices)))
-        calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
-        solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjevndøgn" "Vintersolherv"))
-
-  (setq calendar-latitude lat-trh
-        calendar-longitude lon-trh
-        calendar-location-name "Trondheim, Norway")
-
   (progn
-    ;; moons in agenda
-    (org-no-warnings (defvar date))
-    (defun t/org-lunar-phases ()
-      "Show lunar phase in Agenda buffer."
-      (require 'lunar)
-      (let* ((phase-list (lunar-phase-list (nth 0 date) (nth 2 date)))
-             (phase (cl-find-if (lambda (phase) (equal (car phase) date))
-                                phase-list)))
-        (when phase
-          (setq ret (concat (lunar-phase-name (nth 2 phase)) " "
-                            (substring (nth 1 phase) 0 5))))))
+    (setq calendar-holidays
+          (append calendar-norway-raude-dagar
+                  calendar-norway-andre-merkedagar
+                  calendar-norway-dst
+                  '((holiday-fixed 3 17 "St. Patricksdag") ; extra non-no days
+                    (holiday-fixed 10 31 "Hallowe'en")
+                    (holiday-float 11 4 4 "Thanksgiving")
+                    (solar-equinoxes-solstices)))
+          calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
+          solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjevndøgn" "Vintersolherv"))
 
-    (defadvice lunar-phase-name (around sv-lunar-phase-name activate)
-      "Månefasenavn på norsk."
-      (setq ad-return-value
-            (let ((phase (ad-get-arg 0)))
-              (cond ((= 0 phase) "Nymåne ●")
-                    ((= 1 phase) "Månen i ny ☽")
-                    ((= 2 phase) "Fullmåne ○")
-                    ((= 3 phase) "Månen i ne ☾")))))))
+    (setq calendar-latitude lat-trh
+          calendar-longitude lon-trh
+          calendar-location-name "Trondheim, Norway")
 
-(t/declare-prefix "oo" "Org"
-                  "c" 'org-capture
-                  "e" 'org-export-dispatch
-                  "g" 'org-mac-grab-link
-                  "a" 'org-agenda
-                  "n" 'org-alert-check
-                  "i" 'org-info)
-
-(t/declare-prefix "oom" "Mobile"
-                  "p" 'org-mobile-push
-                  "P" 'org-mobile-pull)
-
-(t/declare-prefix "ool" "Links"
-                  "s" 'org-store-link
-                  "i" 'org-insert-link)
-
-(t/declare-prefix "oot" "Tags"
-                  "a" 'org-archive-set-tag
-                  "t" 'org-set-tags-command)
-
-(t/declare-prefix "ooT" "Table"
-                  "Tg" 'org-table-toggle-coordinate-overlays
-                  "Tf" 'org-table-formula)
-
-(t/declare-prefix "ooC" "Clock"
-                  "i" 'org-clock-in
-                  "o" 'org-clock-out)
-
-(progn
-  ;; blank line before new entries with text,
-  ;; but not headings following other headings (todolists)
-
-  (setq org-blank-before-new-entry
-        '((heading . always)
-          (plain-list-item . nil)))
-
-  (defun t/call-rebinding-org-blank-behaviour (fn)
-    (let ((org-blank-before-new-entry
-           (copy-tree org-blank-before-new-entry)))
-      (when (org-at-heading-p)
-        (rplacd (assoc 'heading org-blank-before-new-entry) nil))
-      (call-interactively fn)))
-
-  (defun t/org-meta-return-dwim ()
-    (interactive)
-    (evil-end-of-line)
-    (t/call-rebinding-org-blank-behaviour 'org-meta-return)
-    (evil-cp-append 1))
-
-  (defun t/org-insert-todo-heading-dwim ()
-    (interactive)
-    (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading)
-    (evil-cp-append 1))
-
-  (defun t/org-insert-heading-respent-content-dwim ()
-    (interactive)
-    (t/call-rebinding-org-blank-behaviour 'org-insert-heading-respect-content)
-    (evil-cp-append 1))
-
-  (defun t/org-insert-todo-heading-respect-content-dwim ()
-    (interactive)
-    (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading-respect-content)
-    (evil-cp-append 1))
-
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (bind-key "M-<return>" 't/org-meta-return-dwim org-mode-map)
-              (bind-key "M-S-<return>" 't/org-insert-todo-heading-dwim org-mode-map)
-              (bind-key "C-<return>" 't/org-insert-heading-respent-content-dwim org-mode-map)
-              (bind-key "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim org-mode-map))))
-
-(defun yas/org-very-safe-expand ()
-  (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
-
-(defun yas/org-setup ()
-  ;; yasnippet (using the new org-cycle hooks)
-  (yas-global-mode 1)
-  (make-variable-buffer-local 'yas-trigger-key)
-  (setq yas-trigger-key [tab])
-  (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-  (define-key yas-keymap [tab] 'yas-next-field))
-
-;; See https://github.com/eschulte/emacs24-starter-kit/issues/80.
-(setq org-src-tab-acts-natively nil)
-
-(add-hook 'org-mode-hook #'yas/org-setup)
-
-(use-package elfeed
-  :commands (elfeed-search-mode elfeed-show-mode)
-  :init
-  (setq elfeed-db-directory "~/Dropbox/Apps/elfeed/db"
-        elfeed-search-filter "@6-months-ago +unread -old"
-        shr-use-fonts nil)
-
-  (with-eval-after-load 'evil
     (progn
-      (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
-      (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)))
+      ;; moons in agenda
+      (with-no-warnings (defvar date))
+      (defun t/org-lunar-phases ()
+        "Show lunar phase in Agenda buffer."
+        (require 'lunar)
+        (let* ((phase-list (lunar-phase-list (nth 0 date) (nth 2 date)))
+               (phase (cl-find-if (lambda (phase) (equal (car phase) date))
+                                  phase-list)))
+          (when phase
+            (setq ret (concat (lunar-phase-name (nth 2 phase)) " "
+                              (substring (nth 1 phase) 0 5))))))
 
-  (t/declare-prefix "o" "Other"
-                    "r" 'elfeed))
+      (defadvice lunar-phase-name (around sv-lunar-phase-name activate)
+        "Månefasenavn på norsk."
+        (setq ad-return-value
+              (let ((phase (ad-get-arg 0)))
+                (cond ((= 0 phase) "Nymåne ●")
+                      ((= 1 phase) "Månen i ny ☽")
+                      ((= 2 phase) "Fullmåne ○")
+                      ((= 3 phase) "Månen i ne ☾"))))))))
 
-(use-package elfeed-goodies
+(t/use-package elfeed
+  :commands (elfeed-search-mode elfeed-show-mode)
+  :bind (:map
+         elfeed-search-mode-map
+         ("SPC" . elfeed-search-show-entry))
+  :init
+  (progn
+    (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
+          elfeed-search-filter "@6-months-ago +unread -old"
+          shr-use-fonts nil)
+
+    (with-eval-after-load 'evil
+      (progn
+        (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
+        (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)))
+
+    (t/declare-prefix "o" "Other"
+                      "r" 'elfeed)))
+
+(t/use-package elfeed-goodies
   :after elfeed
   :config
-  (elfeed-goodies/setup))
+  (progn
+    (elfeed-goodies/setup)))
 
-;; extracted stuff from feedly https://feedly.com/v3/subscriptions
-;; subscriptions.map(s => `** [[${s.id}][${s.title}]] :${(s.topics ||[]).map(t => t).join(':')}:`).join("\n")
-(use-package elfeed-org
+(t/use-package elfeed-org
   :after elfeed
   :config
-  (elfeed-org)
-  (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org")))
+  (progn
+    (elfeed-org)
+    (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org"))))
 
 (provide 't-org)

@@ -542,11 +542,12 @@ Examples:
     (force-mode-line-update)))
 
 ;; Show eldoc in the mode-line when using `eval-expression'.
-(use-package eldoc-eval
+(t/use-package eldoc-eval
   :commands eldoc-current-buffer
   :config
-  (setq eldoc-in-minibuffer-show-fn 'doom-eldoc-show-in-mode-line)
-  (eldoc-in-minibuffer-mode +1))
+  (progn
+    (setq eldoc-in-minibuffer-show-fn 'doom-eldoc-show-in-mode-line)
+    (eldoc-in-minibuffer-mode +1)))
 
 (provide 'doom-modeline)
 ;;; doom-modeline.el ends here

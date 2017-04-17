@@ -1,4 +1,4 @@
-(use-package remark-mode
+(t/use-package remark-mode
   :commands remark-mode)
 
 (provide 't-lang-remark)

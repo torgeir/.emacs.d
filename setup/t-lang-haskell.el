@@ -1,4 +1,4 @@
-(use-package haskell-mode
+(t/use-package haskell-mode
   :commands haskell-mode)
 
 (provide 't-lang-haskell)

@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22743 55948 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22782 25069 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -139,7 +139,7 @@ Removes file connected to current buffer and kills buffer.
 (autoload 't/paredit-wrap-round-from-behind "t-defuns" "\
 
 
-\(fn IGNORE)" t nil)
+\(fn)" t nil)
 
 (autoload 't/untabify-buffer "t-defuns" "\
 Remove tabs in buffer
@@ -386,6 +386,11 @@ Toggles between themes `spacemacs-dark' and `spacemacs-light'
 
 \(fn)" t nil)
 
+(autoload 't/fix-fira-ligatures "t-defuns" "\
+
+
+\(fn)" nil nil)
+
 (autoload 't/decrease-font-size "t-defuns" "\
 
 
@@ -619,24 +624,47 @@ Counts the number of items in `org-mobile-inbox-for-pull'.
 
 \(fn)" nil nil)
 
+(autoload 't/get-string-from-file "t-defuns" "\
+Return `file-path's file content.
+
+\(fn FILE-PATH)" nil nil)
+
+(autoload 't/re-seq "t-defuns" "\
+Get a list of all regexp matches (from the first group) in a string
+
+\(fn REGEXP STRING)" nil nil)
+
+(autoload 't/re-seq-in-file "t-defuns" "\
+
+
+\(fn REGEX FILE)" nil nil)
+
+(autoload 't/fn-prefix "t-defuns" "\
+
+
+\(fn PREFIX MODULE)" nil nil)
+
+(autoload 't/call-fns "t-defuns" "\
+
+
+\(fn FNS)" nil nil)
+
+(autoload 't/call-prefix "t-defuns" "\
+
+
+\(fn PREFIX MODULE)" nil nil)
+
+(autoload 't/call-init "t-defuns" "\
+
+
+\(fn PREFIX-FMT PKG)" nil nil)
+
 ;;;***
 
-;;;### (autoloads nil "t-macros" "t-macros.el" (22734 41384 0 0))
-;;; Generated autoloads from t-macros.el
-
-(autoload 't/idle-timer "t-macros" "\
-Reloadable variant of run-with-idle-timer.
-
-\(fn NAME FN EVERY-MINUTE)" nil t)
-
-;;;***
-
-;;;### (autoloads nil nil ("t-autoloads.el" "t-bootstrap.el" "t-custom.el"
-;;;;;;  "t-cygwin.el" "t-debug.el" "t-editor.el" "t-evil.el" "t-keys.el"
-;;;;;;  "t-langs.el" "t-load-theme.el" "t-mac.el" "t-modeline.el"
-;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
-;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
-;;;;;;  (22743 56935 0 0))
+;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
+;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-lang-arduino.el"
+;;;;;;  "t-lang-clojure.el" "t-lang-css.el" "t-lang-docker.el" ...)
+;;;;;;  (22782 25176 0 0))
 
 ;;;***
 
