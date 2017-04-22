@@ -63,8 +63,13 @@
                                   "ua" 'cljr-unwind-all
                                   "uw" 'cljr-unwind
 
-                                  "ml" 'cljr-move-to-let
-                                  )))))
+                                  "ml" 'cljr-move-to-let))))
+
+  (defun t/clojure-mode-hook-cljs ()
+    (when-let ((is-cljs-file (not (null (string-match "\\.cljs$" (buffer-file-name))))))
+      (when (not (eq major-mode 'clojurescript-mode))
+        (clojurescript-mode))))
+  (add-hook 'clojure-mode-hook #'t/clojure-mode-hook-cljs))
 
 ;;(use-package cljr-helm)
 
