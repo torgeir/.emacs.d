@@ -31,6 +31,7 @@
     (setq explicit-shell-file-name "/bin/zsh")
 
     (defun t/term-mode-hook ()
+      (evil-define-key 'normal term-raw-map "p" 'term-paste)
       (evil-define-key 'normal term-raw-map (kbd "C-d") 'term-send-eof)
       (evil-define-key 'insert term-raw-map (kbd "C-d") 'term-send-eof))
 
