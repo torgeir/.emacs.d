@@ -13,7 +13,7 @@
   (t/use-package helm-insert-line-from-project
     :commands t/helm-find-and-insert-line-from-project
     :ensure nil
-    :load-path "site-lisp/helm-insert-line-from-project")
+    :load-path "site-lisp/helm-insert-line-from-project/")
 
   (t/use-package spotify
     :ensure nil
