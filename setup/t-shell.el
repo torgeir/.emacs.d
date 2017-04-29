@@ -88,7 +88,7 @@
                       '("hidedesktop" "defaults write com.apple.finder CreateDesktop -bool false && killall Finder")
                       '("hidehidden" "defaults write com.apple.finder AppleShowAllFiles -boolean false && killall Finder")
                       '("ip" "dig +short myip.opendns.com @resolver1.opendns.com")
-                      '("j" "z")
+                      '("j" "z $*")
                       '("l" "ls -laF")
                       '("ll" "ls -la")
                       '("lout" "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend")
@@ -153,6 +153,9 @@
           (eshell-life-is-too-much)
         (delete-forward-char 1)))
 
+
+    (when (boundp 'spacemacs-useful-buffers-regexp)
+      (add-to-list 'spacemacs-useful-buffers-regexp "\\*eshell.*"))
     (add-hook 'eshell-directory-change-hook (lambda () (rename-buffer (t/eshell-buffer-id) t)))
     (add-hook 'eshell-mode-hook
               (lambda ()
@@ -169,6 +172,7 @@
                   (setq eshell-cmpl-ignore-case t)
                   (eshell-cmpl-initialize)
                   (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+                  (define-key eshell-mode-map (kbd "C-r") 'helm-eshell-history)
                   (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
                 (progn
                   (defun t/eshell-kill-input--go-to-eol ()
