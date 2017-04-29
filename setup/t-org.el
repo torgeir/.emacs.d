@@ -311,6 +311,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         (when t-org-file-save-since-last-idle
           (message "Syncing agenda...")
           (org-save-all-org-buffers)
+          (org-gcal-sync)
           (t/org-export-calendars)
           (org-mobile-pull)
           (org-mobile-push)
@@ -537,5 +538,13 @@ Locally redefines org-agenda-files not to export all agenda files."
   (progn
     (elfeed-org)
     (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org"))))
+
+(t/use-package org-gcal
+  :init
+  (progn
+    (when (boundp 't-org-gcal)
+      (setq org-gcal-client-id t-org-gcal-client-id
+            org-gcal-client-secret t-org-gcal-client-secret
+            org-gcal-file-alist t-org-gcal-file-alist))))
 
 (provide 't-org)
