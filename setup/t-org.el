@@ -19,7 +19,8 @@
     (setq-local var val))
 
   (setq org-startup-indented t        ; turn on org-indent-mode
-        org-agenda-restore-windows-after-quit t
+        org-agenda-window-setup 'only-window ; remove other windows when agenda
+        org-agenda-restore-windows-after-quit t ; restore them again
         org-return-follows-link t
         org-tab-follows-link nil
         org-hide-leading-stars t
