@@ -27,6 +27,7 @@
     (defun clear-all-highlights ()
       (interactive)
       (evil-ex-nohighlight)
+      (evil-search-highlight-persist-remove-all)
       (highlight-symbol-remove-all))
 
     ;; clear highlights with leader leader
