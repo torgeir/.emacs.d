@@ -1175,4 +1175,16 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (message "t/call-init: %s" fn)
       (funcall fn))))
 
-(provide 't-defuns)
+;;;###autoload
+(defun t/buffer-finished-p (b)
+  (eq 0
+      (string-match-p
+       "^Process .* finished$"
+       (car (last
+             (split-string
+              (with-current-buffer b
+                (let ((len (length (buffer-string))))
+                  (buffer-substring-no-properties 1 len)))
+              "\n"))))))
+
+ (provide 't-defuns)
