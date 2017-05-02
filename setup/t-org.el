@@ -554,4 +554,10 @@ Locally redefines org-agenda-files not to export all agenda files."
 
 (t/use-package gnuplot)
 
+(t/use-package helm-org-rifle
+  :config
+  (t/declare-prefix-for-mode 'org-mode "s" "Search"
+                             "p" 'helm-org-rifle
+                             "P" 'helm-projectile-ag))
+
 (provide 't-org)
