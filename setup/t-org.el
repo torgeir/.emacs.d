@@ -140,6 +140,7 @@
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((emacs-lisp . t)
+       (gnuplot . t)
        (clojure . t)
        (python . t)
        (ruby . t)
@@ -374,6 +375,10 @@ Locally redefines org-agenda-files not to export all agenda files."
                       "i" 'org-clock-in
                       "o" 'org-clock-out)
 
+    (when (boundp 'org-evil-table-mode-map)
+      (bind-key "M-S-<left>" 'org-table-delete-column org-evil-table-mode-map)
+      (bind-key "M-S-<right>" 'org-table-insert-column org-evil-table-mode-map))
+
     (progn
       ;; blank line before new entries with text,
       ;; but not headings following other headings (todolists)
@@ -391,16 +396,15 @@ Locally redefines org-agenda-files not to export all agenda files."
 
       (defun t/org-meta-return-dwim ()
         (interactive)
-        (evil-end-of-line)
-        (t/call-rebinding-org-blank-behaviour 'org-meta-return)
-        (evil-cp-append 1))
+        (evil-append-line 0)
+        (t/call-rebinding-org-blank-behaviour 'org-meta-return))
 
       (defun t/org-insert-todo-heading-dwim ()
         (interactive)
         (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading)
         (evil-cp-append 1))
 
-      (defun t/org-insert-heading-respent-content-dwim ()
+      (defun t/org-insert-heading-respect-content-dwim ()
         (interactive)
         (t/call-rebinding-org-blank-behaviour 'org-insert-heading-respect-content)
         (evil-cp-append 1))
@@ -415,7 +419,7 @@ Locally redefines org-agenda-files not to export all agenda files."
                   (bind-key "C-w" 'org-refile org-mode-map)
                   (bind-key "M-<return>" 't/org-meta-return-dwim org-mode-map)
                   (bind-key "M-S-<return>" 't/org-insert-todo-heading-dwim org-mode-map)
-                  (bind-key "C-<return>" 't/org-insert-heading-respent-content-dwim org-mode-map)
+                  (bind-key "C-<return>" 't/org-insert-heading-respect-content-dwim org-mode-map)
                   (bind-key "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim org-mode-map))))
 
     (defun yas/org-very-safe-expand ()
@@ -547,5 +551,7 @@ Locally redefines org-agenda-files not to export all agenda files."
       (setq org-gcal-client-id t-org-gcal-client-id
             org-gcal-client-secret t-org-gcal-client-secret
             org-gcal-file-alist t-org-gcal-file-alist))))
+
+(t/use-package gnuplot)
 
 (provide 't-org)
