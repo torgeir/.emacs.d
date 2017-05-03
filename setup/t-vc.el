@@ -60,6 +60,9 @@
 
     (add-hook 'magit-log-mode-hook 'visual-line-mode)
 
+    (when (boundp 'spacemacs-useful-buffers-regexp)
+      (add-to-list 'spacemacs-useful-buffers-regexp "\\*magit.*"))
+
     (defadvice magit-blame-mode (after switch-to-emacs-mode activate)
       (if magit-blame-mode
           (evil-emacs-state 1)
