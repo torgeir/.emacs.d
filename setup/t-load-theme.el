@@ -4,15 +4,38 @@
 
 (t/use-package gruvbox-theme :defer t)
 
-(t/use-package doom-themes :defer t
-    :init
-    (progn
-      (add-hook 'find-file-hook 'doom-buffer-mode)
-      (add-hook 'minibuffer-setup-hook 'doom-brighten-minibuffer))
-    :config
-    (progn
-      (require 'doom-neotree)
-      (setq doom-neotree-enable-file-icons t)))
+(t/use-package doom-themes
+  :defer t
+  :config
+  (progn
+    (setq doom-enable-bold t         ; if nil, bolding are universally disabled
+          doom-enable-italic t       ; if nil, italics are universally disabled
+
+          ;; doom-one specific settings
+          doom-one-brighter-modeline nil
+          doom-one-brighter-comments nil)
+
+    ;; brighter source buffers (that represent files)
+    (add-hook 'find-file-hook 'doom-buffer-mode-maybe)
+    ;; ...if you use auto-revert-mode
+    (add-hook 'after-revert-hook 'doom-buffer-mode-maybe)
+    ;; And you can brighten other buffers (unconditionally) with:
+    (add-hook 'ediff-prepare-buffer-hook 'doom-buffer-mode)
+
+    ;; brighter minibuffer when active
+    (add-hook 'minibuffer-setup-hook 'doom-brighten-minibuffer)
+
+    ;; Enable custom neotree theme
+                                        ;(doom-themes-neotree-config)  ; all-the-icons fonts must be installed!
+
+    ;; Enable nlinum line highlighting
+    (doom-themes-nlinum-config)        ; requires nlinum and hl-line-mode
+
+    ;; Necessary for org-mode
+    (setq org-fontify-whole-heading-line t
+          org-fontify-done-headline t
+          org-fontify-quote-and-verse-blocks t)
+    ))
 
 (defun t-load-theme/config ()
   (defconst t-themes (list
