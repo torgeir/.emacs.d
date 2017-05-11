@@ -585,7 +585,7 @@
   :init
   (progn
     (setq smooth-scroll-margin 5
-          mouse-wheel-scroll-amount '(2 ((shift) . 1)) ;; two lines at a time
+          mouse-wheel-scroll-amount '(3 ((shift) . 1)) ;; two lines at a time
           mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
           mouse-wheel-follow-mouse 't))
   :config
