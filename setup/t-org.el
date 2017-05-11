@@ -524,7 +524,8 @@ Locally redefines org-agenda-files not to export all agenda files."
   (progn
     (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
           elfeed-search-filter "@6-months-ago +unread -old"
-          shr-use-fonts nil)
+          shr-use-fonts nil
+          shr-max-image-proportion 0.3)
 
     (with-eval-after-load 'evil
       (progn
