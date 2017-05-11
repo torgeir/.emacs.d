@@ -4,6 +4,10 @@
   :commands (clojure-mode)
   :config
   (progn
+    (setq clojure-indent-style :align-arguments)
+    (put-clojure-indent '-> 1)
+    (put-clojure-indent '->> 1)
+    (put-clojure-indent 'doall 1)
     ;; stop nagging about saving
     (defadvice clojure-test-run-tests (before save-first activate)
       (save-buffer))
