@@ -429,7 +429,8 @@
         (setq cursor-in-non-selected-windows nil)))
     (add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
     (set-face-attribute 'helm-source-header nil :height 1)
-    (add-hook 'helm-before-initialize-hook 'neotree-hide)))
+    (with-eval-after-load 'neotree
+      (add-hook 'helm-before-initialize-hook 'neotree-hide))))
 
 (t/use-package helm-ag
   :after helm
