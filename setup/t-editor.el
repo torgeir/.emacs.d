@@ -612,13 +612,13 @@
   :commands highlight-parentheses-mode
   :init
   (progn
-    (set-face-foreground 'show-paren-match-face (face-foreground 'font-lock-comment-face))
     (setq hl-paren-colors '("DeepPink1" "maroon1" "maroon2" "maroon3" "DeepPink3"
                             "DeepPink4" "maroon4" "VioletRed4"
                             "magenta1" "magenta2" "magenta3" "magenta4"
                             "DarkOrchid1" "DarkOrchid3" "DarkOrchid4" "purple4")))
   :config
   (progn
+    (set-face-foreground 'show-paren-match-face (face-foreground 'font-lock-comment-face))
     (add-hook 'prog-mode-hook 'highlight-parentheses-mode)))
 
 (t/use-package highlight-escape-sequences
