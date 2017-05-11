@@ -281,6 +281,8 @@ PWD is not in a git repo (or the git command is not found)."
          ((pcomplete-match (regexp-opt '("add" "rm")) 1)
           (while (pcomplete-here (pcomplete-entries))))
          ;; provide branch completion for the command `checkout'.
+         ((pcomplete-match "origin" 1)
+          (pcomplete-here* (pcmpl-git-get-refs "heads")))
          ((pcomplete-match "checkout" 1)
           (pcomplete-here* (pcmpl-git-get-refs "heads")))
          ((pcomplete-match "co" 1)
