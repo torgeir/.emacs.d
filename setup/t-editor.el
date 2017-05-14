@@ -340,17 +340,23 @@
   :config
   (progn
     (require 'smartparens-config)
+    (bind-key "<backspace>" 'sp-backward-delete-char sp-keymap)
     (bind-key "<delete>" 'sp-delete-char sp-keymap)
     (bind-key "C-<right>" 'sp-forward-slurp-sexp sp-keymap)
     (bind-key "C-<left>" 'sp-forward-barf-sexp sp-keymap)
     (bind-key "C-S-<right>" 'sp-backward-barf-sexp sp-keymap)
     (bind-key "C-S-<left>" 'sp-backward-slurp-sexp sp-keymap)
-    (bind-key "M-r" 'sp-raise-sexp sp-keymap)
-    (bind-key ";" 'sp-comment sp-keymap)
     (bind-key "M-<up>" 'sp-splice-sexp-killing-backward sp-keymap)
     (bind-key "M-<down>" 'sp-splice-sexp-killing-forward sp-keymap)
     (bind-key "M-S-<right>" 'sp-forward-sexp sp-keymap)
     (bind-key "M-S-<left>" 'sp-backward-sexp sp-keymap)
+
+    (dolist (mode-map (list
+                       emacs-lisp-mode-map
+                       clojure-mode-map
+                       lisp-mode-map
+                       lisp-interaction-mode-map))
+      (define-key mode-map ";" 'sp-comment))
 
     (t/def-pairs ((paren . "(")
                   (bracket . "[")
