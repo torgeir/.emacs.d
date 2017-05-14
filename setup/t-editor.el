@@ -109,13 +109,6 @@
 
   :config
   (progn
-    (defun neotree-find-project-root ()
-      (interactive)
-      (if (neo-global--window-exists-p)
-          (neotree-hide)
-        (let ((origin-buffer-file-name (buffer-file-name)))
-          (neotree-find (projectile-project-root))
-          (neotree-find origin-buffer-file-name))))
 
     (defun neotree-change-root-up ()
       (interactive)
@@ -824,7 +817,7 @@
 
   (t/declare-prefix "f" "Files/Frame"
                     "f" 'helm-find-files
-                    "l" 'neotree-find
+                    "l" 't/neotree-open-file
                     "J" 'dired-jump
                     "j" 'dired-jump-other-window
                     "d" 'delete-frame
@@ -904,7 +897,7 @@
                     "F" 'projectile-find-file-dwim
                     "G" 'projectile-regenerate-tags
                     "k" 'projectile-kill-buffers
-                    "l" 'neotree-find-project-root
+                    "l" 't/neotree-open-file
                     "o" 't/open-in-desktop
                     "p" 'projectile-find-file-in-known-projects
                     "R" 'projectile-replace

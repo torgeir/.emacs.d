@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22792 64475 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22808 9756 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -664,6 +664,11 @@ Get a list of all regexp matches (from the first group) in a string
 
 \(fn B)" nil nil)
 
+(autoload 't/neotree-open-file "t-defuns" "\
+
+
+\(fn)" t nil)
+
 ;;;***
 
 ;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
@@ -677,7 +682,7 @@ Get a list of all regexp matches (from the first group) in a string
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
 ;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
-;;;;;;  (22792 64455 0 0))
+;;;;;;  (22808 9937 0 0))
 
 ;;;***
 

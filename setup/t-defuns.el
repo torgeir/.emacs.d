@@ -1187,4 +1187,13 @@ If FILEXT is provided, return files with extension FILEXT instead."
                   (buffer-substring-no-properties 1 len)))
               "\n"))))))
 
+;;;###autoload
+(defun t/neotree-open-file ()
+  (interactive)
+  (if (neo-global--window-exists-p)
+      (neotree-hide)
+    (let ((origin-buffer-file-name (buffer-file-name)))
+      (neotree-find (projectile-project-root))
+      (neotree-find origin-buffer-file-name))))
+
  (provide 't-defuns)
