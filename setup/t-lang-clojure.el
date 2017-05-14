@@ -93,6 +93,12 @@
          ("C-M-." . cider-find-dwim))
   :config
   (progn
+
+    (defun t/cider-insert-last-sexp-in-repl ()
+      (interactive)
+      (cider-insert-last-sexp-in-repl 't)
+      (other-window 1))
+
     (t/declare-prefix-for-mode 'clojure-mode "d" "Mode"
                                "f" 'cider-doc
                                "j" 'cider-javadoc
@@ -101,6 +107,7 @@
                                "j" 'cider-jack-in
                                "J" 'cider-quit)
     (t/declare-prefix-for-mode 'clojure-mode "me" "Evaluate"
+                               "e" 't/cider-insert-last-sexp-in-repl
                                "b" 'cider-eval-buffer
                                "r" 'cider-eval-region
                                "f" 'cider-eval-defun-at-point
