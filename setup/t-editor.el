@@ -221,11 +221,11 @@
     (bind-key "C-l" 'evil-delete-backward-word company-active-map)
     (bind-key "C-u" 'backward-kill-sentence company-active-map)
     (bind-key "C-n" #'company-select-next company-active-map))
-    (bind-key "C-p" #'company-select-previous company-active-map)
-    (bind-key "C-," (lambda ()
-                      (interactive)
-                      (company-abort)
-                      (completion-at-point)) company-active-map))
+  (bind-key "C-p" #'company-select-previous company-active-map)
+  (bind-key "C-," (lambda ()
+                    (interactive)
+                    (company-abort)
+                    (completion-at-point)) company-active-map))
 
 (t/use-package company-flx
   :after company
@@ -309,21 +309,6 @@
                    (t/emoji-cheat-shet-plus--unicode-for-emoji-text emoji)
                  emoji)))))))))
 
-(t/use-package paredit
-  :diminish paredit-mode
-  :commands (enable-paredit-mode evil-cleverparens-mode)
-  :config
-  (progn
-    (dolist (mode-hook '(emacs-lisp-mode-hook
-                         clojure-mode-hook
-                         eval-expression-minibuffer-setup-hook
-                         ielm-mode-hook
-                         lisp-mode-hook
-                         lisp-interaction-mode-hook
-                         scheme-mode-hook))
-      (add-hook mode-hook #'enable-paredit-mode)
-      (add-hook mode-hook #'evil-cleverparens-mode))))
-
 (t/use-package smartparens
   :diminish smartparens-mode
   :only-standalone t
@@ -338,6 +323,17 @@
                     ruby-mode
                     mark-down-mode))
       (add-hook hook 'turn-on-smartparens-mode))
+
+    (dolist (hook '(emacs-lisp-mode-hook
+                    clojure-mode-hook
+                    eval-expression-minibuffer-setup-hook
+                    ielm-mode-hook
+                    lisp-mode-hook
+                    lisp-interaction-mode-hook
+                    scheme-mode-hook))
+      (add-hook hook #'turn-on-smartparens-mode)
+      (add-hook hook #'evil-cleverparens-mode))
+
     (setq sp-highlight-pair-overlay nil
           sp-highlight-wrap-overlay nil
           sp-highlight-wrap-tag-overlay nil))
@@ -349,13 +345,24 @@
     (bind-key "C-<left>" 'sp-forward-barf-sexp sp-keymap)
     (bind-key "C-S-<right>" 'sp-backward-barf-sexp sp-keymap)
     (bind-key "C-S-<left>" 'sp-backward-slurp-sexp sp-keymap)
-    (bind-key "M-s" 'sp-unwrap-sexp sp-keymap)
-    (bind-key "M-S-s" 'sp-raise-sexp sp-keymap)
-    (bind-key "M-i" 'sp-split-sexp sp-keymap)
-    (bind-key "M-S-i" 'sp-join-sexp sp-keymap)
-    (bind-key "M-t" 'sp-transpose-sexp sp-keymap)
-    (bind-key "M-S-<left>" 'sp-backward-sexp sp-keymap)
+    (bind-key "M-r" 'sp-raise-sexp sp-keymap)
+    (bind-key ";" 'sp-comment sp-keymap)
+    (bind-key "M-<up>" 'sp-splice-sexp-killing-backward sp-keymap)
+    (bind-key "M-<down>" 'sp-splice-sexp-killing-forward sp-keymap)
     (bind-key "M-S-<right>" 'sp-forward-sexp sp-keymap)
+    (bind-key "M-S-<left>" 'sp-backward-sexp sp-keymap)
+
+    (t/def-pairs ((paren . "(")
+                  (bracket . "[")
+                  (brace . "{")
+                  (single-quote . "'")
+                  (double-quote . "\"")
+                  (back-quote . "`")))
+
+    (bind-key "s-(" 't/wrap-with-parens)
+    (bind-key "s-)" 't/paredit-wrap-round-from-behind)
+    (bind-key "M-s-(" 't/wrap-with-braces)
+    (bind-key "M-s-[" 't/wrap-with-brackets)
 
     (sp-with-modes '(js2-mode
                      js-mode

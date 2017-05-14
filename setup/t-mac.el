@@ -40,12 +40,6 @@
   (bind-key "M-(" "{" key-translation-map)
   (bind-key "M-)" "}" key-translation-map)
 
-  ;; paredit specials
-  (bind-key "s-(" 'paredit-wrap-round)
-  (bind-key "s-)" 't/paredit-wrap-round-from-behind)
-  (bind-key "M-s-(" 'paredit-wrap-curly)
-  (bind-key "M-s-[" 'paredit-wrap-square)
-
   ;; os x window movement
   (bind-key "s->" 'next-multiframe-window)
   (bind-key "s-<" 'previous-multiframe-window)

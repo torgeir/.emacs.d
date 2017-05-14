@@ -73,8 +73,6 @@ for setting up vars and config after load")
              (message "t/use-package init: %s" (symbol-name ',init-name))
              (use-package ,package ,@body)))))))
 
-(provide 't-macros)
-
 ;; tests
 
 (comment
@@ -117,3 +115,18 @@ for setting up vars and config after load")
 
 (comment
  (symbol-function 't/config-which-key))
+
+(defmacro t/def-pairs (pairs)
+  "Create smartsmartparens wrapping function, e.g. t/wrap-with-paren"
+  `(progn
+     ,@(loop for (key . val) in pairs
+             collect
+             `(defun ,(read (concat
+                             "t/wrap-with-"
+                             (prin1-to-string key)
+                             "s"))
+                  (&optional arg)
+                (interactive "p")
+                (sp-wrap-with-pair ,val)))))
+
+(provide 't-macros)

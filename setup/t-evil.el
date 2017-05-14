@@ -84,6 +84,8 @@
 
 (t/use-package evil-cleverparens
   :after evil
+  :bind (:map evil-cleverparens-mode-map
+              ("M-d" . nil))
   :diminish evil-cleverparens-mode)
 
 (t/use-package org-evil

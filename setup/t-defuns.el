@@ -272,7 +272,7 @@ region-end is used."
 (defun t/paredit-wrap-round-from-behind ()
   (interactive)
   (forward-sexp -1)
-  (paredit-wrap-round)
+  (t/wrap-with-parens)
   (insert " ")
   (forward-char -1))
 
