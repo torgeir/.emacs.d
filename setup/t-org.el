@@ -303,7 +303,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         (when t-org-file-save-since-last-idle
           (message "Syncing agenda...")
           (org-save-all-org-buffers)
-          (org-gcal-sync)
           (t/org-export-calendars)
           (org-mobile-pull)
           (org-mobile-push)
@@ -322,7 +321,8 @@ Locally redefines org-agenda-files not to export all agenda files."
                                                 "bekk/datainn.org")))))
           (org-icalendar-export-agenda-files)))
 
-      (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5))
+      (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
+      (t/idle-timer t-timers-sync-org-gcal 'org-gcal-sync 60))
 
     (progn
       ;; show week numbers in calendar
