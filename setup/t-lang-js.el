@@ -18,13 +18,12 @@
                   js-indent-level *t-indent*
                   js-switch-indent-offset *t-indent*
                   js2-basic-offset *t-indent*))    ;; don't steel keys
-  :bind (:map
-         js2-mode-map
-         ("M-j" . nil)
-         ("M-." . nil)
-         ("TAB" . t/tab-properly))
   :config
   (progn
+
+    (unbind-key "M-j" js2-mode-map)
+    (unbind-key "M-." js2-mode-map)
+    (bind-key "TAB" 't/tab-properly js2-mode-map)
     (add-hook 'js2-mode-hook (lambda ()
                                (flycheck-mode 1)
                                (turn-on-smartparens-mode)
@@ -56,11 +55,9 @@
 
 (t/use-package nodejs-repl
   :commands nodejs-repl
-  :bind (:map
-         js2-mode-map
-         ("C-x C-e" . t/send-region-to-nodejs-repl-process))
   :config
   (progn
+    (bind-key "C-x C-e" 't/send-region-to-nodejs-repl-process js2-mode-map)
     (add-hook 'nodejs-repl-mode-hook
               (lambda ()
                 (bind-key "C-d" 't/volatile-kill-buffer evil-insert-state-local-map)

@@ -77,20 +77,7 @@
 (t/use-package org
   :ensure org-plus-contrib
   :commands (org-mode)
-  :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
-  :bind (:map
-         org-mode-map
-         ("s-s" . org-save-all-org-buffers)
-         ("C-x C-s" . org-save-all-org-buffers)
-         ("C-c C-k" . org-edit-src-abort)
-         ("M-p" . outline-previous-visible-heading)
-         ("M-n" . outline-next-visible-heading)
-         ("C-o" . nil)
-         ;;("C-c C-c" . org-edit-src-exit)
-         :map
-         smartparens-mode-map
-         ("M-S-<right>" . nil)
-         ("M-S-<left>" . nil)))
+  :mode ("\\.\\(org\\|org_archive\\)$" . org-mode))
 
 (defun t-org/config ()
 
@@ -517,9 +504,6 @@ Locally redefines org-agenda-files not to export all agenda files."
 
 (t/use-package elfeed
   :commands (elfeed-search-mode elfeed-show-mode)
-  :bind (:map
-         elfeed-search-mode-map
-         ("SPC" . elfeed-search-show-entry))
   :init
   (progn
     (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
@@ -533,7 +517,10 @@ Locally redefines org-agenda-files not to export all agenda files."
         (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)))
 
     (t/declare-prefix "o" "Other"
-                      "r" 'elfeed)))
+                      "r" 'elfeed))
+  :config
+  (progn
+    (bind-key "SPC" 'elfeed-search-show-entry elfeed-search-mode-map)))
 
 (t/use-package elfeed-goodies
   :after elfeed

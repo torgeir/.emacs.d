@@ -2,14 +2,12 @@
   :only-standalone t
   :ensure nil
   :mode "\\.css$"
-  :bind (:map
-         css-mode-map
-         ("M-k" . t/css-kill-value))
   :init
   (progn
     (setq css-indent-offset *t-indent*))
   :config
   (progn
+    (bind-key "M-k" 't/css-kill-value css-mode-map)
     (dolist (hook '(css-eldoc-enable
                     turn-on-smartparens-mode
                     rainbow-mode))
@@ -26,8 +24,8 @@
   :only-standalone t
   :mode "\\.less$"
   :commands less-css-mode
-  :bind (:map
-         css-mode-map
-         ("M-k" . t/css-kill-value)))
+  :config
+  (progn
+    (bind-key "M-k" 't/css-kill-value css-mode-map)))
 
 (provide 't-lang-css)

@@ -1,12 +1,10 @@
 (t/use-package ensime
   :pin melpa-stable
   :commands (ensime ensime-mode)
-  :bind (:map
-         evil-normal-state-map
-         ("C-." . nil)
-         ("M-." . nil))
   :config
   (progn
+    (unbind-key "C-." evil-normal-state-map)
+    (unbind-key "M-." evil-normal-state-map)
     (require 'ensime)
     (add-hook 'scala-mode-hook 'ensime-mode)
     (add-hook 'scala-mode-hook (lambda ()

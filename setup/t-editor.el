@@ -2,9 +2,11 @@
   :only-standalone t
   :ensure nil
   :commands (winner-undo winner-redo)
-  :bind (("C-c <left>" . winner-undo)
-         ("C-c <right>" . winner-undo))
-  :config (winner-mode 1))
+  :config
+  (progn
+    (winner-mode 1)
+    (bind-key "C-c <left>" 'winner-undo)
+    (bind-key "C-c <right>" 'winner-undo)))
 
 (t/use-package uniquify ; add dirs to buffer names when not unique
   :only-standalone t
@@ -90,7 +92,6 @@
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
 
 (t/use-package neotree
-  :bind (([f6] . neotree-toggle))
   :only-standalone t
   :commands (neotree-toggle
              neotree-show
@@ -109,6 +110,8 @@
 
   :config
   (progn
+
+    (bind-key [f6] 'neotree-toggle)
 
     (defun neotree-change-root-up ()
       (interactive)
@@ -189,14 +192,14 @@
                        (undo-tree-visualize))))))
 
 (t/use-package smex
-  :bind (("C-x C-m" . smex)
-         ("C-c C-M" . smex-major-mode-commands))
   :init
   (progn
     (setq smex-flex-matching t
           smex-save-file (locate-user-emacs-file ".smex-items")))
   :config
   (progn
+    (bind-key "C-x C-m" 'smex)
+    (bind-key "C-c C-M" 'smex-major-mode-commands)
     (smex-initialize)))
 
 (t/use-package company
@@ -387,10 +390,10 @@
 
 (t/use-package w3m
   :commands w3m
-  :bind (:map
-         w3m-mode-map
-         ("M-p" . backward-paragraph)
-         ("M-n" . forward-paragraph)))
+  :config
+  (progn
+    (bind-key "M-p" 'backward-paragraph w3m-mode-map)
+    (bind-key "M-n" 'forward-paragraph w3m-mode-map)))
 
 (t/use-package discover-my-major
   :commands (discover-my-major discover-my-mode))
@@ -402,14 +405,13 @@
              helm-projectile-ag)
   :only-standalone t
   :diminish helm-mode
-  :bind (:map
-         helm-map
-         ("C-w" . backward-kill-word)
-         ("C-u" . backward-kill-sentence)
-         ("C-c u" . universal-argument))
   :config
   (progn
     (require 'helm-config)
+    (progn
+      (bind-key "C-w" 'backward-kill-word helm-map)
+      (bind-key "C-u" 'backward-kill-sentence helm-map)
+      (bind-key "C-c u" 'universal-argument helm-map))
     (setq-default helm-display-header-line nil
                   helm-M-x-fuzzy-match t
                   helm-apropos-fuzzy-match t
@@ -477,18 +479,22 @@
   :after helm
   :only-standalone t
   :commands helm-swoop
-  :bind (:map
-         helm-swoop-edit-map
-         ("C-c C-c" . helm-swoop--edit-complete)
-         ("C-c C-k" . helm-swoop--edit-cancel)))
+  :config
+  (progn
+    (bind-key "C-c C-c" helm-swoop--edit-complete helm-swoop-edit-map)
+    (bind-key "C-c C-k" helm-swoop--edit-cancel helm-swoop-edit-map)))
 
 (t/use-package visual-regexp
   :commands vr/query-replace
-  :bind ("M-%" . vr/query-replace))
+  :config
+  (progn
+    (bind-key "M-%" 'vr/query-replace)))
 
 (t/use-package dash-at-point
   :commands dash-at-point
-  :bind ("C-c C-j" . dash-at-point))
+  :config
+  (progn
+    (bind-key "C-c C-j" 'dash-at-point)))
 
 (t/use-package expand-region
   :commands (er/expand-region er/contract-region)
@@ -502,11 +508,11 @@
   :commands transpose-frame)
 
 (t/use-package etags-select
-  :bind (("M-?" . t/ido-find-tag)
-         ("M-." . t/find-tag-at-point)
-         ("M-_" . find-tag-other-window))
   :config
   (progn
+    (bind-key "M-?" 't/ido-find-tag)
+    (bind-key "M-." 't/find-tag-at-point)
+    (bind-key "M-_" 'find-tag-other-window)
     (add-hook 'etags-select-mode-hook
               (lambda ()
                 (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)

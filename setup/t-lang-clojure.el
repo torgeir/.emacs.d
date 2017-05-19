@@ -88,11 +88,10 @@
           cider-overlays-use-font-lock t
           nrepl-hide-special-buffers t
           cider-prompt-for-symbol nil))
-  :bind (:map
-         cider-mode-map
-         ("C-M-." . cider-find-dwim))
   :config
   (progn
+
+    (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
 
     (defun t/cider-insert-last-sexp-in-repl ()
       (interactive)
