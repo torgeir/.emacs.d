@@ -18,6 +18,8 @@
     "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
     (setq-local var val))
 
+  (add-to-list 'org-archive-save-context-info 'ltags t)
+
   (setq org-startup-indented t        ; turn on org-indent-mode
         org-agenda-window-setup 'only-window ; remove other windows when agenda
         org-agenda-restore-windows-after-quit t ; restore them again
