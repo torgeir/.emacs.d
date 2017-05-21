@@ -342,17 +342,14 @@
           sp-highlight-wrap-tag-overlay nil))
   :config
   (progn
-    (require 'smartparens-config)
+    (sp-use-paredit-bindings)
     (bind-key "<backspace>" 'sp-backward-delete-char sp-keymap)
     (bind-key "<delete>" 'sp-delete-char sp-keymap)
-    (bind-key "C-<right>" 'sp-forward-slurp-sexp sp-keymap)
-    (bind-key "C-<left>" 'sp-forward-barf-sexp sp-keymap)
-    (bind-key "C-S-<right>" 'sp-backward-barf-sexp sp-keymap)
-    (bind-key "C-S-<left>" 'sp-backward-slurp-sexp sp-keymap)
-    (bind-key "M-<up>" 'sp-splice-sexp-killing-backward sp-keymap)
-    (bind-key "M-<down>" 'sp-splice-sexp-killing-forward sp-keymap)
-    (bind-key "M-S-<right>" 'sp-forward-sexp sp-keymap)
-    (bind-key "M-S-<left>" 'sp-backward-sexp sp-keymap)
+
+    (unbind-key "M-<up>" sp-keymap)
+    (unbind-key "M-<down>" sp-keymap)
+    (bind-key "C-M-<up>" 'sp-splice-sexp-killing-backward sp-keymap)
+    (bind-key "C-M-<down>" 'sp-splice-sexp-killing-forward sp-keymap)
 
     (dolist (mode-map (list
                        emacs-lisp-mode-map

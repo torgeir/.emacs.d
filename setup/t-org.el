@@ -409,10 +409,7 @@ Locally redefines org-agenda-files not to export all agenda files."
       (add-hook 'org-mode-hook
                 (lambda ()
                   (bind-key "C-w" 'org-refile org-mode-map)
-                  (bind-key "M-<return>" 't/org-meta-return-dwim org-mode-map)
-                  (bind-key "M-S-<return>" 't/org-insert-todo-heading-dwim org-mode-map)
-                  (bind-key "C-<return>" 't/org-insert-heading-respect-content-dwim org-mode-map)
-                  (bind-key "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim org-mode-map))))
+                  )))
 
     (defun yas/org-very-safe-expand ()
       (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
@@ -555,13 +552,13 @@ Locally redefines org-agenda-files not to export all agenda files."
 
 ;; smartparens helpers
 (with-eval-after-load 'smartparens
-(sp-with-modes 'org-mode
-  (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
-  (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
-  (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-  (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-  (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-  (sp-local-pair "«" "»")))
+  (sp-with-modes 'org-mode
+    (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
+    (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
+    (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "«" "»")))
 
 
 (provide 't-org)
