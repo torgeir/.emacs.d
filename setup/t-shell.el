@@ -42,6 +42,8 @@
     ;; ansi-term
     (defun t/ansi-term-mode-hook ()
       "Close current term buffer when `exit' or c-d from term buffer."
+      (goto-address-mode)
+
       (when (ignore-errors (get-buffer-process (current-buffer)))
         (set-process-sentinel
          (get-buffer-process (current-buffer))
@@ -54,7 +56,12 @@
 
     (defconst t-term-name "/bin/zsh")
     (defadvice ansi-term (before force-bash)
-      (interactive (list t-term-name)))
+      (interactive (list t-term-name))
+      (term-line-mode))
+    (ad-activate 'ansi-term)
+
+    (defadvice ansi-term (after always-use-line-mode)
+      (term-line-mode))
     (ad-activate 'ansi-term)
 
     ;; fix tab-completion
