@@ -489,7 +489,7 @@
 
 (t/use-package dash-at-point
   :commands dash-at-point
-  :config
+  :init
   (progn
     (bind-key "C-c C-j" 'dash-at-point)))
 
