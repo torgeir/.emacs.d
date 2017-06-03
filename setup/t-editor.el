@@ -87,7 +87,7 @@
 (t/use-package rainbow-delimiters
   :commands rainbow-delimiters-mode
   :only-standalone t
-  :config
+  :init
   (progn
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
 
@@ -353,10 +353,12 @@
 
     (dolist (mode-map (list
                        emacs-lisp-mode-map
-                       clojure-mode-map
                        lisp-mode-map
                        lisp-interaction-mode-map))
       (define-key mode-map ";" 'sp-comment))
+
+    (with-eval-after-load 'clojure-mode
+      (define-key clojure-mode-map ";" 'sp-comment))
 
     (t/def-pairs ((paren . "(")
                   (bracket . "[")
@@ -478,8 +480,8 @@
   :commands helm-swoop
   :config
   (progn
-    (bind-key "C-c C-c" helm-swoop--edit-complete helm-swoop-edit-map)
-    (bind-key "C-c C-k" helm-swoop--edit-cancel helm-swoop-edit-map)))
+    (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
+    (bind-key "C-c C-k" 'helm-swoop--edit-cancel helm-swoop-edit-map)))
 
 (t/use-package visual-regexp
   :commands vr/query-replace
@@ -489,7 +491,7 @@
 
 (t/use-package dash-at-point
   :commands dash-at-point
-  :init
+  :config
   (progn
     (bind-key "C-c C-j" 'dash-at-point)))
 
@@ -760,7 +762,7 @@
     (advice-add 'eval-defun :filter-return (lambda (r) (endless/eval-overlay r (save-excursion (end-of-defun) (point))))))
 
   (evil-leader/set-key "'" 't/eshell)
-  (evil-leader/set-key "[?\\t]" 't/switch-to-previous-buffer)
+  (evil-leader/set-key "TAB" 't/switch-to-previous-buffer)
 
   (t/declare-prefix "a" "Applications"
                     "B" 'w3m
@@ -778,6 +780,11 @@
                     "S" 'suggest)
 
   (t/declare-prefix "fe" "Editor")
+
+  (t/declare-prefix "fe" "Files"
+                    "i" (lambda () (interactive)
+                          (let ((default-directory user-emacs-directory))
+                            (helm-projectile nil))))
 
   (t/declare-prefix "fep" "Packages"
                     "i" 'package-install

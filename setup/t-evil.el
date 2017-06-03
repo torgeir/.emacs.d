@@ -41,26 +41,12 @@
     (bind-key "Y" 'spacemacs/evil-yank-to-end-of-line evil-normal-state-map)
     (bind-key "Y" 'spacemacs/evil-yank-to-end-of-line evil-motion-state-map)))
 
-(t/use-package evil-numbers
-  :only-standalone t
-  :commands (evil-numbers/inc-at-pt
-             evil-numbers/dec-at-pt)
-  :init
-  (progn
-    (evil-leader/set-key
-      "+" 'evil-numbers/inc-at-pt
-      "-" 'evil-numbers/dec-at-pt)))
-
 (t/use-package evil-matchit
   :only-standalone t
   :commands evilmi-jump-items
   :config
   (progn
     (global-evil-matchit-mode 1)))
-
-(t/use-package evil-multiedit
-  :config
-  (evil-multiedit-default-keybinds))
 
 (t/use-package evil-surround
   :only-standalone t
@@ -85,12 +71,17 @@
 (t/use-package evil-cleverparens
   :after evil
   :diminish evil-cleverparens-mode
-  :config
-  (progn
-    (unbind-key "M-d" evil-cleverparens-mode-map)))
+  :init
+  (progn (setq evil-cleverparens-use-additional-bindings nil)))
 
-(t/use-package org-evil
-  :after evil)
+(t/use-package evil-multiedit
+  :defer 1
+  :config
+  (evil-multiedit-default-keybinds))
+
+(comment
+ (t/use-package org-evil
+   :after evil))
 
 (t/use-package evil-commentary
   :after evil)

@@ -1,6 +1,6 @@
 (t/use-package clojure-mode
   :pin melpa-stable
-  :mode "\\.\\(edn\\|boot\\|clj\\|cljs\\)$"
+  :mode "\\.\\(edn\\|boot\\|clj\\)$"
   :commands (clojure-mode)
   :config
   (progn
@@ -22,6 +22,10 @@
     (add-hook 'clojure-mode-hook
               (lambda ()
                 (clj-refactor-mode 1)
+
+                (let ((is-cljs-file (not (null (string-match "\\.cljs$" (buffer-file-name))))))
+                  (when is-cljs-file (clojurescript-mode)))
+
                 (dolist (mapping '(("maps" . "outpace.util.maps")
                                    ("seqs" . "outpace.util.seqs")
                                    ("string" . "clojure.string")
@@ -29,6 +33,7 @@
                                    ("edn" . "clojure.edn")
                                    ("time" . "clj-time.core")))
                   (add-to-list 'cljr-magic-require-namespaces mapping t))
+
                 (t/declare-prefix-for-mode 'clojure-mode
                                            "mr" "Refactor"
                                            ;; https://github.com/clojure-emacs/clj-refactor.el/wiki

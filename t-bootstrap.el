@@ -4,7 +4,6 @@
 (defconst t-leader "SPC")
 (defconst t-dir-snippets (t/user-emacs-file "snippets"))
 (defconst t-dir-setup (t/user-emacs-file "setup"))
-(defconst t-dir-langs (t/user-emacs-file "langs"))
 
 (defconst t-dir-site-lisp (t/user-emacs-file "site-lisp"))
 (defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
@@ -22,7 +21,6 @@
 (defvar *t-debug-init* nil "Debug/time startup")
 
 (add-to-list 'load-path t-dir-setup)
-(add-to-list 'load-path t-dir-langs)
 (add-to-list 'load-path t-dir-site-lisp)
 
 (dolist (project (directory-files t-dir-site-lisp t "\\w+")) ; add folders inside site-lisp as well

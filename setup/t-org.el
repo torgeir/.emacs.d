@@ -18,8 +18,6 @@
     "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
     (setq-local var val))
 
-  (add-to-list 'org-archive-save-context-info 'ltags t)
-
   (setq org-startup-indented t        ; turn on org-indent-mode
         org-agenda-window-setup 'only-window ; remove other windows when agenda
         org-agenda-restore-windows-after-quit t ; restore them again
@@ -79,266 +77,9 @@
 (t/use-package org
   :ensure org-plus-contrib
   :commands (org-mode)
-  :mode ("\\.\\(org\\|org_archive\\)$" . org-mode))
-
-(defun t-org/config ()
-
-  (with-eval-after-load 'org
-
-    (progn
-      ;; fix completion dissapearing
-
-      (with-eval-after-load 'company (add-to-list 'company-backends 'company-capf))
-      (defun add-pcomplete-to-capf () (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-      (add-hook 'org-mode-hook #'add-pcomplete-to-capf))
-
-    (progn
-      ;; modules
-      (setq org-modules '(org-mouse))
-      (org-load-modules-maybe t)))
-
+  :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
+  :init
   (progn
-    ;; misc
-
-    ;;(require 'ox-md)
-    (require 'ob-clojure)
-
-    (setq org-babel-clojure-backend 'cider) ; use cider instead of slime (default)
-
-    (defconst org-babel-clojure-nrepl-timeout 20)
-    (defun org-babel-execute:clojure (body params)
-      "Execute a block of Clojure code with Babel."
-      (let ((expanded (org-babel-expand-body:clojure body params))
-            result)
-        (require 'cider)
-        (let ((result-params (cdr (assoc :result-params params))))
-          (setq result
-                (nrepl-dict-get
-                 (let ((nrepl-sync-request-timeout org-babel-clojure-nrepl-timeout))
-                   (nrepl-sync-request:eval expanded (cider-current-connection) (cider-current-session)))
-                 (if (or (member "output" result-params)
-                         (member "pp" result-params))
-                     "out"
-                   "value"))))
-        (org-babel-result-cond (cdr (assoc :result-params params))
-          result
-          (condition-case nil
-              result
-            (error result)))))
-
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (gnuplot . t)
-       (clojure . t)
-       (python . t)
-       (ruby . t)
-       (js . t)
-       (latex . t)
-       (shell . t)
-       (dot . t)
-       (restclient . t)))
-
-    (add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
-
-    (add-hook 'org-mode-hook
-              (lambda ()
-                (org-display-inline-images t t)
-                (visual-line-mode 1)    ; wrap long lines
-                ;; (progn
-                ;;   ;; yasnippet
-                ;;   (make-variable-buffer-local 'yas/trigger-key)
-                ;;   (org-set-local 'yas/trigger-key [tab])
-                ;;   (bind-key [tab] 'yas-next-field-or-maybe-expand yas/keymap))
-                )))
-
-  (progn
-    ;; agenda
-
-    (defun t/org-skip-subtree-if-priority (priority)
-      "Skip an agenda subtree if it has a priority of PRIORITY.
-
-PRIORITY may be one of the characters ?A, ?B, or ?C."
-      (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-            (pri-value (* 1000 (- org-lowest-priority priority)))
-            (pri-current (org-get-priority (thing-at-point 'line t))))
-        (if (= pri-value pri-current)
-            subtree-end
-          nil)))
-
-
-    (defun t/org-todos-by-tag-settings (name)
-      `((org-agenda-remove-tags t)
-        (org-agenda-sorting-strategy '(tag-up priority-down))
-        (org-agenda-todo-keyword-format "")
-        (org-agenda-overriding-header ,(concat "\n" name "\n"))))
-
-    (defun t/org-day-summary (tags)
-      `((tags ,(concat "PRIORITY=\"A\"&" ;; wat lol
-                       (replace-regexp-in-string "|" "|PRIORITY=\"A\"&" tags))
-              ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-               (org-agenda-overriding-header "Pri")))
-        (agenda ,tags
-                ((org-agenda-span 'day)
-                 (org-agenda-ndays 1)
-                 (org-agenda-time-grid nil)))
-        (tags-todo ,tags
-                   ((org-agenda-overriding-header "Unscheduled")
-                    (org-agenda-skip-function
-                     '(or (t/org-skip-subtree-if-priority ?A)
-                          (org-agenda-skip-if nil '(scheduled deadline))))))
-        (tags-todo ,tags
-                   ((org-agenda-overriding-header "Scheduled")
-                    (org-agenda-skip-function
-                     '(or (t/org-skip-subtree-if-priority ?A)
-                          (org-agenda-skip-if nil '(notscheduled deadline))))
-                    (org-show-context-detail 'minimal)
-                    (org-agenda-view-columns-initially t)))))
-
-    (setq org-agenda-include-diary t
-          org-agenda-diary-file (t/org-directory "diary.org")
-          org-agenda-default-appointment-duration nil
-          org-agenda-window-setup 'only-window ; delete other windows when showing agenda
-          org-agenda-files (t/find-org-files-recursively org-directory "org") ; where to look for org files
-          org-agenda-text-search-extra-files (t/find-org-files-recursively (t/user-file "/Dropbox/org") "org_archive")
-          org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
-          org-agenda-custom-commands `(("w" . "Work")
-                                       ("wh" "home" ,(t/org-day-summary "+home") ((org-agenda-remove-tags t)))
-                                       ("ww" "bekk" ,(t/org-day-summary "+bekk") ((org-agenda-remove-tags t)))
-                                       ("wd" "datainn" ,(t/org-day-summary "+datainn") ((org-agenda-remove-tags t)))
-
-                                       ("t" . "Todos")
-                                       ("ta" alltodo)
-                                       ("tt" todo "TODO" ,(t/org-todos-by-tag-settings "TODO tasks by tag"))
-                                       ("ts" todo "STARTED" ,(t/org-todos-by-tag-settings "STARTED tasks by tag"))
-                                       ("tc" todo "CANCELLED" ,(t/org-todos-by-tag-settings "CANCELLED tasks by tag"))
-                                       ("td" todo "DONE" ,(t/org-todos-by-tag-settings "DONE tasks by tag"))
-
-                                       ("h" . "Home")
-                                       ("hs" tags-todo "serie")
-                                       ("he" tags-todo "emacs")
-                                       ("hb" tags-todo "book")
-                                       ("hv" tags-todo "video")
-
-                                       ("d" "Deadlines" agenda ""
-                                        ((org-agenda-entry-types '(:deadline))
-                                         (org-agenda-ndays 1)
-                                         (org-deadline-warning-days 60)
-                                         (org-agenda-time-grid nil))))))
-
-  (progn
-    ;; realign tags
-
-    (defun t/org-mode-before-save ()
-      "Hook run before saving org buffers"
-      (when (eq major-mode 'org-mode)
-        (t/org-mode-realign-all-tags)))
-
-    (defun t/org-mode-realign-all-tags ()
-      "Code to realign tags, stolen from org.el"
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward org-outline-regexp-bol nil t)
-          (org-set-tags nil t)
-          (end-of-line))))
-
-    (add-hook 'before-save-hook #'t/org-mode-before-save))
-
-  (progn
-    ;; reselect visual when moving multiple lines
-    (setq t-org-move-tree-was-visual nil)
-    (defun t/org-visual-restore ()
-      (when t-org-move-tree-was-visual
-        (evil-normal-state)
-        (evil-visual-restore)
-        (setq t-org-move-tree-was-visual nil)))
-    (defadvice org-metaup   (before t/before-org-metaup activate) (setq t-org-move-tree-was-visual (region-active-p)))
-    (defadvice org-metadown (before t/before-org-metadown activate) (setq t-org-move-tree-was-visual (region-active-p)))
-    (defadvice org-metaup   (after t/after-org-metaup activate) (t/org-visual-restore))
-    (defadvice org-metadown (after t/after-org-metadown activate) (t/org-visual-restore)))
-
-  (progn
-    ;; save org mode buffers after refile
-    (defadvice
-        org-refile
-        (after t/after-org-refile activate)
-      (org-save-all-org-buffers)))
-
-  (progn
-    ;; idle timer
-
-    (when (boundp 'spacemacs-useful-buffers-regexp)
-      (add-to-list 'spacemacs-useful-buffers-regexp "\\*Org Agenda\\*"))
-
-    (defun t/jump-to-org-agenda ()
-      (interactive)
-      (let ((agenda-buffer (get-buffer "*Org Agenda*"))
-            wind)
-        (if (and (not (equal agenda-buffer (current-buffer)))
-                 agenda-buffer)
-            (if (setq wind (get-buffer-window agenda-buffer))
-                (select-window wind)
-              (if (called-interactively-p)
-                  (progn
-                    (select-window (display-buffer agenda-buffer t t))
-                    (org-fit-window-to-buffer)
-                    (org-agenda-redo t))
-                (with-selected-window (display-buffer agenda-buffer)
-                  (org-fit-window-to-buffer)
-                  (org-agenda-redo t))))
-          (call-interactively 'org-agenda-list))))
-
-    (progn
-
-      (defvar t-org-file-save-since-last-idle nil)
-
-      (defun t/org-mode-before-save-since-last-idle ()
-        "Hook to remember if org files are saved since last idle timer."
-        (when (eq major-mode 'org-mode)
-          (setq t-org-file-save-since-last-idle t)))
-
-      (add-hook 'before-save-hook #'t/org-mode-before-save-since-last-idle)
-
-      (defun t/org-idle-timer ()
-        "Timer to run when idle for syncing org."
-        (interactive)
-        (when t-org-file-save-since-last-idle
-          (message "Syncing agenda...")
-          (org-save-all-org-buffers)
-          (t/org-export-calendars)
-          (org-mobile-pull)
-          (org-mobile-push)
-          (setq t-org-file-save-since-last-idle nil)
-          (message "Syncing agenda... done"))
-        (t/jump-to-org-agenda))
-
-      (defun t/org-export-calendars ()
-        "Export given set of calendars to ical files, so you can subscribe to their dropbox links in ical.
-Locally redefines org-agenda-files not to export all agenda files."
-        (interactive)
-        (let ((org-agenda-files (cons org-default-notes-file
-                                      (mapcar #'t/org-directory
-                                              '("home.org"
-                                                "bekk/bekk.org"
-                                                "bekk/datainn.org")))))
-          (org-icalendar-export-agenda-files)))
-
-      (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
-      (t/idle-timer t-timers-sync-org-gcal 'org-gcal-sync 60))
-
-    (progn
-      ;; show week numbers in calendar
-
-      (copy-face font-lock-constant-face 'calendar-iso-week-face)
-      (set-face-attribute 'calendar-iso-week-face nil :height 0.7 :foreground "VioletRed2")
-      (copy-face 'default 'calendar-iso-week-header-face)
-      (set-face-attribute 'calendar-iso-week-header-face nil :height 0.7 :foreground "VioletRed4")
-      (setq calendar-intermonth-text
-            '(propertize
-              (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
-              'font-lock-face 'calendar-iso-week-face)
-            calendar-intermonth-header (propertize "WK" 'font-lock-face 'calendar-iso-week-header-face)))
-
     (t/declare-prefix "oo" "Org"
                       "c" 'org-capture
                       "e" 'org-export-dispatch
@@ -366,71 +107,341 @@ Locally redefines org-agenda-files not to export all agenda files."
     (t/declare-prefix "ooC" "Clock"
                       "i" 'org-clock-in
                       "o" 'org-clock-out)
+    ))
 
-    (when (boundp 'org-evil-table-mode-map)
-      (bind-key "M-S-<left>" 'org-table-delete-column org-evil-table-mode-map)
-      (bind-key "M-S-<right>" 'org-table-insert-column org-evil-table-mode-map))
+(defun t-org/config ()
+
+  (with-eval-after-load 'org
+
+    (add-to-list 'org-archive-save-context-info 'ltags t)
 
     (progn
-      ;; blank line before new entries with text,
-      ;; but not headings following other headings (todolists)
+      ;; fix completion dissapearing
 
-      (setq org-blank-before-new-entry
-            '((heading . always)
-              (plain-list-item . nil)))
+      (with-eval-after-load 'company (add-to-list 'company-backends 'company-capf))
+      (defun add-pcomplete-to-capf () (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+      (add-hook 'org-mode-hook #'add-pcomplete-to-capf))
 
-      (defun t/call-rebinding-org-blank-behaviour (fn)
-        (let ((org-blank-before-new-entry
-               (copy-tree org-blank-before-new-entry)))
-          (when (org-at-heading-p)
-            (rplacd (assoc 'heading org-blank-before-new-entry) nil))
-          (call-interactively fn)))
+    (progn
+      ;; modules
+      (setq org-modules '(org-mouse))
+      (org-load-modules-maybe t))
 
-      (defun t/org-meta-return-dwim ()
-        (interactive)
-        (evil-append-line 0)
-        (t/call-rebinding-org-blank-behaviour 'org-meta-return))
+    (progn
+      ;; misc
 
-      (defun t/org-insert-todo-heading-dwim ()
-        (interactive)
-        (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading)
-        (evil-cp-append 1))
+      ;;(require 'ox-md)
+      (require 'ob-clojure)
 
-      (defun t/org-insert-heading-respect-content-dwim ()
-        (interactive)
-        (t/call-rebinding-org-blank-behaviour 'org-insert-heading-respect-content)
-        (evil-cp-append 1))
+      (setq org-babel-clojure-backend 'cider) ; use cider instead of slime (default)
 
-      (defun t/org-insert-todo-heading-respect-content-dwim ()
-        (interactive)
-        (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading-respect-content)
-        (evil-cp-append 1))
+      (defconst org-babel-clojure-nrepl-timeout 20)
+      (defun org-babel-execute:clojure (body params)
+        "Execute a block of Clojure code with Babel."
+        (let ((expanded (org-babel-expand-body:clojure body params))
+              result)
+          (require 'cider)
+          (let ((result-params (cdr (assoc :result-params params))))
+            (setq result
+                  (nrepl-dict-get
+                   (let ((nrepl-sync-request-timeout org-babel-clojure-nrepl-timeout))
+                     (nrepl-sync-request:eval expanded (cider-current-connection) (cider-current-session)))
+                   (if (or (member "output" result-params)
+                           (member "pp" result-params))
+                       "out"
+                     "value"))))
+          (org-babel-result-cond (cdr (assoc :result-params params))
+            result
+            (condition-case nil
+                result
+              (error result)))))
+
+      (org-babel-do-load-languages
+       'org-babel-load-languages
+       '((emacs-lisp . t)
+         (gnuplot . t)
+         (clojure . t)
+         (python . t)
+         (ruby . t)
+         (js . t)
+         (latex . t)
+         (shell . t)
+         (dot . t)
+         (restclient . t)))
+
+      (add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
 
       (add-hook 'org-mode-hook
                 (lambda ()
-                  (bind-key "C-w" 'org-refile org-mode-map)
+                  (org-display-inline-images t t)
+                  (visual-line-mode 1)    ; wrap long lines
+                  ;; (progn
+                  ;;   ;; yasnippet
+                  ;;   (make-variable-buffer-local 'yas/trigger-key)
+                  ;;   (org-set-local 'yas/trigger-key [tab])
+                  ;;   (bind-key [tab] 'yas-next-field-or-maybe-expand yas/keymap))
                   )))
 
-    (defun yas/org-very-safe-expand ()
-      (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
+    (progn
+      ;; agenda
 
-    (defun yas/org-setup ()
-      ;; yasnippet (using the new org-cycle hooks)
-      (yas-global-mode 1)
-      (make-variable-buffer-local 'yas-trigger-key)
-      (setq yas-trigger-key [tab])
-      (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-      (define-key yas-keymap [tab] 'yas-next-field))
+      (defun t/org-skip-subtree-if-priority (priority)
+        "Skip an agenda subtree if it has a priority of PRIORITY.
 
-    ;; See https://github.com/eschulte/emacs24-starter-kit/issues/80.
-    (setq org-src-tab-acts-natively nil)
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+        (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+              (pri-value (* 1000 (- org-lowest-priority priority)))
+              (pri-current (org-get-priority (thing-at-point 'line t))))
+          (if (= pri-value pri-current)
+              subtree-end
+            nil)))
 
-    (add-hook 'org-mode-hook #'yas/org-setup)))
+
+      (defun t/org-todos-by-tag-settings (name)
+        `((org-agenda-remove-tags t)
+          (org-agenda-sorting-strategy '(tag-up priority-down))
+          (org-agenda-todo-keyword-format "")
+          (org-agenda-overriding-header ,(concat "\n" name "\n"))))
+
+      (defun t/org-day-summary (tags)
+        `((tags ,(concat "PRIORITY=\"A\"&" ;; wat lol
+                         (replace-regexp-in-string "|" "|PRIORITY=\"A\"&" tags))
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "Pri")))
+          (agenda ,tags
+                  ((org-agenda-span 'day)
+                   (org-agenda-ndays 1)
+                   (org-agenda-time-grid nil)))
+          (tags-todo ,tags
+                     ((org-agenda-overriding-header "Unscheduled")
+                      (org-agenda-skip-function
+                       '(or (t/org-skip-subtree-if-priority ?A)
+                            (org-agenda-skip-if nil '(scheduled deadline))))))
+          (tags-todo ,tags
+                     ((org-agenda-overriding-header "Scheduled")
+                      (org-agenda-skip-function
+                       '(or (t/org-skip-subtree-if-priority ?A)
+                            (org-agenda-skip-if nil '(notscheduled deadline))))
+                      (org-show-context-detail 'minimal)
+                      (org-agenda-view-columns-initially t)))))
+
+      (setq org-agenda-include-diary t
+            org-agenda-diary-file (t/org-directory "diary.org")
+            org-agenda-default-appointment-duration nil
+            org-agenda-window-setup 'only-window ; delete other windows when showing agenda
+            org-agenda-files (t/find-org-files-recursively org-directory "org") ; where to look for org files
+            org-agenda-text-search-extra-files (t/find-org-files-recursively (t/user-file "/Dropbox/org") "org_archive")
+            org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
+            org-agenda-custom-commands `(("w" . "Work")
+                                         ("wh" "home" ,(t/org-day-summary "+home") ((org-agenda-remove-tags t)))
+                                         ("ww" "bekk" ,(t/org-day-summary "+bekk") ((org-agenda-remove-tags t)))
+                                         ("wd" "datainn" ,(t/org-day-summary "+datainn") ((org-agenda-remove-tags t)))
+
+                                         ("t" . "Todos")
+                                         ("ta" alltodo)
+                                         ("tt" todo "TODO" ,(t/org-todos-by-tag-settings "TODO tasks by tag"))
+                                         ("ts" todo "STARTED" ,(t/org-todos-by-tag-settings "STARTED tasks by tag"))
+                                         ("tc" todo "CANCELLED" ,(t/org-todos-by-tag-settings "CANCELLED tasks by tag"))
+                                         ("td" todo "DONE" ,(t/org-todos-by-tag-settings "DONE tasks by tag"))
+
+                                         ("h" . "Home")
+                                         ("hs" tags-todo "serie")
+                                         ("he" tags-todo "emacs")
+                                         ("hb" tags-todo "book")
+                                         ("hv" tags-todo "video")
+
+                                         ("d" "Deadlines" agenda ""
+                                          ((org-agenda-entry-types '(:deadline))
+                                           (org-agenda-ndays 1)
+                                           (org-deadline-warning-days 60)
+                                           (org-agenda-time-grid nil))))))
+
+    (progn
+      ;; realign tags
+
+      (defun t/org-mode-before-save ()
+        "Hook run before saving org buffers"
+        (when (eq major-mode 'org-mode)
+          (t/org-mode-realign-all-tags)))
+
+      (defun t/org-mode-realign-all-tags ()
+        "Code to realign tags, stolen from org.el"
+        (save-excursion
+          (goto-char (point-min))
+          (while (re-search-forward org-outline-regexp-bol nil t)
+            (org-set-tags nil t)
+            (end-of-line))))
+
+      (add-hook 'before-save-hook #'t/org-mode-before-save)
+
+      (progn
+        ;; reselect visual when moving multiple lines
+        (setq t-org-move-tree-was-visual nil)
+        (defun t/org-visual-restore ()
+          (when t-org-move-tree-was-visual
+            (evil-normal-state)
+            (evil-visual-restore)
+            (setq t-org-move-tree-was-visual nil)))
+        (defadvice org-metaup   (before t/before-org-metaup activate) (setq t-org-move-tree-was-visual (region-active-p)))
+        (defadvice org-metadown (before t/before-org-metadown activate) (setq t-org-move-tree-was-visual (region-active-p)))
+        (defadvice org-metaup   (after t/after-org-metaup activate) (t/org-visual-restore))
+        (defadvice org-metadown (after t/after-org-metadown activate) (t/org-visual-restore))))
+
+    (progn
+      ;; save org mode buffers after refile
+      (defadvice
+          org-refile
+          (after t/after-org-refile activate)
+        (org-save-all-org-buffers)))
+
+    (progn
+      ;; idle timer
+
+      (when (boundp 'spacemacs-useful-buffers-regexp)
+        (add-to-list 'spacemacs-useful-buffers-regexp "\\*Org Agenda\\*"))
+
+      (defun t/jump-to-org-agenda ()
+        (interactive)
+        (let ((agenda-buffer (get-buffer "*Org Agenda*"))
+              wind)
+          (if (and (not (equal agenda-buffer (current-buffer)))
+                   agenda-buffer)
+              (if (setq wind (get-buffer-window agenda-buffer))
+                  (select-window wind)
+                (if (called-interactively-p)
+                    (progn
+                      (select-window (display-buffer agenda-buffer t t))
+                      (org-fit-window-to-buffer)
+                      (org-agenda-redo t))
+                  (with-selected-window (display-buffer agenda-buffer)
+                    (org-fit-window-to-buffer)
+                    (org-agenda-redo t))))
+            (call-interactively 'org-agenda-list))))
+
+      (progn
+
+        (defvar t-org-file-save-since-last-idle nil)
+
+        (defun t/org-mode-before-save-since-last-idle ()
+          "Hook to remember if org files are saved since last idle timer."
+          (when (eq major-mode 'org-mode)
+            (setq t-org-file-save-since-last-idle t)))
+
+        (add-hook 'before-save-hook #'t/org-mode-before-save-since-last-idle)
+
+        (defun t/org-idle-timer ()
+          "Timer to run when idle for syncing org."
+          (interactive)
+          (when t-org-file-save-since-last-idle
+            (message "Syncing agenda...")
+            (org-save-all-org-buffers)
+            (t/org-export-calendars)
+            (org-mobile-pull)
+            (org-mobile-push)
+            (setq t-org-file-save-since-last-idle nil)
+            (message "Syncing agenda... done"))
+          (t/jump-to-org-agenda))
+
+        (defun t/org-export-calendars ()
+          "Export given set of calendars to ical files, so you can subscribe to their dropbox links in ical.
+Locally redefines org-agenda-files not to export all agenda files."
+          (interactive)
+          (let ((org-agenda-files (cons org-default-notes-file
+                                        (mapcar #'t/org-directory
+                                                '("home.org"
+                                                  "bekk/bekk.org"
+                                                  "bekk/datainn.org")))))
+            (org-icalendar-export-agenda-files)))
+
+        (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
+        (t/idle-timer t-timers-sync-org-gcal 'org-gcal-sync 60))
+
+      (progn
+        ;; show week numbers in calendar
+
+        (copy-face font-lock-constant-face 'calendar-iso-week-face)
+        (set-face-attribute 'calendar-iso-week-face nil :height 0.7 :foreground "VioletRed2")
+        (copy-face 'default 'calendar-iso-week-header-face)
+        (set-face-attribute 'calendar-iso-week-header-face nil :height 0.7 :foreground "VioletRed4")
+        (setq calendar-intermonth-text
+              '(propertize
+                (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
+                'font-lock-face 'calendar-iso-week-face)
+              calendar-intermonth-header (propertize "WK" 'font-lock-face 'calendar-iso-week-header-face)))
+
+      (when (boundp 'org-evil-table-mode-map)
+        (bind-key "M-S-<left>" 'org-table-delete-column org-evil-table-mode-map)
+        (bind-key "M-S-<right>" 'org-table-insert-column org-evil-table-mode-map))
+
+      (progn
+        ;; blank line before new entries with text,
+        ;; but not headings following other headings (todolists)
+
+        (setq org-blank-before-new-entry
+              '((heading . always)
+                (plain-list-item . nil)))
+
+        (defun t/call-rebinding-org-blank-behaviour (fn)
+          (let ((org-blank-before-new-entry
+                 (copy-tree org-blank-before-new-entry)))
+            (when (org-at-heading-p)
+              (rplacd (assoc 'heading org-blank-before-new-entry) nil))
+            (call-interactively fn)))
+
+        (defun t/org-meta-return-dwim ()
+          (interactive)
+          (evil-append-line 0)
+          (t/call-rebinding-org-blank-behaviour 'org-meta-return))
+
+        (defun t/org-insert-todo-heading-dwim ()
+          (interactive)
+          (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading)
+          (evil-cp-append 1))
+
+        (defun t/org-insert-heading-respect-content-dwim ()
+          (interactive)
+          (t/call-rebinding-org-blank-behaviour 'org-insert-heading-respect-content)
+          (evil-cp-append 1))
+
+        (defun t/org-insert-todo-heading-respect-content-dwim ()
+          (interactive)
+          (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading-respect-content)
+          (evil-cp-append 1))
+
+        (add-hook 'org-mode-hook
+                  (lambda ()
+                    (bind-key "C-w" 'org-refile org-mode-map)
+                    )))
+
+      (defun yas/org-very-safe-expand ()
+        (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
+
+      (defun yas/org-setup ()
+        ;; yasnippet (using the new org-cycle hooks)
+        (yas-global-mode 1)
+        (make-variable-buffer-local 'yas-trigger-key)
+        (setq yas-trigger-key [tab])
+        (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+        (define-key yas-keymap [tab] 'yas-next-field))
+
+      ;; See https://github.com/eschulte/emacs24-starter-kit/issues/80.
+      (setq org-src-tab-acts-natively nil)
+
+      (add-hook 'org-mode-hook #'yas/org-setup))
+
+
+    (defun t/remove-org-mode-stars ()
+      (set-face-attribute 'org-hide nil 
+                          :foreground 
+                          (face-attribute 'default :background)))
+    (add-hook 'org-mode-hook #'t/remove-org-mode-stars)
+    ))
 
 (t/use-package ob-restclient
   :after org)
 
 (t/use-package org-alert
+  :defer 5
   :config
   (progn
     (setq alert-default-style 'osx-notifier

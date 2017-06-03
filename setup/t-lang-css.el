@@ -8,17 +8,14 @@
   :config
   (progn
     (bind-key "M-k" 't/css-kill-value css-mode-map)
-    (dolist (hook '(css-eldoc-enable
-                    turn-on-smartparens-mode
+    (dolist (hook '(turn-on-smartparens-mode
                     rainbow-mode))
       (add-hook 'css-mode-hook hook))))
 
 (t/use-package css-eldoc
-  :commands css-eldoc-enable
   :init
   (progn
-    (with-eval-after-load 'company-mode
-      (add-hook 'css-mode-hook #'css-eldoc-enable))))
+    (add-hook 'css-mode-hook #'turn-on-css-eldoc)))
 
 (t/use-package less-css-mode
   :only-standalone t

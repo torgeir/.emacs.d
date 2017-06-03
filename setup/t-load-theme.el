@@ -15,13 +15,6 @@
           doom-one-brighter-modeline nil
           doom-one-brighter-comments t)
 
-    ;; brighter source buffers (that represent files)
-    ;,(add-hook 'find-file-hook 'doom-buffer-mode-maybe)
-    ;; ...if you use auto-revert-mode
-    ;;(add-hook 'after-revert-hook 'doom-buffer-mode-maybe)
-    ;; And you can brighten other buffers (unconditionally) with:
-    (add-hook 'ediff-prepare-buffer-hook 'doom-buffer-mode)
-
     ;; brighter minibuffer when active
     (add-hook 'minibuffer-setup-hook 'doom-brighten-minibuffer)
 
@@ -48,13 +41,6 @@
       (setq t-themes (-concat rest first))
       (car (-take 1 t-themes))))
 
-  (defun t/tone-down-fringe-bg-color ()
-    "Make fringe background-color the same as the background-color"
-    (interactive)
-    (set-face-attribute 'fringe nil
-                        :foreground (face-foreground 'default)
-                        :background (face-background 'default)))
-
   (defun t/load-theme-cycle ()
     "Cycles `t-themes' and loads first theme in list"
     (interactive)
@@ -67,7 +53,6 @@
 
   (defadvice load-theme (after t/advice-after-load-theme activate)
     "Tone down fringe after loading new themes"
-    ;;(t/tone-down-fringe-bg-color)
     (t/reset-font-size))
 
   (add-hook 'after-init-hook (lambda () (t/load-theme)))

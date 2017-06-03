@@ -1172,7 +1172,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/call-init (prefix-fmt pkg)
   (let ((fn (intern (format prefix-fmt pkg))))
     (when (fboundp fn)
-      (message "t/call-init: %s" fn)
+      (when *t-debug-init*
+        (message "t/call-init: %s" fn))
       (funcall fn))))
 
 ;;;###autoload
@@ -1190,7 +1191,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/neotree-open-file ()
   (interactive)
-  (if (neo-global--window-exists-p)
+  (if (and (fboundp 'neo-global--window-exists-p)
+           (neo-global--window-exists-p))
       (neotree-hide)
     (let ((origin-buffer-file-name (buffer-file-name)))
       (neotree-find (projectile-project-root))
