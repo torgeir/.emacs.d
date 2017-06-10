@@ -27,11 +27,12 @@
     (defun clear-all-highlights ()
       (interactive)
       (evil-ex-nohighlight)
-      (evil-search-highlight-persist-remove-all)
+      (when (fboundp 'evil-search-highlight-persist-remove-all)
+        (evil-search-highlight-persist-remove-all))
       (highlight-symbol-remove-all))
 
-    ;; clear highlights with leader leader
-    (evil-leader/set-key t-leader 'clear-all-highlights)
+    (t/declare-prefix "s" "Search"
+                      "c" 'clear-all-highlights)
 
     (defun spacemacs/evil-yank-to-end-of-line ()
       "Yank from point to end of line."
