@@ -1252,4 +1252,10 @@ If FILEXT is provided, return files with extension FILEXT instead."
           (evil-normal-state))
       (evil-cp-backward-up-sexp))))
 
+;;;###autoload
+(defun t/helm-files-emacs-init-files ()
+  (interactive)
+  (let ((default-directory user-emacs-directory))
+    (helm-projectile nil)))
+
 (provide 't-defuns)

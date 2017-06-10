@@ -811,9 +811,8 @@
   (t/declare-prefix "fe" "Editor")
 
   (t/declare-prefix "fe" "Files"
-                    "i" (lambda () (interactive)
-                          (let ((default-directory user-emacs-directory))
-                            (helm-projectile nil))))
+                    "R" 'config-reload
+                    "i" 't/helm-files-emacs-init-files)
 
   (t/declare-prefix "fep" "Packages"
                     "i" 'package-install
