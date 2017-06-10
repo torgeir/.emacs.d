@@ -27,12 +27,18 @@
 (progn
   ;; emacs local
 
+  (t/use-package sgml-mode
+    :ensure nil
+    :init
+    (progn
+      (add-hook 'sgml-mode-hook
+                (lambda ()
+                  (set (make-local-variable 'sgml-basic-offset) *t-indent-xml*)
+                  (sgml-guess-indent)))))
+
   (t/use-package nxml-mode
     :ensure nil
     :mode "\\.\\(xml\\|svg\\|rss\\|xsd\\|xslt\\|plist\\)$"
-    :init
-    (setq sgml-basic-offset *t-indent-xml*)
-
     :config
     ;; reindent after deleting tag with C-c DEL
     (defadvice sgml-delete-tag (after reindent activate)
@@ -43,9 +49,8 @@
 
   (t/use-package html
     :ensure nil
-    :mode
-    ("\\.html\\'" . html-mode)
-    ("\\.htm\\'" . html-mode))
+    :mode ("\\.\\(html|htm\\)" . html-mode))
+
   )
 
 (provide 't-local)

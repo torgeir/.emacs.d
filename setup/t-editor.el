@@ -30,13 +30,14 @@
     (setq tramp-default-method "ssh"
           tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save"))))
 
-(t/use-package hideshow
-  :defer 2
-  :ensure nil
-  :diminish hs-minor-mode
-  :config
-  (progn
-    (add-hook 'prog-mode-hook 'hs-minor-mode)))
+(comment
+ (t/use-package hideshow
+   :defer 2
+   :ensure nil
+   :diminish hs-minor-mode
+   :config
+   (progn
+     (add-hook 'prog-mode-hook 'hs-minor-mode))))
 
 (t/use-package dired
   :ensure nil
@@ -161,7 +162,7 @@
   :only-standalone t
   :config
   (progn
-    (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)
+    (setq aw-keys '(?j ?k ?l ?a ?s ?d ?f ?g)
           aw-background t)))
 
 (t/use-package ace-jump-mode
@@ -318,38 +319,14 @@
   :commands turn-on-smartparens-mode
   :init
   (progn
-    (dolist (hook '(js2-mode-hook
-                    js-mode-hook
-                    java-mode
-                    text-mode-hook
-                    restclient-mode-hook
-                    ruby-mode
-                    mark-down-mode))
-      (add-hook hook 'turn-on-smartparens-mode))
-
-    (dolist (hook '(emacs-lisp-mode-hook
-                    clojure-mode-hook
-                    eval-expression-minibuffer-setup-hook
-                    ielm-mode-hook
-                    lisp-mode-hook
-                    lisp-interaction-mode-hook
-                    scheme-mode-hook))
-      (add-hook hook #'turn-on-smartparens-mode)
-      (add-hook hook #'evil-cleverparens-mode))
-
-    (setq sp-highlight-pair-overlay nil
-          sp-highlight-wrap-overlay nil
-          sp-highlight-wrap-tag-overlay nil))
-  :config
-  (progn
+    (setq sp-ignore-modes-list (delete 'minibuffer-inactive-mode sp-ignore-modes-list))
     (sp-use-paredit-bindings)
     (bind-key "<backspace>" 'sp-backward-delete-char sp-keymap)
     (bind-key "<delete>" 'sp-delete-char sp-keymap)
-
+    ;; interfers with e.g. org-mode, enable them specifically in lisp modes instead
     (unbind-key "M-<up>" sp-keymap)
     (unbind-key "M-<down>" sp-keymap)
-    (bind-key "C-M-<up>" 'sp-splice-sexp-killing-backward sp-keymap)
-    (bind-key "C-M-<down>" 'sp-splice-sexp-killing-forward sp-keymap)
+    (bind-key "M-?" 'sp-convolute-sexp sp-keymap)
 
     (dolist (mode-map (list
                        emacs-lisp-mode-map
@@ -360,6 +337,61 @@
     (with-eval-after-load 'clojure-mode
       (define-key clojure-mode-map ";" 'sp-comment))
 
+    (dolist (hook '(js2-mode-hook
+                    js-mode-hook
+                    java-mode
+                    text-mode-hook
+                    restclient-mode-hook
+                    ruby-mode
+                    mark-down-mode))
+      (add-hook hook 'turn-on-smartparens-mode))
+
+    ;; enable in minibuffer
+    (add-hook 'eval-expression-minibuffer-setup-hook #'turn-on-smartparens-mode)
+    (add-hook 'eval-expression-minibuffer-setup-hook #'evil-cleverparens-mode) 
+
+    (defun t/enable-movement-for-lisp-mode (m)
+      (let* ((mode (symbol-name m))
+             (mode-hook (intern (concat mode "-hook")))
+             (mode-map (intern (concat mode "-map"))))
+        (add-hook mode-hook 'turn-on-smartparens-mode)
+        (add-hook mode-hook 'evil-cleverparens-mode)
+
+        ;; add M-<up/down> in lisp modes, not to steal them in org-mode
+        (eval `(add-hook mode-hook (lambda ()
+                                     (bind-key "M-<up>" 'sp-splice-sexp-killing-backward ,mode-map)
+                                     (bind-key "M-<down>" 'sp-splice-sexp-killing-forward ,mode-map))))
+        
+        (eval `(bind-key "M-<left>" #'t/backward-down-sexp ,mode-map))
+        (eval `(bind-key "M-<right>" #'t/forward-down-sexp ,mode-map))
+        (eval `(bind-key "M-S-<left>" #'t/backward-sexp ,mode-map))
+        (eval `(bind-key "M-S-<right>" #'t/forward-sexp ,mode-map))))
+
+    (defun t/disable-quote-pairs-for-mode (mode)
+      (sp-local-pair mode "`" nil :actions nil)
+      (sp-local-pair mode "'" nil :actions nil))
+
+    (t/enable-movement-for-lisp-mode 'emacs-lisp-mode)
+
+    (dolist (mode (list
+                   'emacs-lisp-mode
+                   'lisp-mode
+                   'lisp-interaction-mode))
+      (t/enable-movement-for-lisp-mode mode))
+
+    (with-eval-after-load 'clojure-mode (t/enable-movement-for-lisp-mode 'clojure-mode))
+    (with-eval-after-load 'ielm-mode (t/enable-movement-for-lisp-mode 'ielm-mode))
+    (with-eval-after-load 'scheme-mode (t/enable-movement-for-lisp-mode 'scheme-mode))
+
+    (dolist (mode '(emacs-lisp-mode
+                    clojure-mode
+                    ielm-mode
+                    lisp-mode
+                    lisp-interaction-mode
+                    minibuffer-inactive-mode
+                    scheme-mode))
+      (t/disable-quote-pairs-for-mode mode))
+    
     (t/def-pairs ((paren . "(")
                   (bracket . "[")
                   (brace . "{")
@@ -536,9 +568,6 @@
     ;; make fundamental snippets global snippets
     (add-hook 'yas-minor-mode-hook (lambda () (yas-activate-extra-mode 'fundamental-mode)))
 
-    ;; on for all buffers
-    (yas-global-mode 1)
-
     ;; jump to end of snippet definition
     (bind-key "<return>" 'yas-exit-all-snippets yas-keymap)
 
@@ -623,20 +652,22 @@
   :commands highlight-parentheses-mode
   :init
   (progn
-    (setq hl-paren-colors '("DeepPink1" "maroon1" "maroon2" "maroon3" "DeepPink3"
-                            "DeepPink4" "maroon4" "VioletRed4"
-                            "magenta1" "magenta2" "magenta3" "magenta4"
-                            "DarkOrchid1" "DarkOrchid3" "DarkOrchid4" "purple4")))
+    (setq hl-paren-colors '("DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink"))
+    (add-hook 'prog-mode-hook 'highlight-parentheses-mode))
   :config
   (progn
-    (set-face-foreground 'show-paren-match-face (face-foreground 'font-lock-comment-face))
-    (add-hook 'prog-mode-hook 'highlight-parentheses-mode)))
+    (defface t-hl-paren-face
+      '(( t (:foreground "Green" :bold t)))
+      "Face used for highlighting matching parens" :group 'basic-faces)
+    (set-face-foreground 'show-paren-match-face (face-foreground 't-hl-paren-face))))
 
 (t/use-package highlight-escape-sequences
   :commands hes-mode
+  :init
+  (progn
+    (add-hook 'prog-mode-hook 'hes-mode))
   :config
   (progn
-    (add-hook 'prog-mode-hook 'hes-mode)
     (put 'hes-escape-backslash-face 'face-alias 'font-lock-comment-face)
     (put 'hes-escape-sequence-face 'face-alias 'font-lock-comment-face)))
 
@@ -648,15 +679,13 @@
              highlight-symbol-prev)
   :init
   (progn
-    (setq highlight-symbol-idle-delay 0.2))
-  :config
-  (progn
+    (setq highlight-symbol-idle-delay 0.2)
     (add-hook 'prog-mode-hook 'highlight-symbol-mode)))
 
 (t/use-package highlight-numbers
   :defer 1
   :only-standalone t
-  :config
+  :init
   (progn
     (add-hook 'prog-mode-hook 'highlight-numbers-mode)))
 

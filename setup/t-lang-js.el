@@ -13,7 +13,7 @@
                   js2-strict-cond-assign-warning nil
                   js2-strict-var-redeclaration-warning nil
                   js2-strict-trailing-comma-warning t) ;; jshint does not warn about this now for some reason
-    (setq-default js2-global-externs '("module" "require" "describe" "it" "sinon" "assert" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
+    (setq-default js2-global-externs '("module" "require" "describe" "it" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON" "process"))
     (setq-default js2-highlight-level 3
                   js-indent-level *t-indent*
                   js-switch-indent-offset *t-indent*

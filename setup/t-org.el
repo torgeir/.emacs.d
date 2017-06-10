@@ -80,7 +80,7 @@
   :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
   :init
   (progn
-    (t/declare-prefix "oo" "Org"
+    (t/declare-prefix "ao" "Org"
                       "c" 'org-capture
                       "e" 'org-export-dispatch
                       "g" 'org-mac-grab-link
@@ -88,23 +88,23 @@
                       "n" 'org-alert-check
                       "i" 'org-info)
 
-    (t/declare-prefix "oom" "Mobile"
+    (t/declare-prefix "aom" "Mobile"
                       "p" 'org-mobile-push
                       "P" 'org-mobile-pull)
 
-    (t/declare-prefix "ool" "Links"
+    (t/declare-prefix "aol" "Links"
                       "s" 'org-store-link
                       "i" 'org-insert-link)
 
-    (t/declare-prefix "oot" "Tags"
+    (t/declare-prefix "aot" "Tags"
                       "a" 'org-archive-set-tag
                       "t" 'org-set-tags-command)
 
-    (t/declare-prefix "ooT" "Table"
+    (t/declare-prefix "aoT" "Table"
                       "Tg" 'org-table-toggle-coordinate-overlays
                       "Tf" 'org-table-formula)
 
-    (t/declare-prefix "ooC" "Clock"
+    (t/declare-prefix "aoC" "Clock"
                       "i" 'org-clock-in
                       "o" 'org-clock-out)
     ))
@@ -526,7 +526,7 @@ Locally redefines org-agenda-files not to export all agenda files."
         (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
         (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)))
 
-    (t/declare-prefix "o" "Other"
+    (t/declare-prefix "a" "Applications"
                       "r" 'elfeed))
   :config
   (progn
@@ -564,6 +564,7 @@ Locally redefines org-agenda-files not to export all agenda files."
 ;; smartparens helpers
 (with-eval-after-load 'smartparens
   (sp-with-modes 'org-mode
+    
     (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
     (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
     (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))

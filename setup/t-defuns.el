@@ -1198,4 +1198,58 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (neotree-find (projectile-project-root))
       (neotree-find origin-buffer-file-name))))
 
- (provide 't-defuns)
+;;;###autoload
+(defun t/backward-down-sexp ()
+  "Move backward to the start of the previous sexp."
+  (interactive)
+  (cond
+   ((looking-back "^\s*?") (backward-word))
+   ((or (looking-back " ")
+        (looking-back ")")) (backward-char))
+   ((and (looking-back "(")
+         (looking-at "(")) (backward-char))
+   ((looking-back "(") (evil-cp-backward-up-sexp))
+   (t (sp-backward-sexp))))
+
+;;;###autoload
+(defun t/forward-down-sexp ()
+  "Move forward to the end of the previous sexp."
+  (interactive)
+  (cond
+   ((looking-at "\"") (forward-sexp))
+   ((looking-at "\)\)$") (forward-char))
+   ((or (looking-at "\s(")
+        (looking-at "(")) (forward-char))
+   ((and (looking-at "[^\s]")
+         (not (looking-at ".$"))) (forward-sexp))
+   ((looking-at "\s*[^\s]") (evil-forward-word-begin))
+   ((or (looking-at "\s)")
+        (looking-at ".$")) (evil-cp-next-opening))
+   (t (sp-forward-sexp))))
+
+;;;###autoload
+(defun t/forward-sexp ()
+  (interactive)
+  (if (looking-at "(")
+      (evil-jump-item)
+    (if (looking-at ")")
+        (progn
+          (evil-emacs-state)
+          (forward-char)
+          (sp-forward-sexp)
+          (evil-normal-state))
+      (evil-cp-up-sexp))))
+
+;;;###autoload
+(defun t/backward-sexp ()
+  (interactive)
+  (if (looking-at ")")
+      (evil-jump-item)
+    (if (looking-at "(")
+        (progn
+          (evil-emacs-state)
+          (sp-backward-sexp)
+          (evil-normal-state))
+      (evil-cp-backward-up-sexp))))
+
+(provide 't-defuns)

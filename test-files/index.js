@@ -1,3 +1,5 @@
+const EventEmitter = require('events');
+
 function withName () {}
 var {a, b} = {};
 

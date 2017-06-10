@@ -75,9 +75,13 @@
   (progn (setq evil-cleverparens-use-additional-bindings nil)))
 
 (t/use-package evil-multiedit
-  :defer 1
+  :commands evil-multiedit-match-symbol-and-next
+  :init
+  (bind-key "M-d" 'evil-multiedit-match-symbol-and-next evil-normal-state-map)
   :config
-  (evil-multiedit-default-keybinds))
+  (progn
+    (evil-multiedit-default-keybinds)
+    (unbind-key "M-d" evil-insert-state-map)))
 
 (comment
  (t/use-package org-evil
