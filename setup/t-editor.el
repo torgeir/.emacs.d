@@ -832,6 +832,7 @@
                     "n" 'nlinum-mode
                     "r" 'nlinum-relative-toggle
                     "b" 'fancy-battery-mode
+                    "w" 'writeroom-mode
                     "Cc" 'rainbow-mode
                     "Cd" 'rainbow-delimiters-mode)
 
@@ -933,9 +934,6 @@
                     "c" 'ace-jump-char-mode
                     "l" 'ace-jump-line-mode
                     "W" 'ace-jump-word-mode)
-
-  (t/declare-prefix "T" "Toggle"
-                    "w" 'writeroom-mode)
 
   (t/declare-prefix "c" "Comment/Complete"
                     "l" 't/helm-find-and-insert-line-from-project)
