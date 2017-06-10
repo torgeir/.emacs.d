@@ -30,7 +30,7 @@
    ring-bell-function 'ignore ; no bell
    compilation-scroll-output 'first-error ; scroll compilation to first error
    window-combination-resize t ; resize proportionally
-   initial-major-mode 'text-mode ; load *scratch* in text-mode
+   initial-major-mode 'emacs-lisp-mode ; load *scratch* in text-mode
    initial-scratch-message nil ; clear *scratch* buffer
    echo-keystrokes 0.001 ; show keystrokes
    save-interprogram-paste-before-kill t ; clipboard contents into kill-ring before replace
