@@ -649,7 +649,7 @@
 (t/use-package highlight-parentheses
   :only-standalone t
   :diminish highlight-parentheses-mode
-  :commands highlight-parentheses-mode
+  :defer 1
   :init
   (progn
     (setq hl-paren-colors '("DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink"))

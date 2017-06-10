@@ -82,6 +82,11 @@
         split-width-threshold 0
         split-window-preferred-function #'t/split-window-sensibly)
 
+  ;; remember file positions, and layout
+  (save-place-mode 1)
+  (desktop-save-mode 1)
+  (setq desktop-save t)
+
   ;; temp files in..
   (setq backup-directory-alist `((".*" . ,(locate-user-emacs-file ".backups/")))
         auto-save-file-name-transforms `((".*" ,(locate-user-emacs-file ".auto-save-list/") t))

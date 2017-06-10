@@ -28,3 +28,5 @@
 /.cache
 /t-before.el
 /org-gcal/*
+/.emacs.desktop
+/.emacs.desktop.lock
