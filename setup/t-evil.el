@@ -78,11 +78,37 @@
 (t/use-package evil-multiedit
   :commands evil-multiedit-match-symbol-and-next
   :init
-  (bind-key "M-d" 'evil-multiedit-match-symbol-and-next evil-normal-state-map)
+  (progn
+    (setq evil-multiedit-follow-matches t)
+    (bind-key "M-d" 'evil-multiedit-match-symbol-and-next evil-normal-state-map)
+    (with-eval-after-load 'evil-multiedit
+      (bind-key "M-j" 'evil-multiedit-toggle-or-restrict-region evil-multiedit-state-map)
+      (bind-key "M-k" 'evil-multiedit-toggle-or-restrict-region evil-multiedit-state-map)
+      (bind-key "M-j" 'evil-multiedit-toggle-or-restrict-region evil-multiedit-insert-state-map)
+      (bind-key "M-k" 'evil-multiedit-toggle-or-restrict-region evil-multiedit-insert-state-map)))
   :config
   (progn
     (evil-multiedit-default-keybinds)
-    (unbind-key "M-d" evil-insert-state-map)))
+    (unbind-key "M-d" evil-insert-state-map)
+    
+    ;; TODO remove when https://github.com/syl20bnr/evil-escape/pull/77 is merged
+    (defun evil-escape-func ()
+      "Return the function to escape from everything."
+      (pcase evil-state
+        (`normal (evil-escape--escape-normal-state))
+        (`motion (evil-escape--escape-motion-state))
+        (`insert 'evil-normal-state)
+        (`emacs (evil-escape--escape-emacs-state))
+        (`hybrid (evil-escape--escape-emacs-state))
+        (`evilified (evil-escape--escape-emacs-state))
+        (`visual 'evil-exit-visual-state)
+        (`replace 'evil-normal-state)
+        (`lisp 'evil-lisp-state/quit)
+        (`iedit 'evil-iedit-state/quit-iedit-mode)
+        (`iedit-insert 'evil-iedit-state/quit-iedit-mode)
+        (`multiedit 'evil-multiedit-abort)
+        (`multiedit-insert 'evil-multiedit-abort)
+        (_ (evil-escape--escape-normal-state))))))
 
 (comment
  (t/use-package org-evil
