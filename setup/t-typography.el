@@ -26,4 +26,8 @@
     (t/set-emoji-font nil) ; for when Emacs is started in GUI mode
     (add-hook 'after-make-frame-functions 't/set-emoji-font))) ; hook for when a frame is created with emacsclient
 
+;; add window margins
+(setq-default left-margin-width 1 right-margin-width 1)
+(set-window-buffer nil (current-buffer))
+
 (provide 't-typography)
