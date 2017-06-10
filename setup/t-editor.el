@@ -346,6 +346,10 @@
                     mark-down-mode))
       (add-hook hook 'turn-on-smartparens-mode))
 
+    (with-eval-after-load 'js2-mode
+      (bind-key "M-<up>" 'sp-splice-sexp-killing-backward js2-mode-map)
+      (bind-key "M-<down>" 'sp-splice-sexp-killing-forward js2-mode-map))
+
     ;; enable in minibuffer
     (add-hook 'eval-expression-minibuffer-setup-hook #'turn-on-smartparens-mode)
     (add-hook 'eval-expression-minibuffer-setup-hook #'evil-cleverparens-mode) 
@@ -362,10 +366,12 @@
                                      (bind-key "M-<up>" 'sp-splice-sexp-killing-backward ,mode-map)
                                      (bind-key "M-<down>" 'sp-splice-sexp-killing-forward ,mode-map))))
         
-        (eval `(bind-key "M-<left>" #'t/backward-down-sexp ,mode-map))
-        (eval `(bind-key "M-<right>" #'t/forward-down-sexp ,mode-map))
-        (eval `(bind-key "M-S-<left>" #'t/backward-sexp ,mode-map))
-        (eval `(bind-key "M-S-<right>" #'t/forward-sexp ,mode-map))))
+        (eval
+         `(progn
+            (bind-key "M-<left>" #'t/backward-down-sexp ,mode-map)
+            (bind-key "M-<right>" #'t/forward-down-sexp ,mode-map)
+            (bind-key "M-S-<left>" #'t/backward-sexp ,mode-map)
+            (bind-key "M-S-<right>" #'t/forward-sexp ,mode-map)))))
 
     (defun t/disable-quote-pairs-for-mode (mode)
       (sp-local-pair mode "`" nil :actions nil)
