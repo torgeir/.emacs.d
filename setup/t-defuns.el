@@ -1258,4 +1258,19 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (let ((default-directory user-emacs-directory))
     (helm-projectile nil)))
 
+;;;###autoload
+(defun t/newline-expand-braces ()
+  "Newline like `evil-ret', but expand (), [] and {} with newline in between, and indent accordingly."
+  (interactive)
+  (cond
+   ((or (and (looking-back "(") (looking-at ")"))
+        (and (looking-back "\\[") (looking-at "\\]"))
+        (and (looking-back "{") (looking-at "}"))) (progn
+                                                     (indent-according-to-mode)
+                                                     (newline)
+                                                     (indent-according-to-mode)
+                                                     (t/open-line-above)))
+   (t (evil-ret))))
+
+
 (provide 't-defuns)

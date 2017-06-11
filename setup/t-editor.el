@@ -333,6 +333,7 @@
     (unbind-key "M-<up>" sp-keymap)
     (unbind-key "M-<down>" sp-keymap)
     (bind-key "M-?" 'sp-convolute-sexp sp-keymap)
+    (bind-key "RET" #'t/newline-expand-braces)
 
     (dolist (mode-map (list
                        emacs-lisp-mode-map
@@ -371,17 +372,12 @@
         (eval `(add-hook mode-hook (lambda ()
                                      (bind-key "M-<up>" 'sp-splice-sexp-killing-backward ,mode-map)
                                      (bind-key "M-<down>" 'sp-splice-sexp-killing-forward ,mode-map))))
-        
         (eval
          `(progn
             (bind-key "M-<left>" #'t/backward-down-sexp ,mode-map)
             (bind-key "M-<right>" #'t/forward-down-sexp ,mode-map)
             (bind-key "M-S-<left>" #'t/backward-sexp ,mode-map)
             (bind-key "M-S-<right>" #'t/forward-sexp ,mode-map)))))
-
-    (defun t/disable-quote-pairs-for-mode (mode)
-      (sp-local-pair mode "`" nil :actions nil)
-      (sp-local-pair mode "'" nil :actions nil))
 
     (t/enable-movement-for-lisp-mode 'emacs-lisp-mode)
 
@@ -394,6 +390,13 @@
     (with-eval-after-load 'clojure-mode (t/enable-movement-for-lisp-mode 'clojure-mode))
     (with-eval-after-load 'ielm-mode (t/enable-movement-for-lisp-mode 'ielm-mode))
     (with-eval-after-load 'scheme-mode (t/enable-movement-for-lisp-mode 'scheme-mode))
+
+    (sp-with-modes 'emacs-lisp-mode
+      (sp-local-pair "`" "'" :when '(sp-in-docstring-p))))
+
+    (defun t/disable-quote-pairs-for-mode (mode)
+      (sp-local-pair mode "`" nil :actions nil)
+      (sp-local-pair mode "'" nil :actions nil))
 
     (dolist (mode '(emacs-lisp-mode
                     clojure-mode
@@ -422,11 +425,7 @@
                      text-mode
                      restclient-mode
                      ruby-mode
-                     mark-down-mode)
-      (sp-local-pair "[" nil :post-handlers
-                     '((t/sp--create-newline-and-enter-sexp "RET")))
-      (sp-local-pair "{" nil :post-handlers
-                     '((t/sp--create-newline-and-enter-sexp "RET"))))))
+                     mark-down-mode))))
 
 (t/use-package writeroom-mode
   :commands writeroom-mode)
