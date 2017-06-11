@@ -394,38 +394,38 @@
     (sp-with-modes 'emacs-lisp-mode
       (sp-local-pair "`" "'" :when '(sp-in-docstring-p))))
 
-    (defun t/disable-quote-pairs-for-mode (mode)
-      (sp-local-pair mode "`" nil :actions nil)
-      (sp-local-pair mode "'" nil :actions nil))
+  (defun t/disable-quote-pairs-for-mode (mode)
+    (sp-local-pair mode "`" nil :actions nil)
+    (sp-local-pair mode "'" nil :actions nil))
 
-    (dolist (mode '(emacs-lisp-mode
-                    clojure-mode
-                    ielm-mode
-                    lisp-mode
-                    lisp-interaction-mode
-                    minibuffer-inactive-mode
-                    scheme-mode))
-      (t/disable-quote-pairs-for-mode mode))
-    
-    (t/def-pairs ((paren . "(")
-                  (bracket . "[")
-                  (brace . "{")
-                  (single-quote . "'")
-                  (double-quote . "\"")
-                  (back-quote . "`")))
+  (dolist (mode '(emacs-lisp-mode
+                  clojure-mode
+                  ielm-mode
+                  lisp-mode
+                  lisp-interaction-mode
+                  minibuffer-inactive-mode
+                  scheme-mode))
+    (t/disable-quote-pairs-for-mode mode))
+  
+  (t/def-pairs ((paren . "(")
+                (bracket . "[")
+                (brace . "{")
+                (single-quote . "'")
+                (double-quote . "\"")
+                (back-quote . "`")))
 
-    (bind-key "s-(" 't/wrap-with-parens)
-    (bind-key "s-)" 't/paredit-wrap-round-from-behind)
-    (bind-key "M-s-(" 't/wrap-with-braces)
-    (bind-key "M-s-[" 't/wrap-with-brackets)
+  (bind-key "s-(" 't/wrap-with-parens)
+  (bind-key "s-)" 't/paredit-wrap-round-from-behind)
+  (bind-key "M-s-(" 't/wrap-with-braces)
+  (bind-key "M-s-[" 't/wrap-with-brackets)
 
-    (sp-with-modes '(js2-mode
-                     js-mode
-                     java-mode
-                     text-mode
-                     restclient-mode
-                     ruby-mode
-                     mark-down-mode))))
+  (sp-with-modes '(js2-mode
+                   js-mode
+                   java-mode
+                   text-mode
+                   restclient-mode
+                   ruby-mode
+                   mark-down-mode)))
 
 (t/use-package writeroom-mode
   :commands writeroom-mode)
@@ -576,6 +576,16 @@
 
   :config
   (progn
+    
+    (bind-key "<backspace>" 'yas-skip-and-clear-or-delete-char yas-keymap)
+
+    (progn
+      (defun t/reload-snippets-on-save ()
+        "Reload yasnippet files on save."
+        (when (string-match "\\.yasnippet$" buffer-file-name)
+          (yas-reload-all)))
+      (add-hook 'after-save-hook #'t/reload-snippets-on-save))
+
     ;; make fundamental snippets global snippets
     (add-hook 'yas-minor-mode-hook (lambda () (yas-activate-extra-mode 'fundamental-mode)))
 

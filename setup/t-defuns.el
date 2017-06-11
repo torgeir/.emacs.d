@@ -1270,7 +1270,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
                                                      (newline)
                                                      (indent-according-to-mode)
                                                      (t/open-line-above)))
-   (t (evil-ret))))
-
+   (t (progn
+        (evil-ret)
+        (indent-according-to-mode)))))
 
 (provide 't-defuns)

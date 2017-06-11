@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: class
+# key: class
+# --
+class ${1:Type}${2: extends ${3:Super}} {
+  constructor() {
+    ${2:$(when (< 0 (string-width yas-text))
+               "this.super();\n")}$0
+  }
+}
