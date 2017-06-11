@@ -230,12 +230,12 @@
     (bind-key "C-w" 'evil-delete-backward-word company-active-map)
     (bind-key "C-l" 'evil-delete-backward-word company-active-map)
     (bind-key "C-u" 'backward-kill-sentence company-active-map)
-    (bind-key "C-n" #'company-select-next company-active-map))
-  (bind-key "C-p" #'company-select-previous company-active-map)
-  (bind-key "C-," (lambda ()
-                    (interactive)
-                    (company-abort)
-                    (completion-at-point)) company-active-map))
+    (bind-key "C-n" #'company-select-next company-active-map)
+    (bind-key "C-p" #'company-select-previous company-active-map)
+    (bind-key "C-," (lambda ()
+                      (interactive)
+                      (company-abort)
+                      (completion-at-point)) company-active-map)))
 
 (t/use-package company-flx
   :after company
@@ -392,40 +392,40 @@
     (with-eval-after-load 'scheme-mode (t/enable-movement-for-lisp-mode 'scheme-mode))
 
     (sp-with-modes 'emacs-lisp-mode
-      (sp-local-pair "`" "'" :when '(sp-in-docstring-p))))
+      (sp-local-pair "`" "'" :when '(sp-in-docstring-p)))
 
-  (defun t/disable-quote-pairs-for-mode (mode)
-    (sp-local-pair mode "`" nil :actions nil)
-    (sp-local-pair mode "'" nil :actions nil))
+    (defun t/disable-quote-pairs-for-mode (mode)
+      (sp-local-pair mode "`" nil :actions nil)
+      (sp-local-pair mode "'" nil :actions nil))
 
-  (dolist (mode '(emacs-lisp-mode
-                  clojure-mode
-                  ielm-mode
-                  lisp-mode
-                  lisp-interaction-mode
-                  minibuffer-inactive-mode
-                  scheme-mode))
-    (t/disable-quote-pairs-for-mode mode))
-  
-  (t/def-pairs ((paren . "(")
-                (bracket . "[")
-                (brace . "{")
-                (single-quote . "'")
-                (double-quote . "\"")
-                (back-quote . "`")))
+    (dolist (mode '(emacs-lisp-mode
+                    clojure-mode
+                    ielm-mode
+                    lisp-mode
+                    lisp-interaction-mode
+                    minibuffer-inactive-mode
+                    scheme-mode))
+      (t/disable-quote-pairs-for-mode mode))
+    
+    (t/def-pairs ((paren . "(")
+                  (bracket . "[")
+                  (brace . "{")
+                  (single-quote . "'")
+                  (double-quote . "\"")
+                  (back-quote . "`")))
 
-  (bind-key "s-(" 't/wrap-with-parens)
-  (bind-key "s-)" 't/paredit-wrap-round-from-behind)
-  (bind-key "M-s-(" 't/wrap-with-braces)
-  (bind-key "M-s-[" 't/wrap-with-brackets)
+    (bind-key "s-(" 't/wrap-with-parens)
+    (bind-key "s-)" 't/paredit-wrap-round-from-behind)
+    (bind-key "M-s-(" 't/wrap-with-braces)
+    (bind-key "M-s-[" 't/wrap-with-brackets)
 
-  (sp-with-modes '(js2-mode
-                   js-mode
-                   java-mode
-                   text-mode
-                   restclient-mode
-                   ruby-mode
-                   mark-down-mode)))
+    (sp-with-modes '(js2-mode
+                     js-mode
+                     java-mode
+                     text-mode
+                     restclient-mode
+                     ruby-mode
+                     mark-down-mode))))
 
 (t/use-package writeroom-mode
   :commands writeroom-mode)
