@@ -80,7 +80,7 @@
   :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
   :init
   (progn
-    (t/declare-prefix "ao" "Org"
+    (t/declare-prefix "o" "Org"
                       "c" 'org-capture
                       "e" 'org-export-dispatch
                       "g" 'org-mac-grab-link
@@ -88,26 +88,26 @@
                       "n" 'org-alert-check
                       "i" 'org-info)
 
-    (t/declare-prefix "aom" "Mobile"
+    (t/declare-prefix "om" "Mobile"
                       "p" 'org-mobile-push
                       "P" 'org-mobile-pull)
 
-    (t/declare-prefix "aol" "Links"
+    (t/declare-prefix "ol" "Links"
                       "s" 'org-store-link
                       "i" 'org-insert-link)
 
-    (t/declare-prefix "aot" "Tags"
+    (t/declare-prefix "ot" "Tags"
                       "a" 'org-archive-set-tag
                       "t" 'org-set-tags-command)
 
-    (t/declare-prefix "aoT" "Table"
+    (t/declare-prefix "oT" "Table"
                       "Tg" 'org-table-toggle-coordinate-overlays
                       "Tf" 'org-table-formula)
 
-    (t/declare-prefix "aoC" "Clock"
+    (t/declare-prefix "oC" "Clock"
                       "i" 'org-clock-in
-                      "o" 'org-clock-out)
-    ))
+                      "o" 'org-clock-out))
+  )
 
 (defun t-org/config ()
 
