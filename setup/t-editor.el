@@ -1,3 +1,9 @@
+(t/use-package restart-emacs
+  :init
+  (progn
+    (t/declare-prefix "q" "Quit"
+                      "r" (lambda () (interactive) (restart-emacs)))))
+
 (t/use-package winner
   :only-standalone t
   :ensure nil
