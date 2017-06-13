@@ -2,7 +2,8 @@
   :init
   (progn
     (t/declare-prefix "q" "Quit"
-                      "r" (lambda () (interactive) (restart-emacs)))))
+                      "r" (lambda () (interactive) (restart-emacs))
+                      "R" (lambda () (interactive) (restart-emacs '("--no-desktop"))))))
 
 (t/use-package winner
   :only-standalone t
