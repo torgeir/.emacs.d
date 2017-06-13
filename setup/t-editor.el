@@ -817,9 +817,9 @@
 
   (t/declare-prefix "a" "Applications"
                     "B" 'w3m
-                    "C" 'calendar
+                    "c" 'calendar
                     "b" 'browse-url
-                    "c" 'calc-dispatch
+                    "C" 'calc-dispatch
                     "d" 'dired-jump
                     "h" 'hackernews
                     "i" 't/open-in-intellij
