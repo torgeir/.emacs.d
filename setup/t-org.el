@@ -429,11 +429,19 @@ Locally redefines org-agenda-files not to export all agenda files."
 
       (add-hook 'org-mode-hook #'yas/org-setup))
 
+    (defun t/reset-org-font-sizes ()
+      "Reset org font headers to same height font."
+      (dolist (face '(org-level-1
+                      org-level-2
+                      org-level-3
+                      org-level-4
+                      org-level-5))
+        (set-face-attribute face nil :weight 'semi-bold :height 1.0)))
+
+    (add-hook 'org-mode-hook 't/reset-org-font-sizes)
 
     (defun t/remove-org-mode-stars ()
-      (set-face-attribute 'org-hide nil 
-                          :foreground 
-                          (face-attribute 'default :background)))
+      (set-face-attribute 'org-hide nil :foreground (face-attribute 'default :background)))
     (add-hook 'org-mode-hook #'t/remove-org-mode-stars)
     ))
 
