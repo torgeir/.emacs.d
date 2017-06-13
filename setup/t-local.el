@@ -33,8 +33,7 @@
     (progn
       (add-hook 'sgml-mode-hook
                 (lambda ()
-                  (set (make-local-variable 'sgml-basic-offset) *t-indent-xml*)
-                  (sgml-guess-indent)))))
+                  (set (make-local-variable 'sgml-basic-offset) *t-indent-xml*)))))
 
   (t/use-package nxml-mode
     :ensure nil
