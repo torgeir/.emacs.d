@@ -527,7 +527,7 @@ Locally redefines org-agenda-files not to export all agenda files."
                       ((= 3 phase) "Månen i ne ☾"))))))))
 
 (t/use-package elfeed
-  :commands (elfeed-search-mode elfeed-show-mode)
+  :commands (elfeed elfeed-search-mode elfeed-show-mode)
   :init
   (progn
     (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
