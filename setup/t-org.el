@@ -390,8 +390,11 @@ Locally redefines org-agenda-files not to export all agenda files."
 
         (defun t/org-meta-return-dwim ()
           (interactive)
-          (evil-append-line 0)
-          (t/call-rebinding-org-blank-behaviour 'org-meta-return))
+          (if (looking-back "^")
+              (call-interactively 'org-meta-return)
+            (progn
+              (evil-append-line 0)
+              (t/call-rebinding-org-blank-behaviour 'org-meta-return))))
 
         (defun t/org-insert-todo-heading-dwim ()
           (interactive)
@@ -411,7 +414,10 @@ Locally redefines org-agenda-files not to export all agenda files."
         (add-hook 'org-mode-hook
                   (lambda ()
                     (bind-key "C-w" 'org-refile org-mode-map)
-                    )))
+                    (bind-key "M-<return>" 't/org-meta-return-dwim org-mode-map)
+                    (bind-key "M-S-<return>" 't/org-insert-todo-heading-dwim org-mode-map)
+                    (bind-key "C-<return>" 't/org-insert-heading-respect-content-dwim org-mode-map)
+                    (bind-key "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim org-mode-map))))
 
       (defun yas/org-very-safe-expand ()
         (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
