@@ -107,13 +107,14 @@
              neotree-find)
   :init
   (progn
-    (setq neo-window-width 30
-          neo-smart-open nil
+    (setq neo-smart-open nil
+          neo-window-fixed-size nil
           neo-create-file-auto-open t
+          neo-mode-line-type 'none
           neo-show-updir-line nil
-          neo-dont-be-alone t
           neo-show-hidden-files t
           neo-auto-indent-point t)
+    (add-hook 'neotree-mode-hook 'hl-line-mode)
     (when is-mac (setq neo-theme 'icons)))
 
   :config

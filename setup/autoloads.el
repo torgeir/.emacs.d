@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22844 24568 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22862 20104 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -694,6 +694,11 @@ Move forward to the end of the previous sexp.
 
 \(fn)" t nil)
 
+(autoload 't/newline-expand-braces "t-defuns" "\
+Newline like `evil-ret', but expand (), [] and {} with newline in between, and indent accordingly.
+
+\(fn)" t nil)
+
 ;;;***
 
 ;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
@@ -707,7 +712,7 @@ Move forward to the end of the previous sexp.
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
 ;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
-;;;;;;  (22844 24432 0 0))
+;;;;;;  (22862 19722 0 0))
 
 ;;;***
 

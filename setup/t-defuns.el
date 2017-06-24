@@ -1195,6 +1195,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
            (neo-global--window-exists-p))
       (neotree-hide)
     (let ((origin-buffer-file-name (buffer-file-name)))
+      (neotree-toggle)
       (neotree-find (projectile-project-root))
       (neotree-find origin-buffer-file-name))))
 

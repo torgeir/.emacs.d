@@ -4,21 +4,22 @@
 
 (t/use-package gruvbox-theme :defer t)
 
+(t/use-package solaire-mode
+  :defer t
+  :init
+  (progn
+    (add-hook 'after-change-major-mode-hook #'turn-on-solaire-mode)
+    (add-hook 'after-revert-hook #'turn-on-solaire-mode)
+    (add-hook 'minibuffer-setup-hook #'solaire-mode-in-minibuffer)))
+
 (t/use-package doom-themes
   :defer t
   :config
   (progn
     (setq doom-enable-bold t         ; if nil, bolding are universally disabled
           doom-enable-italic t       ; if nil, italics are universally disabled
-
-          ;; doom-one specific settings
-          doom-one-brighter-modeline nil
           doom-one-brighter-comments t)
 
-    ;; brighter minibuffer when active
-    (add-hook 'minibuffer-setup-hook 'doom-brighten-minibuffer)
-
-    ;; Enable nlinum line highlighting
     (doom-themes-nlinum-config)
 
     ;; Necessary for org-mode
