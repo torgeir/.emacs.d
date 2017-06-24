@@ -354,7 +354,7 @@ Locally redefines org-agenda-files not to export all agenda files."
             (org-icalendar-export-agenda-files)))
 
         (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
-        (t/idle-timer t-timers-sync-org-gcal 'org-gcal-sync 60))
+        (t/idle-timer t-timers-sync-org-gcal 'org-gcal-fetch 60))
 
       (progn
         ;; show week numbers in calendar
