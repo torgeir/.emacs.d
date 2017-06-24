@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(highlight-symbol-face ((t (:background "gray22"))))
  '(org-checkbox-statistics-todo ((t (:inherit org-todo))))
  '(org-code ((t (:foreground "VioletRed1"))))
  '(org-date ((t (:foreground "turquoise2"))))
