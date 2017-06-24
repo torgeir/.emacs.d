@@ -92,6 +92,7 @@
                       '("gds" "magit-diff-staged")
                       '("grep" "grep --color=always $*")
                       '("gs" "magit-status")
+                      '("gadd-origin-pr" "git config --add remote.origin.fetch \"+refs/pull/*/head:refs/remotes/origin/pr/*\"")
                       '("hidedesktop" "defaults write com.apple.finder CreateDesktop -bool false && killall Finder")
                       '("hidehidden" "defaults write com.apple.finder AppleShowAllFiles -boolean false && killall Finder")
                       '("ip" "dig +short myip.opendns.com @resolver1.opendns.com")
