@@ -1,8 +1,7 @@
 (t/use-package powerline)
 
 (defun t-modeline/config ()
-  (require 'doom-modeline)
-  (setq mode-line-format (doom-modeline))
+  (require 't-doom-modeline)
 
   (defvar mode-line-cleaner-alist
     `(;;(eldoc-mode . "")

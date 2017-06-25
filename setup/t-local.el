@@ -20,9 +20,9 @@
     :load-path "site-lisp/spotify/"
     :commands helm-spotify)
 
-  (t/use-package doom-modeline
+  (t/use-package t-doom-modeline
     :ensure nil
-    :load-path "site-lisp/doom-modeline/"))
+    :load-path "site-lisp/t-doom-modeline/"))
 
 (progn
   ;; emacs local
