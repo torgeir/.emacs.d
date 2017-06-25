@@ -22,7 +22,19 @@
 
   (t/use-package t-doom-modeline
     :ensure nil
-    :load-path "site-lisp/t-doom-modeline/"))
+    :load-path "site-lisp/t-doom-modeline/")
+
+  (t/use-package nxml-eldoc
+    :ensure nil
+    :load-path "site-lisp/nxml-eldoc/"
+    :init
+    (add-hook 'nxml-mode-hook 'turn-on-nxml-eldoc))
+
+  (t/use-package json-path-eldoc
+    :ensure nil
+    :load-path "site-lisp/json-path-eldoc/"
+    :init
+    (add-hook 'json-mode-hook 'json-path-eldoc-enable)))
 
 (progn
   ;; emacs local
