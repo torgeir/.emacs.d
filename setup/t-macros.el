@@ -48,7 +48,7 @@ for setting up vars and config after load")
         (setq entries (plist-put entries :config `(,config-name)))
 
         ;; pass through some other use-package keys
-        (let ((ks (list :init :config :mode :bind :ensure :diminish :after :commands :defer :load-path :pin)))
+        (let ((ks (list :init :config :mode :bind :ensure :diminish :after :commands :defer :load-path :pin :evil-state)))
           (dolist (k ks)
             (when (plist-member entries k)
               (let ((v (plist-get entries k)))
