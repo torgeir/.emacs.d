@@ -293,7 +293,8 @@
   :init
   (progn
     (t/declare-prefix "a" "applications"
-                      "e" 'emoji-cheat-sheet-plus-insert))
+                      "e" 'emoji-cheat-sheet-plus-insert
+                      "u" 'helm-unicode))
   :config
   (progn
     ;; make `emoji-cheat-sheet-plus'this insert unicodes 🎉
