@@ -246,17 +246,30 @@
   :diminish tern-mode
   :only-standalone t
   :after company
-  :bind (:map
-         tern-mode-keymap
-         ("M-." . nil)
-         ("M-," . nil)
-         ("C-M-." . nil)
-         ("M-," . pop-tag-mark)
-         ("C-M-." . helm-etags-select))
   :config
   (progn
+    (add-hook 'tern-mode-hook
+              (lambda ()
+                (bind-key "M-." 'tern-find-definition tern-mode-keymap)
+                (bind-key "M-," 'tern-pop-find-definition tern-mode-keymap)
+                (bind-key "C-M-." 'helm-etags-select tern-mode-keymap)
+                (bind-key "M-." 'tern-find-definition evil-normal-state-local-map)
+                (bind-key "M-," 'tern-pop-find-definition evil-normal-state-local-map)
+                (bind-key "C-M-." 'helm-etags-select evil-normal-state-local-map)
+                ))
     (add-to-list 'company-backends 'company-tern)
     (setq tern-command (append tern-command '("--no-port-file")))))
+
+;; TODO torgeir tags
+(comment (t/use-package helm-xref
+           :init
+           (progn
+             (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
+           :config
+           (progn
+             (bind-key "M-." 'xref-find-definitions)
+             (bind-key "M-?" 'xref-find-references)
+             (bind-key "M-," 'xref-pop-marker-stack))))
 
 (t/use-package helm-unicode)
 
@@ -313,7 +326,7 @@
     ;; interfers with e.g. org-mode, enable them specifically in lisp modes instead
     (unbind-key "M-<up>" sp-keymap)
     (unbind-key "M-<down>" sp-keymap)
-    (bind-key "M-?" 'sp-convolute-sexp sp-keymap)
+    (unbind-key "M-?" sp-keymap)
     (bind-key "RET" #'t/newline-expand-braces)
 
     (dolist (mode-map (list
@@ -528,16 +541,17 @@
 (t/use-package transpose-frame
   :commands transpose-frame)
 
-(t/use-package etags-select
-  :config
-  (progn
-    (bind-key "M-?" 't/ido-find-tag)
-    (bind-key "M-." 't/find-tag-at-point)
-    (bind-key "M-_" 'find-tag-other-window)
-    (add-hook 'etags-select-mode-hook
-              (lambda ()
-                (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)
-                (bind-key "M-RET" 'etags-select-goto-tag-other-window etags-select-mode-map)))))
+;; TODO torgeir tags
+(comment (t/use-package etags-select
+           :config
+           (progn
+             (bind-key "M-?" 't/ido-find-tag)
+             (bind-key "M-." 't/find-tag-at-point)
+             (bind-key "M-_" 'find-tag-other-window)
+             (add-hook 'etags-select-mode-hook
+                       (lambda ()
+                         (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)
+                         (bind-key "M-RET" 'etags-select-goto-tag-other-window etags-select-mode-map))))))
 
 (t/use-package yasnippet
   :diminish yas-minor-mode
@@ -942,7 +956,7 @@
 
   (t/declare-prefix "j" "Jump to"
                     "w" 'ace-window
-                    "j" 'ace-jump-mode
+                    "j" 'dumb-jump-go
                     "c" 'ace-jump-char-mode
                     "l" 'ace-jump-line-mode
                     "W" 'ace-jump-word-mode)

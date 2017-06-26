@@ -27,7 +27,7 @@
  '(jdee-db-active-breakpoint-face-colors (cons "#181e26" "#51afef"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#181e26" "#7bc275"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#181e26" "#3D3D48"))
- '(magit-pull-arguments nil t)
+ '(magit-pull-arguments nil)
  '(neo-mode-line-type (quote none) t)
  '(org-ellipsis " > ")
  '(org-tags-column -60)

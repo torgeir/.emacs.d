@@ -1,7 +1,5 @@
 (t/use-package js2-mode
-  ;; js2-mode steals TAB, let's steal it back for yasnippet
   :mode "\\.js$"
-  :only-standalone t
   :interpreter "node"
   :init
   (progn
@@ -12,9 +10,9 @@
                   js2-strict-var-hides-function-arg-warning nil
                   js2-strict-cond-assign-warning nil
                   js2-strict-var-redeclaration-warning nil
-                  js2-strict-trailing-comma-warning t) ;; jshint does not warn about this now for some reason
-    (setq-default js2-global-externs '("module" "require" "describe" "it" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON" "process"))
-    (setq-default js2-highlight-level 3
+                  js2-strict-trailing-comma-warning t ;; jshint does not warn about this now for some reason
+                  js2-global-externs '("module" "require" "describe" "it" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON" "process")
+                  js2-highlight-level 3
                   js-indent-level *t-indent*
                   js-switch-indent-offset *t-indent*
                   js2-basic-offset *t-indent*)
@@ -22,17 +20,16 @@
     (add-hook 'js2-mode-hook (lambda ()
                                (flycheck-mode 1)
                                (turn-on-smartparens-mode)
-                               (tern-mode)))
-    (t/declare-prefix-for-mode 'js2-mode
-                               "me" "Evaluate"
-                               "b" 't/send-buffer-to-nodejs-repl-process
-                               "r" 't/send-region-to-nodejs-repl-process))
-
+                               (tern-mode))))
   :config
   (progn
     (unbind-key "M-j" js2-mode-map)
     (unbind-key "M-." js2-mode-map)
-    (bind-key "TAB" 't/tab-properly js2-mode-map)))
+    (bind-key "TAB" 't/tab-properly js2-mode-map)
+    (t/declare-prefix-for-mode 'js2-mode
+                               "me" "Evaluate"
+                               "b" 't/send-buffer-to-nodejs-repl-process
+                               "r" 't/send-region-to-nodejs-repl-process))) 
 
 (t/use-package js2-refactor
   :only-standalone t
