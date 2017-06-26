@@ -803,6 +803,7 @@
   ;; Highlight and follow bug references in comments and strings
   (add-hook 'prog-mode-hook 'bug-reference-prog-mode)
 
+  (add-hook 'focus-out-hook #'garbage-collect) ; make it feel snappier
   (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
 
   (add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)

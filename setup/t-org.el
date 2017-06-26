@@ -52,7 +52,8 @@
         org-use-fast-todo-selection t
         org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)")))
 
-  (setq org-src-fontify-natively t
+  (setq org-src-window-setup 'current-window ; edit code src blocks in current window
+        org-src-fontify-natively t
         org-src-tab-acts-natively t
         org-confirm-babel-evaluate nil ; don't prompt on every code run
         org-export-babel-evaluate nil ; don't run stuff automatically on export

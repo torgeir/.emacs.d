@@ -11,6 +11,9 @@ var {a, b} = {};
     whattt: 3
   };
 
+  /**
+   * sums numbers
+   */
   function sum (ls, acc = 0) {
     if (ls.length == 0) {
       return acc;
