@@ -361,7 +361,7 @@
 
     ;; enable in minibuffer
     (add-hook 'eval-expression-minibuffer-setup-hook #'turn-on-smartparens-mode)
-    (add-hook 'eval-expression-minibuffer-setup-hook #'evil-cleverparens-mode) 
+    (add-hook 'eval-expression-minibuffer-setup-hook #'evil-cleverparens-mode)
 
     (defun t/enable-movement-for-lisp-mode (m)
       (let* ((mode (symbol-name m))
