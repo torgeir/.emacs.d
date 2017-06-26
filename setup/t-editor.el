@@ -408,7 +408,7 @@
                     minibuffer-inactive-mode
                     scheme-mode))
       (t/disable-quote-pairs-for-mode mode))
-    
+
     (t/def-pairs ((paren . "(")
                   (bracket . "[")
                   (brace . "{")
@@ -578,7 +578,7 @@
 
   :config
   (progn
-    
+
     (bind-key "<backspace>" 'yas-skip-and-clear-or-delete-char yas-keymap)
 
     (progn
@@ -802,6 +802,8 @@
   ;; Highlight and follow bug references in comments and strings
   (add-hook 'prog-mode-hook 'bug-reference-prog-mode)
 
+  (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
+
   (add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)
 
   (progn
@@ -845,7 +847,7 @@
 
   (t/declare-prefix "t" "Toggle"
                     "d" 'toggle-debug-on-error
-                    "T" 't/load-theme-cycle
+                    "t" 't/load-theme-cycle
                     "n" 'nlinum-mode
                     "r" 'nlinum-relative-toggle
                     "b" 'fancy-battery-mode

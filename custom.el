@@ -9,8 +9,7 @@
  '(org-date ((t (:foreground "turquoise2"))))
  '(org-special-keyword ((t (:foreground "gray25"))))
  '(org-tag ((t (:foreground "#7bda75" :weight normal))))
- '(rainbow-delimiters-unmatched-face ((t (:foreground "#e0211d" :overline nil :underline t))))
- '(solaire-default-face ((t (:inherit default :background "#222832")))))
+ '(rainbow-delimiters-unmatched-face ((t (:foreground "#e0211d" :overline nil :underline t)))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

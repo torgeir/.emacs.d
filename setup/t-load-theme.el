@@ -30,17 +30,17 @@
 (defun t-load-theme/config ()
   (defconst t-themes (list
                       'doom-vibrant
-                      'spacemacs-dark
-                      'darktooth
-                      'spacemacs-light) "Themes to cycle")
-
+                      'spacemacs-light
+                      ;'spacemacs-dark
+                      ) "Themes to cycle")
+  
   (defun t/cycle-theme ()
     "Cycles themes in `t-themes'"
     (interactive)
-    (let ((first (-take 1 t-themes))
-          (rest (-drop 1 t-themes)))
-      (setq t-themes (-concat rest first))
-      (car (-take 1 t-themes))))
+    (let ((first (car t-themes))
+          (rest (cdr t-themes)))
+      (setq t-themes (append rest (list first)))
+      (car t-themes)))
 
   (defun t/load-theme-cycle ()
     "Cycles `t-themes' and loads first theme in list"
@@ -50,10 +50,10 @@
   (defun t/load-theme ()
     "Loads theme and fixes fringe bg color"
     (interactive)
-    (t/switch-theme (nth 0 t-themes)))
+    (t/switch-theme (car t-themes)))
 
   (defadvice load-theme (after t/advice-after-load-theme activate)
-    "Tone down fringe after loading new themes"
+    "Reset font size after loading theme"
     (t/reset-font-size))
 
   (add-hook 'after-init-hook (lambda () (t/load-theme)))
