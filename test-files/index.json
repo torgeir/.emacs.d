@@ -1,4 +1,6 @@
 {
   "some": "json-file",
-  "yes": 1
+  "yes": {
+    "more": "here"
+  }
 }
