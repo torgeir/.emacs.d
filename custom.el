@@ -23,7 +23,7 @@
  '(evil-want-Y-yank-to-eol nil)
  '(fci-rule-color "#3E4451" t)
  '(flycheck-javascript-flow-args nil)
- '(helm-source-names-using-follow (quote ("Show hunks in project")))
+ '(helm-source-names-using-follow (quote ("datainn.org" "Show hunks in project")))
  '(jdee-db-active-breakpoint-face-colors (cons "#181e26" "#51afef"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#181e26" "#7bc275"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#181e26" "#3D3D48"))

@@ -805,7 +805,6 @@
 
   (add-hook 'focus-out-hook #'garbage-collect) ; make it feel snappier
   (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
-
   (add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)
 
   (progn
