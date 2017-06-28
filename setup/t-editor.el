@@ -786,6 +786,12 @@
                                         ;(projectile-global-mode)
   )
 
+(t/use-package aggressive-indent
+  :commands global-aggressive-indent-mode
+  :init
+  (progn
+    (add-hook 'prog-mode-hook 'global-aggressive-indent-mode)))
+
 (t/use-package try)
 
 (t/use-package selectric-mode ; lol
