@@ -765,7 +765,8 @@
   :init
   (progn
     (setq projectile-mode-line '(:eval (format "[%s]" (projectile-project-name)))
-          ;;projectile-known-projects-file (locate-user-emacs-file ".projectile-bookmarks.eld")
+          projectile-enable-caching t
+          projectile-known-projects-file (locate-user-emacs-file ".cache/projectile-bookmarks.eld")
           projectile-require-project-root nil
           shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
           projectile-completion-system 'helm))
@@ -782,8 +783,8 @@
     (add-to-list 'grep-find-ignored-files "**.bundle.js")
     (add-to-list 'grep-find-ignored-files "**.build.js")
     (add-to-list 'grep-find-ignored-files ".DS_Store")
-    (add-to-list 'grep-find-ignored-files "custom.el"))
-                                        ;(projectile-global-mode)
+    (add-to-list 'grep-find-ignored-files "custom.el")
+    (projectile-global-mode +1))
   )
 
 (t/use-package aggressive-indent
