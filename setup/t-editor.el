@@ -148,23 +148,6 @@
                    ("C" . neotree-change-root)))
       (eval `(evil-define-key (if *t-spacemacs* 'evilified 'normal) neotree-mode-map (kbd ,(car key)) ',(cdr key))))))
 
-(t/use-package nlinum
-  :commands nlinum
-  :config
-  (progn
-    (setq nlinum-format "%4d "
-          nlinum-highlight-current-line t)))
-
-(t/use-package nlinum-relative
-  :after nlinum
-  :init
-  (progn
-    (setq nlinum-relative-redisplay-delay 0
-          nlinum-relative-current-symbol "> "))
-  :config
-  (progn
-    (nlinum-relative-setup-evil)))
-
 (t/use-package ace-window
   :commands ace-window
   :only-standalone t
