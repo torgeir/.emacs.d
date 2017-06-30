@@ -763,6 +763,7 @@
     (add-to-list 'projectile-globally-ignored-files "**.bundle.js")
     (add-to-list 'projectile-globally-ignored-files "**.build.js")
     (add-to-list 'projectile-globally-ignored-files ".DS_Store")
+    (add-to-list 'projectile-globally-ignored-files "projectile.cache")
     (add-to-list 'grep-find-ignored-files "**.bundle.js")
     (add-to-list 'grep-find-ignored-files "**.build.js")
     (add-to-list 'grep-find-ignored-files ".DS_Store")
