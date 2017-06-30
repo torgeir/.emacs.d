@@ -841,6 +841,7 @@
                     "t" 't/load-theme-cycle
                     "n" 'nlinum-mode
                     "r" 'nlinum-relative-toggle
+                    "l" 'hl-line-mode
                     "b" 'fancy-battery-mode
                     "w" 'writeroom-mode
                     "Cc" 'rainbow-mode
