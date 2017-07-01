@@ -60,8 +60,6 @@
 
   (t/use-package html
     :ensure nil
-    :mode ("\\.\\(html|htm\\)" . html-mode))
-
-  )
+    :mode ("\\.\\(html|htm\\)" . html-mode)))
 
 (provide 't-local)

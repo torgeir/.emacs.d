@@ -114,8 +114,6 @@
 
   (with-eval-after-load 'org
 
-    (add-to-list 'org-archive-save-context-info 'ltags t)
-
     (progn
       ;; fix completion dissapearing
 
@@ -453,10 +451,10 @@ Locally redefines org-agenda-files not to export all agenda files."
     ))
 
 (t/use-package ob-restclient
-  :after org)
+  :after org-plus-contrib)
 
 (t/use-package org-alert
-  :defer 5
+  :after org-plus-contrib
   :config
   (progn
     (setq alert-default-style 'osx-notifier
@@ -464,11 +462,11 @@ Locally redefines org-agenda-files not to export all agenda files."
     (org-alert-enable)))
 
 (t/use-package org-mac-iCal
-  :after org
+  :after org-plus-contrib
   :commands (org-mac-iCal))
 
 (t/use-package weather-metno
-  :after org
+  :after org-plus-contrib
   :config
   (progn
     (setq weather-metno-location-name "Trondheim, Norway"
@@ -566,6 +564,7 @@ Locally redefines org-agenda-files not to export all agenda files."
     (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org"))))
 
 (t/use-package org-gcal
+  :after org-plus-contrib
   :init
   (progn
     (when (boundp 't-org-gcal)
@@ -573,9 +572,11 @@ Locally redefines org-agenda-files not to export all agenda files."
             org-gcal-client-secret t-org-gcal-client-secret
             org-gcal-file-alist t-org-gcal-file-alist))))
 
-(t/use-package gnuplot)
+(t/use-package gnuplot
+  :after org-plus-contrib)
 
 (t/use-package helm-org-rifle
+  :after org-plus-contrib
   :config
   (t/declare-prefix-for-mode 'org-mode "s" "Search"
                              "p" 'helm-org-rifle

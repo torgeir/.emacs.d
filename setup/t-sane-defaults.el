@@ -1,9 +1,3 @@
-(t/use-package dash); list helpers
-
-(t/use-package s) ; string helpers
-
-(t/use-package f) ; file helpers
-
 (t/use-package all-the-icons) ; pretty icons
 
 (t/use-package better-defaults) ; rid the insanity
@@ -49,7 +43,8 @@
    tab-width 2 ; two spaces
    cursor-in-non-selected-windows nil ; no cursor in other open windows
    eval-expression-print-length nil ; no length limit when printing sexps in message buffer
-   eval-expression-print-level nil) ; no level limit when printing sexps in message buffer
+   eval-expression-print-level nil ; no level limit when printing sexps in message buffer
+   frame-resize-pixelwise t)
 
   ;; y or n will do
   (defalias 'yes-or-no-p 'y-or-n-p)

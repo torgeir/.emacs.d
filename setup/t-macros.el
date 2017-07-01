@@ -64,14 +64,17 @@ for setting up vars and config after load")
 
         `(progn
            (defun ,vars-name ()
+             (interactive)
              (when *t-debug-init*
                (message "t/use-package vars: %s" (symbol-name ',vars-name)))
              ,init-body)
            (defun ,config-name ()
+             (interactive)
              (when *t-debug-init*
                (message "t/use-package config: %s" (symbol-name ',config-name)))
              ,config-body)
            (defun ,init-name ()
+             (interactive)
              (when *t-debug-init*
                (message "t/use-package init: %s" (symbol-name ',init-name)))
              (use-package ,package ,@body)))))))

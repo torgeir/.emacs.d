@@ -22,6 +22,10 @@
 (require 'diminish)
 (require 'bind-key)
 
+(use-package dash) ; list helpers
+(use-package s) ; string helpers
+(use-package f) ; file helpers
+
 (require 't-local)
 
 (t/use-package paradox
