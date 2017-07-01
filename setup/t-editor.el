@@ -663,10 +663,7 @@
     (add-hook 'prog-mode-hook 'highlight-parentheses-mode))
   :config
   (progn
-    (defface t-hl-paren-face
-      '(( t (:foreground "Green" :bold t)))
-      "Face used for highlighting matching parens" :group 'basic-faces)
-    (set-face-foreground 'show-paren-match-face (face-foreground 't-hl-paren-face))))
+    (set-face-foreground 'show-paren-match "Green")))
 
 (t/use-package highlight-escape-sequences
   :commands hes-mode
