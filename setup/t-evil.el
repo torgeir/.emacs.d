@@ -4,6 +4,14 @@
 (t/use-package evil
   :only-standalone t)
 
+(t/use-package evil-anzu
+  :only-standalone t
+  :init
+  (progn
+    (setq anzu-cons-mode-line-p nil
+          anzu-minimum-input-length 1
+          anzu-search-threshold 100)))
+
 (t/use-package evil-escape
   :only-standalone t
   :after evil
@@ -115,10 +123,13 @@
    :after evil))
 
 (t/use-package evil-commentary
-  :after evil)
+  :after evil
+  :commands (evil-commentary evil-commentary-yank evil-commentary-line)
+  :config (evil-commentary-mode 1))
 
 (defun t-evil/vars ()
   (setq evil-default-state 'normal
+        evil-insert-skip-empty-lines t
         evil-search-module 'evil-search))
 
 (defun t-evil/funcs ()
@@ -146,12 +157,29 @@
     (t/evil-update-cursor-color)))
 
 (defun t-evil/config ()
-
   (if is-mac
       (bind-key "C-'" 't/toggle-evil-local-mode)
     (bind-key "C-|" 't/toggle-evil-local-mode))
 
   (progn
+    (defvar +evil-esc-hook '(t)
+      "A hook run after ESC is pressed in normal mode (invoked by
+`evil-force-normal-state'). If a hook returns non-nil, all hooks after it are
+ignored.")
+
+    (defun +evil*attach-escape-hook (&optional ignore)
+      "Run the `+evil-esc-hook'."
+      (cond ((minibuffer-window-active-p (minibuffer-window))
+             ;; quit the minibuffer if open.
+             (abort-recursive-edit))
+            ((evil-ex-hl-active-p 'evil-ex-search)
+             ;; disable ex search buffer highlights.
+             (evil-ex-nohighlight))
+            (t
+             ;; Run all escape hooks. If any returns
+             ;; non-nil, then stop there.
+             (run-hook-with-args-until-success '+evil-esc-hook))))
+
     (defvar t-evil-major-modes '(;;help-mode
                                  compilation-mode
                                  special-mode
@@ -228,7 +256,7 @@
   (when (boundp 'evil-hybrid-state-map)
     (bind-key "M-y" 'helm-show-kill-ring evil-hybrid-state-map))
 
-;;; esc ought to quit
+  ;; esc ought to quit
   (bind-key [escape] 'keyboard-quit evil-normal-state-map)
   (bind-key [escape] 'keyboard-quit evil-visual-state-map)
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-map)
@@ -237,6 +265,12 @@
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
 
+  (defun t/keyboard-quit-advice (fn &rest args)
+    (let ((region-was-active (region-active-p)))
+      (unwind-protect (apply fn args)
+        (+evil*attach-escape-hook))))
+  (advice-add 'keyboard-quit :around #'t/keyboard-quit-advice)
+  
   ;; macro camelCase to snakeCase
   (evil-set-register ?c [?: ?s ?/ ?\\ ?( ?[ ?a ?- ?z ?0 ?- ?9 ?] ?\\ ?) ?\\ ?( ?[ ?A ?- ?Z ?0 ?- ?9 ?] ?\\ ?) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g]))
 
