@@ -1,7 +1,7 @@
 (progn
   ;; site-lisp
   
-  (t/use-package evil-use-package
+  (use-package evil-use-package
     :ensure nil
     :load-path "site-lisp/evil-use-package/")
 
