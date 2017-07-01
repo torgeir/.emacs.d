@@ -34,7 +34,7 @@
     :ensure nil
     :load-path "site-lisp/json-path-eldoc/"
     :init
-    (add-hook 'json-mode-hook 'json-path-eldoc-enable)))
+    (add-hook 'json-mode-hook 'turn-on-json-path-eldoc)))
 
 (progn
   ;; emacs local
