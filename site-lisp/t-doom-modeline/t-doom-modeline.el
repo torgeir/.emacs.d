@@ -4,43 +4,72 @@
 (defun doom-project-root ()
   (t/project-root))
 
-(defmacro add-hook! (hook &rest func-or-forms)
-  "A convenience macro for `add-hook'.
+(defun doom--resolve-hooks (hooks)
+  (cl-loop with quoted-p = (eq (car-safe hooks) 'quote)
+           for hook in (doom-enlist (doom-unquote hooks))
+           if (eq (car-safe hook) 'quote)
+           collect (cadr hook)
+           else if quoted-p
+           collect hook
+           else collect (intern (format "%s-hook" (symbol-name hook)))))
 
-HOOK can be one hook or a list of hooks. If the hook(s) are not quoted, -hook is
-appended to them automatically. If they are quoted, they are used verbatim.
+(defun doom-unquote (exp)
+  "Return EXP unquoted."
+  (while (memq (car-safe exp) '(quote function))
+    (setq exp (cadr exp)))
+  exp)
 
-FUNC-OR-FORMS can be a quoted symbol, a list of quoted symbols, or forms. Forms will be
-wrapped in a lambda. A list of symbols will expand into a series of add-hook calls.
+(defun doom-enlist (exp)
+  "Return EXP wrapped in a list, or as-is if already a list."
+  (if (listp exp) exp (list exp)))
 
+(defmacro add-hook! (&rest args)
+  "A convenience macro for `add-hook'. Takes, in order:
+  1. Optional properties :local and/or :append, which will make the hook
+     buffer-local or append to the list of hooks (respectively),
+  2. The hooks: either an unquoted major mode, an unquoted list of major-modes,
+     a quoted hook variable or a quoted list of hook variables. If unquoted, the
+     hooks will be resolved by appending -hook to each symbol.
+  3. A function, list of functions, or body forms to be wrapped in a lambda.
 Examples:
     (add-hook! 'some-mode-hook 'enable-something)
     (add-hook! some-mode '(enable-something and-another))
     (add-hook! '(one-mode-hook second-mode-hook) 'enable-something)
     (add-hook! (one-mode second-mode) 'enable-something)
-    (add-hook! (one-mode second-mode) (setq v 5) (setq a 2))"
+    (add-hook! :append (one-mode second-mode) 'enable-something)
+    (add-hook! :local (one-mode second-mode) 'enable-something)
+    (add-hook! (one-mode second-mode) (setq v 5) (setq a 2))
+    (add-hook! :append :local (one-mode second-mode) (setq v 5) (setq a 2))
+Body forms can access the hook's arguments through the let-bound variable
+`args'."
   (declare (indent defun) (debug t))
-  (unless func-or-forms
-    (error "add-hook!: FUNC-OR-FORMS is empty"))
-  (let* ((val (car func-or-forms))
-         (quoted (eq (car-safe hook) 'quote))
-         (hook (if quoted (cadr hook) hook))
-         (funcs (if (eq (car-safe val) 'quote)
-                    (if (cdr-safe (cadr val))
-                        (cadr val)
-                      (list (cadr val)))
-                  (list func-or-forms)))
-         (forms '()))
-    (mapc
-     (lambda (f)
-       (let ((func (cond ((symbolp f) `(quote ,f))
-                         (t `(lambda (&rest _) ,@func-or-forms)))))
-         (mapc
-          (lambda (h)
-            (push `(add-hook ',(if quoted h (intern (format "%s-hook" h))) ,func) forms))
-          (-list hook)))) funcs)
-    `(progn ,@forms)))
-
+  (let ((hook-fn 'add-hook)
+        append-p local-p)
+    (while (keywordp (car args))
+      (pcase (pop args)
+        (:append (setq append-p t))
+        (:local  (setq local-p t))
+        (:remove (setq hook-fn 'remove-hook))))
+    (let ((hooks (doom--resolve-hooks (pop args)))
+          (funcs
+           (let ((val (car args)))
+             (if (memq (car-safe val) '(quote function))
+                 (if (cdr-safe (cadr val))
+                     (cadr val)
+                   (list (cadr val)))
+               (list args))))
+          forms)
+      (dolist (fn funcs)
+        (setq fn (if (symbolp fn)
+                     `(function ,fn)
+                   `(lambda (&rest _) ,@args)))
+        (dolist (hook hooks)
+          (push (cond ((eq hook-fn 'remove-hook)
+                       `(remove-hook ',hook ,fn ,local-p))
+                      (t
+                       `(add-hook ',hook ,fn ,append-p ,local-p)))
+                forms)))
+      `(progn ,@(nreverse forms)))))
 
 ;;;###autoload
 (defvar doom-memoized-table (make-hash-table :test 'equal :size 10)
@@ -249,7 +278,6 @@ active."
 ;; Show version string for multi-version managers like rvm, rbenv, pyenv, etc.
 (defvar-local +doom-modeline-env-version nil)
 (defvar-local +doom-modeline-env-command nil)
-(add-hook! '(focus-in-hook find-file-hook) #'+doom-modeline|update-env)
 (defun +doom-modeline|update-env ()
   (when +doom-modeline-env-command
     (let* ((default-directory (doom-project-root))
@@ -257,8 +285,7 @@ active."
       (setq +doom-modeline-env-version (if (string-match "[ \t\n\r]+\\'" s)
                                            (replace-match "" t t s)
                                          s)))))
-
-;; Only support python and ruby for now
+(add-hook! '(focus-in-hook find-file-hook) #'+doom-modeline|update-env)
 (add-hook! 'python-mode-hook (setq +doom-modeline-env-command "python --version 2>&1 | cut -d' ' -f2"))
 (add-hook! 'ruby-mode-hook   (setq +doom-modeline-env-command "ruby   --version 2>&1 | cut -d' ' -f2"))
 
@@ -589,7 +616,8 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
   (let ((meta (concat (+doom-modeline--macro-recording)
                       (+doom-modeline--anzu)
                       (+doom-modeline--evil-substitute)
-                      (+doom-modeline--iedit))))
+                      (+doom-modeline--iedit)
+                      )))
     (or (and (not (string= meta "")) meta)
         (if buffer-file-name " %I "))))
 
@@ -678,5 +706,8 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
 (add-hook 'org-src-mode-hook #'+doom-modeline|set-special-modeline)
 (add-hook 'image-mode-hook #'+doom-modeline|set-media-modeline)
 (add-hook 'circe-mode-hook #'+doom-modeline|set-special-modeline)
+
+;; torgeir added this
+(add-hook! 'js2-mode-hook (setq +doom-modeline-env-command "node -v 2>&1"))
 
 (provide 't-doom-modeline)
