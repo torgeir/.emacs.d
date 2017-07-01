@@ -1275,4 +1275,9 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (evil-ret)
         (indent-according-to-mode)))))
 
+;;;###autoload
+(defun t/recompile-elpa ()
+  (interactive)
+  (byte-recompile-directory (expand-file-name (t/user-emacs-file "elpa")) 0))
+
 (provide 't-defuns)
