@@ -17,22 +17,22 @@
     (setq-default js2-highlight-level 3
                   js-indent-level *t-indent*
                   js-switch-indent-offset *t-indent*
-                  js2-basic-offset *t-indent*))    ;; don't steel keys
-  :config
-  (progn
+                  js2-basic-offset *t-indent*)
 
-    (unbind-key "M-j" js2-mode-map)
-    (unbind-key "M-." js2-mode-map)
-    (bind-key "TAB" 't/tab-properly js2-mode-map)
     (add-hook 'js2-mode-hook (lambda ()
                                (flycheck-mode 1)
                                (turn-on-smartparens-mode)
                                (tern-mode)))
-
     (t/declare-prefix-for-mode 'js2-mode
                                "me" "Evaluate"
                                "b" 't/send-buffer-to-nodejs-repl-process
-                               "r" 't/send-region-to-nodejs-repl-process)))
+                               "r" 't/send-region-to-nodejs-repl-process))
+
+  :config
+  (progn
+    (unbind-key "M-j" js2-mode-map)
+    (unbind-key "M-." js2-mode-map)
+    (bind-key "TAB" 't/tab-properly js2-mode-map)))
 
 (t/use-package js2-refactor
   :only-standalone t
