@@ -6,7 +6,7 @@
 ;;;### (autoloads nil "t-cygwin" "t-cygwin.el" (0 0 0 0))
 ;;; Generated autoloads from t-cygwin.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-cygwin" '(#("t-cygwin/" 0 9 (fontified nil)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-cygwin" '("t-cygwin/")))
 
 ;;;***
 
@@ -714,25 +714,40 @@ Newline like `evil-ret', but expand (), [] and {} with newline in between, and i
 \(fn)" t nil)
 
 (autoload 't/recompile-elpa "t-defuns" "\
-
+Recompile the elpa/ directory to resolve byte compilation issues.
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
+(autoload 't/describe "t-defuns" "\
+Describe functions, features, symbols, or run help-apropos if it's not found.
+
+\(fn)" t nil)
+
+(autoload 't/unbind "t-defuns" "\
+Unbind function or symbol depending on type.
+
+\(fn FN-OR-S)" t nil)
+
+(autoload 't/add-to-list "t-defuns" "\
+Adds items to the list `l'.
+
+\(fn L ITEM-OR-ITEMS)" nil nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '(#("*t-adjusted-font-size*" 0 22 (fontified nil)) #("t/" 0 2 (fontified nil)))))
 
 ;;;***
 
 ;;;### (autoloads nil "t-editor" "t-editor.el" (0 0 0 0))
 ;;; Generated autoloads from t-editor.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-editor" '(#("t-editor/config" 0 15 (fontified nil)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-editor" '(#("t-editor/config" 0 11 (face font-lock-function-name-face fontified t) 11 15 (face font-lock-function-name-face fontified t)))))
 
 ;;;***
 
 ;;;### (autoloads nil "t-evil" "t-evil.el" (0 0 0 0))
 ;;; Generated autoloads from t-evil.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-evil" '(#("t-evil" 0 6 (fontified nil)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-evil" '("t-evil")))
 
 ;;;***
 
@@ -774,7 +789,7 @@ Newline like `evil-ret', but expand (), [] and {} with newline in between, and i
 ;;;### (autoloads nil "t-macros" "t-macros.el" (0 0 0 0))
 ;;; Generated autoloads from t-macros.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-macros" '("t/" "comment")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-macros" '(#("t/" 0 2 (fontified nil)) #("comment" 0 7 (fontified nil)))))
 
 ;;;***
 
@@ -788,14 +803,14 @@ Newline like `evil-ret', but expand (), [] and {} with newline in between, and i
 ;;;### (autoloads nil "t-modules" "t-modules.el" (0 0 0 0))
 ;;; Generated autoloads from t-modules.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modules" '("t-modules")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modules" '(#("t-modules" 0 9 (fontified nil)))))
 
 ;;;***
 
 ;;;### (autoloads nil "t-org" "t-org.el" (0 0 0 0))
 ;;; Generated autoloads from t-org.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '(#("t-org/" 0 6 (fontified nil)) #("lat-trh" 0 1 (fontified nil) 1 7 (fontified nil)) #("lon-trh" 0 1 (fontified nil) 1 7 (fontified nil)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '("t-org/" "lat-trh" "lon-trh")))
 
 ;;;***
 
@@ -824,7 +839,7 @@ Newline like `evil-ret', but expand (), [] and {} with newline in between, and i
 ;;;### (autoloads nil "t-typography" "t-typography.el" (0 0 0 0))
 ;;; Generated autoloads from t-typography.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-typography" '("t-typography/config")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-typography" '(#("t-typography/config" 0 19 (fontified nil)))))
 
 ;;;***
 

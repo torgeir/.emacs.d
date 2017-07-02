@@ -737,29 +737,40 @@
              projectile-project-root)
   :init
   (progn
-    (setq projectile-mode-line '(:eval (format "[%s]" (projectile-project-name)))
-          projectile-enable-caching t
-          projectile-known-projects-file (locate-user-emacs-file ".cache/projectile-bookmarks.eld")
+    (setq shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
+          projectile-completion-system 'helm
           projectile-require-project-root nil
-          shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
-          projectile-completion-system 'helm))
+          projectile-known-projects-file (locate-user-emacs-file ".cache/projectile.projects")
+          projectile-cache-file (locate-user-emacs-file ".cache/projectile.cache")
+          projectile-enable-caching t
+          projectile-project-root-files '(".git" ".hg" ".svn" ".project" "package.json" "setup.py" "Gemfile" "build.gradle")))
   :config
   (progn
-    (add-to-list 'projectile-globally-ignored-directories "elpa-backups")
-    (add-to-list 'projectile-globally-ignored-directories "node_modules")
-    (add-to-list 'projectile-globally-ignored-directories "target")
-    (add-to-list 'projectile-globally-ignored-directories "dist")
-    (add-to-list 'projectile-globally-ignored-directories ".idea")
-    (add-to-list 'projectile-globally-ignored-files "**.bundle.js")
-    (add-to-list 'projectile-globally-ignored-files "**.build.js")
-    (add-to-list 'projectile-globally-ignored-files ".DS_Store")
-    (add-to-list 'projectile-globally-ignored-files "projectile.cache")
-    (add-to-list 'grep-find-ignored-files "**.bundle.js")
-    (add-to-list 'grep-find-ignored-files "**.build.js")
-    (add-to-list 'grep-find-ignored-files ".DS_Store")
-    (add-to-list 'grep-find-ignored-files "custom.el")
-    (projectile-global-mode +1))
-  )
+    (t/add-to-list projectile-globally-ignored-directories '("elpa-backups" "node_modules" "target" "dist" ".idea"))
+    (t/add-to-list projectile-globally-ignored-files '("**.bundle.js" "**.build.js" ".DS_Store" "projectile.cache"))
+    (t/add-to-list grep-find-ignored-files '("**.bundle.js" "**.build.js" ".DS_Store" "custom.el"))
+    (projectile-global-mode +1)))
+
+(t/use-package dumb-jump
+  :init
+  (progn
+    (setq dumb-jump-selector 'helm))
+  :config
+  (progn
+    (bind-key "M-." 'dumb-jump-go evil-normal-state-map)
+    (bind-key "M-." 'dumb-jump-go evil-insert-state-map)
+    
+    (add-hook 'emacs-lisp-mode-hook
+              (lambda ()
+                (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
+                (bind-key "M-." 'xref-find-definitions evil-insert-state-map)
+                ))
+
+    ;; TODO torgeir tags
+    ;;(bind-key "M-g o" 'dumb-jump-go-other-window)
+    ;;(bind-key "M-g x" 'dumb-jump-go-prefer-external dumb-jump-mode-map)
+    ;;(bind-key "M-g z" 'dumb-jump-go-prefer-external-other-window dumb-jump-mode-map)
+    ))
 
 (t/use-package aggressive-indent
   :commands global-aggressive-indent-mode
@@ -825,6 +836,7 @@
                     "i" 'package-install
                     "r" 'package-refresh-contents
                     "l" 'paradox-list-packages
+                    "R" 'package-reinstall
                     "U" 't/upgrade-packages)
 
   (t/declare-prefix "t" "Toggle"
@@ -833,7 +845,6 @@
                     "n" 'nlinum-mode
                     "r" 'nlinum-relative-toggle
                     "l" 'hl-line-mode
-                    "b" 'fancy-battery-mode
                     "w" 'writeroom-mode
                     "Cc" 'rainbow-mode
                     "Cd" 'rainbow-delimiters-mode)
@@ -851,9 +862,7 @@
 
   (t/declare-prefix "d" "Doc"
                     "d" 'dash-at-point
-                    "s" 'dash-at-point-with-docset
-                    "a" 'helm-apropos
-                    "f" 'describe-function)
+                    "s" 'dash-at-point-with-docset)
 
   (t/declare-prefix "x" "Text manipulation"
                     "a" 'align-regexp
@@ -878,8 +887,8 @@
   (t/declare-prefix "f" "Files/Frame"
                     "f" 'helm-find-files
                     "l" 't/neotree-open-file
-                    "J" 'dired-jump
-                    "j" 'dired-jump-other-window
+                    "j" 'dired-jump
+                    "J" 'dired-jump-other-window
                     "d" 'delete-frame
                     "g" 'ffap
                     "o" 't/open-in-desktop

@@ -34,7 +34,12 @@
     :ensure nil
     :load-path "site-lisp/json-path-eldoc/"
     :init
-    (add-hook 'json-mode-hook 'turn-on-json-path-eldoc)))
+    (add-hook 'json-mode-hook 'turn-on-json-path-eldoc))
+  
+  (t/use-package html2text
+    ;; needed for helm-google
+    :ensure nil
+    :load-path "site-lisp/html2text"))
 
 (progn
   ;; emacs local

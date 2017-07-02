@@ -1299,4 +1299,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
         ((symbolp fn-or-s) (makunbound fn-or-s))
         (t (message "Can't unbind %s, not a fboundp or symbolp" fn-or-s))))
 
+;;;###autoload
+(defun t/add-to-list (l item-or-items)
+  "Adds items to the list `l'."
+  (if (listp item-or-items)
+      (dolist (item item-or-items) (add-to-list (quote l) item t))
+    (add-to-list (quote l) item-or-items))
+  l)
+
 (provide 't-defuns)
