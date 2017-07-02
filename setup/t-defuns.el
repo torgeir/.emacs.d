@@ -1291,4 +1291,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
           ((symbolp s) (describe-variable s))
           (t (call-interactively 'helm-apropos)))))
 
+;;;###autoload
+(defun t/unbind (fn-or-s)
+  "Unbind function or symbol depending on type."
+  (interactive)
+  (cond ((fboundp fn-or-s) (fmakunbound fn-or-s))
+        ((symbolp fn-or-s) (makunbound fn-or-s))
+        (t (message "Can't unbind %s, not a fboundp or symbolp" fn-or-s))))
+
 (provide 't-defuns)
