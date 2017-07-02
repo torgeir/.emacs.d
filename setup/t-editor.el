@@ -172,16 +172,11 @@
   :commands undo-tree-visualize
   :init
   (progn
-    (setq undo-tree-visualizer-timestamps t
-          undo-tree-visualizer-diff t))
-  :config
-  (progn
-    (bind-key [f7] (lambda ()
-                     "custom undo tree visualizer toggle"
-                     (interactive)
-                     (if (get-buffer undo-tree-visualizer-buffer-name)
-                         (undo-tree-visualizer-quit)
-                       (undo-tree-visualize))))))
+    (setq undo-tree-auto-save-history nil
+          undo-tree-visualizer-timestamps t
+          undo-tree-visualizer-diff t)
+    (t/declare-prefix "a" "Applications"
+                      "u" 'undo-tree-visualize)))
 
 (t/use-package smex
   :init
@@ -364,8 +359,6 @@
             (bind-key "M-<right>" #'t/forward-down-sexp ,mode-map)
             (bind-key "M-S-<left>" #'t/backward-sexp ,mode-map)
             (bind-key "M-S-<right>" #'t/forward-sexp ,mode-map)))))
-
-    (t/enable-movement-for-lisp-mode 'emacs-lisp-mode)
 
     (dolist (mode (list
                    'emacs-lisp-mode
@@ -891,8 +884,9 @@
                     "g" 'ffap
                     "o" 't/open-in-desktop
                     "r" 'helm-recentf)
-
+  
   (t/declare-prefix "h" "Help"
+                    "h" #'t/describe
                     "a" 'helm-apropos
                     "l" 'helm-locate-library
                     "i" 'helm-info-at-point

@@ -1277,7 +1277,18 @@ If FILEXT is provided, return files with extension FILEXT instead."
 
 ;;;###autoload
 (defun t/recompile-elpa ()
+  "Recompile the elpa/ directory to resolve byte compilation issues."
   (interactive)
   (byte-recompile-directory (expand-file-name (t/user-emacs-file "elpa")) 0))
+
+;;;###autoload
+(defun t/describe ()
+  "Describe functions, features, symbols, or run help-apropos if it's not found."
+  (interactive)
+  (let ((s (symbol-at-point)))
+    (cond ((fboundp s) (describe-function s))
+          ((featurep s) (describe-package s))
+          ((symbolp s) (describe-variable s))
+          (t (call-interactively 'helm-apropos)))))
 
 (provide 't-defuns)

@@ -15,6 +15,7 @@
   (modify-coding-system-alist 'file "" 'utf-8)
 
   (setq-default
+   word-wrap t
    mode-require-final-newline nil ; don't require final newline
    require-final-newline nil ; don't require final newline
    redisplay-dont-pause t ; update screen immediately

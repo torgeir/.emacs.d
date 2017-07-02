@@ -9,9 +9,6 @@
           (push lexical-tuple prettify-symbols-alist)
           (prettify-symbols-mode))))
 
-    (add-hook 'lisp-mode-hook (t/ligature '("lambda" . ?l)))
-    (add-hook 'lisp-interaction-mode (t/ligature '("lambda" . ?l)))
-    (add-hook 'emacs-lisp-mode-hook (t/ligature '("lambda" . ?l)))
     (dolist (hook '(js2-mode-hook web-mode-hook))
       (add-hook hook (t/ligature '("function" . ?f)))))
 
