@@ -1266,11 +1266,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (cond
    ((or (and (looking-back "(") (looking-at ")"))
         (and (looking-back "\\[") (looking-at "\\]"))
-        (and (looking-back "{") (looking-at "}"))) (progn
-                                                     (indent-according-to-mode)
-                                                     (newline)
-                                                     (indent-according-to-mode)
-                                                     (t/open-line-above)))
+        (and (looking-back "{") (looking-at "}")))
+    (progn
+      (indent-according-to-mode)
+      (newline)
+      (indent-according-to-mode)
+      (t/open-line-above)))
    (t (progn
         (evil-ret)
         (indent-according-to-mode)))))

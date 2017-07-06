@@ -7,6 +7,7 @@
  '(org-checkbox-statistics-todo ((t (:inherit org-todo))))
  '(org-code ((t (:foreground "VioletRed1"))))
  '(org-date ((t (:foreground "turquoise2"))))
+ '(org-level-1 ((t (:foreground "#51afef" :weight semi-bold :height 1.0 :background nil))))
  '(org-special-keyword ((t (:foreground "gray25"))))
  '(org-tag ((t (:foreground "#7bda75" :weight normal))))
  '(rainbow-delimiters-unmatched-face ((t (:foreground "#e0211d" :overline nil :underline t)))))

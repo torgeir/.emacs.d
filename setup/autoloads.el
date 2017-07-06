@@ -6,7 +6,7 @@
 ;;;### (autoloads nil "t-cygwin" "t-cygwin.el" (0 0 0 0))
 ;;; Generated autoloads from t-cygwin.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-cygwin" '("t-cygwin/")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-cygwin" '(#("t-cygwin/" 0 9 (fontified nil face font-lock-function-name-face)))))
 
 ;;;***
 
@@ -733,14 +733,14 @@ Adds items to the list `l'.
 
 \(fn L ITEM-OR-ITEMS)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '(#("*t-adjusted-font-size*" 0 22 (fontified nil)) #("t/" 0 2 (fontified nil)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
 
 ;;;***
 
 ;;;### (autoloads nil "t-editor" "t-editor.el" (0 0 0 0))
 ;;; Generated autoloads from t-editor.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-editor" '(#("t-editor/config" 0 11 (face font-lock-function-name-face fontified t) 11 15 (face font-lock-function-name-face fontified t)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-editor" '("t-editor/config")))
 
 ;;;***
 
@@ -810,7 +810,7 @@ Adds items to the list `l'.
 ;;;### (autoloads nil "t-org" "t-org.el" (0 0 0 0))
 ;;; Generated autoloads from t-org.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '("t-org/" "lat-trh" "lon-trh")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '(#("t-org/" 0 6 (fontified nil)) #("lat-trh" 0 1 (face font-lock-variable-name-face fontified nil) 1 7 (fontified nil face font-lock-variable-name-face)) #("lon-trh" 0 1 (face font-lock-variable-name-face fontified nil) 1 7 (face font-lock-variable-name-face fontified nil)))))
 
 ;;;***
 
@@ -832,7 +832,7 @@ Adds items to the list `l'.
 ;;;### (autoloads nil "t-shell" "t-shell.el" (0 0 0 0))
 ;;; Generated autoloads from t-shell.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '("t-shell/config")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '(#("t-shell/config" 0 14 (fontified nil)))))
 
 ;;;***
 

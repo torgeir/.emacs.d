@@ -965,8 +965,7 @@
                     "l" 't/helm-find-and-insert-line-from-project)
 
   (t/declare-prefix "h" "Highlight"
-                    ;; leader leader clears all highlights
-                    "h" 'highlight-symbol
+                    "H" 'highlight-symbol
                     "n" 'highlight-symbol-next
                     "N" 'highlight-symbol-prev)
 
