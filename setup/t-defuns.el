@@ -84,21 +84,23 @@
 
 ;;;###autoload
 (defun t/build-tags ()
-  "build ctags file for projectile project, calls load-tags when done"
+  "Build ctags file for projectile project, calls load-tags when done.
+
+Remember to build emacs --without-ctags and use the one from `brew' instead,
+it's the one with the correct options needed to generate ctags that emacs 
+understands"
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-      ((root (projectile-project-root))
-       (ctags (expand-file-name "~/.emacs.d/ctags"))
-       (tags (shell-quote-argument (concat root "TAGS")))
-       (process (start-process-shell-command
-                 "build ctags asynchronously"
-                 "*ctags async*"
-                 (concat
-                  "ctags -e -R"       ; etags mode, recurse
-                  " --options=" ctags ; use global config
-                  " -f " tags " " ; put it in project/TAGS
-                  root))))
+      ((ctags (expand-file-name "~/.emacs.d/ctags"))
+       (tags (shell-quote-argument (concat (projectile-project-root) "TAGS")))
+       (process (start-process-shell-command "build ctags asynchronously"
+                                             "*ctags async*"
+                                             (concat
+                                              "etags -R"          ; recurse
+                                              " --options=" ctags ; use global config
+                                              " -f " tags " "     ; put it in project/TAGS
+                                              root))))
     (set-process-sentinel process (lambda (process event)
                                     (t/load-tags tags)))))
 
