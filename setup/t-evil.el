@@ -180,14 +180,12 @@ ignored.")
              ;; non-nil, then stop there.
              (run-hook-with-args-until-success '+evil-esc-hook))))
 
-    (defvar t-evil-major-modes '(;;help-mode
-                                 compilation-mode
+    (defvar t-evil-major-modes '(compilation-mode
                                  special-mode
                                  calendar-mode
                                  git-rebase-mode
                                  flycheck-error-list-mode
                                  diff-mode
-                                 ;;term-mode
                                  cider-stacktrace-mode
                                  cider-docview-mode)
       "Major modes that should trigger evil emacs state when changed to.")
