@@ -569,15 +569,19 @@
 
   :config
   (progn
+    
+    (defun t/yas-clear-or-delete-char () 
+      "Replace `yas-next-field' with noop `+' to make <backspace> only clear or delete-char."
+      (interactive)
+      (cl-letf (((symbol-function 'yas-next-field) #'+))
+        (call-interactively 'yas-skip-and-clear-or-delete-char)))
+    (bind-key "<backspace>" #'t/yas-clear-or-delete-char yas-keymap)
 
-    (bind-key "<backspace>" 'yas-skip-and-clear-or-delete-char yas-keymap)
-
-    (progn
-      (defun t/reload-snippets-on-save ()
-        "Reload yasnippet files on save."
-        (when (string-match "\\.yasnippet$" buffer-file-name)
-          (yas-reload-all)))
-      (add-hook 'after-save-hook #'t/reload-snippets-on-save))
+    (defun t/reload-snippets-on-save ()
+      "Reload yasnippet files on save."
+      (when (string-match "\\.yasnippet$" buffer-file-name)
+        (yas-reload-all)))
+    (add-hook 'after-save-hook #'t/reload-snippets-on-save)
 
     ;; make fundamental snippets global snippets
     (add-hook 'yas-minor-mode-hook (lambda () (yas-activate-extra-mode 'fundamental-mode)))
