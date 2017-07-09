@@ -870,6 +870,7 @@
 
   (t/declare-prefix "t" "Toggle"
                     "d" 'toggle-debug-on-error
+                    "f" 'toggle-frame-fullscreen
                     "t" 't/load-theme-cycle
                     "n" #'t/toggle-line-numbers
                     "r" #'t/toggle-relative-line-numbers
