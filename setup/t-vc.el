@@ -1,24 +1,24 @@
-  (t/use-package git-gutter+
-    :diminish git-gutter+-mode
-    :defer t
-    :init
-    (progn
-      (with-eval-after-load 'git-gutter+
-        (add-hook 'after-init-hook 'global-git-gutter+-mode)))
-    :config
-    (progn
-      (setq git-gutter+-modified-sign "~"
-            git-gutter+-added-sign "+"
-            git-gutter+-deleted-sign "-"
-            git-gutter+-separator-sign (if has-gui "" " "))))
+(t/use-package git-gutter+
+  :diminish git-gutter+-mode
+  :defer t
+  :init
+  (progn
+    (with-eval-after-load 'git-gutter+
+      (add-hook 'after-init-hook 'global-git-gutter+-mode)))
+  :config
+  (progn
+    (setq git-gutter+-modified-sign "~"
+          git-gutter+-added-sign "+"
+          git-gutter+-deleted-sign "-"
+          git-gutter+-separator-sign (if has-gui "" " "))))
 
-  (t/use-package git-gutter-fringe+
-    :config
-    (progn
-      (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "...XXXX......")
-      (fringe-helper-define 'git-gutter-fr+-delprivate/t/eted '(top repeat) "...XXXX......")
-      (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "...XXXX......")
-      (git-gutter+-enable-fringe-display-mode)))
+(t/use-package git-gutter-fringe+
+  :config
+  (progn
+    (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "XXX.....")
+    (fringe-helper-define 'git-gutter-fr+-delprivate/t/eted '(top repeat) "XXX.....")
+    (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "XXX.....")
+    (git-gutter+-enable-fringe-display-mode)))
 
 (t/use-package helm-open-github
   :commands (helm-open-github-from-issues

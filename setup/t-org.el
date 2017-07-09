@@ -365,7 +365,7 @@ Locally redefines org-agenda-files not to export all agenda files."
               '(propertize
                 (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
                 'font-lock-face 'calendar-iso-week-face)
-              calendar-intermonth-header (propertize "WK" 'font-lock-face 'calendar-iso-week-header-face)))
+              calendar-intermonth-header (propertize "W " 'font-lock-face 'calendar-iso-week-header-face)))
 
       (when (boundp 'org-evil-table-mode-map)
         (bind-key "M-S-<left>" 'org-table-delete-column org-evil-table-mode-map)
