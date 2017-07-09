@@ -1,7 +1,7 @@
-(t/use-package powerline)
-
 (defun t-modeline/config ()
-  (require 't-doom-modeline)
+
+  (defun t/init-modeline () (+doom-modeline|init))
+  (add-hook 'after-init-hook #'t/init-modeline)
 
   (defvar mode-line-cleaner-alist
     `(;;(eldoc-mode . "")

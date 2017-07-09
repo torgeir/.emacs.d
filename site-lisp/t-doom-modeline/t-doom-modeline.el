@@ -1,8 +1,8 @@
-;;; ui/doom-modeline/config.el -*- lexical-binding: t; -*-
+;; -*- lexical-binding: t; -*-
 
 ;; TODO torgeir added this
-(defun doom-project-root ()
-  (t/project-root))
+(setq +doom-modeline-height 40)
+(defun doom-project-root () (t/project-root))
 
 (defun doom--resolve-hooks (hooks)
   (cl-loop with quoted-p = (eq (car-safe hooks) 'quote)
@@ -182,7 +182,7 @@ DEFAULT is non-nil, set the default mode-line for all buffers."
 ;; Variables
 ;;
 
-(defvar +doom-modeline-height 45
+(defvar +doom-modeline-height 29
   "How tall the mode-line should be (only respected in GUI emacs).")
 
 (defvar +doom-modeline-bar-width 3
@@ -278,6 +278,7 @@ active."
 ;; Show version string for multi-version managers like rvm, rbenv, pyenv, etc.
 (defvar-local +doom-modeline-env-version nil)
 (defvar-local +doom-modeline-env-command nil)
+(add-hook! '(focus-in-hook find-file-hook) #'+doom-modeline|update-env)
 (defun +doom-modeline|update-env ()
   (when +doom-modeline-env-command
     (let* ((default-directory (doom-project-root))
@@ -285,7 +286,8 @@ active."
       (setq +doom-modeline-env-version (if (string-match "[ \t\n\r]+\\'" s)
                                            (replace-match "" t t s)
                                          s)))))
-(add-hook! '(focus-in-hook find-file-hook) #'+doom-modeline|update-env)
+
+;; Only support python and ruby for now
 (add-hook! 'python-mode-hook (setq +doom-modeline-env-command "python --version 2>&1 | cut -d' ' -f2"))
 (add-hook! 'ruby-mode-hook   (setq +doom-modeline-env-command "ruby   --version 2>&1 | cut -d' ' -f2"))
 
@@ -399,6 +401,12 @@ directory, the file name, and its state (modified, read-only or non-existent)."
                             "circle-slash"
                             :face 'doom-modeline-urgent
                             :v-adjust -0.05)
+                           " "))
+                  ((buffer-narrowed-p)
+                   (concat (all-the-icons-octicon
+                            "fold"
+                            :face 'doom-modeline-warning
+                            :v-adjust -0.05)
                            " ")))
             (when-let (dir-path (+doom-modeline--buffer-path))
               (if-let (faces (or faces (if active 'doom-modeline-buffer-path)))
@@ -417,16 +425,14 @@ directory, the file name, and its state (modified, read-only or non-existent)."
 ;;
 (def-modeline-segment! buffer-encoding
   "Displays the encoding and eol style of the buffer the same way Atom does."
-  (concat (let ((eol-type (coding-system-eol-type buffer-file-coding-system)))
-            (cond ((eq eol-type 0) "LF  ")
-                  ((eq eol-type 1) "CRLF  ")
-                  ((eq eol-type 2) "CR  ")))
-          (let* ((sys (coding-system-plist buffer-file-coding-system))
-                 (sys-name (plist-get sys :name))
-                 (sys-cat (plist-get sys :category)))
-            (cond ((memq sys-cat '(coding-category-undecided coding-category-utf-8))
+  (concat (pcase (coding-system-eol-type buffer-file-coding-system)
+            (0 "LF  ")
+            (1 "CRLF  ")
+            (2 "CR  "))
+          (let ((sys (coding-system-plist buffer-file-coding-system)))
+            (cond ((memq (plist-get sys :category) '(coding-category-undecided coding-category-utf-8))
                    "UTF-8")
-                  (t (upcase (symbol-name sys-name)))))
+                  (t (upcase (symbol-name (plist-get sys :name))))))
           "  "))
 
 ;;
@@ -434,8 +440,10 @@ directory, the file name, and its state (modified, read-only or non-existent)."
   "The major mode, including process, environment and text-scale info."
   (propertize
    (concat (format-mode-line mode-name)
-           (if (stringp mode-line-process) mode-line-process)
-           (if +doom-modeline-env-version (concat " " +doom-modeline-env-version))
+           (when (stringp mode-line-process)
+             mode-line-process)
+           (when +doom-modeline-env-version
+             (concat " " +doom-modeline-env-version))
            (and (featurep 'face-remap)
                 (/= text-scale-mode-amount 0)
                 (format " (%+d)" text-scale-mode-amount)))
@@ -444,56 +452,54 @@ directory, the file name, and its state (modified, read-only or non-existent)."
 ;;
 (def-modeline-segment! vcs
   "Displays the current branch, colored based on its state."
-  (when vc-mode
-    (let ((backend (when buffer-file-name (vc-backend buffer-file-name)))
-          (state   (when buffer-file-name (vc-state buffer-file-name)))
-          (face    'mode-line-inactive)
-          (active  (active))
-          (all-the-icons-scale-factor 1.0)
-          (all-the-icons-default-adjust -0.1))
-      (concat "  "
-              (cond ((memq state '(edited added))
-                     (if active (setq face 'doom-modeline-info))
-                     (all-the-icons-octicon
-                      "git-compare"
-                      :face face
-                      :height 1.2
-                      :v-adjust -0.05))
-                    ((eq state 'needs-merge)
-                     (if active (setq face 'doom-modeline-info))
-                     (all-the-icons-octicon "git-merge" :face face))
-                    ((eq state 'needs-update)
-                     (if active (setq face 'doom-modeline-warning))
-                     (all-the-icons-octicon "arrow-down" :face face))
-                    ((memq state '(removed conflict unregistered))
-                     (if active (setq face 'doom-modeline-urgent))
-                     (all-the-icons-octicon "alert" :face face))
-                    (t
-                     (if active (setq face 'font-lock-doc-face))
-                     (all-the-icons-octicon
-                      "git-compare"
-                      :face face
-                      :height 1.2
-                      :v-adjust -0.05)))
-              " "
-              (propertize (substring vc-mode (+ (if (eq backend 'Hg) 2 3) 2))
-                          'face (if active face))
-              " "))))
+  (when (and vc-mode buffer-file-name)
+    (let* ((backend (vc-backend buffer-file-name))
+           (state   (vc-state buffer-file-name backend)))
+      (let ((face    'mode-line-inactive)
+            (active  (active))
+            (all-the-icons-scale-factor 1.0)
+            (all-the-icons-default-adjust -0.1))
+        (concat "  "
+                (cond ((memq state '(edited added))
+                       (if active (setq face 'doom-modeline-info))
+                       (all-the-icons-octicon
+                        "git-compare"
+                        :face face
+                        :height 1.2
+                        :v-adjust -0.05))
+                      ((eq state 'needs-merge)
+                       (if active (setq face 'doom-modeline-info))
+                       (all-the-icons-octicon "git-merge" :face face))
+                      ((eq state 'needs-update)
+                       (if active (setq face 'doom-modeline-warning))
+                       (all-the-icons-octicon "arrow-down" :face face))
+                      ((memq state '(removed conflict unregistered))
+                       (if active (setq face 'doom-modeline-urgent))
+                       (all-the-icons-octicon "alert" :face face))
+                      (t
+                       (if active (setq face 'font-lock-doc-face))
+                       (all-the-icons-octicon
+                        "git-compare"
+                        :face face
+                        :height 1.2
+                        :v-adjust -0.05)))
+                " "
+                (propertize (substring vc-mode (+ (if (eq backend 'Hg) 2 3) 2))
+                            'face (if active face))
+                " ")))))
 
 ;;
 (defun +doom-ml-icon (icon &optional text face voffset)
   "Displays an octicon ICON with FACE, followed by TEXT. Uses
 `all-the-icons-octicon' to fetch the icon."
-  (concat
-   (if vc-mode " " "  ")
-   (when icon
-     (concat
-      (all-the-icons-material icon :face face :height 1.1 :v-adjust (or voffset -0.2))
-      ;; (all-the-icons-octicon icon :face face :height 1.0 :v-adjust 0)
-      (if text +doom-modeline-vspc)))
-   (when text
-     (propertize text 'face face))
-   (if vc-mode "  " " ")))
+  (concat (if vc-mode " " "  ")
+          (when icon
+            (concat
+             (all-the-icons-material icon :face face :height 1.1 :v-adjust (or voffset -0.2))
+             (if text +doom-modeline-vspc)))
+          (when text
+            (propertize text 'face face))
+          (if vc-mode "  " " ")))
 
 (def-modeline-segment! flycheck
   "Displays color-coded flycheck error status in the current buffer with pretty
@@ -575,7 +581,7 @@ lines are selected, or the NxM dimensions of a block selection."
      'face (if (active) 'doom-modeline-panel))))
 
 (defsubst +doom-modeline--evil-substitute ()
-  "Show number of :s matches in real time."
+  "Show number of matches for evil-ex substitutions and highlights in real time."
   (when (and evil-mode
              (or (assq 'evil-ex-substitute evil-ex-active-highlights-alist)
                  (assq 'evil-ex-global-match evil-ex-active-highlights-alist)
@@ -587,8 +593,11 @@ lines are selected, or the NxM dimensions of a block selection."
            (pattern (car-safe (evil-delimited-arguments evil-ex-argument 2))))
        (if pattern
            (format " %s matches " (how-many pattern (car range) (cdr range)))
-         " ... "))
+         " - "))
      'face (if (active) 'doom-modeline-panel))))
+
+(defun doom-themes--overlay-sort (a b)
+  (< (overlay-start a) (overlay-start b)))
 
 (defsubst +doom-modeline--iedit ()
   "Show the number of iedit regions matches + what match you're on."
@@ -602,9 +611,9 @@ lines are selected, or the NxM dimensions of a block selection."
        (format " %s/%d "
                (if this-oc
                    (- length
-                      (length (cdr
-                               (memq this-oc (sort (append iedit-occurrences-overlays (list))
-                                                   (lambda (x y) (< (overlay-start x) (overlay-start y))))))))
+                      (length (memq this-oc (sort (append iedit-occurrences-overlays nil)
+                                                  #'doom-themes--overlay-sort)))
+                      -1)
                  "-")
                length))
      'face (if (active) 'doom-modeline-panel))))
@@ -616,44 +625,28 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
   (let ((meta (concat (+doom-modeline--macro-recording)
                       (+doom-modeline--anzu)
                       (+doom-modeline--evil-substitute)
-                      (+doom-modeline--iedit)
-                      )))
-    (or (and (not (string= meta "")) meta)
+                      (+doom-modeline--iedit))))
+    (or (and (not (equal meta "")) meta)
         (if buffer-file-name " %I "))))
 
 ;; TODO Include other information
 (def-modeline-segment! media-info
   "Metadata regarding the current file, such as dimensions for images."
   (cond ((eq major-mode 'image-mode)
-         (let ((size (image-size (image-get-display-property) :pixels)))
-           (format "  %dx%d  " (car size) (cdr size))))))
+         (cl-destructuring-bind (width . height)
+             (image-size (image-get-display-property) :pixels)
+           (format "  %dx%d  " width height)))))
 
-;;
-(def-modeline-segment! eldoc
-  "Display eldoc documentation in the mode-line while using the minibuffer (e.g.
-`eval-expression')."
-  (bound-and-true-p str))
-
-;; These bars regulate the height of the mode-line in GUI Emacs.
+;; The bar regulates the height of the mode-line in GUI Emacs.
 (def-modeline-segment! bar
-  (if (display-graphic-p)
-      (+doom-modeline--make-xpm
-       (face-background (if (active)
-                            'doom-modeline-bar
-                          'doom-modeline-inactive-bar)
-                        nil t)
-       +doom-modeline-height
-       +doom-modeline-bar-width)
-    ""))
-
-(def-modeline-segment! eldoc-bar
-  "A differently colored bar, to signify an eldoc display."
-  (if (display-graphic-p)
-      (+doom-modeline--make-xpm
-       (face-background 'doom-modeline-eldoc-bar nil t)
-       +doom-modeline-height
-       +doom-modeline-bar-width)
-    ""))
+  (when (display-graphic-p)
+    (+doom-modeline--make-xpm
+     (face-background (if (active)
+                          'doom-modeline-bar
+                        'doom-modeline-inactive-bar)
+                      nil t)
+     +doom-modeline-height
+     +doom-modeline-bar-width)))
 
 
 ;;
@@ -663,10 +656,6 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
 (def-modeline! main
   (bar matches " " buffer-info "  %l:%c %p  " selection-info)
   (buffer-encoding major-mode vcs flycheck))
-
-(def-modeline! eldoc
-  (eldoc-bar " " eldoc)
-  (media-info major-mode))
 
 (def-modeline! minimal
   (bar matches " " buffer-info)
@@ -684,18 +673,19 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
   (bar " %b  ")
   (media-info major-mode))
 
-;;
-(doom-set-modeline 'main t)
-
-;; This scratch buffer is already created, and doesn't get a modeline. For the
-;; love of Emacs, someone give the man a modeline!
-(with-current-buffer "*scratch*"
-  (doom-set-modeline 'main))
-
 
 ;;
 ;; Hooks
 ;;
+
+(defun +doom-modeline|init ()
+  "Set the default modeline."
+  (doom-set-modeline 'main t)
+
+  ;; This scratch buffer is already created and doesn't get a modeline. For the
+  ;; love of Emacs, someone give the man a modeline!
+  (with-current-buffer "*scratch*"
+    (doom-set-modeline 'main)))
 
 (defun +doom-modeline|set-special-modeline ()
   (doom-set-modeline 'special))
@@ -703,9 +693,16 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
 (defun +doom-modeline|set-media-modeline ()
   (doom-set-modeline 'media))
 
+
+;;
+;; Bootstrap
+;;
+
+(add-hook 'doom-init-ui-hook #'+doom-modeline|init)
+
 (add-hook 'org-src-mode-hook #'+doom-modeline|set-special-modeline)
-(add-hook 'image-mode-hook #'+doom-modeline|set-media-modeline)
-(add-hook 'circe-mode-hook #'+doom-modeline|set-special-modeline)
+(add-hook 'image-mode-hook   #'+doom-modeline|set-media-modeline)
+(add-hook 'circe-mode-hook   #'+doom-modeline|set-special-modeline)
 
 ;; torgeir added this
 (add-hook! 'js2-mode-hook (setq +doom-modeline-env-command "node -v 2>&1"))

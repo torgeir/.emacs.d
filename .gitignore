@@ -14,6 +14,7 @@
 /.company-statistics-cache.el
 /.hl-save
 /*.elc
+**.elc
 /langs-extra.el
 /proxy.el
 /eshell/*
