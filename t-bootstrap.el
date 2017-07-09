@@ -49,10 +49,13 @@
 (defun t/reload-autoloads ()
   "Regenerate and reload autoloads.el."
   (interactive)
+  (when (and (boundp 'generated-autoload-file)
+             (file-exists-p generated-autoload-file))
+    (delete-file generated-autoload-file))
+  (shell-command (concat "touch " t-file-autoloads))
   (let ((generated-autoload-file t-file-autoloads))
-    (when (file-exists-p generated-autoload-file) (delete-file generated-autoload-file))
-    (update-directory-autoloads t-dir-setup)
-    (when (called-interactively-p 'interactive) (load "autoloads"))))
+    (update-directory-autoloads (concat t-dir-setup "/"))
+    (when (called-interactively-p 'interactive) (load t-file-autoloads t t))))
 
 (unless (require 'autoloads t-file-autoloads t)
   (t/reload-autoloads)

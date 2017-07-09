@@ -6,7 +6,7 @@
 ;;;### (autoloads nil "t-cygwin" "t-cygwin.el" (0 0 0 0))
 ;;; Generated autoloads from t-cygwin.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-cygwin" '(#("t-cygwin/" 0 9 (fontified nil face font-lock-function-name-face)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-cygwin" '("t-cygwin/")))
 
 ;;;***
 
@@ -61,7 +61,11 @@ pretty prints json in selected region
 \(fn)" t nil)
 
 (autoload 't/build-tags "t-defuns" "\
-build ctags file for projectile project, calls load-tags when done
+Build ctags file for projectile project, calls load-tags when done.
+
+Remember to build emacs --without-ctags and use the one from `brew' instead,
+it's the one with the correct options needed to generate ctags that emacs 
+understands
 
 \(fn)" t nil)
 
@@ -733,21 +737,31 @@ Adds items to the list `l'.
 
 \(fn L ITEM-OR-ITEMS)" nil nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
+(autoload 't/toggle-line-numbers "t-defuns" "\
+Toggle line numbers on or off.
+
+\(fn)" t nil)
+
+(autoload 't/toggle-relative-line-numbers "t-defuns" "\
+Toggle relative line numbers on or off.
+
+\(fn)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '(#("*t-adjusted-font-size*" 0 22 (fontified nil)) #("t/" 0 2 (fontified nil)))))
 
 ;;;***
 
 ;;;### (autoloads nil "t-editor" "t-editor.el" (0 0 0 0))
 ;;; Generated autoloads from t-editor.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-editor" '("t-editor/config")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-editor" '(#("t-editor/config" 0 15 (fontified nil)))))
 
 ;;;***
 
 ;;;### (autoloads nil "t-evil" "t-evil.el" (0 0 0 0))
 ;;; Generated autoloads from t-evil.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-evil" '("t-evil")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-evil" '(#("t-evil" 0 6 (fontified nil)))))
 
 ;;;***
 
@@ -775,7 +789,7 @@ Adds items to the list `l'.
 ;;;### (autoloads nil "t-load-theme" "t-load-theme.el" (0 0 0 0))
 ;;; Generated autoloads from t-load-theme.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-load-theme" '("t-load-theme/config")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-load-theme" '(#("t-load-theme/config" 0 19 (fontified nil)))))
 
 ;;;***
 
@@ -789,14 +803,14 @@ Adds items to the list `l'.
 ;;;### (autoloads nil "t-macros" "t-macros.el" (0 0 0 0))
 ;;; Generated autoloads from t-macros.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-macros" '(#("t/" 0 2 (fontified nil)) #("comment" 0 7 (fontified nil)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-macros" '("t/" "comment")))
 
 ;;;***
 
 ;;;### (autoloads nil "t-modeline" "t-modeline.el" (0 0 0 0))
 ;;; Generated autoloads from t-modeline.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modeline" '("t-modeline/config")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modeline" '(#("t-modeline/config" 0 17 (fontified nil)))))
 
 ;;;***
 
@@ -810,7 +824,7 @@ Adds items to the list `l'.
 ;;;### (autoloads nil "t-org" "t-org.el" (0 0 0 0))
 ;;; Generated autoloads from t-org.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '(#("t-org/" 0 6 (fontified nil)) #("lat-trh" 0 1 (face font-lock-variable-name-face fontified nil) 1 7 (fontified nil face font-lock-variable-name-face)) #("lon-trh" 0 1 (face font-lock-variable-name-face fontified nil) 1 7 (face font-lock-variable-name-face fontified nil)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '(#("t-org/" 0 6 (fontified nil)) #("lat-trh" 0 1 (fontified nil) 1 7 (fontified nil)) #("lon-trh" 0 1 (fontified nil) 1 7 (fontified nil)))))
 
 ;;;***
 
@@ -825,28 +839,28 @@ Adds items to the list `l'.
 ;;;;;;  0 0))
 ;;; Generated autoloads from t-sane-defaults.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-sane-defaults" '("t-sane-defaults/vars" "t/init-mouse")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-sane-defaults" '(#("t-sane-defaults/vars" 0 1 (fontified nil) 1 20 (fontified nil)) #("t/init-mouse" 0 1 (fontified nil) 1 12 (fontified nil)))))
 
 ;;;***
 
 ;;;### (autoloads nil "t-shell" "t-shell.el" (0 0 0 0))
 ;;; Generated autoloads from t-shell.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '(#("t-shell/config" 0 14 (fontified nil)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '("t-shell/config")))
 
 ;;;***
 
 ;;;### (autoloads nil "t-typography" "t-typography.el" (0 0 0 0))
 ;;; Generated autoloads from t-typography.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-typography" '(#("t-typography/config" 0 19 (fontified nil)))))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-typography" '("t-typography/config")))
 
 ;;;***
 
 ;;;### (autoloads nil "t-vc" "t-vc.el" (0 0 0 0))
 ;;; Generated autoloads from t-vc.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-vc" '("t-vc/config")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-vc" '(#("t-vc/config" 0 11 (fontified nil)))))
 
 ;;;***
 
