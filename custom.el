@@ -3,7 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(highlight-symbol-face ((t (:inherit comment-face))))
+ '(highlight-symbol-face ((t (:inherit font-lock-comment-face))))
  '(org-checkbox-statistics-todo ((t (:inherit org-todo))))
  '(org-code ((t (:foreground "VioletRed1"))))
  '(org-date ((t (:foreground "turquoise2"))))
@@ -29,7 +29,7 @@
  '(jdee-db-requested-breakpoint-face-colors (cons "#181e26" "#7bc275"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#181e26" "#3D3D48"))
  '(magit-pull-arguments nil t)
- '(neo-mode-line-type (quote none))
+ '(neo-mode-line-type (quote none) t)
  '(org-ellipsis " > ")
  '(org-tags-column -60)
  '(org-todo-keywords

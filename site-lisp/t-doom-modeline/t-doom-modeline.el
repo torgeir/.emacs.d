@@ -1,7 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 
 ;; TODO torgeir added this
-(setq +doom-modeline-height 50)
+(setq +doom-modeline-height 40)
 (defun doom-project-root () (t/project-root))
 
 (defun doom--resolve-hooks (hooks)

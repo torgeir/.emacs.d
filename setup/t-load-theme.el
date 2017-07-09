@@ -2,8 +2,10 @@
 (t/use-package doom-themes
   :config
   (progn
-    (setq doom-themes-enable-bold t         ; if nil, bolding are universally disabled
-          doom-themes-enable-italic t)      ; if nil, italics are universally disabled
+    (setq doom-themes-enable-bold t
+          doom-themes-enable-italic t
+          doom-vibrant-brighter-comments t)
+    (doom-themes-visual-bell-config)
     (doom-themes-nlinum-config)))
 
 (defun t-load-theme/config ()
