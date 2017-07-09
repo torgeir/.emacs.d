@@ -357,7 +357,6 @@ Locally redefines org-agenda-files not to export all agenda files."
 
       (progn
         ;; show week numbers in calendar
-
         (copy-face font-lock-constant-face 'calendar-iso-week-face)
         (set-face-attribute 'calendar-iso-week-face nil :height 0.7 :foreground "VioletRed2")
         (copy-face 'default 'calendar-iso-week-header-face)

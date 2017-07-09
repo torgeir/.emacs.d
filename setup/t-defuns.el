@@ -602,7 +602,9 @@ Including indent-buffer, which should not be called automatically on save."
                              (mapcar 'symbol-name
                                      (custom-available-themes))))))
   (mapcar #'disable-theme custom-enabled-themes)
-  (load-theme theme t))
+  (load-theme theme t)
+  (when (eq theme 'doom-vibrant)
+    (set-face-attribute font-lock-comment-face nil :background "#21252c")))
 
 ;;;###autoload
 (defun t/toggle-theme-dark-light ()
