@@ -751,6 +751,14 @@
     (t/idle-timer recentf-auto-save-timer #'recentf-save-list 1)
     (recentf-mode 1)))
 
+(t/use-package linum-relative
+  :commands linum-relative-mode
+  :init
+  (progn
+    (add-hook 'linum-mode-hook (lambda nil (setq linum-format " %d ")))
+    (add-hook 'linum-relative-mode-hook (lambda nil (setq linum-relative-format " %3s ")))
+    (linum-relative-mode 0)))
+
 (t/use-package projectile
   :diminish projectile-mode
   :only-standalone t
@@ -785,8 +793,7 @@
     (add-hook 'emacs-lisp-mode-hook
               (lambda ()
                 (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
-                (bind-key "M-." 'xref-find-definitions evil-insert-state-map)
-                ))
+                (bind-key "M-." 'xref-find-definitions evil-insert-state-map)))
 
     ;; TODO torgeir tags
     ;;(bind-key "M-g o" 'dumb-jump-go-other-window)
@@ -864,8 +871,8 @@
   (t/declare-prefix "t" "Toggle"
                     "d" 'toggle-debug-on-error
                     "t" 't/load-theme-cycle
-                    "n" 'nlinum-mode
-                    "r" 'nlinum-relative-toggle
+                    "n" #'t/toggle-line-numbers
+                    "r" #'t/toggle-relative-line-numbers
                     "l" 'hl-line-mode
                     "w" 'writeroom-mode
                     "Cc" 'rainbow-mode
