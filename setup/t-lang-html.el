@@ -5,7 +5,6 @@
                               (bind-key "TAB" 't/tab-properly html-mode-map))))
 
 (t/use-package tagedit
-  :only-standalone t
   :commands tagedit-mode
   :init
   ;; tagedit does not seem to work well with web-mode

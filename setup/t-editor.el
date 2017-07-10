@@ -331,6 +331,8 @@
     (unbind-key "M-<up>" sp-keymap)
     (unbind-key "M-<down>" sp-keymap)
     (unbind-key "M-?" sp-keymap)
+    (unbind-key "C-<right>" sp-keymap)
+    (unbind-key "C-<left>" sp-keymap)
     (bind-key "RET" #'t/newline-expand-braces)
 
     (dolist (mode-map (list
@@ -375,7 +377,10 @@
             (bind-key "M-<left>" #'t/backward-down-sexp ,mode-map)
             (bind-key "M-<right>" #'t/forward-down-sexp ,mode-map)
             (bind-key "M-S-<left>" #'t/backward-sexp ,mode-map)
-            (bind-key "M-S-<right>" #'t/forward-sexp ,mode-map)))))
+            (bind-key "M-S-<right>" #'t/forward-sexp ,mode-map)
+            (with-eval-after-load 'smartparens
+              (bind-key "C-<right>" #'sp-forward-slurp-sexp ,mode-map)
+              (bind-key "C-<left>" #'sp-forward-barf-sexp ,mode-map))))))
 
     (dolist (mode (list
                    'emacs-lisp-mode
@@ -413,15 +418,15 @@
     (bind-key "s-(" 't/wrap-with-parens)
     (bind-key "s-)" 't/paredit-wrap-round-from-behind)
     (bind-key "M-s-(" 't/wrap-with-braces)
-    (bind-key "M-s-[" 't/wrap-with-brackets)
-
-    (sp-with-modes '(js2-mode
-                     js-mode
-                     java-mode
-                     text-mode
-                     restclient-mode
-                     ruby-mode
-                     mark-down-mode))))
+    (bind-key "M-s-[" 't/wrap-with-brackets))
+  
+  :config
+  (progn
+    (bind-key "C-<right>" #'sp-forward-slurp-sexp text-mode-map)
+    (bind-key "C-<left>" #'sp-forward-barf-sexp text-mode-map)
+    (with-eval-after-load 'js2-mode
+      (bind-key "C-<right>" #'sp-forward-slurp-sexp js2-mode-map)
+      (bind-key "C-<left>" #'sp-forward-barf-sexp js2-mode-map))))
 
 (t/use-package writeroom-mode
   :commands writeroom-mode)
