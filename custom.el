@@ -3,7 +3,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(highlight-symbol-face ((t (:inherit font-lock-comment-face))))
+ '(font-lock-comment-face ((t (:foreground "#6A8FBF"))))
+ '(hackernews-comment-count-face ((t (:inherit org-code))))
+ '(hackernews-link-face ((t (:inherit font-lock-keyword-face))))
+ '(highlight-symbol-face ((t (:inherit hl-line))))
  '(org-checkbox-statistics-todo ((t (:inherit org-todo))))
  '(org-code ((t (:foreground "VioletRed1"))))
  '(org-date ((t (:foreground "turquoise2"))))
@@ -28,8 +31,8 @@
  '(jdee-db-active-breakpoint-face-colors (cons "#181e26" "#51afef"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#181e26" "#7bc275"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#181e26" "#3D3D48"))
- '(magit-pull-arguments nil t)
- '(neo-mode-line-type (quote none) t)
+ '(magit-pull-arguments nil)
+ '(neo-mode-line-type (quote none))
  '(org-ellipsis " > ")
  '(org-tags-column -60)
  '(org-todo-keywords

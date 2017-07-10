@@ -3,8 +3,7 @@
   :config
   (progn
     (setq doom-themes-enable-bold t
-          doom-themes-enable-italic t
-          doom-vibrant-brighter-comments t)
+          doom-themes-enable-italic t)
     (doom-themes-visual-bell-config)
     (doom-themes-nlinum-config)))
 
