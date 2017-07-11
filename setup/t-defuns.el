@@ -1102,10 +1102,16 @@ If FILEXT is provided, return files with extension FILEXT instead."
   "Opens current file in IntelliJ IDEA."
   (interactive)
   (shell-command
-   (format "/Applications/IntelliJ\\ IDEA.app/Contents/MacOS/idea %s --line %d %s"
-           (t/project-root)
-           (line-number-at-pos)
-           (shell-quote-argument (buffer-file-name))))
+   (let* ((cmd "/Applications/IntelliJ\\ IDEA.app/Contents/MacOS/idea %s")
+          (args " --line %d %s")
+          (root (t/project-root))
+          (file-name (buffer-file-name)))
+     (if file-name
+         (format (concat cmd args)
+                 root
+                 (line-number-at-pos)
+                 (shell-quote-argument file-name))
+       (format cmd root))))
   (t/osascript-activate "IntelliJ IDEA"))
 
 ;;;###autoload
