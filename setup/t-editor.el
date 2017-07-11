@@ -819,6 +819,8 @@
 
 (defun t-editor/config ()
 
+  (with-eval-after-load 're-builder '(setq reb-re-syntax 'rx))
+
   ;; wrap text in text modes
   (add-hook 'text-mode-hook 'auto-fill-mode)
 

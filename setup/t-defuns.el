@@ -1339,4 +1339,56 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (linum-mode 1)
       (linum-relative-on))))
 
+;;;###autoload
+(defun t/highlight-logging ()
+  "Add log highlighting to current major mode."
+  (interactive)
+  (defvar t-log-debug-face 'doom-modeline-buffer-path)
+  (defvar t-log-info-face 'doom-modeline-info)
+  (defvar t-log-warn-face 'doom-modeline-warning)
+  (defvar t-log-error-face 'doom-modeline-urgent)
+  (defvar t-log-comment-face 'doom-modeline-eldoc-bar)
+  (defvar t-log-keyword-face 'org-level-2)
+  (defvar t-log-hl-face 'org-code)
+  (font-lock-add-keywords
+   nil
+   `((,(rx (and "[" (group (one-or-more (or alnum "-"))) "]"))                  1 t-log-keyword-face t) ; [module]
+     (,(rx (and bol "[" (group (or "debug" "DEBUG")) "]"))                      1 t-log-debug-face t)
+     (,(rx (and bol "[" (group (or "info" "INFO")) "]"))                        1 t-log-info-face t)
+     (,(rx (and bol "[" (group (or "warn" "warning" "WARN" "WARNING")) "]"))    1 t-log-warn-face t)
+     (,(rx (and bol "[" (group (or "error" "ERROR" "fatal" "FATAL")) "]"))      1 t-log-error-face t)
+     (,(rx (and (zero-or-more (any ".")) (group (or "DEBUG"))))                 1 t-log-debug-face t)
+     (,(rx (and (zero-or-more (any ".")) (group (or "INFO" "SUCCESS"))))        1 t-log-info-face t)
+     (,(rx (and (zero-or-more (any ".")) (group (or "WARN" "SKIPPED"))))        1 t-log-warn-face t)
+     (,(rx (and (zero-or-more (any ".")) (group (or "FAILURE" "Caused by:"))))  1 t-log-error-face t)
+     ;; com.some.domain
+     (,(rx (group (one-or-more letter)
+                  (>= 2 (and "." (one-or-more (or digit letter "$"))))
+                  (optional "@" (one-or-more alnum)))) 1 t-log-comment-face t)
+     ;; Tests run: 2, Failures: 0, Errors: 0, Skipped: 0
+     (,(rx (and (zero-or-more (any ".")) "Tests run: " (group (any "[1-9]") (zero-or-more (any "[0-9]"))) (zero-or-more (any ".")))) 1 t-log-info-face t)
+     (,(rx (and (zero-or-more (any ".")) "Failures: "  (group (any "[1-9]") (zero-or-more (any "[0-9]"))) (zero-or-more (any ".")))) 1 t-log-warn-face t)
+     (,(rx (and (zero-or-more (any ".")) "Errors: "    (group (any "[1-9]") (zero-or-more (any "[0-9]"))) (zero-or-more (any ".")))) 1 t-log-error-face t)
+     (,(rx (and (zero-or-more (any ".")) "Skipped: "   (group (any "[1-9]") (zero-or-more (any "[0-9]"))) (zero-or-more (any ".")))) 1 t-log-warn-face t)
+     ;; 0.662 s, 2s, 30m, 10 min, 20 minutes, 1hour, 20 hours
+     (,(rx (group (one-or-more digit)
+                  (optional (or "," ".") (one-or-more digit))
+                  (optional " ")
+                  (or (or "s" "sec" "second" "seconds")
+                      (or "m" "min" "minute" "minutes")
+                      (or "h" "hour" "hours")))
+           word-boundary) 1 t-log-hl-face t)
+     ;; 2017-07-11 14:45:11.067
+     (,(rx bol (group (repeat 4 digit) "-" (repeat 2 digit) "-" (repeat 2 digit)
+                      " "
+                      (repeat 2 digit) ":" (repeat 2 digit) ":" (repeat 2 digit) (or "," ".") (repeat 3 digit))) 1 t-log-comment-face t)
+     ;; 14:45:11.067
+     (,(rx (group (repeat 2 digit) ":" (repeat 2 digit) ":" (repeat 2 digit) (or "," ".") (repeat 3 digit))) 1 t-log-comment-face t)
+     ))
+  
+  (if (fboundp 'font-lock-flush)
+      (font-lock-flush)
+    (when font-lock-mode
+      (with-no-warnings (font-lock-fontify-buffer)))))
+
 (provide 't-defuns)

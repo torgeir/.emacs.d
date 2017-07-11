@@ -32,7 +32,7 @@
  '(jdee-db-requested-breakpoint-face-colors (cons "#181e26" "#7bc275"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#181e26" "#3D3D48"))
  '(magit-pull-arguments nil)
- '(neo-mode-line-type (quote none))
+ '(neo-mode-line-type (quote none) t)
  '(org-ellipsis " > ")
  '(org-tags-column -60)
  '(org-todo-keywords
