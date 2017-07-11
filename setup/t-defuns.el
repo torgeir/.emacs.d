@@ -1066,7 +1066,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/font-lock-test-faces ()
   "Outputs test strings with all font lock faces to show colors."
-  (dolist (face `(font-lock-warning-face
+  (interactive)
+  (dolist (face '(font-lock-warning-face
                   font-lock-function-name-face
                   font-lock-variable-name-face
                   font-lock-keyword-face
@@ -1080,9 +1081,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
                   font-lock-doc-face
                   font-lock-negation-char-face))
     (end-of-buffer)
-    (let ((current-string (concat "\n" (symbol-name face))))
-                                        ; (put-text-property 0 (length current-string) 'face face current-string)
-      (insert (propertize current-string 'face face)))))
+    (let ((current-string (concat "\n" (symbol-name face)))
+          (is-font-lock font-lock-mode))
+      (when is-font-lock (font-lock-mode 0))
+      (put-text-property 1 (length current-string) 'face face current-string)
+      (insert current-string)
+      (when is-font-lock (font-lock-mode 1)))))
 
 ;;;###autoload
 (defun t/find-file-check-make-large-file-read-only-hook ()
