@@ -811,6 +811,33 @@
   (progn
     (add-hook 'prog-mode-hook 'global-aggressive-indent-mode)))
 
+(use-package artist-mode
+  :ensure nil
+  :defer t
+  :commands artist-mode
+  :init
+  (progn
+    (defun t/artist-mode ()
+      (interactive)
+      (if artist-mode
+          (progn
+            (artist-mode-off)
+            (evil-normal-state))
+        (progn
+          (switch-to-buffer "*scratch*")
+          (aggressive-indent-mode 0)
+          (evil-insert-state)
+          (artist-mode t))))
+
+    (with-eval-after-load 'which-key
+      (t/declare-prefix "aa" "drawing"
+                        "t" #'t/artist-mode
+                        "p" 'artist-select-op-pen-line
+                        "r" 'artist-select-op-rectangle
+                        "c" 'artist-select-op-circle
+                        "e" 'artist-select-op-ellipse
+                        "s" 'artist-select-op-square))))
+
 (t/use-package try)
 
 (t/use-package selectric-mode ; lol
