@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(eshell-ls-executable ((t (:inherit doom-modeline-info :weight bold))))
  '(font-lock-comment-face ((t (:foreground "#6A8FBF"))))
  '(hackernews-comment-count-face ((t (:inherit org-code))))
  '(hackernews-link-face ((t (:inherit font-lock-keyword-face))))

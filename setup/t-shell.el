@@ -140,8 +140,8 @@
         (eshell (t/eshell-buffer-id))
         (when (and hasfile (eq eshell-process-list nil))
           (goto-char (point-max))
-          (insert (propertize "ls" 'face 'font-lock-comment-face))
-          (eshell-send-input)
+          ;;(insert (propertize "ls" 'face 'font-lock-comment-face))
+          ;;(eshell-send-input)
           (setenv "PAGER" "cat"))))
 
     (defun t/eshell-clear ()
@@ -243,6 +243,8 @@ PWD is not in a git repo (or the git command is not found)."
             (list (file-name-directory directory) (file-name-base directory))
           (list "" directory)))
 
+      (defvar t-eshell-success-face 'doom-modeline-info)
+      (defvar t-eshell-error-face 'doom-modeline-urgent)
       (setq eshell-prompt-function
             (lambda ()
               (let* ((directory (split-directory-prompt (pwd-shorten-dirs (pwd-replace-home (eshell/pwd)))))
@@ -253,8 +255,8 @@ PWD is not in a git repo (or the git command is not found)."
                      (prompt (concat
                               (propertize parent 'face 'font-lock-builtin-face)
                               (propertize name 'face 'font-lock-constant-face)
-                              (propertize branch 'face 'font-lock-string-face)
-                              (propertize " $" 'face (if (zerop eshell-last-command-status) 'font-lock-comment-face 'error))
+                              (propertize branch 'face 'font-lock-comment-face)
+                              (propertize " $" 'face (if (zerop eshell-last-command-status) t-eshell-success-face t-eshell-error-face))
                               (propertize " " 'face 'font-lock-preprocessor-face))))
                 (t/propertize-read-only prompt)))))
 
