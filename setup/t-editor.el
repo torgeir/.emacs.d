@@ -419,7 +419,7 @@
     (bind-key "s-)" 't/paredit-wrap-round-from-behind)
     (bind-key "M-s-(" 't/wrap-with-braces)
     (bind-key "M-s-[" 't/wrap-with-brackets))
-  
+
   :config
   (progn
     (bind-key "C-<right>" #'sp-forward-slurp-sexp text-mode-map)
@@ -578,8 +578,7 @@
 
   :config
   (progn
-    
-    (defun t/yas-clear-or-delete-char () 
+    (defun t/yas-clear-or-delete-char ()
       "Replace `yas-next-field' with noop `+' to make <backspace> only clear or delete-char."
       (interactive)
       (cl-letf (((symbol-function 'yas-next-field) #'+))
@@ -794,7 +793,7 @@
   (progn
     (bind-key "M-." 'dumb-jump-go evil-normal-state-map)
     (bind-key "M-." 'dumb-jump-go evil-insert-state-map)
-    
+
     (add-hook 'emacs-lisp-mode-hook
               (lambda ()
                 (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
@@ -930,7 +929,7 @@
                     "g" 'ffap
                     "o" 't/open-in-desktop
                     "r" 'helm-recentf)
-  
+
   (t/declare-prefix "h" "Help"
                     "h" #'t/describe
                     "a" 'helm-apropos
