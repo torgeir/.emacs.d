@@ -71,7 +71,8 @@
   :after evil
   :diminish evil-cleverparens-mode
   :init
-  (progn (setq evil-cleverparens-use-additional-bindings nil)))
+  (progn (setq evil-cleverparens-use-additional-bindings nil
+               evil-cleverparens-use-regular-insert t)))
 
 (t/use-package evil-multiedit
   :commands evil-multiedit-match-symbol-and-next

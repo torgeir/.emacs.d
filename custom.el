@@ -8,10 +8,12 @@
  '(hackernews-comment-count-face ((t (:inherit org-code))))
  '(hackernews-link-face ((t (:inherit font-lock-keyword-face))))
  '(highlight-symbol-face ((t (:inherit hl-line))))
+ '(org-agenda-dimmed-todo-face ((t (:inherit org-level-2))))
  '(org-checkbox-statistics-todo ((t (:inherit org-todo))))
  '(org-code ((t (:foreground "VioletRed1"))))
  '(org-date ((t (:foreground "turquoise2"))))
  '(org-level-1 ((t (:foreground "#51afef" :weight semi-bold :height 1.0 :background nil))))
+ '(org-scheduled-previously ((t (:inherit error))))
  '(org-special-keyword ((t (:foreground "gray25"))))
  '(org-tag ((t (:foreground "#7bda75" :weight normal))))
  '(rainbow-delimiters-unmatched-face ((t (:foreground "#e0211d" :overline nil :underline t)))))
@@ -33,8 +35,16 @@
  '(jdee-db-requested-breakpoint-face-colors (cons "#181e26" "#7bc275"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#181e26" "#3D3D48"))
  '(magit-pull-arguments nil)
- '(neo-mode-line-type (quote none) t)
+ '(neo-mode-line-type (quote none))
+ '(org-agenda-diary-file "/Users/torgeirthoresen//Dropbox/org/diary.org")
+ '(org-agenda-files
+   (quote
+    ("/Users/torgeirthoresen/Dropbox/org/tasks.org" "/Users/torgeirthoresen/Dropbox/org/prog.org" "/Users/torgeirthoresen/Dropbox/org/org-tricks.org" "/Users/torgeirthoresen/Dropbox/org/manager.org" "/Users/torgeirthoresen/Dropbox/org/journal.org" "/Users/torgeirthoresen/Dropbox/org/info.org" "/Users/torgeirthoresen/Dropbox/org/inbox.org" "/Users/torgeirthoresen/Dropbox/org/home.org" "/Users/torgeirthoresen/Dropbox/org/heart-of-clojure.org" "/Users/torgeirthoresen/Dropbox/org/gcal/delt.org" "/Users/torgeirthoresen/Dropbox/org/feeds.org" "/Users/torgeirthoresen/Dropbox/org/diary.org" "/Users/torgeirthoresen/Dropbox/org/bekk/bekk.org" "/Users/torgeirthoresen/Dropbox/org/bekk/datainn.org")))
+ '(org-agenda-include-diary t)
+ '(org-agenda-restore-windows-after-quit t)
+ '(org-agenda-window-setup (quote only-window))
  '(org-ellipsis " > ")
+ '(org-enforce-todo-dependencies t)
  '(org-tags-column -60)
  '(org-todo-keywords
    (quote
