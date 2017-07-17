@@ -18,9 +18,9 @@
   :init
   (progn
     (setq-default evil-escape-key-sequence "jk"
-                  evil-escape-delay 0.08)
-    (with-eval-after-load 'evil-escape
-      (evil-escape-mode))))
+                  evil-escape-delay 0.08))
+  :config
+  (evil-escape-mode))
 
 (t/use-package evil-leader
   :after evil
@@ -31,16 +31,6 @@
     (evil-mode nil)
     (global-evil-leader-mode)
     (evil-mode 1)
-
-    (defun clear-all-highlights ()
-      (interactive)
-      (evil-ex-nohighlight)
-      (when (fboundp 'evil-search-highlight-persist-remove-all)
-        (evil-search-highlight-persist-remove-all))
-      (highlight-symbol-remove-all))
-
-    (t/declare-prefix "s" "Search"
-                      "c" 'clear-all-highlights)
 
     (defun spacemacs/evil-yank-to-end-of-line ()
       "Yank from point to end of line."
@@ -88,6 +78,7 @@
   :init
   (progn
     (setq evil-multiedit-follow-matches t)
+    (advice-add 'evil-multiedit-abort :after #'+evil*attach-escape-hook)
     (bind-key "M-d" 'evil-multiedit-match-symbol-and-next evil-normal-state-map)
     (with-eval-after-load 'evil-multiedit
       (bind-key "M-j" 'evil-multiedit-toggle-or-restrict-region evil-multiedit-state-map)
@@ -169,16 +160,21 @@ ignored.")
 
     (defun +evil*attach-escape-hook (&optional ignore)
       "Run the `+evil-esc-hook'."
-      (cond ((minibuffer-window-active-p (minibuffer-window))
-             ;; quit the minibuffer if open.
-             (abort-recursive-edit))
-            ((evil-ex-hl-active-p 'evil-ex-search)
-             ;; disable ex search buffer highlights.
-             (evil-ex-nohighlight))
-            (t
-             ;; Run all escape hooks. If any returns
-             ;; non-nil, then stop there.
-             (run-hook-with-args-until-success '+evil-esc-hook))))
+      (when (minibuffer-window-active-p (minibuffer-window))
+        ;; quit the minibuffer if open.
+        (abort-recursive-edit))
+      (when (evil-ex-hl-active-p 'evil-ex-search)
+        ;; disable ex search buffer highlights.
+        (evil-ex-nohighlight))
+      (when (and (featurep 'anzu)
+                 anzu--state)
+        ;; escape anzu number of matches
+        (anzu--reset-status))
+      (when (and (featurep 'highlight-symbol)
+                 highlight-symbol-mode)
+        (highlight-symbol-remove-all))
+      ;; Run all escape hooks. If any returns non-nil, then stop there.
+      (run-hook-with-args-until-success '+evil-esc-hook))
 
     (defvar t-evil-major-modes '(compilation-mode
                                  special-mode
