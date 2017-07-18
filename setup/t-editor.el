@@ -848,7 +848,7 @@
 
 (defun t-editor/config ()
 
-  (with-eval-after-load 're-builder '(setq reb-re-syntax 'rx))
+  (with-eval-after-load 're-builder (setq reb-re-syntax 'rx))
 
   ;; wrap text in text modes
   (add-hook 'text-mode-hook 'auto-fill-mode)
@@ -876,6 +876,13 @@
   (evil-leader/set-key "'" 't/eshell)
   (evil-leader/set-key "TAB" 't/switch-to-previous-buffer)
 
+  (defvar t-regex-mode nil "reb-mode on or not")
+  (defun t/toggle-regex-mode ()
+    (interactive)
+    (if t-regex-mode (reb-quit) (re-builder))
+    (setq t-regex-mode (not t-regex-mode)))
+  (add-hook '+evil-esc-hook (lambda nil (t/safe-call reb-quit)))
+
   (t/declare-prefix "a" "Applications"
                     "B" 'w3m
                     "c" 'calendar
@@ -886,6 +893,7 @@
                     "i" 't/open-in-intellij
                     "p" 'list-processes
                     "m" 'helm-spotify
+                    "R" #'t/toggle-regex-mode
                     "se" 't/eshell
                     "st" 'ansi-term
                     "sT" 'term

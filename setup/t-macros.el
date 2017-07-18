@@ -11,7 +11,14 @@
      (when (and (boundp ',name) ,name) (cancel-timer ,name))
      (setq ,name (run-with-idle-timer (* ,every-minute 60) t ,fn))))
 
-(defmacro comment (&rest ignore) nil)
+(defmacro t/safe-call (fn)
+  "Expands to call `fn' only if it is bound to a function."
+  `(when (fboundp (quote ,fn))
+     (funcall (quote ,fn))))
+
+(defmacro comment (&rest ignore)
+  "Ignore stuff, return `nil'."
+  nil)
 
 (progn
 
