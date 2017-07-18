@@ -80,18 +80,52 @@
   :init
   (progn
     (setq evil-multiedit-follow-matches t)
-    (advice-add 'evil-multiedit-abort :after #'+evil*attach-escape-hook)
     (bind-key "M-d" 'evil-multiedit-match-symbol-and-next evil-normal-state-map)
-    (with-eval-after-load 'evil-multiedit
-      (bind-key "M-j" 'evil-multiedit-toggle-or-restrict-region evil-multiedit-state-map)
-      (bind-key "M-k" 'evil-multiedit-toggle-or-restrict-region evil-multiedit-state-map)
-      (bind-key "M-j" 'evil-multiedit-toggle-or-restrict-region evil-multiedit-insert-state-map)
-      (bind-key "M-k" 'evil-multiedit-toggle-or-restrict-region evil-multiedit-insert-state-map)))
+    (bind-key "gn" 'evil-multiedit--visual-line evil-multiedit-state-map)
+    (advice-add 'evil-multiedit-abort :after #'+evil*attach-escape-hook))
   :config
   (progn
     (evil-multiedit-default-keybinds)
     (unbind-key "M-d" evil-insert-state-map)
-    
+
+    (progn
+      (setq evil-multiedit-store-in-search-history t)
+
+      (defun t/mc-prev ()
+        (interactive)
+        (evil-ex-search-previous)
+        (evil-ex-nohighlight)
+        (when (not (iedit-find-current-occurrence-overlay))
+          (evil-multiedit-toggle-or-restrict-region)))
+
+      (defun t/mc-next ()
+        (interactive)
+        (evil-ex-search-next)
+        (evil-ex-nohighlight)
+        (when (not (iedit-find-current-occurrence-overlay))
+          (evil-multiedit-toggle-or-restrict-region)))
+
+      (defun t/mc-skip-prev ()
+        (interactive)
+        (evil-multiedit-toggle-or-restrict-region)
+        (evil-ex-search-previous)
+        (evil-ex-nohighlight)
+        (when (not (iedit-find-current-occurrence-overlay))
+          (evil-multiedit-toggle-or-restrict-region)))
+
+      (defun t/mc-skip-next ()
+        (interactive)
+        (evil-multiedit-toggle-or-restrict-region)
+        (evil-ex-search-next)
+        (evil-ex-nohighlight)
+        (when (not (iedit-find-current-occurrence-overlay))
+          (evil-multiedit-toggle-or-restrict-region)))
+
+      (bind-key "M-j" #'t/mc-next evil-multiedit-state-map)
+      (bind-key "M-k" #'t/mc-prev evil-multiedit-state-map)
+      (bind-key "M-J" #'t/mc-skip-next evil-multiedit-state-map)
+      (bind-key "M-K" #'t/mc-skip-prev evil-multiedit-state-map))
+
     ;; TODO remove when https://github.com/syl20bnr/evil-escape/pull/77 is merged
     (defun evil-escape-func ()
       "Return the function to escape from everything."
