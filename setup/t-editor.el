@@ -586,6 +586,14 @@
         (call-interactively 'yas-skip-and-clear-or-delete-char)))
     (bind-key "<backspace>" #'t/yas-clear-or-delete-char yas-keymap)
 
+    (defun t/reload-autoloads-on-defuns-save ()
+      "Reload autoloads on defuns.el save."
+      (when (string-match "\\t-defuns.el$" buffer-file-name)
+        (eval-buffer)
+        (t/reload-autoloads)
+        (message "Reloaded autoloads.")))
+    (add-hook 'after-save-hook #'t/reload-autoloads-on-defuns-save)
+
     (defun t/reload-snippets-on-save ()
       "Reload yasnippet files on save."
       (when (string-match "\\.yasnippet$" buffer-file-name)
