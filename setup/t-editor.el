@@ -815,12 +815,14 @@
     ;;(bind-key "M-g z" 'dumb-jump-go-prefer-external-other-window dumb-jump-mode-map)
     ))
 
-(comment (t/use-package aggressive-indent
-   :commands global-aggressive-indent-mode
-   :init
-   (progn
-     (add-hook 'java-mode-hook (lambda () (aggressive-indent-mode 0)))
-     (add-hook 'prog-mode-hook 'global-aggressive-indent-mode))))
+(t/use-package aggressive-indent
+  :commands global-aggressive-indent-mode
+  :init
+  (progn
+    (add-hook 'java-mode-hook (lambda () (aggressive-indent-mode 0)))
+    (add-hook 'prog-mode-hook 'global-aggressive-indent-mode)
+    (t/declare-prefix "t" "Toggles"
+                      "a" 'aggressive-indent-mode)))
 
 (use-package artist-mode
   :ensure nil
