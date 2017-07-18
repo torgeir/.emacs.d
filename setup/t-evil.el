@@ -1,6 +1,3 @@
-(defconst t-evil-cursor-color-emacs "dark orange")
-(defconst t-evil-cursor-color-evil "green2")
-
 (t/use-package evil
   :only-standalone t)
 
@@ -19,15 +16,18 @@
   :init
   (progn
     (setq-default evil-escape-key-sequence "jk"
-                  evil-escape-delay 0.08))
+                  evil-escape-delay 0.1))
   :config
   (evil-escape-mode))
 
 (t/use-package evil-leader
   :after evil
+  :init
+  (progn
+    (setq evil-leader/in-all-states t
+          evil-leader/non-normal-prefix "C-c C-"))
   :config
   (progn
-    (setq evil-leader/in-all-states t)
     (evil-leader/set-leader t-leader)
     (evil-mode nil)
     (global-evil-leader-mode)
@@ -127,28 +127,24 @@
   (add-hook '+evil-esc-hook 'evil-ex-nohighlight))
 
 (defun t-evil/funcs ()
-  (setq                                 ; initial colors
-   evil-emacs-state-cursor `(,t-evil-cursor-color-emacs box)
-   evil-normal-state-cursor `(,t-evil-cursor-color-evil box)
-   evil-visual-state-cursor `(,t-evil-cursor-color-evil hollow))
-
   (add-hook 'git-commit-mode-hook 'evil-insert-state)
   (add-hook 'org-capture-mode-hook 'evil-insert-state)
 
-  (defun t/evil-update-cursor-color ()
-    (let* ((colors `((emacs . ,t-evil-cursor-color-emacs)
-                     (normal . ,t-evil-cursor-color-evil)
-                     (visual . ,t-evil-cursor-color-evil)
-                     (motion . ,t-evil-cursor-color-evil)
-                     (insert . ,t-evil-cursor-color-evil)))
-           (state-color (assoc evil-state colors)))
-      (set-cursor-color (if state-color (cdr state-color) t-evil-cursor-color-emacs))))
+  (defun t/init-evil-cursors (&rest _)
+    "Change cursors after theme colors have loaded."
+    (setq evil-default-cursor (face-background 'cursor nil t)
+          evil-emacs-state-cursor  `(,(face-foreground 'warning) box)
+          evil-normal-state-cursor 'box
+          evil-insert-state-cursor 'bar
+          evil-visual-state-cursor 'hollow))
+  (advice-add #'load-theme :after #'t/init-evil-cursors)
 
   (defun t/toggle-evil-local-mode ()
     "Toggles evil-local-mode and updates the cursor. The `evil-*-state-cursor's seem to work by default, but not when toggling evil-local-mode (in emacsclients) off and on, so help it."
     (interactive)
-    (evil-local-mode (if evil-local-mode 0 1))
-    (t/evil-update-cursor-color)))
+    (if (equal evil-state 'emacs)
+        (evil-normal-state)
+      (evil-emacs-state))))
 
 (defun t-evil/config ()
   (if is-mac
