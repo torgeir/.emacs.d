@@ -1,10 +1,9 @@
 ;;;###autoload
 (defun t/tab-properly ()
   (interactive)
-  (let ((yas-fallback-behavior 'return-nil))
-    (unless (yas-expand)
-      (when (fboundp 'simplezen-expand-or-indent-for-tab) (simplezen-expand-or-indent-for-tab))
-      (when (looking-back "^\s*") (back-to-indentation)))))
+  (unless (yas-expand)
+    (when (fboundp 'simplezen-expand-or-indent-for-tab) (simplezen-expand-or-indent-for-tab))
+    (when (looking-back "^\s*") (back-to-indentation))))
 
 ;;;###autoload
 (defun t/send-buffer-to-scala-repl ()

@@ -10,7 +10,8 @@
   (progn
     (setq anzu-cons-mode-line-p nil
           anzu-minimum-input-length 1
-          anzu-search-threshold 100)))
+          anzu-search-threshold 100)
+    (add-hook '+evil-esc-hook 'anzu--reset-status)))
 
 (t/use-package evil-escape
   :only-standalone t
@@ -122,7 +123,8 @@
 (defun t-evil/vars ()
   (setq evil-default-state 'normal
         evil-insert-skip-empty-lines t
-        evil-search-module 'evil-search))
+        evil-search-module 'evil-search)
+  (add-hook '+evil-esc-hook 'evil-ex-nohighlight))
 
 (defun t-evil/funcs ()
   (setq                                 ; initial colors
@@ -160,21 +162,7 @@
 ignored.")
 
     (defun +evil*attach-escape-hook (&optional ignore)
-      "Run the `+evil-esc-hook'."
-      (when (minibuffer-window-active-p (minibuffer-window))
-        ;; quit the minibuffer if open.
-        (abort-recursive-edit))
-      (when (evil-ex-hl-active-p 'evil-ex-search)
-        ;; disable ex search buffer highlights.
-        (evil-ex-nohighlight))
-      (when (and (featurep 'anzu)
-                 anzu--state)
-        ;; escape anzu number of matches
-        (anzu--reset-status))
-      (when (and (featurep 'highlight-symbol)
-                 highlight-symbol-mode)
-        (highlight-symbol-remove-all))
-      ;; Run all escape hooks. If any returns non-nil, then stop there.
+      "Run all `+evil-esc-hook' hooks. If any returns non-nil, stop there."
       (run-hook-with-args-until-success '+evil-esc-hook))
 
     (defvar t-evil-major-modes '(compilation-mode

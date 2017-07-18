@@ -210,6 +210,7 @@
   :config
   (progn
     (global-company-mode)
+    (add-hook '+evil-esc-hook 'company-abort)
     (bind-key "TAB" #'company-complete-selection company-active-map)
     (bind-key "C-w" 'evil-delete-backward-word company-active-map)
     (bind-key "C-l" 'evil-delete-backward-word company-active-map)
@@ -703,7 +704,8 @@
   :init
   (progn
     (setq highlight-symbol-idle-delay 0.2)
-    (add-hook 'prog-mode-hook 'highlight-symbol-mode)))
+    (add-hook 'prog-mode-hook 'highlight-symbol-mode)
+    (add-hook '+evil-esc-hook 'highlight-symbol-remove-all)))
 
 (t/use-package highlight-numbers
   :defer 1
