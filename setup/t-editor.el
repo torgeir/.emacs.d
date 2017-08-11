@@ -850,6 +850,10 @@
     (t/declare-prefix "t" "Toggles"
                       "a" 'aggressive-indent-mode)))
 
+(t/use-package beginend
+  :config
+  (beginend-global-mode))
+
 (use-package artist-mode
   :ensure nil
   :defer t
