@@ -84,12 +84,13 @@
   (progn
     (setq evil-multiedit-follow-matches t)
     (bind-key "M-d" 'evil-multiedit-match-symbol-and-next evil-normal-state-map)
-    (bind-key "gn" 'evil-multiedit--visual-line evil-multiedit-state-map)
+    (bind-key "C-M-d" 'evil-multiedit-restore evil-normal-state-map)
     (advice-add 'evil-multiedit-abort :after #'+evil*attach-escape-hook))
   :config
   (progn
     (evil-multiedit-default-keybinds)
     (unbind-key "M-d" evil-insert-state-map)
+    (bind-key "gn" 'evil-multiedit--visual-line evil-multiedit-state-map)
 
     (progn
       (setq evil-multiedit-store-in-search-history t)
