@@ -350,7 +350,6 @@
 
 (t/use-package smartparens
   :diminish smartparens-mode
-  :only-standalone t
   :commands turn-on-smartparens-mode
   :init
   (progn
@@ -409,9 +408,8 @@
             (bind-key "M-<right>" #'t/forward-down-sexp ,mode-map)
             (bind-key "M-S-<left>" #'t/backward-sexp ,mode-map)
             (bind-key "M-S-<right>" #'t/forward-sexp ,mode-map)
-            (with-eval-after-load 'smartparens
-              (bind-key "C-<right>" #'sp-forward-slurp-sexp ,mode-map)
-              (bind-key "C-<left>" #'sp-forward-barf-sexp ,mode-map))))))
+            (bind-key "C-<right>" #'sp-forward-slurp-sexp ,mode-map)
+            (bind-key "C-<left>" #'sp-forward-barf-sexp ,mode-map)))))
 
     (dolist (mode (list
                    'emacs-lisp-mode
@@ -422,6 +420,16 @@
     (with-eval-after-load 'clojure-mode (t/enable-movement-for-lisp-mode 'clojure-mode))
     (with-eval-after-load 'ielm-mode (t/enable-movement-for-lisp-mode 'ielm-mode))
     (with-eval-after-load 'scheme-mode (t/enable-movement-for-lisp-mode 'scheme-mode))
+    (add-hook 'minibuffer-inactive-mode-hook (lambda ()
+                                               (progn
+                                                 (bind-key "M-<up>" 'sp-splice-sexp-killing-backward minibuffer-local-map)
+                                                 (bind-key "M-<down>" 'sp-splice-sexp-killing-forward minibuffer-local-map)
+                                                 (bind-key "M-<left>" #'t/backward-down-sexp minibuffer-local-map)
+                                                 (bind-key "M-<right>" #'t/forward-down-sexp minibuffer-local-map)
+                                                 (bind-key "M-S-<left>" #'t/backward-sexp minibuffer-local-map)
+                                                 (bind-key "M-S-<right>" #'t/forward-sexp minibuffer-local-map)
+                                                 (bind-key "C-<right>" #'sp-forward-slurp-sexp minibuffer-local-map)
+                                                 (bind-key "C-<left>" #'sp-forward-barf-sexp minibuffer-local-map))))
 
     (sp-with-modes 'emacs-lisp-mode
       (sp-local-pair "`" "'" :when '(sp-in-docstring-p)))
