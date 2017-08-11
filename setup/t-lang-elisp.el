@@ -19,6 +19,7 @@
                              "e" 't/eval-region-or-last-sexp
                              "f" 'eval-defun
                              "r" 'eval-region
+                             "p" 'eval-print-last-sexp
                              "R" 't/eval-and-replace)
 
   (bind-key "TAB" #'t/tab-properly emacs-lisp-mode-map))
