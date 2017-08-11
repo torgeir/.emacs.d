@@ -50,6 +50,10 @@ ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
 
 ### deps
 
+remember to byte compile ~/.emacs.d/site-lisp/t-doom-modeline/,
+`(byte-recompile-file "~/.emacs.d/site-lisp/t-doom-modeline/t-doom-modeline.el"
+t 0)`
+
 these need to exist on `PATH`:
 
 - git
