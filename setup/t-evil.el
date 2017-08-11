@@ -284,6 +284,7 @@ ignored.")
   (bind-key "C-S-y" (lambda () (interactive) (evil-paste-pop -1)) evil-visual-state-map)
   ;; show kill ring when not in insert mode, where c-y repeats text from above line
   (bind-key "M-y" 'helm-show-kill-ring evil-normal-state-map)
+  (bind-key "M-y" 'helm-show-kill-ring evil-insert-state-map)
   (bind-key "M-y" 'helm-show-kill-ring evil-visual-state-map)
   (when (boundp 'evil-hybrid-state-map)
     (bind-key "M-y" 'helm-show-kill-ring evil-hybrid-state-map))
