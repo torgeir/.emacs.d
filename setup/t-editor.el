@@ -247,12 +247,35 @@
   (progn
     (add-to-list 'company-backends 'company-restclient)))
 
+(t/use-package helm-xref
+  :init
+  (progn
+    (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
+  :config
+  (progn
+    (bind-key "M-." 'xref-find-definitions)
+    (bind-key "M-?" 'xref-find-references)
+    (bind-key "M-," 'xref-pop-marker-stack)))
+
+(t/use-package helm-xref
+  :init
+  (progn
+    (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
+  :config
+  (progn
+    (bind-key "M-." 'xref-find-definitions)
+    (bind-key "M-?" 'xref-find-references)
+    (bind-key "M-," 'xref-pop-marker-stack)))
+
 (t/use-package company-tern
   :diminish tern-mode
   :only-standalone t
   :after company
   :config
   (progn
+
+    ;; fix helm-etags-select for huge regexps
+    (setq helm-fuzzy-matching-highlight-fn (lambda (file) file))
     (add-hook 'tern-mode-hook
               (lambda ()
                 (bind-key "M-." 'tern-find-definition tern-mode-keymap)
@@ -265,16 +288,23 @@
     (add-to-list 'company-backends 'company-tern)
     (setq tern-command (append tern-command '("--no-port-file")))))
 
-;; TODO torgeir tags
-(comment (t/use-package helm-xref
-           :init
-           (progn
-             (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
-           :config
-           (progn
-             (bind-key "M-." 'xref-find-definitions)
-             (bind-key "M-?" 'xref-find-references)
-             (bind-key "M-," 'xref-pop-marker-stack))))
+(t/use-package etags-select
+  :init
+  (progn
+    ;; read tag files in the current directory and two parent directories
+    (setq
+     tags-file-name nil
+     tags-table-list `("./TAGS"
+                       "./../TAGS"
+                       "./../../TAGS"
+                       ,(t/user-file ".nvm/versions/node/v8.2.1/src/node-8.x/lib/TAGS")))
+    
+    (add-hook 'etags-select-mode-hook
+              (lambda ()
+                (bind-key "j" 'etags-select-next-tag etags-select-mode-map)
+                (bind-key "k" 'etags-select-previous-tag etags-select-mode-map)
+                (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)
+                (bind-key "M-RET" 'etags-select-goto-tag-other-window etags-select-mode-map)))))
 
 (t/use-package helm-unicode)
 
@@ -550,18 +580,6 @@
 
 (t/use-package transpose-frame
   :commands transpose-frame)
-
-;; TODO torgeir tags
-(comment (t/use-package etags-select
-           :config
-           (progn
-             (bind-key "M-?" 't/ido-find-tag)
-             (bind-key "M-." 't/find-tag-at-point)
-             (bind-key "M-_" 'find-tag-other-window)
-             (add-hook 'etags-select-mode-hook
-                       (lambda ()
-                         (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)
-                         (bind-key "M-RET" 'etags-select-goto-tag-other-window etags-select-mode-map))))))
 
 (t/use-package yasnippet
   :diminish yas-minor-mode
@@ -1061,10 +1079,12 @@
                     "p" 'helm-projectile-ag
                     "a" 'helm-multi-swoop-all
                     "m" 'helm-multi-swoop
-                    "w" (t/macro-helm-ag-insert 'word helm-projectile-ag)
-                    "W" (t/macro-helm-ag-insert 'symbol helm-projectile-ag))
+                    "t" 'etags-select-find-tag-at-point
+                    "T" 'helm-etags-select
+                    "i" 'helm-imenu
+                    "I" 'helm-imenu-in-all-buffers)
 
-  (t/declare-prefix "si" "Search Internet"
+  (t/declare-prefix "sw" "Search Internet"
                     "i" 'helm-google
                     "g" 'helm-google
                     "G" 'helm-google-suggest

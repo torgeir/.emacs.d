@@ -85,21 +85,39 @@
 (defun t/build-tags ()
   "Build ctags file for projectile project, calls load-tags when done.
 
+Effectively runs this for the current git project, e.g:
+
+ctags -e -R --options=~/.emacs.d/ctags -f ~/.emacs.d/TAGS ~/.emacs.d/
+
+The same can be done for the current folder only to place a TAGS file in it:
+
+ctags -e -R .
+
+This goes well with the following setting:
+
+(setq
+   tags-table-list '(\"./TAGS\"
+                     \"./../TAGS\"
+                     \"./../../TAGS\"
+                     \"/Users/torgeirthoresen/.nvm/versions/node/v8.2.1/src/node-8.x/lib/TAGS\"))
+
 Remember to build emacs --without-ctags and use the one from `brew' instead,
 it's the one with the correct options needed to generate ctags that emacs 
-understands"
+understands."
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-      ((ctags (expand-file-name "~/.emacs.d/ctags"))
-       (tags (shell-quote-argument (concat (projectile-project-root) "TAGS")))
+      (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
+       (root (projectile-project-root))
+       (tags (shell-quote-argument (concat root "TAGS")))
        (process (start-process-shell-command "build ctags asynchronously"
                                              "*ctags async*"
                                              (concat
-                                              "etags -R"          ; recurse
+                                              "ctags -e -R"          ; recurse
                                               " --options=" ctags ; use global config
                                               " -f " tags " "     ; put it in project/TAGS
-                                              root))))
+                                              " ."                   ; in the current directory
+                                              ))))
     (set-process-sentinel process (lambda (process event)
                                     (t/load-tags tags)))))
 
