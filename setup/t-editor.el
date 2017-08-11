@@ -738,8 +738,7 @@
   :init
   (progn
     (setq highlight-symbol-idle-delay 0.2)
-    (add-hook 'prog-mode-hook 'highlight-symbol-mode)
-    (add-hook '+evil-esc-hook 'highlight-symbol-remove-all)))
+    (add-hook 'prog-mode-hook 'highlight-symbol-mode)))
 
 (t/use-package highlight-numbers
   :defer 1
@@ -917,7 +916,6 @@
     (interactive)
     (if t-regex-mode (reb-quit) (re-builder))
     (setq t-regex-mode (not t-regex-mode)))
-  (add-hook '+evil-esc-hook (lambda nil (t/safe-call reb-quit)))
 
   (t/declare-prefix "a" "Applications"
                     "B" 'w3m

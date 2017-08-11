@@ -197,7 +197,22 @@ ignored.")
 
     (defun +evil*attach-escape-hook (&optional ignore)
       "Run all `+evil-esc-hook' hooks. If any returns non-nil, stop there."
-      (run-hook-with-args-until-success '+evil-esc-hook))
+      (cond (;; quit the minibuffer if open.
+             (minibuffer-window-active-p (minibuffer-window))
+             (abort-recursive-edit))
+            ;; disable ex search buffer highlights.
+            ((evil-ex-hl-active-p 'evil-ex-search)
+             (evil-ex-nohighlight))
+            ;; escape anzu number of matches
+            ((and (featurep 'anzu)
+                  anzu--state)
+             (anzu--reset-status))
+            ;; remove highlights
+            ((and (featurep 'highlight-symbol)
+                  highlight-symbol-mode)
+             (highlight-symbol-remove-all))
+            ;; Run all escape hooks. If any returns non-nil, then stop there.
+            (t (run-hook-with-args-until-success '+evil-esc-hook))))
 
     (defvar t-evil-major-modes '(compilation-mode
                                  special-mode
