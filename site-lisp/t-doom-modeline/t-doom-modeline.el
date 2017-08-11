@@ -383,11 +383,13 @@ buffer where knowing the current project directory is important."
   "Combined information about the current buffer, including the current working
 directory, the file name, and its state (modified, read-only or non-existent)."
   (let* ((all-the-icons-scale-factor 1.2)
-         (modified-p (buffer-modified-p))
          (active (active))
-         (faces (if modified-p 'doom-modeline-buffer-modified)))
-    (concat (and (not (-contains-p '(dired-mode) major-mode))
-                 (not (s-starts-with-p "*" (buffer-name)))
+         (modified-p (buffer-modified-p))
+         (special-p (or (-contains-p '(dired-mode) major-mode)
+                        (s-starts-with-p "*" (buffer-name))))
+         (faces (cond (special-p 'doom-modeline-info)
+                      (modified-p 'doom-modeline-buffer-modified))))
+    (concat (and (not special-p)
                  (cond (buffer-read-only
                         (concat (all-the-icons-octicon
                                  "lock"
