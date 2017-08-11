@@ -12,10 +12,12 @@
   (progn
     (with-eval-after-load 'web-mode
       (bind-key "TAB" #'t/tab-properly web-mode-map)
+      ;; TODO torgeir extract
       (add-hook 'web-mode-hook (lambda ()
                                  (let ((is-jsx-file (not (null (string-match "\\.jsx$" (buffer-file-name))))))
                                    (when is-jsx-file
-                                     (js2-minor-mode)))))
+                                     (js2-minor-mode)
+                                     (prettier-js-mode)))))
       (add-hook 'web-mode-hook           ; http://web-mode.org/
                 (lambda ()
                   (add-to-list 'company-dabbrev-code-modes 'web-mode)

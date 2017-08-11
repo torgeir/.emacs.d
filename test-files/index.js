@@ -1,10 +1,9 @@
-const EventEmitter = require('events');
+const EventEmitter = require("events");
 
-function withName () {}
-var {a, b} = {};
+function withName() {}
+var { a, b } = {};
 
-(function () {
-
+(function() {
   var o = {
     what: 1,
     whatt: 2,
@@ -14,7 +13,7 @@ var {a, b} = {};
   /**
    * sums numbers
    */
-  function sum (ls, acc = 0) {
+  function sum(ls, acc = 0) {
     if (ls.length == 0) {
       return acc;
     }

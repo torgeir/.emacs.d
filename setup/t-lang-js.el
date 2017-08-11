@@ -29,7 +29,14 @@
     (t/declare-prefix-for-mode 'js2-mode
                                "me" "Evaluate"
                                "b" 't/send-buffer-to-nodejs-repl-process
-                               "r" 't/send-region-to-nodejs-repl-process))) 
+                               "r" 't/send-region-to-nodejs-repl-process)))
+
+(t/use-package prettier-js
+  :init
+  (progn
+    (setq prettier-js-args nil)
+    (add-hook 'js2-mode-hook 'prettier-js-mode)
+    (add-hook 'web-mode-hook 'prettier-js-mode)))
 
 (t/use-package js2-refactor
   :only-standalone t
