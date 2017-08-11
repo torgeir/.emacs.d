@@ -844,8 +844,9 @@
   :commands global-aggressive-indent-mode
   :init
   (progn
-    (add-hook 'java-mode-hook (lambda () (aggressive-indent-mode 0)))
-    (add-hook 'prog-mode-hook 'global-aggressive-indent-mode)
+    (comment
+     (add-hook 'java-mode-hook (lambda () (aggressive-indent-mode 0)))
+     (add-hook 'prog-mode-hook 'global-aggressive-indent-mode))
     (t/declare-prefix "t" "Toggles"
                       "a" 'aggressive-indent-mode)))
 
