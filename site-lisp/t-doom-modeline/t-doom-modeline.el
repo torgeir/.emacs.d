@@ -161,6 +161,9 @@ DEFAULT is non-nil, set the default mode-line for all buffers."
               (buffer-local-value 'mode-line-format (current-buffer)))
             modeline))))
 
+(def-modeline-segment! icon
+  (all-the-icons-icon-for-buffer))
+
 ;; TODO /torgeir added this
 
 ;; Keep `+doom-modeline-current-window' up-to-date
@@ -383,31 +386,33 @@ directory, the file name, and its state (modified, read-only or non-existent)."
          (modified-p (buffer-modified-p))
          (active (active))
          (faces (if modified-p 'doom-modeline-buffer-modified)))
-    (concat (cond (buffer-read-only
-                   (concat (all-the-icons-octicon
-                            "lock"
-                            :face 'doom-modeline-warning
-                            :v-adjust -0.05)
-                           " "))
-                  (modified-p
-                   (concat (all-the-icons-faicon
-                            "floppy-o"
-                            :face 'doom-modeline-buffer-modified
-                            :v-adjust -0.0575)
-                           " "))
-                  ((and buffer-file-name
-                        (not (file-exists-p buffer-file-name)))
-                   (concat (all-the-icons-octicon
-                            "circle-slash"
-                            :face 'doom-modeline-urgent
-                            :v-adjust -0.05)
-                           " "))
-                  ((buffer-narrowed-p)
-                   (concat (all-the-icons-octicon
-                            "fold"
-                            :face 'doom-modeline-warning
-                            :v-adjust -0.05)
-                           " ")))
+    (concat (and (not (-contains-p '(dired-mode) major-mode))
+                 (not (s-starts-with-p "*" (buffer-name)))
+                 (cond (buffer-read-only
+                        (concat (all-the-icons-octicon
+                                 "lock"
+                                 :face 'doom-modeline-warning
+                                 :v-adjust -0.05)
+                                " "))
+                       (modified-p
+                        (concat (all-the-icons-faicon
+                                 "floppy-o"
+                                 :face 'doom-modeline-buffer-modified
+                                 :v-adjust -0.0575)
+                                " "))
+                       ((and buffer-file-name
+                             (not (file-exists-p buffer-file-name)))
+                        (concat (all-the-icons-octicon
+                                 "circle-slash"
+                                 :face 'doom-modeline-urgent
+                                 :v-adjust -0.05)
+                                " "))
+                       ((buffer-narrowed-p)
+                        (concat (all-the-icons-octicon
+                                 "fold"
+                                 :face 'doom-modeline-warning
+                                 :v-adjust -0.05)
+                                " "))))
             (when-let (dir-path (+doom-modeline--buffer-path))
               (if-let (faces (or faces (if active 'doom-modeline-buffer-path)))
                   (propertize dir-path 'face `(:inherit ,faces))
@@ -415,7 +420,8 @@ directory, the file name, and its state (modified, read-only or non-existent)."
             (when-let (file-path (+doom-modeline--buffer-file))
               (if-let (faces (or faces (if active 'doom-modeline-buffer-file)))
                   (propertize file-path 'face `(:inherit ,faces))
-                file-path)))))
+                file-path))
+            (if buffer-file-name " %I"))))
 
 ;;
 (def-modeline-segment! buffer-info-simple
@@ -626,8 +632,7 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
                       (+doom-modeline--anzu)
                       (+doom-modeline--evil-substitute)
                       (+doom-modeline--iedit))))
-    (or (and (not (equal meta "")) meta)
-        (if buffer-file-name " %I "))))
+    (and (not (equal meta "")) meta)))
 
 ;; TODO Include other information
 (def-modeline-segment! media-info
@@ -654,25 +659,24 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
 ;;
 
 (def-modeline! main
-  (bar matches " " buffer-info "  %l:%c %p  " selection-info)
+  (bar matches " " icon " " buffer-info " %l:%c %p  " selection-info)
   (buffer-encoding major-mode vcs flycheck))
 
 (def-modeline! minimal
-  (bar matches " " buffer-info)
+  (bar matches " " icon buffer-info)
   (media-info major-mode))
 
 (def-modeline! special
-  (bar matches " " buffer-info-simple "  %l:%c %p  " selection-info)
+  (bar matches " " icon buffer-info-simple "  %l:%c %p  " selection-info)
   (buffer-encoding major-mode flycheck))
 
 (def-modeline! project
-  (bar buffer-project)
+  (bar icon buffer-project)
   (major-mode))
 
 (def-modeline! media
-  (bar " %b  ")
+  (bar icon " %b  ")
   (media-info major-mode))
-
 
 ;;
 ;; Hooks
