@@ -48,17 +48,6 @@
   (progn
     (global-evil-matchit-mode 1)))
 
-(t/use-package evil-surround
-  :only-standalone t
-  :after evil
-  :config
-  (progn
-    (global-evil-surround-mode 1)
-    ;; the opposite of vim, like spacemacs
-    (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
-    (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
-
-
 (t/use-package evil-visualstar
   :only-standalone t
   :commands (evil-visualstar/begin-search-forward
@@ -73,7 +62,21 @@
   :diminish evil-cleverparens-mode
   :init
   (progn (setq evil-cleverparens-use-additional-bindings nil
-               evil-cleverparens-use-regular-insert t)))
+               evil-cleverparens-use-regular-insert t))
+  :config
+  (with-eval-after-load 'evil-surround
+    (add-to-list 'evil-surround-operator-alist '(evil-cp-delete . delete))
+    (add-to-list 'evil-surround-operator-alist '(evil-cp-change . change))))
+
+(t/use-package evil-surround
+  :only-standalone t
+  :after evil
+  :config
+  (progn
+    (global-evil-surround-mode 1)
+    ;; the opposite of vim, like spacemacs
+    (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
+    (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
 
 (t/use-package evil-multiedit
   :commands evil-multiedit-match-symbol-and-next
