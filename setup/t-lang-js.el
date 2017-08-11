@@ -36,7 +36,9 @@
   (progn
     (setq prettier-js-args nil)
     (add-hook 'js2-mode-hook 'prettier-js-mode)
-    (add-hook 'web-mode-hook 'prettier-js-mode)))
+    (add-hook 'web-mode-hook (lambda ()
+                               (when-let (is-jsx-mode (string-match "\\.jsx$" (buffer-file-name)))
+                                 (prettier-js-mode))))))
 
 (t/use-package js2-refactor
   :only-standalone t
