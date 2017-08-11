@@ -89,7 +89,8 @@
                     "s" 'magit-status
                     "b" 'magit-blame
                     "l" 'magit-log
-                    "C" 'magit-commit)
+                    "C" 'magit-commit
+                    "c" #'t/clone)
 
   (t/declare-prefix "gh" "Hunk"
                     "n" 'git-gutter+-next-hunk

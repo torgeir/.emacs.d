@@ -1408,4 +1408,17 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (when font-lock-mode
       (with-no-warnings (font-lock-fontify-buffer)))))
 
+;;;###autoload
+(defun t/clone (repo)
+  "Clone a github repo to `~/Code/<repo-name>'."
+  (interactive "sClone repository: ")
+  (let* ((repo-name (and (string-match "\\([^/:]+?\\)\\(/?\\.git\\)?$" repo)
+                         (match-string 1 repo)))
+         (dir (expand-file-name (format "~/Code/%s/" repo-name))))
+    (when (not (file-exists-p dir))
+      (message "Cloning %s to %s.." repo dir)
+      (magit-run-git-async "clone" repo (magit-convert-filename-for-git dir))
+      (message "Cloning %s to %s.. ok." repo dir))
+    (dired dir)))
+
 (provide 't-defuns)
