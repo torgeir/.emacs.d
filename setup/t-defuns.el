@@ -93,14 +93,6 @@ The same can be done for the current folder only to place a TAGS file in it:
 
 ctags -e -R .
 
-This goes well with the following setting:
-
-(setq
-   tags-table-list '(\"./TAGS\"
-                     \"./../TAGS\"
-                     \"./../../TAGS\"
-                     \"/Users/torgeirthoresen/.nvm/versions/node/v8.2.1/src/node-8.x/lib/TAGS\"))
-
 Remember to build emacs --without-ctags and use the one from `brew' instead,
 it's the one with the correct options needed to generate ctags that emacs 
 understands."

@@ -273,16 +273,14 @@
   :after company
   :config
   (progn
-
-    ;; fix helm-etags-select for huge regexps
-    (setq helm-fuzzy-matching-highlight-fn (lambda (file) file))
+    (advice-add 'tern-find-definition :before 'xref-push-marker-stack) ; make pop-tag-mark work with tern
     (add-hook 'tern-mode-hook
               (lambda ()
                 (bind-key "M-." 'tern-find-definition tern-mode-keymap)
-                (bind-key "M-," 'tern-pop-find-definition tern-mode-keymap)
-                (bind-key "C-M-." 'helm-etags-select tern-mode-keymap)
                 (bind-key "M-." 'tern-find-definition evil-normal-state-local-map)
-                (bind-key "M-," 'tern-pop-find-definition evil-normal-state-local-map)
+                (bind-key "M-," 'pop-tag-mark tern-mode-keymap)
+                (bind-key "M-," 'pop-tag-mark evil-normal-state-local-map)
+                (bind-key "C-M-." 'helm-etags-select tern-mode-keymap)
                 (bind-key "C-M-." 'helm-etags-select evil-normal-state-local-map)
                 ))
     (add-to-list 'company-backends 'company-tern)
@@ -291,20 +289,27 @@
 (t/use-package etags-select
   :init
   (progn
-    ;; read tag files in the current directory and two parent directories
-    (setq
-     tags-file-name nil
-     tags-table-list `("./TAGS"
-                       "./../TAGS"
-                       "./../../TAGS"
-                       ,(t/user-file ".nvm/versions/node/v8.2.1/src/node-8.x/lib/TAGS")))
-    
+    (setq helm-etags-fuzzy-match t
+          etags-select-go-if-unambiguous t
+          ;; fix helm-etags-select for huge regexps
+          helm-fuzzy-matching-highlight-fn (lambda (file) file))
     (add-hook 'etags-select-mode-hook
               (lambda ()
                 (bind-key "j" 'etags-select-next-tag etags-select-mode-map)
                 (bind-key "k" 'etags-select-previous-tag etags-select-mode-map)
                 (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)
                 (bind-key "M-RET" 'etags-select-goto-tag-other-window etags-select-mode-map)))))
+
+(t/use-package etags-table
+  :init
+  (setq etags-table-search-up-depth 1 ; don't search upwards
+        tags-file-name nil ; only use tags-table-list via etags-table
+        etags-table-alist (list
+                           `(,(t/user-file "Code/datainn/datainn/.*\\.jsx?$")
+                             ,(t/user-file "Code/datainn/datainn/web/TAGS"))
+                           `(".*\\.jsx?$"
+                             ,(t/user-file ".nvm/versions/node/v8.2.1/src/node-8.x/TAGS") ; generated with `ctags -e -R lib`
+                             ))))
 
 (t/use-package helm-unicode)
 

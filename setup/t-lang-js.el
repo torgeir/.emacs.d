@@ -20,7 +20,12 @@
     (add-hook 'js2-mode-hook (lambda ()
                                (flycheck-mode 1)
                                (turn-on-smartparens-mode)
-                               (tern-mode))))
+                               (js2-imenu-extras-mode)
+                               (tern-mode)
+                               ;; TODO tern-mode issue with question?
+                               ;; tern capf seems to hijack tags? look for tags first:
+                               (setq completion-at-point-functions (reverse completion-at-point-functions))
+                               )))
   :config
   (progn
     (unbind-key "M-j" js2-mode-map)
@@ -38,6 +43,7 @@
     (add-hook 'js2-mode-hook 'prettier-js-mode)
     (add-hook 'web-mode-hook (lambda ()
                                (when-let (is-jsx-mode (string-match "\\.jsx$" (buffer-file-name)))
+                                 (tern-mode)
                                  (prettier-js-mode))))))
 
 (t/use-package js2-refactor
