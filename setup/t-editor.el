@@ -328,7 +328,7 @@
                       "u" 'helm-unicode))
   :config
   (progn
-    ;; make `emoji-cheat-sheet-plus'this insert unicodes 🎉
+    ;; make `emoji-cheat-sheet-plus' insert unicodes 🎉
     (defvar t-emoji-cheat-sheet-plus-use-unicode t)
 
     (defun t/emoji-cheat-shet-plus--unicode-for-emoji-text (text)
