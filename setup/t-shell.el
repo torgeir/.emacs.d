@@ -91,6 +91,8 @@
                       '("cleanupdsstore" "find . -name '*.DS_Store' -type f -ls -delete")
                       '("d" "dired $1")
                       '("e" "find-file $1")
+                      '("f" "helm-find-files $1")
+                      '("p" "helm-projectile")
                       '("emacs" "find-file $1")
                       '("emptytrash" "sudo rm -rfv /Volumes/*/.Trashes; rm -rfv ~/.Trash")
                       '("esudo" "find-file /sudo::/$1")
