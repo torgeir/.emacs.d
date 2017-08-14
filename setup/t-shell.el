@@ -73,6 +73,10 @@
   (progn
     ;; eshell
 
+    (t/use-package esh-help
+      :init
+      (add-hook 'eshell-mode-hook 'setup-esh-help-eldoc))
+
     (defun t/eshell-init-smart ()
       "Init smart eshell"
       (require 'em-smart)
