@@ -1404,6 +1404,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/clone (repo)
   "Clone a github repo to `~/Code/<repo-name>'."
   (interactive "sClone repository: ")
+  (require 'magit)
   (let* ((repo-name (and (string-match "\\([^/:]+?\\)\\(/?\\.git\\)?$" repo)
                          (match-string 1 repo)))
          (dir (expand-file-name (format "~/Code/%s/" repo-name))))
