@@ -159,6 +159,18 @@
   :config (evil-commentary-mode 1))
 
 (defun t-evil/vars ()
+  (progn
+    (defvar t-evil-major-modes '(compilation-mode
+                                 special-mode
+                                 calendar-mode
+                                 git-rebase-mode
+                                 diff-mode)
+      "Major modes that should trigger evil emacs state when changed to.")
+    (add-hook 'after-change-major-mode-hook
+              (lambda ()
+                (when (member major-mode t-evil-major-modes)
+                  (evil-emacs-state)))))
+
   (setq evil-default-state 'normal
         evil-insert-skip-empty-lines t
         evil-search-module 'evil-search)
@@ -212,21 +224,7 @@ ignored.")
                   highlight-symbol-mode)
              (highlight-symbol-remove-all))
             ;; Run all escape hooks. If any returns non-nil, then stop there.
-            (t (run-hook-with-args-until-success '+evil-esc-hook))))
-
-    (defvar t-evil-major-modes '(compilation-mode
-                                 special-mode
-                                 calendar-mode
-                                 git-rebase-mode
-                                 flycheck-error-list-mode
-                                 diff-mode
-                                 cider-stacktrace-mode
-                                 cider-docview-mode)
-      "Major modes that should trigger evil emacs state when changed to.")
-    (add-hook 'after-change-major-mode-hook
-              (lambda ()
-                (when (member major-mode t-evil-major-modes)
-                  (evil-emacs-state)))))
+            (t (run-hook-with-args-until-success '+evil-esc-hook)))))
 
   ;; motions keys for help buffers
   (evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)

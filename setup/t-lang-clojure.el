@@ -95,6 +95,12 @@
           cider-prompt-for-symbol nil))
   :config
   (progn
+
+    (defun t/cider-insert-last-sexp-in-repl ()
+      (interactive)
+      (cider-insert-last-sexp-in-repl 't)
+      (other-window 1))
+
     (defun t/init-clj-mode-keys-in-mode (mode)
       (t/declare-prefix-for-mode mode "d" "Mode"
                                  "f" 'cider-doc
@@ -106,11 +112,17 @@
       (t/declare-prefix-for-mode mode "me" "Evaluate"
                                  "b" 'cider-eval-buffer
                                  "r" 'cider-eval-region
+                                 "e" 't/cider-insert-last-sexp-in-repl
                                  "f" 'cider-eval-defun-at-point
                                  "R" 'cider-eval-last-sexp-and-replace))
 
     (t/init-clj-mode-keys-in-mode 'clojure-mode)
     (t/init-clj-mode-keys-in-mode 'clojurescript-mode)
+
+    (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
+
+    (t/add-to-list t-evil-major-modes 'cider-stacktrace-mode)
+    (t/add-to-list t-evil-major-modes 'cider-docview-mode)
 
     ;; minibuffer doc in repl
     (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)

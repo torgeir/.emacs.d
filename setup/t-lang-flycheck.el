@@ -6,6 +6,7 @@
     (setq flycheck-display-errors-function #'flycheck-display-error-messages))
   :config
   (progn
+    (t/add-to-list t-evil-major-modes 'flycheck-error-list-mode)
     (setq-default flycheck-disabled-checkers
                   (append flycheck-disabled-checkers '(javascript-jshint)))
     (setq-default flycheck-disabled-checkers
