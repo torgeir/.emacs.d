@@ -75,4 +75,45 @@
                 (bind-key "C-d" 't/volatile-kill-buffer evil-insert-state-local-map)
                 (bind-key "C-d" 't/volatile-kill-buffer evil-normal-state-local-map)))))
 
+(t/use-package indium
+  :commands (indium-repl-mode
+             indium-interaction-mode
+             indium-debugger-mode)
+  :init
+  (with-eval-after-load 'js2-mode
+    (add-hook 'js2-mode-hook 'indium-interaction-mode)
+    (t/declare-prefix-for-mode 'js2-mode
+                               "m" "mode"
+                               "j" 'indium-run-node
+                               "J" 'indium-quit)
+    (t/declare-prefix-for-mode 'js2-mode
+                               "me" "Evaluate"
+                               "b" 'indium-eval-buffer
+                               "f" 'indium-eval-defun
+                               "e" 'indium-eval-last-node))
+  :config
+  (progn
+    (add-hook 'indium-repl-mode-hook
+              (progn
+                (bind-key "C-d" 'indium-quit indium-repl-mode-map)
+                (bind-key "C-d" 'indium-quit evil-normal-state-local-map)
+                (bind-key "C-d" 'indium-quit evil-insert-state-local-map)
+                (bind-key "C-l" 'indium-repl-clear-output indium-repl-mode-map)))
+    (add-hook 'indium-interaction-mode
+              (progn
+                (bind-key "C-c C-c" #'indium-eval-last-node evil-normal-state-local-map)
+                (bind-key "C-c C-c" #'indium-eval-last-node evil-insert-state-local-map)))
+    (dolist (mode '(indium-repl-mode
+                    indium-debugger-mode
+                    indium-debugger-frames-mode
+                    indium-debugger-locals-mode
+                    indium-inspector-mode))
+      (add-to-list 't-evil-major-modes mode))
+    
+    ;; inline evaled results when in js2-mode using cider
+    (autoload 'cider--make-result-overlay "cider-overlays")
+    (defun t/overlay-indium (r)
+      (cider--make-result-overlay (indium-fontify-js "%s" r) :where (point) :duration 'command))
+    (setq indium-interaction-eval-node-hook (list #'t/overlay-indium))))
+
 (provide 't-lang-js)
