@@ -106,17 +106,17 @@
                       '("hidehidden" "defaults write com.apple.finder AppleShowAllFiles -boolean false && killall Finder")
                       '("ip" "dig +short myip.opendns.com @resolver1.opendns.com")
                       '("j" "z $*")
-                      '("l" "ls -laF")
-                      '("ll" "ls -la")
+                      '("ll" "ls -laH")
+                      '("l" "ls -H")
                       '("lout" "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend")
                       '("md" "mkdir $1; cd $1")
                       '("serve" "python -m SimpleHTTPServer")
                       '("showdesktop" "defaults write com.apple.finder CreateDesktop -bool true && killall Finder")
                       '("showhidden" "defaults write com.apple.finder AppleShowAllFiles -boolean true && killall Finder")
-                      '("ssh" "cd /$1:~")
+                      '("essh" "cd \"/ssh:$1:~\"")
                       '("sudo" "*sudo $*")))
         (add-to-list 'eshell-command-aliases-list alias)))
-
+    
     (defun t/eshell-init ()
       "Init eshell"
       (t/eshell-init-smart)
@@ -177,6 +177,7 @@
     (add-hook 'eshell-mode-hook
               (lambda ()
                 (paredit-mode 1)
+                (bind-key "S-<return>" 'newline-and-indent eshell-mode-map)
                 (bind-key "C-l" 't/eshell-clear eshell-mode-map)
                 (bind-key "C-a" 'eshell-bol eshell-mode-map)
                 (bind-key "C-a" 'eshell-bol evil-insert-state-local-map)
@@ -246,20 +247,23 @@ PWD is not in a git repo (or the git command is not found)."
                           "/"))
             pwd)))  ;; Otherwise, we just return the PWD
 
-      (defun split-directory-prompt (directory)
-        (if (string-match-p ".*/.*" directory)
-            (list (file-name-directory directory) (file-name-base directory))
-          (list "" directory)))
+      (defun split-directory-prompt (directory short-dir)
+        (if (string-match-p ".*/.*" short-dir)
+            (list (file-name-directory short-dir)
+                  (if (file-directory-p directory)
+                      (file-name-nondirectory short-dir)
+                    (file-name-base short-dir)))
+          (list "" short-dir)))
 
       (defvar t-eshell-success-face 'doom-modeline-info)
       (defvar t-eshell-error-face 'doom-modeline-urgent)
       (setq eshell-prompt-function
             (lambda ()
-              (let* ((directory (split-directory-prompt (pwd-shorten-dirs (pwd-replace-home (eshell/pwd)))))
+              (let* ((pwd (eshell/pwd))
+                     (directory (split-directory-prompt pwd (pwd-shorten-dirs (pwd-replace-home pwd))))
                      (parent (car directory))
                      (name (cadr directory))
                      (branch (or (curr-dir-git-branch-string (eshell/pwd)) ""))
-
                      (prompt (concat
                               (propertize parent 'face 'font-lock-builtin-face)
                               (propertize name 'face 'font-lock-constant-face)

@@ -32,10 +32,11 @@
 (t/use-package tramp
   :defer t
   :ensure nil
-  :config
-  (progn
-    (setq tramp-default-method "ssh"
-          tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save"))))
+  :init
+  (add-hook 'eshell-mode-hook
+            (lambda ()
+              (setq tramp-default-method "ssh"
+                    tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))))
 
 (comment
  (t/use-package hideshow
