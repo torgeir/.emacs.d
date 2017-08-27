@@ -1381,18 +1381,22 @@ If FILEXT is provided, return files with extension FILEXT instead."
      (,(rx (and (zero-or-more (any ".")) "Skipped: "   (group (any "[1-9]") (zero-or-more (any "[0-9]"))) (zero-or-more (any ".")))) 1 t-log-warn-face t)
      ;; 0.662 s, 2s, 30m, 10 min, 20 minutes, 1hour, 20 hours
      (,(rx (group (one-or-more digit)
-                  (optional (or "," ".") (one-or-more digit))
+                  (optional (or "," "." ":") (one-or-more digit))
                   (optional " ")
-                  (or (or "s" "sec" "second" "seconds")
+                  (or (or "ms" "millisecond" "milliseconds")
+                      (or "s" "sec" "second" "seconds")
                       (or "m" "min" "minute" "minutes")
                       (or "h" "hour" "hours")))
            word-boundary) 1 t-log-hl-face t)
-     ;; 2017-07-11 14:45:11.067
-     (,(rx bol (group (repeat 4 digit) "-" (repeat 2 digit) "-" (repeat 2 digit)
-                      " "
-                      (repeat 2 digit) ":" (repeat 2 digit) ":" (repeat 2 digit) (or "," ".") (repeat 3 digit))) 1 t-log-comment-face t)
+     ;; 2017-07-11T14:45:11.067+02:00
+     (,(rx (group (repeat 4 digit) "-" (repeat 2 digit) "-" (repeat 2 digit)
+                  (or " " "T")
+                  (repeat 2 digit) ":" (repeat 2 digit) ":" (repeat 2 digit)
+                  (optional (or "," ".") (repeat 3 digit))
+                  (optional (or "Z"
+                                (and "+" (repeat 2 digit) ":" (repeat 2 digit)))))) 1 t-log-comment-face t)
      ;; 14:45:11.067
-     (,(rx (group (repeat 2 digit) ":" (repeat 2 digit) ":" (repeat 2 digit) (or "," ".") (repeat 3 digit))) 1 t-log-comment-face t)
+     (,(rx (group (repeat 2 digit) ":" (repeat 2 digit) ":" (repeat 2 digit) (optional (or "," ".") (repeat 3 digit)))) 1 t-log-comment-face t)
      ))
   
   (if (fboundp 'font-lock-flush)
