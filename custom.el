@@ -67,6 +67,7 @@
                        "\\_>"))
               1
               (quote font-lock-variable-name-face))))))))
+ '(tags-add-tables t)
  '(vc-annotate-background "#181e26")
  '(vc-annotate-color-map
    (list
