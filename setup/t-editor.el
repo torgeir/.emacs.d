@@ -545,7 +545,10 @@
 (t/use-package helm-projectile
   :after helm
   :only-standalone t
-  :commands helm-projectile)
+  :commands helm-projectile
+  :init
+  (progn
+    (setq helm-projectile-truncate-lines t)))
 
 (t/use-package helm-descbinds
   :after helm
