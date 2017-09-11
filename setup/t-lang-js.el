@@ -104,7 +104,7 @@
                 (bind-key "C-c C-c" #'indium-eval-last-node evil-normal-state-local-map)
                 (bind-key "C-c C-c" #'indium-eval-last-node evil-insert-state-local-map)))
     (dolist (mode '(indium-repl-mode
-                    indium-debugger-mode
+                    indium-debugger-major-mode
                     indium-debugger-frames-mode
                     indium-debugger-locals-mode
                     indium-inspector-mode))
@@ -113,7 +113,7 @@
     ;; inline evaled results when in js2-mode using cider
     (autoload 'cider--make-result-overlay "cider-overlays")
     (defun t/overlay-indium (r)
-      (cider--make-result-overlay (indium-fontify-js "%s" r) :where (point) :duration 'command))
+      (cider--make-result-overlay (indium-fontify-js r) :where (point) :duration 'command))
     (setq indium-interaction-eval-node-hook (list #'t/overlay-indium))))
 
 (provide 't-lang-js)

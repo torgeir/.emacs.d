@@ -105,9 +105,10 @@
                       '("hidedesktop" "defaults write com.apple.finder CreateDesktop -bool false && killall Finder")
                       '("hidehidden" "defaults write com.apple.finder AppleShowAllFiles -boolean false && killall Finder")
                       '("ip" "dig +short myip.opendns.com @resolver1.opendns.com")
+                      '("localip" "ipconfig getifaddr en0")
                       '("j" "z $*")
-                      '("ll" "ls -laH")
-                      '("l" "ls -H")
+                      '("ll" "ls -laH $*")
+                      '("l" "ls -H $*")
                       '("lout" "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend")
                       '("md" "mkdir $1; cd $1")
                       '("serve" "python -m SimpleHTTPServer")
@@ -314,4 +315,22 @@ PWD is not in a git repo (or the git command is not found)."
          ;; provide branch completion for the command `checkout'.
          ((pcomplete-match "\\(co\\|checkout\\|merge\\|branch\\|diff\\)" 1)
           (pcomplete-here* (pcmpl-git-get-refs '("heads")))))))))
+
+(comment ;; pcomplete example
+
+ (defun pcomplete/torgeir ()
+   (pcomplete-here* '("add" "remove"))
+   (cond
+    ((pcomplete-match "add" 1)
+     (pcomplete-here* '("one" "two")))
+    ((pcomplete-match "remove" 1)
+     (pcomplete-here* '("two" "three"))))))
+
+
+(use-package pcmpl-git)
+(use-package pcmpl-args)
+(use-package pcmpl-homebrew)
+(use-package pcomplete-extension)
+
 (provide 't-shell)
+
