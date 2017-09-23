@@ -17,7 +17,8 @@ ln -s ~/.emacs.d/.spacemacs
 ### os x
 
 ```
-brew install emacs --with-cocoa --with-ctags --with-gnutls --with-imagemagick@6 --with-librsvg
+brew tap d12frosted/emacs-plus
+brew install emacs-plus --HEAD --with-natural-title-bar --without-spacemacs-icon
 ```
 
 ### ubuntu

@@ -63,7 +63,7 @@ for setting up vars and config after load")
 
         ;; don't add :only-standalone packages in spacemacs t-"layer"
         (when (not only-standalone)
-          (t/add-to-list t-use-package-t-layer-pkgs package)
+          (t/add-to-list 't-use-package-t-layer-pkgs package)
           (setq t-use-package-t-layer-pkgs (delete-dups t-use-package-t-layer-pkgs)))
 
         (add-to-list 't-use-package-pkgs package t)

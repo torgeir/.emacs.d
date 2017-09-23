@@ -81,7 +81,7 @@
   ;; remember file positions, and layout
   (save-place-mode 1)
   (desktop-save-mode 1)
-  (setq desktop-save t)
+  (setq desktop-save nil)
 
   ;; temp files in..
   (setq backup-directory-alist `((".*" . ,(locate-user-emacs-file ".backups/")))

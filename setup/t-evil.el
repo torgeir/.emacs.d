@@ -85,7 +85,9 @@
     (setq evil-multiedit-follow-matches t)
     (bind-key "M-d" 'evil-multiedit-match-symbol-and-next evil-normal-state-map)
     (bind-key "C-M-d" 'evil-multiedit-restore evil-normal-state-map)
-    (advice-add 'evil-multiedit-abort :after #'+evil*attach-escape-hook))
+    ;; seems to make helm-projectile disappear?
+    ;;(advice-add 'evil-multiedit-abort :after #'+evil*attach-escape-hook)
+    )
   :config
   (progn
     (evil-multiedit-default-keybinds)
@@ -128,30 +130,7 @@
       (bind-key "M-j" #'t/mc-next evil-multiedit-state-map)
       (bind-key "M-k" #'t/mc-prev evil-multiedit-state-map)
       (bind-key "M-J" #'t/mc-skip-next evil-multiedit-state-map)
-      (bind-key "M-K" #'t/mc-skip-prev evil-multiedit-state-map))
-
-    ;; TODO remove when https://github.com/syl20bnr/evil-escape/pull/77 is merged
-    (defun evil-escape-func ()
-      "Return the function to escape from everything."
-      (pcase evil-state
-        (`normal (evil-escape--escape-normal-state))
-        (`motion (evil-escape--escape-motion-state))
-        (`insert 'evil-normal-state)
-        (`emacs (evil-escape--escape-emacs-state))
-        (`hybrid (evil-escape--escape-emacs-state))
-        (`evilified (evil-escape--escape-emacs-state))
-        (`visual 'evil-exit-visual-state)
-        (`replace 'evil-normal-state)
-        (`lisp 'evil-lisp-state/quit)
-        (`iedit 'evil-iedit-state/quit-iedit-mode)
-        (`iedit-insert 'evil-iedit-state/quit-iedit-mode)
-        (`multiedit 'evil-multiedit-abort)
-        (`multiedit-insert 'evil-multiedit-abort)
-        (_ (evil-escape--escape-normal-state))))))
-
-(comment
- (t/use-package org-evil
-   :after evil))
+      (bind-key "M-K" #'t/mc-skip-prev evil-multiedit-state-map))))
 
 (t/use-package evil-commentary
   :after evil

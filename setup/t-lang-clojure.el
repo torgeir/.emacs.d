@@ -96,6 +96,11 @@
   :config
   (progn
 
+    (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
+
+    (t/add-to-list 't-evil-major-modes 'cider-stacktrace-mode)
+    (t/add-to-list 't-evil-major-modes 'cider-docview-mode)
+
     (defun t/cider-insert-last-sexp-in-repl ()
       (interactive)
       (cider-insert-last-sexp-in-repl 't)
@@ -118,11 +123,6 @@
 
     (t/init-clj-mode-keys-in-mode 'clojure-mode)
     (t/init-clj-mode-keys-in-mode 'clojurescript-mode)
-
-    (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
-
-    (t/add-to-list t-evil-major-modes 'cider-stacktrace-mode)
-    (t/add-to-list t-evil-major-modes 'cider-docview-mode)
 
     ;; minibuffer doc in repl
     (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)

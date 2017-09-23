@@ -40,11 +40,12 @@
   :init
   (progn
     (setq prettier-js-args nil)
-    (add-hook 'js2-mode-hook 'prettier-js-mode)
-    (add-hook 'web-mode-hook (lambda ()
-                               (when-let (is-jsx-mode (string-match "\\.jsx$" (buffer-file-name)))
-                                 (tern-mode)
-                                 (prettier-js-mode))))))
+    (defun t/prettier-jsx-hook ()
+      (when-let* ((is-jsx-mode (string-match "\\.jsx$" (buffer-file-name))))
+        (prettier-js-mode)))
+    ;;(add-hook 'js2-mode-hook 'prettier-js-mode)
+    ;;(add-hook 'web-mode-hook #'t/prettier-jsx-hook)
+    ))
 
 (t/use-package js2-refactor
   :only-standalone t
@@ -93,22 +94,39 @@
                                "e" 'indium-eval-last-node))
   :config
   (progn
+    (defun t/indium-debugger-mode-hook ()
+      (bind-key "?" 'indium-debugger-show-help-message evil-normal-state-local-map)
+      (bind-key "o" 'indium-debugger-step-over evil-normal-state-local-map)
+      (bind-key "i" 'indium-debugger-step-into evil-normal-state-local-map)
+      (bind-key "O" 'indium-debugger-step-out evil-normal-state-local-map)
+      (bind-key "c" 'indium-debugger-resume evil-normal-state-local-map)
+      (bind-key "l" 'indium-debugger-locals evil-normal-state-local-map)
+      (bind-key "s" 'indium-debugger-stack-frames evil-normal-state-local-map)
+      (bind-key "q" 'indium-debugger-resume evil-normal-state-local-map)
+      (bind-key "h" 'indium-debugger-here evil-normal-state-local-map)
+      (bind-key "e" 'indium-debugger-evaluate evil-normal-state-local-map)
+      (bind-key "n" 'indium-debugger-next-frame evil-normal-state-local-map)
+      (bind-key "p" 'indium-debugger-previous-frame evil-normal-state-local-map))
+    (add-hook 'indium-debugger-mode-hook #'t/indium-debugger-mode-hook)
     (add-hook 'indium-repl-mode-hook
-              (progn
+              (lambda ()
                 (bind-key "C-d" 'indium-quit indium-repl-mode-map)
                 (bind-key "C-d" 'indium-quit evil-normal-state-local-map)
                 (bind-key "C-d" 'indium-quit evil-insert-state-local-map)
                 (bind-key "C-l" 'indium-repl-clear-output indium-repl-mode-map)))
-    (add-hook 'indium-interaction-mode
-              (progn
+    (add-hook 'indium-interaction-mode-hook
+              (lambda ()
                 (bind-key "C-c C-c" #'indium-eval-last-node evil-normal-state-local-map)
                 (bind-key "C-c C-c" #'indium-eval-last-node evil-insert-state-local-map)))
-    (dolist (mode '(indium-repl-mode
-                    indium-debugger-major-mode
-                    indium-debugger-frames-mode
-                    indium-debugger-locals-mode
-                    indium-inspector-mode))
-      (add-to-list 't-evil-major-modes mode))
+    (defun t/indium-jk ()
+      (bind-key "j" 'indium-inspector-next-reference evil-normal-state-local-map)
+      (bind-key "k" 'indium-inspector-previous-reference evil-normal-state-local-map)
+      (bind-key "q" 'quit-window evil-normal-state-local-map))
+    (dolist (hook '(indium-repl-mode-hook
+                    indium-debugger-frames-mode-hook
+                    indium-debugger-locals-mode-hook
+                    indium-inspector-mode-hook))
+      (add-hook hook #'t/indium-jk))
     
     ;; inline evaled results when in js2-mode using cider
     (autoload 'cider--make-result-overlay "cider-overlays")

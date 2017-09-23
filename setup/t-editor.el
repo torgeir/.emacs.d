@@ -38,15 +38,6 @@
               (setq tramp-default-method "ssh"
                     tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))))
 
-(comment
- (t/use-package hideshow
-   :defer 2
-   :ensure nil
-   :diminish hs-minor-mode
-   :config
-   (progn
-     (add-hook 'prog-mode-hook 'hs-minor-mode))))
-
 (t/use-package dired
   :ensure nil
   :only-standalone t
@@ -545,10 +536,7 @@
 (t/use-package helm-projectile
   :after helm
   :only-standalone t
-  :commands helm-projectile
-  :init
-  (progn
-    (setq helm-projectile-truncate-lines t)))
+  :commands helm-projectile)
 
 (t/use-package helm-descbinds
   :after helm
@@ -824,9 +812,9 @@
           projectile-project-root-files '(".git" ".hg" ".svn" ".project" "package.json" "setup.py" "Gemfile" "build.gradle")))
   :config
   (progn
-    (t/add-to-list projectile-globally-ignored-directories '("elpa-backups" "node_modules" "target" "dist" ".idea"))
-    (t/add-to-list projectile-globally-ignored-files '("**.bundle.js" "**.build.js" ".DS_Store" "projectile.cache"))
-    (t/add-to-list grep-find-ignored-files '("**.bundle.js" "**.build.js" ".DS_Store" "custom.el"))
+    (t/add-to-list 'projectile-globally-ignored-directories '("elpa-backups" "node_modules" "target" "dist" ".idea"))
+    (t/add-to-list 'projectile-globally-ignored-files '("**.bundle.js" "**.build.js" ".DS_Store" "projectile.cache" "custom.el"))
+    (t/add-to-list 'grep-find-ignored-files '("**.bundle.js" "**.build.js" ".DS_Store" "custom.el"))
     (projectile-global-mode +1)))
 
 (t/use-package dumb-jump

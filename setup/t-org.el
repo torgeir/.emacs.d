@@ -524,43 +524,43 @@ Locally redefines org-agenda-files not to export all agenda files."
                       ((= 2 phase) "Fullmåne ○")
                       ((= 3 phase) "Månen i ne ☾"))))))))
 
-(comment (t/use-package elfeed
-           :commands (elfeed elfeed-search-mode elfeed-show-mode)
-           :init
-           (progn
-             (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
-                   elfeed-search-filter "@6-months-ago +unread -old -photo -life -gaming -news"
-                   shr-use-fonts nil
-                   shr-max-image-proportion 0.3)
+(t/use-package elfeed
+  :commands (elfeed elfeed-search-mode elfeed-show-mode)
+  :init
+  (progn
+    (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
+          elfeed-search-filter "@6-months-ago +unread -old -photo -life -gaming -news"
+          shr-use-fonts nil
+          shr-max-image-proportion 0.3)
 
-             (with-eval-after-load 'evil
-               (progn
-                 (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
-                 (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)))
+    (with-eval-after-load 'evil
+      (progn
+        (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
+        (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)))
 
-             (t/declare-prefix "a" "Applications"
-                               "r" 'elfeed))
-           :config
-           (progn
-             (bind-key "SPC" 'elfeed-search-show-entry elfeed-search-mode-map)
-             (defun t/elfeed-hook ()
-               (interactive)
-               (visual-line-mode)
-               (set-window-margins nil 5 5))
-             (add-hook 'elfeed-show-mode-hook #'t/elfeed-hook))))
+    (t/declare-prefix "a" "Applications"
+                      "r" 'elfeed))
+  :config
+  (progn
+    (bind-key "SPC" 'elfeed-search-show-entry elfeed-search-mode-map)
+    (defun t/elfeed-hook ()
+      (interactive)
+      (visual-line-mode)
+      (set-window-margins nil 5 5))
+    (add-hook 'elfeed-show-mode-hook #'t/elfeed-hook)))
 
-(comment (t/use-package elfeed-goodies
-           :after elfeed
-           :config
-           (progn
-             (elfeed-goodies/setup))))
+(t/use-package elfeed-goodies
+  :after elfeed
+  :config
+  (progn
+    (elfeed-goodies/setup)))
 
-(comment (t/use-package elfeed-org
-           :after elfeed
-           :config
-           (progn
-             (elfeed-org)
-             (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org")))))
+(t/use-package elfeed-org
+  :after elfeed
+  :config
+  (progn
+    (elfeed-org)
+    (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org"))))
 
 (t/use-package org-gcal
   :after org
