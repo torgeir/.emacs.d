@@ -81,6 +81,8 @@
   :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
   :init
   (progn
+    (with-eval-after-load 'org-agenda
+      (bind-key "s-s" 'org-save-all-org-buffers org-agenda-mode-map))
     (t/declare-prefix "o" "Org"
                       "c" 'org-capture
                       "e" 'org-export-dispatch
