@@ -3,6 +3,6 @@
 
 (use-package company-terraform
   :config
-  (company-terraform-init))
+  (t/add-company-backend-hook 'terraform-mode-hook 'company-terraform))
 
 (provide 't-lang-terraform)

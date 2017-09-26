@@ -1419,4 +1419,14 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (message "Cloning %s to %s.. ok." repo dir))
     (dired dir)))
 
+;;;###autoload
+(defun t/add-company-backend-hook (mode-hook &rest backends)
+  "Add list of grouped company backends for `mode-hook'."
+  (lexical-let* ((backends backends)) ; lambda makes closure
+    (add-hook mode-hook
+              (lambda nil
+                (make-local-variable 'company-backends)
+                (add-to-list 'company-backends backends)))))
+
+
 (provide 't-defuns)

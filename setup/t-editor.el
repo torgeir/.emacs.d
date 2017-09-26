@@ -196,7 +196,14 @@
           company-tooltip-flip-when-above t
           company-show-numbers t ; nav with m-<n>
           company-selection-wrap-around t
-          company-require-match nil)
+          company-require-match nil
+          company-backends '((company-files
+                              company-keywords
+                              company-capf
+                              company-yasnippet)
+                             (company-dabbrev-code
+                              company-dabbrev
+                              company-dabbrev)))
     (with-eval-after-load 'company
       (add-hook 'prog-mode-hook 'company-mode)))
   :config
@@ -224,20 +231,12 @@
   :after company
   :only-standalone t
   :config
-  (progn
-    (add-to-list 'company-backends 'company-web-html)))
-
-(t/use-package company-ansible
-  :after company
-  :config
-  (progn
-    (add-to-list 'company-backends 'company-ansible)))
+  (t/add-company-backend-hook 'web-mode-hook 'company-web-html 'company-etags))
 
 (t/use-package company-restclient
   :after company
   :config
-  (progn
-    (add-to-list 'company-backends 'company-restclient)))
+  (t/add-company-backend-hook 'restclient-mode-hook 'company-restclient))
 
 (t/use-package helm-xref
   :init
@@ -275,7 +274,10 @@
                 (bind-key "C-M-." 'helm-etags-select tern-mode-keymap)
                 (bind-key "C-M-." 'helm-etags-select evil-normal-state-local-map)
                 ))
-    (add-to-list 'company-backends 'company-tern)
+    (with-eval-after-load 'js2-mode
+      (t/add-company-backend-hook 'js2-mode-hook
+                                  'company-tern
+                                  'company-etags))
     (setq tern-command (append tern-command '("--no-port-file")))))
 
 (t/use-package etags-select
@@ -851,6 +853,16 @@
 (t/use-package beginend
   :config
   (beginend-global-mode))
+
+(use-package whitespace
+  :demand t
+  :ensure nil
+  :init
+  (progn
+    (add-hook 'prog-mode-hook #'whitespace-turn-on)
+    (add-hook 'text-mode-hook #'whitespace-turn-on))
+  :config
+  (setq-default whitespace-style '(face)))
 
 (use-package artist-mode
   :ensure nil
