@@ -109,8 +109,7 @@
 
     (t/declare-prefix "oC" "Clock"
                       "i" 'org-clock-in
-                      "o" 'org-clock-out))
-  )
+                      "o" 'org-clock-out)))
 
 (defun t-org/config ()
 
@@ -175,13 +174,7 @@
       (add-hook 'org-mode-hook
                 (lambda ()
                   (org-display-inline-images t t)
-                  (visual-line-mode 1)    ; wrap long lines
-                  ;; (progn
-                  ;;   ;; yasnippet
-                  ;;   (make-variable-buffer-local 'yas/trigger-key)
-                  ;;   (org-set-local 'yas/trigger-key [tab])
-                  ;;   (bind-key [tab] 'yas-next-field-or-maybe-expand yas/keymap))
-                  )))
+                  (visual-line-mode 1))))
 
     (progn
       ;; agenda
