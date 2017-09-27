@@ -145,10 +145,11 @@
                                  git-rebase-mode
                                  diff-mode)
       "Major modes that should trigger evil emacs state when changed to.")
-    (add-hook 'after-change-major-mode-hook
-              (lambda ()
-                (when (member major-mode t-evil-major-modes)
-                  (evil-emacs-state)))))
+    (with-eval-after-load 'evil
+      (add-hook 'after-change-major-mode-hook
+                (lambda ()
+                  (when (member major-mode t-evil-major-modes)
+                    (evil-emacs-state))))))
 
   (setq evil-default-state 'normal
         evil-insert-skip-empty-lines t

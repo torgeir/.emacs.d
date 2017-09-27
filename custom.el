@@ -8,8 +8,9 @@
  '(hackernews-comment-count-face ((t (:inherit org-code))))
  '(hackernews-link-face ((t (:inherit font-lock-keyword-face))))
  '(highlight-symbol-face ((t (:inherit hl-line))))
+ '(markdown-header-face ((t (:inherit bold :foreground "#66bb5c"))))
  '(org-agenda-dimmed-todo-face ((t (:inherit org-level-2))))
- '(org-checkbox-statistics-todo ((t (:inherit org-todo))))
+ '(org-checkbox-statistics-todo ((t (:inherit org-todo))) t)
  '(org-code ((t (:foreground "VioletRed1"))))
  '(org-date ((t (:foreground "turquoise2"))))
  '(org-level-1 ((t (:foreground "#51afef" :weight semi-bold :height 1.0 :background nil))))
@@ -36,15 +37,15 @@
  '(jdee-db-active-breakpoint-face-colors (cons "#181e26" "#51afef"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#181e26" "#7bc275"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#181e26" "#3D3D48"))
- '(magit-pull-arguments nil t)
- '(neo-mode-line-type (quote none))
+ '(magit-pull-arguments nil)
+ '(neo-mode-line-type (quote none) t)
  '(org-agenda-diary-file "/Users/torgeirthoresen//Dropbox/org/diary.org")
  '(org-agenda-files
    (quote
     ("/Users/torgeirthoresen/Dropbox/org/tasks.org" "/Users/torgeirthoresen/Dropbox/org/prog.org" "/Users/torgeirthoresen/Dropbox/org/org-tricks.org" "/Users/torgeirthoresen/Dropbox/org/manager.org" "/Users/torgeirthoresen/Dropbox/org/journal.org" "/Users/torgeirthoresen/Dropbox/org/info.org" "/Users/torgeirthoresen/Dropbox/org/inbox.org" "/Users/torgeirthoresen/Dropbox/org/home.org" "/Users/torgeirthoresen/Dropbox/org/heart-of-clojure.org" "/Users/torgeirthoresen/Dropbox/org/gcal/delt.org" "/Users/torgeirthoresen/Dropbox/org/feeds.org" "/Users/torgeirthoresen/Dropbox/org/diary.org" "/Users/torgeirthoresen/Dropbox/org/bekk/bekk.org" "/Users/torgeirthoresen/Dropbox/org/bekk/datainn.org")))
  '(org-agenda-include-diary t)
- '(org-agenda-restore-windows-after-quit t)
- '(org-agenda-window-setup (quote only-window))
+ '(org-agenda-restore-windows-after-quit t t)
+ '(org-agenda-window-setup (quote only-window) t)
  '(org-ellipsis " > ")
  '(org-enforce-todo-dependencies t)
  '(org-tags-column -60)
@@ -74,7 +75,6 @@
               1
               (quote font-lock-variable-name-face))))))))
  '(tags-add-tables t)
- '(tramp-syntax (quote default) nil (tramp))
  '(vc-annotate-background "#181e26")
  '(vc-annotate-color-map
    (list

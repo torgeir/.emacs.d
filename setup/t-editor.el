@@ -883,13 +883,14 @@
           (artist-mode t))))
 
     (with-eval-after-load 'which-key
-      (t/declare-prefix "aa" "drawing"
+      (with-eval-after-load 'evil-leader
+        (t/declare-prefix "aa" "drawing"
                         "t" #'t/artist-mode
                         "p" 'artist-select-op-pen-line
                         "r" 'artist-select-op-rectangle
                         "c" 'artist-select-op-circle
                         "e" 'artist-select-op-ellipse
-                        "s" 'artist-select-op-square))))
+                        "s" 'artist-select-op-square)))))
 
 (t/use-package try)
 
