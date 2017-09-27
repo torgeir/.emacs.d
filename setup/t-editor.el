@@ -696,16 +696,6 @@
     (enable-smooth-scroll-for-function next-line)
     (enable-smooth-scroll-for-function isearch-repeat)))
 
-
-(t/use-package syslog-mode
-  :mode "\\.log$"
-  :init
-  (progn
-    (add-hook 'syslog-mode-hook
-              (lambda ()
-                (bind-key "f" 'syslog-filter-lines evil-normal-state-local-map)
-                (bind-key "F" 'hide-lines-show-all evil-normal-state-local-map)))))
-
 (t/use-package highlight-parentheses
   :only-standalone t
   :diminish highlight-parentheses-mode
