@@ -231,7 +231,7 @@
   :after company
   :only-standalone t
   :config
-  (t/add-company-backend-hook 'web-mode-hook 'company-web-html 'company-etags))
+  (t/add-company-backend-hook 'web-mode-hook 'company-web-html))
 
 (t/use-package company-restclient
   :after company
