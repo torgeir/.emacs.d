@@ -13,7 +13,7 @@
     (with-eval-after-load 'web-mode
       (bind-key "TAB" #'t/tab-properly web-mode-map)
       (defun t/jsx-hook ()
-        (when-let* ((is-jsx-file (string-match "\\.jsx$" (buffer-file-name))))
+        (when-let ((is-jsx-file (string-match "\\.jsx$" (buffer-file-name))))
           ;;(tern-mode)
           ;;(js2-minor-mode)
           ))

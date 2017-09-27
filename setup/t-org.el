@@ -455,10 +455,6 @@ Locally redefines org-agenda-files not to export all agenda files."
           org-alert-interval (* 1 60 60))
     (org-alert-enable)))
 
-(t/use-package org-mac-iCal
-  :after org
-  :commands (org-mac-iCal))
-
 (t/use-package weather-metno
   :after org
   :config
@@ -557,6 +553,7 @@ Locally redefines org-agenda-files not to export all agenda files."
     (elfeed-org)
     (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org"))))
 
+
 (t/use-package org-gcal
   :after org
   :init
@@ -579,7 +576,7 @@ Locally redefines org-agenda-files not to export all agenda files."
 ;; smartparens helpers
 (with-eval-after-load 'smartparens
   (sp-with-modes 'org-mode
-    
+
     (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
     (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :wrap "C-_")
     ;;(sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))

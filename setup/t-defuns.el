@@ -1014,7 +1014,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/grab-chrome-url ()
   "Grab the frontmost url out of chrome using `org-mac-grab-link'"
   (interactive)
-  (when-let* ((chrome-url (org-mac-chrome-get-frontmost-url))
+  (when-let ((chrome-url (org-mac-chrome-get-frontmost-url))
               (_ (string-match "\\\[\\\[\\(.*\\)\\\]\\\[" chrome-url)))
     (match-string 1 chrome-url)))
 

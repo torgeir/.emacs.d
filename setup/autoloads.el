@@ -3,21 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-cygwin" "t-cygwin.el" (0 0 0 0))
-;;; Generated autoloads from t-cygwin.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-cygwin" '("t-cygwin/")))
-
-;;;***
-
-;;;### (autoloads nil "t-debug" "t-debug.el" (0 0 0 0))
-;;; Generated autoloads from t-debug.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-debug" '("t-")))
-
-;;;***
-
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (0 0 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22987 51554 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -63,9 +49,17 @@ pretty prints json in selected region
 (autoload 't/build-tags "t-defuns" "\
 Build ctags file for projectile project, calls load-tags when done.
 
+Effectively runs this for the current git project, e.g:
+
+ctags -e -R --options=~/.emacs.d/ctags -f ~/.emacs.d/TAGS ~/.emacs.d/
+
+The same can be done for the current folder only to place a TAGS file in it:
+
+ctags -e -R .
+
 Remember to build emacs --without-ctags and use the one from `brew' instead,
 it's the one with the correct options needed to generate ctags that emacs 
-understands
+understands.
 
 \(fn)" t nil)
 
@@ -610,7 +604,7 @@ Echo the face at point.
 (autoload 't/font-lock-test-faces "t-defuns" "\
 Outputs test strings with all font lock faces to show colors.
 
-\(fn)" nil nil)
+\(fn)" t nil)
 
 (autoload 't/find-file-check-make-large-file-read-only-hook "t-defuns" "\
 If a file is over a given size, make the buffer read only.
@@ -747,131 +741,35 @@ Toggle relative line numbers on or off.
 
 \(fn)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '(#("*t-adjusted-font-size*" 0 22 (fontified nil)) #("t/" 0 2 (fontified nil)))))
+(autoload 't/highlight-logging "t-defuns" "\
+Add log highlighting to current major mode.
+
+\(fn)" t nil)
+
+(autoload 't/clone "t-defuns" "\
+Clone a github repo to `~/Code/<repo-name>'.
+
+\(fn REPO)" t nil)
+
+(autoload 't/add-company-backend-hook "t-defuns" "\
+Add list of grouped company backends for `mode-hook'.
+
+\(fn MODE-HOOK &rest BACKENDS)" nil nil)
 
 ;;;***
 
-;;;### (autoloads nil "t-editor" "t-editor.el" (0 0 0 0))
-;;; Generated autoloads from t-editor.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-editor" '(#("t-editor/config" 0 15 (fontified nil)))))
-
-;;;***
-
-;;;### (autoloads nil "t-evil" "t-evil.el" (0 0 0 0))
-;;; Generated autoloads from t-evil.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-evil" '(#("t-evil" 0 6 (fontified nil)))))
-
-;;;***
-
-;;;### (autoloads nil "t-keys" "t-keys.el" (0 0 0 0))
-;;; Generated autoloads from t-keys.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-keys" '("t-keys/")))
-
-;;;***
-
-;;;### (autoloads nil "t-lang-elisp" "t-lang-elisp.el" (0 0 0 0))
-;;; Generated autoloads from t-lang-elisp.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-lang-elisp" '("t-lang-elisp/config")))
-
-;;;***
-
-;;;### (autoloads nil "t-langs" "t-langs.el" (0 0 0 0))
-;;; Generated autoloads from t-langs.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-langs" '("t-langs")))
-
-;;;***
-
-;;;### (autoloads nil "t-load-theme" "t-load-theme.el" (0 0 0 0))
-;;; Generated autoloads from t-load-theme.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-load-theme" '(#("t-load-theme/config" 0 19 (fontified nil)))))
-
-;;;***
-
-;;;### (autoloads nil "t-mac" "t-mac.el" (0 0 0 0))
-;;; Generated autoloads from t-mac.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-mac" '("t-mac/")))
-
-;;;***
-
-;;;### (autoloads nil "t-macros" "t-macros.el" (0 0 0 0))
-;;; Generated autoloads from t-macros.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-macros" '("t/" "comment")))
-
-;;;***
-
-;;;### (autoloads nil "t-modeline" "t-modeline.el" (0 0 0 0))
-;;; Generated autoloads from t-modeline.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modeline" '(#("t-modeline/config" 0 17 (fontified nil)))))
-
-;;;***
-
-;;;### (autoloads nil "t-modules" "t-modules.el" (0 0 0 0))
-;;; Generated autoloads from t-modules.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modules" '(#("t-modules" 0 9 (fontified nil)))))
-
-;;;***
-
-;;;### (autoloads nil "t-org" "t-org.el" (0 0 0 0))
-;;; Generated autoloads from t-org.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '(#("t-org/" 0 6 (fontified nil)) #("lat-trh" 0 1 (fontified nil) 1 7 (fontified nil)) #("lon-trh" 0 1 (fontified nil) 1 7 (fontified nil)))))
-
-;;;***
-
-;;;### (autoloads nil "t-packaging" "t-packaging.el" (0 0 0 0))
-;;; Generated autoloads from t-packaging.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-packaging" '("use-package-verbose")))
-
-;;;***
-
-;;;### (autoloads nil "t-sane-defaults" "t-sane-defaults.el" (0 0
-;;;;;;  0 0))
-;;; Generated autoloads from t-sane-defaults.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-sane-defaults" '(#("t-sane-defaults/vars" 0 1 (fontified nil) 1 20 (fontified nil)) #("t/init-mouse" 0 1 (fontified nil) 1 12 (fontified nil)))))
-
-;;;***
-
-;;;### (autoloads nil "t-shell" "t-shell.el" (0 0 0 0))
-;;; Generated autoloads from t-shell.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '("t-shell/config")))
-
-;;;***
-
-;;;### (autoloads nil "t-typography" "t-typography.el" (0 0 0 0))
-;;; Generated autoloads from t-typography.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-typography" '("t-typography/config")))
-
-;;;***
-
-;;;### (autoloads nil "t-vc" "t-vc.el" (0 0 0 0))
-;;; Generated autoloads from t-vc.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-vc" '(#("t-vc/config" 0 11 (fontified nil)))))
-
-;;;***
-
-;;;### (autoloads nil nil ("t-custom.el" "t-lang-arduino.el" "t-lang-clojure.el"
-;;;;;;  "t-lang-css.el" "t-lang-docker.el" "t-lang-elm.el" "t-lang-flow.el"
-;;;;;;  "t-lang-flycheck.el" "t-lang-fsharp.el" "t-lang-gitconfig.el"
-;;;;;;  "t-lang-gitignore.el" "t-lang-haskell.el" "t-lang-html.el"
-;;;;;;  "t-lang-js.el" "t-lang-json.el" "t-lang-markdown.el" "t-lang-pug.el"
-;;;;;;  "t-lang-remark.el" "t-lang-scala.el" "t-lang-sh.el" "t-lang-web.el"
-;;;;;;  "t-lang-yaml.el" "t-local.el" "t-powerline.el" "t-which-key.el")
-;;;;;;  (0 0 0 0))
+;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
+;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-lang-arduino.el"
+;;;;;;  "t-lang-clojure.el" "t-lang-css.el" "t-lang-docker.el" "t-lang-elisp.el"
+;;;;;;  "t-lang-elm.el" "t-lang-flow.el" "t-lang-flycheck.el" "t-lang-fsharp.el"
+;;;;;;  "t-lang-gitconfig.el" "t-lang-gitignore.el" "t-lang-haskell.el"
+;;;;;;  "t-lang-html.el" "t-lang-js.el" "t-lang-json.el" "t-lang-markdown.el"
+;;;;;;  "t-lang-pug.el" "t-lang-remark.el" "t-lang-scala.el" "t-lang-sh.el"
+;;;;;;  "t-lang-terraform.el" "t-lang-web.el" "t-lang-yaml.el" "t-langs.el"
+;;;;;;  "t-load-theme.el" "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el"
+;;;;;;  "t-modules.el" "t-org.el" "t-packaging.el" "t-powerline.el"
+;;;;;;  "t-sane-defaults.el" "t-shell.el" "t-typography.el" "t-vc.el"
+;;;;;;  "t-which-key.el") (22986 43629 0 0))
 
 ;;;***
 

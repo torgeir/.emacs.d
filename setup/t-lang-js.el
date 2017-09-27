@@ -41,7 +41,7 @@
   (progn
     (setq prettier-js-args nil)
     (defun t/prettier-jsx-hook ()
-      (when-let* ((is-jsx-mode (string-match "\\.jsx$" (buffer-file-name))))
+      (when-let ((is-jsx-mode (string-match "\\.jsx$" (buffer-file-name))))
         (prettier-js-mode)))
     ;;(add-hook 'js2-mode-hook 'prettier-js-mode)
     ;;(add-hook 'web-mode-hook #'t/prettier-jsx-hook)
