@@ -34,7 +34,7 @@
     "Reset font size after loading theme"
     (t/reset-font-size))
 
-  (add-hook 'after-init-hook (lambda () (t/load-theme)))
+  (t/add-hook 'after-init-hook 't/load-theme)
 
   (if has-gui
       (t/load-theme)

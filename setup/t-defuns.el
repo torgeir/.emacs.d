@@ -719,7 +719,7 @@ Including indent-buffer, which should not be called automatically on save."
 (defun server-remove-kill-buffer-hook ()
   ;; remove other clients-has-the-file-open-prompt
   (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
-(add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
+(t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
 
 (defadvice yank (around t/advice-indent-paste-before activate)
   "Advice to intent text after pasting with `yank'.
@@ -1425,8 +1425,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (lexical-let* ((backends backends)) ; lambda makes closure
     (add-hook mode-hook
               (lambda nil
-                (make-local-variable 'company-backends)
-                (add-to-list 'company-backends backends)))))
+                      (make-local-variable 'company-backends)
+                      (add-to-list 'company-backends backends)))))
 
 
 (provide 't-defuns)

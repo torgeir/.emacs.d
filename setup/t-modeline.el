@@ -1,7 +1,7 @@
 (defun t-modeline/config ()
 
   (defun t/init-modeline () (+doom-modeline|init))
-  (add-hook 'after-init-hook #'t/init-modeline)
+  (t/add-hook 'after-init-hook #'t/init-modeline)
 
   (defvar mode-line-cleaner-alist
     `(;;(eldoc-mode . "")
@@ -24,6 +24,6 @@
       (tern-mode . "tern"))
     "Alist for `t/clean-mode-line'. Modeline replacements")
 
-  (add-hook 'after-change-major-mode-hook 't/clean-mode-line))
+  (t/add-hook 'after-change-major-mode-hook 't/clean-mode-line))
 
 (provide 't-modeline)

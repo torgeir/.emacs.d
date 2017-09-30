@@ -13,18 +13,17 @@
     (with-eval-after-load 'web-mode
       (bind-key "TAB" #'t/tab-properly web-mode-map)
       (defun t/jsx-hook ()
-        (when-let ((is-jsx-file (string-match "\\.jsx$" (buffer-file-name))))
-          ;;(tern-mode)
-          ;;(js2-minor-mode)
-          ))
-      (add-hook 'web-mode-hook #'t/jsx-hook)
-      (add-hook 'web-mode-hook ; http://web-mode.org/
-                (lambda ()
-                  (add-to-list 'company-dabbrev-code-modes 'web-mode)
-                  (if (equal web-mode-content-type "javascript")
-                      (web-mode-set-content-type "jsx"))
-                  (dolist (mode '(js-mode html-mode css-mode))
-                    (yas-activate-extra-mode mode)))))))
+        (t/when-ext "jsx"
+          (tern-mode)
+          (js2-minor-mode)))
+      (t/add-company-backend-hook 'web-mode-hook 'company-web-html 'company-tern)
+      (t/add-hook 'web-mode-hook #'t/jsx-hook)
+      (t/add-hook-defun 'web-mode-hook t/hook-web ; http://web-mode.org/
+                        (add-to-list 'company-dabbrev-code-modes 'web-mode)
+                        (if (equal web-mode-content-type "javascript")
+                            (web-mode-set-content-type "jsx"))
+                        (dolist (mode '(js-mode html-mode css-mode))
+                          (yas-activate-extra-mode mode))))))
 
 (t/use-package web-beautify
   :only-standalone t

@@ -11,8 +11,7 @@
                   (append flycheck-disabled-checkers '(javascript-jshint)))
     (setq-default flycheck-disabled-checkers
                   (append flycheck-disabled-checkers '(json-jsonlist)))
-    (add-hook 'html-mode-hook 'flycheck-mode)
-    (add-hook 'web-mode-hook 'flycheck-mode)))
+    (t/add-hook '(html-mode-hook web-mode-hook) 'flycheck-mode)))
 
 (t/use-package flycheck-clojure
   :pin melpa-stable
@@ -20,7 +19,7 @@
   :init
   (progn
     (with-eval-after-load 'cider
-      (add-hook 'cider-mode-hook 'flycheck-mode)))
+      (t/add-hook 'cider-mode-hook 'flycheck-mode)))
   :config
   (progn
     (add-to-list 'flycheck-checkers 'clojure-cider-eastwood)))

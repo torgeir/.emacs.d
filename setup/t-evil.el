@@ -8,7 +8,7 @@
     (setq anzu-cons-mode-line-p nil
           anzu-minimum-input-length 1
           anzu-search-threshold 100)
-    (add-hook '+evil-esc-hook 'anzu--reset-status)))
+    (t/add-hook '+evil-esc-hook 'anzu--reset-status)))
 
 (t/use-package evil-escape
   :only-standalone t
@@ -146,19 +146,17 @@
                                  diff-mode)
       "Major modes that should trigger evil emacs state when changed to.")
     (with-eval-after-load 'evil
-      (add-hook 'after-change-major-mode-hook
-                (lambda ()
-                  (when (member major-mode t-evil-major-modes)
-                    (evil-emacs-state))))))
+      (t/add-hook-defun 'after-change-major-mode-hook t/hook-major-mode
+                        (when (member major-mode t-evil-major-modes)
+                          (evil-emacs-state))))
 
   (setq evil-default-state 'normal
         evil-insert-skip-empty-lines t
         evil-search-module 'evil-search)
-  (add-hook '+evil-esc-hook 'evil-ex-nohighlight))
+  (t/add-hook '+evil-esc-hook 'evil-ex-nohighlight)))
 
 (defun t-evil/funcs ()
-  (add-hook 'git-commit-mode-hook 'evil-insert-state)
-  (add-hook 'org-capture-mode-hook 'evil-insert-state)
+  (t/add-hook '(git-commit-mode-hook org-capture-mode-hook) 'evil-insert-state)
 
   (defun t/init-evil-cursors (&rest _)
     "Change cursors after theme colors have loaded."

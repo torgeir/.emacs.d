@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22987 51554 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22992 1045 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -769,7 +769,7 @@ Add list of grouped company backends for `mode-hook'.
 ;;;;;;  "t-load-theme.el" "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el"
 ;;;;;;  "t-modules.el" "t-org.el" "t-packaging.el" "t-powerline.el"
 ;;;;;;  "t-sane-defaults.el" "t-shell.el" "t-typography.el" "t-vc.el"
-;;;;;;  "t-which-key.el") (22986 43629 0 0))
+;;;;;;  "t-which-key.el") (22992 750 0 0))
 
 ;;;***
 

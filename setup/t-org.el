@@ -118,9 +118,10 @@
     (progn
       ;; fix completion dissapearing
 
-      (with-eval-after-load 'company (add-to-list 'company-backends 'company-capf))
-      (defun add-pcomplete-to-capf () (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-      (add-hook 'org-mode-hook #'add-pcomplete-to-capf))
+      (with-eval-after-load 'company
+        (t/add-company-backend-hook 'org-mode-hook 'company-capf))
+      (defun add-pcomplete-to-capf () (t/add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+      (t/add-hook 'org-mode-hook #'add-pcomplete-to-capf))
 
     (progn
       ;; modules
@@ -169,12 +170,11 @@
          (dot . t)
          (restclient . t)))
 
-      (add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
+      (t/add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
 
-      (add-hook 'org-mode-hook
-                (lambda ()
-                  (org-display-inline-images t t)
-                  (visual-line-mode 1))))
+      (t/add-hook-defun 'org-mode-hook t/hook-org
+                        (org-display-inline-images t t)
+                        (visual-line-mode 1)))
 
     (progn
       ;; agenda
@@ -266,7 +266,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
             (org-set-tags nil t)
             (end-of-line))))
 
-      (add-hook 'before-save-hook #'t/org-mode-before-save)
+      (t/add-hook 'before-save-hook #'t/org-mode-before-save)
 
       (progn
         ;; reselect visual when moving multiple lines
@@ -321,7 +321,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
           (when (eq major-mode 'org-mode)
             (setq t-org-file-save-since-last-idle t)))
 
-        (add-hook 'before-save-hook #'t/org-mode-before-save-since-last-idle)
+        (t/add-hook 'before-save-hook #'t/org-mode-before-save-since-last-idle)
 
         (defun t/org-idle-timer ()
           "Timer to run when idle for syncing org."
@@ -404,13 +404,12 @@ Locally redefines org-agenda-files not to export all agenda files."
           (t/call-rebinding-org-blank-behaviour 'org-insert-todo-heading-respect-content)
           (evil-cp-append 1))
 
-        (add-hook 'org-mode-hook
-                  (lambda ()
-                    (bind-key "C-w" 'org-refile org-mode-map)
-                    (bind-key "M-<return>" 't/org-meta-return-dwim org-mode-map)
-                    (bind-key "M-S-<return>" 't/org-insert-todo-heading-dwim org-mode-map)
-                    (bind-key "C-<return>" 't/org-insert-heading-respect-content-dwim org-mode-map)
-                    (bind-key "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim org-mode-map))))
+        (t/add-hook-defun 'org-mode-hook t/hook-org-meta
+                          (bind-key "C-w" 'org-refile org-mode-map)
+                          (bind-key "M-<return>" 't/org-meta-return-dwim org-mode-map)
+                          (bind-key "M-S-<return>" 't/org-insert-todo-heading-dwim org-mode-map)
+                          (bind-key "C-<return>" 't/org-insert-heading-respect-content-dwim org-mode-map)
+                          (bind-key "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim org-mode-map)))
 
       (defun yas/org-very-safe-expand ()
         (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
@@ -426,7 +425,7 @@ Locally redefines org-agenda-files not to export all agenda files."
       ;; See https://github.com/eschulte/emacs24-starter-kit/issues/80.
       (setq org-src-tab-acts-natively nil)
 
-      (add-hook 'org-mode-hook #'yas/org-setup))
+      (t/add-hook 'org-mode-hook #'yas/org-setup))
 
     (defun t/reset-org-font-sizes ()
       "Reset org font headers to same height font."
@@ -437,11 +436,11 @@ Locally redefines org-agenda-files not to export all agenda files."
                       org-level-5))
         (set-face-attribute face nil :weight 'semi-bold :height 1.0)))
 
-    (add-hook 'org-mode-hook 't/reset-org-font-sizes)
+    (t/add-hook 'org-mode-hook 't/reset-org-font-sizes)
 
     (defun t/remove-org-mode-stars ()
       (set-face-attribute 'org-hide nil :foreground (face-attribute 'default :background)))
-    (add-hook 'org-mode-hook #'t/remove-org-mode-stars)
+    (t/add-hook 'org-mode-hook #'t/remove-org-mode-stars)
     ))
 
 (t/use-package ob-restclient
@@ -534,11 +533,9 @@ Locally redefines org-agenda-files not to export all agenda files."
   :config
   (progn
     (bind-key "SPC" 'elfeed-search-show-entry elfeed-search-mode-map)
-    (defun t/elfeed-hook ()
-      (interactive)
-      (visual-line-mode)
-      (set-window-margins nil 5 5))
-    (add-hook 'elfeed-show-mode-hook #'t/elfeed-hook)))
+    (t/add-hook-defun 'elfeed-show-mode-hook t/hook-elfeed
+                      (visual-line-mode)
+                      (set-window-margins nil 5 5))))
 
 (t/use-package elfeed-goodies
   :after elfeed

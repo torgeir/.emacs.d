@@ -15,68 +15,66 @@
     (defadvice nrepl-load-current-buffer (before save-first activate)
       (save-buffer))))
 
-(defun t/init-clj-refactor-in-mode (mode)
-  (lambda ()
-    (clj-refactor-mode 1)
-    (dolist (mapping '(("maps" . "outpace.util.maps")
-                       ("seqs" . "outpace.util.seqs")
-                       ("string" . "clojure.string")
-                       ("reflect" . "clojure.reflect")
-                       ("edn" . "clojure.edn")
-                       ("time" . "clj-time.core")))
-      (add-to-list 'cljr-magic-require-namespaces mapping t))
-    (t/declare-prefix-for-mode mode
-                               "mr" "Refactor"
-                               ;; https://github.com/clojure-emacs/clj-refactor.el/wiki
-                               "?" 'cljr-describe-refactoring
-
-                               "ar" 'cljr-add-require-to-ns
-                               "ap" 'cljr-add-project-dependency
-                               "am" 'cljr-add-missing-libspec
-
-                               "cc" 'cljr-cycle-coll
-                               "ct" 'cljr-cycle-thread
-                               "ci" 'cljr-cycle-if
-
-                               "dk" 'cljr-destructure-keys
-
-                               "ec" 'cljr-extract-constant
-                               "ed" 'cljr-extract-def
-                               "el" 'cljr-expand-let
-                               "ef" 'cljr-extract-function
-
-                               "is" 'cljr-inline-symbol
-                               "in" 'clojure-insert-ns-form
-                               "un" 'clojure-update-ns
-                               "il" 'cljr-introduce-let
-
-                               "rr" 'cljr-remove-unused-requires
-                               "rl" 'cljr-remove-let
-                               "rs" 'cljr-rename-symbol
-                               "ru" 'cljr-replace-use
-
-                               "sn" 'cljr-sort-ns
-                               "sp" 'cljr-sort-project-dependencies
-                               "sr" 'cljr-stop-referring
-
-                               "th" 'cljr-thread
-                               "tf" 'cljr-thread-first-all
-                               "tl" 'cljr-thread-last-all
-
-                               "ua" 'cljr-unwind-all
-                               "uw" 'cljr-unwind
-
-                               "ml" 'cljr-move-to-let
-                               )))
-
-
 (t/use-package clj-refactor
   :pin melpa-stable
   :commands (clj-refactor-mode)
   :init
-  (with-eval-after-load 'clojure-mode
-    (add-hook 'clojurescript-mode-hook (lambda () (t/init-clj-refactor-in-mode 'clojurescript-mode)))
-    (add-hook 'clojure-mode-hook (lambda () (t/init-clj-refactor-in-mode 'clojure-mode)))))
+  (progn
+    (t/add-hook-defun 'clojure-mode-hook t/hook-clojure
+                      (clj-refactor-mode 1)
+                      (t/when-ext "cljs" (clojurescript-mode))
+                      (dolist (mapping '(("maps" . "outpace.util.maps")
+                                         ("seqs" . "outpace.util.seqs")
+                                         ("string" . "clojure.string")
+                                         ("reflect" . "clojure.reflect")
+                                         ("edn" . "clojure.edn")
+                                         ("time" . "clj-time.core")))
+                        (add-to-list 'cljr-magic-require-namespaces mapping t))
+
+                      (t/declare-prefix-for-mode 'clojure-mode
+                                                 "mr" "Refactor"
+                                                 ;; https://github.com/clojure-emacs/clj-refactor.el/wiki
+                                                 "?" 'cljr-describe-refactoring
+
+                                                 "ar" 'cljr-add-require-to-ns
+                                                 "ap" 'cljr-add-project-dependency
+                                                 "am" 'cljr-add-missing-libspec
+
+                                                 "cc" 'cljr-cycle-coll
+                                                 "ct" 'cljr-cycle-thread
+                                                 "ci" 'cljr-cycle-if
+
+                                                 "dk" 'cljr-destructure-keys
+
+                                                 "ec" 'cljr-extract-constant
+                                                 "ed" 'cljr-extract-def
+                                                 "el" 'cljr-expand-let
+                                                 "ef" 'cljr-extract-function
+
+                                                 "is" 'cljr-inline-symbol
+                                                 "in" 'clojure-insert-ns-form
+                                                 "un" 'clojure-update-ns
+                                                 "il" 'cljr-introduce-let
+
+                                                 "rr" 'cljr-remove-unused-requires
+                                                 "rl" 'cljr-remove-let
+                                                 "rs" 'cljr-rename-symbol
+                                                 "ru" 'cljr-replace-use
+
+                                                 "sn" 'cljr-sort-ns
+                                                 "sp" 'cljr-sort-project-dependencies
+                                                 "sr" 'cljr-stop-referring
+
+                                                 "th" 'cljr-thread
+                                                 "tf" 'cljr-thread-first-all
+                                                 "tl" 'cljr-thread-last-all
+
+                                                 "ua" 'cljr-unwind-all
+                                                 "uw" 'cljr-unwind
+
+                                                 "ml" 'cljr-move-to-let
+                                                 ))))
+
 
 (t/use-package cljr-helm)
 
@@ -98,8 +96,7 @@
 
     (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
 
-    (t/add-to-list 't-evil-major-modes 'cider-stacktrace-mode)
-    (t/add-to-list 't-evil-major-modes 'cider-docview-mode)
+    (t/add-to-list 't-evil-major-modes '(cider-stacktrace-mode cider-docview-mode))
 
     (defun t/cider-insert-last-sexp-in-repl ()
       (interactive)
@@ -125,20 +122,20 @@
     (t/init-clj-mode-keys-in-mode 'clojurescript-mode)
 
     ;; minibuffer doc in repl
-    (add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
-    (add-hook 'cider-repl-mode-hook 'paredit-mode)
-    (add-hook 'cider--debug-mode-hook (lambda () (interactive) (evil-local-mode 0)))
-    (add-hook 'cider-popup-buffer-mode-hook 'visual-line-mode)
+    (t/add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
+    (t/add-hook 'cider-repl-mode-hook 'paredit-mode)
+    (t/add-hook-defun 'cider--debug-mode-hook t/hook-cider-debug (evil-emacs-state))
+    (t/add-hook 'cider-popup-buffer-mode-hook 'visual-line-mode)
 
     ;; company
     (with-eval-after-load 'company
-      (add-hook 'cider-repl-mode-hook #'company-mode)
-      (add-hook 'cider-mode-hook #'company-mode))
+      (t/add-hook '(cider-repl-mode-hook cider-mode-hook) 'company-mode))
 
     ;; match camel-case tokens
     (add-hook 'clojure-mode-hook 'subword-mode)
     (add-hook 'clojure-mode-hook 'enable-paredit-mode)
     (add-hook 'clojurescript-mode-hook 'subword-mode)
-    (add-hook 'clojurescript-mode-hook 'enable-paredit-mode)))
+    (add-hook 'clojurescript-mode-hook 'enable-paredit-mode)
+    (t/add-hook 'clojure-mode-hook '(subword-mode enable-paredit-mode))))
 
 (provide 't-lang-clojure)

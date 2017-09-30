@@ -33,7 +33,7 @@
 (defun nxml-eldoc-enable ()
   "Turn on nxml-eldoc in buffers where `nxml-mode' is active."
   (interactive)
-  (add-hook 'nxml-mode-hook #'turn-on-nxml-eldoc))
+  (t/add-hook 'nxml-mode-hook #'turn-on-nxml-eldoc))
 
 ;;;###autoload
 (defun nxml-eldoc-disable ()

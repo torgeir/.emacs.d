@@ -28,13 +28,13 @@
     :ensure nil
     :load-path "site-lisp/nxml-eldoc/"
     :init
-    (add-hook 'nxml-mode-hook 'turn-on-nxml-eldoc))
+    (t/add-hook 'nxml-mode-hook 'turn-on-nxml-eldoc))
 
   (t/use-package json-path-eldoc
     :ensure nil
     :load-path "site-lisp/json-path-eldoc/"
     :init
-    (add-hook 'json-mode-hook 'turn-on-json-path-eldoc))
+    (t/add-hook 'json-mode-hook 'turn-on-json-path-eldoc))
   
   (t/use-package html2text
     ;; needed for helm-google
@@ -48,9 +48,8 @@
     :ensure nil
     :init
     (progn
-      (add-hook 'sgml-mode-hook
-                (lambda ()
-                  (set (make-local-variable 'sgml-basic-offset) *t-indent-xml*)))))
+      (t/add-hook-defun 'sgml-mode-hook t/hook-sgml
+                        (set (make-local-variable 'sgml-basic-offset) *t-indent-xml*))))
 
   (t/use-package nxml-mode
     :ensure nil

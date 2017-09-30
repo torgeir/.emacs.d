@@ -1,3 +1,52 @@
+(defmacro t/when-ext (ext &rest body)
+  "Run `body' when buffer's file has extension `ext'."
+  (declare (indent 1))
+  `(let ((ext-re (concat "\\." ,ext "$")))
+     (when (string-match ext-re (buffer-file-name))
+       ,@body)))
+
+(defun t/ensure-list (i-or-is)
+  "Ensure `i-or-is' is a list."
+  (if (and (listp i-or-is)
+           (not (functionp i-or-is)) ; lambda
+           )
+      i-or-is
+    (list i-or-is)))
+
+(defmacro t/add-hook (hook-or-hooks fn-or-fns &optional append local)
+  "Add one or more hook fns."
+  `(let ((hooks (t/ensure-list ,hook-or-hooks))
+         (fns (t/ensure-list ,fn-or-fns)))
+     (dolist (hook hooks)
+       (dolist (fn fns)
+         (add-hook hook fn ,append ,local)))))
+
+(defmacro t/remove-hook (hook-or-hooks fn-or-fns)
+  "Remove one or more hook fns"
+  `(let ((hooks (t/ensure-list ,hook-or-hooks))
+         (fns (t/ensure-list ,fn-or-fns)))
+     (dolist (hook hooks)
+       (dolist (fn fns)
+         (remove-hook hook fn)))))
+
+(defmacro t/add-hook-setq (hook-or-hooks var_ val_ &rest vars_)
+  `(t/add-hook ,hook-or-hooks
+               (lambda nil
+                 (let ((var (quote ,var_))
+                       (val (quote ,val_))
+                       (vars (quote ,vars_))
+                       (bindings '(setq)))
+                   (while var
+                     (setq bindings (cons val (cons var bindings))
+                           var (and vars (pop vars))
+                           val (and vars (pop vars))))
+                   (eval (nreverse (copy-list bindings)))))))
+
+(defmacro t/add-hook-defun (hook-or-hooks fn &rest body)
+  `(progn
+     (defun ,fn () (interactive) ,@body)
+     (t/add-hook ,hook-or-hooks (quote ,fn))))
+
 (defmacro t/macro-helm-ag-insert (thing fn)
   `(lambda ()
      (interactive)

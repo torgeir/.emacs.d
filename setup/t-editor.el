@@ -33,10 +33,9 @@
   :defer t
   :ensure nil
   :init
-  (add-hook 'eshell-mode-hook
-            (lambda ()
-              (setq tramp-default-method "ssh"
-                    tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))))
+  (t/add-hook-setq 'eshell-mode-hook
+                   tramp-default-method "ssh"
+                   tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
 
 (t/use-package dired
   :ensure nil
@@ -67,8 +66,7 @@
 (t/use-package all-the-icons-dired
   :after dired
   :init
-  (progn
-    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)))
+  (t/add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 ;; less verbose dired
 (t/use-package dired-details
@@ -79,17 +77,13 @@
 (t/use-package rainbow-mode
   :diminish rainbow-mode
   :commands rainbow-mode
-  :config
-  (progn
-    (dolist (mode-hook '(prog-mode-hook css-mode-hook html-mode-hook))
-      (add-hook mode-hook #'rainbow-mode))))
+  :init
+  (t/add-hook '(prog-mode-hook css-mode-hook html-mode-hook) 'rainbow-mode))
 
 (t/use-package rainbow-delimiters
   :commands rainbow-delimiters-mode
-  :only-standalone t
   :init
-  (progn
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)))
+  (t/add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (t/use-package neotree
   :only-standalone t
@@ -106,7 +100,7 @@
           neo-show-updir-line nil
           neo-show-hidden-files t
           neo-auto-indent-point t)
-    (add-hook 'neotree-mode-hook 'hl-line-mode)
+    (t/add-hook 'neotree-mode-hook 'hl-line-mode)
     (when is-mac (setq neo-theme 'icons)))
 
   :config
@@ -205,11 +199,11 @@
                               company-dabbrev
                               company-dabbrev)))
     (with-eval-after-load 'company
-      (add-hook 'prog-mode-hook 'company-mode)))
+      (t/add-hook 'prog-mode-hook 'company-mode)))
   :config
   (progn
     (global-company-mode)
-    (add-hook '+evil-esc-hook 'company-abort)
+    (t/add-hook '+evil-esc-hook 'company-abort)
     (bind-key "TAB" #'company-complete-selection company-active-map)
     (bind-key "C-w" 'evil-delete-backward-word company-active-map)
     (bind-key "C-l" 'evil-delete-backward-word company-active-map)
@@ -229,9 +223,7 @@
 
 (t/use-package company-web
   :after company
-  :only-standalone t
-  :config
-  (t/add-company-backend-hook 'web-mode-hook 'company-web-html))
+  :only-standalone t)
 
 (t/use-package company-restclient
   :after company
@@ -265,19 +257,15 @@
   :config
   (progn
     (advice-add 'tern-find-definition :before 'xref-push-marker-stack) ; make pop-tag-mark work with tern
-    (add-hook 'tern-mode-hook
-              (lambda ()
-                (bind-key "M-." 'tern-find-definition tern-mode-keymap)
-                (bind-key "M-." 'tern-find-definition evil-normal-state-local-map)
-                (bind-key "M-," 'pop-tag-mark tern-mode-keymap)
-                (bind-key "M-," 'pop-tag-mark evil-normal-state-local-map)
-                (bind-key "C-M-." 'helm-etags-select tern-mode-keymap)
-                (bind-key "C-M-." 'helm-etags-select evil-normal-state-local-map)
-                ))
+    (t/add-hook-defun 'tern-mode-hook t/hook-tern
+                      (bind-key "M-." 'tern-find-definition tern-mode-keymap)
+                      (bind-key "M-." 'tern-find-definition evil-normal-state-local-map)
+                      (bind-key "M-," 'pop-tag-mark tern-mode-keymap)
+                      (bind-key "M-," 'pop-tag-mark evil-normal-state-local-map)
+                      (bind-key "C-M-." 'helm-etags-select tern-mode-keymap)
+                      (bind-key "C-M-." 'helm-etags-select evil-normal-state-local-map))
     (with-eval-after-load 'js2-mode
-      (t/add-company-backend-hook 'js2-mode-hook
-                                  'company-tern
-                                  'company-etags))
+      (t/add-company-backend-hook 'js2-mode-hook 'company-tern 'company-yasnippet))
     (setq tern-command (append tern-command '("--no-port-file")))))
 
 (t/use-package etags-select
@@ -287,12 +275,11 @@
           etags-select-go-if-unambiguous t
           ;; fix helm-etags-select for huge regexps
           helm-fuzzy-matching-highlight-fn (lambda (file) file))
-    (add-hook 'etags-select-mode-hook
-              (lambda ()
-                (bind-key "j" 'etags-select-next-tag etags-select-mode-map)
-                (bind-key "k" 'etags-select-previous-tag etags-select-mode-map)
-                (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)
-                (bind-key "M-RET" 'etags-select-goto-tag-other-window etags-select-mode-map)))))
+    (t/add-hook-defun 'etags-select-mode-hook t/hook-etags-select
+                      (bind-key "j" 'etags-select-next-tag etags-select-mode-map)
+                      (bind-key "k" 'etags-select-previous-tag etags-select-mode-map)
+                      (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)
+                      (bind-key "M-RET" 'etags-select-goto-tag-other-window etags-select-mode-map))))
 
 (t/use-package etags-table
   :init
@@ -373,34 +360,34 @@
     (with-eval-after-load 'clojure-mode
       (define-key clojure-mode-map ";" 'sp-comment))
 
-    (dolist (hook '(js2-mode-hook
-                    js-mode-hook
-                    java-mode
-                    text-mode-hook
-                    restclient-mode-hook
-                    ruby-mode
-                    mark-down-mode))
-      (add-hook hook 'turn-on-smartparens-mode))
+    (t/add-hook '(web-mode-hook
+                  js2-mode-hook
+                  js-mode-hook
+                  java-mode
+                  text-mode-hook
+                  restclient-mode-hook
+                  ruby-mode
+                  mark-down-mode)
+                'turn-on-smartparens-mode)
 
     (with-eval-after-load 'js2-mode
       (bind-key "M-<up>" 'sp-splice-sexp-killing-backward js2-mode-map)
       (bind-key "M-<down>" 'sp-splice-sexp-killing-forward js2-mode-map))
 
     ;; enable in minibuffer
-    (add-hook 'eval-expression-minibuffer-setup-hook #'turn-on-smartparens-mode)
-    (add-hook 'eval-expression-minibuffer-setup-hook #'evil-cleverparens-mode)
+    (t/add-hook 'eval-expression-minibuffer-setup-hook #'(turn-on-smartparens-mode evil-cleverparens-mode))
 
     (defun t/enable-movement-for-lisp-mode (m)
       (let* ((mode (symbol-name m))
              (mode-hook (intern (concat mode "-hook")))
              (mode-map (intern (concat mode "-map"))))
-        (add-hook mode-hook 'turn-on-smartparens-mode)
-        (add-hook mode-hook 'evil-cleverparens-mode)
+        (t/add-hook mode-hook '(turn-on-smartparens-mode evil-cleverparens-mode))
 
         ;; add M-<up/down> in lisp modes, not to steal them in org-mode
-        (eval `(add-hook mode-hook (lambda ()
-                                     (bind-key "M-<up>" 'sp-splice-sexp-killing-backward ,mode-map)
-                                     (bind-key "M-<down>" 'sp-splice-sexp-killing-forward ,mode-map))))
+        (eval `(add-hook mode-hook
+                         (lambda nil
+                           (bind-key "M-<up>" 'sp-splice-sexp-killing-backward ,mode-map)
+                           (bind-key "M-<down>" 'sp-splice-sexp-killing-forward ,mode-map))))
         (eval
          `(progn
             (bind-key "M-<left>" #'t/backward-down-sexp ,mode-map)
@@ -419,16 +406,15 @@
     (with-eval-after-load 'clojure-mode (t/enable-movement-for-lisp-mode 'clojure-mode))
     (with-eval-after-load 'ielm-mode (t/enable-movement-for-lisp-mode 'ielm-mode))
     (with-eval-after-load 'scheme-mode (t/enable-movement-for-lisp-mode 'scheme-mode))
-    (add-hook 'minibuffer-inactive-mode-hook (lambda ()
-                                               (progn
-                                                 (bind-key "M-<up>" 'sp-splice-sexp-killing-backward minibuffer-local-map)
-                                                 (bind-key "M-<down>" 'sp-splice-sexp-killing-forward minibuffer-local-map)
-                                                 (bind-key "M-<left>" #'t/backward-down-sexp minibuffer-local-map)
-                                                 (bind-key "M-<right>" #'t/forward-down-sexp minibuffer-local-map)
-                                                 (bind-key "M-S-<left>" #'t/backward-sexp minibuffer-local-map)
-                                                 (bind-key "M-S-<right>" #'t/forward-sexp minibuffer-local-map)
-                                                 (bind-key "C-<right>" #'sp-forward-slurp-sexp minibuffer-local-map)
-                                                 (bind-key "C-<left>" #'sp-forward-barf-sexp minibuffer-local-map))))
+    (t/add-hook-defun 'minibuffer-inactive-mode-hook t/hook-minibuffer
+                      (bind-key "M-<up>" 'sp-splice-sexp-killing-backward minibuffer-local-map)
+                      (bind-key "M-<down>" 'sp-splice-sexp-killing-forward minibuffer-local-map)
+                      (bind-key "M-<left>" #'t/backward-down-sexp minibuffer-local-map)
+                      (bind-key "M-<right>" #'t/forward-down-sexp minibuffer-local-map)
+                      (bind-key "M-S-<left>" #'t/backward-sexp minibuffer-local-map)
+                      (bind-key "M-S-<right>" #'t/forward-sexp minibuffer-local-map)
+                      (bind-key "C-<right>" #'sp-forward-slurp-sexp minibuffer-local-map)
+                      (bind-key "C-<left>" #'sp-forward-barf-sexp minibuffer-local-map))
 
     (sp-with-modes 'emacs-lisp-mode
       (sp-local-pair "`" "'" :when '(sp-in-docstring-p)))
@@ -516,10 +502,10 @@
       "Hide the cursor in helm buffers."
       (with-helm-buffer
         (setq cursor-in-non-selected-windows nil)))
-    (add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
+    (t/add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
     (set-face-attribute 'helm-source-header nil :height 1)
     (with-eval-after-load 'neotree
-      (add-hook 'helm-before-initialize-hook 'neotree-hide))))
+      (t/add-hook 'helm-before-initialize-hook 'neotree-hide))))
 
 (t/use-package helm-ag
   :after helm
@@ -617,16 +603,15 @@
         (eval-buffer)
         (t/reload-autoloads)
         (message "Reloaded autoloads.")))
-    (add-hook 'after-save-hook #'t/reload-autoloads-on-defuns-save)
+    (t/add-hook 'after-save-hook #'t/reload-autoloads-on-defuns-save)
 
     (defun t/reload-snippets-on-save ()
       "Reload yasnippet files on save."
-      (when (string-match "\\.yasnippet$" buffer-file-name)
-        (yas-reload-all)))
-    (add-hook 'after-save-hook #'t/reload-snippets-on-save)
+      (t/when-ext "yasnippet" (yas-reload-all)))
+    (t/add-hook 'after-save-hook #'t/reload-snippets-on-save)
 
     ;; make fundamental snippets global snippets
-    (add-hook 'yas-minor-mode-hook (lambda () (yas-activate-extra-mode 'fundamental-mode)))
+    (t/add-hook-defun 'yas-minor-mode-hook t/hook-yas (yas-activate-extra-mode 'fundamental-mode))
 
     ;; jump to end of snippet definition
     (bind-key "<return>" 'yas-exit-all-snippets yas-keymap)
@@ -703,7 +688,7 @@
   :init
   (progn
     (setq hl-paren-colors '("DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink"))
-    (add-hook 'prog-mode-hook 'highlight-parentheses-mode))
+    (t/add-hook 'prog-mode-hook 'highlight-parentheses-mode))
   :config
   (progn
     (set-face-foreground 'show-paren-match "Green")))
@@ -712,7 +697,7 @@
   :commands hes-mode
   :init
   (progn
-    (add-hook 'prog-mode-hook 'hes-mode))
+    (t/add-hook 'prog-mode-hook 'hes-mode))
   :config
   (progn
     (put 'hes-escape-backslash-face 'face-alias 'font-lock-comment-face)
@@ -727,14 +712,14 @@
   :init
   (progn
     (setq highlight-symbol-idle-delay 0.2)
-    (add-hook 'prog-mode-hook 'highlight-symbol-mode)))
+    (t/add-hook 'prog-mode-hook 'highlight-symbol-mode)))
 
 (t/use-package highlight-numbers
   :defer 1
   :only-standalone t
   :init
   (progn
-    (add-hook 'prog-mode-hook 'highlight-numbers-mode)))
+    (t/add-hook 'prog-mode-hook 'highlight-numbers-mode)))
 
 (t/use-package restclient
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
@@ -783,8 +768,8 @@
   :commands linum-relative-mode
   :init
   (progn
-    (add-hook 'linum-mode-hook (lambda nil (setq linum-format " %d ")))
-    (add-hook 'linum-relative-mode-hook (lambda nil (setq linum-relative-format " %3s ")))
+    (t/add-hook-setq 'linum-mode-hook linum-format " %d ")
+    (t/add-hook-setq 'linum-relative-mode-hook linum-relative-format " %3s ")
     (linum-relative-mode 0)))
 
 (t/use-package projectile
@@ -818,10 +803,9 @@
     (bind-key "M-." 'dumb-jump-go evil-normal-state-map)
     (bind-key "M-." 'dumb-jump-go evil-insert-state-map)
 
-    (add-hook 'emacs-lisp-mode-hook
-              (lambda ()
-                (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
-                (bind-key "M-." 'xref-find-definitions evil-insert-state-map)))
+    (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-elisp
+                      (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
+                      (bind-key "M-." 'xref-find-definitions evil-insert-state-map))
 
     ;; TODO torgeir tags
     ;;(bind-key "M-g o" 'dumb-jump-go-other-window)
@@ -833,10 +817,8 @@
   :commands (aggressive-indent-mode global-aggressive-indent-mode)
   :init
   (progn
-    (add-hook 'emacs-lisp-mode 'aggressive-indent-mode)
-    (comment
-     (add-hook 'java-mode-hook (lambda () (aggressive-indent-mode 0)))
-     (add-hook 'prog-mode-hook 'global-aggressive-indent-mode))
+    (t/add-hook-defun 'java-mode-hook t/hook-java (aggressive-indent-mode 0))
+    (t/add-hook 'prog-mode-hook 'aggressive-indent-mode)
     (t/declare-prefix "t" "Toggles"
                       "a" 'aggressive-indent-mode)))
 
@@ -849,8 +831,7 @@
   :ensure nil
   :init
   (progn
-    (add-hook 'prog-mode-hook #'whitespace-turn-on)
-    (add-hook 'text-mode-hook #'whitespace-turn-on))
+    (t/add-hook '(prog-mode-hook text-mode-hook) 'whitespace-turn-on))
   :config
   (setq-default whitespace-style '(face)))
 
@@ -875,12 +856,12 @@
     (with-eval-after-load 'which-key
       (with-eval-after-load 'evil-leader
         (t/declare-prefix "aa" "drawing"
-                        "t" #'t/artist-mode
-                        "p" 'artist-select-op-pen-line
-                        "r" 'artist-select-op-rectangle
-                        "c" 'artist-select-op-circle
-                        "e" 'artist-select-op-ellipse
-                        "s" 'artist-select-op-square)))))
+                          "t" #'t/artist-mode
+                          "p" 'artist-select-op-pen-line
+                          "r" 'artist-select-op-rectangle
+                          "c" 'artist-select-op-circle
+                          "e" 'artist-select-op-ellipse
+                          "s" 'artist-select-op-square)))))
 
 (t/use-package try)
 
@@ -892,18 +873,18 @@
   (with-eval-after-load 're-builder (setq reb-re-syntax 'rx))
 
   ;; wrap text in text modes
-  (add-hook 'text-mode-hook 'auto-fill-mode)
+  (t/add-hook 'text-mode-hook 'auto-fill-mode)
 
   ;; from spacemacs
   ;; Highlight and allow to open http link at point in programming buffers
   ;; goto-address-prog-mode only highlights links in strings and comments
-  (add-hook 'prog-mode-hook 'goto-address-prog-mode)
+  (t/add-hook 'prog-mode-hook 'goto-address-prog-mode)
   ;; Highlight and follow bug references in comments and strings
-  (add-hook 'prog-mode-hook 'bug-reference-prog-mode)
+  (t/add-hook 'prog-mode-hook 'bug-reference-prog-mode)
 
-  (add-hook 'focus-out-hook #'garbage-collect) ; make it feel snappier
-  (add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
-  (add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)
+  (t/add-hook 'focus-out-hook #'garbage-collect) ; make it feel snappier
+  (t/add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
+  (t/add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)
 
   (progn
     ;; inline evaled results when in elisp using cider

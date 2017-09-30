@@ -2,8 +2,8 @@
   :commands bash-completion-dynamic-complete
   :init
   (progn
-    (add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)
-    (add-hook 'shell-command-complete-functions 'bash-completion-dynamic-complete)))
+    (t/add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)
+    (t/add-hook 'shell-command-complete-functions 'bash-completion-dynamic-complete)))
 
 (t/use-package eshell-z
   :defer t
@@ -24,7 +24,7 @@
       (set-process-sentinel (get-buffer-process (current-buffer))
                             #'t/shell-mode-kill-buffer-on-exit))
 
-    (add-hook 'shell-mode-hook #'t/shell-mode-hook))
+    (t/add-hook 'shell-mode-hook #'t/shell-mode-hook))
 
   (progn
     ;; term
@@ -39,7 +39,7 @@
       (evil-define-key 'normal term-raw-map (kbd "C-d") 'term-send-eof)
       (evil-define-key 'insert term-raw-map (kbd "C-d") 'term-send-eof))
 
-    (add-hook 'term-mode-hook #'t/term-mode-hook))
+    (t/add-hook 'term-mode-hook #'t/term-mode-hook))
 
   (progn
     ;; ansi-term
@@ -55,7 +55,7 @@
            (when (string-match "\\(finished\\|exited\\)" change)
              (kill-buffer (process-buffer proc)))))))
 
-    (add-hook 'term-mode-hook #'t/ansi-term-mode-hook)
+    (t/add-hook 'term-mode-hook #'t/ansi-term-mode-hook)
 
     (defconst t-term-name "/bin/zsh")
     (defadvice ansi-term (before force-bash)
@@ -68,14 +68,14 @@
     (ad-activate 'ansi-term)
 
     ;; fix tab-completion
-    (add-hook 'term-mode-hook (lambda () (setq yas-dont-activate t))))
+    (t/add-hook-setq 'term-mode-hook yas-dont-activate t))
 
   (progn
     ;; eshell
 
     (t/use-package esh-help
       :init
-      (add-hook 'eshell-mode-hook 'setup-esh-help-eldoc))
+      (t/add-hook 'eshell-mode-hook 'setup-esh-help-eldoc))
 
     (defun t/eshell-init-smart ()
       "Init smart eshell"
@@ -174,33 +174,32 @@
 
     (when (boundp 'spacemacs-useful-buffers-regexp)
       (add-to-list 'spacemacs-useful-buffers-regexp "\\*eshell.*"))
-    (add-hook 'eshell-directory-change-hook (lambda () (rename-buffer (t/eshell-buffer-id) t)))
-    (add-hook 'eshell-mode-hook
-              (lambda ()
-                (paredit-mode 1)
-                (bind-key "S-<return>" 'newline-and-indent eshell-mode-map)
-                (bind-key "C-l" 't/eshell-clear eshell-mode-map)
-                (bind-key "C-a" 'eshell-bol eshell-mode-map)
-                (bind-key "C-a" 'eshell-bol evil-insert-state-local-map)
-                (bind-key "C-a" 'eshell-bol evil-normal-state-local-map)
-                (bind-key "C-d" 't/eshell-quit-or-delete-char eshell-mode-map)
-                (bind-key "C-d" 't/eshell-quit-or-delete-char paredit-mode-map)
-                (bind-key "C-d" 't/eshell-quit-or-delete-char evil-insert-state-local-map)
-                (bind-key "C-d" 't/eshell-quit-or-delete-char evil-normal-state-local-map)
-                (progn ;; helm for history
-                  (setq eshell-cmpl-ignore-case t)
-                  (eshell-cmpl-initialize)
-                  (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-                  (define-key eshell-mode-map (kbd "C-r") 'helm-eshell-history)
-                  (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
-                (progn
-                  (defun t/eshell-kill-input--go-to-eol ()
-                    "Go to end of line before killing input"
-                    (end-of-line))
-                  (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol))
-                (bind-key "C-u" 'eshell-kill-input eshell-mode-map)
-                ;; C-c c-d sends exit
-                (bind-key "C-c C-u" 'universal-argument eshell-mode-map)))
+    (t/add-hook-defun 'eshell-directory-change-hook t/hook-eshell-dir (rename-buffer (t/eshell-buffer-id) t))
+    (t/add-hook-defun 'eshell-mode-hook t/hook-eshell
+                      (paredit-mode 1)
+                      (bind-key "S-<return>" 'newline-and-indent eshell-mode-map)
+                      (bind-key "C-l" 't/eshell-clear eshell-mode-map)
+                      (bind-key "C-a" 'eshell-bol eshell-mode-map)
+                      (bind-key "C-a" 'eshell-bol evil-insert-state-local-map)
+                      (bind-key "C-a" 'eshell-bol evil-normal-state-local-map)
+                      (bind-key "C-d" 't/eshell-quit-or-delete-char eshell-mode-map)
+                      (bind-key "C-d" 't/eshell-quit-or-delete-char paredit-mode-map)
+                      (bind-key "C-d" 't/eshell-quit-or-delete-char evil-insert-state-local-map)
+                      (bind-key "C-d" 't/eshell-quit-or-delete-char evil-normal-state-local-map)
+                      (progn ;; helm for history
+                        (setq eshell-cmpl-ignore-case t)
+                        (eshell-cmpl-initialize)
+                        (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+                        (define-key eshell-mode-map (kbd "C-r") 'helm-eshell-history)
+                        (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
+                      (progn
+                        (defun t/eshell-kill-input--go-to-eol ()
+                          "Go to end of line before killing input"
+                          (end-of-line))
+                        (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol))
+                      (bind-key "C-u" 'eshell-kill-input eshell-mode-map)
+                      ;; C-c c-d sends exit
+                      (bind-key "C-c C-u" 'universal-argument eshell-mode-map))
 
     ;; fix wierd prompts
     (add-to-list

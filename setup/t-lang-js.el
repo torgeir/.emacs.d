@@ -17,15 +17,14 @@
                   js-switch-indent-offset *t-indent*
                   js2-basic-offset *t-indent*)
 
-    (add-hook 'js2-mode-hook (lambda ()
-                               (flycheck-mode 1)
-                               (turn-on-smartparens-mode)
-                               (js2-imenu-extras-mode)
-                               (tern-mode)
-                               ;; TODO tern-mode issue with question?
-                               ;; tern capf seems to hijack tags? look for tags first:
-                               (setq completion-at-point-functions (reverse completion-at-point-functions))
-                               )))
+    (t/add-hook-setq 'js2-mode-hook
+                     ;; TODO tern-mode issue with question?
+                     ;; tern capf seems to hijack tags? look for tags first:
+                     completion-at-point-functions (reverse completion-at-point-functions))
+    (t/add-hook 'js2-mode-hook #'(flycheck-mode
+                                  turn-on-smartparens-mode
+                                  js2-imenu-extras-mode
+                                  tern-mode)))
   :config
   (progn
     (unbind-key "M-j" js2-mode-map)
@@ -41,10 +40,9 @@
   (progn
     (setq prettier-js-args nil)
     (defun t/prettier-jsx-hook ()
-      (when-let ((is-jsx-mode (string-match "\\.jsx$" (buffer-file-name))))
-        (prettier-js-mode)))
-    ;;(add-hook 'js2-mode-hook 'prettier-js-mode)
-    ;;(add-hook 'web-mode-hook #'t/prettier-jsx-hook)
+      (t/when-ext "jsx" (prettier-js-mode)))
+    ;;(t/add-hook 'js2-mode-hook 'prettier-js-mode)
+    ;;(t/add-hook 'web-mode-hook #'t/prettier-jsx-hook)
     ))
 
 (t/use-package js2-refactor
@@ -71,10 +69,9 @@
   :config
   (progn
     (bind-key "C-x C-e" 't/send-region-to-nodejs-repl-process js2-mode-map)
-    (add-hook 'nodejs-repl-mode-hook
-              (lambda ()
-                (bind-key "C-d" 't/volatile-kill-buffer evil-insert-state-local-map)
-                (bind-key "C-d" 't/volatile-kill-buffer evil-normal-state-local-map)))))
+    (t/add-hook-defun 'nodejs-repl-mode-hook t/hook-nodejs-repl
+                      (bind-key "C-d" 't/volatile-kill-buffer evil-insert-state-local-map)
+                      (bind-key "C-d" 't/volatile-kill-buffer evil-normal-state-local-map))))
 
 (t/use-package indium
   :commands (indium-repl-mode
@@ -82,7 +79,7 @@
              indium-debugger-mode)
   :init
   (with-eval-after-load 'js2-mode
-    (add-hook 'js2-mode-hook 'indium-interaction-mode)
+    (t/add-hook 'js2-mode-hook 'indium-interaction-mode)
     (t/declare-prefix-for-mode 'js2-mode
                                "m" "mode"
                                "j" 'indium-run-node
@@ -107,17 +104,15 @@
       (bind-key "e" 'indium-debugger-evaluate evil-normal-state-local-map)
       (bind-key "n" 'indium-debugger-next-frame evil-normal-state-local-map)
       (bind-key "p" 'indium-debugger-previous-frame evil-normal-state-local-map))
-    (add-hook 'indium-debugger-mode-hook #'t/indium-debugger-mode-hook)
-    (add-hook 'indium-repl-mode-hook
-              (lambda ()
-                (bind-key "C-d" 'indium-quit indium-repl-mode-map)
-                (bind-key "C-d" 'indium-quit evil-normal-state-local-map)
-                (bind-key "C-d" 'indium-quit evil-insert-state-local-map)
-                (bind-key "C-l" 'indium-repl-clear-output indium-repl-mode-map)))
-    (add-hook 'indium-interaction-mode-hook
-              (lambda ()
-                (bind-key "C-c C-c" #'indium-eval-last-node evil-normal-state-local-map)
-                (bind-key "C-c C-c" #'indium-eval-last-node evil-insert-state-local-map)))
+    (t/add-hook 'indium-debugger-mode-hook #'t/indium-debugger-mode-hook)
+    (t/add-hook-defun 'indium-repl-mode-hook t/hook-indium-repl
+                      (bind-key "C-d" 'indium-quit indium-repl-mode-map)
+                      (bind-key "C-d" 'indium-quit evil-normal-state-local-map)
+                      (bind-key "C-d" 'indium-quit evil-insert-state-local-map)
+                      (bind-key "C-l" 'indium-repl-clear-output indium-repl-mode-map))
+    (t/add-hook-defun 'indium-interaction-mode-hook t/hook-indium-interaction
+                      (bind-key "C-c C-c" #'indium-eval-last-node evil-normal-state-local-map)
+                      (bind-key "C-c C-c" #'indium-eval-last-node evil-insert-state-local-map))
     (defun t/indium-jk ()
       (bind-key "j" 'indium-inspector-next-reference evil-normal-state-local-map)
       (bind-key "k" 'indium-inspector-previous-reference evil-normal-state-local-map)
@@ -126,7 +121,7 @@
                     indium-debugger-frames-mode-hook
                     indium-debugger-locals-mode-hook
                     indium-inspector-mode-hook))
-      (add-hook hook #'t/indium-jk))
+      (t/add-hook hook #'t/indium-jk))
     
     ;; inline evaled results when in js2-mode using cider
     (autoload 'cider--make-result-overlay "cider-overlays")

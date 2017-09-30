@@ -4,7 +4,7 @@
   :init
   (progn
     (with-eval-after-load 'git-gutter+
-      (add-hook 'after-init-hook 'global-git-gutter+-mode)))
+      (t/add-hook 'after-init-hook 'global-git-gutter+-mode)))
   :config
   (progn
     (setq git-gutter+-modified-sign "~"
@@ -58,7 +58,7 @@
   (progn
     (bind-key "q" #'magit-quit-session magit-status-mode-map)
 
-    (add-hook 'magit-log-mode-hook 'visual-line-mode)
+    (t/add-hook 'magit-log-mode-hook 'visual-line-mode)
 
     (when (boundp 'spacemacs-useful-buffers-regexp)
       (add-to-list 'spacemacs-useful-buffers-regexp "\\*magit.*"))
@@ -81,7 +81,7 @@
 
 (t/use-package magit-gh-pulls
   :after magit
-  :init (add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls))
+  :init (t/add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls))
 
 (defun t-vc/config ()
   (t/declare-prefix "g" "Git"
