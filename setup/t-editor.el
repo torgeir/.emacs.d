@@ -819,14 +819,14 @@
     (bind-key "M-<" 'beginend-prog-mode-goto-beginning)
     (bind-key "M->" 'beginend-prog-mode-goto-end)))
 
-(use-package whitespace
+(t/use-package whitespace
   :demand t
-  :ensure nil
+  :commands (whitespace-turn-on)
   :init
   (progn
-    (t/add-hook '(prog-mode-hook text-mode-hook) 'whitespace-turn-on))
-  :config
-  (setq-default whitespace-style '(face)))
+    (setq show-trailing-whitespace t
+          whitespace-style '(face))
+    (t/add-hook '(prog-mode-hook text-mode-hook) 'whitespace-turn-on)))
 
 (use-package artist-mode
   :ensure nil
