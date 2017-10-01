@@ -567,7 +567,7 @@
 (t/use-package expand-region
   :commands (er/expand-region er/contract-region)
   :only-standalone t
-  :config
+  :init
   (progn
     (bind-key (if is-mac "M-@" "M-'") 'er/expand-region)
     (bind-key (if is-mac "M-*" "M-§") 'er/contract-region)))
