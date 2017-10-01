@@ -1429,4 +1429,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
               (make-local-variable 'company-backends)
               (setq-local company-backends (t/company-backends backends)))))
 
+;;;###autoload
+(defun t/projectile-magit-status ()
+  (interactive)
+  (let ((projects (projectile-relevant-known-projects)))
+    (if projects
+        (projectile-completing-read "Switch to project: " projects :action 'magit-status)
+      (user-error "No projects found"))))
+
 (provide 't-defuns)

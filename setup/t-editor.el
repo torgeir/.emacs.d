@@ -1057,6 +1057,7 @@
                     "d" 'projectile-find-dir
                     "f" 'helm-projectile
                     "F" 'projectile-find-file-dwim
+                    "g" 't/projectile-magit-status
                     "G" 'projectile-regenerate-tags
                     "k" 'projectile-kill-buffers
                     "l" 't/neotree-open-file
