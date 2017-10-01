@@ -378,16 +378,19 @@
     (t/add-hook 'eval-expression-minibuffer-setup-hook #'(turn-on-smartparens-mode evil-cleverparens-mode))
 
     (defun t/enable-movement-for-lisp-mode (m)
-      (let* ((mode (symbol-name m))
-             (mode-hook (intern (concat mode "-hook")))
-             (mode-map (intern (concat mode "-map"))))
-        (t/add-hook mode-hook '(turn-on-smartparens-mode evil-cleverparens-mode))
+      (lexical-let* ((mode (symbol-name m))
+                     (mode-hook (intern (concat mode "-hook")))
+                     (mode-map (intern (concat mode "-map"))))
+        (add-hook mode-hook 'turn-on-smartparens-mode)
+        (add-hook mode-hook 'evil-cleverparens-mode)
 
         ;; add M-<up/down> in lisp modes, not to steal them in org-mode
-        (eval `(add-hook mode-hook
-                         (lambda nil
-                           (bind-key "M-<up>" 'sp-splice-sexp-killing-backward ,mode-map)
-                           (bind-key "M-<down>" 'sp-splice-sexp-killing-forward ,mode-map))))
+        (add-hook mode-hook
+                  (lambda nil
+                    (eval
+                     `(progn
+                        (bind-key "M-<up>" 'sp-splice-sexp-killing-backward ,mode-map)
+                        (bind-key "M-<down>" 'sp-splice-sexp-killing-forward ,mode-map)))))
         (eval
          `(t/bind-in (quote ,mode-map)
                      "M-<left>" #'t/backward-down-sexp
