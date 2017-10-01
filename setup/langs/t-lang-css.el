@@ -8,6 +8,7 @@
   :config
   (progn
     (bind-key "M-k" 't/css-kill-value css-mode-map)
+    (t/add-company-backend-hook 'css-mode-hook 'company-css)
     (t/add-hook 'css-mode-hook '(turn-on-smartparens-mode rainbow-mode))))
 
 (t/use-package css-eldoc

@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22992 1045 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22992 44668 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -58,7 +58,7 @@ The same can be done for the current folder only to place a TAGS file in it:
 ctags -e -R .
 
 Remember to build emacs --without-ctags and use the one from `brew' instead,
-it's the one with the correct options needed to generate ctags that emacs 
+it's the one with the correct options needed to generate ctags that emacs
 understands.
 
 \(fn)" t nil)
@@ -759,17 +759,11 @@ Add list of grouped company backends for `mode-hook'.
 ;;;***
 
 ;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
-;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-lang-arduino.el"
-;;;;;;  "t-lang-clojure.el" "t-lang-css.el" "t-lang-docker.el" "t-lang-elisp.el"
-;;;;;;  "t-lang-elm.el" "t-lang-flow.el" "t-lang-flycheck.el" "t-lang-fsharp.el"
-;;;;;;  "t-lang-gitconfig.el" "t-lang-gitignore.el" "t-lang-haskell.el"
-;;;;;;  "t-lang-html.el" "t-lang-js.el" "t-lang-json.el" "t-lang-markdown.el"
-;;;;;;  "t-lang-pug.el" "t-lang-remark.el" "t-lang-scala.el" "t-lang-sh.el"
-;;;;;;  "t-lang-terraform.el" "t-lang-web.el" "t-lang-yaml.el" "t-langs.el"
-;;;;;;  "t-load-theme.el" "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el"
-;;;;;;  "t-modules.el" "t-org.el" "t-packaging.el" "t-powerline.el"
-;;;;;;  "t-sane-defaults.el" "t-shell.el" "t-typography.el" "t-vc.el"
-;;;;;;  "t-which-key.el") (22992 750 0 0))
+;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
+;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
+;;;;;;  "t-org.el" "t-packaging.el" "t-powerline.el" "t-sane-defaults.el"
+;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
+;;;;;;  (22992 44659 0 0))
 
 ;;;***
 
