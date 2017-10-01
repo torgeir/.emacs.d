@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package restart-emacs
   :init
   (progn

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defconst lat-trh 63.427)
 (defconst lon-trh 10.391)
 

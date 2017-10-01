@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package css-mode
   :only-standalone t
   :ensure nil

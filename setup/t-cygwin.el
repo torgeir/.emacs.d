@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defun t-cygwin/config ()
   (bind-key "C-+" 't/increase-font-size)
   (bind-key "C--" 't/decrease-font-size)

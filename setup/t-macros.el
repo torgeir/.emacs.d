@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defmacro t/when-ext (ext &rest body)
   "Run `body' when buffer's file has extension `ext'."
   (declare (indent 1))

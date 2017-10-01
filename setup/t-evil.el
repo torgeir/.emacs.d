@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package evil
   :only-standalone t)
 

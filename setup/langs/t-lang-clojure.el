@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package clojure-mode
   :pin melpa-stable
   :mode (("\\.\\(edn\\|boot\\|clj\\)$" . clojure-mode)

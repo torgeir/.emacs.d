@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package elm-mode
   :mode "\\.elm$"
   :init

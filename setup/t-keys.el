@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defun t-keys/vars ()
 
   ;; lisp-friendly

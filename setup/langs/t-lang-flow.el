@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package flycheck-flow
   :config
   (with-eval-after-load 'flycheck

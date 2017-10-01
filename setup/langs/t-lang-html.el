@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package simplezen
   :commands simplezen-expand-or-indent-for-tab
   :init

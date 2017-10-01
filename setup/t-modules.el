@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (require 't-langs)
 (defconst t-modules
       (remove-if 'null

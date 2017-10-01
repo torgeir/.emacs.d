@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package gitignore-mode
   :commands gitignore-mode)
 

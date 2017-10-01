@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defun t-langs/config ()
   (t/declare-prefix "m" "Mode"))
 

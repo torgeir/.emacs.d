@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package ensime
   :pin melpa-stable
   :commands (ensime ensime-mode)

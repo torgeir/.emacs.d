@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package haskell-mode
   :commands haskell-mode)
 

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package spacemacs-theme :defer t)
 (t/use-package doom-themes
   :config

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defun t-mac/vars ()
   ;; trash
   (setq delete-by-moving-to-trash t

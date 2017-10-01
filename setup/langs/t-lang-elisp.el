@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defun t-lang-elisp/config ()
   ;; lisp
   (t/declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"

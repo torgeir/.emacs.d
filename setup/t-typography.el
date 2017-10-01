@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defun t-typography/config ()
 
   (t/add-hook-defun '(js2-mode-hook web-mode-hook) t/ligatures

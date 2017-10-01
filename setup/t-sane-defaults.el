@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package all-the-icons) ; pretty icons
 
 (t/use-package better-defaults) ; rid the insanity

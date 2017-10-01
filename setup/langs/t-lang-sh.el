@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package sh-script
   :mode ("\\.sh\\'" . sh-mode)
   :init

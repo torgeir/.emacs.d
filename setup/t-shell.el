@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package bash-completion
   :commands bash-completion-dynamic-complete
   :init

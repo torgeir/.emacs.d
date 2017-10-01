@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package flycheck
   :commands flycheck-mode
   :only-standalone t

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package yaml-mode
   :commands yaml-mode)
 

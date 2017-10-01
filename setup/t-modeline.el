@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (defun t-modeline/config ()
 
   (defun t/init-modeline () (+doom-modeline|init))

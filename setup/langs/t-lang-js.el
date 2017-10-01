@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package js2-mode
   :mode "\\.js$"
   :interpreter "node"

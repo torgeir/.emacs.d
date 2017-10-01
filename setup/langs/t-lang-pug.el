@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package pug-mode
   :only-standalone t
   :mode "\\.pug$")

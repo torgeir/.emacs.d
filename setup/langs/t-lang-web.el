@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package web-mode
   :only-standalone t
   :mode "\\.jsx$"

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package git-gutter+
   :diminish git-gutter+-mode
   :defer t

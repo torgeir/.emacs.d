@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (t/use-package json-mode
   :only-standalone t
   :mode "\\(json\\|jshintrc\\|eslintrc\\)$")

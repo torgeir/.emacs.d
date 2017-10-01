@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (setq load-prefer-newer t) ; don't load outdated bytecode
 
 (require 'package)

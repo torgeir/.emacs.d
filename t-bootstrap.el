@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (require 'cl)
 (load (t/user-emacs-file "t-before.el") t)
 
