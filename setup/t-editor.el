@@ -179,6 +179,17 @@
     (bind-key "C-c C-M" 'smex-major-mode-commands)
     (smex-initialize)))
 
+(defun t/company-backends (&optional backends)
+  `((,@backends
+     company-files
+     company-keywords
+     company-capf
+     company-yasnippet
+     company-emoji)
+    (company-dabbrev-code
+     company-dabbrev
+     company-abbrev)))
+
 (t/use-package company
   :diminish company-mode
   :only-standalone t
@@ -191,13 +202,7 @@
           company-show-numbers t ; nav with m-<n>
           company-selection-wrap-around t
           company-require-match nil
-          company-backends '((company-files
-                              company-keywords
-                              company-capf
-                              company-yasnippet)
-                             (company-dabbrev-code
-                              company-dabbrev
-                              company-dabbrev)))
+          company-backends (t/company-backends '()))
     (with-eval-after-load 'company
       (t/add-hook 'prog-mode-hook 'company-mode)))
   :config
@@ -265,7 +270,7 @@
                       (bind-key "C-M-." 'helm-etags-select tern-mode-keymap)
                       (bind-key "C-M-." 'helm-etags-select evil-normal-state-local-map))
     (with-eval-after-load 'js2-mode
-      (t/add-company-backend-hook 'js2-mode-hook 'company-tern 'company-yasnippet))
+      (t/add-company-backend-hook 'js2-mode-hook 'company-tern))
     (setq tern-command (append tern-command '("--no-port-file")))))
 
 (t/use-package etags-select
@@ -294,11 +299,7 @@
 
 (t/use-package helm-unicode)
 
-(t/use-package company-emoji
-  :after company
-  :config
-  (progn
-    (add-to-list 'company-backends 'company-emoji)))
+(t/use-package company-emoji :after company)
 
 (t/use-package emoji-cheat-sheet-plus
   :commands (emoji-cheat-sheet-plus-insert)

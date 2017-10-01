@@ -1,3 +1,5 @@
+;;; setup/t-defuns.el -*- lexical-binding: t; -*-
+
 ;;;###autoload
 (defun t/tab-properly ()
   (interactive)
@@ -95,7 +97,7 @@ The same can be done for the current folder only to place a TAGS file in it:
 ctags -e -R .
 
 Remember to build emacs --without-ctags and use the one from `brew' instead,
-it's the one with the correct options needed to generate ctags that emacs 
+it's the one with the correct options needed to generate ctags that emacs
 understands."
   (interactive)
   (message "building project tags..")
@@ -1015,7 +1017,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
   "Grab the frontmost url out of chrome using `org-mac-grab-link'"
   (interactive)
   (when-let ((chrome-url (org-mac-chrome-get-frontmost-url))
-              (_ (string-match "\\\[\\\[\\(.*\\)\\\]\\\[" chrome-url)))
+             (_ (string-match "\\\[\\\[\\(.*\\)\\\]\\\[" chrome-url)))
     (match-string 1 chrome-url)))
 
 ;;;###autoload
@@ -1399,7 +1401,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
      ;; 14:45:11.067
      (,(rx (group (repeat 2 digit) ":" (repeat 2 digit) ":" (repeat 2 digit) (optional (or "," ".") (repeat 3 digit)))) 1 t-log-comment-face t)
      ))
-  
+
   (if (fboundp 'font-lock-flush)
       (font-lock-flush)
     (when font-lock-mode
@@ -1422,11 +1424,9 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/add-company-backend-hook (mode-hook &rest backends)
   "Add list of grouped company backends for `mode-hook'."
-  (lexical-let* ((backends backends)) ; lambda makes closure
-    (add-hook mode-hook
-              (lambda nil
-                      (make-local-variable 'company-backends)
-                      (add-to-list 'company-backends backends)))))
-
+  (add-hook mode-hook
+            (lambda nil
+              (make-local-variable 'company-backends)
+              (setq-local company-backends (t/company-backends backends)))))
 
 (provide 't-defuns)
