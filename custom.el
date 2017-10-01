@@ -46,7 +46,7 @@
  '(org-agenda-include-diary t)
  '(org-agenda-restore-windows-after-quit t)
  '(org-agenda-window-setup (quote only-window))
- '(org-ellipsis " > ")
+ '(org-ellipsis " >")
  '(org-enforce-todo-dependencies t)
  '(org-tags-column -60)
  '(org-todo-keywords
@@ -74,7 +74,6 @@
                        "\\_>"))
               1
               (quote font-lock-variable-name-face))))))))
- '(show-trailing-whitespace t)
  '(tags-add-tables t)
  '(vc-annotate-background "#181e26")
  '(vc-annotate-color-map

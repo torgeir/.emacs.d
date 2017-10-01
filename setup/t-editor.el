@@ -823,14 +823,12 @@
     (bind-key "M-<" 'beginend-prog-mode-goto-beginning)
     (bind-key "M->" 'beginend-prog-mode-goto-end)))
 
-(t/use-package whitespace
-  :demand t
-  :commands (whitespace-turn-on)
+(use-package whitespace
+  :ensure nil
   :init
-  (progn
-    (setq show-trailing-whitespace t
-          whitespace-style '(face))
-    (t/add-hook '(prog-mode-hook text-mode-hook) 'whitespace-turn-on)))
+  (t/add-hook-defun '(prog-mode-hook text-mode-hook git-commit-mode-hook) t/hook-whitespace
+                    (setq-local whitespace-style '(face tabs tab-mark trailing))
+                    (whitespace-mode 1)))
 
 (use-package artist-mode
   :ensure nil
@@ -928,7 +926,8 @@
                     "n" #'t/toggle-line-numbers
                     "r" #'t/toggle-relative-line-numbers
                     "l" 'hl-line-mode
-                    "w" 'writeroom-mode
+                    "w" 'whitespace-mode
+                    "W" 'writeroom-mode
                     "Cc" 'rainbow-mode
                     "Cd" 'rainbow-delimiters-mode)
 
