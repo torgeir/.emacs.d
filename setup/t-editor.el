@@ -429,6 +429,9 @@
                     scheme-mode))
       (t/disable-quote-pairs-for-mode mode))
 
+    (sp-with-modes 'emacs-lisp-mode
+      (sp-local-pair "`" "'" :when '(sp-in-docstring-p)))
+
     (t/def-pairs ((paren . "(")
                   (bracket . "[")
                   (brace . "{")
