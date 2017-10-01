@@ -849,6 +849,10 @@
           (evil-insert-state)
           (artist-mode t))))
 
+    (t/add-hook-defun 'artist-mode-hook t/hook-artist
+                      (t/bind-in '(evil-normal-state-local-map evil-insert-state-local-map)
+                                 "q" 'artist-mode-off))
+
     (with-eval-after-load 'evil-leader
       (t/declare-prefix "aa" "drawing"
                         "t" #'t/artist-mode
