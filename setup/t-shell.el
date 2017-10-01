@@ -177,15 +177,17 @@
     (t/add-hook-defun 'eshell-directory-change-hook t/hook-eshell-dir (rename-buffer (t/eshell-buffer-id) t))
     (t/add-hook-defun 'eshell-mode-hook t/hook-eshell
                       (paredit-mode 1)
-                      (bind-key "S-<return>" 'newline-and-indent eshell-mode-map)
-                      (bind-key "C-l" 't/eshell-clear eshell-mode-map)
-                      (bind-key "C-a" 'eshell-bol eshell-mode-map)
-                      (bind-key "C-a" 'eshell-bol evil-insert-state-local-map)
-                      (bind-key "C-a" 'eshell-bol evil-normal-state-local-map)
-                      (bind-key "C-d" 't/eshell-quit-or-delete-char eshell-mode-map)
-                      (bind-key "C-d" 't/eshell-quit-or-delete-char paredit-mode-map)
-                      (bind-key "C-d" 't/eshell-quit-or-delete-char evil-insert-state-local-map)
-                      (bind-key "C-d" 't/eshell-quit-or-delete-char evil-normal-state-local-map)
+                      (t/bind-in 'eshell-mode-map
+                                 "S-<return>" 'newline-and-indent
+                                 "C-l" 't/eshell-clear
+                                 "C-a" 'eshell-bol
+                                 "C-u" 'eshell-kill-input
+                                 ;; C-c c-d sends exit
+                                 "C-c C-u" 'universal-argument
+                                 )
+                      (t/bind-in '(eshell-mode-map paredit-mode-map evil-insert-state-local-map evil-normal-state-local-map)
+                                 "C-a" 'eshell-bol
+                                 "C-d" 't/eshell-quit-or-delete-char)
                       (progn ;; helm for history
                         (setq eshell-cmpl-ignore-case t)
                         (eshell-cmpl-initialize)
@@ -196,10 +198,7 @@
                         (defun t/eshell-kill-input--go-to-eol ()
                           "Go to end of line before killing input"
                           (end-of-line))
-                        (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol))
-                      (bind-key "C-u" 'eshell-kill-input eshell-mode-map)
-                      ;; C-c c-d sends exit
-                      (bind-key "C-c C-u" 'universal-argument eshell-mode-map))
+                        (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol)))
 
     ;; fix wierd prompts
     (add-to-list

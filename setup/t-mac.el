@@ -6,23 +6,23 @@
   ;; make this run also after connecting with emacsclient
   ;; https://groups.google.com/forum/#!topic/gnu.emacs.help/ZGu2MNkJGrI
   (defadvice terminal-init-xterm (after map-S-up-escape-sequence activate)
-    (progn
-      ;; fix terminal shortcomings, remap them in iterm2, and bring tem back here
-      ;; unused keys are e.g. above f17 which is ^[[15;2~ in emacs that is \e[15;2\~
-      ;; http://aperiodic.net/phil/archives/Geekery/term-function-keys.html
-      (bind-key "\e[15;2\~" "C-SPC" input-decode-map)
-      (bind-key "\e[17;2\~" "C-M-SPC" input-decode-map)
-      (bind-key "\e[18;2\~" "C-." input-decode-map)
-      (bind-key "\e[19;2\~" "C-," input-decode-map)
-      ;; c-æ on a norwegian mac keyboard IS the ansi escape character ^[
-      ;; for debugging run: (read-key-sequence "?")
-      (bind-key "\e[20;2\~" "C-æ" input-decode-map)
-      ;; c-ø on a norwegian mac keyboard is ^\
-      (bind-key "C-\\" "C-ø" input-decode-map)
-      ;; c-å on a norwegian mac keyboard is ^]
-      (bind-key "C-]" "C-å" input-decode-map)
-      ;; skip \e21;2~, its f10? what
-      (bind-key "\e[22;2\~" "C-'" input-decode-map)))
+    (t/bind-in 'input-decode-map
+               ;; fix terminal shortcomings, remap them in iterm2, and bring tem back here
+               ;; unused keys are e.g. above f17 which is ^[[15;2~ in emacs that is \e[15;2\~
+               ;; http://aperiodic.net/phil/archives/Geekery/term-function-keys.html
+               "\e[15;2\~" "C-SPC"
+               "\e[17;2\~" "C-M-SPC"
+               "\e[18;2\~" "C-."
+               "\e[19;2\~" "C-,"
+               ;; c-æ on a norwegian mac keyboard IS the ansi escape character ^[
+               ;; for debugging run: (read-key-sequence "?")
+               "\e[20;2\~" "C-æ"
+               ;; c-ø on a norwegian mac keyboard is ^\
+               "C-\\" "C-ø"
+               ;; c-å on a norwegian mac keyboard is ^]
+               "C-]" "C-å"
+               ;; skip \e21;2~, its f10? what
+               "\e[22;2\~" "C-'"))
 
   ;; bind fn to H-
   (setq ns-function-modifier 'hyper))
@@ -32,13 +32,14 @@
   :config (exec-path-from-shell-initialize))
 
 (defun t-mac/config ()
-  ;; translate norwegian os x keybindings
-  (bind-key "M-7" "|" key-translation-map)
-  (bind-key "M-/" "\\" key-translation-map)
-  (bind-key "M-8" "[" key-translation-map)
-  (bind-key "M-9" "]" key-translation-map)
-  (bind-key "M-(" "{" key-translation-map)
-  (bind-key "M-)" "}" key-translation-map)
+  (t/bind-in 'key-translation-map
+             ;; translate norwegian os x keybindings
+             "M-7" "|"
+             "M-/" "\\"
+             "M-8" "["
+             "M-9" "]"
+             "M-(" "{"
+             "M-)" "}")
 
   ;; os x window movement
   (bind-key "s->" 'next-multiframe-window)

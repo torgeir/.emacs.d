@@ -30,6 +30,7 @@
          (remove-hook hook fn)))))
 
 (defmacro t/add-hook-setq (hook-or-hooks var_ val_ &rest vars_)
+  "A `setq' run in hooks."
   `(t/add-hook ,hook-or-hooks
                (lambda nil
                  (let ((var (quote ,var_))
@@ -42,7 +43,20 @@
                            val (and vars (pop vars))))
                    (eval (nreverse (copy-list bindings)))))))
 
+(defmacro t/bind-in (maps_ key_ fn_ &rest bindings)
+  "Bind keys in maps."
+  `(let ((maps (t/ensure-list ,maps_))
+         (key (quote ,key_))
+         (fn (quote ,fn_))
+         (bs (quote ,bindings)))
+     (while key
+       (dolist (map maps)
+         (eval `(bind-key ,key ,fn ,map)))
+       (setq key (and bs (pop bs))
+             fn (and bs (pop bs))))))
+
 (defmacro t/add-hook-defun (hook-or-hooks fn &rest body)
+  "Create a defun `fn' with `body' in `hook-or-hooks'."
   `(progn
      (defun ,fn () (interactive) ,@body)
      (t/add-hook ,hook-or-hooks (quote ,fn))))

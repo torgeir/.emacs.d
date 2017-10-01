@@ -209,16 +209,15 @@
   (progn
     (global-company-mode)
     (t/add-hook '+evil-esc-hook 'company-abort)
-    (bind-key "TAB" #'company-complete-selection company-active-map)
-    (bind-key "C-w" 'evil-delete-backward-word company-active-map)
-    (bind-key "C-l" 'evil-delete-backward-word company-active-map)
-    (bind-key "C-u" 'backward-kill-sentence company-active-map)
-    (bind-key "C-n" #'company-select-next company-active-map)
-    (bind-key "C-p" #'company-select-previous company-active-map)
-    (bind-key "C-," (lambda ()
-                      (interactive)
-                      (company-abort)
-                      (completion-at-point)) company-active-map)))
+    (defun t/company-helm () (interactive) (company-abort) (completion-at-point))
+    (t/bind-in 'company-active-map
+               "TAB" 'company-complete-selection
+               "C-w" 'evil-delete-backward-word
+               "C-l" 'evil-delete-backward-word
+               "C-u" 'backward-kill-sentence
+               "C-n" 'company-select-next
+               "C-p" 'company-select-previous
+               "C-," #'t/company-helm)))
 
 (t/use-package company-flx
   :after company
@@ -263,12 +262,10 @@
   (progn
     (advice-add 'tern-find-definition :before 'xref-push-marker-stack) ; make pop-tag-mark work with tern
     (t/add-hook-defun 'tern-mode-hook t/hook-tern
-                      (bind-key "M-." 'tern-find-definition tern-mode-keymap)
-                      (bind-key "M-." 'tern-find-definition evil-normal-state-local-map)
-                      (bind-key "M-," 'pop-tag-mark tern-mode-keymap)
-                      (bind-key "M-," 'pop-tag-mark evil-normal-state-local-map)
-                      (bind-key "C-M-." 'helm-etags-select tern-mode-keymap)
-                      (bind-key "C-M-." 'helm-etags-select evil-normal-state-local-map))
+                      (t/bind-in '(tern-mode-keymap evil-normal-state-local-map)
+                                 "M-." 'tern-find-definition
+                                 "M-," 'pop-tag-mark
+                                 "C-M-." 'helm-etags-select))
     (with-eval-after-load 'js2-mode
       (t/add-company-backend-hook 'js2-mode-hook 'company-tern))
     (setq tern-command (append tern-command '("--no-port-file")))))
@@ -281,10 +278,11 @@
           ;; fix helm-etags-select for huge regexps
           helm-fuzzy-matching-highlight-fn (lambda (file) file))
     (t/add-hook-defun 'etags-select-mode-hook t/hook-etags-select
-                      (bind-key "j" 'etags-select-next-tag etags-select-mode-map)
-                      (bind-key "k" 'etags-select-previous-tag etags-select-mode-map)
-                      (bind-key "RET" 'etags-select-goto-tag etags-select-mode-map)
-                      (bind-key "M-RET" 'etags-select-goto-tag-other-window etags-select-mode-map))))
+                      (t/bind-in 'etags-select-mode-map
+                                 "j" 'etags-select-next-tag
+                                 "k" 'etags-select-previous-tag
+                                 "RET" 'etags-select-goto-tag
+                                 "M-RET" 'etags-select-goto-tag-other-window))))
 
 (t/use-package etags-table
   :init
@@ -372,9 +370,9 @@
                 'turn-on-smartparens-mode)
 
     (with-eval-after-load 'js2-mode
-      (bind-key "M-<up>" 'sp-splice-sexp-killing-backward js2-mode-map)
-      (bind-key "M-<down>" 'sp-splice-sexp-killing-forward js2-mode-map))
-
+      (t/bind-in 'js2-mode-map
+                 "M-<up>" 'sp-splice-sexp-killing-backward
+                 "M-<down>" 'sp-splice-sexp-killing-forward))
     ;; enable in minibuffer
     (t/add-hook 'eval-expression-minibuffer-setup-hook #'(turn-on-smartparens-mode evil-cleverparens-mode))
 
@@ -390,13 +388,13 @@
                            (bind-key "M-<up>" 'sp-splice-sexp-killing-backward ,mode-map)
                            (bind-key "M-<down>" 'sp-splice-sexp-killing-forward ,mode-map))))
         (eval
-         `(progn
-            (bind-key "M-<left>" #'t/backward-down-sexp ,mode-map)
-            (bind-key "M-<right>" #'t/forward-down-sexp ,mode-map)
-            (bind-key "M-S-<left>" #'t/backward-sexp ,mode-map)
-            (bind-key "M-S-<right>" #'t/forward-sexp ,mode-map)
-            (bind-key "C-<right>" #'sp-forward-slurp-sexp ,mode-map)
-            (bind-key "C-<left>" #'sp-forward-barf-sexp ,mode-map)))))
+         `(t/bind-in (quote ,mode-map)
+                     "M-<left>" #'t/backward-down-sexp
+                     "M-<right>" #'t/forward-down-sexp
+                     "M-S-<left>" #'t/backward-sexp
+                     "M-S-<right>" #'t/forward-sexp
+                     "C-<right>" #'sp-forward-slurp-sexp
+                     "C-<left>" #'sp-forward-barf-sexp))))
 
     (dolist (mode (list
                    'emacs-lisp-mode
@@ -408,17 +406,15 @@
     (with-eval-after-load 'ielm-mode (t/enable-movement-for-lisp-mode 'ielm-mode))
     (with-eval-after-load 'scheme-mode (t/enable-movement-for-lisp-mode 'scheme-mode))
     (t/add-hook-defun 'minibuffer-inactive-mode-hook t/hook-minibuffer
-                      (bind-key "M-<up>" 'sp-splice-sexp-killing-backward minibuffer-local-map)
-                      (bind-key "M-<down>" 'sp-splice-sexp-killing-forward minibuffer-local-map)
-                      (bind-key "M-<left>" #'t/backward-down-sexp minibuffer-local-map)
-                      (bind-key "M-<right>" #'t/forward-down-sexp minibuffer-local-map)
-                      (bind-key "M-S-<left>" #'t/backward-sexp minibuffer-local-map)
-                      (bind-key "M-S-<right>" #'t/forward-sexp minibuffer-local-map)
-                      (bind-key "C-<right>" #'sp-forward-slurp-sexp minibuffer-local-map)
-                      (bind-key "C-<left>" #'sp-forward-barf-sexp minibuffer-local-map))
-
-    (sp-with-modes 'emacs-lisp-mode
-      (sp-local-pair "`" "'" :when '(sp-in-docstring-p)))
+                      (t/bind-in 'minibuffer-local-map
+                                 "M-<up>" 'sp-splice-sexp-killing-backward
+                                 "M-<down>" 'sp-splice-sexp-killing-forward
+                                 "M-<left>" #'t/backward-down-sexp
+                                 "M-<right>" #'t/forward-down-sexp
+                                 "M-S-<left>" #'t/backward-sexp
+                                 "M-S-<right>" #'t/forward-sexp
+                                 "C-<right>" #'sp-forward-slurp-sexp
+                                 "C-<left>" #'sp-forward-barf-sexp))
 
     (defun t/disable-quote-pairs-for-mode (mode)
       (sp-local-pair mode "`" nil :actions nil)
@@ -447,11 +443,13 @@
 
   :config
   (progn
-    (bind-key "C-<right>" #'sp-forward-slurp-sexp text-mode-map)
-    (bind-key "C-<left>" #'sp-forward-barf-sexp text-mode-map)
+    (t/bind-in 'text-mode-map
+               "C-<right>" #'sp-forward-slurp-sexp
+               "C-<left>" #'sp-forward-barf-sexp)
     (with-eval-after-load 'js2-mode
-      (bind-key "C-<right>" #'sp-forward-slurp-sexp js2-mode-map)
-      (bind-key "C-<left>" #'sp-forward-barf-sexp js2-mode-map))))
+      (t/bind-in 'js2-mode-map
+                 "C-<right>" #'sp-forward-slurp-sexp
+                 "C-<left>" #'sp-forward-barf-sexp))))
 
 (t/use-package writeroom-mode
   :commands writeroom-mode)
@@ -459,9 +457,9 @@
 (t/use-package w3m
   :commands w3m
   :config
-  (progn
-    (bind-key "M-p" 'backward-paragraph w3m-mode-map)
-    (bind-key "M-n" 'forward-paragraph w3m-mode-map)))
+  (t/bind-in 'w3m-mode-map
+             "M-p" 'backward-paragraph
+             "M-n" 'forward-paragraph))
 
 (t/use-package discover-my-major
   :commands (discover-my-major discover-my-mode))
@@ -476,10 +474,11 @@
   :config
   (progn
     (require 'helm-config)
-    (progn
-      (bind-key "C-w" 'backward-kill-word helm-map)
-      (bind-key "C-u" 'backward-kill-sentence helm-map)
-      (bind-key "C-c u" 'universal-argument helm-map))
+    (with-eval-after-load 'helm-command
+      (t/bind-in '(helm-map helm-M-x-map)
+                 "C-w" 'backward-kill-word
+                 "C-u" 'backward-kill-sentence
+                 "C-c u" 'universal-argument))
     (setq-default helm-display-header-line nil
                   helm-M-x-fuzzy-match t
                   helm-apropos-fuzzy-match t
@@ -499,11 +498,9 @@
                   helm-quick-update t
                   helm-M-x-requires-pattern nil)
     (helm-mode 1)
-    (defun t/hide-cursor-in-helm-buffer ()
-      "Hide the cursor in helm buffers."
-      (with-helm-buffer
-        (setq cursor-in-non-selected-windows nil)))
-    (t/add-hook 'helm-after-initialize-hook 't/hide-cursor-in-helm-buffer)
+    (t/add-hook-defun 'helm-after-initialize-hook t/hide-cursor-in-helm-buffer
+                      (with-helm-buffer
+                        (setq cursor-in-non-selected-windows nil)))
     (set-face-attribute 'helm-source-header nil :height 1)
     (with-eval-after-load 'neotree
       (t/add-hook 'helm-before-initialize-hook 'neotree-hide))))
@@ -548,9 +545,9 @@
   :only-standalone t
   :commands helm-swoop
   :config
-  (progn
-    (bind-key "C-c C-c" 'helm-swoop--edit-complete helm-swoop-edit-map)
-    (bind-key "C-c C-k" 'helm-swoop--edit-cancel helm-swoop-edit-map)))
+  (t/bind-in 'helm-swoop-edit-map
+             "C-c C-c" 'helm-swoop--edit-complete
+             "C-c C-k" 'helm-swoop--edit-cancel))
 
 (t/use-package visual-regexp
   :commands vr/query-replace
@@ -598,18 +595,13 @@
         (call-interactively 'yas-skip-and-clear-or-delete-char)))
     (bind-key "<backspace>" #'t/yas-clear-or-delete-char yas-keymap)
 
-    (defun t/reload-autoloads-on-defuns-save ()
-      "Reload autoloads on defuns.el save."
-      (when (string-match "\\t-defuns.el$" buffer-file-name)
-        (eval-buffer)
-        (t/reload-autoloads)
-        (message "Reloaded autoloads.")))
-    (t/add-hook 'after-save-hook #'t/reload-autoloads-on-defuns-save)
-
-    (defun t/reload-snippets-on-save ()
-      "Reload yasnippet files on save."
-      (t/when-ext "yasnippet" (yas-reload-all)))
-    (t/add-hook 'after-save-hook #'t/reload-snippets-on-save)
+    (t/add-hook-defun 'after-save-hook t/reload-autoloads-on-defuns-save
+                      (when (string-match "\\t-defuns.el$" buffer-file-name)
+                        (eval-buffer)
+                        (t/reload-autoloads)
+                        (message "Reloaded autoloads.")))
+    (t/add-hook-defun 'after-save-hook t/reload-snippets-on-save
+                      (t/when-ext "yasnippet" (yas-reload-all)))
 
     ;; make fundamental snippets global snippets
     (t/add-hook-defun 'yas-minor-mode-hook t/hook-yas (yas-activate-extra-mode 'fundamental-mode))
@@ -634,8 +626,9 @@
             (move-beginning-of-line 1)
           (goto-char position))))
 
-    (bind-key "C-e" 'yas/goto-end-of-active-field yas-keymap)
-    (bind-key "C-a" 'yas/goto-start-of-active-field yas-keymap)))
+    (t/bind-in 'yas-keymap
+               "C-e" 'yas/goto-end-of-active-field
+               "C-a" 'yas/goto-start-of-active-field)))
 
 (t/use-package ag
   :commands ag
@@ -645,11 +638,8 @@
           ag-highlight-search t
           ag-project-root-function (lambda (d) (projectile-project-root)))))
 
-(t/use-package wgrep
-  :after ag)
-
-(t/use-package wgrep-ag
-  :after ag)
+(t/use-package wgrep :after ag)
+(t/use-package wgrep-ag :after ag)
 
 (t/use-package autorevert
   :defer t
@@ -801,18 +791,13 @@
     (setq dumb-jump-selector 'helm))
   :config
   (progn
-    (bind-key "M-." 'dumb-jump-go evil-normal-state-map)
-    (bind-key "M-." 'dumb-jump-go evil-insert-state-map)
+    (t/bind-in '(evil-normal-state-map evil-insert-state-map)
+               "M-." 'dumb-jump-go
+               "M-." 'dumb-jump-go)
 
     (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-elisp
                       (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
-                      (bind-key "M-." 'xref-find-definitions evil-insert-state-map))
-
-    ;; TODO torgeir tags
-    ;;(bind-key "M-g o" 'dumb-jump-go-other-window)
-    ;;(bind-key "M-g x" 'dumb-jump-go-prefer-external dumb-jump-mode-map)
-    ;;(bind-key "M-g z" 'dumb-jump-go-prefer-external-other-window dumb-jump-mode-map)
-    ))
+                      (bind-key "M-." 'xref-find-definitions evil-insert-state-map))))
 
 (t/use-package aggressive-indent
   :commands (aggressive-indent-mode global-aggressive-indent-mode)
@@ -824,8 +809,12 @@
                       "a" 'aggressive-indent-mode)))
 
 (t/use-package beginend
-  :config
-  (beginend-global-mode))
+  :commands (beginend-prog-mode-goto-beginning
+             beginend-prog-mode-goto-end)
+  :init
+  (progn
+    (bind-key "M-<" 'beginend-prog-mode-goto-beginning)
+    (bind-key "M->" 'beginend-prog-mode-goto-end)))
 
 (use-package whitespace
   :demand t
@@ -872,17 +861,8 @@
 (defun t-editor/config ()
 
   (with-eval-after-load 're-builder (setq reb-re-syntax 'rx))
-
-  ;; wrap text in text modes
-  (t/add-hook 'text-mode-hook 'auto-fill-mode)
-
-  ;; from spacemacs
-  ;; Highlight and allow to open http link at point in programming buffers
-  ;; goto-address-prog-mode only highlights links in strings and comments
-  (t/add-hook 'prog-mode-hook 'goto-address-prog-mode)
-  ;; Highlight and follow bug references in comments and strings
-  (t/add-hook 'prog-mode-hook 'bug-reference-prog-mode)
-
+  (t/add-hook 'text-mode-hook 'auto-fill-mode) ; wrap text in text modes
+  (t/add-hook 'text-mode-hook 'goto-address-prog-mode) ; navigate urls
   (t/add-hook 'focus-out-hook #'garbage-collect) ; make it feel snappier
   (t/add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
   (t/add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)

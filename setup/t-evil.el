@@ -25,7 +25,7 @@
   :init
   (progn
     (setq evil-leader/in-all-states t
-          evil-leader/non-normal-prefix "C-c C-"))
+          evil-leader/non-normal-prefix "C-"))
   :config
   (progn
     (evil-leader/set-leader t-leader)
@@ -127,10 +127,11 @@
         (when (not (iedit-find-current-occurrence-overlay))
           (evil-multiedit-toggle-or-restrict-region)))
 
-      (bind-key "M-j" #'t/mc-next evil-multiedit-state-map)
-      (bind-key "M-k" #'t/mc-prev evil-multiedit-state-map)
-      (bind-key "M-J" #'t/mc-skip-next evil-multiedit-state-map)
-      (bind-key "M-K" #'t/mc-skip-prev evil-multiedit-state-map))))
+      (t/bind-in 'evil-multiedit-state-map
+                 "M-j" #'t/mc-next
+                 "M-k" #'t/mc-prev
+                 "M-J" #'t/mc-skip-next
+                 "M-K" #'t/mc-skip-prev))))
 
 (t/use-package evil-commentary
   :after evil
@@ -217,53 +218,33 @@ ignored.")
   ;; i_Ctrl-o - C-o from hybrid mode, like in vim insert mode
   (evil-define-key 'hybrid global-map (kbd "C-o") 'evil-execute-in-normal-state)
 
+  (defun t/paste-prev ()
+    (interactive)
+    (evil-paste-pop -1))
+
   ;; some emacs stuff is useful, in terminals etc
   ;; http://stackoverflow.com/a/16226006
-  (bind-key "C-e" 'evil-end-of-line evil-normal-state-map)
-  (bind-key "C-e" 'end-of-line evil-insert-state-map)
-  (bind-key "C-e" 'evil-end-of-line evil-visual-state-map)
-  (bind-key "C-e" 'evil-end-of-line evil-motion-state-map)
-  (bind-key "C-f" 'evil-forward-char evil-normal-state-map)
-  (bind-key "C-f" 'evil-forward-char evil-insert-state-map)
-  (bind-key "C-f" 'evil-forward-char evil-insert-state-map)
-  (bind-key "C-b" 'evil-backward-char evil-normal-state-map)
-  (bind-key "C-b" 'evil-backward-char evil-insert-state-map)
-  (bind-key "C-b" 'evil-backward-char evil-visual-state-map)
-  (bind-key "C-d" 'evil-delete-char evil-normal-state-map)
-  (bind-key "C-d" 'evil-delete-char evil-insert-state-map)
-  (bind-key "C-d" 'evil-delete-char evil-visual-state-map)
-  (bind-key "C-n" 'evil-next-line evil-normal-state-map)
-  (bind-key "C-n" 'evil-next-line evil-insert-state-map)
-  (bind-key "C-n" 'evil-next-line evil-visual-state-map)
-  (bind-key "C-p" 'evil-previous-line evil-normal-state-map)
-  (bind-key "C-p" 'evil-previous-line evil-insert-state-map)
-  (bind-key "C-p" 'evil-previous-line evil-visual-state-map)
-  (bind-key "C-w" 'evil-delete-backward-word evil-normal-state-map)
-  (bind-key "C-w" 'evil-delete-backward-word evil-insert-state-map)
-  (bind-key "C-w" 'evil-delete-backward-word evil-visual-state-map)
-  (bind-key "C-k" 'kill-line evil-normal-state-map)
-  (bind-key "C-k" 'kill-line evil-insert-state-map)
-  (bind-key "C-k" 'kill-line evil-visual-state-map)
-  (bind-key "Q" 'call-last-kbd-macro evil-normal-state-map)
-  (bind-key "Q" 'call-last-kbd-macro evil-visual-state-map)
+  (t/bind-in '(evil-normal-state-map
+               evil-insert-state-map
+               evil-visual-state-map
+               evil-motion-state-map)
+             "C-a" 't/smart-beginning-of-line
+             "C-b" 'evil-backward-char
+             "C-d" 'evil-delete-char
+             "C-e" 'end-of-line
+             "C-f" 'evil-forward-char
+             "C-k" 'kill-line
+             "C-n" 'evil-next-line
+             "C-p" 'evil-previous-line
+             "C-w" 'evil-delete-backward-word
+             "M-y" 'helm-show-kill-ring
+             "C-y" 'evil-paste-pop)
 
-  ;; smarter c-a
-  (bind-key "C-a" 't/smart-beginning-of-line evil-normal-state-map)
-  (bind-key "C-a" 't/smart-beginning-of-line evil-insert-state-map)
-  (bind-key "C-a" 't/smart-beginning-of-line evil-visual-state-map)
-  (bind-key "C-a" 't/smart-beginning-of-line evil-motion-state-map)
-
-  ;; cycle after pasting with p
-  (bind-key "C-y" 'evil-paste-pop evil-normal-state-map)
-  (bind-key "C-y" 'evil-paste-pop evil-visual-state-map)
-  (bind-key "C-S-y" (lambda () (interactive) (evil-paste-pop -1)) evil-normal-state-map)
-  (bind-key "C-S-y" (lambda () (interactive) (evil-paste-pop -1)) evil-visual-state-map)
-  ;; show kill ring when not in insert mode, where c-y repeats text from above line
-  (bind-key "M-y" 'helm-show-kill-ring evil-normal-state-map)
-  (bind-key "M-y" 'helm-show-kill-ring evil-insert-state-map)
-  (bind-key "M-y" 'helm-show-kill-ring evil-visual-state-map)
-  (when (boundp 'evil-hybrid-state-map)
-    (bind-key "M-y" 'helm-show-kill-ring evil-hybrid-state-map))
+  (t/bind-in '(evil-normal-state-map
+               evil-visual-state-map)
+             "Q" 'call-last-kbd-macro
+             "C-y" 'evil-paste-pop ; cycle after pasting with p
+             "C-S-y" 't/evil-paste-prev)
 
   ;; esc ought to quit
   (bind-key [escape] 'keyboard-quit evil-normal-state-map)
@@ -279,7 +260,7 @@ ignored.")
       (unwind-protect (apply fn args)
         (+evil*attach-escape-hook))))
   (advice-add 'keyboard-quit :around #'t/keyboard-quit-advice)
-  
+
   ;; macro camelCase to snakeCase
   (evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g]))
 

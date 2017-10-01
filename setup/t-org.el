@@ -117,11 +117,10 @@
 
     (progn
       ;; fix completion dissapearing
-
       (with-eval-after-load 'company
         (t/add-company-backend-hook 'org-mode-hook 'company-capf))
-      (defun add-pcomplete-to-capf () (t/add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-      (t/add-hook 'org-mode-hook #'add-pcomplete-to-capf))
+      (t/add-hook-defun 'org-mode-hook t/hook-add-pcomplete-to-capf
+                        (t/add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t)))
 
     (progn
       ;; modules
@@ -253,11 +252,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
     (progn
       ;; realign tags
 
-      (defun t/org-mode-before-save ()
-        "Hook run before saving org buffers"
-        (when (eq major-mode 'org-mode)
-          (t/org-mode-realign-all-tags)))
-
       (defun t/org-mode-realign-all-tags ()
         "Code to realign tags, stolen from org.el"
         (save-excursion
@@ -266,7 +260,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
             (org-set-tags nil t)
             (end-of-line))))
 
-      (t/add-hook 'before-save-hook #'t/org-mode-before-save)
+      (t/add-hook-defun 'before-save-hook t/org-mode-before-save
+                        (when (eq major-mode 'org-mode)
+                          (t/org-mode-realign-all-tags)))
 
       (progn
         ;; reselect visual when moving multiple lines
@@ -315,13 +311,10 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
       (progn
 
         (defvar t-org-file-save-since-last-idle nil)
-
-        (defun t/org-mode-before-save-since-last-idle ()
-          "Hook to remember if org files are saved since last idle timer."
-          (when (eq major-mode 'org-mode)
-            (setq t-org-file-save-since-last-idle t)))
-
-        (t/add-hook 'before-save-hook #'t/org-mode-before-save-since-last-idle)
+        ;; Hook to remember if org files are saved since last idle timer.
+        (t/add-hook-defun 'before-save-hook t/org-mode-before-save-since-last-idle
+                          (when (eq major-mode 'org-mode)
+                            (setq t-org-file-save-since-last-idle t)))
 
         (defun t/org-idle-timer ()
           "Timer to run when idle for syncing org."
@@ -363,8 +356,9 @@ Locally redefines org-agenda-files not to export all agenda files."
               calendar-intermonth-header (propertize "W " 'font-lock-face 'calendar-iso-week-header-face)))
 
       (when (boundp 'org-evil-table-mode-map)
-        (bind-key "M-S-<left>" 'org-table-delete-column org-evil-table-mode-map)
-        (bind-key "M-S-<right>" 'org-table-insert-column org-evil-table-mode-map))
+        (t/bind-in 'org-evil-table-mode-map
+                   "M-S-<left>" 'org-table-delete-column
+                   "M-S-<right>" 'org-table-insert-column))
 
       (progn
         ;; blank line before new entries with text,
@@ -405,11 +399,12 @@ Locally redefines org-agenda-files not to export all agenda files."
           (evil-cp-append 1))
 
         (t/add-hook-defun 'org-mode-hook t/hook-org-meta
-                          (bind-key "C-w" 'org-refile org-mode-map)
-                          (bind-key "M-<return>" 't/org-meta-return-dwim org-mode-map)
-                          (bind-key "M-S-<return>" 't/org-insert-todo-heading-dwim org-mode-map)
-                          (bind-key "C-<return>" 't/org-insert-heading-respect-content-dwim org-mode-map)
-                          (bind-key "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim org-mode-map)))
+                          (t/bind-in 'org-mode-map
+                                     "C-w" 'org-refile
+                                     "M-<return>" 't/org-meta-return-dwim
+                                     "M-S-<return>" 't/org-insert-todo-heading-dwim
+                                     "C-<return>" 't/org-insert-heading-respect-content-dwim
+                                     "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim)))
 
       (defun yas/org-very-safe-expand ()
         (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
@@ -427,21 +422,15 @@ Locally redefines org-agenda-files not to export all agenda files."
 
       (t/add-hook 'org-mode-hook #'yas/org-setup))
 
-    (defun t/reset-org-font-sizes ()
-      "Reset org font headers to same height font."
-      (dolist (face '(org-level-1
-                      org-level-2
-                      org-level-3
-                      org-level-4
-                      org-level-5))
-        (set-face-attribute face nil :weight 'semi-bold :height 1.0)))
-
-    (t/add-hook 'org-mode-hook 't/reset-org-font-sizes)
-
-    (defun t/remove-org-mode-stars ()
-      (set-face-attribute 'org-hide nil :foreground (face-attribute 'default :background)))
-    (t/add-hook 'org-mode-hook #'t/remove-org-mode-stars)
-    ))
+    (t/add-hook-defun 'org-mode-hook t/reset-org-font-sizes
+                      (dolist (face '(org-level-1
+                                      org-level-2
+                                      org-level-3
+                                      org-level-4
+                                      org-level-5))
+                        (set-face-attribute face nil :weight 'semi-bold :height 1.0)))
+    (t/add-hook-defun 'org-mode-hook t/remove-org-mode-stars
+                      (set-face-attribute 'org-hide nil :foreground (face-attribute 'default :background)) )))
 
 (t/use-package ob-restclient
   :after org)
