@@ -831,12 +831,13 @@
 (use-package artist-mode
   :ensure nil
   :defer t
-  :commands artist-mode
+  :commands (t/artist-mode artist-mode)
   :init
   (progn
     (defun t/artist-mode ()
       (interactive)
-      (if artist-mode
+      (if (and (boundp 'artist-mode)
+               artist-mode)
           (progn
             (artist-mode-off)
             (evil-normal-state))
@@ -846,15 +847,14 @@
           (evil-insert-state)
           (artist-mode t))))
 
-    (with-eval-after-load 'which-key
-      (with-eval-after-load 'evil-leader
-        (t/declare-prefix "aa" "drawing"
-                          "t" #'t/artist-mode
-                          "p" 'artist-select-op-pen-line
-                          "r" 'artist-select-op-rectangle
-                          "c" 'artist-select-op-circle
-                          "e" 'artist-select-op-ellipse
-                          "s" 'artist-select-op-square)))))
+    (with-eval-after-load 'evil-leader
+      (t/declare-prefix "aa" "drawing"
+                        "t" #'t/artist-mode
+                        "p" 'artist-select-op-pen-line
+                        "r" 'artist-select-op-rectangle
+                        "c" 'artist-select-op-circle
+                        "e" 'artist-select-op-ellipse
+                        "s" 'artist-select-op-square))))
 
 (t/use-package try)
 
