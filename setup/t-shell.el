@@ -74,9 +74,10 @@
   (progn
     ;; eshell
 
-    (t/use-package esh-help
+    (use-package esh-help
       :init
-      (t/add-hook 'eshell-mode-hook 'setup-esh-help-eldoc))
+      (with-eval-after-load 'eshell
+        (setup-esh-help-eldoc)))
 
     (defun t/eshell-init-smart ()
       "Init smart eshell"
@@ -118,7 +119,7 @@
                       '("essh" "cd \"/ssh:$1:~\"")
                       '("sudo" "*sudo $*")))
         (add-to-list 'eshell-command-aliases-list alias)))
-    
+
     (defun t/eshell-init ()
       "Init eshell"
       (t/eshell-init-smart)
