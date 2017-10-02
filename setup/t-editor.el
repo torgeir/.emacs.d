@@ -363,7 +363,7 @@
     (t/add-hook '(web-mode-hook
                   js2-mode-hook
                   js-mode-hook
-                  java-mode
+                  java-mode-hook
                   text-mode-hook
                   restclient-mode-hook
                   ruby-mode
@@ -372,6 +372,10 @@
 
     (with-eval-after-load 'js2-mode
       (t/bind-in 'js2-mode-map
+                 "M-<up>" 'sp-splice-sexp-killing-backward
+                 "M-<down>" 'sp-splice-sexp-killing-forward))
+    (with-eval-after-load 'java-mode
+      (t/bind-in 'java-mode-map
                  "M-<up>" 'sp-splice-sexp-killing-backward
                  "M-<down>" 'sp-splice-sexp-killing-forward))
     ;; enable in minibuffer
