@@ -1202,15 +1202,17 @@ If FILEXT is provided, return files with extension FILEXT instead."
 
 ;;;###autoload
 (defun t/buffer-finished-p (b)
-  (eq 0
-      (string-match-p
-       "^Process .* finished$"
-       (car (last
-             (split-string
-              (with-current-buffer b
-                (let ((len (length (buffer-string))))
-                  (buffer-substring-no-properties 1 len)))
-              "\n"))))))
+  "Return non-nil value if the buffer has an ended process."
+  (string-match-p
+   "^Process .* \\(finished\\|exited\\).*$"
+   (car (last
+         (split-string
+          (with-current-buffer b
+            (let ((len (length (buffer-string))))
+              (if (> len 0)
+                  (buffer-substring-no-properties 1 len)
+                "")))
+          "\n")))))
 
 ;;;###autoload
 (defun t/neotree-open-file ()

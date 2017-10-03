@@ -37,8 +37,15 @@
       (t/highlight-logging)
       (evil-define-key 'normal term-raw-map "p" 'term-paste)
       (evil-define-key 'insert term-raw-map (kbd "<tab>") 'term-send-tab)
-      (evil-define-key 'normal term-raw-map (kbd "C-d") 'term-send-eof)
-      (evil-define-key 'insert term-raw-map (kbd "C-d") 'term-send-eof))
+
+      (defun t/term-quit-if-finished ()
+        (interactive)
+        (if (t/buffer-finished-p (current-buffer))
+            (t/volatile-kill-buffer)
+          (term-send-eof)))
+
+      (t/bind-in '(evil-normal-state-local-map evil-insert-state-local-map)
+                 "C-d" 't/term-quit-if-finished))
 
     (t/add-hook 'term-mode-hook #'t/term-mode-hook))
 
