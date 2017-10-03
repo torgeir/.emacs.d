@@ -77,7 +77,8 @@
                                                  ))))
 
 
-(t/use-package cljr-helm)
+(t/use-package cljr-helm
+  :commands cljr-helm)
 
 (t/use-package clojure-mode-extra-font-locking
   :commands clojure-mode) ;; more syntax hilighting

@@ -59,8 +59,8 @@
     (bind-key "#" 'evil-visualstar/begin-search-backward evil-visual-state-map)))
 
 (t/use-package evil-cleverparens
-  :after evil
   :diminish evil-cleverparens-mode
+  :defer 1
   :init
   (progn (setq evil-cleverparens-use-additional-bindings nil
                evil-cleverparens-use-regular-insert t))
@@ -71,7 +71,7 @@
 
 (t/use-package evil-surround
   :only-standalone t
-  :after evil
+  :defer 1
   :config
   (progn
     (global-evil-surround-mode 1)
@@ -135,7 +135,6 @@
                  "M-K" #'t/mc-skip-prev))))
 
 (t/use-package evil-commentary
-  :after evil
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
   :config (evil-commentary-mode 1))
 

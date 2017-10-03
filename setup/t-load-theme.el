@@ -12,7 +12,7 @@
   (defconst t-themes (list
                       'doom-vibrant
                       'spacemacs-light) "Themes to cycle")
-  
+
   (defun t/cycle-theme ()
     "Cycles themes in `t-themes'"
     (interactive)

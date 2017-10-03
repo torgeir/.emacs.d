@@ -28,17 +28,20 @@
   (t/use-package nxml-eldoc
     :ensure nil
     :load-path "site-lisp/nxml-eldoc/"
+    :commands turn-on-nxml-eldoc
     :init
     (t/add-hook 'nxml-mode-hook 'turn-on-nxml-eldoc))
 
   (t/use-package json-path-eldoc
     :ensure nil
     :load-path "site-lisp/json-path-eldoc/"
+    :commands turn-on-json-path-eldoc
     :init
     (t/add-hook 'json-mode-hook 'turn-on-json-path-eldoc))
   
   (t/use-package html2text
     ;; needed for helm-google
+    :commands helm-google
     :ensure nil
     :load-path "site-lisp/html2text"))
 
@@ -47,6 +50,7 @@
 
   (t/use-package sgml-mode
     :ensure nil
+    :commands html-mode
     :init
     (progn
       (t/add-hook-defun 'sgml-mode-hook t/hook-sgml

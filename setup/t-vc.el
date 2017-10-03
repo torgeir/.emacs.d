@@ -1,11 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 (t/use-package git-gutter+
   :diminish git-gutter+-mode
-  :defer t
   :init
-  (progn
-    (with-eval-after-load 'git-gutter+
-      (t/add-hook 'after-init-hook 'global-git-gutter+-mode)))
+  (t/add-hook 'prog-mode-hook 'git-gutter+-mode)
   :config
   (progn
     (setq git-gutter+-modified-sign "~"
@@ -14,12 +11,12 @@
           git-gutter+-separator-sign (if has-gui "" " "))))
 
 (t/use-package git-gutter-fringe+
-  :config
-  (progn
-    (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "XXX.....")
-    (fringe-helper-define 'git-gutter-fr+-delprivate/t/eted '(top repeat) "XXX.....")
-    (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "XXX.....")
-    (git-gutter+-enable-fringe-display-mode)))
+  :init
+  (t/add-hook-defun 'git-gutter+-mode-hook t/hook-git-gutter+
+                    (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "XXX.....")
+                    (fringe-helper-define 'git-gutter-fr+-delprivate/t/eted '(top repeat) "XXX.....")
+                    (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "XXX.....")
+                    (git-gutter+-enable-fringe-display-mode)))
 
 (t/use-package helm-open-github
   :commands (helm-open-github-from-issues

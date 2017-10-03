@@ -13,6 +13,7 @@
     (t/add-hook 'css-mode-hook '(turn-on-smartparens-mode rainbow-mode))))
 
 (t/use-package css-eldoc
+  :commands turn-on-css-eldoc
   :init
   (progn
     (t/add-hook 'css-mode-hook 'turn-on-css-eldoc)))

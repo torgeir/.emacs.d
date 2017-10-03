@@ -37,14 +37,20 @@
                                "r" 't/send-region-to-nodejs-repl-process)))
 
 (t/use-package prettier-js
+  :commands prettier-js-mode
   :init
   (progn
     (setq prettier-js-args nil)
     (defun t/prettier-jsx-hook ()
       (t/when-ext "jsx" (prettier-js-mode)))
-    ;;(t/add-hook 'js2-mode-hook 'prettier-js-mode)
-    ;;(t/add-hook 'web-mode-hook #'t/prettier-jsx-hook)
-    ))
+    (defun t/enable-prettier ()
+      (prettier-js-mode 1)
+      (t/add-hook 'js2-mode-hook 'prettier-js-mode)
+      (t/add-hook 'web-mode-hook #'t/prettier-jsx-hook))
+    (defun t/disable-prettier ()
+      (prettier-js-mode -1)
+      (t/add-hook 'js2-mode-hook 'prettier-js-mode)
+      (t/add-hook 'web-mode-hook #'t/prettier-jsx-hook))))
 
 (t/use-package js2-refactor
   :only-standalone t
@@ -123,7 +129,7 @@
                     indium-debugger-locals-mode-hook
                     indium-inspector-mode-hook))
       (t/add-hook hook #'t/indium-jk))
-    
+
     ;; inline evaled results when in js2-mode using cider
     (autoload 'cider--make-result-overlay "cider-overlays")
     (defun t/overlay-indium (r)

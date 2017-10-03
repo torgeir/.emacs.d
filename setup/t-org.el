@@ -437,7 +437,7 @@ Locally redefines org-agenda-files not to export all agenda files."
   :after org)
 
 (t/use-package org-alert
-  :after org
+  :commands t/org-idle-timer
   :config
   (progn
     (setq alert-default-style 'osx-notifier
@@ -458,7 +458,6 @@ Locally redefines org-agenda-files not to export all agenda files."
           )))
 
 (t/use-package org-mac-link
-  :after org
   :ensure org-plus-contrib
   :commands (org-mac-grab-link
              org-mac-chrome-get-frontmost-url))
@@ -505,7 +504,7 @@ Locally redefines org-agenda-files not to export all agenda files."
                       ((= 3 phase) "Månen i ne ☾"))))))))
 
 (t/use-package elfeed
-  :commands (elfeed elfeed-search-mode elfeed-show-mode)
+  :commands (elfeed)
   :init
   (progn
     (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
@@ -528,21 +527,20 @@ Locally redefines org-agenda-files not to export all agenda files."
                       (set-window-margins nil 5 5))))
 
 (t/use-package elfeed-goodies
-  :after elfeed
-  :config
-  (progn
-    (elfeed-goodies/setup)))
+  :commands elfeed-goodies/setup
+  :init
+  (add-hook 'elfeed-search-mode-hook 'elfeed-goodies/setup))
 
 (t/use-package elfeed-org
-  :after elfeed
-  :config
+  :commands elfeed-org
+  :init
   (progn
-    (elfeed-org)
+    (add-hook 'elfeed-search-mode-hook 'elfeed-org)
     (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org"))))
 
 
 (t/use-package org-gcal
-  :after org
+  :commands (org-gcal-sync org-gcal-fetch)
   :init
   (progn
     (when (boundp 't-org-gcal)
@@ -554,7 +552,7 @@ Locally redefines org-agenda-files not to export all agenda files."
   :after org)
 
 (t/use-package helm-org-rifle
-  :after org
+  :commands (helm-org-rifle)
   :config
   (t/declare-prefix-for-mode 'org-mode "s" "Search"
                              "p" 'helm-org-rifle

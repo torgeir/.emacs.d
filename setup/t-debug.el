@@ -4,7 +4,7 @@
 
 (when *t-debug-init*
 
-  (setq use-package-debug t)
+  (setq use-package-debug nil)
 
   (with-current-buffer (get-buffer-create t-buffer-load-times)
     (insert (format "Threshold set at %.3f seconds\n\n"

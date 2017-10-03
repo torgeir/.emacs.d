@@ -1,5 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (t/use-package restart-emacs
+  :commands restart-emacs
   :init
   (progn
     (t/declare-prefix "q" "Quit"
@@ -65,13 +66,13 @@
     (bind-key "M-n" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map)))
 
 (t/use-package all-the-icons-dired
-  :after dired
+  :commands all-the-icons-dired-mode
   :init
   (t/add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 ;; less verbose dired
 (t/use-package dired-details
-  :after dired
+  :commands dired
   :init (setq-default dired-details-hidden-string "")
   :config (dired-details-install))
 
@@ -154,6 +155,7 @@
           ace-jump-mode-case-fold t)))
 
 (t/use-package evil-snipe
+  :defer 2
   :config
   (evil-snipe-override-mode 1))
 
@@ -170,6 +172,7 @@
                       "u" 'undo-tree-visualize)))
 
 (t/use-package smex
+  :commands (smex smex-major-mode-commands)
   :init
   (progn
     (setq smex-flex-matching t
@@ -194,7 +197,7 @@
 (t/use-package company
   :diminish company-mode
   :only-standalone t
-  :defer 1
+  :defer 2
   :init
   (progn
     (setq company-idle-delay 0.2
@@ -227,11 +230,11 @@
     (company-flx-mode +1)))
 
 (t/use-package company-web
-  :after company
+  :commands (web-mode js2-mode)
   :only-standalone t)
 
 (t/use-package company-restclient
-  :after company
+  :commands restclient-mode
   :config
   (t/add-company-backend-hook 'restclient-mode-hook 'company-restclient))
 
@@ -246,6 +249,10 @@
     (bind-key "M-," 'xref-pop-marker-stack)))
 
 (t/use-package helm-xref
+  :commands (helm-xref-show-xrefs
+             xref-find-definitions
+             xref-find-references
+             xfref-pop-marker-stack)
   :init
   (progn
     (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
@@ -256,9 +263,12 @@
     (bind-key "M-," 'xref-pop-marker-stack)))
 
 (t/use-package company-tern
+  :commands tern-mode
   :diminish tern-mode
   :only-standalone t
-  :after company
+  :init
+  (with-eval-after-load 'js2-mode
+    (t/add-company-backend-hook 'js2-mode-hook 'company-tern))
   :config
   (progn
     (advice-add 'tern-find-definition :before 'xref-push-marker-stack) ; make pop-tag-mark work with tern
@@ -267,11 +277,10 @@
                                  "M-." 'tern-find-definition
                                  "M-," 'pop-tag-mark
                                  "C-M-." 'helm-etags-select))
-    (with-eval-after-load 'js2-mode
-      (t/add-company-backend-hook 'js2-mode-hook 'company-tern))
     (setq tern-command (append tern-command '("--no-port-file")))))
 
 (t/use-package etags-select
+  :commands etags-select-find-tag-at-point
   :init
   (progn
     (setq helm-etags-fuzzy-match t
@@ -286,6 +295,7 @@
                                  "M-RET" 'etags-select-goto-tag-other-window))))
 
 (t/use-package etags-table
+  :after etags-select
   :init
   (setq etags-table-search-up-depth 1 ; don't search upwards
         tags-file-name nil ; only use tags-table-list via etags-table
@@ -296,7 +306,8 @@
                              ,(t/user-file ".nvm/versions/node/v8.2.1/src/node-8.x/TAGS") ; generated with `ctags -e -R lib`
                              ))))
 
-(t/use-package helm-unicode)
+(t/use-package helm-unicode
+  :commands helm-unicode)
 
 (t/use-package company-emoji :after company)
 
@@ -339,7 +350,8 @@
   :commands turn-on-smartparens-mode
   :init
   (progn
-    (setq sp-ignore-modes-list (delete 'minibuffer-inactive-mode sp-ignore-modes-list))
+    (with-eval-after-load 'smartparens
+      (setq sp-ignore-modes-list (delete 'minibuffer-inactive-mode sp-ignore-modes-list)))
     (sp-use-paredit-bindings)
     (bind-key "<backspace>" 'sp-backward-delete-char sp-keymap)
     (bind-key "<delete>" 'sp-delete-char sp-keymap)
@@ -517,7 +529,6 @@
       (t/add-hook 'helm-before-initialize-hook 'neotree-hide))))
 
 (t/use-package helm-ag
-  :after helm
   :only-standalone t
   :commands helm-ag
   :init
@@ -531,12 +542,10 @@
       (setq helm-ag-base-command "ag --nocolor --nogroup --vimgrep"))))
 
 (t/use-package helm-projectile
-  :after helm
   :only-standalone t
   :commands helm-projectile)
 
 (t/use-package helm-descbinds
-  :after helm
   :only-standalone t
   :commands helm-descbinds
   :config
@@ -545,14 +554,12 @@
     (setq helm-descbinds-window-style 'split)))
 
 (t/use-package helm-dash
-  :after helm
   :commands helm-dash)
 
 (t/use-package helm-google
   :commands helm-google)
 
 (t/use-package helm-swoop
-  :after helm
   :only-standalone t
   :commands helm-swoop
   :config
@@ -779,7 +786,8 @@
   :only-standalone t
   :commands (projectile-mode
              helm-projectile
-             projectile-project-root)
+             projectile-project-root
+             projectile-relevant-known-projects)
   :init
   (progn
     (setq shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
@@ -797,10 +805,10 @@
     (projectile-global-mode +1)))
 
 (t/use-package dumb-jump
+  :commands dumb-jump-go
   :init
   (progn
     (setq dumb-jump-selector 'helm))
-  :config
   (progn
     (t/bind-in '(evil-normal-state-map evil-insert-state-map)
                "M-." 'dumb-jump-go
@@ -866,7 +874,8 @@
                         "e" 'artist-select-op-ellipse
                         "s" 'artist-select-op-square))))
 
-(t/use-package try)
+(t/use-package try
+  :commands try)
 
 (t/use-package selectric-mode ; lol
   :commands selectric-mode)

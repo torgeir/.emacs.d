@@ -23,7 +23,7 @@
                     t-lang-web
                     t-lang-html
                     t-lang-yaml
-                    t-lang-flow
+                    ;;t-lang-flow
                     t-lang-terraform
                     ))
 
