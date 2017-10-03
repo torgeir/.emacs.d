@@ -81,18 +81,37 @@
   (progn
     ;; eshell
 
-    (use-package esh-help
-      :init
-      (with-eval-after-load 'eshell
-        (setup-esh-help-eldoc)))
+    (defun t/eshell-init ()
+      "Init eshell."
+      (t/add-hook-defun 'eshell-first-time-mode-hook t/hook-init-eshell
+                        (t/eshell-init-smart)
+                        (t/eshell-init-aliases)
+
+                        ;; fix wierd prompts
+                        (add-to-list 'eshell-preoutput-filter-functions
+                                     (lambda (output)
+                                       (replace-regexp-in-string "\\[[0-9]+[G-K]" "" output))))
+
+      (setq eshell-history-size 10000
+            eshell-hist-ignoredups t
+            eshell-save-history-on-exit t
+            eshell-list-files-after-cd t
+            eshell-banner-message ""
+            eshell-error-if-no-glob t
+            eshell-visual-commands '("less" "ssh" "tmux" "top" "htop" "bash" "vim")
+            eshell-visual-subcommands '(("git" "log" "df" "diff" "show"))
+            eshell-term-name "eterm-color"))
+
+    (t/eshell-init)
+
 
     (defun t/eshell-init-smart ()
       "Init smart eshell"
       (require 'em-smart)
-      (eval-after-load 'esh-module '(add-to-list 'eshell-modules-list 'eshell-smart))
       (setq eshell-where-to-jump 'begin
             eshell-review-quick-commands nil
-            eshell-smart-space-goes-to-end t))
+            eshell-smart-space-goes-to-end t)
+      (eshell-smart-initialize))
 
     (defun t/eshell-init-aliases ()
       (require 'em-alias)
@@ -127,21 +146,10 @@
                       '("sudo" "*sudo $*")))
         (add-to-list 'eshell-command-aliases-list alias)))
 
-    (defun t/eshell-init ()
-      "Init eshell"
-      (t/eshell-init-smart)
-      (setq eshell-history-size 10000
-            eshell-hist-ignoredups t
-            eshell-save-history-on-exit t
-            eshell-list-files-after-cd t
-            eshell-banner-message ""
-            eshell-error-if-no-glob t
-            eshell-visual-commands '("less" "ssh" "tmux" "top" "htop" "bash" "vim")
-            eshell-visual-subcommands '(("git" "log" "df" "diff" "show"))
-            eshell-term-name "eterm-color")
-      (t/eshell-init-aliases))
-
-    (t/eshell-init)
+    (use-package esh-help
+      :commands setup-esh-help-eldoc
+      :init
+      (t/add-hook 'eshell-first-time-mode-hook 'setup-esh-help-eldoc))
 
     (defun t/eshell-buffer-id ()
       "Next eshell buffer id."
@@ -158,6 +166,7 @@
         (eshell (t/eshell-buffer-id))
         (when (and hasfile (eq eshell-process-list nil))
           (goto-char (point-max))
+          ;; default command
           ;;(insert (propertize "ls" 'face 'font-lock-comment-face))
           ;;(eshell-send-input)
           (setenv "PAGER" "cat"))))
@@ -208,12 +217,6 @@
                           "Go to end of line before killing input"
                           (end-of-line))
                         (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol)))
-
-    ;; fix wierd prompts
-    (add-to-list
-     'eshell-preoutput-filter-functions
-     (lambda (output)
-       (replace-regexp-in-string "\\[[0-9]+[G-K]" "" output)))
 
     (progn
       ;; eshell prompt
