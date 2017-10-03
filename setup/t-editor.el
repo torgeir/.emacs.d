@@ -879,6 +879,8 @@
   (t/add-hook 'focus-out-hook #'garbage-collect) ; make it feel snappier
   (t/add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
   (t/add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)
+  (setq large-file-warning-threshold (* 20 ; mb
+                                        1024 1024))
 
   (progn
     ;; inline evaled results when in elisp using cider
