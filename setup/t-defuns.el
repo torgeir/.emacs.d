@@ -1432,6 +1432,18 @@ If FILEXT is provided, return files with extension FILEXT instead."
               (setq-local company-backends (t/company-backends backends)))))
 
 ;;;###autoload
+(defun t/projectile-dired ()
+  (interactive)
+  (let ((projects (projectile-relevant-known-projects)))
+    (if projects
+        (projectile-completing-read
+         "Switch to project: "
+         projects
+         :action (lambda (project)
+                   (dired project)))
+      (user-error "No projects found"))))
+
+;;;###autoload
 (defun t/projectile-magit-status ()
   (interactive)
   (let ((projects (projectile-relevant-known-projects)))

@@ -1059,7 +1059,7 @@
   (t/declare-prefix "p" "Project"
                     "b" 'helm-browse-project
                     "c" 'projectile-switch-project
-                    "d" 'projectile-find-dir
+                    "d" 't/projectile-dired
                     "f" 'helm-projectile
                     "F" 'projectile-find-file-dwim
                     "g" 't/projectile-magit-status
