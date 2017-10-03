@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22993 12776 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (22995 61503 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -672,7 +672,7 @@ Get a list of all regexp matches (from the first group) in a string
 \(fn PREFIX-FMT PKG)" nil nil)
 
 (autoload 't/buffer-finished-p "t-defuns" "\
-
+Return non-nil value if the buffer has an ended process.
 
 \(fn B)" nil nil)
 
@@ -761,13 +761,18 @@ Add list of grouped company backends for `mode-hook'.
 
 \(fn)" t nil)
 
+(autoload 't/projectile-helm-ag "t-defuns" "\
+
+
+\(fn)" t nil)
+
 ;;;***
 
 ;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
 ;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (22993 12449
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (22995 61261
 ;;;;;;  0 0))
 
 ;;;***

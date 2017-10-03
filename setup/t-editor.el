@@ -1059,6 +1059,7 @@
                     "l" 't/neotree-open-file
                     "o" 't/open-in-desktop
                     "p" 'projectile-find-file-in-known-projects
+                    "s" 't/projectile-helm-ag
                     "R" 'projectile-replace
                     "S" 'projectile-save-project-buffers
                     "t" 'projectile-find-test-file)

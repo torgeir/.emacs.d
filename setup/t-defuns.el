@@ -1444,4 +1444,17 @@ If FILEXT is provided, return files with extension FILEXT instead."
                    (magit-status project)))
       (user-error "No projects found"))))
 
+;;;###autoload
+(defun t/projectile-helm-ag ()
+  (interactive)
+  (let ((projects (projectile-relevant-known-projects)))
+    (if projects
+        (projectile-completing-read
+         "Switch to project: "
+         projects
+         :action (lambda (project)
+                   (dired project)
+                   (helm-projectile-ag)))
+      (user-error "No projects found"))))
+
 (provide 't-defuns)
