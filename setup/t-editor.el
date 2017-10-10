@@ -838,9 +838,11 @@
 (use-package whitespace
   :ensure nil
   :init
-  (t/add-hook-defun '(prog-mode-hook text-mode-hook git-commit-mode-hook) t/hook-whitespace
-                    (setq-local whitespace-style '(face tabs tab-mark trailing))
-                    (whitespace-mode 1)))
+  (progn
+    (t/add-hook 'before-save-hook 'whitespace-cleanup)
+    (t/add-hook-defun '(prog-mode-hook text-mode-hook git-commit-mode-hook) t/hook-whitespace
+                      (setq-local whitespace-style '(face tabs tab-mark trailing))
+                      (whitespace-mode 1))))
 
 (use-package artist-mode
   :ensure nil
