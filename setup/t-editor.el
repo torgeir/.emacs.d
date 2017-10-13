@@ -589,7 +589,7 @@
 (t/use-package yasnippet
   :diminish yas-minor-mode
   :only-standalone t
-  :commands (org-cycle yas-expand t/tab-properly yas-activate-extra-mode)
+  :commands (org-cycle yas-expand t/tab-properly yas-activate-extra-mode yas-global-mode)
   :init
   (progn
     (setq yas-snippet-dirs '(t-dir-snippets)
@@ -602,6 +602,8 @@
 
   :config
   (progn
+    (yas-global-mode)
+
     (defun t/yas-clear-or-delete-char ()
       "Replace `yas-next-field' with noop `+' to make <backspace> only clear or delete-char."
       (interactive)

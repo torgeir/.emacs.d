@@ -407,21 +407,22 @@ Locally redefines org-agenda-files not to export all agenda files."
                                      "C-<return>" 't/org-insert-heading-respect-content-dwim
                                      "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim)))
 
-      (defun yas/org-very-safe-expand ()
-        (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
+      (progn
+        ;; yas in org
 
-      (defun yas/org-setup ()
-        ;; yasnippet (using the new org-cycle hooks)
-        (yas-global-mode 1)
-        (make-variable-buffer-local 'yas-trigger-key)
-        (setq yas-trigger-key [tab])
-        (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-        (define-key yas-keymap [tab] 'yas-next-field))
+        (defun yas/org-very-safe-expand ()
+          (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
 
-      ;; See https://github.com/eschulte/emacs24-starter-kit/issues/80.
-      (setq org-src-tab-acts-natively nil)
+        (defun yas/org-setup ()
+          (make-variable-buffer-local 'yas-trigger-key)
+          (setq yas-trigger-key [tab])
+          (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+          (define-key yas-keymap [tab] 'yas-next-field))
 
-      (t/add-hook 'org-mode-hook #'yas/org-setup))
+        ;; See https://github.com/eschulte/emacs24-starter-kit/issues/80.
+        (setq org-src-tab-acts-natively nil)
+
+        (t/add-hook 'org-mode-hook #'yas/org-setup)))
 
     (t/add-hook-defun 'org-mode-hook t/reset-org-font-sizes
                       (dolist (face '(org-level-1

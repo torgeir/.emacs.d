@@ -1,9 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (t/use-package simplezen
-  :commands simplezen-expand-or-indent-for-tab
-  :init
-  (t/add-hook-defun 'html-mode-hook t/hook-simplezen
-                    (bind-key "TAB" 't/tab-properly html-mode-map)))
+  :commands simplezen-expand-or-indent-for-tab)
 
 (t/use-package tagedit
   :commands tagedit-mode
