@@ -3,8 +3,8 @@
   :commands bash-completion-dynamic-complete
   :init
   (progn
-    (t/add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)
-    (t/add-hook 'shell-command-complete-functions 'bash-completion-dynamic-complete)))
+    (autoload 'bash-completion-dynamic-complete "bash-completion" "BASH completion hook")
+    (t/add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)))
 
 (t/use-package eshell-z
   :defer t
@@ -35,6 +35,7 @@
       (defun term-window-width () 2000)
       (setq truncate-lines t)
       (t/highlight-logging)
+      (evil-define-key 'normal term-raw-map "M-:" 'eval-expression)
       (evil-define-key 'normal term-raw-map "p" 'term-paste)
       (evil-define-key 'insert term-raw-map (kbd "<tab>") 'term-send-tab)
 
