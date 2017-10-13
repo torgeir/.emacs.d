@@ -509,9 +509,7 @@ Locally redefines org-agenda-files not to export all agenda files."
   :init
   (progn
     (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
-          elfeed-search-filter "@6-months-ago +unread -old -photo -life -gaming -news"
-          shr-use-fonts nil
-          shr-max-image-proportion 0.3)
+          elfeed-search-filter "@6-months-ago +unread -old -gaming -news -life -photo")
 
     (with-eval-after-load 'evil
       (progn
@@ -523,9 +521,15 @@ Locally redefines org-agenda-files not to export all agenda files."
   :config
   (progn
     (bind-key "SPC" 'elfeed-search-show-entry elfeed-search-mode-map)
-    (t/add-hook-defun 'elfeed-show-mode-hook t/hook-elfeed
+    (setq writeroom-fullscreen-effect 'fullboth)
+    (comment (setf elfeed-show-entry-switch
+                   (lambda (b)
+                     (switch-to-buffer b ; nil t
+                                       )))
+             (setf elfeed-kill-buffer 'kill-this-buffer))
+    (t/add-hook-defun 'elfeed-show-mode-hook t/elfeed-hook
                       (visual-line-mode)
-                      (set-window-margins nil 5 5))))
+                      (writeroom-mode))))
 
 (t/use-package elfeed-goodies
   :commands elfeed-goodies/setup

@@ -731,8 +731,43 @@
 (t/use-package restclient
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
 
+;; eww-mode
+(with-eval-after-load 'shr
+  ;; don't truncate lines in eww-mode
+  ;;(setq shr-width nil)
+  (defun shr-fill-text (text) text)
+  (defun shr-fill-lines (start end) nil)
+  (defun shr-fill-line () nil)
+
+  ;; wrap lines
+  (t/add-hook-defun 'eww-after-render-hook t/hook-eww-trunc
+                    (toggle-truncate-lines -1))
+
+  ;; not to large images
+  (setq shr-use-fonts nil
+        shr-max-image-proportion 0.6
+        shr-ignore-cache t
+        ))
+
 (t/use-package hackernews
-  :commands hackernews)
+  :commands hackernews
+  :config
+  (progn
+    (advice-add 'hackernews :after 'evil-emacs-state)
+    (advice-add 'eww-mode :after 'evil-emacs-state)
+    (t/bind-in 'eww-mode-map
+               "b" 'eww-browse-with-external-browser
+               "M-n" 'forward-paragraph
+               "M-b" 'backward-paragraph)
+    (t/add-hook-defun 'eww-mode-hook t/hook-eww
+                      (writeroom-mode)
+                      (visual-line-mode))
+    (t/bind-in 'hackernews-map
+               "<return>" 'hackernews-button-browse-internal
+               "b" (lambda nil
+                     (interactive)
+                     (hackernews-browse-url-action
+                      (button-at (point)))))))
 
 (t/use-package helm-hunks
   :commands (helm-hunks
@@ -945,6 +980,7 @@
                     "n" #'t/toggle-line-numbers
                     "r" #'t/toggle-relative-line-numbers
                     "l" 'hl-line-mode
+                    "L" 'visual-line-mode
                     "w" 'whitespace-mode
                     "W" 'writeroom-mode
                     "Cc" 'rainbow-mode
