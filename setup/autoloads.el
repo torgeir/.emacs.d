@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (22995 61503 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (23008 30415 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/tab-properly "t-defuns" "\
@@ -572,7 +572,7 @@ Grab the frontmost url out of chrome using `org-mac-grab-link'
 \(fn)" t nil)
 
 (autoload 't/browse-chrome-url-in-w3m "t-defuns" "\
-Open the frontmost chrome url in `w3m'. 
+Open the frontmost chrome url in `w3m'.
 
 \(fn)" t nil)
 
@@ -751,10 +751,20 @@ Clone a github repo to `~/Code/<repo-name>'.
 
 \(fn REPO)" t nil)
 
-(autoload 't/add-company-backend-hook "t-defuns" "\
+(autoload 't/add-company-backends "t-defuns" "\
+Add list of grouped company backends.
+
+\(fn &rest BACKENDS)" nil nil)
+
+(autoload 't/add-company-backends-hook "t-defuns" "\
 Add list of grouped company backends for `mode-hook'.
 
 \(fn MODE-HOOK &rest BACKENDS)" nil nil)
+
+(autoload 't/projectile-dired "t-defuns" "\
+
+
+\(fn)" t nil)
 
 (autoload 't/projectile-magit-status "t-defuns" "\
 
@@ -772,7 +782,7 @@ Add list of grouped company backends for `mode-hook'.
 ;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (22995 61261
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23008 30094
 ;;;;;;  0 0))
 
 ;;;***

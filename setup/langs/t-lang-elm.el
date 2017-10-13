@@ -8,7 +8,7 @@
   :config
   (progn
     (t/add-hook 'elm-mode-hook 'elm-oracle-setup-completion)
-    (t/add-company-backend-hook 'elm-mode-hook 'company-elm)
+    (t/add-company-backends-hook 'elm-mode-hook 'company-elm)
     (t/declare-prefix-for-mode 'elm-mode "me" "Evaluate"
                                "b" (lambda ()
                                      (interactive)

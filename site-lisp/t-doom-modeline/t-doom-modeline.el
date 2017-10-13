@@ -711,6 +711,6 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
 (add-hook 'circe-mode-hook   #'+doom-modeline|set-special-modeline)
 
 ;; torgeir added this
-(add-hook! 'js2-mode-hook (setq +doom-modeline-env-command "node -v 2>&1"))
+(add-hook! 'web-mode-hook (setq +doom-modeline-env-command "node -v 2>&1"))
 
 (provide 't-doom-modeline)

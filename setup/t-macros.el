@@ -3,7 +3,8 @@
   "Run `body' when buffer's file has extension `ext'."
   (declare (indent 1))
   `(let ((ext-re (concat "\\." ,ext "$")))
-     (when (string-match ext-re (buffer-file-name))
+     (when (and (buffer-file-name)
+                (string-match ext-re (buffer-file-name)))
        ,@body)))
 
 (defun t/ensure-list (i-or-is)
@@ -119,7 +120,7 @@ for setting up vars and config after load")
         (setq entries (plist-put entries :config `(,config-name)))
 
         ;; pass through some other use-package keys
-        (let ((ks (list :init :config :mode :bind :ensure :diminish :after :commands :defer :load-path :pin :evil-state)))
+        (let ((ks (list :if :init :config :mode :bind :ensure :diminish :after :commands :defer :load-path :pin :evil-state)))
           (dolist (k ks)
             (when (plist-member entries k)
               (let ((v (plist-get entries k)))

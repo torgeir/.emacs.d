@@ -119,7 +119,7 @@
     (progn
       ;; fix completion dissapearing
       (with-eval-after-load 'company
-        (t/add-company-backend-hook 'org-mode-hook 'company-capf))
+        (t/add-company-backends-hook 'org-mode-hook 'company-capf))
       (t/add-hook-defun 'org-mode-hook t/hook-add-pcomplete-to-capf
                         (t/add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t)))
 

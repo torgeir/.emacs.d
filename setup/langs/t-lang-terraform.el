@@ -5,6 +5,6 @@
 (t/use-package company-terraform
   :after terraform-mode
   :config
-  (t/add-company-backend-hook 'terraform-mode-hook 'company-terraform))
+  (t/add-company-backends-hook 'terraform-mode-hook 'company-terraform))
 
 (provide 't-lang-terraform)

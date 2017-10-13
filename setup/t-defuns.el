@@ -1424,12 +1424,17 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (dired dir)))
 
 ;;;###autoload
-(defun t/add-company-backend-hook (mode-hook &rest backends)
+(defun t/add-company-backends (&rest backends)
+  "Add list of grouped company backends."
+  (make-local-variable 'company-backends)
+  (setq-local company-backends (t/company-backends backends)))
+
+;;;###autoload
+(defun t/add-company-backends-hook (mode-hook &rest backends)
   "Add list of grouped company backends for `mode-hook'."
   (add-hook mode-hook
             (lambda nil
-              (make-local-variable 'company-backends)
-              (setq-local company-backends (t/company-backends backends)))))
+              (apply 't/add-company-backends backends))))
 
 ;;;###autoload
 (defun t/projectile-dired ()

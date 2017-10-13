@@ -230,13 +230,13 @@
     (company-flx-mode +1)))
 
 (t/use-package company-web
-  :commands (web-mode js2-mode)
+  :commands (web-mode)
   :only-standalone t)
 
 (t/use-package company-restclient
   :commands restclient-mode
   :config
-  (t/add-company-backend-hook 'restclient-mode-hook 'company-restclient))
+  (t/add-company-backends-hook 'restclient-mode-hook 'company-restclient))
 
 (t/use-package helm-xref
   :init
@@ -266,9 +266,6 @@
   :commands tern-mode
   :diminish tern-mode
   :only-standalone t
-  :init
-  (with-eval-after-load 'js2-mode
-    (t/add-company-backend-hook 'js2-mode-hook 'company-tern))
   :config
   (progn
     (advice-add 'tern-find-definition :before 'xref-push-marker-stack) ; make pop-tag-mark work with tern
@@ -373,7 +370,6 @@
       (define-key clojure-mode-map ";" 'sp-comment))
 
     (t/add-hook '(web-mode-hook
-                  js2-mode-hook
                   js-mode-hook
                   java-mode-hook
                   text-mode-hook
@@ -382,8 +378,8 @@
                   mark-down-mode)
                 'turn-on-smartparens-mode)
 
-    (with-eval-after-load 'js2-mode
-      (t/bind-in 'js2-mode-map
+    (with-eval-after-load 'web-mode
+      (t/bind-in 'web-mode-map
                  "M-<up>" 'sp-splice-sexp-killing-backward
                  "M-<down>" 'sp-splice-sexp-killing-forward))
     (with-eval-after-load 'java-mode
@@ -469,8 +465,8 @@
     (t/bind-in 'text-mode-map
                "C-<right>" #'sp-forward-slurp-sexp
                "C-<left>" #'sp-forward-barf-sexp)
-    (with-eval-after-load 'js2-mode
-      (t/bind-in 'js2-mode-map
+    (with-eval-after-load 'web-mode
+      (t/bind-in 'web-mode-map
                  "C-<right>" #'sp-forward-slurp-sexp
                  "C-<left>" #'sp-forward-barf-sexp))))
 

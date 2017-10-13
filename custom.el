@@ -54,46 +54,13 @@
     ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)"))))
  '(package-selected-packages
    (quote
-    (artist-mode company-tern magit-gh-pulls company-quickhelp company-terraform terraform-mode pcomplete-extension pcomplete-extensions pcmpl-args pcmpl-homebrew pcmpl-git indium esh-help etags-table beginend prettier-js org-plus-contrib smooth-scrolling yasnippet emoji-cheat-sheet-plus company ace-jump-mode magit git-gutter+ solaire-mode spacemacs-theme evil all-the-icons evil-snipe html2text helm-xref helm-hunks eldoc-eval evil-commentary yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic skewer-mode simple-httpd haml-mode anzu highlight bind-map packed auto-complete clojure-snippets clj-refactor inflections edn peg cider-eval-sexp-fu cider queue clojure-mode mmm-mode markdown-toc markdown-mode gh-md nodejs-repl alert log4e gntp noflet elfeed visual-fill-column wgrep hide-lines loop nlinum google makey restclient know-your-http-well flycheck-pos-tip pos-tip flycheck vi-tilde-fringe ws-butler writeroom-mode winum which-key wgrep-ag web-mode web-beautify weather-metno w3m volatile-highlights visual-regexp uuidgen use-package try transpose-frame toc-org tagedit syslog-mode suggest spaceline smex slim-mode selectric-mode scss-mode sass-mode restart-emacs request rainbow-mode rainbow-delimiters pug-mode persp-mode pcre2el paradox org-mac-link org-mac-iCal org-evil org-bullets org-alert open-junk-file ob-restclient nlinum-relative neotree move-text macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode json-mode js2-refactor js-doc info+ indent-guide hungry-delete hl-todo highlight-symbol highlight-parentheses highlight-numbers highlight-indentation highlight-escape-sequences hide-comnt help-fns+ helm-unicode helm-themes helm-swoop helm-projectile helm-open-github helm-mode-manager helm-make helm-google helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag hackernews gruvbox-theme google-translate golden-ratio git-timemachine git-link git-gutter-fringe+ gist fuzzy flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-multiedit evil-mc evil-matchit evil-lisp-state evil-leader evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu etags-select eshell-z emmet-mode elisp-slime-nav elfeed-org elfeed-goodies dumb-jump doom-themes discover-my-major dired-details define-word dash-at-point darktooth-theme csv-mode company-web company-statistics company-restclient company-flx company-emoji company-ansible column-enforce-mode coffee-mode clean-aindent-mode calendar-norway better-defaults bash-completion auto-yasnippet auto-highlight-symbol auto-compile all-the-icons-dired aggressive-indent ag adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (flow-minor-mode fireplace dired-subtree artist-mode company-tern magit-gh-pulls company-quickhelp company-terraform terraform-mode pcomplete-extension pcomplete-extensions pcmpl-args pcmpl-homebrew pcmpl-git indium esh-help etags-table beginend prettier-js org-plus-contrib smooth-scrolling yasnippet emoji-cheat-sheet-plus company ace-jump-mode magit git-gutter+ solaire-mode spacemacs-theme evil all-the-icons evil-snipe html2text helm-xref helm-hunks eldoc-eval evil-commentary yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic skewer-mode simple-httpd haml-mode anzu highlight bind-map packed auto-complete clojure-snippets clj-refactor inflections edn peg cider-eval-sexp-fu cider queue clojure-mode mmm-mode markdown-toc markdown-mode gh-md nodejs-repl alert log4e gntp noflet elfeed visual-fill-column wgrep hide-lines loop nlinum google makey restclient know-your-http-well flycheck-pos-tip pos-tip flycheck vi-tilde-fringe ws-butler writeroom-mode winum which-key wgrep-ag web-mode web-beautify weather-metno w3m volatile-highlights visual-regexp uuidgen use-package try transpose-frame toc-org tagedit syslog-mode suggest spaceline smex slim-mode selectric-mode scss-mode sass-mode restart-emacs request rainbow-mode rainbow-delimiters pug-mode persp-mode pcre2el paradox org-mac-link org-mac-iCal org-evil org-bullets org-alert open-junk-file ob-restclient nlinum-relative neotree move-text macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode json-mode js2-refactor js-doc info+ indent-guide hungry-delete hl-todo highlight-symbol highlight-parentheses highlight-numbers highlight-indentation highlight-escape-sequences hide-comnt help-fns+ helm-unicode helm-themes helm-swoop helm-projectile helm-open-github helm-mode-manager helm-make helm-google helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag hackernews gruvbox-theme google-translate golden-ratio git-timemachine git-link git-gutter-fringe+ gist fuzzy flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-multiedit evil-mc evil-matchit evil-lisp-state evil-leader evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu etags-select eshell-z emmet-mode elisp-slime-nav elfeed-org elfeed-goodies dumb-jump doom-themes discover-my-major dired-details define-word dash-at-point darktooth-theme csv-mode company-web company-statistics company-restclient company-flx company-emoji company-ansible column-enforce-mode coffee-mode clean-aindent-mode calendar-norway better-defaults bash-completion auto-yasnippet auto-highlight-symbol auto-compile all-the-icons-dired aggressive-indent ag adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(pos-tip-background-color "#36473A")
  '(pos-tip-foreground-color "#FFFFC8")
  '(safe-local-variable-values
    (quote
     ((*t-indent* . 4)
-     (web-mode-markup-indent-offset . 4)
-     (web-mode-css-indent-offset . 4)
      (web-mode-code-indent-offset . 4)
-     (eval font-lock-add-keywords nil
-           (\`
-            (((\,
-               (concat "("
-                       (regexp-opt
-                        (quote
-                         ("sp-do-move-op" "sp-do-move-cl" "sp-do-put-op" "sp-do-put-cl" "sp-do-del-op" "sp-do-del-cl"))
-                        t)
-                       "\\_>"))
-              1
-              (quote font-lock-variable-name-face))))))))
- '(tags-add-tables t)
- '(vc-annotate-background "#181e26")
- '(vc-annotate-color-map
-   (list
-    (cons 20 "#7bc275")
-    (cons 40 "#a0c077")
-    (cons 60 "#c6bf79")
-    (cons 80 "#ECBE7B")
-    (cons 100 "#eaae6e")
-    (cons 120 "#e89f61")
-    (cons 140 "#e69055")
-    (cons 160 "#db8981")
-    (cons 180 "#d082ae")
-    (cons 200 "#C57BDB")
-    (cons 220 "#d874b0")
-    (cons 240 "#eb6d86")
-    (cons 260 "#ff665c")
-    (cons 280 "#ce5b57")
-    (cons 300 "#9e5151")
-    (cons 320 "#6d474d")
-    (cons 340 "#5D656B")
-    (cons 360 "#5D656B")))
- '(vc-annotate-very-old-color nil))
+     (web-mode-css-indent-offset . 4)
+     (web-mode-markup-indent-offset . 4))))
+ '(tags-add-tables t))

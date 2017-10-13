@@ -23,10 +23,8 @@
                              "p" 'eval-print-last-sexp
                              "R" 't/eval-and-replace)
 
-  (t/add-company-backend-hook 'lisp-interaction-mode-hook 'company-elisp)
-  (t/add-company-backend-hook 'lisp-mode-hook 'company-elisp)
-  (t/add-company-backend-hook 'emacs-lisp-mode-hook 'company-elisp)
-
-  (bind-key "TAB" #'t/tab-properly emacs-lisp-mode-map))
+  (t/add-company-backends-hook 'lisp-interaction-mode-hook 'company-elisp)
+  (t/add-company-backends-hook 'lisp-mode-hook 'company-elisp)
+  (t/add-company-backends-hook 'emacs-lisp-mode-hook 'company-elisp))
 
 (provide 't-lang-elisp)

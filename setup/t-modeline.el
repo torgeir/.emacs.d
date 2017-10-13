@@ -15,7 +15,6 @@
       (ethan-wspace-mode . "")
       ;;(rainbow-delimiters-mode . "")
       (html-mode . "html")
-      (js2-mode . "js2")
       (css-mode . "css")
       (less-css-mode . "less")
       (clojure-mode . "clj")
