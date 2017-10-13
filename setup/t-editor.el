@@ -55,7 +55,7 @@
   :config
   (progn
     (bind-key "e" 't/eshell dired-mode-map)
-    (bind-key "TAB" 'dired-details-toggle dired-mode-map)
+    (bind-key "C-d" 'dired-kill-subdir dired-mode-map)
     (bind-key "C-c C-e" 'dired-toggle-read-only)
     (bind-key "C-x C-j" 'dired-jump)
     (bind-key "C-x M-j" '(lambda () (interactive) (dired-jump 1)))
@@ -65,16 +65,27 @@
     (bind-key "M-<down>" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map)
     (bind-key "M-n" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map)))
 
+;; less verbose dired
+(t/use-package dired-details
+  :commands (dired-details-activate dired-details-toggle)
+  :init
+  (progn
+    (setq dired-details-hidden-string "")
+    (t/add-hook-defun 'dired-mode-hook t/hook-dired
+                      (dired-hide-details-mode 1)
+                      (all-the-icons-dired-mode))))
+
+(use-package dired-subtree
+  :commands dired-subtree-toggle
+  :init
+  (progn
+    (setq dired-subtree-line-prefix "  ")
+    (bind-key "TAB" 'dired-subtree-toggle dired-mode-map)))
+
 (t/use-package all-the-icons-dired
   :commands all-the-icons-dired-mode
   :init
   (t/add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
-
-;; less verbose dired
-(t/use-package dired-details
-  :commands dired
-  :init (setq-default dired-details-hidden-string "")
-  :config (dired-details-install))
 
 (t/use-package rainbow-mode
   :diminish rainbow-mode
@@ -498,6 +509,11 @@
                  "C-w" 'backward-kill-word
                  "C-u" 'backward-kill-sentence
                  "C-c u" 'universal-argument))
+    (with-eval-after-load 'helm-files
+      (t/bind-in 'helm-find-files-map
+                 "s-<down>" 'helm-execute-persistent-action
+                 "s-<up>" 'helm-find-files-up-one-level
+                 "C-k" 'helm-find-files-up-one-level))
     (setq-default helm-display-header-line nil
                   helm-M-x-fuzzy-match t
                   helm-apropos-fuzzy-match t
