@@ -709,7 +709,7 @@
   :defer 1
   :init
   (progn
-    (setq hl-paren-colors '("DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink" "DeepPink"))
+    (setq hl-paren-colors (-repeat 26 "DeepPink"))
     (t/add-hook 'prog-mode-hook 'highlight-parentheses-mode))
   :config
   (progn
