@@ -166,7 +166,6 @@
           ace-jump-mode-case-fold t)))
 
 (t/use-package evil-snipe
-  :defer 2
   :config
   (evil-snipe-override-mode 1))
 
