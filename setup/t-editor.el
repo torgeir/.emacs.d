@@ -692,8 +692,8 @@
   :only-standalone t
   :init
   (progn
-    (setq smooth-scroll-margin 5
-          mouse-wheel-scroll-amount '(3 ((shift) . 1)) ;; two lines at a time
+    (setq smooth-scroll-margin 4
+          mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; two lines at a time
           mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
           mouse-wheel-follow-mouse 't))
   :config
