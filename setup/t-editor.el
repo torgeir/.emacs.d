@@ -742,6 +742,19 @@
   (progn
     (t/add-hook 'prog-mode-hook 'highlight-numbers-mode)))
 
+(use-package js-codemod
+  ;; :ensure nil
+  ;; :load-path "~/Desktop/js-codemod/js-codemod.el"
+  :commands (js-codemod-mod-region))
+
+(use-package helm-js-codemod
+  ;;:ensure nil
+  ;;:load-path "~/Desktop/js-codemod/helm-js-codemod.el"
+  :commands (helm-js-codemod)
+  :init
+  (setq helm-js-codemod-mod-dir
+        (expand-file-name "~/Desktop/js-codemod/mods/")))
+
 (t/use-package restclient
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
 
