@@ -529,7 +529,7 @@ Locally redefines org-agenda-files not to export all agenda files."
              (setf elfeed-kill-buffer 'kill-this-buffer))
     (t/add-hook-defun 'elfeed-show-mode-hook t/elfeed-hook
                       (visual-line-mode)
-                      (writeroom-mode))))
+                      (writeroom--enable))))
 
 (t/use-package elfeed-goodies
   :commands elfeed-goodies/setup
