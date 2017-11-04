@@ -604,7 +604,6 @@
 (t/use-package yasnippet
   :diminish yas-minor-mode
   :only-standalone t
-  :commands (org-cycle yas-expand t/tab-properly yas-activate-extra-mode yas-global-mode)
   :init
   (progn
     (setq yas-snippet-dirs '(t-dir-snippets)
