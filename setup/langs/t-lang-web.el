@@ -10,6 +10,9 @@
                         (setq-local web-mode-markup-indent-offset *t-indent*)
                         (setq-local web-mode-css-indent-offset *t-indent*)
                         (setq-local web-mode-code-indent-offset *t-indent*)
+
+                        (js2-minor-mode)
+
                         (tern-mode)
                         (t/add-company-backends 'company-web-html 'company-tern)
 
@@ -22,10 +25,7 @@
                           (yas-activate-extra-mode mode))))))
 
 (t/use-package web-beautify
-  :only-standalone t
-  :commands (web-beautify-html
-             web-beautify-css
-             web-beautify-js)
+  :commands (web-beautify-html web-beautify-css web-beautify-js)
   :init
   (progn
     (t/declare-prefix-for-mode 'web-mode  "m" "Mode" "=" 'web-beautify-html)
