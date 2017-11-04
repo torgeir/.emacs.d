@@ -3,13 +3,8 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (23008 30415 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (23038 10702 0 0))
 ;;; Generated autoloads from t-defuns.el
-
-(autoload 't/tab-properly "t-defuns" "\
-
-
-\(fn)" t nil)
 
 (autoload 't/send-buffer-to-scala-repl "t-defuns" "\
 Send buffer to ensime repl, starts it if its not running
@@ -782,7 +777,7 @@ Add list of grouped company backends for `mode-hook'.
 ;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23008 30094
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23038 10635
 ;;;;;;  0 0))
 
 ;;;***

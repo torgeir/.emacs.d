@@ -1,14 +1,6 @@
 ;;; setup/t-defuns.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
-(defun t/tab-properly ()
-  (interactive)
-  (let ((yas-fallback-behavior 'return-nil))
-    (unless (yas-expand)
-      (when (fboundp 'simplezen-expand-or-indent-for-tab) (simplezen-expand-or-indent-for-tab))
-      (when (looking-back "^\s*") (back-to-indentation)))))
-
-;;;###autoload
 (defun t/send-buffer-to-scala-repl ()
   "Send buffer to ensime repl, starts it if its not running"
   (interactive)
