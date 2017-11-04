@@ -1,6 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 (t/use-package evil
-  :only-standalone t)
+  :only-standalone t
+  :init
+  (setq evil-want-C-d-scroll t
+        evil-want-C-u-scroll t))
 
 (t/use-package evil-anzu
   :only-standalone t
