@@ -221,10 +221,6 @@ ignored.")
   ;; i_Ctrl-o - C-o from hybrid mode, like in vim insert mode
   (evil-define-key 'hybrid global-map (kbd "C-o") 'evil-execute-in-normal-state)
 
-  (defun t/paste-prev ()
-    (interactive)
-    (evil-paste-pop -1))
-
   ;; some emacs stuff is useful, in terminals etc
   ;; http://stackoverflow.com/a/16226006
   (t/bind-in '(evil-normal-state-map
@@ -232,22 +228,24 @@ ignored.")
                evil-visual-state-map
                evil-motion-state-map)
              "C-a" 't/smart-beginning-of-line
-             "C-b" 'evil-backward-char
-             "C-d" 'evil-delete-char
              "C-e" 'end-of-line
+             "C-b" 'evil-backward-char
              "C-f" 'evil-forward-char
              "C-k" 'kill-line
              "C-n" 'evil-next-line
              "C-p" 'evil-previous-line
              "C-w" 'evil-delete-backward-word
-             "M-y" 'helm-show-kill-ring
-             "C-y" 'evil-paste-pop)
+             "M-y" 'helm-show-kill-ring)
+
+  (t/bind-in '(evil-insert-state-map)
+             "C-d" 'evil-delete-char
+             "C-u" (lambda nil (interactive) (kill-line 0)))
 
   (t/bind-in '(evil-normal-state-map
                evil-visual-state-map)
              "Q" 'call-last-kbd-macro
              "C-y" 'evil-paste-pop ; cycle after pasting with p
-             "C-S-y" 't/evil-paste-prev)
+             "C-S-y" (lambda nil (interactive) (evil-paste-pop-next 1)))
 
   ;; esc ought to quit
   (bind-key [escape] 'keyboard-quit evil-normal-state-map)
