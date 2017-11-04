@@ -139,7 +139,7 @@
 
 (t/use-package evil-commentary
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
-  :config (evil-commentary-mode 1))
+  :init (evil-commentary-mode 1))
 
 (defun t-evil/vars ()
   (progn
