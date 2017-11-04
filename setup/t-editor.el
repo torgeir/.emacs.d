@@ -781,11 +781,12 @@
   :config
   (progn
     (advice-add 'hackernews :after 'evil-emacs-state)
-    (advice-add 'eww-mode :after 'evil-emacs-state)
-    (t/bind-in 'eww-mode-map
-               "b" 'eww-browse-with-external-browser
-               "M-n" 'forward-paragraph
-               "M-b" 'backward-paragraph)
+    (with-eval-after-load 'eww
+      (advice-add 'eww-mode :after 'evil-emacs-state)
+      (t/bind-in 'eww-mode-map
+                 "b" 'eww-browse-with-external-browser
+                 "M-n" 'forward-paragraph
+                 "M-b" 'backward-paragraph))
     (t/add-hook-defun 'eww-mode-hook t/hook-eww
                       (writeroom-mode)
                       (visual-line-mode))
