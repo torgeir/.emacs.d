@@ -340,7 +340,14 @@ PWD is not in a git repo (or the git command is not found)."
 
 (use-package pcmpl-git
   :commands eshell)
-;;(use-package pcmpl-args)
+(use-package pcmpl-args
+  :commands eshell
+  :config
+  (defun pcmpl-args-default-man-function (name)
+    "torgeir: Patched to remove arguments to work on os x."
+    (let ((process-environment process-environment))
+      (push "MANWIDTH=10000" process-environment)
+      (pcmpl-args-process-file "man" "--" name))))
 (use-package pcmpl-homebrew
   :commands eshell)
 (use-package pcomplete-extension
