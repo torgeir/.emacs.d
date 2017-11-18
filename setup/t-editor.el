@@ -54,6 +54,7 @@
           dired-dwim-target t))
   :config
   (progn
+    (bind-key "~" (lambda () (interactive) (find-alternate-file "~")) dired-mode-map)
     (bind-key "e" 't/eshell dired-mode-map)
     (bind-key "C-d" 'dired-kill-subdir dired-mode-map)
     (bind-key "C-c C-e" 'dired-toggle-read-only)
