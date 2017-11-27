@@ -109,6 +109,7 @@
   (progn
     (setq neo-smart-open nil
           neo-window-fixed-size nil
+          neo-window-width 35
           neo-create-file-auto-open t
           neo-mode-line-type 'none
           neo-show-updir-line nil
@@ -121,6 +122,15 @@
   (progn
 
     (bind-key [f6] 'neotree-toggle)
+
+    (defun t/neotree-keep-size (fn &rest args)
+      "Reset neotree width after open, if user adjusted it's size."
+      (let ((w (window-width)))
+        (funcall fn)
+        (neo-global--set-window-width w)))
+    (advice-add 'neotree-enter :around 't/neotree-keep-size)
+    (advice-add 'neotree-enter-vertical-split :around 't/neotree-keep-size)
+    (advice-add 'neotree-enter-horizontal-split :around 't/neotree-keep-size)
 
     (defun neotree-change-root-up ()
       (interactive)
