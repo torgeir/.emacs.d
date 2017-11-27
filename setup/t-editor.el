@@ -1118,6 +1118,7 @@
   (t/declare-prefix "f" "Files/Frame"
                     "f" 'helm-find-files
                     "l" 't/neotree-open-file
+                    "L" 'neotree-hide
                     "j" 'dired-jump
                     "J" 'dired-jump-other-window
                     "d" 'delete-frame
