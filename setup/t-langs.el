@@ -3,6 +3,7 @@
   (t/declare-prefix "m" "Mode"))
 
 (defconst t-langs '(t-lang-arduino
+                    t-lang-applescript
                     t-lang-clojure
                     t-lang-css
                     t-lang-docker
