@@ -167,6 +167,33 @@
     (setq aw-keys '(?j ?k ?l ?a ?s ?d ?f ?g)
           aw-background t)))
 
+(use-package avy
+  :commands (avy-goto-char
+             avy-goto-char-2
+             avy-goto-line
+             avy-goto-char-in-line
+             avy-goto-word-0
+             avy-goto-line-above
+             avy-goto-word-0-above
+             avy-goto-word-1-above
+             avy-goto-char-2-above
+             avy-goto-symbol-1-above
+             avy-goto-line-below
+             avy-goto-word-0-below
+             avy-goto-word-1-below
+             avy-goto-char-2-below
+             avy-goto-symbol-1-below)
+  :config
+  (progn
+    (setq avy-all-windows 'all-frames
+          avy-background nil
+          avy-highlight-first t
+          avy-style 'at)
+    (set-face-attribute 'avy-lead-face nil   :background nil :foreground (face-foreground 'error))
+    (set-face-attribute 'avy-lead-face-0 nil :background nil :foreground (face-foreground 'error))
+    (set-face-attribute 'avy-lead-face-1 nil :background nil :foreground (face-foreground 'error))
+    (set-face-attribute 'avy-lead-face-2 nil :background nil :foreground (face-foreground 'error))
+    ))
 
 (t/use-package es-mode
   :init
@@ -1147,9 +1174,26 @@
   (t/declare-prefix "j" "Jump to"
                     "w" 'ace-window
                     "j" 'dumb-jump-go
-                    "c" 'ace-jump-char-mode
-                    "l" 'ace-jump-line-mode
-                    "W" 'ace-jump-word-mode)
+                    "t" 'avy-goto-char-timer
+                    "c" 'avy-goto-char
+                    "C" 'avy-goto-char-2
+                    "l" 'avy-goto-line
+                    "L" 'avy-goto-char-in-line
+                    "W" 'avy-goto-word-1)
+
+  (t/declare-prefix "ja" "Jump to above"
+                    "l" 'avy-goto-line-above
+                    "W" 'avy-goto-word-0-above
+                    "w" 'avy-goto-word-1-above
+                    "c" 'avy-goto-char-2-above
+                    "s" 'avy-goto-symbol-1-above)
+
+  (t/declare-prefix "jb" "Jump to below"
+                    "l" 'avy-goto-line-below
+                    "w" 'avy-goto-word-1-below
+                    "W" 'avy-goto-word-0-below
+                    "c" 'avy-goto-char-2-below
+                    "s" 'avy-goto-symbol-1-below)
 
   (t/declare-prefix "c" "Comment/Complete"
                     "l" 't/helm-find-and-insert-line-from-project)
@@ -1169,6 +1213,7 @@
                     "G" 'projectile-regenerate-tags
                     "k" 'projectile-kill-buffers
                     "l" 't/neotree-open-file
+                    "L" 'neotree-hide
                     "o" 't/open-in-desktop
                     "p" 'projectile-find-file-in-known-projects
                     "s" 't/projectile-helm-ag
