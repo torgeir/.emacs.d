@@ -178,6 +178,19 @@
   :config
   (t/bind-in 'es-mode-map
              "C-c C-v" 'es-execute-request-dwim))
+
+(t/use-package hideshow
+  :init
+  (progn
+    (add-hook 'prog-mode-hook 'hs-minor-mode)
+    (defun display-code-line-counts (ov)
+      (when (eq 'code (overlay-get ov 'hs))
+        (overlay-put ov
+                     'display (format " ... "
+                                      (count-lines (overlay-start ov)
+                                                   (overlay-end ov))))))
+    (setq hs-set-up-overlay #'display-code-line-counts)))
+
 (t/use-package ace-jump-mode
   :commands (ace-jump-mode
              ace-jump-char-mode
