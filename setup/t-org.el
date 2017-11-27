@@ -143,7 +143,8 @@
          (latex . t)
          (shell . t)
          (dot . t)
-         (restclient . t)))
+         (restclient . t)
+         (elasticsearch . t)))
 
       (t/add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
 

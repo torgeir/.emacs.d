@@ -156,6 +156,17 @@
     (setq aw-keys '(?j ?k ?l ?a ?s ?d ?f ?g)
           aw-background t)))
 
+
+(t/use-package es-mode
+  :init
+  (progn
+    (defun t/es-mode-format (status header buffer)
+      (with-current-buffer buffer
+        (json-pretty-print-buffer)))
+    (setq es-response-success-functions '(t/es-mode-format)))
+  :config
+  (t/bind-in 'es-mode-map
+             "C-c C-v" 'es-execute-request-dwim))
 (t/use-package ace-jump-mode
   :commands (ace-jump-mode
              ace-jump-char-mode
