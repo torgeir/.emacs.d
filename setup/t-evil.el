@@ -169,19 +169,9 @@
           evil-normal-state-cursor 'box
           evil-insert-state-cursor 'bar
           evil-visual-state-cursor 'hollow))
-  (advice-add #'load-theme :after #'t/init-evil-cursors)
-
-  (defun t/toggle-evil-local-mode ()
-    "Toggles evil-local-mode and updates the cursor. The `evil-*-state-cursor's seem to work by default, but not when toggling evil-local-mode (in emacsclients) off and on, so help it."
-    (interactive)
-    (if (equal evil-state 'emacs)
-        (evil-normal-state)
-      (evil-emacs-state))))
+  (advice-add #'load-theme :after #'t/init-evil-cursors))
 
 (defun t-evil/config ()
-  (if is-mac
-      (bind-key "C-'" 't/toggle-evil-local-mode)
-    (bind-key "C-|" 't/toggle-evil-local-mode))
 
   (progn
     (defvar +evil-esc-hook '(t)
