@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (23038 10702 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (23067 13506 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/send-buffer-to-scala-repl "t-defuns" "\
@@ -606,10 +606,20 @@ If a file is over a given size, make the buffer read only.
 
 \(fn)" nil nil)
 
+(autoload 't/run-osascript "t-defuns" "\
+Run applescript.
+
+\(fn S)" nil nil)
+
 (autoload 't/osascript-activate "t-defuns" "\
 Run applescript to activate application.
 
 \(fn APP)" nil nil)
+
+(autoload 't/osascript-show-url "t-defuns" "\
+
+
+\(fn URL)" nil nil)
 
 (autoload 't/open-in-intellij "t-defuns" "\
 Opens current file in IntelliJ IDEA.
@@ -777,7 +787,7 @@ Add list of grouped company backends for `mode-hook'.
 ;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23038 10635
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23067 11422
 ;;;;;;  0 0))
 
 ;;;***

@@ -1101,9 +1101,19 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (fundamental-mode)))
 
 ;;;###autoload
+(defun t/run-osascript (s)
+  "Run applescript."
+  (shell-command (format "osascript -e '%s'" s)))
+
+;;;###autoload
 (defun t/osascript-activate (app)
   "Run applescript to activate application."
-  (shell-command (format "osascript -e 'tell application \"%s\" to activate'" app)))
+  (t/run-osascript (format "tell application \"%s\" to activate" app)))
+
+;;;###autoload
+(defun t/osascript-show-url (url)
+  (t/run-osascript
+   (format "tell application \"Google Chrome\" to set URL of active tab of window 1 to \"%s\"" url)))
 
 ;;;###autoload
 (defun t/open-in-intellij ()
