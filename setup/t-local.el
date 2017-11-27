@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (progn
   ;; site-lisp
-  
+
   (use-package evil-use-package
     :ensure nil
     :load-path "site-lisp/evil-use-package/")
@@ -38,7 +38,7 @@
     :commands turn-on-json-path-eldoc
     :init
     (t/add-hook 'json-mode-hook 'turn-on-json-path-eldoc))
-  
+
   (t/use-package html2text
     ;; needed for helm-google
     :commands helm-google
