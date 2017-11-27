@@ -480,12 +480,23 @@ Locally redefines org-agenda-files not to export all agenda files."
                       ((= 2 phase) "Fullmåne ○")
                       ((= 3 phase) "Månen i ne ☾"))))))))
 
+(t/use-package spray
+  :commands spray-mode
+  :init
+  (progn
+    (setq spray-wpm 500
+          spray-margin-top 6
+          spray-margin-left 11)
+    (t/add-hook-defun 'spray-mode-hook t/hook-spray
+                      (set-face-foreground 'spray-accent-face
+                                           (face-foreground 'font-lock-keyword-face)))))
+
 (t/use-package elfeed
   :commands (elfeed)
   :init
   (progn
     (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
-          elfeed-search-filter "@6-months-ago +unread -old -gaming -news -life -photo")
+          elfeed-search-filter "@6-months-ago -old -gaming -news -life +unread -photo")
 
     (with-eval-after-load 'evil
       (progn
@@ -497,12 +508,10 @@ Locally redefines org-agenda-files not to export all agenda files."
   :config
   (progn
     (bind-key "SPC" 'elfeed-search-show-entry elfeed-search-mode-map)
+    (bind-key "s" 'spray-mode elfeed-show-mode-map)
+    (setq elfeed-goodies/entry-pane-position 'bottom)
     (setq writeroom-fullscreen-effect 'fullboth)
-    (comment (setf elfeed-show-entry-switch
-                   (lambda (b)
-                     (switch-to-buffer b ; nil t
-                                       )))
-             (setf elfeed-kill-buffer 'kill-this-buffer))
+    (autoload 'writeroom--enable "writeroom-mode.el")
     (t/add-hook-defun 'elfeed-show-mode-hook t/elfeed-hook
                       (visual-line-mode)
                       (writeroom--enable))))

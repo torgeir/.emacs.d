@@ -796,14 +796,16 @@
     (with-eval-after-load 'eww
       (advice-add 'eww-mode :after 'evil-emacs-state)
       (t/bind-in 'eww-mode-map
-                 "b" 'eww-browse-with-external-browser
+                 "s" 'spray-mode
+                 "M-b" 'backward-paragraph
                  "M-n" 'forward-paragraph
-                 "M-b" 'backward-paragraph))
+                 "b" 'eww-browse-with-external-browser))
     (t/add-hook-defun 'eww-mode-hook t/hook-eww
                       (writeroom-mode)
                       (visual-line-mode))
     (t/bind-in 'hackernews-map
                "<return>" 'hackernews-button-browse-internal
+               "SPC" 'hackernews-button-browse-internal
                "b" (lambda nil
                      (interactive)
                      (hackernews-browse-url-action
@@ -1020,6 +1022,7 @@
                     "t" 't/load-theme-cycle
                     "n" #'t/toggle-line-numbers
                     "r" #'t/toggle-relative-line-numbers
+                    "s" 'spray-mode
                     "l" 'hl-line-mode
                     "L" 'visual-line-mode
                     "w" 'whitespace-mode
