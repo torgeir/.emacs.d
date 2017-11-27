@@ -130,28 +130,7 @@
       ;;(require 'ox-md)
       (require 'ob-clojure)
 
-      (setq org-babel-clojure-backend 'cider) ; use cider instead of slime (default)
-
-      (defconst org-babel-clojure-nrepl-timeout 20)
-      (defun org-babel-execute:clojure (body params)
-        "Execute a block of Clojure code with Babel."
-        (let ((expanded (org-babel-expand-body:clojure body params))
-              result)
-          (require 'cider)
-          (let ((result-params (cdr (assoc :result-params params))))
-            (setq result
-                  (nrepl-dict-get
-                   (let ((nrepl-sync-request-timeout org-babel-clojure-nrepl-timeout))
-                     (nrepl-sync-request:eval expanded (cider-current-connection) (cider-current-session)))
-                   (if (or (member "output" result-params)
-                           (member "pp" result-params))
-                       "out"
-                     "value"))))
-          (org-babel-result-cond (cdr (assoc :result-params params))
-            result
-            (condition-case nil
-                result
-              (error result)))))
+      (setq org-babel-clojure-backend 'cider)
 
       (org-babel-do-load-languages
        'org-babel-load-languages
