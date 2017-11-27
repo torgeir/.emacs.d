@@ -167,7 +167,7 @@
         (eshell (t/eshell-buffer-id))
         (when (and hasfile (eq eshell-process-list nil))
           (goto-char (point-max))
-          (setenv "JAVA_HOME" (shell-command-to-string "/usr/libexec/java_home -v 1.8"))
+          (setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home -v 1.8")))
           (setenv "PAGER" "cat"))))
 
     (defun t/eshell-clear ()
