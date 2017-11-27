@@ -1,4 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
+(t/use-package cdnjs
+  :commands (cdnjs-install-gocdnjs
+             cdnjs-insert-url
+             cdnjs-describe-package
+             cdnjs-list-packages
+             cdnjs-update-package-cache))
+
 (t/use-package prettier-js
   :commands prettier-js-mode
   :init
