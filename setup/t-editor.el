@@ -152,11 +152,12 @@
                    ("I" . neotree-hidden-file-toggle)
                    ("q" . neotree-hide)
                    ("q" . neotree-hide)
+                   ("v" . neotree-quick-look)
                    ("TAB" . neotree-stretch-toggle)
                    ("RET" . neotree-enter)
                    ("M-<down>" . neotree-enter)
                    ("C" . neotree-change-root)))
-      (eval `(evil-define-key (if *t-spacemacs* 'evilified 'normal) neotree-mode-map (kbd ,(car key)) ',(cdr key))))))
+      (eval `(evil-define-key 'normal neotree-mode-map (kbd ,(car key)) ',(cdr key))))))
 
 (t/use-package ace-window
   :commands ace-window
