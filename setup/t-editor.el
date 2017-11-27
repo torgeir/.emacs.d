@@ -745,10 +745,9 @@
   :init
   (progn
     (setq hl-paren-colors (-repeat 26 "DeepPink"))
-    (t/add-hook 'prog-mode-hook 'highlight-parentheses-mode))
-  :config
-  (progn
-    (set-face-foreground 'show-paren-match "Green")))
+    (t/add-hook-defun 'prog-mode-hook t-hook-l-parens
+                      (highlight-parentheses-mode)
+                      (set-face-foreground 'show-paren-match "Green"))))
 
 (t/use-package highlight-escape-sequences
   :commands hes-mode
