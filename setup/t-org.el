@@ -15,9 +15,9 @@
   (setq org-mobile-directory (t/user-dropbox-folder "Apps/MobileOrg")
         org-mobile-inbox-for-pull (t/org-directory "inbox.org"))
 
-  (defun org-set-local (var val)
-    "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
-    (setq-local var val))
+  (comment (defun org-set-local (var val)
+             "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
+             (setq-local var val)))
 
   (setq org-startup-indented t        ; turn on org-indent-mode
         org-agenda-window-setup 'only-window ; remove other windows when agenda
@@ -69,11 +69,7 @@
            entry
            (file+headline org-default-notes-file "Tasks")
            "* TODO %? %^G\n%i")
-
-          ("j" "Journal entry"
-           entry
-           (file+datetree ,(t/org-directory "journal.org"))
-           "**** %U %^{Title}\n%?")))
+          ))
   )
 
 (t/use-package org
