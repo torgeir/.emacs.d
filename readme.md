@@ -27,6 +27,9 @@ brew install emacs-plus --HEAD --with-natural-title-bar --without-spacemacs-icon
 sudo add-apt-repository -y ppa:ubuntu-elisp
 sudo apt-get update
 sudo apt-get install emacs-snapshot
+
+sudo apt-get install fonts-inconsolata
+sudo fc-cache -fv
 ```
 
 ### win
