@@ -44,8 +44,8 @@
 
 (defun t/init-helm-source-project-lines ()
   (defvar t/helm-source-project-lines
-    (helm-build-async-source "Complete line in project"
-      :candidates-process 't/helm-project-lines-candidates
+    (helm-build-sync-source "Complete line in project"
+      :candidates 't/helm-project-lines-candidates
       :candidate-number-limit 20
       :action 't/helm-project-lines-action))
 
