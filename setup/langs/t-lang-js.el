@@ -75,4 +75,22 @@
       (cider--make-result-overlay (indium-fontify-js r) :where (point) :duration 'command))
     (setq indium-interaction-eval-node-hook (list #'t/overlay-indium))))
 
+(t/use-package js2-refactor
+  :after web-mode
+  :init
+  (t/declare-prefix "mr" "Refactor"
+                    "ef" 'js2r-extract-function
+                    "em" 'js2r-extract-method
+                    "ev" 'js2r-extract-var
+                    "ip" 'js2r-introduce-parameter
+                    "iv" 'js2r-inline-var
+                    "rv" 'js2r-rename-var
+
+                    "ao" 'js2r-arguments-to-object
+                    "co" 'js2r-contract-object
+                    "eo" 'js2r-expand-object
+                    "lp" 'js2r-localize-parameter
+                    "tf" 'js2r-toggle-function-expression-and-declaration
+                    "vt" 'js2r-var-to-this))
+
 (provide 't-lang-js)
