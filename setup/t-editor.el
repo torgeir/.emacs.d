@@ -112,10 +112,13 @@
           neo-window-width 35
           neo-create-file-auto-open t
           neo-mode-line-type 'none
+          neo-force-change-root t
           neo-show-updir-line nil
           neo-show-hidden-files t
           neo-auto-indent-point t)
-    (t/add-hook 'neotree-mode-hook 'hl-line-mode)
+    (t/add-hook-defun 'neotree-mode-hook t/neotree-hook
+                      (evil-commentary-mode -1)
+                      (hl-line-mode))
     (when is-mac (setq neo-theme 'icons)))
 
   :config
