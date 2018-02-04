@@ -224,12 +224,13 @@
         "Returns current git branch as a string, or the empty string if
 PWD is not in a git repo (or the git command is not found)."
         (interactive)
-        (when (and (eshell-search-path "git")
+        (when (and is-mac
+                   (eshell-search-path "git")
                    (locate-dominating-file pwd ".git"))
           (let ((git-output (shell-command-to-string (concat "cd " (shell-quote-argument (expand-file-name pwd)) " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
             (if (> (length git-output) 0)
                 (concat " " (substring git-output 0 -1))
-              "(no branch)"))))
+              " (no branch)"))))
 
       (defun pwd-replace-home (pwd)
         "Replace home in PWD with tilde (~) character."
