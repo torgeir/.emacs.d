@@ -578,8 +578,8 @@
                  "C-c u" 'universal-argument))
     (with-eval-after-load 'helm-files
       (t/bind-in 'helm-find-files-map
-                 "s-<down>" 'helm-execute-persistent-action
-                 "s-<up>" 'helm-find-files-up-one-level
+                 "M-<down>" 'helm-execute-persistent-action
+                 "M-<up>" 'helm-find-files-up-one-level
                  "C-k" 'helm-find-files-up-one-level))
     (setq-default helm-display-header-line nil
                   helm-M-x-fuzzy-match t
