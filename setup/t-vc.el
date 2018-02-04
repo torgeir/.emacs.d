@@ -51,13 +51,15 @@
   (setq magit-pull-arguments nil
         magit-fetch-arguments '("--prune")
         magit-rebase-arguments '("--interactive")
-        magit-log-arguments '("--graph" "--color" "--decorate" "-n256"))
+        magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
+        magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
 
   :config
   (progn
     (bind-key "q" #'magit-quit-session magit-status-mode-map)
 
     (t/add-hook 'magit-log-mode-hook 'visual-line-mode)
+    (t/add-hook 'magit-diff-mode-hook 'visual-line-mode)
 
     (when (boundp 'spacemacs-useful-buffers-regexp)
       (add-to-list 'spacemacs-useful-buffers-regexp "\\*magit.*"))
