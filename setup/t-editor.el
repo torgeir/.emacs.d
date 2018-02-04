@@ -895,8 +895,13 @@
           recentf-auto-cleanup 'never))
   :config
   (progn
-    (t/idle-timer recentf-auto-save-timer #'recentf-save-list 1)
-    (recentf-mode 1)))
+    (defun t/recentf-save-if-recentf-mode ()
+      (when recentf-mode
+        (recentf-save-list)))
+    (t/idle-timer recentf-auto-save-timer #'t/recentf-save-if-recentf-mode 1)
+    (recentf-mode 1)
+    (comment
+     (recentf-mode -1))))
 
 (t/use-package linum-relative
   :commands linum-relative-mode
