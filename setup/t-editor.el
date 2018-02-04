@@ -76,12 +76,12 @@
                       (dired-hide-details-mode 1)
                       (all-the-icons-dired-mode))))
 
-(use-package dired-subtree
-  :commands dired-subtree-toggle
-  :init
-  (progn
-    (setq dired-subtree-line-prefix "  ")
-    (bind-key "TAB" 'dired-subtree-toggle dired-mode-map)))
+(comment (use-package dired-subtree
+           :commands dired-subtree-toggle
+           :init
+           (progn
+             (setq dired-subtree-line-prefix "  ")
+             (bind-key "TAB" 'dired-subtree-toggle dired-mode-map))))
 
 (t/use-package all-the-icons-dired
   :commands all-the-icons-dired-mode
