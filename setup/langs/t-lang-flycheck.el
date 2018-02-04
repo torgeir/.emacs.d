@@ -24,9 +24,10 @@
   :init
   (progn
     (with-eval-after-load 'cider
-      (t/add-hook 'cider-mode-hook 'flycheck-mode)))
-  :config
-  (progn
-    (add-to-list 'flycheck-checkers 'clojure-cider-eastwood)))
+      (comment
+       (setq-default flycheck-disabled-checkers
+                     (append flycheck-disabled-checkers '(clojure-cider-typed)))
+       (t/add-hook 'cider-mode-hook 'flycheck-mode)
+       (t/add-hook 'cider-mode-hook 'flycheck-clojure-setup)))))
 
 (provide 't-lang-flycheck)
