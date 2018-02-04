@@ -18,6 +18,7 @@
                     t-lang-json
                     t-lang-markdown
                     t-lang-pug
+                    t-lang-php
                     t-lang-remark
                     t-lang-scala
                     t-lang-sh

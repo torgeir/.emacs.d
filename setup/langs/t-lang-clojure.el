@@ -23,7 +23,6 @@
   (progn
     (t/add-hook-defun 'clojure-mode-hook t/hook-clojure
                       (clj-refactor-mode 1)
-                      (t/when-ext "cljs" (clojurescript-mode))
                       (dolist (mapping '(("maps" . "outpace.util.maps")
                                          ("seqs" . "outpace.util.seqs")
                                          ("string" . "clojure.string")

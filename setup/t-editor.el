@@ -952,14 +952,6 @@
     (t/declare-prefix "t" "Toggles"
                       "a" 'aggressive-indent-mode)))
 
-(t/use-package beginend
-  :commands (beginend-prog-mode-goto-beginning
-             beginend-prog-mode-goto-end)
-  :init
-  (progn
-    (bind-key "M-<" 'beginend-prog-mode-goto-beginning)
-    (bind-key "M->" 'beginend-prog-mode-goto-end)))
-
 (use-package whitespace
   :ensure nil
   :init
