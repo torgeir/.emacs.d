@@ -130,10 +130,10 @@
                         (when (member major-mode t-evil-major-modes)
                           (evil-emacs-state))))
 
-  (setq evil-default-state 'normal
-        evil-insert-skip-empty-lines t
-        evil-search-module 'evil-search)
-  (t/add-hook '+evil-esc-hook 'evil-ex-nohighlight)))
+    (setq evil-default-state 'normal
+          evil-insert-skip-empty-lines t
+          evil-search-module 'evil-search)
+    (t/add-hook '+evil-esc-hook 'evil-ex-nohighlight)))
 
 (defun t-evil/funcs ()
   (t/add-hook '(git-commit-mode-hook org-capture-mode-hook) 'evil-insert-state)
@@ -173,6 +173,7 @@ ignored.")
              (highlight-symbol-remove-all))
             ;; Run all escape hooks. If any returns non-nil, then stop there.
             (t (run-hook-with-args-until-success '+evil-esc-hook)))))
+  (advice-add #'evil-force-normal-state :after #'+evil*attach-escape-hook)
 
   ;; motions keys for help buffers
   (evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
@@ -213,20 +214,11 @@ ignored.")
              "C-y" 'evil-paste-pop ; cycle after pasting with p
              "C-S-y" (lambda nil (interactive) (evil-paste-pop-next 1)))
 
-  ;; esc ought to quit
-  (bind-key [escape] 'keyboard-quit evil-normal-state-map)
-  (bind-key [escape] 'keyboard-quit evil-visual-state-map)
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-map)
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-ns-map)
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-completion-map)
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
-
-  (defun t/keyboard-quit-advice (fn &rest args)
-    (let ((region-was-active (region-active-p)))
-      (unwind-protect (apply fn args)
-        (+evil*attach-escape-hook))))
-  (advice-add 'keyboard-quit :around #'t/keyboard-quit-advice)
 
   ;; macro camelCase to snakeCase
   (evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g]))
