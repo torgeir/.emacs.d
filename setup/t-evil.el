@@ -11,8 +11,7 @@
   (progn
     (setq anzu-cons-mode-line-p nil
           anzu-minimum-input-length 1
-          anzu-search-threshold 100)
-    (t/add-hook '+evil-esc-hook 'anzu--reset-status)))
+          anzu-search-threshold 100)))
 
 (t/use-package evil-escape
   :only-standalone t
@@ -138,8 +137,7 @@
 
     (setq evil-default-state 'normal
           evil-insert-skip-empty-lines t
-          evil-search-module 'evil-search)
-    (t/add-hook '+evil-esc-hook 'evil-ex-nohighlight)))
+          evil-search-module 'evil-search)))
 
 (defun t-evil/funcs ()
   (t/add-hook '(git-commit-mode-hook org-capture-mode-hook) 'evil-insert-state)

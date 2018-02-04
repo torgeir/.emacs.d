@@ -286,7 +286,6 @@
   :config
   (progn
     (global-company-mode)
-    (t/add-hook '+evil-esc-hook 'company-abort)
     (defun t/company-helm () (interactive) (company-abort) (completion-at-point))
     (t/bind-in 'company-active-map
                "TAB" 'company-complete-selection
