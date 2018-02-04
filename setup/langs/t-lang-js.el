@@ -4,7 +4,9 @@
              cdnjs-insert-url
              cdnjs-describe-package
              cdnjs-list-packages
-             cdnjs-update-package-cache))
+             cdnjs-update-package-cache)
+  :init
+  (setq cdnjs-completing-read-function 'completing-read))
 
 (t/use-package prettier-js
   :commands prettier-js-mode
