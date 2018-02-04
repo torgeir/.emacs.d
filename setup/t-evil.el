@@ -117,8 +117,7 @@
 
       (t/bind-in 'evil-multiedit-state-map
                  "M-j" #'t/mc-skip-next
-                 "M-k" #'t/mc-skip-prev)
-      )))
+                 "M-k" #'t/mc-skip-prev))))
 
 (t/use-package evil-commentary
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
