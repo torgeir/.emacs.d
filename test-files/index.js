@@ -24,3 +24,5 @@ var { a, b } = {};
   var e = new EventEmitter();
   var a = 1;
 })();
+
+module.exports = 1;
