@@ -40,7 +40,8 @@
                                "me" "Evaluate"
                                "b" 'indium-eval-buffer
                                "f" 'indium-eval-defun
-                               "e" 'indium-eval-last-node))
+                               "e" 'indium-eval-last-node
+                               "r" 'indium-eval-region))
   :config
   (progn
 
