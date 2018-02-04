@@ -25,12 +25,10 @@
         org-return-follows-link t
         org-tab-follows-link nil
         org-hide-leading-stars t
-        org-hide-emphasis-markers t
+        org-hide-emphasis-markers nil
         org-loop-over-headlines-in-active-region 'start-level ; org-archive with friends work on multiple items
-        org-completion-use-ido t
         org-blank-before-new-entry '((heading . auto) (plain-list-item . t)) ; newlines
         org-cycle-separator-lines 2 ; number of empty lines after heading needed to show visible newline between headings
-        org-list-empty-line-terminates-plain-lists t
         org-catch-invisible-edits 'show ; show invisibles on edit
         org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
         org-refile-targets '((nil :maxlevel . 2)
@@ -45,6 +43,7 @@
         org-fontify-whole-heading-line t
         org-fontify-done-headline t
         org-fontify-quote-and-verse-blocks t
+        org-fontify-emphasized-text t
 
         org-reverse-note-order t      ; newest notes first
         org-log-done 'time            ; log when todos are completed
@@ -68,9 +67,7 @@
         `(("t" "Task"
            entry
            (file+headline org-default-notes-file "Tasks")
-           "* TODO %? %^G\n%i")
-          ))
-  )
+           "* TODO %? %^G\n%i"))))
 
 (t/use-package org
   :ensure org-plus-contrib
