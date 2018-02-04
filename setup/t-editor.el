@@ -276,11 +276,13 @@
   :defer 2
   :init
   (progn
-    (setq company-idle-delay 0.2
+    (setq company-idle-delay 0.15
           company-tooltip-align-annotations t
-          company-tooltip-flip-when-above t
+          company-tooltip-flip-when-above nil
           company-show-numbers t ; nav with m-<n>
           company-selection-wrap-around t
+          company-tooltip-minimum-width 30
+          company-tooltip-margin 1
           company-require-match nil
           company-backends (t/company-backends '()))
     (with-eval-after-load 'company
