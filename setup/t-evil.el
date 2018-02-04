@@ -82,6 +82,13 @@
     (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
     (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
 
+(t/use-package evil-snipe
+  :defer 1
+  :init
+  (progn
+    (evil-snipe-mode 1)
+    (evil-snipe-override-mode 1)))
+
 (t/use-package evil-multiedit
   :commands evil-multiedit-match-symbol-and-next
   :init

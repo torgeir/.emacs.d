@@ -231,10 +231,6 @@
     (setq ace-jump-mode-gray-background t
           ace-jump-mode-case-fold t)))
 
-(t/use-package evil-snipe
-  :config
-  (evil-snipe-override-mode 1))
-
 (t/use-package undo-tree
   :only-standalone t
   :diminish undo-tree-mode
