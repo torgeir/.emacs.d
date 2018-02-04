@@ -1219,13 +1219,10 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/neotree-open-file ()
   (interactive)
-  (if (and (fboundp 'neo-global--window-exists-p)
-           (neo-global--window-exists-p))
-      (neotree-hide)
-    (let ((origin-buffer-file-name (buffer-file-name)))
-      (neotree-toggle)
-      (neotree-find (projectile-project-root))
-      (neotree-find origin-buffer-file-name))))
+  (let ((origin-buffer-file-name (buffer-file-name)))
+    (neotree-toggle)
+    (neotree-find (projectile-project-root))
+    (neotree-find origin-buffer-file-name)))
 
 ;;;###autoload
 (defun t/backward-down-sexp ()
