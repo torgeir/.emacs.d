@@ -54,7 +54,7 @@
     :init
     (progn
       (t/add-hook-defun 'sgml-mode-hook t/hook-sgml
-                        (set (make-local-variable 'sgml-basic-offset) *t-indent-xml*))))
+                        (set (make-local-variable 'sgml-basic-offset) *t-indent*))))
 
   (t/use-package nxml-mode
     :ensure nil
