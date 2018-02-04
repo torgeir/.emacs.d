@@ -88,10 +88,7 @@
   (progn
     (setq evil-multiedit-follow-matches t)
     (bind-key "M-d" 'evil-multiedit-match-symbol-and-next evil-normal-state-map)
-    (bind-key "C-M-d" 'evil-multiedit-restore evil-normal-state-map)
-    ;; seems to make helm-projectile disappear?
-    ;;(advice-add 'evil-multiedit-abort :after #'+evil*attach-escape-hook)
-    )
+    (bind-key "C-M-d" 'evil-multiedit-restore evil-normal-state-map))
   :config
   (progn
     (evil-multiedit-default-keybinds)
@@ -101,41 +98,20 @@
     (progn
       (setq evil-multiedit-store-in-search-history t)
 
-      (defun t/mc-prev ()
-        (interactive)
-        (evil-ex-search-previous)
-        (evil-ex-nohighlight)
-        (when (not (iedit-find-current-occurrence-overlay))
-          (evil-multiedit-toggle-or-restrict-region)))
-
-      (defun t/mc-next ()
-        (interactive)
-        (evil-ex-search-next)
-        (evil-ex-nohighlight)
-        (when (not (iedit-find-current-occurrence-overlay))
-          (evil-multiedit-toggle-or-restrict-region)))
-
       (defun t/mc-skip-prev ()
         (interactive)
         (evil-multiedit-toggle-or-restrict-region)
-        (evil-ex-search-previous)
-        (evil-ex-nohighlight)
-        (when (not (iedit-find-current-occurrence-overlay))
-          (evil-multiedit-toggle-or-restrict-region)))
+        (evil-multiedit-match-and-prev))
 
       (defun t/mc-skip-next ()
         (interactive)
         (evil-multiedit-toggle-or-restrict-region)
-        (evil-ex-search-next)
-        (evil-ex-nohighlight)
-        (when (not (iedit-find-current-occurrence-overlay))
-          (evil-multiedit-toggle-or-restrict-region)))
+        (evil-multiedit-match-and-next))
 
       (t/bind-in 'evil-multiedit-state-map
-                 "M-j" #'t/mc-next
-                 "M-k" #'t/mc-prev
-                 "M-J" #'t/mc-skip-next
-                 "M-K" #'t/mc-skip-prev))))
+                 "M-j" #'t/mc-skip-next
+                 "M-k" #'t/mc-skip-prev)
+      )))
 
 (t/use-package evil-commentary
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
