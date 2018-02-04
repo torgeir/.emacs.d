@@ -12,6 +12,10 @@
                   (append flycheck-disabled-checkers '(javascript-jshint)))
     (setq-default flycheck-disabled-checkers
                   (append flycheck-disabled-checkers '(json-jsonlist)))
+
+    (with-eval-after-load 'web-mode
+      (flycheck-add-mode 'javascript-eslint 'web-mode))
+
     (t/add-hook '(html-mode-hook web-mode-hook) 'flycheck-mode)))
 
 (t/use-package flycheck-clojure
