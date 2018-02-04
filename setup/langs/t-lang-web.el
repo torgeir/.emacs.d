@@ -4,6 +4,7 @@
   :init
   (progn
     (with-eval-after-load 'web-mode
+      (setq web-mode-enable-html-entities-fontification t)
       (t/add-hook-defun 'web-mode-hook t/hook-web ; http://web-mode.org/
                         (setq-local web-mode-auto-close-style 2)
                         (setq-local web-mode-enable-auto-quoting nil)
