@@ -1153,6 +1153,10 @@
                     "t" 'flycheck-mode)
 
   (t/declare-prefix "w" "Windows"
+                    "h" 'windmove-left
+                    "j" 'windmove-down
+                    "k" 'windmove-up
+                    "l" 'windmove-right
                     "n" 'make-frame-command
                     "D" 't/delete-frame-or-hide-last-remaining-frame
                     "d" 'delete-window
