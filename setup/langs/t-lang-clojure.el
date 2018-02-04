@@ -83,11 +83,12 @@
   :commands clojure-mode) ;; more syntax hilighting
 
 (t/use-package cider
-  :pin melpa-stable
   :commands (cider cider-connect cider-jack-in)
   :init
   (progn
     (setq cider-boot-parameters "cider repl -s wait"
+          cider-repl-display-help-banner nil
+          cider-inject-dependencies-at-jack-in nil ;; theyre in ~/.boot/profile.boot
           cider-repl-pop-to-buffer-on-connect nil
           cider-overlays-use-font-lock t
           nrepl-hide-special-buffers t
@@ -121,6 +122,8 @@
 
     (t/init-clj-mode-keys-in-mode 'clojure-mode)
     (t/init-clj-mode-keys-in-mode 'clojurescript-mode)
+
+    (t/add-hook 'cider-docview-mode-hook 'visual-line-mode)
 
     ;; minibuffer doc in repl
     (t/add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
