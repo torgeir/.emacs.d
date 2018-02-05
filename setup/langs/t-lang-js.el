@@ -93,4 +93,19 @@
                     "tf" 'js2r-toggle-function-expression-and-declaration
                     "vt" 'js2r-var-to-this))
 
+(t/use-package nodejs-repl
+  :commands nodejs-repl
+  :init
+  (progn
+    (with-eval-after-load 'web-mode
+      (t/add-hook-defun 'web-mode-hook t/nodejs-repl-hook
+                        (t/evil-ex-define-cmd-local "repl" 'nodejs-repl))))
+  :config
+  (progn
+    (defun t/try-quit-nodejs-repl ()
+      (interactive)
+      (t/term-kill-if-finished 'comint-delchar-or-maybe-eof))
+    (t/bind-in 'nodejs-repl-mode-map
+               "C-d" #'t/try-quit-nodejs-repl)))
+
 (provide 't-lang-js)

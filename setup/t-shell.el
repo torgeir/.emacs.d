@@ -39,14 +39,12 @@
       (evil-define-key 'normal term-raw-map "p" 'term-paste)
       (evil-define-key 'insert term-raw-map (kbd "<tab>") 'term-send-tab)
 
-      (defun t/term-quit-if-finished ()
+      (defun t/term-try-quit ()
         (interactive)
-        (if (t/buffer-finished-p (current-buffer))
-            (t/volatile-kill-buffer)
-          (term-send-eof)))
+        (t/term-quit-if-finished 'term-send-eof))
 
       (t/bind-in '(evil-normal-state-local-map evil-insert-state-local-map)
-                 "C-d" 't/term-quit-if-finished))
+                 "C-d" 't/term-try-quit))
 
     (t/add-hook 'term-mode-hook #'t/term-mode-hook))
 

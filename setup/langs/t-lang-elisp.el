@@ -25,6 +25,21 @@
 
   (t/add-company-backends-hook 'lisp-interaction-mode-hook 'company-elisp)
   (t/add-company-backends-hook 'lisp-mode-hook 'company-elisp)
-  (t/add-company-backends-hook 'emacs-lisp-mode-hook 'company-elisp))
+  (t/add-company-backends-hook 'emacs-lisp-mode-hook 'company-elisp)
+
+  (defun t/try-quit-ielm ()
+    (interactive)
+    (t/term-kill-if-finished 'comint-delchar-or-maybe-eof))
+
+  (defun t/elisp-repl ()
+    (interactive)
+    (t/split-window-below-and-move-there-dammit)
+    (ielm))
+
+  (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-emacs-lisp
+                    (t/evil-ex-define-cmd-local "repl" #'t/elisp-repl)
+                    (with-eval-after-load 'ielm
+                      (t/bind-in 'ielm-map
+                                 "C-d" 't/try-quit-ielm))))
 
 (provide 't-lang-elisp)

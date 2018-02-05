@@ -1,6 +1,13 @@
 ;;; setup/t-defuns.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
+(defun t/evil-ex-define-cmd-local (cmd function)
+  "Locally binds the function FUNCTION to the command CMD."
+  (unless (local-variable-p 'evil-ex-commands)
+    (setq-local evil-ex-commands (copy-alist evil-ex-commands)))
+  (evil-ex-define-cmd cmd function))
+
+;;;###autoload
 (defun t/send-buffer-to-scala-repl ()
   "Send buffer to ensime repl, starts it if its not running"
   (interactive)
@@ -1217,10 +1224,26 @@ If FILEXT is provided, return files with extension FILEXT instead."
           "\n")))))
 
 ;;;###autoload
+(defun t/term-quit-if-finished (&optional else)
+  (interactive)
+  (if (t/buffer-finished-p (current-buffer))
+      (t/volatile-kill-buffer)
+    (when (functionp else)
+      (call-interactively else))))
+
+;;;###autoload
+(defun t/term-kill-if-finished (&optional else)
+  (interactive)
+  (if (t/buffer-finished-p (current-buffer))
+      (t/volatile-kill-buffer-and-window)
+    (when (functionp else)
+      (call-interactively else))))
+
+;;;###autoload
 (defun t/neotree-open-file ()
   (interactive)
   (let ((origin-buffer-file-name (buffer-file-name)))
-    (neotree-toggle)
+    (comment (neotree-toggle))
     (neotree-find (projectile-project-root))
     (neotree-find origin-buffer-file-name)))
 
