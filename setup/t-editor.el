@@ -846,21 +846,27 @@
         shr-ignore-cache t
         ))
 
+(defun t/visit-frontmost-chrome-url-in-eww ()
+  "Visit the front-most url of chrome in eww."
+  (interactive)
+  (eww (t/grab-chrome-url)))
+
+(t/add-hook-defun 'eww-mode-hook t/hook-eww
+                  (t/bind-in '(evil-normal-state-local-map)
+                             "s" 'spray-mode
+                             "M-b" 'backward-paragraph
+                             "M-n" 'forward-paragraph
+                             "b" 'eww-browse-with-external-browser)
+                  (comment (writeroom-mode))
+                  (visual-line-mode))
+
 (t/use-package hackernews
   :commands hackernews
   :config
   (progn
     (advice-add 'hackernews :after 'evil-emacs-state)
     (with-eval-after-load 'eww
-      (advice-add 'eww-mode :after 'evil-emacs-state)
-      (t/bind-in 'eww-mode-map
-                 "s" 'spray-mode
-                 "M-b" 'backward-paragraph
-                 "M-n" 'forward-paragraph
-                 "b" 'eww-browse-with-external-browser))
-    (t/add-hook-defun 'eww-mode-hook t/hook-eww
-                      (writeroom-mode)
-                      (visual-line-mode))
+      (advice-add 'eww-mode :after 'evil-emacs-state))
     (t/bind-in 'hackernews-map
                "<return>" 'hackernews-button-browse-internal
                "SPC" 'hackernews-button-browse-internal
