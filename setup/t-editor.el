@@ -567,7 +567,12 @@
   (progn
     (require 'helm-config)
     (with-eval-after-load 'helm
-      (t/bind-in '(helm-map helm-M-x-map)
+      (t/bind-in '(helm-map)
+                 "C-w" 'backward-kill-word
+                 "C-u" 'backward-kill-sentence
+                 "C-c u" 'universal-argument))
+    (with-eval-after-load 'helm-command
+      (t/bind-in 'helm-M-x-map
                  "C-w" 'backward-kill-word
                  "C-u" 'backward-kill-sentence
                  "C-c u" 'universal-argument))
