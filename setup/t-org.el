@@ -481,10 +481,14 @@ Locally redefines org-agenda-files not to export all agenda files."
   :commands spray-mode
   :init
   (progn
-    (setq spray-wpm 500
+    (setq spray-wpm 600
           spray-margin-top 6
           spray-margin-left 11)
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
+                      (t/bind-in '(evil-normal-state-map)
+                                 "q" 'spray-quit
+                                 "f" 'spray-faster
+                                 "s" 'spray-slower)
                       (set-face-foreground 'spray-accent-face
                                            (face-foreground 'font-lock-keyword-face)))))
 
