@@ -1459,6 +1459,14 @@ If FILEXT is provided, return files with extension FILEXT instead."
               (apply 't/add-company-backends backends))))
 
 ;;;###autoload
+(defun t/visit-git-link-pulls ()
+  "Navigate to /pulls for the current git repo."
+  (interactive)
+  (browse-url (concat "https://"
+                      (git-link--remote-host (git-link--select-remote)) "/"
+                      (git-link--remote-dir (git-link--select-remote)) "/pulls")))
+
+;;;###autoload
 (defun t/projectile-dired ()
   (interactive)
   (let ((projects (projectile-relevant-known-projects)))
@@ -1495,5 +1503,19 @@ If FILEXT is provided, return files with extension FILEXT instead."
                    (dired project)
                    (helm-projectile-ag)))
       (user-error "No projects found"))))
+
+;;;###autoload
+(defun t/projectile-visit-git-link-pulls ()
+  (interactive)
+  (let ((projects (projectile-relevant-known-projects)))
+    (if projects
+        (projectile-completing-read
+         "Visit pulls for project: "
+         projects
+         :action (lambda (project)
+                   (let ((default-directory project))
+                     (t/visit-git-link-pulls))))
+      (user-error "No projects found"))))
+
 
 (provide 't-defuns)

@@ -1231,7 +1231,7 @@
                     "l" 't/neotree-open-file
                     "L" 'neotree-hide
                     "o" 't/open-in-desktop
-                    "p" 'projectile-find-file-in-known-projects
+                    "p" 't/projectile-visit-git-link-pulls
                     "s" 't/projectile-helm-ag
                     "R" 'projectile-replace
                     "S" 'projectile-save-project-buffers
