@@ -1462,6 +1462,9 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/visit-git-link-pulls ()
   "Navigate to /pulls for the current git repo."
   (interactive)
+  (autoload 'git-link--remote-host "git-link")
+  (autoload 'git-link--remote-dir "git-link")
+  (autoload 'git-link--select-remote "git-link")
   (browse-url (concat "https://"
                       (git-link--remote-host (git-link--select-remote)) "/"
                       (git-link--remote-dir (git-link--select-remote)) "/pulls")))
