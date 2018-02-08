@@ -286,8 +286,7 @@ region-end is used."
   (interactive)
   (forward-sexp -1)
   (t/wrap-with-parens)
-  (insert " ")
-  (forward-char -1))
+  (forward-char 0))
 
 ;;;###autoload
 (defun t/untabify-buffer ()
