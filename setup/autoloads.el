@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (23165 25359 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (23165 65479 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/evil-ex-define-cmd-local "t-defuns" "\
@@ -212,7 +212,7 @@ Switch theme, disabling previously loaded
 \(fn THEME)" t nil)
 
 (autoload 't/toggle-theme-dark-light "t-defuns" "\
-Toggles between themes `spacemacs-dark' and `spacemacs-light'
+Toggles between themes `doom-vibrant' and `spacemacs-light'
 
 \(fn)" t nil)
 
@@ -640,7 +640,7 @@ Navigate to /pulls for the current git repo.
 ;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23165 24747
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23165 65459
 ;;;;;;  0 0))
 
 ;;;***

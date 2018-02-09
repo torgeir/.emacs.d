@@ -32,9 +32,7 @@ seem to want files in `C:\Users\<user>\AppData\Roaming\`, and doesn't like
 symlinks, so you could..
 
 - clone the repo and copy `.emacs.d` to `C:\Users\<user>\AppData\Roaming\.emacs.d`
-- clone spacemacs and copy `spacemacs`, copy it to `C:\Users\<user>\AppData\Roaming\spacmacs`
 - copy `.emacs.d/.emacs` to `C:\Users\<user>\AppData\Roaming\.emacs`
-- copy `.emacs.d/.spacemacs` to `C:\Users\<user>\AppData\Roaming\.spacemacs`
 
 ### emacsclient - terminal and gui
 

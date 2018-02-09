@@ -325,6 +325,11 @@ Including indent-buffer, which should not be called automatically on save."
   (split-window-below)
   (windmove-down))
 
+(defun t/evil-yank-to-end-of-line ()
+  "Yank from point to end of line."
+  (interactive)
+  (evil-yank (point) (point-at-eol)))
+
 ;;;###autoload
 (defun t/config-reload () (interactive) (load-file "~/.emacs.d/init.el"))
 
@@ -351,7 +356,7 @@ Including indent-buffer, which should not be called automatically on save."
 
 ;;;###autoload
 (defun t/toggle-theme-dark-light ()
-  "Toggles between themes `spacemacs-dark' and `spacemacs-light'"
+  "Toggles between themes `doom-vibrant' and `spacemacs-light'"
   (interactive)
   (let* ((enabled-theme (car custom-enabled-themes))
          (next-theme (if (equal 'doom-vibrant enabled-theme)

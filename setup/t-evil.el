@@ -32,14 +32,8 @@
     (evil-mode nil)
     (global-evil-leader-mode)
     (evil-mode 1)
-
-    (defun spacemacs/evil-yank-to-end-of-line ()
-      "Yank from point to end of line."
-      (interactive)
-      (evil-yank (point) (point-at-eol)))
-
-    (bind-key "Y" 'spacemacs/evil-yank-to-end-of-line evil-normal-state-map)
-    (bind-key "Y" 'spacemacs/evil-yank-to-end-of-line evil-motion-state-map)))
+    (t/bind-in '(evil-normal-state-map evil-motion-state-map)
+               "Y" 't/evil-yank-to-end-of-line)))
 
 (t/use-package evil-matchit
   :commands evilmi-jump-items
