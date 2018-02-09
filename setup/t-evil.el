@@ -1,12 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
 (t/use-package evil
-  :only-standalone t
   :init
   (setq evil-want-C-d-scroll t
         evil-want-C-u-scroll t))
 
 (t/use-package evil-anzu
-  :only-standalone t
   :init
   (progn
     (setq anzu-cons-mode-line-p nil
@@ -14,7 +12,6 @@
           anzu-search-threshold 100)))
 
 (t/use-package evil-escape
-  :only-standalone t
   :after evil
   :init
   (progn
@@ -45,14 +42,12 @@
     (bind-key "Y" 'spacemacs/evil-yank-to-end-of-line evil-motion-state-map)))
 
 (t/use-package evil-matchit
-  :only-standalone t
   :commands evilmi-jump-items
   :config
   (progn
     (global-evil-matchit-mode 1)))
 
 (t/use-package evil-visualstar
-  :only-standalone t
   :commands (evil-visualstar/begin-search-forward
              evil-visualstar/begin-search-backward)
   :config
@@ -72,7 +67,6 @@
     (add-to-list 'evil-surround-operator-alist '(evil-cp-change . change))))
 
 (t/use-package evil-surround
-  :only-standalone t
   :defer 1
   :config
   (progn
@@ -121,6 +115,17 @@
 (t/use-package evil-commentary
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
   :init (evil-commentary-mode 1))
+
+(use-package evil-goggles
+  :ensure t
+  :init
+  (progn
+    (setq evil-goggles-duration 0.05))
+  :config
+  (progn
+    (evil-goggles-mode)
+    (evil-goggles-use-diff-faces)
+    (comment (evil-goggles-use-diff-faces))))
 
 (defun t-evil/vars ()
   (progn

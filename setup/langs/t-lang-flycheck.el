@@ -1,7 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (t/use-package flycheck
   :commands flycheck-mode
-  :only-standalone t
   :init
   (progn
     (setq flycheck-display-errors-function #'flycheck-display-error-messages))

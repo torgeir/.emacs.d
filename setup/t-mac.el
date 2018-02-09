@@ -29,7 +29,6 @@
   (setq ns-function-modifier 'hyper))
 
 (t/use-package exec-path-from-shell
-  :only-standalone t
   :config (exec-path-from-shell-initialize))
 
 (defun t-mac/config ()
@@ -53,14 +52,6 @@
   (bind-key "M-s-<left>" 'windmove-left)
   (bind-key "s-d" 't/split-window-right-and-move-there-dammit)
   (bind-key "s-D" 't/split-window-below-and-move-there-dammit)
-  (bind-key "C-s-<right>" 't/increase-frame-width)
-  (bind-key "C-s-<left>" 't/decrease-frame-width)
-  (bind-key "C-s-<down>" 't/increase-frame-height)
-  (bind-key "C-s-<up>" 't/decrease-frame-height)
-  (bind-key "C-s-S-<right>" 't/move-frame-right)
-  (bind-key "C-s-S-<left>" 't/move-frame-left)
-  (bind-key "C-s-S-<down>" 't/move-frame-down)
-  (bind-key "C-s-S-<up>" 't/move-frame-up)
 
   ;; s-w quits like C-x C-w
   (bind-key "s-w" #'t/delete-frame-or-hide-last-remaining-frame)

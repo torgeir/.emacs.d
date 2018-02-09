@@ -8,7 +8,6 @@
                       "R" (lambda () (interactive) (restart-emacs '("--no-desktop"))))))
 
 (t/use-package winner
-  :only-standalone t
   :ensure nil
   :commands (winner-undo winner-redo)
   :config
@@ -18,7 +17,6 @@
     (bind-key "C-c <right>" 'winner-undo)))
 
 (t/use-package uniquify ; add dirs to buffer names when not unique
-  :only-standalone t
   :ensure nil
   :init
   (progn
@@ -26,7 +24,6 @@
 
 (t/use-package subword
   :diminish subword-mode
-  :only-standalone t
   :defer 1
   :ensure nil
   :config (subword-mode))
@@ -41,7 +38,6 @@
 
 (t/use-package dired
   :ensure nil
-  :only-standalone t
   :commands (dired dired-jump)
   :init
   (progn
@@ -100,7 +96,6 @@
   (t/add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (t/use-package neotree
-  :only-standalone t
   :commands (neotree-toggle
              neotree-show
              neotree-hide
@@ -164,7 +159,6 @@
 
 (t/use-package ace-window
   :commands ace-window
-  :only-standalone t
   :config
   (progn
     (setq aw-keys '(?j ?k ?l ?a ?s ?d ?f ?g)
@@ -232,7 +226,6 @@
           ace-jump-mode-case-fold t)))
 
 (t/use-package undo-tree
-  :only-standalone t
   :diminish undo-tree-mode
   :commands undo-tree-visualize
   :init
@@ -268,7 +261,6 @@
 
 (t/use-package company
   :diminish company-mode
-  :only-standalone t
   :defer 2
   :init
   (progn
@@ -303,8 +295,7 @@
     (company-flx-mode +1)))
 
 (t/use-package company-web
-  :commands (web-mode)
-  :only-standalone t)
+  :commands (web-mode))
 
 (t/use-package company-restclient
   :commands restclient-mode
@@ -338,7 +329,6 @@
 (t/use-package company-tern
   :commands tern-mode
   :diminish tern-mode
-  :only-standalone t
   :config
   (progn
     (advice-add 'tern-find-definition :before 'xref-push-marker-stack) ; make pop-tag-mark work with tern
@@ -561,7 +551,6 @@
              helm-mini
              helm-projectile
              helm-projectile-ag)
-  :only-standalone t
   :diminish helm-mode
   :config
   (progn
@@ -608,7 +597,6 @@
       (t/add-hook 'helm-before-initialize-hook 'neotree-hide))))
 
 (t/use-package helm-ag
-  :only-standalone t
   :commands helm-ag
   :init
   (progn
@@ -621,11 +609,9 @@
       (setq helm-ag-base-command "ag --nocolor --nogroup --vimgrep"))))
 
 (t/use-package helm-projectile
-  :only-standalone t
   :commands helm-projectile)
 
 (t/use-package helm-descbinds
-  :only-standalone t
   :commands helm-descbinds
   :config
   (progn
@@ -639,7 +625,6 @@
   :commands helm-google)
 
 (t/use-package helm-swoop
-  :only-standalone t
   :commands helm-swoop
   :init
   (setq helm-swoop-use-line-number-face t
@@ -663,7 +648,6 @@
 
 (t/use-package expand-region
   :commands (er/expand-region er/contract-region)
-  :only-standalone t
   :init
   (progn
     (bind-key (if is-mac "M-@" "M-'") 'er/expand-region)
@@ -674,7 +658,6 @@
 
 (t/use-package yasnippet
   :diminish yas-minor-mode
-  :only-standalone t
   :init
   (progn
     (setq yas-snippet-dirs '(t-dir-snippets)
@@ -759,7 +742,6 @@
 
 (t/use-package smooth-scrolling
   :commands (previous-line next-line isearch-repeat)
-  :only-standalone t
   :init
   (progn
     (setq smooth-scroll-margin 4
@@ -774,7 +756,6 @@
     (enable-smooth-scroll-for-function isearch-repeat)))
 
 (t/use-package highlight-parentheses
-  :only-standalone t
   :diminish highlight-parentheses-mode
   :defer 1
   :init
@@ -807,7 +788,6 @@
 
 (t/use-package highlight-numbers
   :defer 1
-  :only-standalone t
   :init
   (progn
     (t/add-hook 'prog-mode-hook 'highlight-numbers-mode)))
@@ -902,7 +882,6 @@
 ;; save more recent files
 (t/use-package recentf
   :defer 1
-  :only-standalone t
   :init
   (progn
     (setq recentf-max-saved-items 1000
@@ -927,7 +906,6 @@
 
 (t/use-package projectile
   :diminish projectile-mode
-  :only-standalone t
   :commands (projectile-mode
              helm-projectile
              projectile-project-root
@@ -1067,7 +1045,7 @@
   (t/declare-prefix "fe" "Editor")
 
   (t/declare-prefix "fe" "Files"
-                    "R" 'config-reload
+                    "R" 't/config-reload
                     "i" 't/helm-files-emacs-init-files)
 
   (t/declare-prefix "fep" "Packages"

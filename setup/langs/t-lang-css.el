@@ -1,6 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (t/use-package css-mode
-  :only-standalone t
   :ensure nil
   :mode "\\.css$"
   :init
@@ -19,7 +18,6 @@
     (t/add-hook 'css-mode-hook 'turn-on-css-eldoc)))
 
 (t/use-package less-css-mode
-  :only-standalone t
   :mode "\\.less$"
   :commands less-css-mode
   :config

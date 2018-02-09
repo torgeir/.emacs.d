@@ -22,7 +22,6 @@
   (bind-key "C-w" 'backward-kill-word minibuffer-local-map) ; minibuffer
   (bind-key "C-c n" 't/cleanup-buffer-whitespace-and-indent)
   (bind-key "C-x C-k" 'kill-region)
-  (bind-key "C-x C-k" 't/isearch-delete-me isearch-mode-map)
   (bind-key "C-x C-c" #'t/delete-frame-or-hide-last-remaining-frame)
 
   ;; completion

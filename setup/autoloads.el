@@ -3,7 +3,7 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (23162 58174 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (23165 25359 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/evil-ex-define-cmd-local "t-defuns" "\
@@ -20,16 +20,6 @@ Send buffer to ensime repl, starts it if its not running
 Send region to ensime repl, starts it if its not running
 
 \(fn START END)" t nil)
-
-(autoload 't/send-region-to-nodejs-repl-process "t-defuns" "\
-Send region to `nodejs-repl' process.
-
-\(fn START END)" t nil)
-
-(autoload 't/send-buffer-to-nodejs-repl-process "t-defuns" "\
-Send buffer to `nodejs-repl process.
-
-\(fn)" t nil)
 
 (autoload 't/clean-mode-line "t-defuns" "\
 
@@ -73,16 +63,6 @@ goes to tag at point, builds and/or loads project TAGS file first
 
 \(fn)" t nil)
 
-(autoload 't/ido-find-tag "t-defuns" "\
-Find a tag using ido
-
-\(fn)" t nil)
-
-(autoload 't/ido-go-straight-home "t-defuns" "\
-
-
-\(fn)" t nil)
-
 (autoload 't/copy-to-clipboard "t-defuns" "\
 Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses builtin pbcopy.
 
@@ -100,11 +80,6 @@ Insert a newline above the current line and put point at beginning.
 
 \(fn)" t nil)
 
-(autoload 't/open-line-below "t-defuns" "\
-Insert a newline below the current line and put point at beginning.
-
-\(fn)" t nil)
-
 (autoload 't/hippie-expand-no-case-fold "t-defuns" "\
 
 
@@ -114,24 +89,6 @@ Insert a newline below the current line and put point at beginning.
 
 
 \(fn)" t nil)
-
-(autoload 't/duplicate-current-line-or-region "t-defuns" "\
-Duplicates the current line or region ARG times.
-If there's no region, the current line will be duplicated.
-
-\(fn ARG)" t nil)
-
-(autoload 't/duplicate-region "t-defuns" "\
-Duplicates the region bounded by START and END NUM times.
-If no START and END is provided, the current region-beginning and
-region-end is used.
-
-\(fn &optional NUM START END)" t nil)
-
-(autoload 't/duplicate-current-line "t-defuns" "\
-Duplicate the current line NUM times.
-
-\(fn &optional NUM)" t nil)
 
 (autoload 't/kill-other-buffers "t-defuns" "\
 Kill all other buffers.
@@ -179,26 +136,6 @@ Evaluate and replace the preceding sexp with its value.
 
 \(fn)" t nil)
 
-(autoload 't/join-lines "t-defuns" "\
-join adjacent lines
-
-\(fn)" t nil)
-
-(autoload 't/kill-and-join-forward "t-defuns" "\
-kills line and joins the next line, without the whitespace
-
-\(fn &optional ARG)" t nil)
-
-(autoload 't/isearch-delete-me "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 't/quit-other-window "t-defuns" "\
-
-
-\(fn)" t nil)
-
 (autoload 't/lorem "t-defuns" "\
 Insert a lorem ipsum.
 
@@ -208,11 +145,6 @@ Insert a lorem ipsum.
 Move point to first non-whitespace character or beginning-of-line.
 
 \(fn)" t nil)
-
-(autoload 't/sp--create-newline-and-enter-sexp "t-defuns" "\
-Open a new brace or bracket expression, with relevant newlines and indent. thx @bodil
-
-\(fn &rest IGNORED)" nil nil)
 
 (autoload 't/delete-frame-or-hide-last-remaining-frame "t-defuns" "\
 Delete the selected frame. If the last one, hide it instead.
@@ -234,7 +166,7 @@ Skip back to previous window
 
 \(fn)" t nil)
 
-(autoload 'buffer-mode "t-defuns" "\
+(autoload 't/buffer-mode "t-defuns" "\
 Returns the major mode associated with a buffer.
 
 \(fn BUFFER-OR-STRING)" nil nil)
@@ -249,35 +181,6 @@ Returns t if the current cursor movement direction is 'down.
 
 \(fn)" nil nil)
 
-(autoload 't/cursors-message "t-defuns" "\
-Print message with added `str' and cursor direction.
-
-\(fn STR)" nil nil)
-
-(autoload 't/cursor-down "t-defuns" "\
-Marks `next-like-this' if the `t/cursors-direction' is 'down.
-   Sets `t/cursors-direction' to 'down if `t/cursors-direction' is 'up.
-
-\(fn)" t nil)
-
-(autoload 't/cursor-up "t-defuns" "\
-Marks `previous-like-this' if the `t/cursors-direction' is 'up.
-   Sets `t/cursors-direction' to 'up if `t/cursors-direction' is 'down.
-
-\(fn)" t nil)
-
-(autoload 't/cursor-down-skip "t-defuns" "\
-Skips to `next-like-this' if `t/cursors-direction' is 'down.
-   Unmarks `previous-like-this' if `t/cursors-direction' is 'up
-
-\(fn)" t nil)
-
-(autoload 't/cursor-up-skip "t-defuns" "\
-Skips to `previous-like-this' if `t/cursors-direction' is 'up.
-   Unmarks `next-like-this' if `t/cursors-direction' is 'down
-
-\(fn)" t nil)
-
 (autoload 't/split-window-right-and-move-there-dammit "t-defuns" "\
 
 
@@ -288,87 +191,7 @@ Skips to `previous-like-this' if `t/cursors-direction' is 'up.
 
 \(fn)" t nil)
 
-(autoload 't/decrease-frame-width "t-defuns" "\
-Decrease emacs frame size horizontally
-
-\(fn)" t nil)
-
-(autoload 't/increase-frame-width "t-defuns" "\
-Increase emacs frame size horizontally
-
-\(fn)" t nil)
-
-(autoload 't/decrease-frame-height "t-defuns" "\
-Decrease emacs frame size vertically
-
-\(fn)" t nil)
-
-(autoload 't/increase-frame-height "t-defuns" "\
-Increase emacs frame size vertically
-
-\(fn)" t nil)
-
-(autoload 't/move-frame-right "t-defuns" "\
-Moves emacs frame right
-
-\(fn)" t nil)
-
-(autoload 't/move-frame-left "t-defuns" "\
-Moves emacs frame left
-
-\(fn)" t nil)
-
-(autoload 't/move-frame-up "t-defuns" "\
-Moves emacs frame up
-
-\(fn)" t nil)
-
-(autoload 't/move-frame-down "t-defuns" "\
-Moves emacs frame down
-
-\(fn)" t nil)
-
-(autoload 'config-reload "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 'config-edit-init "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 'config-edit-org "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 'config-edit-sane-defaults "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 'config-edit-defuns "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 'config-edit-keys "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 'config-edit-mac "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 'config-edit-langs "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 'config-edit-snippets "t-defuns" "\
+(autoload 't/config-reload "t-defuns" "\
 
 
 \(fn)" t nil)
@@ -424,11 +247,6 @@ Toggles between themes `spacemacs-dark' and `spacemacs-light'
 
 \(fn)" t nil)
 
-(autoload 't/refile-to "t-defuns" "\
-Move current headline to specified location
-
-\(fn FILE HEADLINE)" nil nil)
-
 (autoload 't/sudo-edit "t-defuns" "\
 Edit currently visited file as root.
 
@@ -442,6 +260,16 @@ Edit currently visited file as root.
 
 
 \(fn)" nil nil)
+
+(autoload 't/prefix-arg-universal\? "t-defuns" "\
+
+
+\(fn)" nil nil)
+
+(autoload 't/indent-after-paste "t-defuns" "\
+
+
+\(fn FN &rest ARGS)" nil nil)
 
 (autoload 't/comint-clear-buffer "t-defuns" "\
 
@@ -812,7 +640,7 @@ Navigate to /pulls for the current git repo.
 ;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23162 58174
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23165 24747
 ;;;;;;  0 0))
 
 ;;;***

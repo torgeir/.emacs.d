@@ -87,11 +87,6 @@
 
 (progn
 
-  (defvar t-use-package-t-layer-pkgs nil
-    "List of packages inited by t/use-package that will be loaded
-by spacemacs with the fake layer `t'.")
-  (setq t-use-package-t-layer-pkgs nil)
-
   (defvar t-use-package-pkgs nil
     "List of all packages inited by t/use-package that will be used
 for setting up vars and config after load")
@@ -112,7 +107,6 @@ for setting up vars and config after load")
 
       (let* ((init-body (plist-get entries :init))
              (config-body (plist-get entries :config))
-             (only-standalone (plist-get entries :only-standalone))
              (body '()))
 
         ;; make :init and :config call defuns instead
@@ -120,16 +114,12 @@ for setting up vars and config after load")
         (setq entries (plist-put entries :config `(,config-name)))
 
         ;; pass through some other use-package keys
-        (let ((ks (list :if :init :config :mode :bind :ensure :diminish :after :commands :defer :load-path :pin :evil-state)))
+        (let ((ks (list :if :init :config :mode :bind :ensure :diminish :after
+                        :commands :defer :load-path :pin :evil-state)))
           (dolist (k ks)
             (when (plist-member entries k)
               (let ((v (plist-get entries k)))
                 (setq body (plist-put body k v))))))
-
-        ;; don't add :only-standalone packages in spacemacs t-"layer"
-        (when (not only-standalone)
-          (t/add-to-list 't-use-package-t-layer-pkgs package)
-          (setq t-use-package-t-layer-pkgs (delete-dups t-use-package-t-layer-pkgs)))
 
         (add-to-list 't-use-package-pkgs package t)
         (setq t-use-package-pkgs (delete-dups t-use-package-pkgs))

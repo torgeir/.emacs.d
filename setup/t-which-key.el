@@ -1,6 +1,5 @@
 ;;; setup/t-which-key.el -*- lexical-binding: t -*-
 (t/use-package which-key
-  :only-standalone t
   :diminish which-key-mode
   :init
   (progn

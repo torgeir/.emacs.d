@@ -5,13 +5,6 @@ cd && git clone git@github.com:torgeir/.emacs.d.git
 ln -s ~/.emacs.d/.emacs
 ```
 
-for spacemacs, add
-
-```
-cd && git clone https://github.com/syl20bnr/spacemacs
-ln -s ~/.emacs.d/.spacemacs
-```
-
 ### installing emacs
 
 ### os x
@@ -65,7 +58,7 @@ these need to exist on `PATH`:
 - eslint babel-eslint jsonlint eslint-plugin-react tern flow
 - browser-sync
 
-#### fonts 
+#### fonts
 
 install these fonts on the system
 

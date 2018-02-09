@@ -30,21 +30,6 @@
       (ensime-inf-eval-region start end))))
 
 ;;;###autoload
-(defun t/send-region-to-nodejs-repl-process (start end)
-  "Send region to `nodejs-repl' process."
-  (interactive "r")
-  (save-selected-window
-    (save-excursion (nodejs-repl)))
-  (comint-send-region (get-process nodejs-repl-process-name)
-                      start end))
-
-;;;###autoload
-(defun t/send-buffer-to-nodejs-repl-process ()
-  "Send buffer to `nodejs-repl process."
-  (interactive)
-  (t/send-region-to-nodejs-repl-process (point-min) (point-max)))
-
-;;;###autoload
 (defun t/clean-mode-line ()
   (interactive)
   (loop for cleaner in mode-line-cleaner-alist
@@ -133,25 +118,6 @@ understands."
       (etags-select-find-tag-at-point))))
 
 ;;;###autoload
-(defun t/ido-find-tag ()
-  "Find a tag using ido"
-  (interactive)
-  (tags-completion-table)
-  (let (tag-names)
-    (mapatoms (lambda (x)
-                (push (prin1-to-string x t) tag-names))
-              tags-completion-table)
-    (etags-select-find (ido-completing-read "Tag: " tag-names))))
-
-
-;;;###autoload
-(defun t/ido-go-straight-home ()
-  (interactive)
-  (cond
-   ((looking-back "/") (insert "~/"))
-   (:else (call-interactively 'self-insert-command))))
-
-;;;###autoload
 (defun t/copy-to-clipboard (text &optional push)
   "Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses builtin pbcopy."
   (let* ((process-connection-type nil)
@@ -184,14 +150,6 @@ Version 2015-06-12"
   (indent-according-to-mode))
 
 ;;;###autoload
-(defun t/open-line-below ()
-  "Insert a newline below the current line and put point at beginning."
-  (interactive)
-  (unless (eolp)
-    (end-of-line))
-  (newline-and-indent))
-
-;;;###autoload
 (defun t/hippie-expand-no-case-fold ()
   (interactive)
   (let ((case-fold-search nil))
@@ -203,45 +161,6 @@ Version 2015-06-12"
   (let ((hippie-expand-try-functions-list '(try-expand-line-all-buffers)))
     (end-of-line)
     (hippie-expand nil)))
-
-;;;###autoload
-(defun t/duplicate-current-line-or-region (arg)
-  "Duplicates the current line or region ARG times.
-If there's no region, the current line will be duplicated."
-  (interactive "p")
-  (if (region-active-p)
-      (let ((beg (region-beginning))
-            (end (region-end)))
-        (t/duplicate-region arg beg end)
-        (one-shot-keybinding "d" (λ (t/duplicate-region 1 beg end))))
-    (t/duplicate-current-line arg)
-    (one-shot-keybinding "d" 't/duplicate-current-line))
-  (forward-line 1))
-
-;;;###autoload
-(defun t/duplicate-region (&optional num start end)
-  "Duplicates the region bounded by START and END NUM times.
-If no START and END is provided, the current region-beginning and
-region-end is used."
-  (interactive "p")
-  (save-excursion
-    (let* ((start (or start (region-beginning)))
-           (end (or end (region-end)))
-           (region (buffer-substring start end)))
-      (goto-char end)
-      (dotimes (i num)
-        (insert region)))))
-
-;;;###autoload
-(defun t/duplicate-current-line (&optional num)
-  "Duplicate the current line NUM times."
-  (interactive "p")
-  (save-excursion
-    (when (eq (point-at-eol) (point-max))
-      (goto-char (point-max))
-      (newline)
-      (forward-char -1))
-    (t/duplicate-region num (point-at-bol) (1+ (point-at-eol)))))
 
 ;;;###autoload
 (defun t/kill-other-buffers ()
@@ -286,7 +205,8 @@ region-end is used."
   (interactive)
   (forward-sexp -1)
   (t/wrap-with-parens)
-  (forward-char 0))
+  (insert " ")
+  (forward-char -1))
 
 ;;;###autoload
 (defun t/untabify-buffer ()
@@ -327,35 +247,6 @@ Including indent-buffer, which should not be called automatically on save."
            (insert (current-kill 0)))))
 
 ;;;###autoload
-(defun t/join-lines ()
-  "join adjacent lines"
-  (interactive)
-  (join-line -1))
-
-;;;###autoload
-(defun t/kill-and-join-forward (&optional arg)
-  "kills line and joins the next line, without the whitespace"
-  (interactive "P")
-  (if (and (eolp) (not (bolp)))
-      (progn (forward-char 1)
-             (just-one-space 0)
-             (backward-char 1)
-             (kill-line arg))
-    (kill-line arg)))
-
-;;;###autoload
-(defun t/isearch-delete-me ()
-  (interactive)
-  (delete-char (- (length isearch-string)))
-  (isearch-exit))
-
-;;;###autoload
-(defun t/quit-other-window ()
-  (interactive)
-  (other-window 1)
-  (quit-window))
-
-;;;###autoload
 (defun t/lorem ()
   "Insert a lorem ipsum."
   (interactive)
@@ -375,14 +266,6 @@ Including indent-buffer, which should not be called automatically on save."
     (back-to-indentation)
     (and (= oldpos (point))
          (beginning-of-line))))
-
-;;;###autoload
-(defun t/sp--create-newline-and-enter-sexp (&rest _ignored)
-  "Open a new brace or bracket expression, with relevant newlines and indent. thx @bodil"
-  (newline)
-  (indent-according-to-mode)
-  (forward-line -1)
-  (indent-according-to-mode))
 
 ;;;###autoload
 (defun t/delete-frame-or-hide-last-remaining-frame ()
@@ -411,7 +294,7 @@ Including indent-buffer, which should not be called automatically on save."
   (other-window -1))
 
 ;;;###autoload
-(defun buffer-mode (buffer-or-string)
+(defun t/buffer-mode (buffer-or-string)
   "Returns the major mode associated with a buffer."
   (with-current-buffer buffer-or-string
     major-mode))
@@ -431,71 +314,6 @@ Including indent-buffer, which should not be called automatically on save."
   (eq t/cursors-direction 'down))
 
 ;;;###autoload
-(defun t/cursors-message (str)
-  "Print message with added `str' and cursor direction."
-  (message (concat "cursor " str ": " (symbol-name t/cursors-direction))))
-
-;;;###autoload
-(defun t/cursor-down ()
-  "Marks `next-like-this' if the `t/cursors-direction' is 'down.
-   Sets `t/cursors-direction' to 'down if `t/cursors-direction' is 'up."
-  (interactive)
-  (when (not evil-mc-mode)
-    (turn-on-evil-mc-mode))
-  (if (t/cursors-direction-is-down)
-      (progn
-        (evil-mc-make-and-goto-next-match)
-        (t/cursors-message "mark"))
-    (progn
-      (setq t/cursors-direction 'down)
-      (t/cursors-message "direction"))))
-
-;;;###autoload
-(defun t/cursor-up ()
-  "Marks `previous-like-this' if the `t/cursors-direction' is 'up.
-   Sets `t/cursors-direction' to 'up if `t/cursors-direction' is 'down."
-  (interactive)
-  (when (not evil-mc-mode)
-    (turn-on-evil-mc-mode))
-  (if (t/cursors-direction-is-up)
-      (progn
-        (evil-mc-make-and-goto-prev-match)
-        (t/cursors-message "mark"))
-    (progn
-      (setq t/cursors-direction 'up)
-      (t/cursors-message "direction"))))
-
-;;;###autoload
-(defun t/cursor-down-skip ()
-  "Skips to `next-like-this' if `t/cursors-direction' is 'down.
-   Unmarks `previous-like-this' if `t/cursors-direction' is 'up"
-  (interactive)
-  (when (not evil-mc-mode)
-    (turn-on-evil-mc-mode))
-  (if (t/cursors-direction-is-up)
-      (progn
-        (evil-mc-skip-and-goto-prev-cursor)
-        (t/cursors-message "unmark"))
-    (progn
-      (evil-mc-skip-and-goto-next-match)
-      (t/cursors-message "skip"))))
-
-;;;###autoload
-(defun t/cursor-up-skip ()
-  "Skips to `previous-like-this' if `t/cursors-direction' is 'up.
-   Unmarks `next-like-this' if `t/cursors-direction' is 'down"
-  (interactive)
-  (when (not evil-mc-mode)
-    (turn-on-evil-mc-mode))
-  (if (t/cursors-direction-is-down)
-      (progn
-        (evil-mc-skip-and-goto-next-cursor)
-        (t/cursors-message "unmark"))
-    (progn
-      (evil-mc-skip-and-goto-prev-match)
-      (t/cursors-message "skip"))))
-
-;;;###autoload
 (defun t/split-window-right-and-move-there-dammit ()
   (interactive)
   (split-window-right)
@@ -508,90 +326,7 @@ Including indent-buffer, which should not be called automatically on save."
   (windmove-down))
 
 ;;;###autoload
-(defun t/decrease-frame-width ()
-  "Decrease emacs frame size horizontally"
-  (interactive)
-  (let ((frame (selected-frame)))
-    (set-frame-width frame (- (frame-width frame) 4))))
-
-;;;###autoload
-(defun t/increase-frame-width ()
-  "Increase emacs frame size horizontally"
-  (interactive)
-  (let ((frame (selected-frame)))
-    (set-frame-width frame (+ (frame-width frame) 4))))
-
-;;;###autoload
-(defun t/decrease-frame-height ()
-  "Decrease emacs frame size vertically"
-  (interactive)
-  (let ((frame (selected-frame)))
-    (set-frame-height frame (- (frame-height frame) 2))))
-
-;;;###autoload
-(defun t/increase-frame-height ()
-  "Increase emacs frame size vertically"
-  (interactive)
-  (let ((frame (selected-frame)))
-    (set-frame-height frame (+ (frame-height frame) 2))))
-
-;;;###autoload
-(defun t/move-frame-right ()
-  "Moves emacs frame right"
-  (interactive)
-  (let* ((frame (selected-frame))
-         (left (frame-parameter frame 'left)))
-    (set-frame-parameter frame 'left (+ left 20))))
-
-;;;###autoload
-(defun t/move-frame-left ()
-  "Moves emacs frame left"
-  (interactive)
-  (let* ((frame (selected-frame))
-         (left (frame-parameter frame 'left)))
-    (set-frame-parameter frame 'left (- left 20))))
-
-;;;###autoload
-(defun t/move-frame-up ()
-  "Moves emacs frame up"
-  (interactive)
-  (let* ((frame (selected-frame))
-         (top (frame-parameter frame 'left)'top))
-    (set-frame-parameter frame 'top (- top 20))))
-
-;;;###autoload
-(defun t/move-frame-down ()
-  "Moves emacs frame down"
-  (interactive)
-  (let* ((frame (selected-frame))
-         (top (frame-parameter frame 'top)))
-    (set-frame-parameter frame 'top (+ top 20))))
-
-;;;###autoload
-(defun config-reload () (interactive) (load-file "~/.emacs.d/init.el"))
-
-;;;###autoload
-(defun config-edit-init () (interactive) (find-file "~/.emacs.d/init.el"))
-
-;;;###autoload
-(defun config-edit-org () (interactive) (find-file "~/.emacs.d/setup/t-org.el"))
-
-;;;###autoload
-(defun config-edit-sane-defaults () (interactive) (find-file "~/.emacs.d/setup/t-sane-defaults.el"))
-
-;;;###autoload
-(defun config-edit-defuns () (interactive) (find-file "~/.emacs.d/setup/t-defuns.el"))
-
-;;;###autoload
-(defun config-edit-keys () (interactive) (find-file "~/.emacs.d/setup/t-keys.el"))
-
-;;;###autoload
-(defun config-edit-mac () (interactive) (find-file "~/.emacs.d/setup/t-mac.el"))
-
-;;;###autoload
-(defun config-edit-langs () (interactive) (find-file "~/.emacs.d/setup/t-langs.el"))
-;;;###autoload
-(defun config-edit-snippets () (interactive) (find-file "~/.emacs.d/snippets/"))
+(defun t/config-reload () (interactive) (load-file "~/.emacs.d/init.el"))
 
 ;;;###autoload
 (defun t/face-color-b (attr)
@@ -619,11 +354,12 @@ Including indent-buffer, which should not be called automatically on save."
   "Toggles between themes `spacemacs-dark' and `spacemacs-light'"
   (interactive)
   (let* ((enabled-theme (car custom-enabled-themes))
-         (next-theme (if (equal 'spacemacs-dark enabled-theme) 'spacemacs-light 'spacemacs-dark)))
+         (next-theme (if (equal 'doom-vibrant enabled-theme)
+                         'spacemacs-light
+                       'doom-vibrant)))
     (t/switch-theme next-theme)))
 
-;; mac/win friendly font
-(defvar *t-adjusted-font-size* t-font-size)
+(defvar *t-adjusted-font-size* t-font-size "Dynamically changed to adjust font with keybindings.")
 
 ;;;###autoload
 (defun t/reload-font ()
@@ -695,14 +431,6 @@ Including indent-buffer, which should not be called automatically on save."
   (org-capture))
 
 ;;;###autoload
-(defun t/refile-to (file headline)
-  "Move current headline to specified location"
-  (let ((pos (save-excursion
-               (find-file file)
-               (org-find-exact-headline-in-buffer headline))))
-    (org-refile nil nil (list headline file nil pos))))
-
-;;;###autoload
 (defun t/sudo-edit (&optional arg)
   "Edit currently visited file as root.
 
@@ -721,61 +449,21 @@ Including indent-buffer, which should not be called automatically on save."
   (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
 (t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
 
-(defadvice yank (around t/advice-indent-paste-before activate)
-  "Advice to intent text after pasting with `yank'.
-   Use `c-u yank' to prevent it."
+;;;###autoload
+(defun t/prefix-arg-universal? ()
+  (equal '(4) current-prefix-arg))
+
+;;;###autoload
+(defun t/indent-after-paste (fn &rest args)
   (evil-start-undo-step)
-  (let* ((prefix current-prefix-arg)
-         (got-universal-prefix (equal '(4) prefix)))
-    (ad-set-arg 0 (unless got-universal-prefix prefix))
-    ad-do-it
-    (unless got-universal-prefix
-      (indent-region (region-beginning)
-                     (region-end))))
+  (apply fn args)
+  (unless (t/prefix-arg-universal?)
+    (indent-region (region-beginning) (region-end)))
   (evil-end-undo-step))
 
-(defadvice yank-pop (around t/advice-indent-paste-before activate)
-  "Advice to intent text after pasting with `yank-pop'.
-   Use `c-u yank-pop' to prevent it."
-  (evil-start-undo-step)
-  (let* ((prefix current-prefix-arg)
-         (got-universal-prefix (equal '(4) prefix)))
-    (ad-set-arg 0 (unless got-universal-prefix prefix))
-    ad-do-it
-    (unless got-universal-prefix
-      (indent-region (region-beginning)
-                     (region-end))))
-  (evil-end-undo-step))
-
-(defadvice evil-paste-before (around t/advice-indent-paste-before activate)
-  "Advice to intent text after pasting with `P'.
-   Use `c-u P' to prevent it."
-  (evil-start-undo-step)
-  (let* ((prefix current-prefix-arg)
-         (got-universal-prefix (equal '(4) prefix)))
-    (ad-set-arg 0 (unless got-universal-prefix prefix))
-    ad-do-it
-    (unless got-universal-prefix
-      (indent-region (region-beginning)
-                     (region-end))))
-  (evil-end-undo-step))
-
-(defadvice evil-paste-after (around t/advice-indent-paste-after activate)
-  "Advice to intent text after pasting with `p'.
-   Use `c-u p' to prevent it."
-  (evil-start-undo-step)
-  (let* ((prefix current-prefix-arg)
-         (got-universal-prefix (equal '(4) prefix)))
-    (ad-set-arg 0 (unless got-universal-prefix prefix))
-    ad-do-it
-    (unless got-universal-prefix
-      (indent-region (region-beginning)
-                     (region-end))))
-  (evil-end-undo-step))
-
-;; Remove an advice: disable it, then activate it?
-;; (ad-disable-advice 'evil-paste-after 'around 't/advice-paste-indent)
-;; (ad-activate 'evil-paste-after)
+(advice-add 'yank :around #'t/indent-after-paste)
+(advice-add 'evil-paste-before :around #'t/indent-after-paste)
+(advice-add 'evil-paste-after :around #'t/indent-after-paste)
 
 ;;;###autoload
 (defun t/comint-clear-buffer ()
