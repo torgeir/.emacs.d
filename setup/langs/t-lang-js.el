@@ -32,7 +32,7 @@
              indium-interaction-mode
              indium-debugger-mode)
   :init
-  (with-eval-after-load 'web-mode
+  (t/after web-mode
     (t/add-hook 'web-mode-hook 'indium-interaction-mode)
     (t/declare-prefix-for-mode 'web-mode
                                "m" "mode"
@@ -97,7 +97,7 @@
   :commands nodejs-repl
   :init
   (progn
-    (with-eval-after-load 'web-mode
+    (t/after web-mode
       (t/add-hook-defun 'web-mode-hook t/nodejs-repl-hook
                         (t/evil-ex-define-cmd-local "repl" 'nodejs-repl))))
   :config

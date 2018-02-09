@@ -23,7 +23,7 @@
             ("deletechar"            . "⌦")
             ("RET"                   . "⏎")))
 
-    (with-eval-after-load 'which-key
+    (t/after which-key
       (which-key-mode nil)
       (which-key-mode))
 
@@ -38,7 +38,7 @@
     (defun t/declare-prefix (prefix name &optional key fn &rest bindings)
       "Declares which-key `prefix' and a display `name' for the prefix.
    Sets up keybindings for the prefix."
-      (with-eval-after-load 'which-key
+      (t/after which-key
         (which-key-declare-prefixes (t/prefix-with-leader prefix) name)
         (which-key-declare-prefixes (t/prefix-with-emacs-leader prefix) name)
         (while key
@@ -49,7 +49,7 @@
     (defun t/declare-prefix-for-mode (mode prefix name &optional key fn &rest bindings)
       "Declares which-key `prefix' and a display `name' for the prefix only in `mode`.
    Sets up keybindings for the prefix."
-      (with-eval-after-load 'which-key
+      (t/after which-key
         (which-key-declare-prefixes-for-mode mode (t/prefix-with-leader prefix) name)
         (which-key-declare-prefixes-for-mode mode (t/prefix-with-emacs-leader prefix) name)
         (while key

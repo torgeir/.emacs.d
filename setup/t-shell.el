@@ -10,7 +10,7 @@
   :defer t
   :init
   (progn
-    (with-eval-after-load 'eshell
+    (t/after eshell
       (require 'eshell-z))))
 
 (defun t-shell/config ()

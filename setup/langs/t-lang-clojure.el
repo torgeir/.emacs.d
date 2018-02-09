@@ -132,7 +132,7 @@
     (t/add-hook 'cider-popup-buffer-mode-hook 'visual-line-mode)
 
     ;; company
-    (with-eval-after-load 'company
+    (t/after company
       (t/add-hook '(cider-repl-mode-hook cider-mode-hook) 'company-mode))
 
     ;; match camel-case tokens

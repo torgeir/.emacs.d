@@ -28,7 +28,7 @@
 (require 'dash)
 
 (defun evil-use-package-wrap-weal (file list)
-  `(with-eval-after-load ',file ,@list))
+  `(t/after ,file ,@list))
 
 (defun evil-use-package-quote-symbols (list)
   (--map-when (symbolp it) `(quote ,it) list))

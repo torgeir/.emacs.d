@@ -46,8 +46,9 @@
              evil-visualstar/begin-search-backward)
   :config
   (progn
-    (bind-key "*" 'evil-visualstar/begin-search-forward evil-visual-state-map)
-    (bind-key "#" 'evil-visualstar/begin-search-backward evil-visual-state-map)))
+    (t/bind-in 'evil-visual-state-map
+               "*" 'evil-visualstar/begin-search-forward
+               "#" 'evil-visualstar/begin-search-backward)))
 
 (t/use-package evil-cleverparens
   :diminish evil-cleverparens-mode
@@ -56,7 +57,7 @@
   (progn (setq evil-cleverparens-use-additional-bindings nil
                evil-cleverparens-use-regular-insert t))
   :config
-  (with-eval-after-load 'evil-surround
+  (t/after evil-surround
     (add-to-list 'evil-surround-operator-alist '(evil-cp-delete . delete))
     (add-to-list 'evil-surround-operator-alist '(evil-cp-change . change))))
 
@@ -129,7 +130,7 @@
                                  git-rebase-mode
                                  diff-mode)
       "Major modes that should trigger evil emacs state when changed to.")
-    (with-eval-after-load 'evil
+    (t/after evil
       (t/add-hook-defun 'after-change-major-mode-hook t/hook-major-mode
                         (when (member major-mode t-evil-major-modes)
                           (evil-emacs-state))))

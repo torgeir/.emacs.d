@@ -38,7 +38,7 @@
 
   (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-emacs-lisp
                     (t/evil-ex-define-cmd-local "repl" #'t/elisp-repl)
-                    (with-eval-after-load 'ielm
+                    (t/after ielm
                       (t/bind-in 'ielm-map
                                  "C-d" 't/try-quit-ielm))))
 

@@ -1,4 +1,14 @@
 ;;; -*- lexical-binding: t; -*-
+(require 'subr-x)
+
+(defmacro t/after (file-name &rest body)
+  (declare (indent 1))
+  `(if-let ((locate-library (symbol-name ',file-name)))
+       (with-eval-after-load ',file-name ,@body)
+     (user-error
+      (format "t/after: for %s is not a filename in load-path?"
+              (symbol-name ',file-name)))))
+
 (defmacro t/when-ext (ext &rest body)
   "Run `body' when buffer's file has extension `ext'."
   (declare (indent 1))

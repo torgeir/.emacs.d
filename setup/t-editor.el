@@ -273,7 +273,7 @@
           company-tooltip-margin 1
           company-require-match nil
           company-backends (t/company-backends '()))
-    (with-eval-after-load 'company
+    (t/after company
       (t/add-hook 'prog-mode-hook 'company-mode)))
   :config
   (progn
@@ -410,7 +410,7 @@
   :commands turn-on-smartparens-mode
   :init
   (progn
-    (with-eval-after-load 'smartparens
+    (t/after smartparens
       (setq sp-ignore-modes-list (delete 'minibuffer-inactive-mode sp-ignore-modes-list)))
     (sp-use-paredit-bindings)
     (bind-key "<backspace>" 'sp-backward-delete-char sp-keymap)
@@ -429,7 +429,7 @@
                        lisp-interaction-mode-map))
       (define-key mode-map ";" 'sp-comment))
 
-    (with-eval-after-load 'clojure-mode
+    (t/after clojure-mode
       (define-key clojure-mode-map ";" 'sp-comment))
 
     (t/add-hook '(web-mode-hook
@@ -441,11 +441,11 @@
                   mark-down-mode)
                 'turn-on-smartparens-mode)
 
-    (with-eval-after-load 'web-mode
+    (t/after web-mode
       (t/bind-in 'web-mode-map
                  "M-<up>" 'sp-splice-sexp-killing-backward
                  "M-<down>" 'sp-splice-sexp-killing-forward))
-    (with-eval-after-load 'java-mode
+    (t/after java-mode
       (t/bind-in 'java-mode-map
                  "M-<up>" 'sp-splice-sexp-killing-backward
                  "M-<down>" 'sp-splice-sexp-killing-forward))
@@ -481,9 +481,9 @@
                    'lisp-interaction-mode))
       (t/enable-movement-for-lisp-mode mode))
 
-    (with-eval-after-load 'clojure-mode (t/enable-movement-for-lisp-mode 'clojure-mode))
-    (with-eval-after-load 'ielm-mode (t/enable-movement-for-lisp-mode 'ielm-mode))
-    (with-eval-after-load 'scheme-mode (t/enable-movement-for-lisp-mode 'scheme-mode))
+    (t/after clojure-mode (t/enable-movement-for-lisp-mode 'clojure-mode))
+    (t/after ielm-mode (t/enable-movement-for-lisp-mode 'ielm-mode))
+    (t/after scheme-mode (t/enable-movement-for-lisp-mode 'scheme-mode))
     (t/add-hook-defun 'minibuffer-inactive-mode-hook t/hook-minibuffer
                       (t/bind-in 'minibuffer-local-map
                                  "M-<up>" 'sp-splice-sexp-killing-backward
@@ -528,7 +528,7 @@
     (t/bind-in 'text-mode-map
                "C-<right>" #'sp-forward-slurp-sexp
                "C-<left>" #'sp-forward-barf-sexp)
-    (with-eval-after-load 'web-mode
+    (t/after web-mode
       (t/bind-in 'web-mode-map
                  "C-<right>" #'sp-forward-slurp-sexp
                  "C-<left>" #'sp-forward-barf-sexp))))
@@ -555,17 +555,17 @@
   :config
   (progn
     (require 'helm-config)
-    (with-eval-after-load 'helm
+    (t/after helm
       (t/bind-in '(helm-map)
                  "C-w" 'backward-kill-word
                  "C-u" 'backward-kill-sentence
                  "C-c u" 'universal-argument))
-    (with-eval-after-load 'helm-command
+    (t/after helm-command
       (t/bind-in 'helm-M-x-map
                  "C-w" 'backward-kill-word
                  "C-u" 'backward-kill-sentence
                  "C-c u" 'universal-argument))
-    (with-eval-after-load 'helm-files
+    (t/after helm-files
       (t/bind-in 'helm-find-files-map
                  "M-<down>" 'helm-execute-persistent-action
                  "M-<up>" 'helm-find-files-up-one-level
@@ -593,7 +593,7 @@
                       (with-helm-buffer
                         (setq cursor-in-non-selected-windows nil)))
     (set-face-attribute 'helm-source-header nil :height 1)
-    (with-eval-after-load 'neotree
+    (t/after neotree
       (t/add-hook 'helm-before-initialize-hook 'neotree-hide))))
 
 (t/use-package helm-ag
@@ -809,7 +809,7 @@
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
 
 ;; eww-mode
-(with-eval-after-load 'shr
+(t/after shr
   ;; don't truncate lines in eww-mode
   ;;(setq shr-width nil)
   (defun shr-fill-text (text) text)
@@ -845,7 +845,7 @@
   :config
   (progn
     (advice-add 'hackernews :after 'evil-emacs-state)
-    (with-eval-after-load 'eww
+    (t/after eww
       (advice-add 'eww-mode :after 'evil-emacs-state))
     (t/bind-in 'hackernews-map
                "<return>" 'hackernews-button-browse-internal
@@ -981,7 +981,7 @@
                       (t/bind-in '(evil-normal-state-local-map evil-insert-state-local-map)
                                  "q" 'artist-mode-off))
 
-    (with-eval-after-load 'evil-leader
+    (t/after evil-leader
       (t/declare-prefix "aa" "drawing"
                         "t" #'t/artist-mode
                         "p" 'artist-select-op-pen-line
@@ -998,7 +998,7 @@
 
 (defun t-editor/config ()
 
-  (with-eval-after-load 're-builder (setq reb-re-syntax 'rx))
+  (t/after re-builder (setq reb-re-syntax 'rx))
   (t/add-hook 'text-mode-hook 'auto-fill-mode) ; wrap text in text modes
   (t/add-hook 'text-mode-hook 'goto-address-prog-mode) ; navigate urls
   (t/add-hook 'focus-out-hook #'garbage-collect) ; make it feel snappier

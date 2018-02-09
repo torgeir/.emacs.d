@@ -56,7 +56,7 @@
             :input current-line-string
             :keymap t/helm-project-lines-keymap))))
 
-(with-eval-after-load 'helm
+(t/after helm
   (t/init-helm-source-project-lines))
 
 (provide 'helm-insert-line-from-project)

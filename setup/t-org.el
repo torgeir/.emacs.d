@@ -75,7 +75,7 @@
   :mode ("\\.\\(org\\|org_archive\\)$" . org-mode)
   :init
   (progn
-    (with-eval-after-load 'org-agenda
+    (t/after org-agenda
       (bind-key "s-s" 'org-save-all-org-buffers org-agenda-mode-map))
     (t/declare-prefix "o" "Org"
                       "c" 'org-capture
@@ -107,11 +107,11 @@
 
 (defun t-org/config ()
 
-  (with-eval-after-load 'org
+  (t/after org
 
     (progn
       ;; fix completion dissapearing
-      (with-eval-after-load 'company
+      (t/after company
         (t/add-company-backends-hook 'org-mode-hook 'company-capf))
       (t/add-hook-defun 'org-mode-hook t/hook-add-pcomplete-to-capf
                         (t/add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t)))
@@ -499,7 +499,7 @@ Locally redefines org-agenda-files not to export all agenda files."
     (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
           elfeed-search-filter "@6-months-ago -old -gaming -news -life +unread -photo")
 
-    (with-eval-after-load 'evil
+    (t/after evil
       (progn
         (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
         (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)))
@@ -550,7 +550,7 @@ Locally redefines org-agenda-files not to export all agenda files."
                              "P" 'helm-projectile-ag))
 
 ;; smartparens helpers
-(with-eval-after-load 'smartparens
+(t/after smartparens
   (sp-with-modes 'org-mode
     (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
     (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))

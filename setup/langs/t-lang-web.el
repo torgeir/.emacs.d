@@ -3,7 +3,7 @@
   :mode "\\.jsx?$"
   :init
   (progn
-    (with-eval-after-load 'web-mode
+    (t/after web-mode
       (setq web-mode-enable-html-entities-fontification t)
       (t/add-hook-defun 'web-mode-hook t/hook-web ; http://web-mode.org/
                         (setq-local web-mode-auto-close-style 2)

@@ -12,7 +12,7 @@
     (setq-default flycheck-disabled-checkers
                   (append flycheck-disabled-checkers '(json-jsonlist)))
 
-    (with-eval-after-load 'web-mode
+    (t/after web-mode
       (flycheck-add-mode 'javascript-eslint 'web-mode))
 
     (t/add-hook '(html-mode-hook web-mode-hook) 'flycheck-mode)))
@@ -22,7 +22,7 @@
   :commands flycheck-mode
   :init
   (progn
-    (with-eval-after-load 'cider
+    (t/after cider
       (comment
        (setq-default flycheck-disabled-checkers
                      (append flycheck-disabled-checkers '(clojure-cider-typed)))
