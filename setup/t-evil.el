@@ -115,12 +115,11 @@
   :ensure t
   :init
   (progn
-    (setq evil-goggles-duration 0.05))
+    (setq evil-goggles-duration 0.02))
   :config
   (progn
     (evil-goggles-mode)
-    (evil-goggles-use-diff-faces)
-    (comment (evil-goggles-use-diff-faces))))
+    (evil-goggles-use-magit-faces)))
 
 (defun t-evil/vars ()
   (progn
@@ -210,13 +209,13 @@ ignored.")
 
   (t/bind-in '(evil-insert-state-map)
              "C-d" 'evil-delete-char
-             "C-u" (lambda nil (interactive) (kill-line 0)))
+             "C-u" (t/lambda-i (kill-line 0)))
 
   (t/bind-in '(evil-normal-state-map
                evil-visual-state-map)
              "Q" 'call-last-kbd-macro
              "C-y" 'evil-paste-pop ; cycle after pasting with p
-             "C-S-y" (lambda nil (interactive) (evil-paste-pop-next 1)))
+             "C-S-y" (t/lambda-i (evil-paste-pop-next 1)))
 
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-map)
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-ns-map)

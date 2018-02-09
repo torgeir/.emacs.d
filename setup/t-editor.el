@@ -4,8 +4,8 @@
   :init
   (progn
     (t/declare-prefix "q" "Quit"
-                      "r" (lambda () (interactive) (restart-emacs))
-                      "R" (lambda () (interactive) (restart-emacs '("--no-desktop"))))))
+                      "r" (t/lambda-i (restart-emacs))
+                      "R" (t/lambda-i (restart-emacs '("--no-desktop"))))))
 
 (t/use-package winner
   :ensure nil
@@ -50,17 +50,17 @@
           dired-dwim-target t))
   :config
   (progn
-    (bind-key "~" (lambda () (interactive) (find-alternate-file "~")) dired-mode-map)
+    (bind-key "~" (t/lambda-i (find-alternate-file "~")) dired-mode-map)
     (bind-key "e" 't/eshell dired-mode-map)
     (bind-key "C-d" 'dired-kill-subdir dired-mode-map)
     (bind-key "C-c C-e" 'dired-toggle-read-only)
     (bind-key "C-x C-j" 'dired-jump)
-    (bind-key "C-x M-j" '(lambda () (interactive) (dired-jump 1)))
-    (bind-key "u" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
-    (bind-key "M-<up>" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
-    (bind-key "M-p" '(lambda () (interactive) (find-alternate-file "..")) dired-mode-map)
-    (bind-key "M-<down>" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map)
-    (bind-key "M-n" '(lambda () (interactive) (dired-find-alternate-file)) dired-mode-map)))
+    (bind-key "C-x M-j" '(t/lambda-i (dired-jump 1)))
+    (bind-key "u" '(t/lambda-i (find-alternate-file "..")) dired-mode-map)
+    (bind-key "M-<up>" '(t/lambda-i (find-alternate-file "..")) dired-mode-map)
+    (bind-key "M-p" '(t/lambda-i (find-alternate-file "..")) dired-mode-map)
+    (bind-key "M-<down>" '(t/lambda-i (dired-find-alternate-file)) dired-mode-map)
+    (bind-key "M-n" '(t/lambda-i (dired-find-alternate-file)) dired-mode-map)))
 
 ;; less verbose dired
 (t/use-package dired-details

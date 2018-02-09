@@ -57,12 +57,12 @@
   (bind-key "s-w" #'t/delete-frame-or-hide-last-remaining-frame)
 
   ;; don't pop up font menu, makes new tab work in iterm2
-  (bind-key "s-t" '(lambda () (interactive)))
+  (bind-key "s-t" '(t/lambda-i))
 
   ;; buffer font size adjustment
-  (bind-key "s-?" '(lambda () (interactive) (text-scale-increase 1)))
-  (bind-key "s-_" '(lambda () (interactive) (text-scale-decrease 1)))
-  (bind-key "s-=" '(lambda () (interactive) (text-scale-set 0)))
+  (bind-key "s-?" '(t/lambda-i (text-scale-increase 1)))
+  (bind-key "s-_" '(t/lambda-i (text-scale-decrease 1)))
+  (bind-key "s-=" '(t/lambda-i (text-scale-set 0)))
 
   ;; global font size adjustment
   (bind-key "s-+" 't/increase-font-size)
@@ -70,6 +70,6 @@
   (bind-key "s-0" 't/reset-font-size)
 
   ;; s-p print dialog kills emacs, so disable it..
-  (bind-key "s-p" (lambda () (interactive))))
+  (bind-key "s-p" (t/lambda-i)))
 
 (provide 't-mac)

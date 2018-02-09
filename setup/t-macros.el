@@ -1,6 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'subr-x)
 
+(defmacro t/lambda-i (&rest body)
+  `(lambda nil (interactive) ,@body))
+
 (defmacro t/after (file-name &rest body)
   (declare (indent 1))
   `(if-let ((locate-library (symbol-name ',file-name)))
