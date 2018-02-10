@@ -3,8 +3,13 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (23165 65479 0 0))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (23166 49055 0 0))
 ;;; Generated autoloads from t-defuns.el
+
+(autoload 't/async-shell-command "t-defuns" "\
+Execute `CMD' async, call `FN' with the result string.
+
+\(fn NAME CMD &optional FN)" nil nil)
 
 (autoload 't/evil-ex-define-cmd-local "t-defuns" "\
 Locally binds the function FUNCTION to the command CMD.
@@ -640,7 +645,7 @@ Navigate to /pulls for the current git repo.
 ;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23165 65459
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23166 6699
 ;;;;;;  0 0))
 
 ;;;***

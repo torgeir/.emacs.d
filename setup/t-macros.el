@@ -2,7 +2,9 @@
 (require 'subr-x)
 
 (defmacro t/lambda-i (&rest body)
-  `(lambda nil (interactive) ,@body))
+  `(lambda () (interactive) ,@body))
+
+(t/lambda-i)
 
 (defmacro t/after (file-name &rest body)
   (declare (indent 1))

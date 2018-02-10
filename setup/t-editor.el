@@ -55,12 +55,12 @@
     (bind-key "C-d" 'dired-kill-subdir dired-mode-map)
     (bind-key "C-c C-e" 'dired-toggle-read-only)
     (bind-key "C-x C-j" 'dired-jump)
-    (bind-key "C-x M-j" '(t/lambda-i (dired-jump 1)))
-    (bind-key "u" '(t/lambda-i (find-alternate-file "..")) dired-mode-map)
-    (bind-key "M-<up>" '(t/lambda-i (find-alternate-file "..")) dired-mode-map)
-    (bind-key "M-p" '(t/lambda-i (find-alternate-file "..")) dired-mode-map)
-    (bind-key "M-<down>" '(t/lambda-i (dired-find-alternate-file)) dired-mode-map)
-    (bind-key "M-n" '(t/lambda-i (dired-find-alternate-file)) dired-mode-map)))
+    (bind-key "C-x M-j" (t/lambda-i (dired-jump 1)))
+    (bind-key "u" (t/lambda-i (find-alternate-file "..")) dired-mode-map)
+    (bind-key "M-<up>" (t/lambda-i (find-alternate-file "..")) dired-mode-map)
+    (bind-key "M-p" (t/lambda-i (find-alternate-file "..")) dired-mode-map)
+    (bind-key "M-<down>" (t/lambda-i (dired-find-alternate-file)) dired-mode-map)
+    (bind-key "M-n" (t/lambda-i (dired-find-alternate-file)) dired-mode-map)))
 
 ;; less verbose dired
 (t/use-package dired-details

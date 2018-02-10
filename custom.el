@@ -4,6 +4,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(eshell-ls-executable ((t (:inherit doom-modeline-info :weight bold))))
+ '(evil-goggles-delete-face ((t (:inherit magit-diff-removed))))
+ '(evil-goggles-paste-face ((t (:inherit magit-diff-added))))
+ '(evil-goggles-undo-redo-add-face ((t (:inherit magit-diff-added))))
+ '(evil-goggles-undo-redo-remove-face ((t (:inherit magit-diff-removed))))
  '(font-lock-comment-face ((t (:foreground "#6A8FBF"))))
  '(hackernews-comment-count-face ((t (:inherit org-code))))
  '(hackernews-link-face ((t (:inherit font-lock-keyword-face))))
@@ -35,7 +39,7 @@
  '(flycheck-javascript-flow-args nil)
  '(helm-source-names-using-follow
    (quote
-    ("Buffers" "Projectile files" "datainn.org" "Show hunks in project")))
+    ("Complete line in project" "Buffers" "Projectile files" "datainn.org" "Show hunks in project")))
  '(jdee-db-active-breakpoint-face-colors (cons "#181e26" "#51afef"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#181e26" "#7bc275"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#181e26" "#3D3D48"))
