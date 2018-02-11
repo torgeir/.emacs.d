@@ -1,3 +1,5 @@
+;; TODO this does no longer work after the spotify oauth api
+
 (require 'url)
 
 (defun spotify-play-track (track)
