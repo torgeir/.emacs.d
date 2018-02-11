@@ -656,13 +656,24 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
      +doom-modeline-bar-width)))
 
 
+;; TODO torgeir added this
+(def-modeline-segment! org-mobile-inbox
+  "Return org mobile inbox count"
+  (let ((sep " "))
+    (cond ((eq major-mode 'org-mode)
+           (let ((c (t/mobile-inbox-count)))
+             (concat (when (> c 0)
+                       (concat (propertize (format "📫 %s" c) 'face 'doom-modeline-urgent) sep))
+                     sep))))))
+
 ;;
 ;; Mode lines
 ;;
 
 (def-modeline! main
   (bar matches " " icon " " buffer-info " %l:%c %p  " selection-info)
-  (buffer-encoding major-mode vcs flycheck))
+  ;; TODO torgeir added this
+  (org-mobile-inbox buffer-encoding major-mode vcs flycheck))
 
 (def-modeline! minimal
   (bar matches " " icon buffer-info)
