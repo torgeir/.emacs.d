@@ -157,13 +157,6 @@
                    ("C" . neotree-change-root)))
       (eval `(evil-define-key 'normal neotree-mode-map (kbd ,(car key)) ',(cdr key))))))
 
-(t/use-package ace-window
-  :commands ace-window
-  :config
-  (progn
-    (setq aw-keys '(?j ?k ?l ?a ?s ?d ?f ?g)
-          aw-background t)))
-
 (use-package avy
   :commands (avy-goto-char
              avy-goto-char-2
@@ -180,17 +173,22 @@
              avy-goto-word-1-below
              avy-goto-char-2-below
              avy-goto-symbol-1-below)
+  :init
+  (progn
+    (setq avy-keys '(?j ?f ?d ?k ?s ?a)
+          avy-timeout-seconds 0.2
+          avy-all-windows 'all-frames
+          avy-case-fold-search nil
+          avy-highlight-first t
+          avy-style 'at-full
+          avy-background t))
   :config
   (progn
-    (setq avy-all-windows 'all-frames
-          avy-background nil
-          avy-highlight-first t
-          avy-style 'at)
-    (set-face-attribute 'avy-lead-face nil   :background nil :foreground (face-foreground 'error))
-    (set-face-attribute 'avy-lead-face-0 nil :background nil :foreground (face-foreground 'error))
-    (set-face-attribute 'avy-lead-face-1 nil :background nil :foreground (face-foreground 'error))
-    (set-face-attribute 'avy-lead-face-2 nil :background nil :foreground (face-foreground 'error))
-    ))
+    (let ((f 'font-lock-function-name-face))
+      (set-face-attribute 'avy-lead-face nil   :background nil :foreground (face-foreground f))
+      (set-face-attribute 'avy-lead-face-0 nil :background nil :foreground (face-foreground f))
+      (set-face-attribute 'avy-lead-face-1 nil :background nil :foreground (face-foreground f))
+      (set-face-attribute 'avy-lead-face-2 nil :background nil :foreground (face-foreground f)))))
 
 (t/use-package es-mode
   :init
@@ -1117,6 +1115,7 @@
 
   (t/declare-prefix "h" "Help"
                     "h" #'t/describe
+                    "f" #'t/face-at-point
                     "a" 'helm-apropos
                     "l" 'helm-locate-library
                     "i" 'helm-info-at-point
