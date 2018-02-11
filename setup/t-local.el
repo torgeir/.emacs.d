@@ -11,10 +11,10 @@
     :load-path "site-lisp/cloudformation/"
     :commands cloudformation-mode)
 
-  (t/use-package helm-insert-line-from-project
-    :commands t/helm-find-and-insert-line-from-project
+  (t/use-package helm-lines
+    :commands helm-lines
     :ensure nil
-    :load-path "site-lisp/helm-insert-line-from-project/")
+    :load-path "site-lisp/helm-lines/")
 
   (t/use-package spotify
     :ensure nil
