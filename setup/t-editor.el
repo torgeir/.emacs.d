@@ -554,7 +554,7 @@
   (progn
     (require 'helm-config)
     (t/after helm
-      (t/bind-in '(helm-map)
+      (t/bind-in 'helm-map
                  "C-w" 'backward-kill-word
                  "C-u" 'backward-kill-sentence
                  "C-c u" 'universal-argument))
@@ -568,7 +568,8 @@
                  "M-<down>" 'helm-execute-persistent-action
                  "M-<up>" 'helm-find-files-up-one-level
                  "C-k" 'helm-find-files-up-one-level))
-    (setq-default helm-display-header-line nil
+    (setq-default helm-candidate-number nil
+                  helm-display-header-line nil
                   helm-M-x-fuzzy-match t
                   helm-apropos-fuzzy-match t
                   helm-buffers-fuzzy-matching t
@@ -1189,7 +1190,7 @@
                     "s" 'avy-goto-symbol-1-below)
 
   (t/declare-prefix "c" "Comment/Complete"
-                    "l" 't/helm-find-and-insert-line-from-project)
+                    "l" 'helm-lines)
 
   (t/declare-prefix "h" "Highlight"
                     "H" 'highlight-symbol

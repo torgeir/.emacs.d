@@ -14,7 +14,9 @@
   (t/use-package helm-lines
     :commands helm-lines
     :ensure nil
-    :load-path "site-lisp/helm-lines/")
+    ;; TODO remove when https://github.com/melpa/melpa/pull/5300 is merged
+    :load-path "~/Code/helm-lines.el/"
+    )
 
   (t/use-package spotify
     :ensure nil
