@@ -476,9 +476,12 @@ Including indent-buffer, which should not be called automatically on save."
 ;;;###autoload
 (defun t/indent-after-paste (fn &rest args)
   (evil-start-undo-step)
-  (apply fn args)
-  (unless (t/prefix-arg-universal?)
-    (indent-region (region-beginning) (region-end)))
+  (let* ((u-prefix (t/prefix-arg-universal?))
+         (current-prefix-arg (unless u-prefix current-prefix-arg))
+         (args (if u-prefix (list nil) args)))
+    (apply fn args)
+    (unless u-prefix
+      (indent-region (region-beginning) (region-end))))
   (evil-end-undo-step))
 
 (advice-add 'yank :around #'t/indent-after-paste)
