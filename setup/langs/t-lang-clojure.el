@@ -21,59 +21,63 @@
   :commands (clj-refactor-mode)
   :init
   (progn
-    (t/add-hook-defun 'clojure-mode-hook t/hook-clojure
-                      (clj-refactor-mode 1)
-                      (dolist (mapping '(("maps" . "outpace.util.maps")
-                                         ("seqs" . "outpace.util.seqs")
-                                         ("string" . "clojure.string")
-                                         ("reflect" . "clojure.reflect")
-                                         ("edn" . "clojure.edn")
-                                         ("time" . "clj-time.core")))
-                        (add-to-list 'cljr-magic-require-namespaces mapping t))
+    (defun t/init-clj-refactor (mode)
+      (progn
+        (clj-refactor-mode 1)
+        (dolist (mapping '(("maps" . "outpace.util.maps")
+                           ("seqs" . "outpace.util.seqs")
+                           ("string" . "clojure.string")
+                           ("reflect" . "clojure.reflect")
+                           ("edn" . "clojure.edn")
+                           ("time" . "clj-time.core")))
+          (add-to-list 'cljr-magic-require-namespaces mapping t))
 
-                      (t/declare-prefix-for-mode 'clojure-mode
-                                                 "mr" "Refactor"
-                                                 ;; https://github.com/clojure-emacs/clj-refactor.el/wiki
-                                                 "?" 'cljr-describe-refactoring
+        (eval `(t/declare-prefix-for-mode ',mode
+                                          "mr" "Refactor"
+                                          ;; https://github.com/clojure-emacs/clj-refactor.el/wiki
+                                          "?" 'cljr-describe-refactoring
 
-                                                 "ar" 'cljr-add-require-to-ns
-                                                 "ap" 'cljr-add-project-dependency
-                                                 "am" 'cljr-add-missing-libspec
+                                          "ar" 'cljr-add-require-to-ns
+                                          "ap" 'cljr-add-project-dependency
+                                          "am" 'cljr-add-missing-libspec
 
-                                                 "cc" 'cljr-cycle-coll
-                                                 "ct" 'cljr-cycle-thread
-                                                 "ci" 'cljr-cycle-if
+                                          "cc" 'cljr-cycle-coll
+                                          "ct" 'cljr-cycle-thread
+                                          "ci" 'cljr-cycle-if
 
-                                                 "dk" 'cljr-destructure-keys
+                                          "dk" 'cljr-destructure-keys
 
-                                                 "ec" 'cljr-extract-constant
-                                                 "ed" 'cljr-extract-def
-                                                 "el" 'cljr-expand-let
-                                                 "ef" 'cljr-extract-function
+                                          "ec" 'cljr-extract-constant
+                                          "ed" 'cljr-extract-def
+                                          "el" 'cljr-expand-let
+                                          "ef" 'cljr-extract-function
 
-                                                 "is" 'cljr-inline-symbol
-                                                 "in" 'clojure-insert-ns-form
-                                                 "un" 'clojure-update-ns
-                                                 "il" 'cljr-introduce-let
+                                          "is" 'cljr-inline-symbol
+                                          "in" 'clojure-insert-ns-form
+                                          "un" 'clojure-update-ns
+                                          "il" 'cljr-introduce-let
 
-                                                 "rr" 'cljr-remove-unused-requires
-                                                 "rl" 'cljr-remove-let
-                                                 "rs" 'cljr-rename-symbol
-                                                 "ru" 'cljr-replace-use
+                                          "rr" 'cljr-remove-unused-requires
+                                          "rl" 'cljr-remove-let
+                                          "rs" 'cljr-rename-symbol
+                                          "ru" 'cljr-replace-use
 
-                                                 "sn" 'cljr-sort-ns
-                                                 "sp" 'cljr-sort-project-dependencies
-                                                 "sr" 'cljr-stop-referring
+                                          "sn" 'cljr-sort-ns
+                                          "sp" 'cljr-sort-project-dependencies
+                                          "sr" 'cljr-stop-referring
 
-                                                 "th" 'cljr-thread
-                                                 "tf" 'cljr-thread-first-all
-                                                 "tl" 'cljr-thread-last-all
+                                          "th" 'cljr-thread
+                                          "tf" 'cljr-thread-first-all
+                                          "tl" 'cljr-thread-last-all
 
-                                                 "ua" 'cljr-unwind-all
-                                                 "uw" 'cljr-unwind
+                                          "ua" 'cljr-unwind-all
+                                          "uw" 'cljr-unwind
 
-                                                 "ml" 'cljr-move-to-let
-                                                 ))))
+                                          "ml" 'cljr-move-to-let
+                                          ))))
+
+    (t/add-hook 'clojure-mode-hook (t/lambda-i (t/init-clj-refactor 'clojure-mode)))
+    (t/add-hook 'clojurescript-mode-hook (t/lambda-i (t/init-clj-refactor 'clojurescript-mode)))))
 
 
 (t/use-package cljr-helm

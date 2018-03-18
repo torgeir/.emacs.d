@@ -113,6 +113,7 @@
           neo-auto-indent-point t)
     (t/add-hook-defun 'neotree-mode-hook t/neotree-hook
                       (evil-commentary-mode -1)
+                      (evil-extra-operator-mode -1)
                       (hl-line-mode))
     (when is-mac (setq neo-theme 'icons)))
 

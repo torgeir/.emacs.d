@@ -276,10 +276,12 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                     (progn
                       (select-window (display-buffer agenda-buffer t t))
                       (org-fit-window-to-buffer)
-                      (org-agenda-redo t))
+                      ;;(org-agenda-redo t)
+                      )
                   (with-selected-window (display-buffer agenda-buffer)
                     (org-fit-window-to-buffer)
-                    (org-agenda-redo t))))
+                    ;; (org-agenda-redo t)
+                    )))
             (call-interactively 'org-agenda-list))))
 
       (progn
@@ -485,7 +487,7 @@ Locally redefines org-agenda-files not to export all agenda files."
           spray-margin-top 6
           spray-margin-left 11)
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
-                      (t/bind-in '(evil-normal-state-map)
+                      (t/bind-in '(evil-normal-state-local-map)
                                  "q" 'spray-quit
                                  "f" 'spray-faster
                                  "s" 'spray-slower)
