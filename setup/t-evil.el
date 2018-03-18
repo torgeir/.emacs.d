@@ -111,15 +111,23 @@
   :commands (evil-commentary evil-commentary-yank evil-commentary-line)
   :init (evil-commentary-mode 1))
 
-(use-package evil-goggles
-  :ensure t
+(use-package google-translate)
+
+(t/use-package evil-goggles
+  :defer 1
   :init
   (progn
-    (setq evil-goggles-duration 0.02))
+    (setq evil-goggles-duration 0.1
+          evil-goggles-async-duration 0.1))
   :config
-  (progn
-    (evil-goggles-mode)
-    (evil-goggles-use-magit-faces)))
+  (t/add-hook-defun 'prog-mode-hook t/hook-goggles
+                    (evil-goggles-mode)
+                    (evil-goggles-use-magit-faces)))
+
+(t/use-package evil-extra-operator
+  :defer 1
+  :config
+  (global-evil-extra-operator-mode 1))
 
 (defun t-evil/vars ()
   (progn

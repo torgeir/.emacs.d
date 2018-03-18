@@ -6,7 +6,8 @@
   :commands (clojure-mode clojurescript-mode)
   :config
   (progn
-    (setq clojure-indent-style :align-arguments)
+    (setq clojure-indent-style :align-arguments
+          clojure-align-forms-automatically t)
     (put-clojure-indent '-> 1)
     (put-clojure-indent '->> 1)
     (put-clojure-indent 'doall 1)
