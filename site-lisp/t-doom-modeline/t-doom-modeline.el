@@ -661,7 +661,7 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
   "Return org mobile inbox count"
   (let ((sep " "))
     (cond ((eq major-mode 'org-mode)
-           (let ((c (t/mobile-inbox-count)))
+           (when-let ((c (t/mobile-inbox-count)))
              (concat (when (> c 0)
                        (concat (propertize (format "📫 %s" c) 'face 'doom-modeline-urgent) sep))
                      sep))))))
