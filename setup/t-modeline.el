@@ -1,7 +1,15 @@
 ;;; -*- lexical-binding: t; -*-
 (defun t-modeline/config ()
 
-  (defun t/init-modeline () (+doom-modeline|init))
+  (defun t/init-modeline ()
+    ;; (+doom-modeline|init)
+    ;; try without'em
+    (progn
+      (setq-default mode-line-format nil
+                    frame-title-format " ")
+      (setq mode-line-format nil
+            frame-title-format " ")))
+
   (t/add-hook 'after-init-hook #'t/init-modeline)
 
   (defvar mode-line-cleaner-alist
