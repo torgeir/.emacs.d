@@ -127,6 +127,10 @@
                     (evil-goggles-mode)
                     (evil-goggles-use-magit-faces)))
 
+;; dependencies of evil-extra-operator
+(use-package highlight)
+(use-package fold-this)
+
 (t/use-package evil-extra-operator
   :defer 1
   :config
