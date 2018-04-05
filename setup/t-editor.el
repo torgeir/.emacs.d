@@ -1040,6 +1040,7 @@
                     "se" 't/eshell
                     "st" 'ansi-term
                     "sT" 'term
+                    "ss" 'shell
                     "S" 'suggest)
 
   (t/declare-prefix "fe" "Editor")
