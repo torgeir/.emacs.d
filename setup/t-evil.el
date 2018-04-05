@@ -2,7 +2,9 @@
 (t/use-package evil
   :init
   (setq evil-want-C-d-scroll t
-        evil-want-C-u-scroll t))
+        evil-want-C-u-scroll t
+        evil-want-Y-yank-to-eol nil
+        evil-move-beyond-eol t))
 
 (t/use-package evil-anzu
   :init
@@ -54,7 +56,7 @@
   :diminish evil-cleverparens-mode
   :defer 1
   :init
-  (progn (setq evil-cleverparens-use-additional-bindings nil
+  (progn (setq evil-cleverparens-use-additional-bindings t
                evil-cleverparens-use-regular-insert t))
   :config
   (t/after evil-surround
@@ -88,6 +90,7 @@
   (progn
     (evil-multiedit-default-keybinds)
     (unbind-key "M-d" evil-insert-state-map)
+    (unbind-key "C-M-D" evil-normal-state-map)
     (bind-key "gn" 'evil-multiedit--visual-line evil-multiedit-state-map)
 
     (progn
