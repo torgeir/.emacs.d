@@ -34,7 +34,7 @@
       ;;(rainbow-mode . "")
       ;;(company-mode . "")
       ;;(yas-minor-mode . "")
-      ;;(undo-tree-mode . "")
+      (js2-mode . "js")
       (evil-escape-mode . "")
       (ethan-wspace-mode . "")
       ;;(rainbow-delimiters-mode . "")
