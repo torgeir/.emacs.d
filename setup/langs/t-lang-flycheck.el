@@ -12,10 +12,10 @@
     (setq-default flycheck-disabled-checkers
                   (append flycheck-disabled-checkers '(json-jsonlist)))
 
-    (t/after web-mode
-      (flycheck-add-mode 'javascript-eslint 'web-mode))
+    (t/after js2-mode
+      (flycheck-add-mode 'javascript-eslint 'js2-mode))
 
-    (t/add-hook '(html-mode-hook web-mode-hook) 'flycheck-mode)))
+    (t/add-hook '(html-mode-hook js2-mode-hook) 'flycheck-mode)))
 
 (t/use-package flycheck-clojure
   :pin melpa-stable

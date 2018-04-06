@@ -6,7 +6,7 @@
 ;;; -*- lexical-binding: t; -*-
 (defun t-typography/config ()
 
-  (t/add-hook-defun '(web-mode-hook) t/ligatures
+  (t/add-hook-defun '(js2-mode-hook) t/ligatures
                     (push '("function" . ?ƒ) prettify-symbols-alist)
                     (prettify-symbols-mode))
 

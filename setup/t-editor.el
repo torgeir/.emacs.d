@@ -273,10 +273,9 @@
           company-require-match nil
           company-backends (t/company-backends '()))
     (t/after company
-      (t/add-hook 'prog-mode-hook 'company-mode)))
+      (global-company-mode)))
   :config
   (progn
-    (global-company-mode)
     (defun t/company-helm () (interactive) (company-abort) (completion-at-point))
     (t/bind-in 'company-active-map
                "TAB" 'company-complete-selection
@@ -294,7 +293,7 @@
     (company-flx-mode +1)))
 
 (t/use-package company-web
-  :commands (web-mode))
+  :after company)
 
 (t/use-package company-restclient
   :commands restclient-mode
@@ -431,8 +430,7 @@
     (t/after clojure-mode
       (define-key clojure-mode-map ";" 'sp-comment))
 
-    (t/add-hook '(web-mode-hook
-                  js-mode-hook
+    (t/add-hook '(js-mode-hook
                   java-mode-hook
                   text-mode-hook
                   restclient-mode-hook
@@ -440,6 +438,10 @@
                   mark-down-mode)
                 'turn-on-smartparens-mode)
 
+    (t/after rjsx-mode-mode
+      (t/bind-in 'rjsx-mode-map
+                 "M-<up>" 'sp-splice-sexp-killing-backward
+                 "M-<down>" 'sp-splice-sexp-killing-forward))
     (t/after web-mode
       (t/bind-in 'web-mode-map
                  "M-<up>" 'sp-splice-sexp-killing-backward
