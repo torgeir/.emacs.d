@@ -177,7 +177,7 @@
   :init
   (progn
     (setq avy-keys '(?j ?f ?d ?k ?s ?a)
-          avy-timeout-seconds 0.2
+          avy-timeout-seconds 0.4
           avy-all-windows 'all-frames
           avy-case-fold-search nil
           avy-highlight-first t
