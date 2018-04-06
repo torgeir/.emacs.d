@@ -5,6 +5,8 @@
   (t/add-hook 'prog-mode-hook 'git-gutter+-mode)
   :config
   (progn
+    (evil-add-command-properties #'git-gutter+-next-hunk :jump t)
+    (evil-add-command-properties #'git-gutter+-previous-hunk :jump t)
     (setq git-gutter+-modified-sign "~"
           git-gutter+-added-sign "+"
           git-gutter+-deleted-sign "-"
