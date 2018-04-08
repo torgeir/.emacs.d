@@ -1070,20 +1070,13 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/toggle-line-numbers ()
   "Toggle line numbers on or off."
   (interactive)
-  (linum-relative-off)
-  (if linum-mode
-      (linum-mode 0)
-    (linum-mode 1)))
+  (nlinum-mode (if nlinum-mode 0 1)))
 
 ;;;###autoload
 (defun t/toggle-relative-line-numbers ()
   "Toggle relative line numbers on or off."
   (interactive)
-  (if (or linum-mode linum-relative-mode)
-      (linum-mode 0)
-    (progn
-      (linum-mode 1)
-      (linum-relative-on))))
+  (nlinum-relative-toggle))
 
 ;;;###autoload
 (defun t/highlight-logging ()

@@ -898,13 +898,13 @@
     (comment
      (recentf-mode -1))))
 
-(t/use-package linum-relative
-  :commands linum-relative-mode
+(t/use-package nlinum
   :init
-  (progn
-    (t/add-hook-setq 'linum-mode-hook linum-format " %d ")
-    (t/add-hook-setq 'linum-relative-mode-hook linum-relative-format " %3s ")
-    (linum-relative-mode 0)))
+  (setq nlinum-format " %d "))
+
+(t/use-package nlinum-relative
+  :init
+  (setq nlinum-relative-redisplay-delay 0))
 
 (t/use-package projectile
   :diminish projectile-mode
