@@ -1083,6 +1083,7 @@
                     "b" 'helm-mini
                     "o" 't/switch-to-previous-buffer
                     "N" 'previous-buffer
+                    "p" 'previous-buffer
                     "n" 'next-buffer
                     "R" 'revert-buffer)
 
