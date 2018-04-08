@@ -785,8 +785,11 @@
              highlight-symbol-prev)
   :init
   (progn
-    (setq highlight-symbol-idle-delay 0.2)
-    (t/add-hook 'prog-mode-hook 'highlight-symbol-mode)))
+    (setq highlight-symbol-idle-delay 0.5)
+    (t/add-hook 'prog-mode-hook 'highlight-symbol-mode))
+  :config
+  ;; highlight-symbol uses hl-line-face
+  (require 'hl-line))
 
 (t/use-package highlight-numbers
   :defer 1
