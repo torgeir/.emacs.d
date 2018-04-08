@@ -34,7 +34,9 @@
   (progn
     (unbind-key "M-j" js2-mode-map)
     (unbind-key "M-." js2-mode-map)
-    (bind-key "TAB" 't/tab-properly js2-mode-map)
+    (t/declare-prefix-for-mode 'js2-mode
+                               "h" "Help"
+                               "h" 'tern-get-docs)
     (t/declare-prefix-for-mode 'js2-mode
                                "me" "Evaluate"
                                "b" 't/send-buffer-to-nodejs-repl-process
