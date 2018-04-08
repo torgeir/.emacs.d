@@ -76,7 +76,9 @@
   :init
   (progn
     (t/after org-agenda
-      (bind-key "s-s" 'org-save-all-org-buffers org-agenda-mode-map))
+      (bind-key "s-s" 'org-save-all-org-buffers org-agenda-mode-map)
+      (unbind-key "C-," org-mode-map)) ;; don't need to cycle agenda files
+
     (t/declare-prefix "o" "Org"
                       "c" 'org-capture
                       "e" 'org-export-dispatch
