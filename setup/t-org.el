@@ -79,6 +79,12 @@
       (bind-key "s-s" 'org-save-all-org-buffers org-agenda-mode-map)
       (unbind-key "C-," org-mode-map)) ;; don't need to cycle agenda files
 
+    (evil-add-command-properties #'outline-up-heading :jump t)
+    (evil-add-command-properties #'outline-next-heading :jump t)
+    (evil-add-command-properties #'outline-previous-heading :jump t)
+    (evil-add-command-properties #'org-previous-visible-heading :jump t)
+    (evil-add-command-properties #'org-next-visible-heading :jump t)
+
     (t/declare-prefix "o" "Org"
                       "c" 'org-capture
                       "e" 'org-export-dispatch
@@ -227,7 +233,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
     (progn
       ;; realign tags
-
       (defun t/org-mode-realign-all-tags ()
         "Code to realign tags, stolen from org.el"
         (save-excursion
@@ -262,7 +267,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
     (progn
       ;; idle timer
-
       (when (boundp 'spacemacs-useful-buffers-regexp)
         (add-to-list 'spacemacs-useful-buffers-regexp "\\*Org Agenda\\*"))
 
@@ -278,12 +282,10 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                     (progn
                       (select-window (display-buffer agenda-buffer t t))
                       (org-fit-window-to-buffer)
-                      ;;(org-agenda-redo t)
-                      )
+                      (org-agenda-redo t))
                   (with-selected-window (display-buffer agenda-buffer)
                     (org-fit-window-to-buffer)
-                    ;; (org-agenda-redo t)
-                    )))
+                    (org-agenda-redo t))))
             (call-interactively 'org-agenda-list))))
 
       (progn
@@ -386,7 +388,6 @@ Locally redefines org-agenda-files not to export all agenda files."
 
       (progn
         ;; yas in org
-
         (defun yas/org-very-safe-expand ()
           (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
 
@@ -532,7 +533,6 @@ Locally redefines org-agenda-files not to export all agenda files."
   (progn
     (add-hook 'elfeed-search-mode-hook 'elfeed-org)
     (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org"))))
-
 
 (t/use-package org-gcal
   :commands (org-gcal-sync org-gcal-fetch)
