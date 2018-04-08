@@ -22,7 +22,6 @@
                     t-lang-remark
                     t-lang-scala
                     t-lang-sh
-                    t-lang-web
                     t-lang-html
                     t-lang-yaml
                     t-lang-flow
