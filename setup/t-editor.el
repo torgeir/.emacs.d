@@ -951,7 +951,7 @@
   (progn
     (t/add-hook-defun 'java-mode-hook t/hook-java (aggressive-indent-mode 0))
     (t/add-hook 'prog-mode-hook 'aggressive-indent-mode)
-    (t/declare-prefix "t" "Toggles"
+    (t/declare-prefix "t" "Toggle"
                       "a" 'aggressive-indent-mode)))
 
 (use-package whitespace
