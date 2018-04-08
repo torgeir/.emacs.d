@@ -3,7 +3,17 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (23187 57881 0 0))
+;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
+;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
+;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
+;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23242 16657
+;;;;;;  749545 285000))
+
+;;;***
+
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (23242 16874 194793
+;;;;;;  792000))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/async-shell-command "t-defuns" "\
@@ -639,17 +649,23 @@ Navigate to /pulls for the current git repo.
 
 \(fn)" t nil)
 
-;;;***
-
-;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
-;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
-;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
-;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23173 63816
-;;;;;;  0 0))
+(autoload 't/margins-global "t-defuns" "\
+Set global frame margins.
+
+\(fn L &optional R)" t nil)
+
+(autoload 't/margins-local "t-defuns" "\
+Set buffer local frame margin.
+
+\(fn L &optional R)" t nil)
+
+(autoload 't/toggle-margins "t-defuns" "\
+Toggle buffer local pleasing margins.
+
+\(fn)" t nil)
 
 ;;;***
-
+
 (provide 'autoloads)
 ;; Local Variables:
 ;; version-control: never

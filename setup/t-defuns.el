@@ -1223,5 +1223,30 @@ If FILEXT is provided, return files with extension FILEXT instead."
                      (t/visit-git-link-pulls))))
       (user-error "No projects found"))))
 
+;;;###autoload
+(defun t/margins-global (l &optional r)
+  "Set global frame margins."
+  (interactive "nWidth: ")
+  (setq-default left-margin-width l
+                right-margin-width (or r l))
+  (set-window-buffer nil (current-buffer)))
+
+;;;###autoload
+(defun t/margins-local (l &optional r)
+  "Set buffer local frame margin."
+  (interactive "nWidth: ")
+  (setq-local left-margin-width l)
+  (setq-local right-margin-width (or r l))
+  (set-window-buffer nil (current-buffer)))
+
+;;;###autoload
+(defun t/toggle-margins ()
+  "Toggle buffer local pleasing margins."
+  (interactive)
+  (t/margins-local (if (equal left-margin-width (default-value 'left-margin-width))
+                       (truncate (* 0.15
+                                    (frame-width)))
+                     (default-value 'left-margin-width))
+                   (default-value 'right-margin-width)))
 
 (provide 't-defuns)

@@ -1064,8 +1064,14 @@
   (t/declare-prefix "t" "Toggle"
                     "d" 'toggle-debug-on-error
                     "f" 'toggle-frame-fullscreen
+                    "F" 't/toggle-clean-frame
                     "t" 't/load-theme-cycle
                     "n" #'t/toggle-line-numbers
+                    "m" (lambda nil
+                          "Clean frame look."
+                          (interactive)
+                          (t/toggle-clean-frame)
+                          (t/toggle-margins))
                     "r" #'t/toggle-relative-line-numbers
                     "s" 'spray-mode
                     "l" 'hl-line-mode

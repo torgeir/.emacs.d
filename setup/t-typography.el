@@ -15,8 +15,6 @@
     (t/add-hook 'after-make-frame-functions 't/set-emoji-font))) ; hook for when a frame is created with emacsclient
 
 ;; add window margins
-(setq-default left-margin-width 1
-              right-margin-width 1)
-(set-window-buffer nil (current-buffer))
+(t/margins-global 1)
 
 (provide 't-typography)

@@ -6,7 +6,7 @@
     (setq t-old-modeline nil
           t-old-frametitle nil)
 
-    (defun t/clean-frame ()
+    (defun t/toggle-clean-frame ()
       "Remove mode-line and frame-title for a cleaner look."
       (interactive)
       (if t-old-modeline
@@ -17,14 +17,15 @@
         (progn
           (setq t-old-modeline mode-line-format t-old-frametitle frame-title-format)
           (setq-default mode-line-format nil frame-title-format " ")
-          (setq         mode-line-format nil frame-title-format " ")))))
+          (setq         mode-line-format nil frame-title-format " ")))
+      (force-mode-line-update)))
 
   (defun t/init-modeline ()
     (when (not (or (equal frame-title-format "")
                    (equal frame-title-format " ")))
       (+doom-modeline|init)
       (when (not t-old-modeline) ;; first time around
-        (t/clean-frame))))
+        (t/toggle-clean-frame))))
 
   (t/add-hook 'after-init-hook #'t/init-modeline)
 
