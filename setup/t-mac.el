@@ -42,8 +42,8 @@
              "M-)" "}")
 
   ;; os x window movement
-  (bind-key "s-j" 'previous-buffer)
-  (bind-key "s-k" 'next-buffer)
+  (bind-key "s-k" 'previous-buffer)
+  (bind-key "s-j" 'next-buffer)
   (bind-key "s->" 'next-multiframe-window)
   (bind-key "s-<" 'previous-multiframe-window)
   (bind-key "s-<left>" 't/smart-beginning-of-line)
