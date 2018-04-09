@@ -57,16 +57,17 @@
           (setq key (pop bindings)
                 fn (pop bindings)))))
 
-    (defun t/declare-state (prefix name &optional key fn &rest bindings)
+    (defun t/micro-state-in-mode (mode key fn &rest bindings)
       "Micro state that temporarily overlays a new key map, kinda like hydra"
-      (let ((keymap (make-sparse-keymap)))
+      (lexical-let ((keymap (make-sparse-keymap)))
         (while key
           (bind-key key fn keymap)
           (setq key (pop bindings)
                 fn (pop bindings)))
-        (evil-leader/set-key (concat prefix key)
-          (lambda ()
-            (interactive)
-            (set-temporary-overlay-map keymap t)))))))
+        (lambda ()
+          (interactive)
+          (funcall mode)
+          (set-temporary-overlay-map keymap t (lambda nil
+                                                (funcall mode -1))))))))
 
 (provide 't-which-key)

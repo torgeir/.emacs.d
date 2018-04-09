@@ -828,8 +828,7 @@
   ;; not to large images
   (setq shr-use-fonts nil
         shr-max-image-proportion 0.6
-        shr-ignore-cache t
-        ))
+        shr-ignore-cache t))
 
 (defun t/visit-frontmost-chrome-url-in-eww ()
   "Visit the front-most url of chrome in eww."
@@ -838,23 +837,31 @@
 
 (t/add-hook-defun 'eww-mode-hook t/hook-eww
                   (t/bind-in '(evil-normal-state-local-map)
-                             "s" 'spray-mode
-                             "M-b" 'backward-paragraph
+                             "s" (t/micro-state-in-mode 'spray-mode
+                                                        "s" 'spray-slower
+                                                        "f" 'spray-faster
+                                                        "SPC" 'spray-start/stop
+                                                        "<left>" 'spray-backward-word
+                                                        "<right>" 'spray-forward-word)
+                             "R" 'eww-readable
+                             "M-p" 'backward-paragraph
                              "M-n" 'forward-paragraph
                              "b" 'eww-browse-with-external-browser)
-                  (comment (writeroom-mode))
                   (visual-line-mode))
 
 (t/use-package hackernews
   :commands hackernews
   :config
   (progn
-    (advice-add 'hackernews :after 'evil-emacs-state)
-    (t/after eww
-      (advice-add 'eww-mode :after 'evil-emacs-state))
+    (comment (t/add-hook-defun 'hackernews-mode-hook t/hook-hn
+                               (evil-make-intercept-map hackernews-map 'normal)))
     (t/bind-in 'hackernews-map
                "<return>" 'hackernews-button-browse-internal
-               "SPC" 'hackernews-button-browse-internal
+               "TAB" 'hackernews-next-comment
+               "j" 'hackernews-next-item
+               "k" 'hackernews-previous-item
+               "g" 'hackernews-load-more-stories
+               "G" 'hackernews-reload
                "b" (lambda nil
                      (interactive)
                      (hackernews-browse-url-action
@@ -1076,8 +1083,8 @@
                     "s" 'spray-mode
                     "l" 'hl-line-mode
                     "L" 'visual-line-mode
-                    "w" 'whitespace-mode
-                    "W" 'writeroom-mode
+                    "W" 'whitespace-mode
+                    "w" 'writeroom-mode
                     "Cc" 'rainbow-mode
                     "Cd" 'rainbow-delimiters-mode)
 

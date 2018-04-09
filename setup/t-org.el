@@ -502,10 +502,7 @@ Locally redefines org-agenda-files not to export all agenda files."
           spray-margin-top 6
           spray-margin-left 11)
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
-                      (t/bind-in '(evil-normal-state-local-map)
-                                 "q" 'spray-quit
-                                 "f" 'spray-faster
-                                 "s" 'spray-slower)
+                      (evil-make-intercept-map spray-mode-map 'normal)
                       (set-face-foreground 'spray-accent-face
                                            (face-foreground 'font-lock-keyword-face)))))
 
