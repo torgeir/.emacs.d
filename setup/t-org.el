@@ -8,7 +8,17 @@
                                     "c:/Users/torgth/Dropbox \(Personlig\)"))
 
   (defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
-  (defun t/org-directory (path) (concat org-directory "/" path)))
+  (defun t/org-directory (path) (concat org-directory "/" path))
+  (defun t/org-archive-done-tasks ()
+    (interactive)
+    (org-map-entries (lambda ()
+                       (org-archive-subtree)
+                       (setq org-map-continue-from (outline-previous-heading)))
+                     "/DONE" 'file)
+    (org-map-entries (lambda ()
+                       (org-archive-subtree)
+                       (setq org-map-continue-from (outline-previous-heading)))
+                     "/CANCELLED" 'file)))
 
 (defun t-org/vars ()
   (setq org-directory (t/user-dropbox-folder "org"))
@@ -63,12 +73,13 @@
         org-html-postamble-format
         '(("en" "<p class=\"author\">%a (%e)</p>\n<p class=\"date\">%T</p>")))
 
+  (defun t/org-capture-chrome-link-template (&optional &rest args)
+    (concat "* TODO %? :url:%^G\n\n" (t/grab-chrome-url)))
+
   (setq org-capture-templates
-        `(("t" "Task"
-           entry
-           (file+headline org-default-notes-file "Tasks")
-           "* TODO %? %^G\n%i%a")))
-  )
+        `(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n%i")
+          ("f" "File location" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n%i%a")
+          ("c" "Chrome location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template)))))
 
 (t/use-package org
   :ensure org-plus-contrib
