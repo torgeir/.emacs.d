@@ -67,7 +67,8 @@
         `(("t" "Task"
            entry
            (file+headline org-default-notes-file "Tasks")
-           "* TODO %? %^G\n%i"))))
+           "* TODO %? %^G\n%i%a")))
+  )
 
 (t/use-package org
   :ensure org-plus-contrib
