@@ -837,35 +837,34 @@
 
 (t/add-hook-defun 'eww-mode-hook t/hook-eww
                   (t/bind-in '(evil-normal-state-local-map)
-                             "s" (t/micro-state-in-mode 'spray-mode
-                                                        "s" 'spray-slower
-                                                        "f" 'spray-faster
-                                                        "SPC" 'spray-start/stop
-                                                        "<left>" 'spray-backward-word
-                                                        "<right>" 'spray-forward-word)
                              "R" 'eww-readable
                              "M-p" 'backward-paragraph
                              "M-n" 'forward-paragraph
-                             "b" 'eww-browse-with-external-browser)
+                             "go" 'eww-browse-with-external-browser)
                   (visual-line-mode))
 
 (t/use-package hackernews
   :commands hackernews
+  :init
+  (defun t/hackernews ()
+    "Open hackernews in current window."
+    (interactive)
+    (cl-letf (((symbol-function 'pop-to-buffer) #'switch-to-buffer))
+      (call-interactively 'hackernews)))
   :config
   (progn
-    (comment (t/add-hook-defun 'hackernews-mode-hook t/hook-hn
-                               (evil-make-intercept-map hackernews-map 'normal)))
-    (t/bind-in 'hackernews-map
-               "<return>" 'hackernews-button-browse-internal
-               "TAB" 'hackernews-next-comment
-               "j" 'hackernews-next-item
-               "k" 'hackernews-previous-item
-               "g" 'hackernews-load-more-stories
-               "G" 'hackernews-reload
-               "b" (lambda nil
-                     (interactive)
-                     (hackernews-browse-url-action
-                      (button-at (point)))))))
+    (evil-define-key 'normal hackernews-map
+      (kbd "<return>") 'hackernews-button-browse-internal
+      (kbd "TAB") 'hackernews-next-comment
+      "q" 'kill-buffer-and-window
+      "j" 'hackernews-next-item
+      "k" 'hackernews-previous-item
+      "gr" 'hackernews-load-more-stories
+      "gR" 'hackernews-reload
+      "go" (lambda nil
+             (interactive)
+             (hackernews-browse-url-action
+              (button-at (point)))))))
 
 (t/use-package helm-hunks
   :commands (helm-hunks
@@ -1044,10 +1043,13 @@
                     "b" 'browse-url-at-point
                     "C" 'calc-dispatch
                     "d" 'dired-jump
-                    "h" 'hackernews
+                    "h" 't/hackernews
                     "i" 't/open-in-intellij
                     "p" 'list-processes
                     "m" 'helm-spotify
+                    "n" (lambda nil
+                          (interactive)
+                          (eww "nrk.no"))
                     "R" #'t/toggle-regex-mode
                     "se" 't/eshell
                     "st" 'ansi-term
@@ -1080,7 +1082,6 @@
                           (t/toggle-clean-frame)
                           (t/toggle-margins))
                     "r" #'t/toggle-relative-line-numbers
-                    "s" 'spray-mode
                     "l" 'hl-line-mode
                     "L" 'visual-line-mode
                     "W" 'whitespace-mode

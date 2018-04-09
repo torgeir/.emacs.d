@@ -501,8 +501,15 @@ Locally redefines org-agenda-files not to export all agenda files."
     (setq spray-wpm 600
           spray-margin-top 6
           spray-margin-left 11)
+    (t/declare-prefix "t" "Toggle"
+                      "s" (t/micro-state-in-mode
+                           'spray-mode
+                           "s" 'spray-slower
+                           "f" 'spray-faster
+                           "SPC" 'spray-start/stop
+                           "<left>" 'spray-backward-word
+                           "<right>" 'spray-forward-word))
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
-                      (evil-make-intercept-map spray-mode-map 'normal)
                       (set-face-foreground 'spray-accent-face
                                            (face-foreground 'font-lock-keyword-face)))))
 
@@ -512,24 +519,33 @@ Locally redefines org-agenda-files not to export all agenda files."
   (progn
     (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
           elfeed-search-filter "@6-months-ago -old -gaming -news -life +unread -photo")
-
-    (t/after evil
-      (progn
-        (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
-        (add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)))
-
     (t/declare-prefix "a" "Applications"
                       "r" 'elfeed))
   :config
   (progn
-    (bind-key "SPC" 'elfeed-search-show-entry elfeed-search-mode-map)
-    (bind-key "s" 'spray-mode elfeed-show-mode-map)
+    (evil-set-initial-state 'elfeed-search-mode 'normal)
+    (evil-set-initial-state 'elfeed-show-mode 'normal)
+    (evil-define-key 'normal elfeed-search-mode-map
+      (kbd "<return>") 'elfeed-search-show-entry
+      "q" 'quit-window
+      "go" 'elfeed-search-browse-url
+      "gr" 'elfeed-search-update--force
+      "gR" 'elfeed-search-fetch
+      "u" 'elfeed-search-tag-all-unread
+      "r" 'elfeed-search-untag-all-unread
+      "s" 'elfeed-search-live-filter ; filter
+      "y" 'elfeed-search-yank)
+    (evil-define-key 'normal elfeed-show-mode-map
+      "q" 'elfeed-goodies/delete-pane
+      "g" 'elfeed-show-refresh
+      "b" 'elfeed-show-visit
+      "[" 'elfeed-goodies/split-show-prev
+      "]" 'elfeed-goodies/split-show-next
+      (kbd "SPC") 'scroll-up-command
+      (kbd "S-SPC") 'scroll-down-command)
     (setq elfeed-goodies/entry-pane-position 'bottom)
-    (setq writeroom-fullscreen-effect 'fullboth)
-    (autoload 'writeroom--enable "writeroom-mode.el")
     (t/add-hook-defun 'elfeed-show-mode-hook t/elfeed-hook
-                      (visual-line-mode)
-                      (writeroom--enable))))
+                      (visual-line-mode))))
 
 (t/use-package elfeed-goodies
   :commands elfeed-goodies/setup
