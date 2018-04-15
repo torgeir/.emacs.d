@@ -1,5 +1,5 @@
 (defun t/user-file (path)
-  (concat "/Users/" (getenv "USER") "/" path))
+  (concat "/Users/" (replace-regexp-in-string "\\." "" (getenv "USER")) "/" path))
 
 (setq user-emacs-directory "~/.emacs.d/")
 
