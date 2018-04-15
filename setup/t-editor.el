@@ -825,6 +825,14 @@
   (t/add-hook-defun 'eww-after-render-hook t/hook-eww-trunc
                     (toggle-truncate-lines -1))
 
+  ;; hide images
+  (t/declare-prefix-for-mode 'eww-mode
+                             "t" "Toggle"
+                             "i" 't/eww-toggle-images)
+  (t/declare-prefix-for-mode 'elfeed-show-mode
+                             "t" "Toggle"
+                             "i" 't/eww-toggle-images)
+
   ;; not to large images
   (setq shr-use-fonts nil
         shr-max-image-proportion 0.6
@@ -837,9 +845,13 @@
 
 (t/add-hook-defun 'eww-mode-hook t/hook-eww
                   (t/bind-in '(evil-normal-state-local-map)
+                             "q" 'quit-window
+                             "STAB" 'shr-previous-link
+                             "TAB" 'shr-next-link
                              "R" 'eww-readable
                              "M-p" 'backward-paragraph
                              "M-n" 'forward-paragraph
+                             "s-l" 'eww
                              "go" 'eww-browse-with-external-browser)
                   (visual-line-mode))
 

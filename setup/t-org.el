@@ -525,12 +525,10 @@ Locally redefines org-agenda-files not to export all agenda files."
   (progn
     (evil-set-initial-state 'elfeed-search-mode 'normal)
     (evil-set-initial-state 'elfeed-show-mode 'normal)
-    (evil-define-key 'normal elfeed-search-mode-map
+    (evil-define-key '(normal motion) elfeed-search-mode-map
       (kbd "<return>") 'elfeed-search-show-entry
       "q" 'quit-window
-      "go" 'elfeed-search-browse-url
-      "gr" 'elfeed-search-update--force
-      "gR" 'elfeed-search-fetch
+      ;;(kbd "go") 'elfeed-search-browse-url
       "u" 'elfeed-search-tag-all-unread
       "r" 'elfeed-search-untag-all-unread
       "s" 'elfeed-search-live-filter ; filter
