@@ -10,8 +10,20 @@
 
 (defun t-load-theme/config ()
   (defconst t-themes (list
-                      'doom-vibrant
-                      'spacemacs-light) "Themes to cycle")
+                      'doom-nord
+                      ;;'doom-dracula
+                      ;;'doom-vibrant
+                      'doom-one-light
+                      ;;'doom-solarized-light
+                      ) "Themes to cycle")
+
+  (comment
+   (setq t-themes (list 'doom-nord
+                        ;;'doom-vibrant
+                        ;;'doom-one
+                        'doom-one-light
+                        ;;'doom-solarized-light
+                        )))
 
   (defun t/cycle-theme ()
     "Cycles themes in `t-themes'"

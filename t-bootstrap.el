@@ -9,7 +9,7 @@
 
 (defconst t-dir-site-lisp (t/user-emacs-file "site-lisp"))
 (defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
-(defconst t-font-size 19)
+(defconst t-font-size 17)
 
 (defconst is-mac (equal system-type 'darwin))
 (defconst is-cygwin (equal system-type 'cygwin))
