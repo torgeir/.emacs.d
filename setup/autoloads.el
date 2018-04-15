@@ -7,13 +7,13 @@
 ;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23242 16657
-;;;;;;  749545 285000))
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23251 6684
+;;;;;;  115511 7000))
 
 ;;;***
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (23242 16874 194793
-;;;;;;  792000))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (23251 6737 656612
+;;;;;;  581000))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/async-shell-command "t-defuns" "\
@@ -661,6 +661,11 @@ Set buffer local frame margin.
 
 (autoload 't/toggle-margins "t-defuns" "\
 Toggle buffer local pleasing margins.
+
+\(fn)" t nil)
+
+(autoload 't/eww-toggle-images "t-defuns" "\
+Toggle whether images are loaded and reload the current page fro cache.
 
 \(fn)" t nil)
 

@@ -367,7 +367,8 @@ Including indent-buffer, which should not be called automatically on save."
                              (mapcar 'symbol-name
                                      (custom-available-themes))))))
   (mapcar #'disable-theme custom-enabled-themes)
-  (load-theme theme t))
+  (load-theme theme t)
+  (message "%s" theme))
 
 ;;;###autoload
 (defun t/toggle-theme-dark-light ()
