@@ -24,8 +24,9 @@
     (when (not (or (equal frame-title-format "")
                    (equal frame-title-format " ")))
       (+doom-modeline|init)
-      (when (not t-old-modeline) ;; first time around
-        (t/toggle-clean-frame))))
+      (comment
+       (when (not t-old-modeline) ;; first time around
+         (t/toggle-clean-frame)))))
 
   (t/add-hook 'after-init-hook #'t/init-modeline)
 
