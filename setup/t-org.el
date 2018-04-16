@@ -524,6 +524,11 @@ Locally redefines org-agenda-files not to export all agenda files."
                       (set-face-foreground 'spray-accent-face
                                            (face-foreground 'font-lock-keyword-face)))))
 
+(t/use-package twittering-mode
+  :init
+  (t/declare-prefix "a" "Applications"
+                    "t" 'twittering-mode))
+
 (t/use-package elfeed
   :commands (elfeed)
   :init
