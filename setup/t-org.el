@@ -107,6 +107,7 @@
                       "e" 'org-export-dispatch
                       "g" 'org-mac-grab-link
                       "a" 'org-agenda
+                      "A" 't/org-archive-done-tasks
                       "n" 'org-alert-check
                       "i" 'org-info)
 
@@ -400,6 +401,7 @@ Locally redefines org-agenda-files not to export all agenda files."
 
         (t/add-hook-defun 'org-mode-hook t/hook-org-meta
                           (t/bind-in 'org-mode-map
+                                     "<return>" 'org-return
                                      "C-w" 'org-refile
                                      "M-<return>" 't/org-meta-return-dwim
                                      "M-S-<return>" 't/org-insert-todo-heading-dwim
