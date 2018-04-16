@@ -154,7 +154,7 @@
                    ("q" . neotree-hide)
                    ("q" . neotree-hide)
                    ("v" . neotree-quick-look)
-                   ("TAB" . neotree-stretch-toggle)
+                   ("TAB" . neotree-enter)
                    ("RET" . neotree-enter)
                    ("M-<down>" . neotree-enter)
                    ("C" . neotree-change-root)))
