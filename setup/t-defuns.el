@@ -1241,16 +1241,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (set-window-buffer nil (current-buffer)))
 
 ;;;###autoload
-(defun t/toggle-margins ()
-  "Toggle buffer local pleasing margins."
-  (interactive)
-  (t/margins-local (if (equal left-margin-width (default-value 'left-margin-width))
-                       (truncate (* 0.15
-                                    (frame-width)))
-                     (default-value 'left-margin-width))
-                   (default-value 'right-margin-width)))
-
-;;;###autoload
 (defun t/eww-toggle-images ()
   "Toggle whether images are loaded and reload the current page fro cache."
   (interactive)

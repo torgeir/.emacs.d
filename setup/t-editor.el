@@ -537,7 +537,11 @@
                  "C-<left>" #'sp-forward-barf-sexp))))
 
 (t/use-package writeroom-mode
-  :commands writeroom-mode)
+  :commands writeroom-mode
+  :init
+  (setq writeroom-width 120
+        writeroom-maximize-window nil
+        writeroom-fullscreen-effect 'maximized))
 
 (t/use-package w3m
   :commands w3m
@@ -1090,11 +1094,6 @@
                     "F" 't/toggle-clean-frame
                     "t" 't/load-theme-cycle
                     "n" #'t/toggle-line-numbers
-                    "m" (lambda nil
-                          "Clean frame look."
-                          (interactive)
-                          (t/toggle-clean-frame)
-                          (t/toggle-margins))
                     "r" #'t/toggle-relative-line-numbers
                     "l" 'hl-line-mode
                     "L" 'visual-line-mode
