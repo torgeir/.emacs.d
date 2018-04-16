@@ -827,6 +827,11 @@
   (defun shr-fill-lines (start end) nil)
   (defun shr-fill-line () nil)
 
+  (defun t/elfeed-show-hide-images ()
+    (interactive)
+    (let ((shr-inhibit-images t))
+      (elfeed-show-refresh)))
+
   ;; wrap lines
   (t/add-hook-defun 'eww-after-render-hook t/hook-eww-trunc
                     (toggle-truncate-lines -1))
@@ -837,7 +842,7 @@
                              "i" 't/eww-toggle-images)
   (t/declare-prefix-for-mode 'elfeed-show-mode
                              "t" "Toggle"
-                             "i" 't/eww-toggle-images)
+                             "i" 't/elfeed-show-hide-images)
 
   ;; not to large images
   (setq shr-use-fonts nil
@@ -874,15 +879,15 @@
     (evil-define-key 'normal hackernews-map
       (kbd "<return>") 'hackernews-button-browse-internal
       (kbd "TAB") 'hackernews-next-comment
-      "q" 'kill-buffer-and-window
+      "q" 'quit-window
       "j" 'hackernews-next-item
       "k" 'hackernews-previous-item
       "gr" 'hackernews-load-more-stories
       "gR" 'hackernews-reload
-      "go" (lambda nil
-             (interactive)
-             (hackernews-browse-url-action
-              (button-at (point)))))))
+      "b" (lambda nil
+            (interactive)
+            (hackernews-browse-url-action
+             (button-at (point)))))))
 
 (t/use-package helm-hunks
   :commands (helm-hunks

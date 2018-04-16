@@ -539,14 +539,14 @@ Locally redefines org-agenda-files not to export all agenda files."
     (evil-define-key '(normal motion) elfeed-search-mode-map
       (kbd "<return>") 'elfeed-search-show-entry
       "q" 'quit-window
-      ;;(kbd "go") 'elfeed-search-browse-url
+      "b" 'elfeed-search-browse-url
       "u" 'elfeed-search-tag-all-unread
+      "G" 'elfeed-search-fetch
       "r" 'elfeed-search-untag-all-unread
       "s" 'elfeed-search-live-filter ; filter
       "y" 'elfeed-search-yank)
     (evil-define-key 'normal elfeed-show-mode-map
       "q" 'elfeed-goodies/delete-pane
-      "g" 'elfeed-show-refresh
       "b" 'elfeed-show-visit
       "[" 'elfeed-goodies/split-show-prev
       "]" 'elfeed-goodies/split-show-next
