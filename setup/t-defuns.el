@@ -1176,7 +1176,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-dired ()
   (interactive)
-  (let ((projects (projectile-relevant-known-projects)))
+  (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
          "Switch to project: "
@@ -1188,7 +1188,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-magit-status ()
   (interactive)
-  (let ((projects (projectile-relevant-known-projects)))
+  (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
          "Switch to project: "
@@ -1201,7 +1201,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-helm-ag ()
   (interactive)
-  (let ((projects (projectile-relevant-known-projects)))
+  (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
          "Switch to project: "
@@ -1214,14 +1214,13 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-visit-git-link-pulls ()
   (interactive)
-  (let ((projects (projectile-relevant-known-projects)))
+  (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
          "Visit pulls for project: "
          projects
          :action (lambda (project)
-                   (let ((default-directory project))
-                     (t/visit-git-link-pulls))))
+                   (call-interactively 'magit-browse-pull-request)))
       (user-error "No projects found"))))
 
 ;;;###autoload
