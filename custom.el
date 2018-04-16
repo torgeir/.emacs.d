@@ -34,7 +34,7 @@
    ["#d2ceda" "#f2241f" "#67b11d" "#b1951d" "#3a81c3" "#a31db1" "#21b8c7" "#655370"])
  '(custom-safe-themes
    (quote
-    ("1219caa012a72ee96a86bba91fd6ec4eca2586dbcd1fe82facb5d0655a28b055" "3a651bfd6708cd2995c6f9b50146e890e06419d445980a7cdc095af245899aa7" "666c783d1534051189c9bca391037fc5a11dbc5d51dbe80e8148d66bfa4e9fdb" "ef479623c75026d8ba1de98a8cb74198f6f3eedc6fca509990ac2559ba830675" "9f3181dc1fabe5d58bbbda8c48ef7ece59b01bed606cfb868dd147e8b36af97c" "06dbcfac3705aaaa79e1a3264c6fd44ef0cf86ef5ed67930e4007e63a8c1e8ee" "d320493111089afba1563bc3962d8ea1117dd2b3abb189aeebdc8c51b5517ddb" "eb0a314ac9f75a2bf6ed53563b5d28b563eeba938f8433f6d1db781a47da1366" "8ec2e01474ad56ee33bc0534bdbe7842eea74dccfb576e09f99ef89a705f5501" "6254372d3ffe543979f21c4a4179cd819b808e5dd0f1787e2a2a647f5759c1d1" "0eea76fe89061a7f6da195f4a976c0b91150de987b942fac2dd10992aea33833" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "badc4f9ae3ee82a5ca711f3fd48c3f49ebe20e6303bba1912d4e2d19dd60ec98" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "5d1434865473463d79ee0523c1ae60ecb731ab8d134a2e6f25c17a2b497dd459" default)))
+    ("5715d3b4b071d33af95e9ded99a450aad674e308abb06442a094652a33507cd2" "c5d320f0b5b354b2be511882fc90def1d32ac5d38cccc8c68eab60a62d1621f2" "1219caa012a72ee96a86bba91fd6ec4eca2586dbcd1fe82facb5d0655a28b055" "3a651bfd6708cd2995c6f9b50146e890e06419d445980a7cdc095af245899aa7" "666c783d1534051189c9bca391037fc5a11dbc5d51dbe80e8148d66bfa4e9fdb" "ef479623c75026d8ba1de98a8cb74198f6f3eedc6fca509990ac2559ba830675" "9f3181dc1fabe5d58bbbda8c48ef7ece59b01bed606cfb868dd147e8b36af97c" "06dbcfac3705aaaa79e1a3264c6fd44ef0cf86ef5ed67930e4007e63a8c1e8ee" "d320493111089afba1563bc3962d8ea1117dd2b3abb189aeebdc8c51b5517ddb" "eb0a314ac9f75a2bf6ed53563b5d28b563eeba938f8433f6d1db781a47da1366" "8ec2e01474ad56ee33bc0534bdbe7842eea74dccfb576e09f99ef89a705f5501" "6254372d3ffe543979f21c4a4179cd819b808e5dd0f1787e2a2a647f5759c1d1" "0eea76fe89061a7f6da195f4a976c0b91150de987b942fac2dd10992aea33833" "fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "badc4f9ae3ee82a5ca711f3fd48c3f49ebe20e6303bba1912d4e2d19dd60ec98" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "5d1434865473463d79ee0523c1ae60ecb731ab8d134a2e6f25c17a2b497dd459" default)))
  '(es-cc-endpoint "http://127.0.0.1:9200/")
  '(fci-rule-color "#3E4451" t)
  '(flycheck-javascript-flow-args nil)
@@ -52,38 +52,41 @@
  '(helm-echo-input-in-header-line t)
  '(helm-etags-fuzzy-match t)
  '(helm-ff-skip-boring-files t)
- '(helm-file-cache-fuzzy-match t)
+ '(helm-file-cache-fuzzy-match t t)
  '(helm-follow-mode-persistent t)
  '(helm-lisp-fuzzy-completion t t)
  '(helm-mode t)
  '(helm-mode-fuzzy-match t)
- '(helm-recentf-fuzzy-match t)
+ '(helm-recentf-fuzzy-match t t)
  '(helm-source-names-using-follow
    (quote
     ("Imenu" "Complete line in project" "Buffers" "Projectile files" "datainn.org" "Show hunks in project")))
  '(helm-swoop-use-line-number-face t t)
- '(highlight-symbol-idle-delay 0.2)
+ '(highlight-symbol-idle-delay 0.2 t)
  '(jdee-db-active-breakpoint-face-colors (cons "#181e26" "#51afef"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#181e26" "#7bc275"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#181e26" "#3D3D48"))
  '(magit-pull-arguments nil)
- '(neo-mode-line-type (quote none))
+ '(neo-mode-line-type (quote none) t)
  '(org-agenda-diary-file "/Users/torgeirthoresen//Dropbox/org/diary.org")
  '(org-agenda-files
    (quote
-    ("/Users/torgeirthoresen/Dropbox/org/tasks.org" "/Users/torgeirthoresen/Dropbox/org/prog.org" "/Users/torgeirthoresen/Dropbox/org/org-tricks.org" "/Users/torgeirthoresen/Dropbox/org/manager.org" "/Users/torgeirthoresen/Dropbox/org/info.org" "/Users/torgeirthoresen/Dropbox/org/inbox.org" "/Users/torgeirthoresen/Dropbox/org/home.org" "/Users/torgeirthoresen/Dropbox/org/heart-of-clojure.org" "/Users/torgeirthoresen/Dropbox/org/gcal/delt.org" "/Users/torgeirthoresen/Dropbox/org/feeds.org" "/Users/torgeirthoresen/Dropbox/org/diary.org" "/Users/torgeirthoresen/Dropbox/org/bekk/bekk.org" "/Users/torgeirthoresen/Dropbox/org/bekk/datainn.org")))
- '(org-agenda-include-diary t t)
+    ("/Users/torgeirthoresen/Dropbox/org/tasks.org" "/Users/torgeirthoresen/Dropbox/org/prog.org" "/Users/torgeirthoresen/Dropbox/org/org-tricks.org" "/Users/torgeirthoresen/Dropbox/org/ip.org" "/Users/torgeirthoresen/Dropbox/org/info.org" "/Users/torgeirthoresen/Dropbox/org/inbox.org" "/Users/torgeirthoresen/Dropbox/org/home.org" "/Users/torgeirthoresen/Dropbox/org/heart-of-clojure.org" "/Users/torgeirthoresen/Dropbox/org/gcal/delt.org" "/Users/torgeirthoresen/Dropbox/org/feeds.org" "/Users/torgeirthoresen/Dropbox/org/diary.org" "/Users/torgeirthoresen/Dropbox/org/bekk/bekk.org" "/Users/torgeirthoresen/Dropbox/org/bekk/datainn.org")))
+ '(org-agenda-include-diary t)
  '(org-agenda-restore-windows-after-quit t t)
  '(org-agenda-window-setup (quote only-window) t)
  '(org-ellipsis " >")
- '(org-enforce-todo-dependencies t)
- '(org-tags-column -60)
+ '(org-enforce-todo-dependencies t t)
+ '(org-fontify-done-headline t t)
+ '(org-fontify-quote-and-verse-blocks t t)
+ '(org-fontify-whole-heading-line t t)
+ '(org-tags-column -60 t)
  '(org-todo-keywords
    (quote
-    ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)"))))
+    ((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)"))) t)
  '(package-selected-packages
    (quote
-    (magit-gh-pulls fold-this nav-flash evil-goggles rsjx-mode php-mode applescript-mode es-mode fsharp-mode cdnjs helm-js-codemod js-codemod flow-minor-mode fireplace dired-subtree artist-mode company-tern company-quickhelp company-terraform terraform-mode pcomplete-extension pcomplete-extensions pcmpl-args pcmpl-homebrew pcmpl-git indium esh-help etags-table prettier-js org-plus-contrib smooth-scrolling yasnippet emoji-cheat-sheet-plus company ace-jump-mode magit git-gutter+ solaire-mode spacemacs-theme evil all-the-icons evil-snipe html2text helm-xref helm-hunks eldoc-eval evil-commentary yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic skewer-mode simple-httpd haml-mode anzu highlight bind-map packed auto-complete clojure-snippets clj-refactor inflections edn peg cider-eval-sexp-fu cider queue clojure-mode mmm-mode markdown-toc markdown-mode gh-md nodejs-repl alert log4e gntp noflet elfeed visual-fill-column wgrep hide-lines loop nlinum google makey restclient know-your-http-well flycheck-pos-tip pos-tip flycheck vi-tilde-fringe ws-butler writeroom-mode winum which-key wgrep-ag web-mode web-beautify weather-metno w3m volatile-highlights visual-regexp uuidgen use-package try transpose-frame toc-org tagedit syslog-mode suggest spaceline smex slim-mode selectric-mode scss-mode sass-mode restart-emacs request rainbow-mode rainbow-delimiters pug-mode persp-mode pcre2el paradox org-mac-link org-mac-iCal org-evil org-bullets org-alert open-junk-file ob-restclient nlinum-relative neotree move-text macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode json-mode js2-refactor js-doc info+ indent-guide hungry-delete hl-todo highlight-symbol highlight-parentheses highlight-numbers highlight-indentation highlight-escape-sequences hide-comnt help-fns+ helm-unicode helm-themes helm-swoop helm-projectile helm-open-github helm-mode-manager helm-make helm-google helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag hackernews gruvbox-theme google-translate golden-ratio git-timemachine git-link git-gutter-fringe+ gist fuzzy flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-multiedit evil-mc evil-matchit evil-lisp-state evil-leader evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu etags-select eshell-z emmet-mode elisp-slime-nav elfeed-org elfeed-goodies dumb-jump doom-themes discover-my-major dired-details define-word dash-at-point darktooth-theme csv-mode company-web company-statistics company-restclient company-flx company-emoji company-ansible column-enforce-mode coffee-mode clean-aindent-mode calendar-norway better-defaults bash-completion auto-yasnippet auto-highlight-symbol auto-compile all-the-icons-dired aggressive-indent ag adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (twittering twittering-mode evil-collection fold-this nav-flash evil-goggles rsjx-mode php-mode applescript-mode es-mode fsharp-mode cdnjs helm-js-codemod js-codemod flow-minor-mode fireplace dired-subtree artist-mode company-tern company-quickhelp company-terraform terraform-mode pcomplete-extension pcomplete-extensions pcmpl-args pcmpl-homebrew pcmpl-git indium esh-help etags-table prettier-js org-plus-contrib smooth-scrolling yasnippet emoji-cheat-sheet-plus company ace-jump-mode magit git-gutter+ solaire-mode spacemacs-theme evil all-the-icons evil-snipe html2text helm-xref helm-hunks eldoc-eval evil-commentary yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic skewer-mode simple-httpd haml-mode anzu highlight bind-map packed auto-complete clojure-snippets clj-refactor inflections edn peg cider-eval-sexp-fu cider queue clojure-mode mmm-mode markdown-toc markdown-mode gh-md nodejs-repl alert log4e gntp noflet elfeed visual-fill-column wgrep hide-lines loop nlinum google makey restclient know-your-http-well flycheck-pos-tip pos-tip flycheck vi-tilde-fringe ws-butler writeroom-mode winum which-key wgrep-ag web-mode web-beautify weather-metno w3m volatile-highlights visual-regexp uuidgen use-package try transpose-frame toc-org tagedit syslog-mode suggest spaceline smex slim-mode selectric-mode scss-mode sass-mode restart-emacs request rainbow-mode rainbow-delimiters pug-mode persp-mode pcre2el paradox org-mac-link org-mac-iCal org-evil org-bullets org-alert open-junk-file ob-restclient nlinum-relative neotree move-text macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode json-mode js2-refactor js-doc info+ indent-guide hungry-delete hl-todo highlight-symbol highlight-parentheses highlight-numbers highlight-indentation highlight-escape-sequences hide-comnt help-fns+ helm-unicode helm-themes helm-swoop helm-projectile helm-open-github helm-mode-manager helm-make helm-google helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag hackernews gruvbox-theme google-translate golden-ratio git-timemachine git-link git-gutter-fringe+ gist fuzzy flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-multiedit evil-mc evil-matchit evil-lisp-state evil-leader evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu etags-select eshell-z emmet-mode elisp-slime-nav elfeed-org elfeed-goodies dumb-jump doom-themes discover-my-major dired-details define-word dash-at-point darktooth-theme csv-mode company-web company-statistics company-restclient company-flx company-emoji company-ansible column-enforce-mode coffee-mode clean-aindent-mode calendar-norway better-defaults bash-completion auto-yasnippet auto-highlight-symbol auto-compile all-the-icons-dired aggressive-indent ag adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(pos-tip-background-color "#36473A")
  '(pos-tip-foreground-color "#FFFFC8")
  '(safe-local-variable-values

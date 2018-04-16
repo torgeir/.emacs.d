@@ -4,7 +4,8 @@
   (setq evil-want-C-d-scroll t
         evil-want-C-u-scroll t
         evil-want-Y-yank-to-eol nil
-        evil-move-beyond-eol t))
+        evil-move-beyond-eol t
+        evil-want-integration nil))
 
 (t/use-package evil-anzu
   :init
@@ -36,6 +37,8 @@
     (evil-mode 1)
     (t/bind-in '(evil-normal-state-map evil-motion-state-map)
                "Y" 't/evil-yank-to-end-of-line)))
+
+(t/use-package evil-collection)
 
 (t/use-package evil-matchit
   :commands evilmi-jump-items
