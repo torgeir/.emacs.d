@@ -1,32 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (defun t-modeline/config ()
 
-  (progn ; try without the modeline and the frame-title
-
-    (setq t-old-modeline nil
-          t-old-frametitle nil)
-
-    (defun t/toggle-clean-frame ()
-      "Remove mode-line and frame-title for a cleaner look."
-      (interactive)
-      (if t-old-modeline
-          (progn
-            (setq-default mode-line-format t-old-modeline frame-title-format t-old-frametitle)
-            (setq         mode-line-format t-old-modeline frame-title-format t-old-frametitle)
-            (setq t-old-modeline nil t-old-frametitle nil))
-        (progn
-          (setq t-old-modeline mode-line-format t-old-frametitle frame-title-format)
-          (setq-default mode-line-format nil frame-title-format " ")
-          (setq         mode-line-format nil frame-title-format " ")))
-      (force-mode-line-update)))
-
-  (defun t/init-modeline ()
-    (when (not (or (equal frame-title-format "")
-                   (equal frame-title-format " ")))
-      (+doom-modeline|init)
-      (comment
-       (when (not t-old-modeline) ;; first time around
-         (t/toggle-clean-frame)))))
+  (defun t/init-modeline () (+doom-modeline|init))
 
   (t/add-hook 'after-init-hook #'t/init-modeline)
 
