@@ -1144,6 +1144,7 @@
                     "r" 'evil-show-registers)
 
   (t/declare-prefix "f" "Files/Frame"
+                    "b" 'helm-bookmarks
                     "f" 'helm-find-files
                     "l" 't/neotree-open-file
                     "L" 'neotree-hide
