@@ -76,10 +76,15 @@
   (defun t/org-capture-chrome-link-template (&optional &rest args)
     (concat "* TODO %? :url:%^G\n\n" (t/grab-chrome-url)))
 
+  (defun t/org-capture-elfeed-link-template (&optional &rest args)
+    (concat "* TODO %? :url:%^G\n\n%i\n" (elfeed-entry-link elfeed-show-entry)))
+
   (setq org-capture-templates
-        `(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n%i")
-          ("f" "File location" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n%i%a")
-          ("c" "Chrome location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template)))))
+        `(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n")
+          ("f" "File location" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n")
+          ("e" "Elfeed location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template))
+          ("c" "Chrome location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template))))
+  )
 
 (t/use-package org
   :ensure org-plus-contrib
@@ -166,6 +171,7 @@
       (t/add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
 
       (t/add-hook-defun 'org-mode-hook t/hook-org
+                        (evil-snipe-override-local-mode)
                         (org-display-inline-images t t)
                         (visual-line-mode 1)))
 
@@ -184,64 +190,62 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
             nil)))
 
 
-      (defun t/org-todos-by-tag-settings (name)
+      (defun t/org-agenda-todo-type (name)
         `((org-agenda-remove-tags t)
           (org-agenda-sorting-strategy '(tag-up priority-down))
           (org-agenda-todo-keyword-format "")
-          (org-agenda-overriding-header ,(concat "\n" name "\n"))))
+          (org-agenda-overriding-header ,name)))
+
+      (defun t/org-agenda-pri (header tags)
+        (list (concat "PRIORITY=\"A\"&" tags) `((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                                                (org-agenda-overriding-header ,header))))
+      (defun t/org-agenda-day (tags)
+        (list tags '((org-agenda-span 'day)
+                     (org-agenda-ndays-to-span 1)
+                     (org-agenda-time-grid nil))))
+
+      (defun t/org-agenda-not-pri (header tags skip)
+        (list tags `((org-agenda-overriding-header ,header)
+                     (org-agenda-skip-function '(or (t/org-skip-subtree-if-priority ?A)
+                                                    (org-agenda-skip-if nil (quote ,skip)))))))
+
+      (defun t/org-agenda-todos (header tags)
+        (t/org-agenda-not-pri header tags '(scheduled deadline)))
+
+      (defun t/org-agenda-todos-scheduled (header tags)
+        (t/org-agenda-not-pri header tags '(notscheduled deadline)))
 
       (defun t/org-day-summary (tags)
-        `((tags ,(concat "PRIORITY=\"A\"&" ;; wat lol
-                         (replace-regexp-in-string "|" "|PRIORITY=\"A\"&" tags))
-                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                 (org-agenda-overriding-header "Pri")))
-          (agenda ,tags
-                  ((org-agenda-span 'day)
-                   (org-agenda-ndays 1)
-                   (org-agenda-time-grid nil)))
-          (tags-todo ,tags
-                     ((org-agenda-overriding-header "Unscheduled")
-                      (org-agenda-skip-function
-                       '(or (t/org-skip-subtree-if-priority ?A)
-                            (org-agenda-skip-if nil '(scheduled deadline))))))
-          (tags-todo ,tags
-                     ((org-agenda-overriding-header "Scheduled")
-                      (org-agenda-skip-function
-                       '(or (t/org-skip-subtree-if-priority ?A)
-                            (org-agenda-skip-if nil '(notscheduled deadline))))
-                      (org-show-context-detail 'minimal)
-                      (org-agenda-view-columns-initially t)))))
+        `((tags ,@(t/org-agenda-pri "Pri" tags))
+          (agenda ,@(t/org-agenda-day tags))
+          (tags-todo ,@(t/org-agenda-todos "Todo" tags))
+          (tags-todo ,@(t/org-agenda-todos-scheduled "Scheduled todo" tags))))
+
+      (defun t/org-agenda-read ()
+        '(tags-todo "book|read|twitter|pocket" ((org-agenda-overriding-header "Read"))))
 
       (setq org-agenda-include-diary t
             org-agenda-diary-file (t/org-directory "diary.org")
             org-agenda-default-appointment-duration nil
             org-agenda-window-setup 'only-window ; delete other windows when showing agenda
-            org-agenda-files (t/find-org-files-recursively org-directory "org") ; where to look for org files
-            org-agenda-text-search-extra-files (t/find-org-files-recursively (t/user-file "/Dropbox/org") "org_archive")
+            org-agenda-files (t/find-org-files-recursively org-directory "org$\\\|txt$") ; where to look for org files
+            org-agenda-text-search-extra-files (t/find-org-files-recursively (t/user-file "Dropbox/org") "org_archive$")
             org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
-            org-agenda-custom-commands `(("w" . "Work")
-                                         ("wh" "home" ,(t/org-day-summary "+home") ((org-agenda-remove-tags t)))
-                                         ("ww" "bekk" ,(t/org-day-summary "+bekk") ((org-agenda-remove-tags t)))
-                                         ("wd" "datainn" ,(t/org-day-summary "+datainn") ((org-agenda-remove-tags t)))
-
-                                         ("t" . "Todos")
-                                         ("ta" alltodo)
-                                         ("tt" todo "TODO" ,(t/org-todos-by-tag-settings "TODO tasks by tag"))
-                                         ("ts" todo "STARTED" ,(t/org-todos-by-tag-settings "STARTED tasks by tag"))
-                                         ("tc" todo "CANCELLED" ,(t/org-todos-by-tag-settings "CANCELLED tasks by tag"))
-                                         ("td" todo "DONE" ,(t/org-todos-by-tag-settings "DONE tasks by tag"))
-
-                                         ("h" . "Home")
-                                         ("hs" tags-todo "serie")
-                                         ("he" tags-todo "emacs")
-                                         ("hb" tags-todo "book")
-                                         ("hv" tags-todo "video")
-
-                                         ("d" "Deadlines" agenda ""
-                                          ((org-agenda-entry-types '(:deadline))
-                                           (org-agenda-ndays 1)
-                                           (org-deadline-warning-days 60)
-                                           (org-agenda-time-grid nil))))))
+            org-agenda-custom-commands `(("T" alltodo)
+                                         ("C" todo "DONE" ,(t/org-agenda-todo-type "DONE"))
+                                         ("t" todo "TODO" ,(t/org-agenda-todo-type "TODO"))
+                                         ("b" todo "STARTED" ,(t/org-agenda-todo-type "STARTED"))
+                                         ("c" todo "CANCELLED" ,(t/org-agenda-todo-type "CANCELLED"))
+                                         ("s" tags-todo "serie|film")
+                                         ("e" tags-todo "emacs")
+                                         ("r" tags-todo "book|read|twitter|pocket")
+                                         ("v" tags-todo "video")
+                                         ("w" "bekk" ,(t/org-day-summary "bekk"))
+                                         ("d" "datainn" ,(append (t/org-day-summary "datainn")
+                                                                 `((tags "someday+datainn"))))
+                                         ("h" "home" ,(append (list (t/org-agenda-read))
+                                                              (t/org-day-summary "home-emacs-bekk-someday")
+                                                              `((tags-todo "+someday-work" ((org-agenda-overriding-header "Someday")))))))))
 
     (progn
       ;; realign tags
@@ -294,10 +298,14 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                     (progn
                       (select-window (display-buffer agenda-buffer t t))
                       (org-fit-window-to-buffer)
-                      (org-agenda-redo t))
+                      ;; 100% cpu?
+                      ;;(org-agenda-redo t)
+                      )
                   (with-selected-window (display-buffer agenda-buffer)
                     (org-fit-window-to-buffer)
-                    (org-agenda-redo t))))
+                    ;; 100% cpu?
+                    ;;(org-agenda-redo t)
+                    )))
             (call-interactively 'org-agenda-list))))
 
       (progn

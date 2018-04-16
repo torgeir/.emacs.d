@@ -674,8 +674,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (let* (org-file-list
          (case-fold-search t)         ; filesystems are case sensitive
          (file-name-regex "^[^.#].*") ; exclude dot, autosave, and backup files
-         (filext (or filext "org$\\\|org_archive\\\|org\\.txt$"))
-         (fileregex (format "%s\\.\\(%s$\\)" file-name-regex filext))
+         (filext (or filext "org$\\\|org_archive$\\\|\\.txt$"))
+         (fileregex (format "%s\\.\\(%s\\)" file-name-regex filext))
          (cur-dir-list (directory-files directory t file-name-regex)))
     ;; loop over directory listing
     (dolist (file-or-dir cur-dir-list org-file-list) ; returns org-file-list

@@ -76,11 +76,10 @@
     (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
 
 (t/use-package evil-snipe
-  :defer 1
   :init
-  (progn
-    (evil-snipe-mode 1)
-    (evil-snipe-override-mode 1)))
+  (t/add-hook-defun 'prog-mode-hook t-hook-snipe
+                    (evil-snipe-local-mode 1)
+                    (evil-snipe-override-local-mode 1)))
 
 (t/use-package evil-multiedit
   :commands evil-multiedit-match-symbol-and-next
@@ -136,6 +135,8 @@
 
 (t/use-package evil-extra-operator
   :defer 1
+  :init
+  (setq evil-extra-operator-org-capture-key "gC")
   :config
   (global-evil-extra-operator-mode 1))
 
