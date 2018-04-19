@@ -109,7 +109,7 @@
                       "a" 'org-agenda
                       "A" 't/org-archive-done-tasks
                       "n" 'org-alert-check
-                      "i" 'org-info)
+                      "hi" 'org-info)
 
     (t/declare-prefix "om" "Mobile"
                       "p" 'org-mobile-push
@@ -197,8 +197,13 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
           (org-agenda-todo-keyword-format "")
           (org-agenda-overriding-header ,name)))
 
-      (defun t/org-agenda-pri (header tags)
-        (list (concat "PRIORITY=\"A\"&" tags) `((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+
+      (defun t/org-agenda-pri-a (&rest tags)
+        (string-join (-map (lambda (t) (format "%s&PRIORITY=\"A\"" t)) tags) "|"))
+
+      (defun t/org-agenda-pri (header &rest tags)
+        (list (apply 't/org-agenda-pri-a tags)
+              `((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                                                 (org-agenda-overriding-header ,header))))
       (defun t/org-agenda-day (tags)
         (list tags '((org-agenda-span 'day)
@@ -216,11 +221,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
       (defun t/org-agenda-todos-scheduled (header tags)
         (t/org-agenda-not-pri header tags '(notscheduled deadline)))
 
-      (defun t/org-day-summary (tags)
-        `((tags ,@(t/org-agenda-pri "Pri" tags))
-          (agenda ,@(t/org-agenda-day tags))
-          (tags-todo ,@(t/org-agenda-todos "Todo" tags))
-          (tags-todo ,@(t/org-agenda-todos-scheduled "Scheduled todo" tags))))
+      (defun t/org-day-summary (&rest tags)
+        `((tags ,@(apply 't/org-agenda-pri (append (list "Pri") tags)))
+          (agenda ,@(t/org-agenda-day (string-join tags)))
+          (tags-todo ,@(t/org-agenda-todos "Todo" (string-join tags)))
+          (tags-todo ,@(t/org-agenda-todos-scheduled "Scheduled todo" (string-join tags)))))
 
       (defun t/org-agenda-read ()
         '(tags-todo "book|read|twitter|pocket" ((org-agenda-overriding-header "Read"))))
@@ -241,12 +246,15 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                          ("e" tags-todo "emacs")
                                          ("r" tags-todo "book|read|twitter|pocket")
                                          ("v" tags-todo "video")
-                                         ("w" "bekk" ,(t/org-day-summary "bekk"))
-                                         ("d" "datainn" ,(append (t/org-day-summary "datainn")
-                                                                 `((tags "someday+datainn"))))
+                                         ("w" "bekk" ,(append (t/org-day-summary "+bekk-home")
+                                                              `((tags "+someday+bekk"))))
+                                         ("d" "datainn" ,(append (t/org-day-summary "+datainn-home")
+                                                                 `((tags "+someday+datainn"))))
                                          ("h" "home" ,(append (list (t/org-agenda-read))
-                                                              (t/org-day-summary "home-emacs-bekk-someday")
-                                                              `((tags-todo "+someday-work" ((org-agenda-overriding-header "Someday")))))))))
+                                                              (t/org-day-summary "+home-emacs-someday")
+                                                              `((tags-todo "+someday-work" ((org-agenda-overriding-header "Someday"))))))))
+
+      )
 
     (progn
       ;; realign tags
