@@ -1161,6 +1161,7 @@
                     "a" 'helm-apropos
                     "l" 'helm-locate-library
                     "i" 'helm-info-at-point
+                    "r" 'helm-resume
                     "db" 'helm-descbinds
                     "dd" 'dash-at-point
                     "df" 'describe-function
