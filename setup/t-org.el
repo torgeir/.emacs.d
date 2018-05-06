@@ -4,7 +4,7 @@
 
 (defun t-org/funcs ()
   (defconst t-user-dropbox-folder (if is-mac
-                                      (t/user-file "/Dropbox")
+                                      (t/user-file "Dropbox")
                                     "c:/Users/torgth/Dropbox \(Personlig\)"))
 
   (defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
