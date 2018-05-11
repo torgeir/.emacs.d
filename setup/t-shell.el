@@ -93,6 +93,7 @@
 
       (setq eshell-history-size 10000
             eshell-hist-ignoredups t
+            eshell-scroll-to-bottom-on-output t
             eshell-save-history-on-exit t
             eshell-list-files-after-cd t
             eshell-banner-message ""
