@@ -4,6 +4,7 @@
   (remove-if 'null
              (append
               (list (when is-mac 't-mac)
+                    (when is-linux 't-linux)
                     (when is-ms 't-cygwin)
                     't-load-theme
                     't-sane-defaults

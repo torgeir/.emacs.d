@@ -6,7 +6,8 @@
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
     (doom-themes-visual-bell-config)
-    (doom-themes-org-config)))
+    (doom-themes-org-config)
+    (doom-themes-neotree-config)))
 
 (defun t-load-theme/config ()
   (defconst t-themes (list

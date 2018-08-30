@@ -25,7 +25,6 @@
     :load-path "site-lisp/spotify/"
     :commands helm-spotify)
 
-
   (use-package doom-modeline
     :config
     (progn

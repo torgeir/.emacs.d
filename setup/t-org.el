@@ -3,7 +3,7 @@
 (defconst lon-trh 10.391)
 
 (defun t-org/funcs ()
-  (defconst t-user-dropbox-folder (if is-mac
+  (defconst t-user-dropbox-folder (if (or is-mac is-linux)
                                       (t/user-file "Dropbox")
                                     "c:/Users/torgth/Dropbox \(Personlig\)"))
 
