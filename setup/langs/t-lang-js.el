@@ -73,29 +73,24 @@
   :commands prettier-js-mode
   :init
   (progn
-    (setq prettier-js-args nil)
+    (setq prettier-js-args '("--jsx-bracket-same-line")
+          prettier-js-show-errors 'buffer)
 
-    (defun t/prettier-jsx-hook ()
-      (t/when-ext "jsx" (prettier-js-mode)))
+    (defun t/prettier-hook ()
+      (prettier-js-mode))
 
-    (defun t/enable-prettier ()
-      (interactive)
-      (prettier-js-mode 1)
-      (t/add-hook 'js2-mode-hook #'t/prettier-jsx-hook))
+    (t/add-hook 'js-mode-hook #'t/prettier-hook)
+    (t/add-hook 'js2-mode-hook #'t/prettier-hook)
+    (t/add-hook 'css-mode-hook #'t/prettier-hook)
+    (t/add-hook 'json-mode-hook #'t/prettier-hook)
 
     (defun t/disable-prettier ()
       (interactive)
-      (prettier-js-mode -1)
-      (t/remove-hook 'js2-mode-hook #'t/prettier-jsx-hook))))
+      (prettier-js-mode -1))))
 
 (t/use-package rjsx-mode
-  :init
-  (progn
-    (setq rjsx-jsx-enabled-p t) ; https://github.com/felipeochoa/rjsx-mode/pull/66
-    (t/add-hook-defun 'js2-mode-hook t/rjsx-mode-hook
-                      (js2-minor-mode)
-                      (rjsx-enable-parser))))
-
+  :mode "\\.jsx?$"
+  :commands (rjsx-mode))
 
 (t/use-package indium
   :commands (indium-repl-mode

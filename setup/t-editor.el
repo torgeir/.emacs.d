@@ -117,26 +117,16 @@
                       (evil-commentary-mode -1)
                       (evil-extra-operator-mode -1)
                       (hl-line-mode))
-    (when is-mac (setq neo-theme 'icons)))
+    (t/after neotree
+      (add-to-list 'window-size-change-functions ;; fixes: https://github.com/jaypei/emacs-neotree/issues/262
+                   (lambda (frame)
+                     (let ((neo-window (neo-global--get-window)))
+                       (unless (null neo-window)
+                         (setq neo-window-width (window-width neo-window))))))))
 
   :config
   (progn
-
     (bind-key [f6] 'neotree-toggle)
-
-    (defun t/neotree-keep-size (fn &rest args)
-      "Reset neotree width after open, if user adjusted it's size."
-      (let ((w (window-width)))
-        (funcall fn)
-        (neo-global--set-window-width w)))
-    (advice-add 'neotree-enter :around 't/neotree-keep-size)
-    (advice-add 'neotree-enter-vertical-split :around 't/neotree-keep-size)
-    (advice-add 'neotree-enter-horizontal-split :around 't/neotree-keep-size)
-
-    (defun neotree-change-root-up ()
-      (interactive)
-      (neotree-select-up-node))
-
     (dolist (key '(("n" . neotree-next-line)
                    ("p" . neotree-previous-line)
                    ("C-n" . neotree-next-line)
@@ -148,8 +138,8 @@
                    ("C-c o" . neotree-enter-vertical-split)
                    ("s" . neotree-enter-vertical-split)
                    ("g" . neotree-refresh)
-                   ("u" . neotree-change-root-up)
-                   ("M-<up>" . neotree-change-root-up)
+                   ("u" . (t/lambda-i nil (neotree-select-up-node)))
+                   ("M-<up>" . (t/lambda-i nil (neotree-select-up-node)))
                    ("I" . neotree-hidden-file-toggle)
                    ("q" . neotree-hide)
                    ("q" . neotree-hide)
@@ -943,7 +933,9 @@
   :commands (projectile-mode
              helm-projectile
              projectile-project-root
-             projectile-relevant-known-projects)
+             projectile-relevant-known-projects
+             projectile-load-known-projects
+             )
   :init
   (progn
     (setq shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
@@ -978,7 +970,11 @@
   :commands (aggressive-indent-mode global-aggressive-indent-mode)
   :init
   (progn
-    (t/add-hook-defun 'java-mode-hook t/hook-java (aggressive-indent-mode 0))
+    (t/add-hook-defun 'java-mode-hook t/hook-aggressive-indent-java (aggressive-indent-mode 0))
+    (t/add-hook-defun 'json-mode-hook t/hook-aggressive-indent-json (aggressive-indent-mode 0))
+    (t/add-hook-defun 'js-mode-hook t/hook-aggressive-indent-js (aggressive-indent-mode 0))
+    (t/add-hook-defun 'js2-mode-hook t/hook-aggressive-indent-js2 (aggressive-indent-mode 0))
+    (t/add-hook-defun 'css-mode-hook t/hook-aggressive-indent-css (aggressive-indent-mode 0))
     (t/add-hook 'prog-mode-hook 'aggressive-indent-mode)
     (t/declare-prefix "t" "Toggle"
                       "a" 'aggressive-indent-mode)))
@@ -991,6 +987,32 @@
     (t/add-hook-defun '(prog-mode-hook text-mode-hook git-commit-mode-hook) t/hook-whitespace
                       (setq-local whitespace-style '(face tabs tab-mark trailing))
                       (whitespace-mode 1))))
+
+(use-package doc-view
+  :init
+  (setq doc-view-continuous t)
+  :config
+  (t/after evil
+    (evil-set-initial-state 'doc-view-mode 'normal)
+    (evil-make-overriding-map doc-view-mode-map 'normal)
+    (evil-define-key 'normal doc-view-mode-map
+      "gg" 'doc-view-first-page
+      "G" 'doc-view-last-page
+      "H" 'doc-view-fit-height-to-window
+      "W" 'doc-view-fit-width-to-window
+      "+" 'doc-view-enlarge
+      "-" 'doc-view-shrink
+      "/" (t/lambda-i () (let ((current-prefix-arg 4)) (call-interactively 'doc-view-search)))
+      "?" (t/lambda-i () (let ((current-prefix-arg 4)) (call-interactively 'doc-view-search-backward)))
+      "n" 'doc-view-search-next-match
+      "p" 'doc-view-search-previous-match
+      "j" 'doc-view-next-line-or-next-page
+      "k" 'doc-view-previous-line-or-previous-page
+      "q" (t/lambda-i () (doc-view-kill-proc) (quit-window)))
+    (bind-key "C-u" 'doc-view-scroll-down-or-previous-page doc-view-mode-map)
+    (bind-key "C-d" 'doc-view-scroll-up-or-next-page doc-view-mode-map)))
+
+
 
 (use-package artist-mode
   :ensure nil
@@ -1051,6 +1073,7 @@
     (advice-add 'eval-defun :filter-return (lambda (r) (endless/eval-overlay r (save-excursion (end-of-defun) (point))))))
 
   (evil-leader/set-key "'" 't/eshell)
+  (evil-leader/set-key "<" 't/eshell)
   (evil-leader/set-key "TAB" 't/switch-to-previous-buffer)
   (evil-leader/set-key "u" 'universal-argument)
 
@@ -1078,7 +1101,8 @@
                     "st" 'ansi-term
                     "sT" 'term
                     "ss" 'shell
-                    "S" 'suggest)
+                    "S" 'suggest
+                    "w" 'eww)
 
   (t/declare-prefix "fe" "Editor")
 

@@ -1,11 +1,13 @@
 ;;; -*- lexical-binding: t; -*-
 (t/use-package evil
   :init
-  (setq evil-want-C-d-scroll t
-        evil-want-C-u-scroll t
-        evil-want-Y-yank-to-eol nil
-        evil-move-beyond-eol t
-        evil-want-integration nil))
+  (progn
+    (setq evil-want-C-d-scroll t
+          evil-want-C-u-scroll t
+          evil-want-Y-yank-to-eol nil
+          ;; enabled in lisp mode later
+          evil-move-beyond-eol nil
+          evil-want-integration nil)))
 
 (t/use-package evil-anzu
   :init
