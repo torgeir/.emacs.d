@@ -3,6 +3,20 @@
 ;;; Code:
 
 
+;;;### (autoloads nil "t-cygwin" "t-cygwin.el" (0 0 0 0))
+;;; Generated autoloads from t-cygwin.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-cygwin" '("t-cygwin/")))
+
+;;;***
+
+;;;### (autoloads nil "t-debug" "t-debug.el" (0 0 0 0))
+;;; Generated autoloads from t-debug.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-debug" '("t-")))
+
+;;;***
+
 ;;;### (autoloads nil "t-editor" "t-editor.el" (0 0 0 0))
 ;;; Generated autoloads from t-editor.el
 
@@ -14,6 +28,27 @@
 ;;; Generated autoloads from t-evil.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-evil" '("t-evil/")))
+
+;;;***
+
+;;;### (autoloads nil "t-keys" "t-keys.el" (0 0 0 0))
+;;; Generated autoloads from t-keys.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-keys" '("t-keys/")))
+
+;;;***
+
+;;;### (autoloads nil "t-langs" "t-langs.el" (0 0 0 0))
+;;; Generated autoloads from t-langs.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-langs" '("t-langs")))
+
+;;;***
+
+;;;### (autoloads nil "t-linux" "t-linux.el" (0 0 0 0))
+;;; Generated autoloads from t-linux.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-linux" '("t-linux/config")))
 
 ;;;***
 
@@ -35,6 +70,20 @@
 ;;; Generated autoloads from t-macros.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-macros" '("comment" "t/")))
+
+;;;***
+
+;;;### (autoloads nil "t-modeline" "t-modeline.el" (0 0 0 0))
+;;; Generated autoloads from t-modeline.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modeline" '("t-modeline/config")))
+
+;;;***
+
+;;;### (autoloads nil "t-modules" "t-modules.el" (0 0 0 0))
+;;; Generated autoloads from t-modules.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modules" '("t-modules")))
 
 ;;;***
 
@@ -60,20 +109,34 @@
 
 ;;;***
 
-;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
-;;;;;;  "t-keys.el" "t-langs.el" "t-local.el" "t-modeline.el" "t-modules.el"
-;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
+;;;### (autoloads nil "t-shell" "t-shell.el" (0 0 0 0))
+;;; Generated autoloads from t-shell.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '("t-shell/config")))
+
+;;;***
+
+;;;### (autoloads nil "t-typography" "t-typography.el" (0 0 0 0))
+;;; Generated autoloads from t-typography.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-typography" '("t-typography/config")))
+
+;;;***
+
+;;;### (autoloads nil "t-vc" "t-vc.el" (0 0 0 0))
+;;; Generated autoloads from t-vc.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-vc" '("t-vc/config")))
+
+;;;***
+
+;;;### (autoloads nil nil ("t-custom.el" "t-local.el" "t-which-key.el")
 ;;;;;;  (0 0 0 0))
 
 ;;;***
 
 ;;;### (autoloads nil "t-defuns" "t-defuns.el" (0 0 0 0))
 ;;; Generated autoloads from t-defuns.el
-
-(autoload 't/exec-org-block "t-defuns" "\
-
-
-\(fn NAME VARS)" nil nil)
 
 (autoload 't/async-shell-command "t-defuns" "\
 Execute `CMD' async, call `FN' with the result string.
@@ -718,8 +781,8 @@ Set buffer local frame margin.
 
 \(fn L &optional R)" t nil)
 
-(autoload 't/eww-toggle-images "t-defuns" "\
-Toggle whether images are loaded and reload the current page fro cache.
+(autoload 't/toggle-margins "t-defuns" "\
+Toggle buffer local pleasing margins.
 
 \(fn)" t nil)
 

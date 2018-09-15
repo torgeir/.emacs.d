@@ -1,3 +1,6 @@
+(defun t-linux/vars ()
+  (setq t-font-size 20))
+
 (defun t-linux/config ()
   (t/bind-in 'key-translation-map
              ;; translate norwegian os x keybindings
@@ -22,7 +25,13 @@
   (bind-key "s-d" 't/split-window-right-and-move-there-dammit)
   (bind-key "s-D" 't/split-window-below-and-move-there-dammit)
 
+  (bind-key "s-c" 'evil-yank)
+  (bind-key "s-v" 'evil-paste-after)
+  (bind-key "s-z" 'undo-tree-undo)
   (bind-key "s-s" 'save-buffer)
+  (bind-key "s-a" 'mark-whole-buffer)
+  (bind-key "s-w" 'delete-frame)
+  (bind-key "s-n" 'make-frame)
 
   ;; s-w quits like C-x C-w
   (bind-key "s-w" #'t/delete-frame-or-hide-last-remaining-frame)

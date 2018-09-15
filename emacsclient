@@ -1,2 +1,6 @@
 #!/bin/bash
-/usr/local/bin/emacsclient -a "" -n -c "$@" # 2> /dev/null
+emacsclient=/usr/local/bin/emacsclient
+if [ ! -e "$emacsclient" ]; then
+  emacsclient=/usr/bin/emacsclient # linux
+fi
+$emacsclient -a "" -n -c "$@" # 2> /dev/null
