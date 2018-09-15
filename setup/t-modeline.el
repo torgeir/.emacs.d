@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (defun t-modeline/config ()
 
-  (defun t/init-modeline () (+doom-modeline|init))
+  (defun t/init-modeline () (doom-modeline-init))
 
   (t/add-hook 'after-init-hook #'t/init-modeline)
 

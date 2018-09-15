@@ -23,9 +23,14 @@
     :load-path "site-lisp/spotify/"
     :commands helm-spotify)
 
-  (t/use-package t-doom-modeline
-    :ensure nil
-    :load-path "site-lisp/t-doom-modeline/")
+
+  (use-package doom-modeline
+    :config
+    (progn
+      (setq doom-modeline-height 40)))
+  (comment (t/use-package t-doom-modeline
+             :ensure nil
+             :load-path "site-lisp/t-doom-modeline/"))
 
   (t/use-package nxml-eldoc
     :ensure nil

@@ -12,7 +12,7 @@
 (defun t-load-theme/config ()
   (defconst t-themes (list
                       ;;'doom-dracula
-                      ;;'doom-vibrant
+                      'doom-vibrant
                       ;;'doom-solarized-light
                       'doom-nord
                       'doom-one-light) "Themes to cycle")
