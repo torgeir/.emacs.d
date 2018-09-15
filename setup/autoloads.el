@@ -7,14 +7,19 @@
 ;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23252 19874
-;;;;;;  511632 841000))
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23358 31131
+;;;;;;  880781 312000))
 
 ;;;***
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (23252 20715 884595
-;;;;;;  327000))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (23451 29040 533692
+;;;;;;  6000))
 ;;; Generated autoloads from t-defuns.el
+
+(autoload 't/exec-org-block "t-defuns" "\
+
+
+\(fn NAME VARS)" nil nil)
 
 (autoload 't/async-shell-command "t-defuns" "\
 Execute `CMD' async, call `FN' with the result string.

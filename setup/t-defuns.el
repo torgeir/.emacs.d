@@ -1,4 +1,13 @@
 ;;; setup/t-defuns.el -*- lexical-binding: t; -*-
+;;;###autoload
+(defun t/exec-org-block (name vars)
+  (save-excursion
+    (goto-char (org-babel-find-named-block name))
+    (org-babel-execute-src-block nil
+                                 (org-babel-lob-get-info)
+                                 (seq-map (lambda (var)
+                                            (cons :var var))
+                                          vars))))
 
 ;;;###autoload
 (defun t/async-shell-command (name cmd &optional fn)
