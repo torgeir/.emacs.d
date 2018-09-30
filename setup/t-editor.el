@@ -110,6 +110,7 @@
           neo-create-file-auto-open t
           neo-mode-line-type 'none
           neo-force-change-root t
+          neo-theme 'icons
           neo-show-updir-line nil
           neo-show-hidden-files t
           neo-auto-indent-point t)
