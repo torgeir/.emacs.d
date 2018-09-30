@@ -1,5 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
 (defun t-mac/vars ()
+
+
+  ;; emacs-plus --with-natural-title-bar fix after emacs 26.1
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+
   ;; trash
   (setq delete-by-moving-to-trash t
         trash-directory "~/.Trash/emacs")
