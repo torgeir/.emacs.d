@@ -6,8 +6,12 @@
           evil-want-C-u-scroll t
           evil-want-Y-yank-to-eol nil
           ;; enabled in lisp mode later
-          evil-move-beyond-eol nil
-          evil-want-integration nil)))
+          evil-move-beyond-eol nil)))
+
+(progn
+  (setq evil-want-keybinding nil
+        evil-want-integration nil)
+  (t/use-package evil-collection))
 
 (t/use-package evil-anzu
   :init
@@ -39,11 +43,6 @@
     (evil-mode 1)
     (t/bind-in '(evil-normal-state-map evil-motion-state-map)
                "Y" 't/evil-yank-to-end-of-line)))
-
-
-(progn
-  (setq evil-want-keybinding nil)
-  (t/use-package evil-collection))
 
 (t/use-package evil-matchit
   :commands evilmi-jump-items
