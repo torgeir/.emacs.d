@@ -128,7 +128,8 @@
   :init
   (progn
     (setq evil-goggles-duration 0.2
-          evil-goggles-async-duration 0.2))
+          evil-goggles-async-duration 0.2
+          evil-goggles-pulse t))
   :config
   (t/add-hook-defun 'prog-mode-hook t/hook-goggles
                     (evil-goggles-mode)
