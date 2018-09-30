@@ -7,7 +7,7 @@
   (t/call-init "%s/vars" module))
 
 (dolist (pkg t-use-package-pkgs)
-  (t/call-init "t/init-%s" pkg))
+  (funcall pkg))
 
 (dolist (module t-modules)
   (t/call-init "%s/config" module))

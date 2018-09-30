@@ -136,7 +136,7 @@ for setting up vars and config after load")
               (let ((v (plist-get entries k)))
                 (setq body (plist-put body k v))))))
 
-        (add-to-list 't-use-package-pkgs package t)
+        (add-to-list 't-use-package-pkgs init-name t)
         (setq t-use-package-pkgs (delete-dups t-use-package-pkgs))
 
         `(progn
