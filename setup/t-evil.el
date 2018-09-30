@@ -4,14 +4,10 @@
   (progn
     (setq evil-want-C-d-scroll t
           evil-want-C-u-scroll t
+          evil-want-keybinding nil
+          evil-want-integration t
           evil-want-Y-yank-to-eol nil
-          ;; enabled in lisp mode later
           evil-move-beyond-eol nil)))
-
-(progn
-  (setq evil-want-keybinding nil
-        evil-want-integration nil)
-  (t/use-package evil-collection))
 
 (t/use-package evil-anzu
   :init
@@ -43,6 +39,11 @@
     (evil-mode 1)
     (t/bind-in '(evil-normal-state-map evil-motion-state-map)
                "Y" 't/evil-yank-to-end-of-line)))
+
+(t/use-package evil-collection
+  :after evil
+  :init
+  (evil-collection-init))
 
 (t/use-package evil-matchit
   :commands evilmi-jump-items
@@ -126,8 +127,8 @@
   :defer 1
   :init
   (progn
-    (setq evil-goggles-duration 0.1
-          evil-goggles-async-duration 0.1))
+    (setq evil-goggles-duration 0.2
+          evil-goggles-async-duration 0.2))
   :config
   (t/add-hook-defun 'prog-mode-hook t/hook-goggles
                     (evil-goggles-mode)
