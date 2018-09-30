@@ -27,10 +27,8 @@
   (use-package doom-modeline
     :config
     (progn
-      (setq doom-modeline-height 40)))
-  (comment (t/use-package t-doom-modeline
-             :ensure nil
-             :load-path "site-lisp/t-doom-modeline/"))
+      (setq doom-modeline-height 40)
+      (t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")))
 
   (t/use-package nxml-eldoc
     :ensure nil
