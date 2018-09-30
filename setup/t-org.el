@@ -29,9 +29,8 @@
              "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
              (setq-local var val)))
 
-  (setq org-startup-indented t        ; turn on org-indent-mode
-        org-agenda-window-setup 'only-window ; remove other windows when agenda
-        org-agenda-restore-windows-after-quit t ; restore them again
+  (setq org-ellipsis " >"
+        org-startup-indented t        ; turn on org-indent-mode
         org-return-follows-link t
         org-tab-follows-link nil
         org-hide-leading-stars t
@@ -204,7 +203,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
       (defun t/org-agenda-pri (header &rest tags)
         (list (apply 't/org-agenda-pri-a tags)
               `((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                                                (org-agenda-overriding-header ,header))))
+                (org-agenda-overriding-header ,header))))
       (defun t/org-agenda-day (tags)
         (list tags '((org-agenda-span 'day)
                      (org-agenda-ndays-to-span 1)
@@ -234,6 +233,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
             org-agenda-diary-file (t/org-directory "diary.org")
             org-agenda-default-appointment-duration nil
             org-agenda-window-setup 'only-window ; delete other windows when showing agenda
+            org-agenda-restore-windows-after-quit t ; restore them again
             org-agenda-files (t/find-org-files-recursively org-directory "org$\\\|txt$") ; where to look for org files
             org-agenda-text-search-extra-files (t/find-org-files-recursively (t/user-file "Dropbox/org") "org_archive$")
             org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
