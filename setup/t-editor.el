@@ -531,7 +531,8 @@
   :init
   (setq writeroom-width 120
         writeroom-maximize-window nil
-        writeroom-fullscreen-effect 'maximized))
+        writeroom-fullscreen-effect 'maximized
+        writeroom-major-modes '(js2-mode rjsx-mode)))
 
 (t/use-package w3m
   :commands w3m
