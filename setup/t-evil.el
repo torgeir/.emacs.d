@@ -40,7 +40,10 @@
     (t/bind-in '(evil-normal-state-map evil-motion-state-map)
                "Y" 't/evil-yank-to-end-of-line)))
 
-(t/use-package evil-collection)
+
+(progn
+  (setq evil-want-keybinding nil)
+  (t/use-package evil-collection))
 
 (t/use-package evil-matchit
   :commands evilmi-jump-items

@@ -7,13 +7,13 @@
 ;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
 ;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
 ;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23358 31131
-;;;;;;  880781 312000))
+;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23472 43765
+;;;;;;  363180 324000))
 
 ;;;***
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (23451 29040 533692
-;;;;;;  6000))
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (23472 45136 579751
+;;;;;;  663000))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/exec-org-block "t-defuns" "\

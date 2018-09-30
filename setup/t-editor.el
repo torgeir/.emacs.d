@@ -427,7 +427,8 @@
                   text-mode-hook
                   restclient-mode-hook
                   ruby-mode
-                  mark-down-mode)
+                  mark-down-mode
+                  es-mode-hook)
                 'turn-on-smartparens-mode)
 
     (t/after rjsx-mode-mode

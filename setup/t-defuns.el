@@ -1036,9 +1036,9 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (and (looking-back "\\[") (looking-at "\\]"))
         (and (looking-back "{") (looking-at "}")))
     (progn
-      (indent-according-to-mode)
-      (newline)
-      (indent-according-to-mode)
+      (save-excursion (indent-according-to-mode))
+      (evil-ret)
+      (save-excursion (indent-according-to-mode))
       (t/open-line-above)))
    (t (progn
         (evil-ret)
