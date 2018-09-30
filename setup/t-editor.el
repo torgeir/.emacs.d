@@ -66,20 +66,20 @@
 
 ;; less verbose dired
 (t/use-package dired-details
-  :commands (dired-details-activate dired-details-toggle)
+  :commands (dired dired-jump dired-details-activate dired-details-toggle)
   :init
   (progn
     (setq dired-details-hidden-string "")
-    (t/add-hook-defun 'dired-mode-hook t/hook-dired
-                      (dired-hide-details-mode 1)
-                      (all-the-icons-dired-mode))))
+    (with-eval-after-load 'dired
+      (add-hook 'dired-mode-hook 'dired-hide-details-mode))))
 
-(comment (use-package dired-subtree
-           :commands dired-subtree-toggle
-           :init
-           (progn
-             (setq dired-subtree-line-prefix "  ")
-             (bind-key "TAB" 'dired-subtree-toggle dired-mode-map))))
+(use-package dired-subtree
+  :commands dired-subtree-toggle
+  :init
+  (progn
+    (setq dired-subtree-line-prefix "  ")
+    (with-eval-after-load 'dired
+      (bind-key "TAB" 'dired-subtree-toggle dired-mode-map))))
 
 (t/use-package all-the-icons-dired
   :commands all-the-icons-dired-mode
