@@ -49,7 +49,7 @@ these need to exist on `PATH`:
 
 - git
 - w3m
-- eslint babel-eslint jsonlint eslint-plugin-react tern flow
+- eslint babel-eslint jsonlint eslint-plugin-react tern flow-bin
 - browser-sync
 
 #### fonts
