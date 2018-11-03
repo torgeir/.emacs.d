@@ -1,4 +1,4 @@
-;;(package-initialize) stfu
+;;(package-initialize) ; stfu
 (load (t/user-emacs-file "t-bootstrap.el"))
 (require 't-packaging)
 

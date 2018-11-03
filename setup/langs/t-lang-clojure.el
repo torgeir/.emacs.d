@@ -88,6 +88,7 @@
   :commands clojure-mode) ;; more syntax hilighting
 
 (t/use-package cider
+  :pin melpa-stable
   :commands (cider cider-connect cider-jack-in)
   :init
   (progn

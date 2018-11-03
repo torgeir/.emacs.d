@@ -168,7 +168,7 @@
         (when (and hasfile (eq eshell-process-list nil))
           (goto-char (point-max))
           (setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home -v 9")))
-          (setenv "BOOT_JVM_OPTIONS" "--add-modules \"java.xml.bind\"")
+          (setenv "BOOT_JVM_OPTIONS" "-Djdk.launcher.addmods=java.xml.bind")
           (setenv "PAGER" "cat"))))
 
     (defun t/eshell-clear ()

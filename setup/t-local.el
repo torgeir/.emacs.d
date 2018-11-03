@@ -16,6 +16,8 @@
     :ensure nil
     ;; TODO remove when https://github.com/melpa/melpa/pull/5300 is merged
     :load-path "~/Code/helm-lines.el/"
+    :init
+    (setq helm-lines-project-root-function 't/project-root)
     )
 
   (t/use-package spotify

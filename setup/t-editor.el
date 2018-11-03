@@ -63,13 +63,13 @@
     (bind-key "M-n" (t/lambda-i (dired-find-alternate-file)) dired-mode-map)))
 
 ;; less verbose dired
-(t/use-package dired-details
-  :commands (dired dired-jump dired-details-activate dired-details-toggle)
-  :init
-  (progn
-    (setq dired-details-hidden-string "")
-    (with-eval-after-load 'dired
-      (add-hook 'dired-mode-hook 'dired-hide-details-mode))))
+(comment (t/use-package dired-details
+           :commands (dired dired-jump dired-details-activate dired-details-toggle)
+           :init
+           (progn
+             (setq dired-details-hidden-string "")
+             (with-eval-after-load 'dired
+               (add-hook 'dired-mode-hook 'dired-hide-details-mode)))))
 
 (use-package dired-subtree
   :commands dired-subtree-toggle
@@ -328,32 +328,32 @@
                                  "C-M-." 'helm-etags-select))
     (setq tern-command (append tern-command '("--no-port-file")))))
 
-(t/use-package etags-select
-  :commands etags-select-find-tag-at-point
-  :init
-  (progn
-    (setq helm-etags-fuzzy-match t
-          etags-select-go-if-unambiguous t
-          ;; fix helm-etags-select for huge regexps
-          helm-fuzzy-matching-highlight-fn (lambda (file) file))
-    (t/add-hook-defun 'etags-select-mode-hook t/hook-etags-select
-                      (t/bind-in 'etags-select-mode-map
-                                 "j" 'etags-select-next-tag
-                                 "k" 'etags-select-previous-tag
-                                 "RET" 'etags-select-goto-tag
-                                 "M-RET" 'etags-select-goto-tag-other-window))))
+(comment (t/use-package etags-select
+           :commands etags-select-find-tag-at-point
+           :init
+           (progn
+             (setq helm-etags-fuzzy-match t
+                   etags-select-go-if-unambiguous t
+                   ;; fix helm-etags-select for huge regexps
+                   helm-fuzzy-matching-highlight-fn (lambda (file) file))
+             (t/add-hook-defun 'etags-select-mode-hook t/hook-etags-select
+                               (t/bind-in 'etags-select-mode-map
+                                          "j" 'etags-select-next-tag
+                                          "k" 'etags-select-previous-tag
+                                          "RET" 'etags-select-goto-tag
+                                          "M-RET" 'etags-select-goto-tag-other-window)))))
 
-(t/use-package etags-table
-  :after etags-select
-  :init
-  (setq etags-table-search-up-depth 1 ; don't search upwards
-        tags-file-name nil ; only use tags-table-list via etags-table
-        etags-table-alist (list
-                           `(,(t/user-file "Code/datainn/datainn/.*\\.jsx?$")
-                             ,(t/user-file "Code/datainn/datainn/web/TAGS"))
-                           `(".*\\.jsx?$"
-                             ,(t/user-file ".nvm/versions/node/v8.2.1/src/node-8.x/TAGS") ; generated with `ctags -e -R lib`
-                             ))))
+(comment (t/use-package etags-table
+           :after etags-select
+           :init
+           (setq etags-table-search-up-depth 1 ; don't search upwards
+                 tags-file-name nil ; only use tags-table-list via etags-table
+                 etags-table-alist (list
+                                    `(,(t/user-file "Code/datainn/datainn/.*\\.jsx?$")
+                                      ,(t/user-file "Code/datainn/datainn/web/TAGS"))
+                                    `(".*\\.jsx?$"
+                                      ,(t/user-file ".nvm/versions/node/v8.2.1/src/node-8.x/TAGS") ; generated with `ctags -e -R lib`
+                                      )))))
 
 (t/use-package helm-unicode
   :commands helm-unicode)
@@ -532,7 +532,7 @@
   (setq writeroom-width 120
         writeroom-maximize-window nil
         writeroom-fullscreen-effect 'maximized
-        writeroom-major-modes '(js2-mode rjsx-mode)))
+        writeroom-major-modes '(js-mode js2-mode rjsx-mode)))
 
 (t/use-package w3m
   :commands w3m
@@ -949,8 +949,8 @@
   :config
   (progn
     (t/add-to-list 'projectile-globally-ignored-directories '("elpa-backups" "node_modules" "target" "dist" ".idea"))
-    (t/add-to-list 'projectile-globally-ignored-files '("**.bundle.js" "**.build.js" ".DS_Store" "projectile.cache" "custom.el"))
-    (t/add-to-list 'grep-find-ignored-files '("**.bundle.js" "**.build.js" ".DS_Store" "custom.el"))
+    (t/add-to-list 'projectile-globally-ignored-files '("package-lock.json" "**.bundle.js" "**.build.js" ".DS_Store" "projectile.cache" "custom.el"))
+    (t/add-to-list 'grep-find-ignored-files '("package-lock.json" "**.bundle.js" "**.build.js" ".DS_Store" "custom.el"))
     (projectile-global-mode +1)))
 
 (t/use-package dumb-jump
@@ -1092,7 +1092,7 @@
                     "d" 'dired-jump
                     "h" 't/hackernews
                     "i" 't/open-in-intellij
-                    "p" 'list-processes
+                    "p" 'proced
                     "m" 'helm-spotify
                     "n" (lambda nil
                           (interactive)

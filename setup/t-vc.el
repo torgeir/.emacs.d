@@ -87,7 +87,7 @@
                     "s" 'magit-status
                     "b" 'magit-blame
                     "l" 'magit-log
-                    "C" 'magit-commit
+                    "C" 'magit-commit-create
                     "c" #'t/clone)
 
   (t/declare-prefix "gh" "Hunk"
@@ -98,7 +98,7 @@
                     "=" 'git-gutter+-show-hunk
                     "r" 'git-gutter+-revert-hunks
                     "s" 'git-gutter+-stage-hunks
-                    "cc" 'magit-commit
+                    "cc" 'magit-commit-create
                     "ca" 'magit-commit-amend)
 
   (t/declare-prefix "go" "Open github"

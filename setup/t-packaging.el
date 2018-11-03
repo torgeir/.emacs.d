@@ -19,7 +19,7 @@
 
   (require 'cl)) ; lexical-let
 (defvar use-package-verbose *t-debug-init*)
-(require 'diminish)
+(use-package diminish)
 (require 'bind-key)
 
 (use-package dash) ; list helpers

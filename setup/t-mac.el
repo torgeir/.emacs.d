@@ -1,8 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
 (defun t-mac/vars ()
 
+  ;; mouse
+  (setq ns-use-mwheel-momentum t
+        ns-use-mwheel-acceleration t)
 
-  ;; emacs-plus --with-natural-title-bar fix after emacs 26.1
+  ;; dark title bar
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
 

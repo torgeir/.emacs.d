@@ -99,6 +99,7 @@
   (xterm-mouse-mode t)
   (defun trackp-mouse (e))
   (setq mouse-sel-mode t)
+
   (when (require 'mwheel nil 'noerror)
     (global-set-key [wheel-down] (t/lambda-i (scroll-down 2)))
     (global-set-key [wheel-up] (t/lambda-i (scroll-up 2)))

@@ -1223,13 +1223,20 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-visit-git-link-pulls ()
   (interactive)
+  (require 'ghub)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
          "Visit pulls for project: "
          projects
          :action (lambda (project)
-                   (call-interactively 'magit-browse-pull-request)))
+                   (dired project)
+                   (let* ((origin (magit-upstream-repository))
+                          (id     (magit--forge-id origin))
+                          (prs (ghub-get (format "/repos/%s/pulls" id) nil :auth 'magit)))
+                     (if prs
+                         (call-interactively 'magit-browse-pull-request)
+                       (browse-url (format "https://github.com/%s/pulls" id))))))
       (user-error "No projects found"))))
 
 ;;;###autoload

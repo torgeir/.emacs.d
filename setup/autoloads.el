@@ -3,17 +3,71 @@
 ;;; Code:
 
 
-;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
-;;;;;;  "t-editor.el" "t-evil.el" "t-keys.el" "t-langs.el" "t-load-theme.el"
-;;;;;;  "t-local.el" "t-mac.el" "t-macros.el" "t-modeline.el" "t-modules.el"
-;;;;;;  "t-org.el" "t-packaging.el" "t-sane-defaults.el" "t-shell.el"
-;;;;;;  "t-typography.el" "t-vc.el" "t-which-key.el") (23472 43765
-;;;;;;  363180 324000))
+;;;### (autoloads nil "t-editor" "t-editor.el" (0 0 0 0))
+;;; Generated autoloads from t-editor.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-editor" '("t-editor/config" "t/")))
 
 ;;;***
 
-;;;### (autoloads nil "t-defuns" "t-defuns.el" (23472 45136 579751
-;;;;;;  663000))
+;;;### (autoloads nil "t-evil" "t-evil.el" (0 0 0 0))
+;;; Generated autoloads from t-evil.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-evil" '("t-evil/")))
+
+;;;***
+
+;;;### (autoloads nil "t-load-theme" "t-load-theme.el" (0 0 0 0))
+;;; Generated autoloads from t-load-theme.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-load-theme" '("t-load-theme/config")))
+
+;;;***
+
+;;;### (autoloads nil "t-mac" "t-mac.el" (0 0 0 0))
+;;; Generated autoloads from t-mac.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-mac" '("t-mac/")))
+
+;;;***
+
+;;;### (autoloads nil "t-macros" "t-macros.el" (0 0 0 0))
+;;; Generated autoloads from t-macros.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-macros" '("comment" "t/")))
+
+;;;***
+
+;;;### (autoloads nil "t-org" "t-org.el" (0 0 0 0))
+;;; Generated autoloads from t-org.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '("lat-trh" "lon-trh" "t-org/")))
+
+;;;***
+
+;;;### (autoloads nil "t-packaging" "t-packaging.el" (0 0 0 0))
+;;; Generated autoloads from t-packaging.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-packaging" '("use-package-verbose")))
+
+;;;***
+
+;;;### (autoloads nil "t-sane-defaults" "t-sane-defaults.el" (0 0
+;;;;;;  0 0))
+;;; Generated autoloads from t-sane-defaults.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-sane-defaults" '("t-sane-defaults/vars" "t/init-mouse")))
+
+;;;***
+
+;;;### (autoloads nil nil ("t-custom.el" "t-cygwin.el" "t-debug.el"
+;;;;;;  "t-keys.el" "t-langs.el" "t-local.el" "t-modeline.el" "t-modules.el"
+;;;;;;  "t-shell.el" "t-typography.el" "t-vc.el" "t-which-key.el")
+;;;;;;  (0 0 0 0))
+
+;;;***
+
+;;;### (autoloads nil "t-defuns" "t-defuns.el" (0 0 0 0))
 ;;; Generated autoloads from t-defuns.el
 
 (autoload 't/exec-org-block "t-defuns" "\
@@ -420,7 +474,7 @@ Grab the frontmost url out of chrome using `org-mac-grab-link'
 \(fn)" t nil)
 
 (autoload 't/browse-chrome-url-in-w3m "t-defuns" "\
-Open the frontmost chrome url in `w3m'.
+Open the frontmost chrome url in `w3m'. 
 
 \(fn)" t nil)
 
@@ -668,6 +722,8 @@ Set buffer local frame margin.
 Toggle whether images are loaded and reload the current page fro cache.
 
 \(fn)" t nil)
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
 
 ;;;***
 
