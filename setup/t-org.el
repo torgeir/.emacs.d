@@ -263,7 +263,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
         (save-excursion
           (goto-char (point-min))
           (while (re-search-forward org-outline-regexp-bol nil t)
-            (org-set-tags nil t)
+            (org-set-tags (org-get-tags nil t))
             (end-of-line))))
 
       (t/add-hook-defun 'before-save-hook t/org-mode-before-save
