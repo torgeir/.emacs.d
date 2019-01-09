@@ -71,8 +71,8 @@
                                           "tf" 'cljr-thread-first-all
                                           "tl" 'cljr-thread-last-all
 
-                                          "ua" 'cljr-unwind-all
-                                          "uw" 'cljr-unwind
+                                          "ua" 'clojure-unwind-all
+                                          "uw" 'clojure-unwind
 
                                           "ml" 'cljr-move-to-let
                                           ))))
