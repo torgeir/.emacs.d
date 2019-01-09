@@ -42,6 +42,8 @@
         org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
         org-refile-targets '((nil :maxlevel . 2)
                              (org-agenda-files :maxlevel . 2))
+        org-refile-use-outline-path 'file ; enable refile to top level in file too
+        org-outline-path-complete-in-steps nil ; refile to subpaths
         org-tags-column -60           ; tag position after headings
         org-export-coding-system 'utf-8
         org-default-notes-file (t/org-directory "tasks.org")
@@ -80,6 +82,7 @@
 
   (setq org-capture-templates
         `(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n")
+          ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n")
           ("f" "File location" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n")
           ("e" "Elfeed location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template))
           ("c" "Chrome location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template))))
@@ -350,7 +353,7 @@ Locally redefines org-agenda-files not to export all agenda files."
             (org-icalendar-export-agenda-files)))
 
         (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
-        (t/idle-timer t-timers-sync-org-gcal 'org-gcal-fetch 60))
+        (t/idle-timer t-timers-sync-org-gcal 'org-gcal-sync 30))
 
       (progn
         ;; show week numbers in calendar
@@ -585,13 +588,18 @@ Locally redefines org-agenda-files not to export all agenda files."
     (setq rmh-elfeed-org-files (list "~/Dropbox/org/feeds.org"))))
 
 (t/use-package org-gcal
+  :ensure nil
+  :load-path "site-lisp/org-gcal/"
   :commands (org-gcal-sync org-gcal-fetch)
   :init
   (progn
     (when (boundp 't-org-gcal)
       (setq org-gcal-client-id t-org-gcal-client-id
             org-gcal-client-secret t-org-gcal-client-secret
-            org-gcal-file-alist t-org-gcal-file-alist))))
+            org-gcal-file-alist t-org-gcal-file-alist
+            org-gcal-header-alist t-org-gcal-header-alist
+            org-gcal-up-days 1)
+      (add-hook 'org-agenda-mode-hook 'org-gcal-sync))))
 
 (t/use-package gnuplot
   :after org)
