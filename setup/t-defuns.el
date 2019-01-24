@@ -391,13 +391,54 @@ Including indent-buffer, which should not be called automatically on save."
 
 (defvar *t-adjusted-font-size* t-font-size "Dynamically changed to adjust font with keybindings.")
 
+(defvar t-fonts (if is-mac
+                    (list
+                     "Bitstream Vera Sans Mono"
+                     "DejaVu Sans Mono"
+                     "Code New Roman"
+                     ;;"Fira Code Retina"
+                     "Input Mono"
+                     ;;"Office Code Pro"
+                     ;;"Noto Mono"
+                     ;;"IBM Plex Mono"
+                     ;;"Roboto Mono"
+                     "Ubuntu Mono"
+                     "Borg Sans Mono")
+                  (list "Inconsolata"
+                        "Ubuntu Mono")) "List of usable fonts to cycle.")
+
+(defun t/cycle-font ()
+  "Cycle through list of fonts, setting the front most one."
+  (interactive)
+  (setq t-fonts
+        (if (t/prefix-arg-universal?)
+            (let ((first (car t-fonts))
+                  (rest (cdr t-fonts)))
+              (append (last t-fonts 1) (seq-take t-fonts (- (length t-fonts) 1))))
+          (let ((first (car t-fonts))
+                (rest (cdr t-fonts)))
+            (append rest (list first)))))
+  (t/set-font (car t-fonts)))
+
+(defun t/current-font ()
+  "Grabs the current font. Prints message when called interactively."
+  (interactive)
+  (let ((font (face-attribute 'default :family)))
+    (when (called-interactively-p) (message font))
+    font))
+
+(defun t/set-font (font)
+  "Change font."
+  (when window-system
+    (let ((sized-font (concat font "-" (number-to-string *t-adjusted-font-size*))))
+      (set-face-attribute 'default nil :font sized-font)
+      (message "Font: %s." sized-font))))
+
 ;;;###autoload
 (defun t/reload-font ()
-  (interactive)
-  (when window-system
-    (setq t/default-font (concat (if is-mac "Fira Code Retina-" (if is-linux "Ubuntu Mono-" "Inconsolata-"))
-                                 (number-to-string *t-adjusted-font-size*)))
-    (set-face-attribute 'default nil :font t/default-font)))
+  "Reload font to make e.g. font size changes have effect."
+  (interactive))
+  (t/set-font (t/current-font))
 
 ;;;###autoload
 (defun t/fix-fira-ligatures ()
