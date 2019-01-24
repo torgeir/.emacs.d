@@ -767,6 +767,18 @@
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
 
 ;; eww-mode
+(defun t/eww-readable-after-render (status url buffer)
+  (eww-render status url nil buffer)
+  (switch-to-buffer buffer)
+  (eww-readable))
+
+(defun t/eww-readable (url)
+  (interactive "surl: ")
+  (let ((buffer (get-buffer-create "*eww*")))
+    (with-current-buffer buffer
+      (eww-setup-buffer)
+      (url-retrieve url 't/eww-readable-after-render (list url buffer)))))
+
 (t/after shr
   ;; don't truncate lines in eww-mode
   ;;(setq shr-width nil)
@@ -1052,7 +1064,7 @@
                     "m" 'helm-spotify
                     "n" (lambda nil
                           (interactive)
-                          (eww "nrk.no"))
+                          (t/eww-readable "https://nrk.no"))
                     "R" #'t/toggle-regex-mode
                     "se" 't/eshell
                     "st" 'ansi-term
