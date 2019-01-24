@@ -92,7 +92,8 @@
   :commands (cider cider-connect cider-jack-in)
   :init
   (progn
-    (setq cider-boot-parameters "cider repl -s wait"
+    (setq cider-jack-in-default 'boot
+          cider-boot-parameters "cider repl -s wait"
           cider-repl-display-help-banner nil
           cider-inject-dependencies-at-jack-in nil ;; theyre in ~/.boot/profile.boot
           cider-repl-pop-to-buffer-on-connect nil
