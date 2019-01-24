@@ -118,8 +118,8 @@
                  "M-k" #'t/mc-skip-prev))))
 
 (t/use-package evil-commentary
-  :commands (evil-commentary evil-commentary-yank evil-commentary-line)
-  :init (evil-commentary-mode 1))
+  :defer 1
+  :init (evil-commentary-mode))
 
 (use-package google-translate)
 
