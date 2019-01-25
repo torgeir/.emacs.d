@@ -551,8 +551,15 @@ Locally redefines org-agenda-files not to export all agenda files."
   (progn
     (setq elfeed-db-directory (t/user-file "/Dropbox/Apps/elfeed/db")
           elfeed-search-filter "@6-months-ago -old -gaming -news -life +unread -photo")
+    (defun t/elfeed-show-hide-images ()
+      (interactive)
+      (let ((shr-inhibit-images t))
+        (elfeed-show-refresh)))
     (t/declare-prefix "a" "Applications"
-                      "r" 'elfeed))
+                      "r" 'elfeed)
+    (t/declare-prefix-for-mode 'elfeed-show-mode
+                               "t" "Toggle"
+                               "i" 't/elfeed-show-hide-images))
   :config
   (progn
     (evil-set-initial-state 'elfeed-search-mode 'normal)

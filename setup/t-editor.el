@@ -773,7 +773,7 @@
   (eww-readable))
 
 (defun t/eww-readable (url)
-  (interactive "surl: ")
+  (interactive "sEnter URL: ")
   (let ((buffer (get-buffer-create "*eww*")))
     (with-current-buffer buffer
       (eww-setup-buffer)
@@ -786,27 +786,16 @@
   (defun shr-fill-lines (start end) nil)
   (defun shr-fill-line () nil)
 
-  (defun t/elfeed-show-hide-images ()
-    (interactive)
-    (let ((shr-inhibit-images t))
-      (elfeed-show-refresh)))
+
 
   ;; wrap lines
   (t/add-hook-defun 'eww-after-render-hook t/hook-eww-trunc
-                    (toggle-truncate-lines -1))
+                    (toggle-truncate-lines -1)))
 
-  ;; hide images
-  (t/declare-prefix-for-mode 'eww-mode
-                             "t" "Toggle"
-                             "i" 't/eww-toggle-images)
-  (t/declare-prefix-for-mode 'elfeed-show-mode
-                             "t" "Toggle"
-                             "i" 't/elfeed-show-hide-images)
-
-  ;; not to large images
-  (setq shr-use-fonts nil
-        shr-max-image-proportion 0.6
-        shr-ignore-cache t))
+;; not to large images
+(setq shr-use-fonts nil
+      shr-max-image-proportion 0.6
+      shr-ignore-cache t)
 
 (defun t/visit-frontmost-chrome-url-in-eww ()
   "Visit the front-most url of chrome in eww."
@@ -814,9 +803,12 @@
   (eww (t/grab-chrome-url)))
 
 (t/add-hook-defun 'eww-mode-hook t/hook-eww
+                  (t/declare-prefix-for-mode 'eww-mode
+                                             "t" "Toggle"
+                                             "i" 't/eww-toggle-images)
                   (t/bind-in '(evil-normal-state-local-map)
                              "q" 'quit-window
-                             "STAB" 'shr-previous-link
+                             "S-TAB" 'shr-previous-link
                              "TAB" 'shr-next-link
                              "R" 'eww-readable
                              "M-p" 'backward-paragraph
