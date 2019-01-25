@@ -154,7 +154,9 @@
                    ("C" . neotree-change-root)))
       (eval `(evil-define-key 'normal neotree-mode-map (kbd ,(car key)) ',(cdr key))))))
 
-(use-package avy
+(t/use-package ace-window)
+
+(t/use-package avy
   :commands (avy-goto-char
              avy-goto-char-2
              avy-goto-line
