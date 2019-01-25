@@ -393,17 +393,18 @@ Including indent-buffer, which should not be called automatically on save."
 
 (defvar t-fonts (if is-mac
                     (list
-                     "Bitstream Vera Sans Mono"
                      "DejaVu Sans Mono"
+                     "Bitstream Vera Sans Mono"
                      "Code New Roman"
-                     ;;"Fira Code Retina"
                      "Input Mono"
+                     "Ubuntu Mono"
+                     "Borg Sans Mono"
+                     ;;"Fira Code Retina"
                      ;;"Office Code Pro"
                      ;;"Noto Mono"
                      ;;"IBM Plex Mono"
                      ;;"Roboto Mono"
-                     "Ubuntu Mono"
-                     "Borg Sans Mono")
+                     )
                   (list "Inconsolata"
                         "Ubuntu Mono")) "List of usable fonts to cycle.")
 
