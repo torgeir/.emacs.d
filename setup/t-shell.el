@@ -282,60 +282,59 @@ PWD is not in a git repo (or the git command is not found)."
                               (propertize branch 'face 'font-lock-comment-face)
                               (propertize " $" 'face (if (zerop eshell-last-command-status) t-eshell-success-face t-eshell-error-face))
                               (propertize " " 'face 'font-lock-preprocessor-face))))
-                (t/propertize-read-only prompt)))))
+                (t/propertize-read-only prompt)))))))
 
-    (progn
-      ;; eshell git completion
+(progn
+  ;; eshell git completion
 
-      (defconst pcmpl-git-commands
-        '("pr"
-          "add" "bisect" "branch" "checkout" "clone"
-          "commit" "diff" "fetch" "grep"
-          "init" "log" "merge" "mv" "pull" "push" "rebase"
-          "reset" "rm" "show" "status" "tag" )
-        "List of `git' commands")
+  (defconst pcmpl-git-commands
+    '("pr"
+      "add" "bisect" "branch" "checkout" "clone"
+      "commit" "diff" "fetch" "grep"
+      "init" "log" "merge" "mv" "pull" "push" "rebase"
+      "reset" "rm" "show" "status" "tag" )
+    "List of `git' commands")
 
-      (defun pcmpl-git-remotes ()
-        "Return list of `git' remotes."
-        (-drop-last 1 (s-split "\r?\n" (shell-command-to-string "git remote show"))))
+  (defun pcmpl-git-remotes ()
+    "Return list of `git' remotes."
+    (-drop-last 1 (s-split "\r?\n" (shell-command-to-string "git remote show"))))
 
-      (defvar pcmpl-git-ref-list-cmd "git for-each-ref refs/ --format='%(refname)'"
-        "The `git' command to run to get a list of refs")
+  (defvar pcmpl-git-ref-list-cmd "git for-each-ref refs/ --format='%(refname)'"
+    "The `git' command to run to get a list of refs")
 
-      (defun pcmpl-git-get-refs (types)
-        "Return a list of `git' refs filtered by TYPE."
-        (with-temp-buffer
-          (insert (shell-command-to-string pcmpl-git-ref-list-cmd))
-          (goto-char (point-min))
-          (let ((ref-list))
-            (dolist (type types)
-              (while (re-search-forward (concat "^refs/" type "/\\(.+\\)$") nil t)
-                (add-to-list 'ref-list (match-string 1))))
-            ref-list)))
+  (defun pcmpl-git-get-refs (types)
+    "Return a list of `git' refs filtered by TYPE."
+    (with-temp-buffer
+      (insert (shell-command-to-string pcmpl-git-ref-list-cmd))
+      (goto-char (point-min))
+      (let ((ref-list))
+        (dolist (type types)
+          (while (re-search-forward (concat "^refs/" type "/\\(.+\\)$") nil t)
+            (add-to-list 'ref-list (match-string 1))))
+        ref-list)))
 
-      (defun pcomplete/git ()
-        "Completion for `git'."
+  (defun pcomplete/git ()
+    "Completion for `git'."
 
-        (pcomplete-here* pcmpl-git-commands)
-        (cond
-         ;; complete files/dirs forever if the command is `add' or `rm'
-         ((pcomplete-match (regexp-opt '("add" "rm")) 1)
-          (while (pcomplete-here (pcomplete-entries))))
-         ((pcomplete-match (regexp-opt '("pr")) 1)
-          (while (pcomplete-here (append (pcmpl-git-get-refs '("heads")) (pcmpl-git-remotes)))))
-         ;; provide branch completion for the command `checkout'.
-         ((pcomplete-match "\\(co\\|checkout\\|merge\\|branch\\|diff\\)" 1)
-          (pcomplete-here* (pcmpl-git-get-refs '("heads")))))))))
+    (pcomplete-here* pcmpl-git-commands)
+    (cond
+     ;; complete files/dirs forever if the command is `add' or `rm'
+     ((pcomplete-match (regexp-opt '("add" "rm")) 1)
+      (while (pcomplete-here (pcomplete-entries))))
+     ((pcomplete-match (regexp-opt '("pr")) 1)
+      (while (pcomplete-here (append (pcmpl-git-get-refs '("heads")) (pcmpl-git-remotes)))))
+     ;; provide branch completion for the command `checkout'.
+     ((pcomplete-match "\\(co\\|checkout\\|merge\\|branch\\|diff\\)" 1)
+      (pcomplete-here* (pcmpl-git-get-refs '("heads")))))))
 
-(comment ;; pcomplete example
-
- (defun pcomplete/torgeir ()
-   (pcomplete-here* '("add" "remove"))
-   (cond
-    ((pcomplete-match "add" 1)
-     (pcomplete-here* '("one" "two")))
-    ((pcomplete-match "remove" 1)
-     (pcomplete-here* '("two" "three"))))))
+;; pcomplete example
+(defun pcomplete/torgeir ()
+  (pcomplete-here* '("add" "remove"))
+  (cond
+   ((pcomplete-match "add" 1)
+    (pcomplete-here* '("one" "two")))
+   ((pcomplete-match "remove" 1)
+    (pcomplete-here* '("two" "three")))))
 
 
 (use-package pcmpl-git
