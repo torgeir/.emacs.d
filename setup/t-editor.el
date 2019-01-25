@@ -277,12 +277,19 @@
     (defun t/company-helm () (interactive) (company-abort) (completion-at-point))
     (t/bind-in 'company-active-map
                "TAB" 'company-complete-selection
+               "RET" 'company-complete-selection
                "C-w" 'evil-delete-backward-word
                "C-l" 'evil-delete-backward-word
                "C-u" 'backward-kill-sentence
                "C-n" 'company-select-next
                "C-p" 'company-select-previous
                "C-," #'t/company-helm)))
+
+(t/use-package company-box
+  :init
+  (progn
+    (setq company-box-doc-delay 0.1)
+    (t/add-hook 'company-mode-hook 'company-box-mode)))
 
 (t/use-package company-flx
   :after company
