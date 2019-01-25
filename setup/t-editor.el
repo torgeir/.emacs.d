@@ -62,6 +62,28 @@
     (bind-key "M-<down>" (t/lambda-i (dired-find-alternate-file)) dired-mode-map)
     (bind-key "M-n" (t/lambda-i (dired-find-alternate-file)) dired-mode-map)))
 
+(t/use-package dired-avfs
+  :ensure nil
+  :load-path "site-lisp/dired-avfs/")
+
+(t/use-package dired-details
+  :ensure nil
+  :load-path "site-lisp/dired-details/"
+  :init
+  (progn
+    (setq dired-details-hidden-string "")
+    (with-eval-after-load 'dired
+      (add-hook 'dired-mode-hook 'dired-hide-details-mode))))
+
+(t/use-package dired-subtree
+  :commands dired-subtree-toggle
+  :load-path "site-lisp/dired-subtree/"
+  :init
+  (progn
+    (setq dired-subtree-line-prefix "  ")
+    (with-eval-after-load 'dired
+      (bind-key "TAB" 'dired-subtree-toggle dired-mode-map))))
+
 (t/use-package all-the-icons-dired
   :commands all-the-icons-dired-mode
   :init
