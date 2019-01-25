@@ -84,6 +84,9 @@
   (desktop-save-mode 1)
   (setq desktop-save nil)
 
+  ;; eldoc everywhere
+  (global-eldoc-mode)
+
   ;; temp files in..
   (setq backup-directory-alist `((".*" . ,(locate-user-emacs-file ".backups/")))
         auto-save-file-name-transforms `((".*" ,(locate-user-emacs-file ".auto-save-list/") t))
