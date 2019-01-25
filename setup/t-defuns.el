@@ -1232,8 +1232,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (projectile-completing-read
          "Switch to project: "
          projects
-         :action (lambda (project)
-                   (dired project)))
+         :action 'dired)
       (user-error "No projects found"))))
 
 ;;;###autoload
@@ -1245,8 +1244,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
          "Switch to project: "
          projects
          :action (lambda (project)
-                   (dired project)
-                   (magit-status project)))
+                   (let ((default-directory project))
+                     (magit-status project))))
       (user-error "No projects found"))))
 
 ;;;###autoload
@@ -1258,8 +1257,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
          "Switch to project: "
          projects
          :action (lambda (project)
-                   (dired project)
-                   (helm-projectile-ag)))
+                   (let ((default-directory project))
+                     (helm-projectile-ag))))
       (user-error "No projects found"))))
 
 ;;;###autoload
@@ -1272,13 +1271,10 @@ If FILEXT is provided, return files with extension FILEXT instead."
          "Visit pulls for project: "
          projects
          :action (lambda (project)
-                   (dired project)
-                   (let* ((origin (magit-upstream-repository))
-                          (id     (magit--forge-id origin))
-                          (prs (ghub-get (format "/repos/%s/pulls" id) nil :auth 'magit)))
-                     (if prs
-                         (call-interactively 'magit-browse-pull-request)
-                       (browse-url (format "https://github.com/%s/pulls" id))))))
+                   (let* ((default-directory (expand-file-name project))
+                          (url (magit-get "remote" (magit-get-remote "master") "url"))
+                          (id (replace-regexp-in-string "\\`.+github\\.com:\\(.+\\)\\.git\\'" "\\1" url)))
+                     (browse-url (format "https://github.com/%s/pulls" id)))))
       (user-error "No projects found"))))
 
 ;;;###autoload
