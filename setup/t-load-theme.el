@@ -1,4 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
+(t/use-package doom-modeline
+  :config
+  (progn
+    (setq doom-modeline-height 40)
+    (t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")))
+
 (t/use-package spacemacs-theme :defer t)
 (t/use-package doom-themes
   :config
@@ -7,15 +13,13 @@
           doom-themes-enable-italic t)
     (doom-themes-visual-bell-config)
     (doom-themes-org-config)
-    (doom-themes-neotree-config)))
+    (doom-themes-neotree-config)
+    (doom-themes-visual-bell-config)))
 
 (defun t-load-theme/config ()
   (defconst t-themes (list
                       'doom-one
-                      ;;'doom-dracula
                       'doom-vibrant
-                      ;;'doom-solarized-light
-                      'doom-nord
                       'doom-one-light) "Themes to cycle")
 
 (defun t/cycle-theme ()
@@ -61,6 +65,6 @@
       "Wait until server created window system frame before loading the theme"
       (unless *t-theme-did-load*
         (setq *t-theme-did-load* t)
-        (t/load-theme))))))
-
+        (t/load-theme)))))
+)
 (provide 't-load-theme)

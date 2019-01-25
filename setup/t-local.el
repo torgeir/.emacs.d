@@ -17,19 +17,12 @@
     ;; TODO remove when https://github.com/melpa/melpa/pull/5300 is merged
     :load-path "~/Code/helm-lines.el/"
     :init
-    (setq helm-lines-project-root-function 't/project-root)
-    )
+    (setq helm-lines-project-root-function 't/project-root))
 
   (t/use-package spotify
     :ensure nil
     :load-path "site-lisp/spotify/"
     :commands helm-spotify)
-
-  (use-package doom-modeline
-    :config
-    (progn
-      (setq doom-modeline-height 40)
-      (t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")))
 
   (t/use-package nxml-eldoc
     :ensure nil
