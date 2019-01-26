@@ -150,8 +150,8 @@ inserted (with `i')."
       (dired-details-hide))))
 
 (defun dired-details-delete-overlays ()
-  (mapc '(lambda (list) (mapc 'delete-overlay
-                              (cdr list)))
+  (mapc (lambda (list) (mapc 'delete-overlay
+                             (cdr list)))
         dired-details-internal-overlay-list)
   (setq dired-details-internal-overlay-list nil))
 
@@ -187,25 +187,25 @@ in this dired buffer."
       (widen)
       ;;hide each displayed subdirectory
       (mapc
-       '(lambda (dir-and-pos)
-          (let ((cached-overlays (assoc (car dir-and-pos)
-                                        dired-details-internal-overlay-list)))
-            (if cached-overlays
-                ;;reuse the existing overlays
-                (dired-details-frob-overlays t)
-              ;;no existing overlays for this subdir, make 'em
-              (let ((cache (list (car dir-and-pos)))
-                    (subdir-start (cdr dir-and-pos))
-                    (subdir-end (1- (dired-get-subdir-max dir-and-pos))))
-                (goto-char subdir-start)
-                (forward-line 1) ;;always skip the dir line
-                ;;v1.3 (dired-goto-next-file)
-                (while (< (point) subdir-end)
-                  (dired-details-make-current-line-overlay cache)
-                  (forward-line 1))
-                ;;v1.3 (dired-next-line 1))
-                (setq dired-details-internal-overlay-list
-                      (cons cache dired-details-internal-overlay-list))))))
+       (lambda (dir-and-pos)
+         (let ((cached-overlays (assoc (car dir-and-pos)
+                                       dired-details-internal-overlay-list)))
+           (if cached-overlays
+               ;;reuse the existing overlays
+               (dired-details-frob-overlays t)
+             ;;no existing overlays for this subdir, make 'em
+             (let ((cache (list (car dir-and-pos)))
+                   (subdir-start (cdr dir-and-pos))
+                   (subdir-end (1- (dired-get-subdir-max dir-and-pos))))
+               (goto-char subdir-start)
+               (forward-line 1) ;;always skip the dir line
+               ;;v1.3 (dired-goto-next-file)
+               (while (< (point) subdir-end)
+                 (dired-details-make-current-line-overlay cache)
+                 (forward-line 1))
+               ;;v1.3 (dired-next-line 1))
+               (setq dired-details-internal-overlay-list
+                     (cons cache dired-details-internal-overlay-list))))))
        dired-subdir-alist)))
   (setq dired-details-state 'hidden))
 
@@ -264,9 +264,9 @@ hidden in this buffer."
 
 (defun dired-details-frob-overlays ( hide )
   (if dired-details-internal-overlay-list
-      (mapc '(lambda (list)
-               (mapc (if hide 'dired-details-hide-overlay 'dired-details-show-overlay)
-                     (cdr list)))
+      (mapc (lambda (list)
+              (mapc (if hide 'dired-details-hide-overlay 'dired-details-show-overlay)
+                    (cdr list)))
             dired-details-internal-overlay-list)))
 
 (provide 'dired-details)
