@@ -288,8 +288,10 @@
 (t/use-package company-box
   :init
   (progn
-    (setq company-box-doc-delay 0.1)
-    (t/add-hook 'company-mode-hook 'company-box-mode)))
+    (setq company-box-doc-delay 0.01)
+    (t/add-hook 'company-mode-hook 'company-box-mode))
+  :config
+  (setq company-box-icons-alist company-box-icons-all-the-icons))
 
 (t/use-package company-flx
   :after company

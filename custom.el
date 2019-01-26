@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-box-background ((t (:inherit company-tooltip :background "#202025"))))
  '(eshell-ls-executable ((t (:inherit doom-modeline-info :weight bold))))
  '(evil-goggles-delete-face ((t (:inherit magit-diff-removed))))
  '(evil-goggles-paste-face ((t (:inherit magit-diff-added))))
