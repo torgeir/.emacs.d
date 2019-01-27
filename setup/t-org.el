@@ -574,8 +574,8 @@ Locally redefines org-agenda-files not to export all agenda files."
       "b" 'elfeed-show-visit
       "[" 'elfeed-goodies/split-show-prev
       "]" 'elfeed-goodies/split-show-next
-      (kbd "SPC") 'scroll-up-command
-      (kbd "S-SPC") 'scroll-down-command)
+      "d" 'scroll-up-command
+      "u" 'scroll-down-command)
     (setq elfeed-goodies/entry-pane-position 'bottom)
     (t/add-hook-defun 'elfeed-show-mode-hook t/elfeed-hook
                       (writeroom-mode 1)
