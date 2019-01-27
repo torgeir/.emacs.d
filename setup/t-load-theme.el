@@ -19,7 +19,6 @@
 (defun t-load-theme/config ()
   (defconst t-themes (list
                       'doom-one
-                      'doom-vibrant
                       'doom-one-light) "Themes to cycle")
 
   (defun t/cycle-theme ()
