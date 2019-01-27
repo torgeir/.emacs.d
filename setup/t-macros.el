@@ -62,6 +62,7 @@
 
 (defmacro t/bind-in (maps_ key_ fn_ &rest bindings)
   "Bind keys in maps."
+  (declare (indent 1))
   `(let ((maps (t/ensure-list ,maps_))
          (key (quote ,key_))
          (fn (quote ,fn_))
