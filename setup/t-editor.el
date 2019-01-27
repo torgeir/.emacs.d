@@ -816,6 +816,7 @@
   (interactive "sEnter URL: ")
   (let ((buffer (get-buffer-create "*eww*")))
     (with-current-buffer buffer
+      (autoload 'eww-setup-buffer "eww")
       (eww-setup-buffer)
       (url-retrieve url 't/eww-readable-after-render (list url buffer)))))
 
