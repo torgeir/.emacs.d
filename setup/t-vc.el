@@ -77,9 +77,8 @@
       (kill-buffer)
       (git-gutter+-refresh))))
 
-(t/use-package magit-gh-pulls
-  :after magit
-  :init (t/add-hook 'magit-mode-hook #'turn-on-magit-gh-pulls))
+(t/use-package forge
+  :after magit)
 
 (defun t-vc/config ()
   (t/declare-prefix "g" "Git"
