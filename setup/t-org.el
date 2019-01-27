@@ -573,11 +573,23 @@ Locally redefines org-agenda-files not to export all agenda files."
       "q" 'elfeed-goodies/delete-pane
       "b" 'elfeed-show-visit
       "[" 'elfeed-goodies/split-show-prev
-      "]" 'elfeed-goodies/split-show-next
-      "d" 'scroll-up-command
-      "u" 'scroll-down-command)
+      "]" 'elfeed-goodies/split-show-next)
     (setq elfeed-goodies/entry-pane-position 'bottom)
     (t/add-hook-defun 'elfeed-show-mode-hook t/elfeed-hook
+                      ;; hack to steal SPC from evil-leader
+                      (let ((map (make-sparse-keymap)))
+                        (bind-key "SPC" (lambda ()
+                                          (interactive)
+                                          (condition-case nil
+                                              (scroll-up-command)
+                                            (error (elfeed-goodies/split-show-next)))) map)
+                        (bind-key "S-SPC" (lambda ()
+                                            (interactive)
+                                            (condition-case nil
+                                                (scroll-down-command)
+                                              (error (elfeed-goodies/split-show-prev)))) map)
+                        (set-temporary-overlay-map map
+                                                   (lambda () (equal major-mode 'elfeed-show-mode))))
                       (writeroom-mode 1)
                       (visual-line-mode))))
 
