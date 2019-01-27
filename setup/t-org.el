@@ -88,6 +88,9 @@
           ("c" "Chrome location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template))))
   )
 
+;; org-mobile
+(t/use-package request-deferred)
+
 (t/use-package org
   :ensure org-plus-contrib
   :commands (org-mode)
@@ -312,15 +315,9 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                 (if (called-interactively-p)
                     (progn
                       (select-window (display-buffer agenda-buffer t t))
-                      (org-fit-window-to-buffer)
-                      ;; 100% cpu?
-                      ;;(org-agenda-redo t)
-                      )
+                      (org-fit-window-to-buffer))
                   (with-selected-window (display-buffer agenda-buffer)
-                    (org-fit-window-to-buffer)
-                    ;; 100% cpu?
-                    ;;(org-agenda-redo t)
-                    )))
+                    (org-fit-window-to-buffer))))
             (call-interactively 'org-agenda-list))))
 
       (progn
@@ -341,8 +338,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
             (org-mobile-pull)
             (org-mobile-push)
             (setq t-org-file-save-since-last-idle nil)
-            (message "Syncing agenda... done"))
-          (t/jump-to-org-agenda))
+            (message "Syncing agenda... done")))
 
         (defun t/org-export-calendars ()
           "Export given set of calendars to ical files, so you can subscribe to their dropbox links in ical.
