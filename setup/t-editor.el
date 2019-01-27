@@ -62,6 +62,10 @@
     (bind-key "M-<down>" (t/lambda-i (dired-find-alternate-file)) dired-mode-map)
     (bind-key "M-n" (t/lambda-i (dired-find-alternate-file)) dired-mode-map)))
 
+(t/use-package dired-hacks-utils
+  :ensure nil
+  :load-path "site-lisp/dired-hacks-utils/")
+
 (t/use-package dired-avfs
   :ensure nil
   :load-path "site-lisp/dired-avfs/")
@@ -286,12 +290,15 @@
                "C-," #'t/company-helm)))
 
 (t/use-package company-box
+  :ensure nil
+  :load-path "site-lisp/company-box/"
   :init
   (progn
     (setq company-box-doc-delay 0.01)
-    (t/add-hook 'company-mode-hook 'company-box-mode))
-  :config
-  (setq company-box-icons-alist company-box-icons-all-the-icons))
+    (t/add-hook-defun 'company-mode-hook t/company-box-mode-hook
+                      (t/after company-box
+                        (setq company-box-icons-alist company-box-icons-all-the-icons))
+                      (company-box-mode))))
 
 (t/use-package company-flx
   :after company
@@ -818,8 +825,6 @@
   (defun shr-fill-text (text) text)
   (defun shr-fill-lines (start end) nil)
   (defun shr-fill-line () nil)
-
-
 
   ;; wrap lines
   (t/add-hook-defun 'eww-after-render-hook t/hook-eww-trunc
