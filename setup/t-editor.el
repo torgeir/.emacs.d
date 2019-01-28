@@ -205,6 +205,7 @@
              "C-c C-v" 'es-execute-request-dwim))
 
 (t/use-package hideshow
+  :ensure nil
   :init
   (progn
     (add-hook 'prog-mode-hook 'hs-minor-mode)
@@ -721,6 +722,7 @@
 (t/use-package wgrep-ag :after ag)
 
 (t/use-package autorevert
+  :ensure nil
   :defer t
   :init
   (progn
@@ -894,6 +896,7 @@
                       "SH" 'helm-hunks-staged-current-buffer)))
 
 (t/use-package calendar
+  :ensure nil
   :commands calendar
   :init
   (progn
@@ -905,6 +908,7 @@
 
 ;; save more recent files
 (t/use-package recentf
+  :ensure nil
   :defer 1
   :init
   (progn
@@ -989,6 +993,7 @@
                       (whitespace-mode 1))))
 
 (use-package doc-view
+  :ensure nil
   :init
   (setq doc-view-continuous t)
   :config
