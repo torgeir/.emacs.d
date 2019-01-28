@@ -1127,6 +1127,7 @@
                     "f" 't/cycle-font
                     "F" 'toggle-frame-fullscreen
                     "t" 't/load-theme-cycle
+                    "m" 'menu-bar-mode
                     "n" #'t/toggle-line-numbers
                     "r" #'t/toggle-relative-line-numbers
                     "l" 'hl-line-mode
