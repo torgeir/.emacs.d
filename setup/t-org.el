@@ -569,20 +569,13 @@ Locally redefines org-agenda-files not to export all agenda files."
       "r" 'elfeed-search-untag-all-unread
       "s" 'elfeed-search-live-filter ; filter
       "y" 'elfeed-search-yank)
-    (t/add-hook-defun 'elfeed-search-mode t/elfeed-search-mode-hook
-                      ;; hack to steal SPC from evil-leader
-                      (let ((map (make-sparse-keymap)))
-                        (bind-key "SPC" 'elfeed-search-show-entry map)
-                        (set-temporary-overlay-map ma
-                                                   (lambda () (equal major-mode 'elfeed-search-mode))))
-                      (writeroom-mode 1)
-                      (visual-line-mode))
     (evil-define-key 'normal elfeed-show-mode-map
+      "d" 'scroll-up-command
+      "u" 'scroll-down-command
       "q" 'elfeed-goodies/delete-pane
       "b" 'elfeed-show-visit
-      "[" 'elfeed-goodies/split-show-prev
-      "]" 'elfeed-goodies/split-show-next)
-    (setq elfeed-goodies/entry-pane-position 'bottom)
+      "p" 'elfeed-goodies/split-show-prev
+      "n" 'elfeed-goodies/split-show-next)
     (t/add-hook-defun 'elfeed-show-mode-hook t/elfeed-show-mode-hook
                       ;; hack to steal SPC from evil-leader
                       (let ((map (make-sparse-keymap)))
@@ -604,7 +597,8 @@ Locally redefines org-agenda-files not to export all agenda files."
 (t/use-package elfeed-goodies
   :commands elfeed-goodies/setup
   :init
-  (add-hook 'elfeed-search-mode-hook 'elfeed-goodies/setup))
+  (progn (setq elfeed-goodies/entry-pane-position 'bottom)
+         (add-hook 'elfeed-search-mode-hook 'elfeed-goodies/setup)))
 
 (t/use-package elfeed-org
   :commands elfeed-org
