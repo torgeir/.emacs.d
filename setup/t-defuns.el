@@ -1302,4 +1302,14 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (message "Images are now %s"
            (if shr-inhibit-images "off" "on")))
 
+;;;###autoload
+(defun t/last-used-window-buffer ()
+  "Switch to the window that displays the most recently selected buffer."
+  (interactive)
+  (let* ((buffers (delq (current-buffer) (buffer-list (selected-frame))))
+         (windows (delq (selected-window) (delq nil (mapcar #'get-buffer-window buffers)))))
+    (if windows
+        (select-window (car windows))
+      (message "no suitable window to switch to"))))
+
 (provide 't-defuns)
