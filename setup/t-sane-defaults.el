@@ -17,6 +17,7 @@
 
   (setq-default
    word-wrap t
+   delete-by-moving-to-trash t
    mode-require-final-newline nil ; don't require final newline
    require-final-newline nil ; don't require final newline
    redisplay-dont-pause t ; update screen immediately
@@ -106,10 +107,10 @@
   (setq mouse-sel-mode t)
 
   (when (require 'mwheel nil 'noerror)
-    (global-set-key [wheel-down] (t/lambda-i (scroll-down 2)))
-    (global-set-key [wheel-up] (t/lambda-i (scroll-up 2)))
-    (global-set-key [mouse-4] (t/lambda-i (scroll-down 2)))
-    (global-set-key [mouse-5] (t/lambda-i (scroll-up 2)))
+    (global-set-key [wheel-down] (t/lambda (scroll-down 2)))
+    (global-set-key [wheel-up] (t/lambda (scroll-up 2)))
+    (global-set-key [mouse-4] (t/lambda (scroll-down 2)))
+    (global-set-key [mouse-5] (t/lambda (scroll-up 2)))
     (mouse-wheel-mode t)))
 
 (provide 't-sane-defaults)

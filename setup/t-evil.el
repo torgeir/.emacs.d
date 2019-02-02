@@ -94,8 +94,9 @@
   :init
   (progn
     (setq evil-multiedit-follow-matches t)
-    (bind-key "M-d" 'evil-multiedit-match-symbol-and-next evil-normal-state-map)
-    (bind-key "C-M-d" 'evil-multiedit-restore evil-normal-state-map))
+    (t/bind-in 'evil-normal-state-map
+      "M-d" 'evil-multiedit-match-symbol-and-next
+      "C-M-d" 'evil-multiedit-restore))
   :config
   (progn
     (evil-multiedit-default-keybinds)
@@ -233,15 +234,15 @@ ignored.")
     "C-w" 'evil-delete-backward-word
     "M-y" 'helm-show-kill-ring)
 
-  (t/bind-in '(evil-insert-state-map)
+  (t/bind-in 'evil-insert-state-map
     "C-d" 'evil-delete-char
-    "C-u" (t/lambda-i (kill-line 0)))
+    "C-u" (t/lambda (kill-line 0)))
 
   (t/bind-in '(evil-normal-state-map
                evil-visual-state-map)
     "Q" 'call-last-kbd-macro
     "C-y" 'evil-paste-pop ; cycle after pasting with p
-    "C-S-y" (t/lambda-i (evil-paste-pop-next 1)))
+    "C-S-y" (t/lambda (evil-paste-pop-next 1)))
 
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-map)
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-ns-map)

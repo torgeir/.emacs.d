@@ -1,18 +1,28 @@
 ;;; -*- lexical-binding: t; -*-
 (require 'subr-x)
 
-(defmacro t/lambda-i (&rest body)
-  `(lambda () (interactive) ,@body))
+(defmacro comment (&rest ignore)
+  "Ignore stuff, return `nil'."
+  nil)
 
-(t/lambda-i)
+(defmacro t/lambda (&optional args &rest body)
+  (declare (indent 1))
+  (if body
+      `(lambda ,args (interactive) ,@body)
+    `(lambda (&optional &rest ignore) (interactive) ,args)))
+
+(comment
+ (t/lambda)
+ (t/lambda 1)
+ (t/lambda (one two) 1))
 
 (defmacro t/after (file-name &rest body)
   (declare (indent 1))
-  `(if-let ((locate-library (symbol-name ',file-name)))
-       (with-eval-after-load ',file-name ,@body)
-     (user-error
-      (format "t/after: for %s is not a filename in load-path?"
-              (symbol-name ',file-name)))))
+  (if (locate-library (symbol-name file-name))
+      `(with-eval-after-load ',file-name ,@body)
+    (user-error
+     (format "t/after: for %s is not a filename in load-path?"
+             file-name))))
 
 (defmacro t/when-ext (ext &rest body)
   "Run `body' when buffer's file has extension `ext'."
@@ -32,6 +42,9 @@
 
 (defmacro t/add-hook (hook-or-hooks fn-or-fns &optional append local)
   "Add one or more hook fns."
+  (dolist (hook (t/ensure-list (eval hook-or-hooks)))
+    (unless (or (boundp hook) (listp hook))
+      (user-error (format "%s is not a hook" hook))))
   `(let ((hooks (t/ensure-list ,hook-or-hooks))
          (fns (t/ensure-list ,fn-or-fns)))
      (dolist (hook hooks)
@@ -96,10 +109,6 @@
   "Expands to call `fn' only if it is bound to a function."
   `(when (fboundp (quote ,fn))
      (funcall (quote ,fn))))
-
-(defmacro comment (&rest ignore)
-  "Ignore stuff, return `nil'."
-  nil)
 
 (progn
 

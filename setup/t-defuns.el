@@ -487,7 +487,7 @@ Including indent-buffer, which should not be called automatically on save."
   (t/reload-font))
 
 ;;;###autoload
-(defun t/reset-font-size ()
+(defun t/reset-font-size (&optional &rest args)
   (interactive)
   (setq *t-adjusted-font-size* t-font-size)
   (t/reload-font)
@@ -519,6 +519,7 @@ Including indent-buffer, which should not be called automatically on save."
 (defun server-remove-kill-buffer-hook ()
   ;; remove other clients-has-the-file-open-prompt
   (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
+(require'server)
 (t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
 
 ;;;###autoload

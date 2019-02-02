@@ -8,13 +8,12 @@
 
 (require 't-macros)
 (require 't-packaging)
+(require 't-sane-defaults)
+(t-sane-defaults/init)
 
 (when is-mac    (require 't-mac)    (t-mac/init))
 (when is-linux  (require 't-linux)  (t-linux/init))
 (when is-cygwin (require 't-cygwin) (t-cygwin/init))
-
-(require 't-sane-defaults)
-(t-sane-defaults/init)
 
 (setq custom-file (t/user-emacs-file "custom.el"))
 (load custom-file)
@@ -57,10 +56,6 @@
 (require 't-lang-terraform)
 
 (dolist (pkg t-use-package-pkgs) (funcall pkg))
-
-(when is-mac    (t-mac/config))
-(when is-linux  (t-linux/config))
-(when is-cygwin (t-cygwin/config))
 
 (t-load-theme/config)
 (t-evil/config)

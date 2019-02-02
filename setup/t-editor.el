@@ -5,8 +5,8 @@
   (progn
     (t/declare-prefix "q" "Quit"
                       "d" 't/safe-restart-emacs
-                      "r" (t/lambda-i (restart-emacs))
-                      "R" (t/lambda-i (restart-emacs '("--no-desktop"))))))
+                      "r" (t/lambda (restart-emacs))
+                      "R" (t/lambda (restart-emacs '("--no-desktop"))))))
 
 (t/use-package winner
   :ensure nil
@@ -47,17 +47,18 @@
           dired-dwim-target t))
   :config
   (progn
-    (bind-key "~" (t/lambda-i (find-alternate-file "~")) dired-mode-map)
-    (bind-key "e" 't/eshell dired-mode-map)
-    (bind-key "C-d" 'dired-kill-subdir dired-mode-map)
-    (bind-key "C-c C-e" 'dired-toggle-read-only)
     (bind-key "C-x C-j" 'dired-jump)
-    (evil-define-key 'normal dired-mode-map "u" (t/lambda-i (find-alternate-file "..")))
-    (bind-key "C-x M-j" (t/lambda-i (dired-jump 1)))
-    (bind-key "M-<up>" (t/lambda-i (find-alternate-file "..")) dired-mode-map)
-    (bind-key "M-p" (t/lambda-i (find-alternate-file "..")) dired-mode-map)
-    (bind-key "M-<down>" (t/lambda-i (dired-find-alternate-file)) dired-mode-map)
-    (bind-key "M-n" (t/lambda-i (dired-find-alternate-file)) dired-mode-map)))
+    (bind-key "C-c C-e" 'dired-toggle-read-only)
+    (bind-key "C-x M-j" (t/lambda (dired-jump 1)))
+    (evil-define-key 'normal dired-mode-map "u" (t/lambda (find-alternate-file "..")))
+    (t/bind-in 'dired-mode-map
+      "e" 't/eshell
+      "C-d" 'dired-kill-subdir
+      "~" (t/lambda (find-alternate-file "~"))
+      "M-<up>" (t/lambda (find-alternate-file ".."))
+      "M-p" (t/lambda (find-alternate-file ".."))
+      "M-<down>" (t/lambda (dired-find-alternate-file))
+      "M-n" (t/lambda (dired-find-alternate-file)))))
 
 (t/use-package dired-hacks-utils
   :hook dired-mode-hook
@@ -248,8 +249,9 @@
           smex-save-file (locate-user-emacs-file ".smex-items")))
   :config
   (progn
-    (bind-key "C-x C-m" 'smex)
-    (bind-key "C-c C-M" 'smex-major-mode-commands)
+    (t/bind-in 'global-map
+      "C-x C-m" 'smex
+      "C-c C-M" 'smex-major-mode-commands)
     (smex-initialize)))
 
 (defun t/company-backends (&optional backends)
@@ -324,9 +326,10 @@
     (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
   :config
   (progn
-    (bind-key "M-." 'xref-find-definitions)
-    (bind-key "M-?" 'xref-find-references)
-    (bind-key "M-," 'xref-pop-marker-stack)))
+    (t/bind-in 'global-map
+      "M-." 'xref-find-definitions
+      "M-?" 'xref-find-references
+      "M-," 'xref-pop-marker-stack)))
 
 (t/use-package helm-xref
   :commands (helm-xref-show-xrefs
@@ -338,9 +341,10 @@
     (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
   :config
   (progn
-    (bind-key "M-." 'xref-find-definitions)
-    (bind-key "M-?" 'xref-find-references)
-    (bind-key "M-," 'xref-pop-marker-stack)))
+    (t/bind-in 'global-map
+      "M-." 'xref-find-definitions
+      "M-?" 'xref-find-references
+      "M-," 'xref-pop-marker-stack)))
 
 (t/use-package company-tern
   :commands tern-mode
@@ -404,15 +408,14 @@
     (t/after smartparens
       (setq sp-ignore-modes-list (delete 'minibuffer-inactive-mode sp-ignore-modes-list)))
     (sp-use-paredit-bindings)
-    (bind-key "<backspace>" 'sp-backward-delete-char sp-keymap)
-    (bind-key "<delete>" 'sp-delete-char sp-keymap)
+    (bind-key "RET" #'t/newline-expand-braces)
+    (t/bind-in 'sp-keymap "<backspace>" 'sp-backward-delete-char "<delete>" 'sp-delete-char)
     ;; interfers with e.g. org-mode, enable them specifically in lisp modes instead
     (unbind-key "M-<up>" sp-keymap)
     (unbind-key "M-<down>" sp-keymap)
     (unbind-key "M-?" sp-keymap)
     (unbind-key "C-<right>" sp-keymap)
     (unbind-key "C-<left>" sp-keymap)
-    (bind-key "RET" #'t/newline-expand-braces)
 
     (dolist (mode-map (list
                        emacs-lisp-mode-map
@@ -424,7 +427,6 @@
       (define-key clojure-mode-map ";" 'sp-comment))
 
     (t/add-hook '(js-mode-hook
-                  java-mode-hook
                   text-mode-hook
                   restclient-mode-hook
                   ruby-mode
@@ -432,16 +434,8 @@
                   es-mode-hook)
                 'turn-on-smartparens-mode)
 
-    (t/after rjsx-mode-mode
+    (t/after rjsx-mode
       (t/bind-in 'rjsx-mode-map
-        "M-<up>" 'sp-splice-sexp-killing-backward
-        "M-<down>" 'sp-splice-sexp-killing-forward))
-    (t/after web-mode
-      (t/bind-in 'web-mode-map
-        "M-<up>" 'sp-splice-sexp-killing-backward
-        "M-<down>" 'sp-splice-sexp-killing-forward))
-    (t/after java-mode
-      (t/bind-in 'java-mode-map
         "M-<up>" 'sp-splice-sexp-killing-backward
         "M-<down>" 'sp-splice-sexp-killing-forward))
     ;; enable in minibuffer
@@ -477,8 +471,8 @@
       (t/enable-movement-for-lisp-mode mode))
 
     (t/after clojure-mode (t/enable-movement-for-lisp-mode 'clojure-mode))
-    (t/after ielm-mode (t/enable-movement-for-lisp-mode 'ielm-mode))
-    (t/after scheme-mode (t/enable-movement-for-lisp-mode 'scheme-mode))
+    (t/after ielm (t/enable-movement-for-lisp-mode 'ielm-mode))
+    (t/after scheme (t/enable-movement-for-lisp-mode 'scheme-mode))
     (t/add-hook-defun 'minibuffer-inactive-mode-hook t/hook-minibuffer
                       (t/bind-in 'minibuffer-local-map
                         "M-<up>" 'sp-splice-sexp-killing-backward
@@ -513,20 +507,17 @@
                   (double-quote . "\"")
                   (back-quote . "`")))
 
-    (bind-key "s-(" 't/wrap-with-parens)
-    (bind-key "s-)" 't/paredit-wrap-round-from-behind)
-    (bind-key "M-s-(" 't/wrap-with-braces)
-    (bind-key "M-s-[" 't/wrap-with-brackets))
+    (t/bind-in 'global-map
+      "s-(" 't/wrap-with-parens
+      "s-)" 't/paredit-wrap-round-from-behind
+      "M-s-(" 't/wrap-with-braces
+      "M-s-[" 't/wrap-with-brackets))
 
   :config
   (progn
     (t/bind-in 'text-mode-map
-      "C-<right>" #'sp-forward-slurp-sexp
-      "C-<left>" #'sp-forward-barf-sexp)
-    (t/after web-mode
-      (t/bind-in 'web-mode-map
-        "C-<right>" #'sp-forward-slurp-sexp
-        "C-<left>" #'sp-forward-barf-sexp))))
+      "C-<right>" 'sp-forward-slurp-sexp
+      "C-<left>" 'sp-forward-barf-sexp)))
 
 (t/use-package writeroom-mode
   :commands writeroom-mode
@@ -849,20 +840,21 @@
   (interactive)
   (eww (t/grab-chrome-url)))
 
-(t/add-hook-defun 'eww-mode-hook t/hook-eww
-                  (t/declare-prefix-for-mode 'eww-mode
-                                             "t" "Toggle"
-                                             "i" 't/eww-toggle-images)
-                  (t/bind-in '(evil-normal-state-local-map)
-                    "q" 'quit-window
-                    "S-TAB" 'shr-previous-link
-                    "TAB" 'shr-next-link
-                    "R" 'eww-readable
-                    "M-p" 'backward-paragraph
-                    "M-n" 'forward-paragraph
-                    "s-l" 'eww
-                    "go" 'eww-browse-with-external-browser)
-                  (visual-line-mode))
+(t/after eww
+  (t/add-hook-defun 'eww-mode-hook t/hook-eww
+                    (t/declare-prefix-for-mode 'eww-mode
+                                               "t" "Toggle"
+                                               "i" 't/eww-toggle-images)
+                    (t/bind-in '(evil-normal-state-local-map)
+                      "q" 'quit-window
+                      "S-TAB" 'shr-previous-link
+                      "TAB" 'shr-next-link
+                      "R" 'eww-readable
+                      "M-p" 'backward-paragraph
+                      "M-n" 'forward-paragraph
+                      "s-l" 'eww
+                      "go" 'eww-browse-with-external-browser)
+                    (visual-line-mode)))
 
 (t/use-package hackernews
   :commands hackernews
@@ -923,12 +915,9 @@
   :config
   (progn
     (defun t/recentf-save-if-recentf-mode ()
-      (when recentf-mode
-        (recentf-save-list)))
+      (when recentf-mode (recentf-save-list)))
     (t/idle-timer recentf-auto-save-timer #'t/recentf-save-if-recentf-mode 1)
-    (recentf-mode 1)
-    (comment
-     (recentf-mode -1))))
+    (recentf-mode 1)))
 
 (t/use-package nlinum
   :commands nlinum-mode
@@ -981,7 +970,6 @@
   :commands (aggressive-indent-mode global-aggressive-indent-mode)
   :init
   (progn
-    (t/add-hook-defun 'java-mode-hook t/hook-aggressive-indent-java (aggressive-indent-mode 0))
     (t/add-hook-defun 'json-mode-hook t/hook-aggressive-indent-json (aggressive-indent-mode 0))
     (t/add-hook-defun 'js-mode-hook t/hook-aggressive-indent-js (aggressive-indent-mode 0))
     (t/add-hook-defun 'js2-mode-hook t/hook-aggressive-indent-js2 (aggressive-indent-mode 0))
@@ -1015,16 +1003,16 @@
       "W" 'doc-view-fit-width-to-window
       "+" 'doc-view-enlarge
       "-" 'doc-view-shrink
-      "/" (t/lambda-i () (let ((current-prefix-arg 4)) (call-interactively 'doc-view-search)))
-      "?" (t/lambda-i () (let ((current-prefix-arg 4)) (call-interactively 'doc-view-search-backward)))
+      "/" (t/lambda () (let ((current-prefix-arg 4)) (call-interactively 'doc-view-search)))
+      "?" (t/lambda () (let ((current-prefix-arg 4)) (call-interactively 'doc-view-search-backward)))
       "n" 'doc-view-search-next-match
       "p" 'doc-view-search-previous-match
       "j" 'doc-view-next-line-or-next-page
       "k" 'doc-view-previous-line-or-previous-page
-      "q" (t/lambda-i () (doc-view-kill-proc) (quit-window)))
-    (bind-key "C-u" 'doc-view-scroll-down-or-previous-page doc-view-mode-map)
-    (bind-key "C-d" 'doc-view-scroll-up-or-next-page doc-view-mode-map)))
-
+      "q" (t/lambda () (doc-view-kill-proc) (quit-window)))
+    (t/bind-in 'doc-view-mode-map
+      "C-u" 'doc-view-scroll-down-or-previous-page
+      "C-d" 'doc-view-scroll-up-or-next-page)))
 
 
 (use-package artist-mode

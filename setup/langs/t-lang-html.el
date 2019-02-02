@@ -8,14 +8,14 @@
   ;; tagedit does not seem to work well with web-mode
   (t/add-hook-defun 'html-mode-hook t/hook-tagedit
                     (tagedit-mode 1)
-                    (bind-key "C-<left>"  'tagedit-forward-barf-tag html-mode-map)
-                    (bind-key "C-<right>" 'tagedit-forward-slurp-tag html-mode-map)
-                    (bind-key "C-k" 'tagedit-kill html-mode-map)
-                    (bind-key "M-k" 'tagedit-kill-attribute html-mode-map)
-                    (bind-key "M-r" 'tagedit-raise-tag html-mode-map)
-                    (bind-key "M-s" 'tagedit-splice-tag html-mode-map)
-                    (bind-key "M-S" 'tagedit-split-tag html-mode-map)
-                    (bind-key "M-J" 'tagedit-join-tags html-mode-map)))
-
+                    (t/bind-in 'html-mode-map
+                      "C-<left>"  'tagedit-forward-barf-tag
+                      "C-<right>" 'tagedit-forward-slurp-tag
+                      "C-k" 'tagedit-kill
+                      "M-k" 'tagedit-kill-attribute
+                      "M-r" 'tagedit-raise-tag
+                      "M-s" 'tagedit-splice-tag
+                      "M-S" 'tagedit-split-tag
+                      "M-J" 'tagedit-join-tags)))
 
 (provide 't-lang-html)

@@ -77,8 +77,8 @@
                                           "ml" 'cljr-move-to-let
                                           ))))
 
-    (t/add-hook 'clojure-mode-hook (t/lambda-i (t/init-clj-refactor 'clojure-mode)))
-    (t/add-hook 'clojurescript-mode-hook (t/lambda-i (t/init-clj-refactor 'clojurescript-mode)))))
+    (t/add-hook 'clojure-mode-hook (t/lambda (t/init-clj-refactor 'clojure-mode)))
+    (t/add-hook 'clojurescript-mode-hook (t/lambda (t/init-clj-refactor 'clojurescript-mode)))))
 
 
 (t/use-package cljr-helm

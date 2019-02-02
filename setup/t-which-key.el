@@ -67,6 +67,7 @@
           (interactive)
           (funcall mode)
           (set-temporary-overlay-map keymap t (lambda nil
-                                                (funcall mode -1))))))))
+                                                (funcall mode -1))))))
+    (t/declare-prefix "m" "Mode")))
 
 (provide 't-which-key)
