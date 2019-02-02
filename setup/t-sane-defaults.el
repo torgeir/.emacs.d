@@ -81,8 +81,10 @@
 
   ;; remember file positions, and layout
   (save-place-mode 1)
-  (desktop-save-mode 1)
-  (setq desktop-save nil)
+
+  ;; TODO clashes with company-box
+  ;;(desktop-save-mode 1)
+  ;;(setq desktop-save 'if-exists)
 
   ;; eldoc everywhere
   (global-eldoc-mode)

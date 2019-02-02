@@ -30,7 +30,7 @@
   :init
   (progn
     (setq evil-leader/in-all-states t
-          evil-leader/non-normal-prefix "C-"))
+          evil-leader/non-normal-prefix t-emacs-leader))
   :config
   (progn
     (evil-leader/set-leader t-leader)

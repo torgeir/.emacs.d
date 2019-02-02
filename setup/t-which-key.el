@@ -24,8 +24,7 @@
             ("RET"                   . "⏎")))
 
     (t/after which-key
-      (which-key-mode nil)
-      (which-key-mode))
+      (which-key-mode 1))
 
     (defun t/prefix-with-leader (key)
       "Prefixes `key' with `leader' and a space, e.g. 'SPC m'"
@@ -33,7 +32,7 @@
 
     (defun t/prefix-with-emacs-leader (key)
       "Prefixes `key' with emacs `leader' and a space, e.g. 'C-SPC m'"
-      (concat evil-leader/non-normal-prefix t-leader " " key))
+      (concat t-emacs-leader t-leader " " key))
 
     (defun t/declare-prefix (prefix name &optional key fn &rest bindings)
       "Declares which-key `prefix' and a display `name' for the prefix.

@@ -13,7 +13,7 @@
   (t/add-hook-defun '(js2-mode-hook) t/hook-flow-web
                     (flow-minor-enable-automatically)))
 
-(use-package flycheck-flow
+(t/use-package flycheck-flow
   :init
   (t/after flycheck
     (t/add-hook-defun '(js2-mode-hook) t/hook-flow-flycheck

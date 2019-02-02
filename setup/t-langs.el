@@ -24,7 +24,6 @@
                     t-lang-sh
                     t-lang-html
                     t-lang-yaml
-                    t-lang-flow
                     t-lang-terraform
                     ))
 

@@ -3,6 +3,7 @@
 (load (t/user-emacs-file "t-before.el") t)
 
 (defconst t-leader "SPC")
+(defconst t-emacs-leader "C-")
 (defconst t-dir-snippets (t/user-emacs-file "snippets"))
 (defconst t-dir-setup (t/user-emacs-file "setup"))
 (defconst t-dir-langs (t/user-emacs-file "setup/langs"))
@@ -20,7 +21,7 @@
 
 (defvar *t-indent* 2)
 (defvar *t-indent-xml* 4)
-(defvar *t-debug-init* nil "Debug/time startup")
+(defvar *t-debug-init* t "Debug/time startup")
 (when *t-debug-init* (setq debug-on-error t))
 
 (add-to-list 'load-path t-dir-setup)
