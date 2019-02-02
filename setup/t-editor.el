@@ -298,8 +298,8 @@
     (setq company-box-doc-delay 0.01)
     (t/add-hook-defun 'company-mode-hook t/company-box-mode-hook
                       (t/after company-box
-                        (setq company-box-icons-alist company-box-icons-all-the-icons))
-                      (company-box-mode))))
+                        (setq company-box-icons-alist company-box-icons-all-the-icons)
+                        (company-box-mode)))))
 
 (t/use-package company-flx
   :after company
