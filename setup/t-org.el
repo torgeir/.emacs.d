@@ -354,22 +354,10 @@ Locally redefines org-agenda-files not to export all agenda files."
         (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
         (t/idle-timer t-timers-sync-org-gcal 'org-gcal-sync 30))
 
-      (progn
-        ;; show week numbers in calendar
-        (copy-face font-lock-constant-face 'calendar-iso-week-face)
-        (set-face-attribute 'calendar-iso-week-face nil :height 0.7 :foreground "VioletRed2")
-        (copy-face 'default 'calendar-iso-week-header-face)
-        (set-face-attribute 'calendar-iso-week-header-face nil :height 0.7 :foreground "VioletRed4")
-        (setq calendar-intermonth-text
-              '(propertize
-                (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
-                'font-lock-face 'calendar-iso-week-face)
-              calendar-intermonth-header (propertize "W " 'font-lock-face 'calendar-iso-week-header-face)))
-
       (when (boundp 'org-evil-table-mode-map)
         (t/bind-in 'org-evil-table-mode-map
-                   "M-S-<left>" 'org-table-delete-column
-                   "M-S-<right>" 'org-table-insert-column))
+          "M-S-<left>" 'org-table-delete-column
+          "M-S-<right>" 'org-table-insert-column))
 
       (progn
         ;; blank line before new entries with text,

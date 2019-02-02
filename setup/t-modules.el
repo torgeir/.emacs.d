@@ -9,6 +9,7 @@
                     't-load-theme
                     't-sane-defaults
                     't-custom
+                    't-calendar
                     't-which-key
                     't-evil
                     't-vc
