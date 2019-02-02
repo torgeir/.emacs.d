@@ -1,18 +1,17 @@
 ;;; -*- lexical-binding: t; -*-
-(defun t-keys/vars ()
 
-  ;; lisp-friendly
-  (setq hippie-expand-try-functions-list
-        '(try-complete-file-name-partially
-          try-complete-file-name
-          try-expand-dabbrev-visible
-          try-expand-dabbrev-all-buffers
-          try-expand-dabbrev-from-kill
-          try-expand-all-abbrevs
-          try-complete-lisp-symbol-partially
-          try-complete-lisp-symbol
-          try-expand-list
-          try-expand-line)))
+;; lisp-friendly
+(setq hippie-expand-try-functions-list
+      '(try-complete-file-name-partially
+        try-complete-file-name
+        try-expand-dabbrev-visible
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+        try-expand-all-abbrevs
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol
+        try-expand-list
+        try-expand-line))
 
 (defun t-keys/config ()
   (bind-key "<M-S-up>" 't/move-line-up)
@@ -28,6 +27,8 @@
   ;; completion
   (bind-key "C-." 't/hippie-expand-no-case-fold)
   (bind-key "C-," 'completion-at-point)
-  (bind-key "C-:" 't/hippie-expand-lines))
+  (bind-key "C-:" 't/hippie-expand-lines)
+
+  (t/declare-prefix "m" "Mode"))
 
 (provide 't-keys)

@@ -1,15 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'cl)
-(load (t/user-emacs-file "t-before.el") t)
+(use-package dash) ; list helpers
+(use-package s) ; string helpers
+(use-package f) ; file helpers
 
 (defconst t-leader "SPC")
 (defconst t-emacs-leader "C-")
-(defconst t-dir-snippets (t/user-emacs-file "snippets"))
-(defconst t-dir-setup (t/user-emacs-file "setup"))
-(defconst t-dir-langs (t/user-emacs-file "setup/langs"))
-
-(defconst t-dir-site-lisp (t/user-emacs-file "site-lisp"))
-(defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
 (defconst t-font-size 17)
 
 (defconst is-mac (equal system-type 'darwin))
@@ -24,15 +19,18 @@
 (defvar *t-debug-init* nil "Debug/time startup")
 (when *t-debug-init* (setq debug-on-error nil))
 
+(defconst t-dir-setup (t/user-emacs-file "setup"))
+(defconst t-dir-snippets (t/user-emacs-file "snippets"))
+(defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
+
 (add-to-list 'load-path t-dir-setup)
-(add-to-list 'load-path t-dir-langs)
-(add-to-list 'load-path t-dir-site-lisp)
-
-(dolist (project (directory-files t-dir-site-lisp t "\\w+")) ; add folders inside site-lisp as well
-  (when (file-directory-p project)
-    (add-to-list 'load-path project)))
-
-(require 't-macros)
+(add-to-list 'load-path (t/user-emacs-file "setup/langs"))
+(let ((dir-site-lisp (t/user-emacs-file "site-lisp")))
+  (add-to-list 'load-path dir-site-lisp)
+  ;; add folders inside site-lisp as well
+  (dolist (project (directory-files dir-site-lisp t "\\w+"))
+    (when (file-directory-p project)
+      (add-to-list 'load-path project))))
 
 (defun t/timing-start ()
   (interactive)

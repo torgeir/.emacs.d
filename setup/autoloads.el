@@ -38,13 +38,6 @@
 
 ;;;***
 
-;;;### (autoloads nil "t-langs" "t-langs.el" (0 0 0 0))
-;;; Generated autoloads from t-langs.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-langs" '("t-langs")))
-
-;;;***
-
 ;;;### (autoloads nil "t-linux" "t-linux.el" (0 0 0 0))
 ;;; Generated autoloads from t-linux.el
 
@@ -77,13 +70,6 @@
 ;;; Generated autoloads from t-modeline.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modeline" '("t-modeline/config")))
-
-;;;***
-
-;;;### (autoloads nil "t-modules" "t-modules.el" (0 0 0 0))
-;;; Generated autoloads from t-modules.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modules" '("t-modules")))
 
 ;;;***
 
@@ -130,8 +116,8 @@
 
 ;;;***
 
-;;;### (autoloads nil nil ("t-custom.el" "t-local.el" "t-which-key.el")
-;;;;;;  (0 0 0 0))
+;;;### (autoloads nil nil ("t-calendar.el" "t-local.el" "t-text-objects.el"
+;;;;;;  "t-which-key.el") (0 0 0 0))
 
 ;;;***
 

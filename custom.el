@@ -23,6 +23,7 @@
  '(helm-candidate-number ((t nil)))
  '(highlight-numbers-number ((t (:inherit bold :foreground "#ff9548"))))
  '(highlight-symbol-face ((t (:inherit hl-line))))
+ '(holiday ((t (:foreground "green1"))))
  '(js2-external-variable ((t nil)))
  '(lazy-highlight ((t (:background "#2266A0" :foreground "#DFDFDF" :weight bold))))
  '(markdown-header-face ((t (:inherit bold :foreground "#66bb5c"))))

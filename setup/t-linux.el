@@ -1,4 +1,4 @@
-(defun t-linux/vars ()
+(defun t-linux/init ()
   (setq t-font-size 20))
 
 (defun t-linux/config ()

@@ -1,13 +1,12 @@
 ;;; -*- lexical-binding: t; -*-
+(defun t-cygwin/init ()
+  (setq t-font-size 12))
+
 (defun t-cygwin/config ()
   (bind-key "C-+" 't/increase-font-size)
   (bind-key "C--" 't/decrease-font-size)
-  (bind-key "C-0" 't/reset-font-size))
+  (bind-key "C-0" 't/reset-font-size)
 
-(defun t-cygwin/vars ()
-  (setq t-font-size 12))
-
-(defun t-cygwin/funcs ()
   (defun make-auto-save-file-name ()
     "torgeir: copied this from ftp://ftp.gnu.org/old-gnu/emacs/windows/docs/faq8.html. Fixes an issue when in gui emacs on windows it cant save backup files.
 

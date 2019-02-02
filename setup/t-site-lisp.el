@@ -1,10 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (progn
-  ;; site-lisp
-
-  (use-package evil-use-package
-    :ensure nil
-    :load-path "site-lisp/evil-use-package/")
 
   (t/use-package cloudformation-mode
     :ensure nil
@@ -70,4 +65,4 @@
     :ensure nil
     :mode ("\\.\\(html|htm\\)" . html-mode)))
 
-(provide 't-local)
+(provide 't-site-lisp)

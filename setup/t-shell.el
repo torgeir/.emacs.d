@@ -13,9 +13,8 @@
   (t/add-hook 'eshell-first-time-mode-hook 'setup-esh-help-eldoc))
 
 (t/use-package eshell-z
-  :commands eshell-mode
   :init
-  (t/add-hook-defun 'eshell-first-time-mode-hook t/eshell-z-hook
+  (t/add-hook-defun 'eshell-mode-hook t/eshell-z-hook
                     (require 'eshell-z)))
 
 (defun t-shell/config ()

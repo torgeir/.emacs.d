@@ -6,15 +6,9 @@
   (t/add-hook 'after-init-hook #'t/init-modeline)
 
   (defvar mode-line-cleaner-alist
-    `(;;(eldoc-mode . "")
-      ;;(paredit-mode . "")
-      ;;(rainbow-mode . "")
-      ;;(company-mode . "")
-      ;;(yas-minor-mode . "")
-      (js2-mode . "js")
+    `((js2-mode . "js")
       (evil-escape-mode . "")
       (ethan-wspace-mode . "")
-      ;;(rainbow-delimiters-mode . "")
       (html-mode . "html")
       (css-mode . "css")
       (less-css-mode . "less")

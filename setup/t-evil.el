@@ -152,24 +152,22 @@
   :config
   (global-evil-extra-operator-mode 1))
 
-(defun t-evil/vars ()
-  (progn
-    (defvar t-evil-major-modes '(compilation-mode
-                                 special-mode
-                                 calendar-mode
-                                 git-rebase-mode
-                                 diff-mode)
-      "Major modes that should trigger evil emacs state when changed to.")
-    (t/after evil
-      (t/add-hook-defun 'after-change-major-mode-hook t/hook-major-mode
-                        (when (member major-mode t-evil-major-modes)
-                          (evil-emacs-state))))
+(defvar t-evil-major-modes '(compilation-mode
+                             special-mode
+                             calendar-mode
+                             git-rebase-mode
+                             diff-mode)
+  "Major modes that should trigger evil emacs state when changed to.")
+(t/after evil
+  (t/add-hook-defun 'after-change-major-mode-hook t/hook-major-mode
+                    (when (member major-mode t-evil-major-modes)
+                      (evil-emacs-state))))
 
-    (setq evil-default-state 'normal
-          evil-insert-skip-empty-lines t
-          evil-search-module 'evil-search)))
+(setq evil-default-state 'normal
+      evil-insert-skip-empty-lines t
+      evil-search-module 'evil-search)
 
-(defun t-evil/funcs ()
+(defun t-evil/config ()
   (t/add-hook '(git-commit-mode-hook org-capture-mode-hook) 'evil-insert-state)
 
   (defun t/init-evil-cursors (&rest _)
@@ -179,34 +177,31 @@
           evil-normal-state-cursor 'box
           evil-insert-state-cursor 'bar
           evil-visual-state-cursor 'hollow))
-  (advice-add #'load-theme :after #'t/init-evil-cursors))
+  (advice-add #'load-theme :after #'t/init-evil-cursors)
 
-(defun t-evil/config ()
-
-  (progn
-    (defvar +evil-esc-hook '(t)
-      "A hook run after ESC is pressed in normal mode (invoked by
+  (defvar +evil-esc-hook '(t)
+    "A hook run after ESC is pressed in normal mode (invoked by
 `evil-force-normal-state'). If a hook returns non-nil, all hooks after it are
 ignored.")
 
-    (defun +evil*attach-escape-hook (&optional ignore)
-      "Run all `+evil-esc-hook' hooks. If any returns non-nil, stop there."
-      (cond (;; quit the minibuffer if open.
-             (minibuffer-window-active-p (minibuffer-window))
-             (abort-recursive-edit))
-            ;; disable ex search buffer highlights.
-            ((evil-ex-hl-active-p 'evil-ex-search)
-             (evil-ex-nohighlight))
-            ;; escape anzu number of matches
-            ((and (featurep 'anzu)
-                  anzu--state)
-             (anzu--reset-status))
-            ;; remove highlights
-            ((and (featurep 'highlight-symbol)
-                  highlight-symbol-mode)
-             (highlight-symbol-remove-all))
-            ;; Run all escape hooks. If any returns non-nil, then stop there.
-            (t (run-hook-with-args-until-success '+evil-esc-hook)))))
+  (defun +evil*attach-escape-hook (&optional ignore)
+    "Run all `+evil-esc-hook' hooks. If any returns non-nil, stop there."
+    (cond (;; quit the minibuffer if open.
+           (minibuffer-window-active-p (minibuffer-window))
+           (abort-recursive-edit))
+          ;; disable ex search buffer highlights.
+          ((evil-ex-hl-active-p 'evil-ex-search)
+           (evil-ex-nohighlight))
+          ;; escape anzu number of matches
+          ((and (featurep 'anzu)
+                anzu--state)
+           (anzu--reset-status))
+          ;; remove highlights
+          ((and (featurep 'highlight-symbol)
+                highlight-symbol-mode)
+           (highlight-symbol-remove-all))
+          ;; Run all escape hooks. If any returns non-nil, then stop there.
+          (t (run-hook-with-args-until-success '+evil-esc-hook))))
   (advice-add #'evil-force-normal-state :after #'+evil*attach-escape-hook)
 
   ;; motions keys for help buffers

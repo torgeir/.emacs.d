@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(defun t-mac/vars ()
+(defun t-mac/init ()
 
   ;; mouse
   (setq ns-use-mwheel-momentum t

@@ -2,91 +2,88 @@
 (defconst lat-trh 63.427)
 (defconst lon-trh 10.391)
 
-(defun t-org/funcs ()
-  (defconst t-user-dropbox-folder (if (or is-mac is-linux)
-                                      (t/user-file "Dropbox")
-                                    "c:/Users/torgth/Dropbox \(Personlig\)"))
+(defconst t-user-dropbox-folder (if (or is-mac is-linux)
+                                    (t/user-file "Dropbox")
+                                  "c:/Users/torgth/Dropbox \(Personlig\)"))
 
-  (defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
-  (defun t/org-directory (path) (concat org-directory "/" path))
-  (defun t/org-archive-done-tasks ()
-    (interactive)
-    (org-map-entries (lambda ()
-                       (org-archive-subtree)
-                       (setq org-map-continue-from (outline-previous-heading)))
-                     "/DONE" 'file)
-    (org-map-entries (lambda ()
-                       (org-archive-subtree)
-                       (setq org-map-continue-from (outline-previous-heading)))
-                     "/CANCELLED" 'file)))
+(defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
+(defun t/org-directory (path) (concat org-directory "/" path))
+(defun t/org-archive-done-tasks ()
+  (interactive)
+  (org-map-entries (lambda ()
+                     (org-archive-subtree)
+                     (setq org-map-continue-from (outline-previous-heading)))
+                   "/DONE" 'file)
+  (org-map-entries (lambda ()
+                     (org-archive-subtree)
+                     (setq org-map-continue-from (outline-previous-heading)))
+                   "/CANCELLED" 'file))
 
-(defun t-org/vars ()
-  (setq org-directory (t/user-dropbox-folder "org"))
-  (setq org-mobile-directory (t/user-dropbox-folder "Apps/MobileOrg")
-        org-mobile-inbox-for-pull (t/org-directory "inbox.org"))
+(setq org-directory (t/user-dropbox-folder "org"))
+(setq org-mobile-directory (t/user-dropbox-folder "Apps/MobileOrg")
+      org-mobile-inbox-for-pull (t/org-directory "inbox.org"))
 
-  (comment (defun org-set-local (var val)
-             "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
-             (setq-local var val)))
+(comment (defun org-set-local (var val)
+           "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
+           (setq-local var val)))
 
-  (setq org-ellipsis " >"
-        org-startup-indented t        ; turn on org-indent-mode
-        org-return-follows-link t
-        org-tab-follows-link nil
-        org-hide-leading-stars t
-        org-hide-emphasis-markers nil
-        org-loop-over-headlines-in-active-region 'start-level ; org-archive with friends work on multiple items
-        org-blank-before-new-entry '((heading . auto) (plain-list-item . t)) ; newlines
-        org-cycle-separator-lines 2 ; number of empty lines after heading needed to show visible newline between headings
-        org-catch-invisible-edits 'show ; show invisibles on edit
-        org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
-        org-refile-targets '((nil :maxlevel . 2)
-                             (org-agenda-files :maxlevel . 2))
-        org-refile-use-outline-path 'file ; enable refile to top level in file too
-        org-outline-path-complete-in-steps nil ; refile to subpaths
-        org-tags-column -60           ; tag position after headings
-        org-export-coding-system 'utf-8
-        org-default-notes-file (t/org-directory "tasks.org")
-        org-special-ctrl-k t         ; don't clear tags, etc
-        org-adapt-indentation t      ; move text to align with heading bullets
+(setq org-ellipsis " >"
+      org-startup-indented t        ; turn on org-indent-mode
+      org-return-follows-link t
+      org-tab-follows-link nil
+      org-hide-leading-stars t
+      org-hide-emphasis-markers nil
+      org-loop-over-headlines-in-active-region 'start-level ; org-archive with friends work on multiple items
+      org-blank-before-new-entry '((heading . auto) (plain-list-item . t)) ; newlines
+      org-cycle-separator-lines 2 ; number of empty lines after heading needed to show visible newline between headings
+      org-catch-invisible-edits 'show ; show invisibles on edit
+      org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
+      org-refile-targets '((nil :maxlevel . 2)
+                           (org-agenda-files :maxlevel . 2))
+      org-refile-use-outline-path 'file ; enable refile to top level in file too
+      org-outline-path-complete-in-steps nil ; refile to subpaths
+      org-tags-column -60           ; tag position after headings
+      org-export-coding-system 'utf-8
+      org-default-notes-file (t/org-directory "tasks.org")
+      org-special-ctrl-k t         ; don't clear tags, etc
+      org-adapt-indentation t      ; move text to align with heading bullets
 
-        ;; doom theme
-        org-fontify-whole-heading-line t
-        org-fontify-done-headline t
-        org-fontify-quote-and-verse-blocks t
-        org-fontify-emphasized-text t
+      ;; doom theme
+      org-fontify-whole-heading-line t
+      org-fontify-done-headline t
+      org-fontify-quote-and-verse-blocks t
+      org-fontify-emphasized-text t
 
-        org-reverse-note-order t      ; newest notes first
-        org-log-done 'time            ; log when todos are completed
-        org-log-redeadline 'time      ; log when deadline changes
-        org-log-reschedule 'time      ; log when schedule changes
-        org-use-fast-todo-selection t
-        org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)")))
+      org-reverse-note-order t      ; newest notes first
+      org-log-done 'time            ; log when todos are completed
+      org-log-redeadline 'time      ; log when deadline changes
+      org-log-reschedule 'time      ; log when schedule changes
+      org-use-fast-todo-selection t
+      org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)")))
 
-  (setq org-src-window-setup 'current-window ; edit code src blocks in current window
-        org-src-fontify-natively t
-        org-src-tab-acts-natively t
-        org-confirm-babel-evaluate nil ; don't prompt on every code run
-        org-export-babel-evaluate nil ; don't run stuff automatically on export
-        org-edit-src-content-indentation 0)
+(setq org-src-window-setup 'current-window ; edit code src blocks in current window
+      org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-confirm-babel-evaluate nil ; don't prompt on every code run
+      org-export-babel-evaluate nil ; don't run stuff automatically on export
+      org-edit-src-content-indentation 0)
 
-  (setq org-html-postamble t
-        org-html-postamble-format
-        '(("en" "<p class=\"author\">%a (%e)</p>\n<p class=\"date\">%T</p>")))
+(setq org-html-postamble t
+      org-html-postamble-format
+      '(("en" "<p class=\"author\">%a (%e)</p>\n<p class=\"date\">%T</p>")))
 
-  (defun t/org-capture-chrome-link-template (&optional &rest args)
-    (concat "* TODO %? :url:%^G\n\n" (t/grab-chrome-url)))
+(defun t/org-capture-chrome-link-template (&optional &rest args)
+  (concat "* TODO %? :url:%^G\n\n" (t/grab-chrome-url)))
 
-  (defun t/org-capture-elfeed-link-template (&optional &rest args)
-    (concat "* TODO %? :url:%^G\n\n%i\n" (elfeed-entry-link elfeed-show-entry)))
+(defun t/org-capture-elfeed-link-template (&optional &rest args)
+  (concat "* TODO %? :url:%^G\n\n%i\n" (elfeed-entry-link elfeed-show-entry)))
 
-  (setq org-capture-templates
-        `(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n")
-          ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n")
-          ("f" "File location" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n")
-          ("e" "Elfeed location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template))
-          ("c" "Chrome location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template))))
-  )
+(setq org-capture-templates
+      `(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n")
+        ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n")
+        ("f" "File location" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n")
+        ("e" "Elfeed location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template))
+        ("c" "Chrome location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template))))
 
 ;; org-mobile
 (t/use-package request-deferred :after org)

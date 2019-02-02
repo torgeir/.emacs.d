@@ -1227,6 +1227,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-dired ()
   (interactive)
+  (require 'helm)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
@@ -1238,6 +1239,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-magit-status ()
   (interactive)
+  (require 'helm)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
@@ -1251,6 +1253,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-helm-ag ()
   (interactive)
+  (require 'helm)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
@@ -1258,13 +1261,13 @@ If FILEXT is provided, return files with extension FILEXT instead."
          projects
          :action (lambda (project)
                    (let ((default-directory project))
-                     (require 'helm)
                      (helm-projectile-ag))))
       (user-error "No projects found"))))
 
 ;;;###autoload
 (defun t/projectile-visit-git-link-pulls ()
   (interactive)
+  (require 'helm)
   (require 'ghub)
   (let ((projects (projectile-load-known-projects)))
     (if projects

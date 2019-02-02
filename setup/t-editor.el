@@ -614,7 +614,7 @@
 
 (t/use-package helm-projectile
   :after helm
-  :commands (helm-projectile helm-projectile-ag))
+  :commands (helm-projectile projectile-load-known-projects helm-projectile-ag))
 
 (t/use-package helm-descbinds
   :commands helm-descbinds
@@ -946,8 +946,7 @@
              helm-projectile
              projectile-project-root
              projectile-relevant-known-projects
-             projectile-load-known-projects
-             )
+             projectile-load-known-projects)
   :init
   (progn
     (setq shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo

@@ -3,7 +3,7 @@
 
 (t/use-package better-defaults) ; rid the insanity
 
-(defun t-sane-defaults/vars ()
+(defun t-sane-defaults/init ()
   ;; utf-8 ffs
   (setq locale-coding-system 'utf-8
         default-buffer-file-coding-system 'utf-8)

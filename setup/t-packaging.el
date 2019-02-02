@@ -16,19 +16,16 @@
 (eval-when-compile
   (require 'use-package)
   (setq use-package-always-ensure t) ; fetch the ones missing
-
   (require 'cl)) ; lexical-let
 (defvar use-package-verbose *t-debug-init*)
 (use-package diminish)
 (require 'bind-key)
 
-(use-package dash) ; list helpers
-(use-package s) ; string helpers
-(use-package f) ; file helpers
+(use-package evil-use-package
+  :ensure nil
+  :load-path "site-lisp/evil-use-package/")
 
-(require 't-local)
-
-(t/use-package paradox
+(use-package paradox
   :commands (paradox-list-packages paradox-upgrade-packages)
   :evil-state ((paradox-menu-mode . emacs)
                (paradox-commit-list-mode . emacs))
