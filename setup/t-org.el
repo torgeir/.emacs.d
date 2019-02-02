@@ -557,6 +557,8 @@ Locally redefines org-agenda-files not to export all agenda files."
       "G" 'elfeed-search-fetch
       "r" 'elfeed-search-untag-all-unread
       "s" 'elfeed-search-live-filter ; filter
+      "p" 'elfeed-goodies/split-show-prev
+      "n" 'elfeed-goodies/split-show-next
       "y" 'elfeed-search-yank)
     (evil-define-key 'normal elfeed-show-mode-map
       "d" 'scroll-up-command
