@@ -526,6 +526,7 @@ Locally redefines org-agenda-files not to export all agenda files."
                                            (face-foreground 'font-lock-keyword-face)))))
 
 (t/use-package twittering-mode
+  :commands twittering-mode
   :init
   (t/declare-prefix "a" "Applications"
                     "t" 'twittering-mode))
