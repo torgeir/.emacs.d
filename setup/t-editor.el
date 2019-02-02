@@ -10,11 +10,7 @@
 (t/use-package winner
   :ensure nil
   :commands (winner-undo winner-redo)
-  :config
-  (progn
-    (winner-mode 1)
-    (bind-key "C-c <left>" 'winner-undo)
-    (bind-key "C-c <right>" 'winner-undo)))
+  :config (winner-mode))
 
 (t/use-package uniquify ; add dirs to buffer names when not unique
   :ensure nil
