@@ -5,16 +5,14 @@
     (setq doom-modeline-height 40)
     (t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")))
 
-(t/use-package spacemacs-theme :defer t)
 (t/use-package doom-themes
   :config
   (progn
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
     (doom-themes-visual-bell-config)
-    (doom-themes-org-config)
-    (doom-themes-neotree-config)
-    (doom-themes-visual-bell-config)))
+    (t/add-hook 'org-mode-hook 'doom-themes-org-config)
+    (t/add-hook 'neotree-mode-hook 'doom-themes-neotree-config)))
 
 (defun t-load-theme/config ()
   (defconst t-themes (list

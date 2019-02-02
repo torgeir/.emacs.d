@@ -4,6 +4,7 @@
   :init
   (progn
     (t/declare-prefix "q" "Quit"
+                      "d" 't/safe-restart-emacs
                       "r" (t/lambda-i (restart-emacs))
                       "R" (t/lambda-i (restart-emacs '("--no-desktop"))))))
 
@@ -59,30 +60,32 @@
     (bind-key "M-n" (t/lambda-i (dired-find-alternate-file)) dired-mode-map)))
 
 (t/use-package dired-hacks-utils
+  :hook dired-mode-hook
   :ensure nil
   :load-path "site-lisp/dired-hacks-utils/")
 
 (t/use-package dired-avfs
+  :hook dired-mode-hook
   :ensure nil
   :load-path "site-lisp/dired-avfs/")
 
 (t/use-package dired-details
+  :hook dired-mode-hook
   :ensure nil
   :load-path "site-lisp/dired-details/"
   :init
   (progn
     (setq dired-details-hidden-string "")
-    (with-eval-after-load 'dired
-      (add-hook 'dired-mode-hook 'dired-hide-details-mode))))
+    (add-hook 'dired-mode-hook 'dired-hide-details-mode)))
 
 (t/use-package dired-subtree
   :commands dired-subtree-toggle
+  :ensure nil
   :load-path "site-lisp/dired-subtree/"
   :init
-  (progn
+  (t/after dired
     (setq dired-subtree-line-prefix "  ")
-    (with-eval-after-load 'dired
-      (bind-key "TAB" 'dired-subtree-toggle dired-mode-map))))
+    (bind-key (kbd "<tab>") 'dired-subtree-toggle dired-mode-map)))
 
 (t/use-package all-the-icons-dired
   :commands all-the-icons-dired-mode
@@ -154,7 +157,8 @@
                    ("C" . neotree-change-root)))
       (eval `(evil-define-key 'normal neotree-mode-map (kbd ,(car key)) ',(cdr key))))))
 
-(t/use-package ace-window)
+(t/use-package ace-window
+  :commands ace-window)
 
 (t/use-package avy
   :commands (avy-goto-char
@@ -190,6 +194,7 @@
       (set-face-attribute 'avy-lead-face-2 nil :background nil :foreground (face-foreground f)))))
 
 (t/use-package es-mode
+  :commands es-mode
   :init
   (progn
     (defun t/es-mode-format (status header buffer)
@@ -201,6 +206,7 @@
     "C-c C-v" 'es-execute-request-dwim))
 
 (t/use-package hideshow
+  :commands evil-toggle-fold
   :ensure nil
   :init
   (progn
@@ -287,6 +293,7 @@
       "C-," #'t/company-helm)))
 
 (t/use-package company-box
+  :after company
   :ensure nil
   :load-path "site-lisp/company-box/"
   :init
@@ -351,7 +358,9 @@
 (t/use-package helm-unicode
   :commands helm-unicode)
 
-(t/use-package company-emoji :after company)
+(t/use-package company-emoji
+  :command company-mode
+  :after company)
 
 (t/use-package emoji-cheat-sheet-plus
   :commands (emoji-cheat-sheet-plus-insert)
@@ -539,6 +548,7 @@
 
 (t/use-package helm
   :commands (completion-at-point
+             helm
              helm-mini
              helm-projectile
              helm-projectile-ag)
@@ -590,7 +600,8 @@
       (t/add-hook 'helm-before-initialize-hook 'neotree-hide))))
 
 (t/use-package helm-ag
-  :commands helm-ag
+  :after helm
+  :commands (helm-ag helm-projectile-ag)
   :init
   (progn
     (setq helm-ag-fuzzy-match t
@@ -602,7 +613,8 @@
       (setq helm-ag-base-command "ag --nocolor --nogroup --vimgrep"))))
 
 (t/use-package helm-projectile
-  :commands helm-projectile)
+  :after helm
+  :commands (helm-projectile helm-projectile-ag))
 
 (t/use-package helm-descbinds
   :commands helm-descbinds
@@ -651,16 +663,14 @@
 
 (t/use-package yasnippet
   :diminish yas-minor-mode
+  :defer 1
   :init
   (progn
     (setq yas-snippet-dirs '(t-dir-snippets)
           ;; remove dropdowns
-          yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
-          ;; silence
-          yas-verbosity 1
-          ;; wrap around region
+          ;;yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
+          yas-verbosity 0
           yas-wrap-around-region t))
-
   :config
   (progn
     (yas-global-mode)
@@ -761,10 +771,8 @@
                       (set-face-foreground 'show-paren-match "Green"))))
 
 (t/use-package highlight-escape-sequences
-  :commands hes-mode
-  :init
-  (progn
-    (t/add-hook 'prog-mode-hook 'hes-mode))
+  ;; what the 
+  :hook (prog-mode-hook hes-mode)
   :config
   (progn
     (put 'hes-escape-backslash-face 'face-alias 'font-lock-comment-face)
@@ -923,10 +931,12 @@
      (recentf-mode -1))))
 
 (t/use-package nlinum
+  :commands nlinum-mode
   :init
   (setq nlinum-format " %d "))
 
 (t/use-package nlinum-relative
+  :commands nlinum-relative-toggle
   :init
   (setq nlinum-relative-redisplay-delay 0))
 
@@ -991,6 +1001,7 @@
                       (whitespace-mode 1))))
 
 (use-package doc-view
+  :defer t
   :ensure nil
   :init
   (setq doc-view-continuous t)

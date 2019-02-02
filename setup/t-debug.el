@@ -15,7 +15,7 @@
       (setq res ad-do-it
             delta (float-time (time-since start)))
       (when (> delta t-debug-timer-threshold)
-        (with-current-buffer t-buffer-load-times
+        (with-current-buffer (get-buffer-create t-buffer-load-times)
           (goto-char (point-max))
           (insert (format "package-initialize took %.3f sec\n"
                           delta))))
@@ -31,22 +31,17 @@
       (setq res ad-do-it
             delta (float-time (time-since start)))
       (when (> delta t-debug-timer-threshold)
-        (with-current-buffer t-buffer-load-times
+        (with-current-buffer (get-buffer-create t-buffer-load-times)
           (goto-char (point-max))
           (insert (format "%.3f sec: File %s: Required %s\n"
                           delta load-file-name (ad-get-arg 0)))))
       res))
 
-  (defadvice load (before t/advice-before-load activate)
-    (message (format "t: %s: Loading %s"
-                     (current-time-string)
-                     load-file-name)))
-
   (defadvice load (around t/advice-load activate)
     (let ((start (current-time)) res delta)
       (setq res ad-do-it
             delta (float-time (time-since start)))
-      (with-current-buffer t-buffer-load-times
+      (with-current-buffer (get-buffer-create t-buffer-load-times)
         (goto-char (point-max))
         (insert (format "%.3f sec: File %s: Loaded %s.\n"
                         delta load-file-name (ad-get-arg 0))))

@@ -1258,6 +1258,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
          projects
          :action (lambda (project)
                    (let ((default-directory project))
+                     (require 'helm)
                      (helm-projectile-ag))))
       (user-error "No projects found"))))
 
@@ -1311,5 +1312,31 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (if windows
         (select-window (car windows))
       (message "no suitable window to switch to"))))
+
+;;;###autoload
+(defun t/safe-restart-emacs ()
+  "Restart emacs if config parses correctly."
+  (interactive)
+  (if (eq last-command this-command)
+      (save-buffers-kill-terminal)
+    (require 'async)
+    (async-start
+     (lambda () (shell-command-to-string
+                 "emacs --batch --eval \"
+(condition-case e
+    (progn
+      (load \\\"~/.emacs\\\")
+      (message \\\"-OK-\\\"))
+  (error
+   (message \\\"ERROR!\\\")
+   (signal (car e) (cdr e))))\""))
+     `(lambda (output)
+        (if (string-match "-OK-" output)
+            (when ,(called-interactively-p 'any)
+              (message "Ok."))
+          (switch-to-buffer-other-window "*startup error*")
+          (delete-region (point-min) (point-max))
+          (insert output)
+          (search-backward "Error!"))))))
 
 (provide 't-defuns)

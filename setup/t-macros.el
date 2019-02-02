@@ -131,7 +131,7 @@ for setting up vars and config after load")
 
         ;; pass through some other use-package keys
         (let ((ks (list :if :init :config :mode :bind :ensure :diminish :after
-                        :commands :defer :load-path :pin :evil-state)))
+                        :hook :commands :defer :load-path :pin :evil-state)))
           (dolist (k ks)
             (when (plist-member entries k)
               (let ((v (plist-get entries k)))

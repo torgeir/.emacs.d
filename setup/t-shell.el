@@ -6,10 +6,16 @@
     (autoload 'bash-completion-dynamic-complete "bash-completion" "BASH completion hook")
     (t/add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)))
 
-(t/use-package eshell-z
-  :after eshell
+
+(t/use-package esh-help
+  :commands setup-esh-help-eldoc
   :init
-  (t/add-hook-defun 'eshell-mode-hook t/eshell-z-hook
+  (t/add-hook 'eshell-first-time-mode-hook 'setup-esh-help-eldoc))
+
+(t/use-package eshell-z
+  :commands eshell-mode
+  :init
+  (t/add-hook-defun 'eshell-first-time-mode-hook t/eshell-z-hook
                     (require 'eshell-z)))
 
 (defun t-shell/config ()
@@ -145,12 +151,6 @@
                       '("essh" "cd \"/ssh:$1:~\"")
                       '("sudo" "*sudo $*")))
         (add-to-list 'eshell-command-aliases-list alias)))
-
-    (use-package esh-help
-      :commands setup-esh-help-eldoc
-      :init
-      (t/add-hook 'eshell-first-time-mode-hook 'setup-esh-help-eldoc))
-
     (defun t/eshell-buffer-id ()
       "Next eshell buffer id."
       (concat "*eshell: " (t/eshell-path-of-current-dir) "*"))

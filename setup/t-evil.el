@@ -7,7 +7,9 @@
           evil-want-keybinding nil
           evil-want-integration t
           evil-want-Y-yank-to-eol nil
-          evil-move-beyond-eol nil)))
+          evil-move-beyond-eol nil)
+    ;; https://emacs.stackexchange.com/a/15054
+    (fset 'evil-visual-update-x-selection 'ignore)))
 
 (t/use-package evil-anzu
   :init
@@ -81,6 +83,7 @@
     (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
 
 (t/use-package evil-snipe
+  :defer 1
   :init
   (t/add-hook-defun 'prog-mode-hook t-hook-snipe
                     (evil-snipe-local-mode 1)
@@ -121,7 +124,8 @@
   :defer 1
   :init (evil-commentary-mode))
 
-(use-package google-translate)
+(t/use-package google-translate
+  :commands google-translate-at-point)
 
 (t/use-package evil-goggles
   :defer 1
@@ -137,9 +141,11 @@
 
 ;; dependencies of evil-extra-operator
 (use-package highlight)
-(use-package fold-this)
+(use-package fold-this
+  :after highlight)
 
 (t/use-package evil-extra-operator
+  :after fold-this
   :defer 1
   :init
   (setq evil-extra-operator-org-capture-key "gC")

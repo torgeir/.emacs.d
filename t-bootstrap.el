@@ -21,8 +21,8 @@
 
 (defvar *t-indent* 2)
 (defvar *t-indent-xml* 4)
-(defvar *t-debug-init* t "Debug/time startup")
-(when *t-debug-init* (setq debug-on-error t))
+(defvar *t-debug-init* nil "Debug/time startup")
+(when *t-debug-init* (setq debug-on-error nil))
 
 (add-to-list 'load-path t-dir-setup)
 (add-to-list 'load-path t-dir-langs)
