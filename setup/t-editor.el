@@ -584,6 +584,7 @@
                   helm-ff-skip-boring-files t
                   helm-quick-update t
                   helm-M-x-requires-pattern nil)
+    (require 'helm-mode)
     (helm-mode 1)
     (t/add-hook-defun 'helm-after-initialize-hook t/hide-cursor-in-helm-buffer
                       (with-helm-buffer
