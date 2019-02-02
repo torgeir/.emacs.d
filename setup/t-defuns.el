@@ -438,8 +438,8 @@ Including indent-buffer, which should not be called automatically on save."
 ;;;###autoload
 (defun t/reload-font ()
   "Reload font to make e.g. font size changes have effect."
-  (interactive))
-(t/set-font (t/current-font))
+  (interactive)
+  (t/set-font (t/current-font)))
 
 ;;;###autoload
 (defun t/fix-fira-ligatures ()
