@@ -18,6 +18,7 @@
                     't-editor
                     't-shell
                     't-org
+                    't-text-objects
                     't-modeline
                     't-langs)
               t-langs)))
