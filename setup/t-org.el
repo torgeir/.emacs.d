@@ -149,7 +149,8 @@
 
     (progn
       ;; modules
-      (setq org-modules '(org-mouse))
+      (setq org-modules '(org-tempo ; templates
+                          org-mouse))
       (org-load-modules-maybe t))
 
     (progn
