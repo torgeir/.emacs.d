@@ -3,13 +3,13 @@
 
 (defun t-linux/config ()
   (t/bind-in 'key-translation-map
-             ;; translate norwegian os x keybindings
-             "M-7" "|"
-             "M-/" "\\"
-             "M-8" "["
-             "M-9" "]"
-             "M-(" "{"
-             "M-)" "}")
+    ;; translate norwegian os x keybindings
+    "M-7" "|"
+    "M-/" "\\"
+    "M-8" "["
+    "M-9" "]"
+    "M-(" "{"
+    "M-)" "}")
 
   ;; os x window movement
   (bind-key "s-k" 'previous-buffer)

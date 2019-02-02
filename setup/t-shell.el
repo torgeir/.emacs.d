@@ -44,7 +44,7 @@
         (t/term-quit-if-finished 'term-send-eof))
 
       (t/bind-in '(evil-normal-state-local-map evil-insert-state-local-map)
-                 "C-d" 't/term-try-quit))
+        "C-d" 't/term-try-quit))
 
     (t/add-hook 'term-mode-hook #'t/term-mode-hook))
 
@@ -196,16 +196,16 @@
     (t/add-hook-defun 'eshell-mode-hook t/hook-eshell
                       (paredit-mode 1)
                       (t/bind-in 'eshell-mode-map
-                                 "S-<return>" 'newline-and-indent
-                                 "C-l" 't/eshell-clear
-                                 "C-a" 'eshell-bol
-                                 "C-u" 'eshell-kill-input
-                                 ;; C-c c-d sends exit
-                                 "C-c C-u" 'universal-argument
-                                 )
+                        "S-<return>" 'newline-and-indent
+                        "C-l" 't/eshell-clear
+                        "C-a" 'eshell-bol
+                        "C-u" 'eshell-kill-input
+                        ;; C-c c-d sends exit
+                        "C-c C-u" 'universal-argument
+                        )
                       (t/bind-in '(eshell-mode-map paredit-mode-map evil-insert-state-local-map evil-normal-state-local-map)
-                                 "C-a" 'eshell-bol
-                                 "C-d" 't/eshell-quit-or-delete-char)
+                        "C-a" 'eshell-bol
+                        "C-d" 't/eshell-quit-or-delete-char)
                       (progn ;; helm for history
                         (setq eshell-cmpl-ignore-case t)
                         (eshell-cmpl-initialize)

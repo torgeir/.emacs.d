@@ -8,6 +8,6 @@
         '(propertize
           (format "%2d" (car (calendar-iso-from-absolute (calendar-absolute-from-gregorian (list month day year)))))
           'font-lock-face 'calendar-iso-week-face)
-        calendar-intermonth-header (propertize "W " 'font-lock-face 'calendar-iso-week-header-face))
-  )
-  (provide 't-calendar)
+        calendar-intermonth-header (propertize "W " 'font-lock-face 'calendar-iso-week-header-face)))
+
+(provide 't-calendar)

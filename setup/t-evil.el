@@ -38,7 +38,7 @@
     (global-evil-leader-mode)
     (evil-mode 1)
     (t/bind-in '(evil-normal-state-map evil-motion-state-map)
-               "Y" 't/evil-yank-to-end-of-line)))
+      "Y" 't/evil-yank-to-end-of-line)))
 
 (t/use-package evil-collection
   :after evil
@@ -57,8 +57,8 @@
   :config
   (progn
     (t/bind-in 'evil-visual-state-map
-               "*" 'evil-visualstar/begin-search-forward
-               "#" 'evil-visualstar/begin-search-backward)))
+      "*" 'evil-visualstar/begin-search-forward
+      "#" 'evil-visualstar/begin-search-backward)))
 
 (t/use-package evil-cleverparens
   :diminish evil-cleverparens-mode
@@ -114,8 +114,8 @@
         (evil-multiedit-match-and-next))
 
       (t/bind-in 'evil-multiedit-state-map
-                 "M-j" #'t/mc-skip-next
-                 "M-k" #'t/mc-skip-prev))))
+        "M-j" #'t/mc-skip-next
+        "M-k" #'t/mc-skip-prev))))
 
 (t/use-package evil-commentary
   :defer 1
@@ -222,25 +222,25 @@ ignored.")
                evil-insert-state-map
                evil-visual-state-map
                evil-motion-state-map)
-             "C-a" 't/smart-beginning-of-line
-             "C-e" 'end-of-line
-             "C-b" 'evil-backward-char
-             "C-f" 'evil-forward-char
-             "C-k" 'kill-line
-             "C-n" 'evil-next-line
-             "C-p" 'evil-previous-line
-             "C-w" 'evil-delete-backward-word
-             "M-y" 'helm-show-kill-ring)
+    "C-a" 't/smart-beginning-of-line
+    "C-e" 'end-of-line
+    "C-b" 'evil-backward-char
+    "C-f" 'evil-forward-char
+    "C-k" 'kill-line
+    "C-n" 'evil-next-line
+    "C-p" 'evil-previous-line
+    "C-w" 'evil-delete-backward-word
+    "M-y" 'helm-show-kill-ring)
 
   (t/bind-in '(evil-insert-state-map)
-             "C-d" 'evil-delete-char
-             "C-u" (t/lambda-i (kill-line 0)))
+    "C-d" 'evil-delete-char
+    "C-u" (t/lambda-i (kill-line 0)))
 
   (t/bind-in '(evil-normal-state-map
                evil-visual-state-map)
-             "Q" 'call-last-kbd-macro
-             "C-y" 'evil-paste-pop ; cycle after pasting with p
-             "C-S-y" (t/lambda-i (evil-paste-pop-next 1)))
+    "Q" 'call-last-kbd-macro
+    "C-y" 'evil-paste-pop ; cycle after pasting with p
+    "C-S-y" (t/lambda-i (evil-paste-pop-next 1)))
 
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-map)
   (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-ns-map)

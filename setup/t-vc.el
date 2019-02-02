@@ -37,8 +37,8 @@
   (defadvice git-timemachine-mode (after toggle-evil activate)
     (when git-timemachine-mode
       (t/bind-in 'evil-normal-state-local-map
-                 "C-n" 'git-timemachine-show-next-revision
-                 "C-p" 'git-timemachine-show-previous-revision))))
+        "C-n" 'git-timemachine-show-next-revision
+        "C-p" 'git-timemachine-show-previous-revision))))
 
 (t/use-package gist
   :commands (gist-list

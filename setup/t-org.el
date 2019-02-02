@@ -400,12 +400,12 @@ Locally redefines org-agenda-files not to export all agenda files."
 
         (t/add-hook-defun 'org-mode-hook t/hook-org-meta
                           (t/bind-in 'org-mode-map
-                                     "<return>" 'org-return
-                                     "C-w" 'org-refile
-                                     "M-<return>" 't/org-meta-return-dwim
-                                     "M-S-<return>" 't/org-insert-todo-heading-dwim
-                                     "C-<return>" 't/org-insert-heading-respect-content-dwim
-                                     "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim)))
+                            "<return>" 'org-return
+                            "C-w" 'org-refile
+                            "M-<return>" 't/org-meta-return-dwim
+                            "M-S-<return>" 't/org-insert-todo-heading-dwim
+                            "C-<return>" 't/org-insert-heading-respect-content-dwim
+                            "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim)))
 
       (progn
         ;; yas in org
