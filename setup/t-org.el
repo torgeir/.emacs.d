@@ -89,7 +89,7 @@
   )
 
 ;; org-mobile
-(t/use-package request-deferred)
+(t/use-package request-deferred :after org)
 
 (t/use-package org
   :ensure org-plus-contrib
