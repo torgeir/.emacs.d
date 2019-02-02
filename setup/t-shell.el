@@ -7,11 +7,10 @@
     (t/add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)))
 
 (t/use-package eshell-z
-  :defer t
+  :after eshell
   :init
-  (progn
-    (t/after eshell
-      (require 'eshell-z))))
+  (t/add-hook-defun 'eshell-mode-hook t/eshell-z-hook
+                    (require 'eshell-z)))
 
 (defun t-shell/config ()
 
