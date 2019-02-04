@@ -1343,4 +1343,9 @@ If FILEXT is provided, return files with extension FILEXT instead."
           (insert output)
           (search-backward "Error!"))))))
 
+;;;###autoload
+(defun t/word-at-point ()
+  "Returns word under cursor."
+  (thing-at-point 'word t))
+
 (provide 't-defuns)

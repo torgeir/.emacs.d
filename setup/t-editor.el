@@ -1026,6 +1026,21 @@
 (t/use-package try
   :commands try)
 
+(t/use-package dictionary
+  :commands (dictionary dictionary-search)
+  :init
+  (t/declare-prefix "sd" "dictionary"
+                    "d" (t/lambda (dictionary-search (t/word-at-point)))))
+
+(t/use-package synosaurus
+  :commands synosaurus-lookup
+  :init
+  (progn
+    (setq synosaurus-choose-method 'popup
+          synosaurus-backend 'synosaurus-backend-wordnet)
+    (t/declare-prefix "sd" "dictionary"
+                      "s" (t/lambda (synosaurus-lookup (t/word-at-point))))))
+
 (t/use-package selectric-mode ; lol
   :commands selectric-mode)
 
