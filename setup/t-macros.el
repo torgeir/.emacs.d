@@ -42,9 +42,9 @@
 
 (defmacro t/add-hook (hook-or-hooks fn-or-fns &optional append local)
   "Add one or more hook fns."
-  (dolist (hook (t/ensure-list (eval hook-or-hooks)))
-    (unless (or (boundp hook) (listp hook))
-      (user-error (format "%s is not a hook" hook))))
+  (comment (dolist (hook (t/ensure-list (eval hook-or-hooks)))
+             (unless (or (boundp hook) (listp hook))
+               (user-error (format "%s is not a hook" hook)))))
   `(let ((hooks (t/ensure-list ,hook-or-hooks))
          (fns (t/ensure-list ,fn-or-fns)))
      (dolist (hook hooks)

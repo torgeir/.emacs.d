@@ -175,6 +175,10 @@
       (t/add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
 
       (t/add-hook-defun 'org-mode-hook t/hook-org
+                        ;; bring back stolen smartparen keys
+                        (t/bind-in '(evil-motion-state-local-map)
+                          "M-<up>" 'org-metaup
+                          "M-<down>" 'org-metadown)
                         (evil-snipe-override-local-mode)
                         (org-display-inline-images t t)
                         (visual-line-mode 1)))

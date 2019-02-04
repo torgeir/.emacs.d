@@ -38,6 +38,7 @@
 (require 't-lang-css)
 (require 't-lang-docker)
 (require 't-lang-elisp)
+
 (require 't-lang-elm)
 (require 't-lang-flycheck)
 (require 't-lang-gitconfig)
@@ -66,6 +67,8 @@
 (t-shell/config)
 (t-org/config)
 (t-modeline/config)
+
+(t-lang-elisp/config)
 
 (unless (fboundp 'server-running-p) (require 'server))
 (unless (server-running-p) (server-mode))

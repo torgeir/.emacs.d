@@ -48,8 +48,8 @@
     "s--" 't/decrease-font-size
     "s-0" 't/reset-font-size
 
-    "<M-S-up>" 't/move-line-up
-    "<M-S-down>" 't/move-line-down
+    "<C-S-up>" 't/move-line-up
+    "<C-S-down>" 't/move-line-down
 
     "M-p" 'backward-paragraph
     "M-n" 'forward-paragraph

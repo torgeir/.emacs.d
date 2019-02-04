@@ -407,37 +407,62 @@
   (progn
     (t/after smartparens
       (setq sp-ignore-modes-list (delete 'minibuffer-inactive-mode sp-ignore-modes-list)))
+
     (sp-use-paredit-bindings)
-    (bind-key "RET" #'t/newline-expand-braces)
-    (t/bind-in 'sp-keymap "<backspace>" 'sp-backward-delete-char "<delete>" 'sp-delete-char)
+
+    ;; TODO torgeir
     ;; interfers with e.g. org-mode, enable them specifically in lisp modes instead
-    (unbind-key "M-<up>" sp-keymap)
-    (unbind-key "M-<down>" sp-keymap)
-    (unbind-key "M-?" sp-keymap)
-    (unbind-key "C-<right>" sp-keymap)
-    (unbind-key "C-<left>" sp-keymap)
+    (comment (unbind-key "M-?" sp-keymap)
+             (unbind-key "M-<up>" sp-keymap)
+             (unbind-key "M-<down>" sp-keymap)
+             (unbind-key "C-<right>" sp-keymap)
+             (unbind-key "C-<left>" sp-keymap))
 
-    (dolist (mode-map (list
-                       emacs-lisp-mode-map
-                       lisp-mode-map
-                       lisp-interaction-mode-map))
-      (define-key mode-map ";" 'sp-comment))
+    (t/bind-in 'sp-keymap
+      ;; sp bindings
+      "C-M-f" 'sp-forward-sexp
+      "C-M-b" 'sp-backward-sexp
+      "C-M-d" 'sp-down-sexp
+      "C-M-S-d" 'sp-backward-down-sexp
+      "C-M-a" 'sp-beginning-of-sexp
+      "C-M-e" 'sp-end-of-sexp
+      "C-M-S-e" 'sp-up-sexp
+      "C-M-u" 'sp-backward-up-sexp
+      "C-M-n" 'sp-next-sexp
+      "C-M-p" 'sp-previous-sexp
+      "C-M-k" 'sp-kill-sexp
+      "C-M-w" 'sp-copy-sexp
 
-    (t/after clojure-mode
-      (define-key clojure-mode-map ";" 'sp-comment))
+      ;; paredit bindings
+      "<delete>" 'sp-delete-char
+      "<backspace>" 'sp-backward-delete-char
+      "C-<right>" #'sp-forward-slurp-sexp
+      "C-<left>" #'sp-forward-barf-sexp
+      "M-<up>" 'sp-splice-sexp-killing-backward
+      "M-<down>" 'sp-splice-sexp-killing-forward
+
+      ;; extras
+      "M-S-<up>" #'sp-backward-up-sexp
+      "M-S-<down>" #'sp-down-sexp
+      "M-S-<left>" #'sp-backward-sexp
+      "M-S-<right>" #'sp-forward-sexp)
+
+    (t/bind-in 'global-map
+      "s-(" 't/wrap-with-parens
+      "s-)" 't/paredit-wrap-round-from-behind
+      "M-s-(" 't/wrap-with-braces
+      "M-s-[" 't/wrap-with-brackets)
+
+    (bind-key "RET" #'t/newline-expand-braces)
 
     (t/add-hook '(js-mode-hook
                   text-mode-hook
                   restclient-mode-hook
+                  rjsx-mode
                   ruby-mode
                   mark-down-mode
-                  es-mode-hook)
-                'turn-on-smartparens-mode)
+                  es-mode-hook) 'turn-on-smartparens-mode)
 
-    (t/after rjsx-mode
-      (t/bind-in 'rjsx-mode-map
-        "M-<up>" 'sp-splice-sexp-killing-backward
-        "M-<down>" 'sp-splice-sexp-killing-forward))
     ;; enable in minibuffer
     (t/add-hook 'eval-expression-minibuffer-setup-hook #'(turn-on-smartparens-mode evil-cleverparens-mode))
 
@@ -446,56 +471,15 @@
                      (mode-hook (intern (concat mode "-hook")))
                      (mode-map (intern (concat mode "-map"))))
         (add-hook mode-hook 'turn-on-smartparens-mode)
-        (add-hook mode-hook 'evil-cleverparens-mode)
+        (add-hook mode-hook 'evil-cleverparens-mode)))
 
-        ;; add M-<up/down> in lisp modes, not to steal them in org-mode
-        (add-hook mode-hook
-                  (lambda nil
-                    (eval
-                     `(progn
-                        (bind-key "M-<up>" 'sp-splice-sexp-killing-backward ,mode-map)
-                        (bind-key "M-<down>" 'sp-splice-sexp-killing-forward ,mode-map)))))
-        (eval
-         `(t/bind-in (quote ,mode-map)
-            "M-<left>" #'t/backward-down-sexp
-            "M-<right>" #'t/forward-down-sexp
-            "M-S-<left>" #'t/backward-sexp
-            "M-S-<right>" #'t/forward-sexp
-            "C-<right>" #'sp-forward-slurp-sexp
-            "C-<left>" #'sp-forward-barf-sexp))))
-
-    (dolist (mode (list
-                   'emacs-lisp-mode
-                   'lisp-mode
-                   'lisp-interaction-mode))
-      (t/enable-movement-for-lisp-mode mode))
-
-    (t/after clojure-mode (t/enable-movement-for-lisp-mode 'clojure-mode))
+    (t/after elisp-mode (t/enable-movement-for-lisp-mode 'emacs-lisp-mode))
     (t/after ielm (t/enable-movement-for-lisp-mode 'ielm-mode))
-    (t/after scheme (t/enable-movement-for-lisp-mode 'scheme-mode))
-    (t/add-hook-defun 'minibuffer-inactive-mode-hook t/hook-minibuffer
-                      (t/bind-in 'minibuffer-local-map
-                        "M-<up>" 'sp-splice-sexp-killing-backward
-                        "M-<down>" 'sp-splice-sexp-killing-forward
-                        "M-<left>" #'t/backward-down-sexp
-                        "M-<right>" #'t/forward-down-sexp
-                        "M-S-<left>" #'t/backward-sexp
-                        "M-S-<right>" #'t/forward-sexp
-                        "C-<right>" #'sp-forward-slurp-sexp
-                        "C-<left>" #'sp-forward-barf-sexp))
+    (t/after clojure-mode (t/enable-movement-for-lisp-mode 'clojure-mode))
 
-    (defun t/disable-quote-pairs-for-mode (mode)
+    (dolist (mode '(emacs-lisp-mode clojure-mode ielm-mode minibuffer-inactive-mode))
       (sp-local-pair mode "`" nil :actions nil)
       (sp-local-pair mode "'" nil :actions nil))
-
-    (dolist (mode '(emacs-lisp-mode
-                    clojure-mode
-                    ielm-mode
-                    lisp-mode
-                    lisp-interaction-mode
-                    minibuffer-inactive-mode
-                    scheme-mode))
-      (t/disable-quote-pairs-for-mode mode))
 
     (sp-with-modes 'emacs-lisp-mode
       (sp-local-pair "`" "'" :when '(sp-in-docstring-p)))
@@ -505,14 +489,7 @@
                   (brace . "{")
                   (single-quote . "'")
                   (double-quote . "\"")
-                  (back-quote . "`")))
-
-    (t/bind-in 'global-map
-      "s-(" 't/wrap-with-parens
-      "s-)" 't/paredit-wrap-round-from-behind
-      "M-s-(" 't/wrap-with-braces
-      "M-s-[" 't/wrap-with-brackets))
-
+                  (back-quote . "`"))))
   :config
   (progn
     (t/bind-in 'text-mode-map

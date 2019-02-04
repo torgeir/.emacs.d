@@ -37,9 +37,13 @@
     (ielm))
 
   (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-emacs-lisp
+                    ;; make clever parens nav move across lines
+                    (make-variable-buffer-local 'evil-move-beyond-eol)
+                    (setq-local evil-move-beyond-eol t)
+
                     (t/evil-ex-define-cmd-local "repl" #'t/elisp-repl)
                     (t/after ielm
                       (t/bind-in 'ielm-map
-                                 "C-d" 't/try-quit-ielm))))
+                        "C-d" 't/try-quit-ielm))))
 
 (provide 't-lang-elisp)

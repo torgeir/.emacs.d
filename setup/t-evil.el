@@ -96,7 +96,7 @@
     (setq evil-multiedit-follow-matches t)
     (t/bind-in 'evil-normal-state-map
       "M-d" 'evil-multiedit-match-symbol-and-next
-      "C-M-d" 'evil-multiedit-restore))
+      "C-M-r" 'evil-multiedit-restore))
   :config
   (progn
     (evil-multiedit-default-keybinds)
