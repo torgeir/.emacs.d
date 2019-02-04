@@ -851,10 +851,7 @@
       "k" 'hackernews-previous-item
       "gr" 'hackernews-load-more-stories
       "gR" 'hackernews-reload
-      "b" (lambda nil
-            (interactive)
-            (hackernews-browse-url-action
-             (button-at (point)))))))
+      "b" (t/lambda (hackernews-browse-url-action (button-at (point)))))))
 
 (t/use-package helm-hunks
   :commands (helm-hunks
@@ -1086,9 +1083,7 @@
                     "i" 't/open-in-intellij
                     "p" 'proced
                     "m" 'helm-spotify
-                    "n" (lambda nil
-                          (interactive)
-                          (t/eww-readable "https://nrk.no"))
+                    "n" (t/lambda (t/eww-readable "https://nrk.no"))
                     "R" #'t/toggle-regex-mode
                     "se" 't/eshell
                     "st" 'ansi-term
