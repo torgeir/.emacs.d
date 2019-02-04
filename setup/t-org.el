@@ -566,24 +566,22 @@ Locally redefines org-agenda-files not to export all agenda files."
       "d" 'scroll-up-command
       "u" 'scroll-down-command
       "q" 'elfeed-goodies/delete-pane
-      "b" 'elfeed-show-visit
-      "p" 'elfeed-goodies/split-show-prev
-      "n" 'elfeed-goodies/split-show-next)
+      "b" 'elfeed-show-visit)
     (t/add-hook-defun 'elfeed-show-mode-hook t/elfeed-show-mode-hook
-                      ;; hack to steal SPC from evil-leader
                       (let ((map (make-sparse-keymap)))
-                        (bind-key "SPC" (lambda ()
-                                          (interactive)
-                                          (condition-case nil
-                                              (scroll-up-command)
-                                            (error (elfeed-goodies/split-show-next)))) map)
-                        (bind-key "S-SPC" (lambda ()
-                                            (interactive)
-                                            (condition-case nil
-                                                (scroll-down-command)
-                                              (error (elfeed-goodies/split-show-prev)))) map)
-                        (set-temporary-overlay-map map
-                                                   (lambda () (equal major-mode 'elfeed-show-mode))))
+                        (bind-key "n" (lambda ()
+                                        (interactive)
+                                        (condition-case nil
+                                            (scroll-up-command)
+                                          (error (elfeed-goodies/split-show-next)))) map)
+                        (bind-key "p" (lambda ()
+                                        (interactive)
+                                        (condition-case nil
+                                            (scroll-down-command)
+                                          (error (elfeed-goodies/split-show-prev)))) map)
+                        (set-temporary-overlay-map map t
+                                                   ;; (lambda () (equal major-mode 'elfeed-show-mode))
+                                                   ))
                       (writeroom-mode 1)
                       (visual-line-mode))))
 
