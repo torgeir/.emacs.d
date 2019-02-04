@@ -1066,6 +1066,7 @@
 
   (evil-leader/set-key "'" 't/eshell)
   (evil-leader/set-key "<" 't/eshell)
+  (evil-leader/set-key "|" 't/eshell)
   (evil-leader/set-key "TAB" 't/switch-to-previous-buffer)
   (evil-leader/set-key "u" 'universal-argument)
 
