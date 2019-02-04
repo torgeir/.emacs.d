@@ -119,7 +119,7 @@
           neo-force-change-root t
           neo-theme 'icons
           neo-show-updir-line nil
-          neo-show-hidden-files t
+          neo-show-hidden-files nil
           neo-auto-indent-point t)
     (t/add-hook-defun 'neotree-mode-hook t/neotree-hook
                       (evil-commentary-mode -1)
