@@ -37,7 +37,8 @@
     (interactive)
     (t/switch-theme (car t-themes)))
 
-  (advice-add 'load-theme :after 't/reset-font-size)
+  (defun t/reset-font-after-load (&rest args) (interactive) (t/reset-font-size))
+  (advice-add 'load-theme :after 't/reset-font-after-load)
 
   (defvar *t-theme-did-load* nil)
   (defun t/load-theme-once ()
