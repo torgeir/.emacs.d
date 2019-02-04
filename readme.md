@@ -27,9 +27,10 @@ sudo fc-cache -fv
 
 ### win
 
-Install from cygwin or https://ftp.gnu.org/gnu/emacs/windows/. Win gnu emacs
-seem to want files in `C:\Users\<user>\AppData\Roaming\`, and doesn't like
-symlinks, so you could..
+Install from cygwin or https://ftp.gnu.org/gnu/emacs/windows/ or
+http://alpha.gnu.org/gnu/emacs/pretest/windows/emacs-27/. Win gnu emacs seem to
+want files in `C:\Users\<user>\AppData\Roaming\`, and doesn't like symlinks, so
+you could..
 
 - clone the repo and copy `.emacs.d` to `C:\Users\<user>\AppData\Roaming\.emacs.d`
 - copy `.emacs.d/.emacs` to `C:\Users\<user>\AppData\Roaming\.emacs`
