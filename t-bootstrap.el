@@ -1,8 +1,4 @@
 ;;; -*- lexical-binding: t; -*-
-(use-package dash) ; list helpers
-(use-package s) ; string helpers
-(use-package f) ; file helpers
-
 (defconst t-leader "SPC")
 (defconst t-emacs-leader "C-")
 (defconst t-font-size 17)

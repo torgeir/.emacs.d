@@ -1,5 +1,6 @@
 (defun t/user-file (path)
-  (concat (if is-mac "/Users/" "/home/")
+  (concat (if is-mac "/Users/"
+            (if is-linux "/home/" "c:/Users/"))
           (if is-win "torgth" (replace-regexp-in-string "\\." "" (getenv "USER")))
           "/"
           path))

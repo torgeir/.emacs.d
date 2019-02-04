@@ -434,8 +434,7 @@ Locally redefines org-agenda-files not to export all agenda files."
     (t/add-hook-defun 'org-mode-hook t/remove-org-mode-stars
                       (set-face-attribute 'org-hide nil :foreground (face-attribute 'default :background)) )))
 
-(t/use-package ob-restclient
-  :after org)
+(t/use-package ob-restclient)
 
 (t/use-package org-alert
   :commands t/org-idle-timer

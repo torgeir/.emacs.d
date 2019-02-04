@@ -1,6 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (defun t-cygwin/init ()
-  (setq t-font-size 12)
+  (setq t-font-size 12
+        shell-file-name "C:/Program Files/Git/bin/bash.exe")
 
   (t/bind-in 'global-map
     "C-+" 't/increase-font-size

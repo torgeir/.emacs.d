@@ -915,8 +915,7 @@
              projectile-load-known-projects)
   :init
   (progn
-    (setq shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
-          projectile-completion-system 'helm
+    (setq projectile-completion-system 'helm
           projectile-require-project-root nil
           projectile-known-projects-file (locate-user-emacs-file ".cache/projectile.projects")
           projectile-cache-file (locate-user-emacs-file ".cache/projectile.cache")

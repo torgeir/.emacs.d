@@ -13,7 +13,7 @@
 
 (when is-mac    (require 't-mac)    (t-mac/init))
 (when is-linux  (require 't-linux)  (t-linux/init))
-(when is-cygwin (require 't-cygwin) (t-cygwin/init))
+(when is-ms     (require 't-cygwin) (t-cygwin/init))
 
 (setq custom-file (t/user-emacs-file "custom.el"))
 (load custom-file)

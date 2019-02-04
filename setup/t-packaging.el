@@ -21,6 +21,11 @@
 (use-package diminish)
 (require 'bind-key)
 
+(use-package dash) ; list helpers
+(use-package dash-functional) ; fun list helpers
+(use-package s) ; string helpers
+(use-package f) ; file helpers
+
 (use-package evil-use-package
   :ensure nil
   :load-path "site-lisp/evil-use-package/")

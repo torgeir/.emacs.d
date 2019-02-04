@@ -20,9 +20,7 @@
   (declare (indent 1))
   (if (locate-library (symbol-name file-name))
       `(with-eval-after-load ',file-name ,@body)
-    (user-error
-     (format "t/after: for %s is not a filename in load-path?"
-             file-name))))
+    (message "t/after: for %s is not a filename in load-path?" file-name)))
 
 (defmacro t/when-ext (ext &rest body)
   "Run `body' when buffer's file has extension `ext'."
@@ -44,7 +42,7 @@
   "Add one or more hook fns."
   (comment (dolist (hook (t/ensure-list (eval hook-or-hooks)))
              (unless (or (boundp hook) (listp hook))
-               (user-error (format "%s is not a hook" hook)))))
+               (message "%s is not a hook" hook))))
   `(let ((hooks (t/ensure-list ,hook-or-hooks))
          (fns (t/ensure-list ,fn-or-fns)))
      (dolist (hook hooks)

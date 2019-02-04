@@ -11,6 +11,8 @@
         ;; bind fn to H-
         ns-function-modifier 'hyper
 
+        shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
+
         trash-directory "~/.Trash/emacs")
 
   ;; dark title bar

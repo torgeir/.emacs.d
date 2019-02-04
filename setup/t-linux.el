@@ -1,5 +1,6 @@
 (defun t-linux/init ()
-  (setq t-font-size 20)
+  (setq t-font-size 20
+        shell-file-name "/bin/sh")
 
   (t/bind-in 'key-translation-map
     ;; translate norwegian os x keybindings

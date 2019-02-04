@@ -487,7 +487,7 @@ Including indent-buffer, which should not be called automatically on save."
   (t/reload-font))
 
 ;;;###autoload
-(defun t/reset-font-size (&optional &rest args)
+(defun t/reset-font-size (&optional args)
   (interactive)
   (setq *t-adjusted-font-size* t-font-size)
   (t/reload-font)
