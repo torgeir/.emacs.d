@@ -353,8 +353,9 @@ Locally redefines org-agenda-files not to export all agenda files."
                                                   "bekk/datainn.org")))))
             (org-icalendar-export-agenda-files)))
 
-        (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
-        (t/idle-timer t-timers-sync-org-gcal 'org-gcal-sync 30))
+        (when (not is-ms)
+          (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
+          (t/idle-timer t-timers-sync-org-gcal 'org-gcal-sync 30)))
 
       (when (boundp 'org-evil-table-mode-map)
         (t/bind-in 'org-evil-table-mode-map
