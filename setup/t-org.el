@@ -130,6 +130,7 @@
                       "Tf" 'org-table-formula)
 
     (t/declare-prefix "oC" "Clock"
+                      "r" 'org-clock-report
                       "i" 'org-clock-in
                       "o" 'org-clock-out)))
 
