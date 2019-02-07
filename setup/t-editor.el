@@ -945,6 +945,7 @@
   (progn
     (t/add-hook-defun 'json-mode-hook t/hook-aggressive-indent-json (aggressive-indent-mode 0))
     (t/add-hook-defun 'js-mode-hook t/hook-aggressive-indent-js (aggressive-indent-mode 0))
+    (t/add-hook-defun 'elm-mode-hook t/hook-aggressive-indent-js (aggressive-indent-mode 0))
     (t/add-hook-defun 'js2-mode-hook t/hook-aggressive-indent-js2 (aggressive-indent-mode 0))
     (t/add-hook-defun 'css-mode-hook t/hook-aggressive-indent-css (aggressive-indent-mode 0))
     (t/add-hook 'prog-mode-hook 'aggressive-indent-mode)
