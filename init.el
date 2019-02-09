@@ -1,5 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
-(package-initialize) ; stfu
+(unless package--initialized
+  (package-initialize t))
 
 (load (t/user-emacs-file "t-before.el") t)
 (load (t/user-emacs-file "t-bootstrap.el"))
