@@ -1,5 +1,5 @@
 (defun t-linux/init ()
-  (setq t-font-size 20
+  (setq t-font-size 15
         shell-file-name "/bin/sh")
 
   (t/bind-in 'key-translation-map
@@ -36,6 +36,7 @@
 
     ;; s-w quits like C-x C-w
     "s-w" #'t/delete-frame-or-hide-last-remaining-frame
+    "s-q" 'restart-emacs
 
     ;; buffer font size adjustment
     "s-?" (t/lambda (text-scale-increase 1))
