@@ -6,7 +6,10 @@
     (setq elm-tags-on-save t
           elm-format-on-save t
           elm-sort-imports-on-save t)
-    (t/add-company-backends-hook 'elm-mode-hook 'company-elm)
+    (t/after dash-at-point
+      (add-to-list 'dash-at-point-mode-alist '(elm-mode . "elm")))
+    (t/after company
+      (t/add-company-backends-hook 'elm-mode-hook 'company-elm))
     (t/add-hook 'elm-mode-hook 'elm-oracle-setup-completion))
   :config
   (t/declare-prefix-for-mode 'elm-mode "me" "Evaluate"
