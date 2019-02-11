@@ -1,8 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
+
 (defun t-mac/init ()
 
-  (t/use-package exec-path-from-shell
-    :config (exec-path-from-shell-initialize))
+  ;; intentionally not t/use-package, to make sure it happens at once
+  (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
 
   ;; mouse
   (setq ns-use-mwheel-momentum t
