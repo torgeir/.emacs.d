@@ -555,7 +555,6 @@ Locally redefines org-agenda-files not to export all agenda files."
     (evil-define-key '(normal motion) elfeed-search-mode-map
       (kbd "<return>") 'elfeed-search-show-entry
       "q" 'quit-window
-      "b" 'elfeed-search-browse-url
       "u" 'elfeed-search-tag-all-unread
       "G" 'elfeed-search-fetch
       "r" 'elfeed-search-untag-all-unread

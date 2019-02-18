@@ -829,8 +829,7 @@
                       "R" 'eww-readable
                       "M-p" 'backward-paragraph
                       "M-n" 'forward-paragraph
-                      "s-l" 'eww
-                      "go" 'eww-browse-with-external-browser)
+                      "s-l" 'eww)
                     (visual-line-mode)))
 
 (t/use-package hackernews
@@ -850,8 +849,7 @@
       "j" 'hackernews-next-item
       "k" 'hackernews-previous-item
       "gr" 'hackernews-load-more-stories
-      "gR" 'hackernews-reload
-      "b" (t/lambda (hackernews-browse-url-action (button-at (point)))))))
+      "gR" 'hackernews-reload)))
 
 (t/use-package helm-hunks
   :commands (helm-hunks
@@ -1077,9 +1075,8 @@
   (t/declare-prefix "a" "Applications"
                     "B" 'w3m
                     "c" 'calendar
-                    "b" 'browse-url-at-point
+                    "b" #'t/browse-url-at-point
                     "C" 'calc-dispatch
-                    "d" 'dired-jump
                     "h" 't/hackernews
                     "i" 't/open-in-intellij
                     "p" 'proced
