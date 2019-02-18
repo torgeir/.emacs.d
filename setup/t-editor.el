@@ -1090,7 +1090,8 @@
                     "sT" 'term
                     "ss" 'shell
                     "S" 'suggest
-                    "w" 'eww)
+                    "w" 'eww
+                    "W" (t/lambda (t/eww-readable "https://en.wikipedia.org/wiki/Special:Random")))
 
   (t/declare-prefix "fe" "Editor")
 
