@@ -1113,8 +1113,8 @@
                     "m" 'menu-bar-mode
                     "n" #'t/toggle-line-numbers
                     "r" #'t/toggle-relative-line-numbers
-                    "l" 'hl-line-mode
-                    "L" 'visual-line-mode
+                    "L" 'hl-line-mode
+                    "l" 'visual-line-mode
                     "W" 'whitespace-mode
                     "w" 'writeroom-mode
                     "Cc" 'rainbow-mode
