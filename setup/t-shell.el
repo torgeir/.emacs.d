@@ -6,11 +6,16 @@
     (autoload 'bash-completion-dynamic-complete "bash-completion" "BASH completion hook")
     (t/add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)))
 
-
 (t/use-package esh-help
   :commands setup-esh-help-eldoc
   :init
   (t/add-hook 'eshell-first-time-mode-hook 'setup-esh-help-eldoc))
+
+(t/use-package esh-autosuggest
+  :init
+  (progn
+    (t/bind-in 'esh-autosuggest-active-map (kbd "RET") 'company-complete-selection)
+    (t/add-hook 'eshell-mode-hook 'esh-autosuggest-mode)))
 
 (t/use-package eshell-z
   :init
