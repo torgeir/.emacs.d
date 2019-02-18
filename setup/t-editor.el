@@ -557,7 +557,9 @@
                   helm-follow-mode-persistent t ; keep follow mode on, after on once
                   helm-ff-skip-boring-files t
                   helm-quick-update t
-                  helm-M-x-requires-pattern nil)
+                  helm-M-x-requires-pattern nil
+                  helm-show-completion-display-function #'helm-show-completion-default-display-function)
+
     (require 'helm-mode)
     (helm-mode 1)
     (t/add-hook-defun 'helm-after-initialize-hook t/hide-cursor-in-helm-buffer
