@@ -46,4 +46,8 @@
                       (t/bind-in 'ielm-map
                         "C-d" 't/try-quit-ielm))))
 
+
+;; devilspie
+(add-to-list 'auto-mode-alist '("\\.ds\\'" . emacs-lisp-mode))
+
 (provide 't-lang-elisp)
