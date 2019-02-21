@@ -2,7 +2,8 @@
 (t/use-package doom-modeline
   :config
   (progn
-    (setq doom-modeline-height 40)
+    (setq doom-modeline-height 40
+          doom-themes-padded-modeline 1)
     (t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")))
 
 (t/use-package doom-themes
