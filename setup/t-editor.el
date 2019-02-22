@@ -720,7 +720,6 @@
   :init
   (progn
     (setq smooth-scroll-margin 4
-          mouse-wheel-scroll-amount '(1 ((shift) . 1)) ;; two lines at a time
           mouse-wheel-progressive-speed nil ;; don't accelerate scrolling
           mouse-wheel-follow-mouse 't))
   :config
@@ -1175,6 +1174,7 @@
                     "a" 'helm-apropos
                     "l" 'helm-locate-library
                     "i" 'helm-info-at-point
+                    "I" 'helm-info
                     "r" 'helm-resume
                     "db" 'helm-descbinds
                     "dd" 'dash-at-point

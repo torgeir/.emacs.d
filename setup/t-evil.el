@@ -209,11 +209,17 @@ ignored.")
   (evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
   (evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
   (evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
-  (evil-define-key 'motion help-mode-map (kbd "]") 'help-go-forward)
+  (evil-define-key 'motion help-mode-map (kbd "L") 'help-go-forward)
+  (evil-define-key 'motion help-mode-map (kbd "H") 'help-go-back)
   (evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
-  (evil-define-key 'motion help-mode-map (kbd "[") 'help-go-back)
   (evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
   (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)
+
+  ;; motion keys for info mode
+  (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
+  (evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward)
+  (unbind-key (kbd "h") Info-mode-map)
+  (unbind-key (kbd "l") Info-mode-map)
 
   ;; i_Ctrl-o - C-o from hybrid mode, like in vim insert mode
   (evil-define-key 'hybrid global-map (kbd "C-o") 'evil-execute-in-normal-state)

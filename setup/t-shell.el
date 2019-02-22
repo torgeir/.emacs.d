@@ -155,6 +155,7 @@
                       '("essh" "cd \"/ssh:$1:~\"")
                       '("sudo" "*sudo $*")))
         (add-to-list 'eshell-command-aliases-list alias)))
+
     (defun t/eshell-buffer-id ()
       "Next eshell buffer id."
       (concat "*eshell: " (t/eshell-path-of-current-dir) "*"))
