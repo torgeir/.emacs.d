@@ -499,7 +499,7 @@
 (t/use-package writeroom-mode
   :commands writeroom-mode
   :init
-  (setq writeroom-width 120
+  (setq writeroom-width 0.66
         writeroom-maximize-window nil
         writeroom-fullscreen-effect 'maximized
         writeroom-major-modes '(js-mode js2-mode rjsx-mode)))
