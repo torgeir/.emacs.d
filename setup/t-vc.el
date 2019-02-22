@@ -85,7 +85,8 @@
                     "T" 'git-timemachine-toggle
                     "s" 'magit-status
                     "b" 'magit-blame
-                    "l" 'magit-log
+                    "l" 'magit-log-current
+                    "L" 'magit-log
                     "C" 'magit-commit-create
                     "c" #'t/clone)
 
