@@ -1358,4 +1358,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
   "Returns word under cursor."
   (thing-at-point 'word t))
 
+;;;###autoload
+(defun t/ip ()
+  (interactive)
+  (let ((ip (-> "dig +short myip.opendns.com @resolver1.opendns.com" shell-command-to-string s-trim)))
+    (message ip)
+    (kill-new ip)))
+
+
 (provide 't-defuns)
