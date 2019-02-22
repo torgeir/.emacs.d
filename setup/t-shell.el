@@ -13,14 +13,13 @@
 
 (t/use-package esh-autosuggest
   :init
-  (progn
-    (t/bind-in 'esh-autosuggest-active-map (kbd "RET") 'company-complete-selection)
-    (t/add-hook 'eshell-mode-hook 'esh-autosuggest-mode)))
+  (t/add-hook 'eshell-mode-hook 'esh-autosuggest-mode)
+  :config
+  (t/bind-in 'esh-autosuggest-active-map "C-j" 'company-complete-selection))
 
 (t/use-package eshell-z
   :init
-  (t/add-hook-defun 'eshell-mode-hook t/eshell-z-hook
-                    (require 'eshell-z)))
+  (t/add-hook-defun 'eshell-mode-hook t/eshell-z-hook (require 'eshell-z)))
 
 (defun t-shell/config ()
 
@@ -213,8 +212,9 @@
                       (progn ;; helm for history
                         (setq eshell-cmpl-ignore-case t)
                         (eshell-cmpl-initialize)
+                        (bind-key "C-r" 'helm-eshell-history evil-insert-state-local-map)
                         (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-                        (define-key eshell-mode-map (kbd "C-r") 'helm-eshell-history)
+                        (define-key eshell-mode-map (kbd "M-P") 'helm-eshell-prompts-all)
                         (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
                       (progn
                         (defun t/eshell-kill-input--go-to-eol ()
@@ -317,6 +317,7 @@ PWD is not in a git repo (or the git command is not found)."
             (add-to-list 'ref-list (match-string 1))))
         ref-list)))
 
+  (require 'pcomplete)
   (defun pcomplete/git ()
     "Completion for `git'."
 
@@ -331,18 +332,24 @@ PWD is not in a git repo (or the git command is not found)."
      ((pcomplete-match "\\(co\\|checkout\\|merge\\|branch\\|diff\\)" 1)
       (pcomplete-here* (pcmpl-git-get-refs '("heads")))))))
 
+(defun pcomplete/kill ()
+  (while (pcomplete-match "^-" 'last) (pcomplete-here '("-1" "-2" "-3" "-6" "-9" "-14" "-15" "-l" "-s")))
+  (while (and (pcomplete-match "" 'last)
+              (pcomplete-match "-s" 'last -1)) (pcomplete-here '("HUP" "SIGHUP" "SIGINT" "SIGKILL" "SIGTERM" "SIGSTOP")))
+  (while (pcomplete-here* (-map 's-trim (-> (shell-command-to-string "ps -eo pid | grep -v PID")
+                                            (split-string "\n"))))))
+
 ;; pcomplete example
 (defun pcomplete/torgeir ()
   (pcomplete-here* '("add" "remove"))
   (cond
-   ((pcomplete-match "add" 1)
-    (pcomplete-here* '("one" "two")))
-   ((pcomplete-match "remove" 1)
-    (pcomplete-here* '("two" "three")))))
+   ((pcomplete-match "add" 1) (pcomplete-here* '("one" "two")))
+   ((pcomplete-match "remove" 1) (pcomplete-here* '("two" "three")))))
 
 
 (use-package pcmpl-git
   :commands eshell)
+
 (use-package pcmpl-args
   :commands eshell
   :config
@@ -351,8 +358,10 @@ PWD is not in a git repo (or the git command is not found)."
     (let ((process-environment process-environment))
       (push "MANWIDTH=10000" process-environment)
       (pcmpl-args-process-file "man" "--" name))))
+
 (use-package pcmpl-homebrew
   :commands eshell)
+
 (use-package pcomplete-extension
   :commands eshell)
 
