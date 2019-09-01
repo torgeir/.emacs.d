@@ -95,13 +95,14 @@
     (setq cider-jack-in-default 'boot
           cider-boot-parameters "cider repl -s wait"
           cider-repl-display-help-banner nil
-          cider-inject-dependencies-at-jack-in nil ;; theyre in ~/.boot/profile.boot
+          cider-inject-dependencies-at-jack-in t ;; unused stuff in ~/.boot/profile.boot
           cider-repl-pop-to-buffer-on-connect nil
           cider-overlays-use-font-lock t
           nrepl-hide-special-buffers t
           cider-prompt-for-symbol nil))
   :config
   (progn
+    (cider-add-to-alist 'cider-jack-in-cljs-dependencies "cider/piggieback" "0.4.0")
 
     (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
 
