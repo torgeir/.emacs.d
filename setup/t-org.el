@@ -356,7 +356,7 @@ Locally redefines org-agenda-files not to export all agenda files."
 
         (when (not is-ms)
           (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
-          (t/idle-timer t-timers-sync-org-gcal 'org-gcal-sync 30)))
+          (t/idle-timer t-timers-sync-org-gcal 'org-gcal-fetch 30)))
 
       (when (boundp 'org-evil-table-mode-map)
         (t/bind-in 'org-evil-table-mode-map
@@ -610,14 +610,15 @@ Locally redefines org-agenda-files not to export all agenda files."
             org-gcal-file-alist t-org-gcal-file-alist
             org-gcal-header-alist t-org-gcal-header-alist
             org-gcal-up-days 1)
-      (add-hook 'org-agenda-mode-hook 'org-gcal-sync))))
+      (add-hook 'org-agenda-mode-hook 'org-gcal-fetch))))
 
 (t/use-package gnuplot
   :after org)
 
 (t/use-package helm-org-rifle
+  :after org
   :commands (helm-org-rifle)
-  :config
+  :init
   (t/declare-prefix-for-mode 'org-mode "s" "Search"
                              "p" 'helm-org-rifle
                              "P" 'helm-projectile-ag))
