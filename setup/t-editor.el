@@ -915,8 +915,7 @@
   :commands dumb-jump-go
   :init
   (progn
-    (setq dumb-jump-selector 'helm))
-  (progn
+    (setq dumb-jump-selector 'helm)
     (t/bind-in '(evil-normal-state-map evil-insert-state-map)
       "M-." 'dumb-jump-go
       "M-." 'dumb-jump-go)
