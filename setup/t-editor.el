@@ -321,17 +321,6 @@
   (t/add-company-backends-hook 'restclient-mode-hook 'company-restclient))
 
 (t/use-package helm-xref
-  :init
-  (progn
-    (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
-  :config
-  (progn
-    (t/bind-in 'global-map
-      "M-." 'xref-find-definitions
-      "M-?" 'xref-find-references
-      "M-," 'xref-pop-marker-stack)))
-
-(t/use-package helm-xref
   :commands (helm-xref-show-xrefs
              xref-find-definitions
              xref-find-references
