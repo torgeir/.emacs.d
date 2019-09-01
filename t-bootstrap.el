@@ -15,6 +15,18 @@
 (defvar *t-debug-init* nil "Debug/time startup")
 (when *t-debug-init* (setq debug-on-error nil))
 
+(defconst user-emacs-directory "~/.emacs.d/")
+(defun t/user-emacs-file (path) (concat user-emacs-directory path))
+(defun t/user-file (path)
+  (concat (if is-mac "/Users/"
+            (if is-linux "/home/"
+              "c:/Users/"))
+          (if is-win
+              "torgth"
+            (replace-regexp-in-string "\\." "" (getenv "USER")))
+          "/"
+          path))
+
 (defconst t-dir-setup (t/user-emacs-file "setup"))
 (defconst t-dir-snippets (t/user-emacs-file "snippets"))
 (defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
@@ -59,5 +71,7 @@
 (unless (require 'autoloads t-file-autoloads t)
   (t/reload-autoloads)
   (unless (require 'autoloads t-file-autoloads t) (error "autoloads.el not generated!")))
+
+(load (t/user-emacs-file "t-before.el") t)
 
 (provide 't-bootstrap)

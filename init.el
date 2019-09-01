@@ -1,9 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
+(require 'package)
 (unless package--initialized
   (package-initialize t))
 
-(load (t/user-emacs-file "t-before.el") t)
-(load (t/user-emacs-file "t-bootstrap.el"))
+(load "~/.emacs.d/t-bootstrap.el")
 
 (t/timing-start)
 
