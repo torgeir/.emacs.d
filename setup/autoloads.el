@@ -123,7 +123,7 @@
 
 ;;;***
 
-;;;### (autoloads nil nil ("t-calendar.el" "t-local.el" "t-text-objects.el"
+;;;### (autoloads nil nil ("t-calendar.el" "t-site-lisp.el" "t-text-objects.el"
 ;;;;;;  "t-which-key.el") (0 0 0 0))
 
 ;;;***
