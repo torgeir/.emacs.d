@@ -399,8 +399,8 @@
 
     ;; TODO torgeir
     ;; interfers with e.g. org-mode, enable them specifically in lisp modes instead
-    (comment (unbind-key "M-?" sp-keymap)
-             (unbind-key "M-<up>" sp-keymap)
+    (unbind-key "M-?" sp-keymap)
+    (comment (unbind-key "M-<up>" sp-keymap)
              (unbind-key "M-<down>" sp-keymap)
              (unbind-key "C-<right>" sp-keymap)
              (unbind-key "C-<left>" sp-keymap))
