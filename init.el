@@ -45,6 +45,7 @@
 (require 't-lang-flycheck)
 (require 't-lang-gitconfig)
 (require 't-lang-gitignore)
+(require 't-lang-graphql)
 (require 't-lang-haskell)
 (require 't-lang-js)
 (require 't-lang-json)
