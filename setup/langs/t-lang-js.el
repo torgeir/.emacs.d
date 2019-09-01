@@ -156,6 +156,8 @@
         (evil-normal-state nil)))
 
     (t/add-hook-defun 'indium-interaction-mode-hook t/hook-indium-interaction
+                      (bind-key "C-x C-e" #'t/indium-eval evil-normal-state-local-map)
+                      (bind-key "C-x C-e" #'t/indium-eval evil-insert-state-local-map)
                       (bind-key "C-c C-c" #'t/indium-eval evil-normal-state-local-map)
                       (bind-key "C-c C-c" #'t/indium-eval evil-insert-state-local-map))
 
