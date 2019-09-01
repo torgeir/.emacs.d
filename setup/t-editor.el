@@ -580,21 +580,11 @@
     (helm-descbinds-mode)
     (setq helm-descbinds-window-style 'split)))
 
-(t/use-package helm-dash
-  :commands helm-dash)
-
 (t/use-package helm-google
   :commands helm-google)
 
-(t/use-package helm-swoop
-  :commands helm-swoop
-  :init
-  (setq helm-swoop-use-line-number-face t
-        helm-swoop-speed-or-color nil)
-  :config
-  (t/bind-in 'helm-swoop-edit-map
-    "C-c C-c" 'helm-swoop--edit-complete
-    "C-c C-k" 'helm-swoop--edit-cancel))
+(t/use-package swiper-helm
+  :commands swiper-helm)
 
 (t/use-package visual-regexp
   :commands vr/query-replace
