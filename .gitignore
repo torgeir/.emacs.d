@@ -37,3 +37,8 @@
 /tramp
 /%backup%~
 /eww-bookmarks
+/request
+/transient
+/diary
+/.lsp-session-*
+/.desktop-*
