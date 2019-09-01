@@ -210,7 +210,7 @@ SKIP-EXPORT.  Set SILENT to non-nil to inhibit notifications."
                        ;; explicitly specified.
                        (org-gcal--notify
                         (concat "Status code: " (number-to-string status))
-                        (pp-to-string error-msg)))
+                        (pp-to-string response)))
                       ;; Fetch was successful.
                       (t
                        (with-current-buffer (find-file-noselect (cdr x))
@@ -340,7 +340,7 @@ current calendar."
            (desc (if (plist-get (cadr elem) :contents-begin)
                      (replace-regexp-in-string "^✱" "*"
                                                (replace-regexp-in-string
-                                                "\\`\\(?: *<[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].*?>$\\)\n?\n?"
+                                                "`\\(?: *<[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].*?>$\\)\n?\n?"
                                                 ""
                                                 (replace-regexp-in-string
                                                  " *:PROPERTIES:\n *\\(.*\\(?:\n.*\\)*?\\) *:END:\n+"
