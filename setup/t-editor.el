@@ -1266,21 +1266,18 @@
                     "t" 'projectile-find-test-file)
 
   (t/declare-prefix "s" "Search"
-                    "s" 'helm-swoop
+                    "I" 'helm-imenu-in-all-buffers
+                    "T" 'helm-etags-select
+                    "a" 'helm-multi-swoop-all
                     "b" (t/macro-helm-ag-insert 'word helm-ag-buffers)
                     "f" (t/macro-helm-ag-insert 'word helm-ag-this-file)
-                    "p" 'helm-projectile-ag
-                    "a" 'helm-multi-swoop-all
-                    "m" 'helm-multi-swoop
-                    "t" 'etags-select-find-tag-at-point
-                    "T" 'helm-etags-select
-                    "i" 'helm-imenu
-                    "I" 'helm-imenu-in-all-buffers)
-
-  (t/declare-prefix "sw" "Search Internet"
-                    "i" 'helm-google
                     "g" 'helm-google
                     "G" 'helm-google-suggest
+                    "i" 'helm-imenu
+                    "m" 'helm-multi-swoop
+                    "p" 'helm-projectile-ag
+                    "s" 'swiper-helm
+                    "t" 'etags-select-find-tag-at-point
                     "w" 'helm-wikipedia-suggest))
 
 (provide 't-editor)
