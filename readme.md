@@ -49,7 +49,8 @@ ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
 these need to exist on `PATH`:
 
 - git
-- eslint babel-eslint jsonlint eslint-plugin-react tern flow-bin
+- eslint babel-eslint jsonlint eslint-plugin-react flow-bin
+  typescript-language-server typescript
 - wordnet
 - browser-sync
 

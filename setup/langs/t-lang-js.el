@@ -1,4 +1,38 @@
 ;;; -*- lexical-binding: t; -*-
+(use-package lsp-mode
+  :ensure t
+  :init
+  (progn
+    (require 'lsp-clients)
+    (t/after js2-mode (add-hook 'js2-mode-hook 'lsp))
+    (add-hook 'css-mode 'lsp))
+  :config
+  (add-to-list 'lsp-language-id-configuration '(rjsx-mode . "javascript")))
+
+
+(use-package lsp-ui
+  :init
+  (progn
+    (setq lsp-ui-sideline-show-code-actions nil)
+    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+  :config
+  (progn
+    (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+    (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)))
+
+(use-package helm-lsp
+  :config
+  (progn
+    (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)))
+
+
+(use-package company-lsp
+  :after company
+  :init
+  (setq company-lsp-cache-candidates t
+        company-lsp-async t))
+
+
 (t/use-package js2-mode
   :mode "\\.jsx?$"
   :interpreter "node"
@@ -18,17 +52,13 @@
                   js-switch-indent-offset *t-indent*
                   js2-basic-offset *t-indent*)
 
-    (t/add-hook-setq 'js2-mode-hook
-                     ;; TODO tern-mode issue with question?
-                     ;; tern capf seems to hijack tags? look for tags first:
-                     completion-at-point-functions (reverse completion-at-point-functions))
 
     (t/add-hook-defun 'js2-mode-hook t/js2-mode-hook
                       (flycheck-mode)
                       (turn-on-smartparens-mode)
                       (js2-imenu-extras-mode)
-                      (tern-mode)
-                      (t/add-company-backends 'company-web-html 'company-tern)))
+                      (lsp-mode)
+                      (t/add-company-backends 'company-web-html 'company-tern 'company-lsp)))
 
   :config
   (progn
@@ -36,7 +66,7 @@
     (unbind-key "M-." js2-mode-map)
     (t/declare-prefix-for-mode 'js2-mode
                                "h" "Help"
-                               "h" 'tern-get-docs)
+                               "h" 'lsp-ui-doc)
     (t/declare-prefix-for-mode 'js2-mode
                                "me" "Evaluate"
                                "b" 't/send-buffer-to-nodejs-repl-process
@@ -99,19 +129,19 @@
   :init
   (t/after js2-mode
     (t/add-hook '(js2-mode-hook) 'indium-interaction-mode)
-    (t/declare-prefix-for-mode 'js2-mode
-                               "m" "mode"
-                               "j" 'indium-run-node
-                               "J" 'indium-quit)
-    (t/declare-prefix-for-mode 'js2-mode
-                               "me" "Evaluate"
-                               "b" 'indium-eval-buffer
-                               "f" 'indium-eval-defun
-                               "e" 'indium-eval-last-node
-                               "r" 'indium-eval-region))
+    (t/after rjsx-mode
+      (t/declare-prefix-for-mode 'rjsx-mode
+                                 "m" "mode"
+                                 "j" 'indium-launch
+                                 "J" 'indium-quit)
+      (t/declare-prefix-for-mode 'rjsx-mode
+                                 "me" "Evaluate"
+                                 "b" 'indium-eval-buffer
+                                 "f" 'indium-eval-defun
+                                 "e" 'indium-eval-last-node
+                                 "r" 'indium-eval-region)))
   :config
   (progn
-
     (t/add-hook 'indium-inspector-mode-hook 'evil-emacs-state)
     (t/add-hook 'indium-debugger-mode-hook 'evil-emacs-state)
     (t/add-hook 'indium-debugger-locals-mode-hook 'evil-emacs-state)

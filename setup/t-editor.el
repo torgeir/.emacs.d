@@ -346,19 +346,6 @@
       "M-?" 'xref-find-references
       "M-," 'xref-pop-marker-stack)))
 
-(t/use-package company-tern
-  :commands tern-mode
-  :diminish tern-mode
-  :config
-  (progn
-    (advice-add 'tern-find-definition :before 'xref-push-marker-stack) ; make pop-tag-mark work with tern
-    (t/add-hook-defun 'tern-mode-hook t/hook-tern
-                      (t/bind-in '(tern-mode-keymap evil-normal-state-local-map)
-                        "M-." 'tern-find-definition
-                        "M-," 'pop-tag-mark
-                        "C-M-." 'helm-etags-select))
-    (setq tern-command (append tern-command '("--no-port-file")))))
-
 (t/use-package helm-unicode
   :commands helm-unicode)
 
