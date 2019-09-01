@@ -243,7 +243,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
       (setq org-agenda-include-diary t
             org-agenda-diary-file (t/org-directory "diary.org")
             org-agenda-default-appointment-duration nil
-            org-agenda-window-setup 'only-window ; delete other windows when showing agenda
+            org-agenda-window-setup 'current-window;;'only-window ; delete other windows when showing agenda
             org-agenda-restore-windows-after-quit t ; restore them again
             org-agenda-files (t/find-org-files-recursively org-directory "org$\\\|txt$") ; where to look for org files
             org-agenda-text-search-extra-files (t/find-org-files-recursively (t/user-file "Dropbox/org") "org_archive$")
