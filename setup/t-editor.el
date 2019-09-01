@@ -1216,7 +1216,7 @@
 
   (t/declare-prefix "j" "Jump to"
                     "w" 'ace-window
-                    "j" 'dumb-jump-go
+                    "j" 'avy-goto-char-timer
                     "t" 'avy-goto-char-timer
                     "c" 'avy-goto-char
                     "C" 'avy-goto-char-2
