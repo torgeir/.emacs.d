@@ -26,7 +26,7 @@
   (let ((entry-exists (assq 'buffer-predicate default-frame-alist)))
     (if entry-exists
         (setcdr entry-exists #'t/useful-buffer?)
-      (push '(buffer-predicate . t/useful-buffer-?) default-frame-alist))))
+      (push '(buffer-predicate . t/useful-buffer?) default-frame-alist))))
 
 (defun t-keys/config ()
   (t/bind-in 'minibuffer-local-map "C-w" 'backward-kill-word)
