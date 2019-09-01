@@ -755,7 +755,8 @@
 (defun t/eww-readable-after-render (status url buffer)
   (eww-render status url nil buffer)
   (switch-to-buffer buffer)
-  (eww-readable))
+  (eww-readable)
+  (writeroom-mode 1))
 
 (defun t/eww-readable (url)
   (interactive "sEnter URL: ")
