@@ -20,6 +20,7 @@
       (and (not (get-buffer-window name nil)) ; not already visible in same frame
            (not (s-contains? "autoloads.el" name))
            (or (equal "*scratch*" name)
+               (s-contains? "*eww" name)
                (s-contains? "*eshell" name)
                (not (s-contains? "*" name))))))
   ;; skip non-useful buffers on next-buffer, prev-buffer, other-buffer
