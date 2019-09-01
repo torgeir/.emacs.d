@@ -7,8 +7,7 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 
-;;(setq package-check-signature nil) ; when checking signatures fail
-
+(setq package-check-signature nil) ; when checking signatures fail
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
