@@ -27,6 +27,7 @@
 (require 't-vc)
 (require 't-keys)
 (require 't-editor)
+(require 't-desktop)
 (require 't-shell)
 (require 't-org)
 (require 't-text-objects)

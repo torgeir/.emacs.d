@@ -17,6 +17,13 @@
 
 ;;;***
 
+;;;### (autoloads nil "t-desktop" "t-desktop.el" (0 0 0 0))
+;;; Generated autoloads from t-desktop.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-desktop" '("t/desktop-")))
+
+;;;***
+
 ;;;### (autoloads nil "t-editor" "t-editor.el" (0 0 0 0))
 ;;; Generated autoloads from t-editor.el
 

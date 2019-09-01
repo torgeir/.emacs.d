@@ -1248,6 +1248,22 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (user-error "No projects found"))))
 
 ;;;###autoload
+(defun t/projectile-desktop ()
+  (interactive)
+  (require 'helm)
+  (let ((projects (projectile-load-known-projects)))
+    (if projects
+        (projectile-completing-read
+         "Switch to project: "
+         projects
+         :action (lambda (project)
+                   (when (t/desktop-project-name)
+                     (t/desktop-save))
+                   (let ((default-directory project))
+                     (t/desktop-restore))))
+      (user-error "No projects found"))))
+
+;;;###autoload
 (defun t/projectile-magit-status ()
   (interactive)
   (require 'helm)

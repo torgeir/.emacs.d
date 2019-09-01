@@ -1135,9 +1135,12 @@
                     "n" 'next-buffer
                     "R" 'revert-buffer)
 
-  (t/declare-prefix "d" "Doc"
+  (t/declare-prefix "d" "Doc/Desktop"
                     "d" 'dash-at-point
-                    "s" 'dash-at-point-with-docset)
+                    "S" 'dash-at-point-with-docset
+                    "s" #'t/desktop-save
+                    "r" #'t/desktop-restore
+                    "c" 'desktop-clear)
 
   (t/declare-prefix "x" "Text manipulation"
                     "a" 'align-regexp
@@ -1260,6 +1263,7 @@
                     "b" 'helm-browse-project
                     "c" 'projectile-switch-project
                     "d" 't/projectile-dired
+                    "w" #'t/projectile-desktop
                     "f" 'helm-projectile
                     "F" 'projectile-find-file-dwim
                     "g" 't/projectile-magit-status
