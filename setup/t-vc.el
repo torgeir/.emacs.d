@@ -54,7 +54,9 @@
         magit-fetch-arguments '("--prune")
         magit-rebase-arguments '("--interactive")
         magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
-        magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+        magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
+        ;; fixes https://github.com/magit/ghub/issues/81
+        gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
   :config
   (progn
