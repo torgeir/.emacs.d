@@ -339,7 +339,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
           (when t-org-file-save-since-last-idle
             (message "Syncing agenda...")
             (org-save-all-org-buffers)
-            (t/org-export-calendars)
+            (comment (t/org-export-calendars))
             (org-mobile-pull)
             (org-mobile-push)
             (setq t-org-file-save-since-last-idle nil)
