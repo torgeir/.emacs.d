@@ -532,8 +532,10 @@ Locally redefines org-agenda-files not to export all agenda files."
 (t/use-package twittering-mode
   :commands twittering-mode
   :init
-  (t/declare-prefix "a" "Applications"
-                    "t" 'twittering-mode))
+  (progn
+    (setq twittering-request-confirmation-on-posting t)
+    (t/declare-prefix "a" "Applications"
+                      "t" 'twittering-mode)))
 
 (t/use-package elfeed
   :commands (elfeed)
