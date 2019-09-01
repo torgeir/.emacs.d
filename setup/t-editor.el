@@ -603,10 +603,7 @@
     (bind-key "M-%" 'vr/query-replace)))
 
 (t/use-package dash-at-point
-  :commands dash-at-point
-  :config
-  (progn
-    (bind-key "C-c C-j" 'dash-at-point)))
+  :commands dash-at-point)
 
 (t/use-package expand-region
   :commands (er/expand-region er/contract-region)
