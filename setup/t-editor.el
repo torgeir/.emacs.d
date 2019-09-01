@@ -908,7 +908,7 @@
   (progn
     (t/add-to-list 'projectile-globally-ignored-directories '("elpa-backups" "node_modules" "target" "dist" ".idea"))
     (t/add-to-list 'projectile-globally-ignored-files '("package-lock.json" "**.bundle.js" "**.build.js" ".DS_Store" "projectile.cache" "custom.el"))
-    (t/add-to-list 'grep-find-ignored-files '("package-lock.json" "**.bundle.js" "**.build.js" ".DS_Store" "custom.el"))
+    (t/add-to-list 'grep-find-ignored-files '("package-lock.json" "**.bundle.js" "**.build.js" ".DS_Store" "custom.el" "node_modules/**"))
     (projectile-global-mode +1)))
 
 (t/use-package dumb-jump
