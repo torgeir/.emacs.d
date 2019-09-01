@@ -1090,7 +1090,10 @@
                     "ss" 'shell
                     "S" 'suggest
                     "w" 'eww
-                    "W" (t/lambda (t/eww-readable "https://en.wikipedia.org/wiki/Special:Random")))
+                    "W" (t/lambda nil
+                          (t/eww-readable "https://en.wikipedia.org/wiki/Special:Random")
+                          (visual-line-mode -1)
+                          (visual-line-mode 1)))
 
   (t/declare-prefix "fe" "Editor")
 
