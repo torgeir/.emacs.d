@@ -21,7 +21,9 @@
            (not (s-contains? "autoloads.el" name))
            (or (equal "*scratch*" name)
                (s-contains? "*eww" name)
+               (s-contains? "*Org" name)
                (s-contains? "*eshell" name)
+               (s-contains? "*helm ag" name)
                (not (s-contains? "*" name))))))
   ;; skip non-useful buffers on next-buffer, prev-buffer, other-buffer
   (let ((entry-exists (assq 'buffer-predicate default-frame-alist)))
