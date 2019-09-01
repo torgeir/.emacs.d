@@ -1082,7 +1082,7 @@
                     "i" 't/open-in-intellij
                     "p" 'proced
                     "m" 'helm-spotify
-                    "n" (t/lambda (t/eww-readable "https://nrk.no"))
+                    "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/"))
                     "R" #'t/toggle-regex-mode
                     "se" 't/eshell
                     "st" 'ansi-term
