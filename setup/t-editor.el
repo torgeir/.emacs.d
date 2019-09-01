@@ -483,6 +483,11 @@
       "C-<right>" 'sp-forward-slurp-sexp
       "C-<left>" 'sp-forward-barf-sexp)))
 
+(use-package csv-mode
+  :commands csv-mode
+  :init
+  (setq csv-separators '(";")))
+
 (t/use-package writeroom-mode
   :commands writeroom-mode
   :init
