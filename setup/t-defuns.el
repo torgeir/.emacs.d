@@ -1203,13 +1203,17 @@ If FILEXT is provided, return files with extension FILEXT instead."
   "Clone a github repo to `~/Code/<repo-name>'."
   (interactive "sClone repository: ")
   (require 'magit)
-  (let* ((repo-name (and (string-match "\\([^/:]+?\\)\\(/?\\.git\\)?$" repo)
-                         (match-string 1 repo)))
-         (dir (expand-file-name (format "~/Code/%s/" repo-name))))
+  (when-let* ((repo-name (or (and (s-starts-with? "https://github.com" repo)
+                                  (replace-regexp-in-string "https://github\\.com/\\([^/]+\\)/\\([^/]+\\)/?.*?$" "\\1/\\2" repo))
+                             (and (s-ends-with? ".git" repo)
+                                  (replace-regexp-in-string "git@github.com:\\(.+\\).git" "\\1" repo))))
+              (dir (expand-file-name (format "~/Code/%s/" repo-name))))
     (when (not (file-exists-p dir))
-      (message "Cloning %s to %s.." repo dir)
-      (magit-run-git-async "clone" repo (magit-convert-filename-for-git dir))
-      (message "Cloning %s to %s.. ok." repo dir))
+      (message "Cloning %s.." repo repo-name)
+      (magit-run-git-async "clone"
+                           (format "git@github.com:%s.git" repo-name)
+                           (magit-convert-filename-for-git dir))
+      (message "Cloning %s.. ok." repo repo-name))
     (dired dir)))
 
 ;;;###autoload
@@ -1382,5 +1386,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (message ip)
     (kill-new ip)))
 
+
+;;;###autoload
+(defun t/clone-github-repo-from-chrome ()
+  "Clones the github repo of the currently visisble chrome tab."
+  (interactive)
+  (t/clone (t/grab-chrome-url)))
 
 (provide 't-defuns)
