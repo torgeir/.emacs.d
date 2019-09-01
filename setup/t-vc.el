@@ -50,13 +50,16 @@
 (t/use-package magit
   :commands magit-status
   :init
-  (setq magit-pull-arguments nil
-        magit-fetch-arguments '("--prune")
-        magit-rebase-arguments '("--interactive")
-        magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
-        magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1
-        ;; fixes https://github.com/magit/ghub/issues/81
-        gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+  (progn
+    (setq magit-pull-arguments nil
+          magit-fetch-arguments '("--prune")
+          magit-rebase-arguments '("--interactive")
+          magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
+          magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+    (when is-mac
+      (setq
+       ;; fixes https://github.com/magit/ghub/issues/81 - dont use this on linux
+       gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")))
 
   :config
   (progn
