@@ -179,7 +179,9 @@
                         ;; bring back stolen smartparen keys
                         (t/bind-in '(evil-motion-state-local-map)
                           "M-<up>" 'org-metaup
-                          "M-<down>" 'org-metadown)
+                          "M-<down>" 'org-metadown
+                          "M-S-<right>" 'org-shiftmetaright
+                          "M-S-<left>" 'org-shiftmetaleft)
                         (evil-snipe-override-local-mode)
                         (org-display-inline-images t t)
                         (visual-line-mode 1)))
