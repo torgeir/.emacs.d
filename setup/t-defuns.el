@@ -391,22 +391,23 @@ Including indent-buffer, which should not be called automatically on save."
 
 (defvar *t-adjusted-font-size* t-font-size "Dynamically changed to adjust font with keybindings.")
 
-(defvar t-fonts (if is-mac
-                    (list
-                     "DejaVu Sans Mono"
-                     "Bitstream Vera Sans Mono"
-                     "Code New Roman"
-                     "Input Mono"
-                     "Ubuntu Mono"
-                     "Borg Sans Mono"
-                     ;;"Fira Code Retina"
-                     ;;"Office Code Pro"
-                     ;;"Noto Mono"
-                     ;;"IBM Plex Mono"
-                     ;;"Roboto Mono"
-                     )
-                  (list "Inconsolata"
-                        "Ubuntu Mono")) "List of usable fonts to cycle.")
+(setq t-fonts (if is-mac
+                  (list
+                   "DejaVu Sans Mono"
+                   "Bitstream Vera Sans Mono"
+                   "Code New Roman"
+                   "Input Mono"
+                   "Ubuntu Mono"
+                   "Borg Sans Mono"
+                   "Fira Code Retina"
+                   ;;"Office Code Pro"
+                   ;;"Noto Mono"
+                   ;;"IBM Plex Mono"
+                   ;;"Roboto Mono"
+                   )
+                (list "Inconsolata"
+                      "Ubuntu Mono"));"List of usable fonts to cycle."
+      )
 
 (defun t/cycle-font ()
   "Cycle through list of fonts, setting the front most one."
