@@ -45,7 +45,10 @@
 (t/use-package evil-collection
   :after evil
   :init
-  (evil-collection-init))
+  (progn
+    (evil-collection-init)
+    (t/after org
+      (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle))))
 
 (t/use-package evil-matchit
   :commands evilmi-jump-items
