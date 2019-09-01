@@ -1002,6 +1002,7 @@
       (t/declare-prefix "aa" "drawing"
                         "t" #'t/artist-mode
                         "p" 'artist-select-op-pen-line
+                        "l" 'artist-select-op-line
                         "r" 'artist-select-op-rectangle
                         "c" 'artist-select-op-circle
                         "e" 'artist-select-op-ellipse
