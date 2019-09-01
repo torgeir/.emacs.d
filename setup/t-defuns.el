@@ -1388,6 +1388,13 @@ If FILEXT is provided, return files with extension FILEXT instead."
 
 
 ;;;###autoload
+(defun t/transparency (value)
+  "Sets the transparency of the frame window. 0=transparent/100=opaque"
+  (interactive "nTransparency Value 0 - 100 opaque: ")
+  (set-frame-parameter (selected-frame) 'alpha value))
+
+
+;;;###autoload
 (defun t/clone-github-repo-from-chrome ()
   "Clones the github repo of the currently visisble chrome tab."
   (interactive)
