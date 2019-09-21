@@ -737,16 +737,19 @@
 
 (use-package js-codemod
   ;; :ensure nil
-  ;; :load-path "~/Desktop/js-codemod/js-codemod.el"
+  ;; :load-path "~/Code/js-codemod/js-codemod.el"
   :commands (js-codemod-mod-region))
 
 (use-package helm-js-codemod
-  ;;:ensure nil
-  ;;:load-path "~/Desktop/js-codemod/helm-js-codemod.el"
+  ;; :ensure nil
+  ;; :load-path "~/Code/js-codemod/helm-js-codemod.el"
   :commands (helm-js-codemod)
   :init
-  (setq helm-js-codemod-mod-dir
-        (expand-file-name "~/Desktop/js-codemod/mods/")))
+  (progn
+    (setq helm-js-codemod-mod-dir
+          (expand-file-name (t/user-emacs-file "js-codemods/")))
+    (t/after which-key
+      (t/declare-prefix "mr" "Refactor" "m" 'helm-js-codemod))))
 
 (t/use-package restclient
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))

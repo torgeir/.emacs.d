@@ -1,4 +1,5 @@
-const EventEmitter = require("events");
+const EveatEmitter = require("evenanother");
+import EventEmitter from "events";
 
 function withName() {}
 var { a, b } = {};
@@ -9,6 +10,11 @@ var { a, b } = {};
     whatt: 2,
     whattt: 3
   };
+
+  const c = 3,
+    d = 4;
+
+  const s = "a" + o.what;
 
   /**
    * sums numbers
