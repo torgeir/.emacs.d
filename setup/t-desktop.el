@@ -7,7 +7,7 @@
 
 (defun t/desktop-save ()
   (interactive)
-  (if (t/desktop-project-name)
+  (if-let ((desktop-base-file-name (t/desktop-project-name)))
       (desktop-save (or desktop-dirname
                         (t/project-root)) t)
     (message "Not in a project.")))
