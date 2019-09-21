@@ -1053,6 +1053,9 @@
     (if t-regex-mode (reb-quit) (re-builder))
     (setq t-regex-mode (not t-regex-mode)))
 
+  (t/add-hook 'ediff-keymap-setup-hook
+              (t/lambda (define-key ediff-mode-map "d" 't/ediff-use-both)))
+
   (t/declare-prefix "a" "Applications"
                     "B" 'w3m
                     "c" 'calendar

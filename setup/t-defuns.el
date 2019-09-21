@@ -1406,4 +1406,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (interactive)
   (t/clone (t/grab-chrome-url)))
 
+;;;###autoload
+(defun t/ediff-use-both ()
+  (interactive)
+  (ediff-copy-diff ediff-current-difference nil 'C nil
+                   (concat
+                    (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
+                    (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+
 (provide 't-defuns)
