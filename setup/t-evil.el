@@ -69,8 +69,13 @@
   :diminish evil-cleverparens-mode
   :defer 1
   :init
-  (progn (setq evil-cleverparens-use-additional-bindings t
-               evil-cleverparens-use-regular-insert t))
+  (progn
+    (t/add-hook-defun
+     'evil-cleverparens-enabled-hook t-evil-cp-mode-hook
+     (evil-define-key 'visual evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next)
+     (evil-define-key 'normal evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next))
+    (setq evil-cleverparens-use-additional-bindings t
+          evil-cleverparens-use-regular-insert t))
   :config
   (t/after evil-surround
     (add-to-list 'evil-surround-operator-alist '(evil-cp-delete . delete))
