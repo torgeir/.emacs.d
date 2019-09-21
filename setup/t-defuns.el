@@ -1417,4 +1417,25 @@ If FILEXT is provided, return files with extension FILEXT instead."
                     (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
                     (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
 
+;;;###autoload
+(defun t/lookup-key (key)
+  "Search for KEY in all known keymaps."
+  (mapatoms
+   (lambda (ob)
+     (when (and (boundp ob) (keymapp (symbol-value ob)))
+       (when (functionp (lookup-key (symbol-value ob) key))
+         (message "%S" ob))))
+   obarray))
+
+;;;###autoload
+(defun t/lookup-key-prefix (key)
+  "Search for KEY as prefix in all known keymaps."
+  (mapatoms
+   (lambda (ob)
+     (when (and (boundp ob) (keymapp (symbol-value ob)))
+       (when (let ((m (lookup-key (symbol-value ob) key)))
+               (and m (or (symbolp m) (keymapp m))))
+         (message "%S" ob))))
+   obarray))
+
 (provide 't-defuns)

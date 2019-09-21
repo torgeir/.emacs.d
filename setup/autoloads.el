@@ -34,7 +34,7 @@
 ;;;### (autoloads nil "t-evil" "t-evil.el" (0 0 0 0))
 ;;; Generated autoloads from t-evil.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-evil" '("t-evil/")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-evil" '("t-evil")))
 
 ;;;***
 
@@ -123,13 +123,18 @@
 
 ;;;***
 
-;;;### (autoloads nil nil ("t-calendar.el" "t-site-lisp.el" "t-text-objects.el"
-;;;;;;  "t-which-key.el") (0 0 0 0))
+;;;### (autoloads nil nil ("t-calendar.el" "t-lang-graphql.el" "t-site-lisp.el"
+;;;;;;  "t-text-objects.el" "t-which-key.el") (0 0 0 0))
 
 ;;;***
 
 ;;;### (autoloads nil "t-defuns" "t-defuns.el" (0 0 0 0))
 ;;; Generated autoloads from t-defuns.el
+
+(autoload 't/exec-org-block "t-defuns" "\
+
+
+\(fn NAME VARS)" nil nil)
 
 (autoload 't/async-shell-command "t-defuns" "\
 Execute `CMD' async, call `FN' with the result string.
@@ -142,29 +147,20 @@ Locally binds the function FUNCTION to the command CMD.
 \(fn CMD FUNCTION)" nil nil)
 
 (autoload 't/send-buffer-to-scala-repl "t-defuns" "\
-Send buffer to ensime repl, starts it if its not running
-
-\(fn)" t nil)
+Send buffer to ensime repl, starts it if its not running" t nil)
 
 (autoload 't/send-region-to-scala-repl "t-defuns" "\
 Send region to ensime repl, starts it if its not running
 
 \(fn START END)" t nil)
 
-(autoload 't/clean-mode-line "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/clean-mode-line "t-defuns" nil t nil)
 
 (autoload 't/css-kill-value "t-defuns" "\
-kills the attribute of a css property
-
-\(fn)" t nil)
+kills the attribute of a css property" t nil)
 
 (autoload 't/json-format "t-defuns" "\
-pretty prints json in selected region
-
-\(fn)" t nil)
+pretty prints json in selected region" t nil)
 
 (autoload 't/build-tags "t-defuns" "\
 Build ctags file for projectile project, calls load-tags when done.
@@ -179,9 +175,7 @@ ctags -e -R .
 
 Remember to build emacs --without-ctags and use the one from `brew' instead,
 it's the one with the correct options needed to generate ctags that emacs
-understands.
-
-\(fn)" t nil)
+understands." t nil)
 
 (autoload 't/load-tags "t-defuns" "\
 loads project tags into tag table
@@ -189,9 +183,7 @@ loads project tags into tag table
 \(fn TAGS)" nil nil)
 
 (autoload 't/find-tag-at-point "t-defuns" "\
-goes to tag at point, builds and/or loads project TAGS file first
-
-\(fn)" t nil)
+goes to tag at point, builds and/or loads project TAGS file first" t nil)
 
 (autoload 't/copy-to-clipboard "t-defuns" "\
 Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses builtin pbcopy.
@@ -201,100 +193,56 @@ Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses buil
 (autoload 't/open-in-desktop "t-defuns" "\
 Show current file in desktop (OS's file manager).
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
-Version 2015-06-12
-
-\(fn)" t nil)
+Version 2015-06-12" t nil)
 
 (autoload 't/open-line-above "t-defuns" "\
-Insert a newline above the current line and put point at beginning.
+Insert a newline above the current line and put point at beginning." t nil)
 
-\(fn)" t nil)
+(autoload 't/hippie-expand-no-case-fold "t-defuns" nil t nil)
 
-(autoload 't/hippie-expand-no-case-fold "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 't/hippie-expand-lines "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/hippie-expand-lines "t-defuns" nil t nil)
 
 (autoload 't/kill-other-buffers "t-defuns" "\
-Kill all other buffers.
-
-\(fn)" t nil)
+Kill all other buffers." t nil)
 
 (autoload 't/rename-current-buffer-file "t-defuns" "\
-Renames current buffer and file it is visiting.
-
-\(fn)" t nil)
+Renames current buffer and file it is visiting." t nil)
 
 (autoload 't/delete-current-buffer-file "t-defuns" "\
-Removes file connected to current buffer and kills buffer.
+Removes file connected to current buffer and kills buffer." t nil)
 
-\(fn)" t nil)
-
-(autoload 't/paredit-wrap-round-from-behind "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/paredit-wrap-round-from-behind "t-defuns" nil t nil)
 
 (autoload 't/untabify-buffer "t-defuns" "\
-Remove tabs in buffer
-
-\(fn)" t nil)
+Remove tabs in buffer" t nil)
 
 (autoload 't/indent-buffer "t-defuns" "\
-Correctly indents a buffer
-
-\(fn)" t nil)
+Correctly indents a buffer" t nil)
 
 (autoload 't/cleanup-buffer-whitespace-and-indent "t-defuns" "\
 Perform a bunch of operations on the whitespace content of a buffer.
-Including indent-buffer, which should not be called automatically on save.
+Including indent-buffer, which should not be called automatically on save." t nil)
 
-\(fn)" t nil)
-
-(autoload 't/eval-region-or-last-sexp "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/eval-region-or-last-sexp "t-defuns" nil t nil)
 
 (autoload 't/eval-and-replace "t-defuns" "\
-Evaluate and replace the preceding sexp with its value.
-
-\(fn)" t nil)
+Evaluate and replace the preceding sexp with its value." t nil)
 
 (autoload 't/lorem "t-defuns" "\
-Insert a lorem ipsum.
-
-\(fn)" t nil)
+Insert a lorem ipsum." t nil)
 
 (autoload 't/smart-beginning-of-line "t-defuns" "\
-Move point to first non-whitespace character or beginning-of-line.
-
-\(fn)" t nil)
+Move point to first non-whitespace character or beginning-of-line." t nil)
 
 (autoload 't/delete-frame-or-hide-last-remaining-frame "t-defuns" "\
-Delete the selected frame. If the last one, hide it instead.
+Delete the selected frame. If the last one, hide it instead." t nil)
 
-\(fn)" t nil)
+(autoload 't/copy-buffer-file-name "t-defuns" nil t nil)
 
-(autoload 't/copy-buffer-file-name "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 't/copy-buffer-file-path "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/copy-buffer-file-path "t-defuns" nil t nil)
 
 (autoload 't/previous-window "t-defuns" "\
-Skip back to previous window
-
-\(fn)" t nil)
+Skip back to previous window" t nil)
 
 (autoload 't/buffer-mode "t-defuns" "\
 Returns the major mode associated with a buffer.
@@ -302,29 +250,16 @@ Returns the major mode associated with a buffer.
 \(fn BUFFER-OR-STRING)" nil nil)
 
 (autoload 't/cursors-direction-is-up "t-defuns" "\
-Returns t if the current cursor movement direction is 'up.
-
-\(fn)" nil nil)
+Returns t if the current cursor movement direction is 'up." nil nil)
 
 (autoload 't/cursors-direction-is-down "t-defuns" "\
-Returns t if the current cursor movement direction is 'down.
+Returns t if the current cursor movement direction is 'down." nil nil)
 
-\(fn)" nil nil)
+(autoload 't/split-window-right-and-move-there-dammit "t-defuns" nil t nil)
 
-(autoload 't/split-window-right-and-move-there-dammit "t-defuns" "\
+(autoload 't/split-window-below-and-move-there-dammit "t-defuns" nil t nil)
 
-
-\(fn)" t nil)
-
-(autoload 't/split-window-below-and-move-there-dammit "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 't/config-reload "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/config-reload "t-defuns" nil t nil)
 
 (autoload 't/face-color-b "t-defuns" "\
 Get `:background' color of `attr'
@@ -342,40 +277,25 @@ Switch theme, disabling previously loaded
 \(fn THEME)" t nil)
 
 (autoload 't/toggle-theme-dark-light "t-defuns" "\
-Toggles between themes `doom-vibrant' and `spacemacs-light'
-
-\(fn)" t nil)
+Toggles between themes `doom-vibrant' and `spacemacs-light'" t nil)
 
 (autoload 't/reload-font "t-defuns" "\
+Reload font to make e.g. font size changes have effect." t nil)
 
+(autoload 't/fix-fira-ligatures "t-defuns" nil t nil)
 
-\(fn)" t nil)
+(autoload 't/decrease-font-size "t-defuns" nil t nil)
 
-(autoload 't/fix-fira-ligatures "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 't/decrease-font-size "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 't/increase-font-size "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/increase-font-size "t-defuns" nil t nil)
 
 (autoload 't/reset-font-size "t-defuns" "\
 
 
-\(fn)" t nil)
+\(fn &optional ARGS)" t nil)
 
 (autoload 'make-orgcapture-frame "t-defuns" "\
 @torgeir: credits https://github.com/jjasghar/alfred-org-capture/blob/master/el/alfred-org-capture.el
-  Create a new frame and run org-capture.
-
-\(fn)" t nil)
+  Create a new frame and run org-capture." t nil)
 
 (autoload 't/sudo-edit "t-defuns" "\
 Edit currently visited file as root.
@@ -386,46 +306,29 @@ Edit currently visited file as root.
 
 \(fn &optional ARG)" t nil)
 
-(autoload 'server-remove-kill-buffer-hook "t-defuns" "\
+(autoload 'server-remove-kill-buffer-hook "t-defuns" nil nil nil)
 
-
-\(fn)" nil nil)
-
-(autoload 't/prefix-arg-universal\? "t-defuns" "\
-
-
-\(fn)" nil nil)
+(autoload 't/prefix-arg-universal\? "t-defuns" nil nil nil)
 
 (autoload 't/indent-after-paste "t-defuns" "\
 
 
 \(fn FN &rest ARGS)" nil nil)
 
-(autoload 't/comint-clear-buffer "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/comint-clear-buffer "t-defuns" nil t nil)
 
 (autoload 't/uniquify-lines "t-defuns" "\
-Remove duplicate adjacent lines in region or current buffer
-
-\(fn)" t nil)
+Remove duplicate adjacent lines in region or current buffer" t nil)
 
 (autoload 't/sort-lines "t-defuns" "\
-Sort lines in region or current buffer
-
-\(fn)" t nil)
+Sort lines in region or current buffer" t nil)
 
 (autoload 't/switch-to-previous-buffer "t-defuns" "\
 Switch to previously open buffer.
-Repeated invocations toggle between the two most recently open buffers.
-
-\(fn)" t nil)
+Repeated invocations toggle between the two most recently open buffers." t nil)
 
 (autoload 't/switch-to-scratch-buffer "t-defuns" "\
-Switch to the `*scratch*' buffer. Create it first if needed.
-
-\(fn)" t nil)
+Switch to the `*scratch*' buffer. Create it first if needed." t nil)
 
 (autoload 't/shorten-directory "t-defuns" "\
 Show up to `max-length' characters of a directory name `dir'.
@@ -433,9 +336,7 @@ Show up to `max-length' characters of a directory name `dir'.
 \(fn DIR MAX-LENGTH)" nil nil)
 
 (autoload 't/find-xml-path "t-defuns" "\
-Display the hierarchy of XML elements the point is on as a path.
-
-\(fn)" t nil)
+Display the hierarchy of XML elements the point is on as a path." t nil)
 
 (autoload 't/set-emoji-font "t-defuns" "\
 Adjust the font settings of FRAME so Emacs can display emoji properly 🚀
@@ -449,44 +350,28 @@ Adjust the font settings of FRAME so Emacs can display emoji properly 🚀
 
 (autoload 't/date-time "t-defuns" "\
 Insert current date-time string in full ISO 8601 format.
-Example: 2010-11-29T23:23:35-08:00
-
-\(fn)" nil nil)
+Example: 2010-11-29T23:23:35-08:00" nil nil)
 
 (autoload 't/date-time-for-filename "t-defuns" "\
-Return date-time iso 8601 string suitable for filename
-
-\(fn)" nil nil)
+Return date-time iso 8601 string suitable for filename" nil nil)
 
 (autoload 't/elpa-backup-directory "t-defuns" "\
-Returns the directory name of an elpa backup that would run now.
-
-\(fn)" nil nil)
+Returns the directory name of an elpa backup that would run now." nil nil)
 
 (autoload 't/elpa-backup "t-defuns" "\
-Backup the current elpa folder to elpa-backups.
-
-\(fn)" t nil)
+Backup the current elpa folder to elpa-backups." t nil)
 
 (autoload 't/upgrade-packages "t-defuns" "\
-Upgrade packages after backing up the current elpa files.
-
-\(fn)" t nil)
+Upgrade packages after backing up the current elpa files." t nil)
 
 (autoload 't/current-line-ends-in-comma "t-defuns" "\
-Return whether the current line is suffixed with ','
-
-\(fn)" nil nil)
+Return whether the current line is suffixed with ','" nil nil)
 
 (autoload 't/prev-line-ends-in-comma "t-defuns" "\
-Return whether the current line is suffixed with ','
-
-\(fn)" nil nil)
+Return whether the current line is suffixed with ','" nil nil)
 
 (autoload 't/next-line-ends-in-comma "t-defuns" "\
-Return whether the current line is suffixed with ','
-
-\(fn)" nil nil)
+Return whether the current line is suffixed with ','" nil nil)
 
 (autoload 't/move-line-up "t-defuns" "\
 Move the current line(s) down one line.
@@ -505,34 +390,22 @@ If FILEXT is provided, return files with extension FILEXT instead.
 \(fn &optional DIRECTORY FILEXT)" t nil)
 
 (autoload 't/org-fix-inline-images "t-defuns" "\
-Fix redisplaying images after executing org babel code.
-
-\(fn)" nil nil)
+Fix redisplaying images after executing org babel code." nil nil)
 
 (autoload 't/project-root "t-defuns" "\
-Get project root without throwing
-
-\(fn)" nil nil)
+Get project root without throwing" nil nil)
 
 (autoload 't/volatile-kill-buffer "t-defuns" "\
-Kill current buffer unconditionally.
-
-\(fn)" t nil)
+Kill current buffer unconditionally." t nil)
 
 (autoload 't/volatile-kill-buffer-and-window "t-defuns" "\
-Kill current buffer and the window unconditionally.
-
-\(fn)" t nil)
+Kill current buffer and the window unconditionally." t nil)
 
 (autoload 't/grab-chrome-url "t-defuns" "\
-Grab the frontmost url out of chrome using `org-mac-grab-link'
-
-\(fn)" t nil)
+Grab the frontmost url out of chrome using `org-mac-grab-link'" t nil)
 
 (autoload 't/browse-chrome-url-in-w3m "t-defuns" "\
-Open the frontmost chrome url in `w3m'. 
-
-\(fn)" t nil)
+Open the frontmost chrome url in `w3m'. " t nil)
 
 (autoload 't/get-url "t-defuns" "\
 Get url synchronously.
@@ -545,14 +418,11 @@ Insert url contents in current buffer. Drops headers and 2x empty lines before c
 \(fn URL)" t nil)
 
 (autoload 't/fetch-chrome-url "t-defuns" "\
-Insert contents of frontmost url of chrome in buffer.
+Insert contents of frontmost url of chrome in buffer." t nil)
 
-\(fn)" t nil)
+(autoload 't/browse-url-at-point "t-defuns" nil t nil)
 
-(autoload 't/last-weekday-of-month-p "t-defuns" "\
-
-
-\(fn)" nil nil)
+(autoload 't/last-weekday-of-month-p "t-defuns" nil nil nil)
 
 (autoload 't/face-at-point "t-defuns" "\
 Echo the face at point.
@@ -560,14 +430,10 @@ Echo the face at point.
 \(fn POS)" t nil)
 
 (autoload 't/font-lock-test-faces "t-defuns" "\
-Outputs test strings with all font lock faces to show colors.
-
-\(fn)" t nil)
+Outputs test strings with all font lock faces to show colors." t nil)
 
 (autoload 't/find-file-check-make-large-file-read-only-hook "t-defuns" "\
-If a file is over a given size, make the buffer read only.
-
-\(fn)" nil nil)
+If a file is over a given size, make the buffer read only." nil nil)
 
 (autoload 't/run-osascript "t-defuns" "\
 Run applescript.
@@ -585,9 +451,7 @@ Run applescript to activate application.
 \(fn URL)" nil nil)
 
 (autoload 't/open-in-intellij "t-defuns" "\
-Opens current file in IntelliJ IDEA.
-
-\(fn)" t nil)
+Opens current file in IntelliJ IDEA." t nil)
 
 (autoload 't/propertize-read-only "t-defuns" "\
 
@@ -600,9 +464,7 @@ Opens current file in IntelliJ IDEA.
 \(fn TXT)" nil nil)
 
 (autoload 't/mobile-inbox-count "t-defuns" "\
-Counts the number of items in `org-mobile-inbox-for-pull'.
-
-\(fn)" nil nil)
+Counts the number of items in `org-mobile-inbox-for-pull'." nil nil)
 
 (autoload 't/get-string-from-file "t-defuns" "\
 Return `file-path's file content.
@@ -654,50 +516,28 @@ Return non-nil value if the buffer has an ended process.
 
 \(fn &optional ELSE)" t nil)
 
-(autoload 't/neotree-open-file "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/neotree-open-file "t-defuns" nil t nil)
 
 (autoload 't/backward-down-sexp "t-defuns" "\
-Move backward to the start of the previous sexp.
-
-\(fn)" t nil)
+Move backward to the start of the previous sexp." t nil)
 
 (autoload 't/forward-down-sexp "t-defuns" "\
-Move forward to the end of the previous sexp.
+Move forward to the end of the previous sexp." t nil)
 
-\(fn)" t nil)
+(autoload 't/forward-sexp "t-defuns" nil t nil)
 
-(autoload 't/forward-sexp "t-defuns" "\
+(autoload 't/backward-sexp "t-defuns" nil t nil)
 
-
-\(fn)" t nil)
-
-(autoload 't/backward-sexp "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 't/helm-files-emacs-init-files "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/helm-files-emacs-init-files "t-defuns" nil t nil)
 
 (autoload 't/newline-expand-braces "t-defuns" "\
-Newline like `evil-ret', but expand (), [] and {} with newline in between, and indent accordingly.
-
-\(fn)" t nil)
+Newline like `evil-ret', but expand (), [] and {} with newline in between, and indent accordingly." t nil)
 
 (autoload 't/recompile-elpa "t-defuns" "\
-Recompile the elpa/ directory to resolve byte compilation issues.
-
-\(fn)" t nil)
+Recompile the elpa/ directory to resolve byte compilation issues." t nil)
 
 (autoload 't/describe "t-defuns" "\
-Describe functions, features, symbols, or run help-apropos if it's not found.
-
-\(fn)" t nil)
+Describe functions, features, symbols, or run help-apropos if it's not found." t nil)
 
 (autoload 't/unbind "t-defuns" "\
 Unbind function or symbol depending on type.
@@ -710,24 +550,23 @@ Adds items to the list `l'.
 \(fn L ITEM-OR-ITEMS)" nil nil)
 
 (autoload 't/toggle-line-numbers "t-defuns" "\
-Toggle line numbers on or off.
-
-\(fn)" t nil)
+Toggle line numbers on or off." t nil)
 
 (autoload 't/toggle-relative-line-numbers "t-defuns" "\
-Toggle relative line numbers on or off.
-
-\(fn)" t nil)
+Toggle relative line numbers on or off." t nil)
 
 (autoload 't/highlight-logging "t-defuns" "\
-Add log highlighting to current major mode.
-
-\(fn)" t nil)
+Add log highlighting to current major mode." t nil)
 
 (autoload 't/clone "t-defuns" "\
 Clone a github repo to `~/Code/<repo-name>'.
 
 \(fn REPO)" t nil)
+
+(autoload 't/set-company-backends "t-defuns" "\
+Set company backends.
+
+\(fn &rest BACKENDS)" nil nil)
 
 (autoload 't/add-company-backends "t-defuns" "\
 Add list of grouped company backends.
@@ -740,29 +579,17 @@ Add list of grouped company backends for `mode-hook'.
 \(fn MODE-HOOK &rest BACKENDS)" nil nil)
 
 (autoload 't/visit-git-link-pulls "t-defuns" "\
-Navigate to /pulls for the current git repo.
+Navigate to /pulls for the current git repo." t nil)
 
-\(fn)" t nil)
+(autoload 't/projectile-dired "t-defuns" nil t nil)
 
-(autoload 't/projectile-dired "t-defuns" "\
+(autoload 't/projectile-desktop "t-defuns" nil t nil)
 
+(autoload 't/projectile-magit-status "t-defuns" nil t nil)
 
-\(fn)" t nil)
+(autoload 't/projectile-helm-ag "t-defuns" nil t nil)
 
-(autoload 't/projectile-magit-status "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 't/projectile-helm-ag "t-defuns" "\
-
-
-\(fn)" t nil)
-
-(autoload 't/projectile-visit-git-link-pulls "t-defuns" "\
-
-
-\(fn)" t nil)
+(autoload 't/projectile-visit-git-link-pulls "t-defuns" nil t nil)
 
 (autoload 't/margins-global "t-defuns" "\
 Set global frame margins.
@@ -774,10 +601,39 @@ Set buffer local frame margin.
 
 \(fn L &optional R)" t nil)
 
-(autoload 't/toggle-margins "t-defuns" "\
-Toggle buffer local pleasing margins.
+(autoload 't/eww-toggle-images "t-defuns" "\
+Toggle whether images are loaded and reload the current page fro cache." t nil)
 
-\(fn)" t nil)
+(autoload 't/last-used-window-buffer "t-defuns" "\
+Switch to the window that displays the most recently selected buffer." t nil)
+
+(autoload 't/safe-restart-emacs "t-defuns" "\
+Restart emacs if config parses correctly." t nil)
+
+(autoload 't/word-at-point "t-defuns" "\
+Returns word under cursor." nil nil)
+
+(autoload 't/ip "t-defuns" nil t nil)
+
+(autoload 't/transparency "t-defuns" "\
+Sets the transparency of the frame window. 0=transparent/100=opaque
+
+\(fn VALUE)" t nil)
+
+(autoload 't/clone-github-repo-from-chrome "t-defuns" "\
+Clones the github repo of the currently visisble chrome tab." t nil)
+
+(autoload 't/ediff-use-both "t-defuns" nil t nil)
+
+(autoload 't/lookup-key "t-defuns" "\
+Search for KEY in all known keymaps.
+
+\(fn KEY)" nil nil)
+
+(autoload 't/lookup-key-prefix "t-defuns" "\
+Search for KEY as prefix in all known keymaps.
+
+\(fn KEY)" nil nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
 
