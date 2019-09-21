@@ -3,9 +3,10 @@
   :ensure t
   :init
   (progn
+    (setq lsp-print-io nil
+          lsp-prefer-flymake nil)
     (require 'lsp-clients)
-    (t/after js2-mode (add-hook 'js2-mode-hook 'lsp))
-    (add-hook 'css-mode 'lsp))
+    (add-hook 'css-mode 'lsp-mode))
   :config
   (add-to-list 'lsp-language-id-configuration '(rjsx-mode . "javascript")))
 
@@ -13,7 +14,8 @@
 (use-package lsp-ui
   :init
   (progn
-    (setq lsp-ui-sideline-show-code-actions nil)
+    (setq lsp-ui-sideline-enable t
+          lsp-ui-sideline-show-code-actions nil)
     (add-hook 'lsp-mode-hook 'lsp-ui-mode))
   :config
   (progn
@@ -26,6 +28,10 @@
     (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)))
 
 
+(use-package typescript-mode
+  :mode "\\.ts")
+
+
 (use-package company-lsp
   :after company
   :init
@@ -34,7 +40,7 @@
 
 
 (t/use-package js2-mode
-  :mode "\\.jsx?$"
+  :mode "\\.\\(ts\\|js\\|jsx\\)$"
   :interpreter "node"
   :init
   (progn
@@ -57,8 +63,9 @@
                       (flycheck-mode)
                       (turn-on-smartparens-mode)
                       (js2-imenu-extras-mode)
-                      (lsp-mode)
-                      (t/add-company-backends 'company-web-html 'company-tern 'company-lsp)))
+                      (unless (helm-window) (lsp))
+                      (t/set-company-backends 'company-lsp)
+                      (t/when-ext "ts" (typescript-mode))))
 
   :config
   (progn
@@ -88,7 +95,12 @@
                     "eo" 'js2r-expand-object
                     "lp" 'js2r-localize-parameter
                     "tf" 'js2r-toggle-function-expression-and-declaration
-                    "vt" 'js2r-var-to-this))
+                    "vt" 'js2r-var-to-this)
+  :config
+  (t/add-hook 'multiple-cursors-mode-hook 'evil-emacs-state)
+  (bind-key "<return>" (t/lambda nil
+                         (multiple-cursors-mode -1)
+                         (evil-normal-state)) mc/keymap))
 
 (t/use-package cdnjs
   :commands (cdnjs-install-gocdnjs
@@ -185,6 +197,7 @@
       (interactive)
       (t/term-kill-if-finished 'comint-delchar-or-maybe-eof))
     (t/bind-in 'nodejs-repl-mode-map
-               "C-d" #'t/try-quit-nodejs-repl)))
+      "C-d" #'t/try-quit-nodejs-repl)))
+
 
 (provide 't-lang-js)

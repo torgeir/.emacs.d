@@ -1217,6 +1217,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (dired dir)))
 
 ;;;###autoload
+(defun t/set-company-backends (&rest backends)
+  "Set company backends."
+  (make-local-variable 'company-backends)
+  (setq-local company-backends backends))
+
+;;;###autoload
 (defun t/add-company-backends (&rest backends)
   "Add list of grouped company backends."
   (make-local-variable 'company-backends)

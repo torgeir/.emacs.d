@@ -1258,8 +1258,11 @@
                     "f" (t/macro-helm-ag-insert 'word helm-ag-this-file)
                     "g" 'helm-google
                     "G" 'helm-google-suggest
-                    "i" 'helm-imenu
-                    "m" 'helm-multi-swoop
+                    "m" 'helm-imenu
+                    "i" 'lsp-find-implementation
+                    "r" 'lsp-find-references
+                    "d" 'lsp-find-definition
+                    "D" 'lsp-find-declaration
                     "p" 'helm-projectile-ag
                     "s" 'swiper-helm
                     "t" 'etags-select-find-tag-at-point
