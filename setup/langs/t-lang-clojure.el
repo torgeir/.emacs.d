@@ -104,6 +104,7 @@
   (progn
     (cider-add-to-alist 'cider-jack-in-cljs-dependencies "cider/piggieback" "0.4.0")
 
+    (bind-key "M-." 'cider-find-dwim cider-mode-map)
     (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
 
     (t/add-to-list 't-evil-major-modes '(cider-stacktrace-mode cider-docview-mode))
@@ -144,10 +145,7 @@
       (t/add-hook '(cider-repl-mode-hook cider-mode-hook) 'company-mode))
 
     ;; match camel-case tokens
-    (add-hook 'clojure-mode-hook 'subword-mode)
-    (add-hook 'clojure-mode-hook 'enable-paredit-mode)
-    (add-hook 'clojurescript-mode-hook 'subword-mode)
-    (add-hook 'clojurescript-mode-hook 'enable-paredit-mode)
+    (t/add-hook 'clojurescript-mode-hook '(subword-mode enable-paredit-mode))
     (t/add-hook 'clojure-mode-hook '(subword-mode enable-paredit-mode))))
 
 (provide 't-lang-clojure)
