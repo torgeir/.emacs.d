@@ -1101,7 +1101,7 @@
                     "i" 't/open-in-intellij
                     "p" 'proced
                     "m" 'helm-spotify
-                    "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/" t))
+                    "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/" (t/prefix-arg-universal?)))
                     "R" #'t/toggle-regex-mode
                     "se" 't/eshell
                     "st" 'ansi-term
@@ -1110,7 +1110,7 @@
                     "S" 'suggest
                     "w" 'eww
                     "W" (t/lambda nil
-                          (t/eww-readable "https://en.wikipedia.org/wiki/Special:Random")
+                          (t/eww-readable "https://en.wikipedia.org/wiki/Special:Random" (t/prefix-arg-universal?))
                           (visual-line-mode -1)
                           (visual-line-mode 1)))
 
