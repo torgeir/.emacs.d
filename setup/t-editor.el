@@ -824,6 +824,14 @@
       "gr" 'hackernews-load-more-stories
       "gR" 'hackernews-reload)))
 
+(t/use-package helm-lines
+  :commands helm-lines
+  :init
+  (progn
+    (setq helm-lines-project-root-function 't/project-root)
+    (t/declare-prefix "c" "Comment/Complete"
+                      "l" 'helm-lines)))
+
 (t/use-package helm-hunks
   :commands (helm-hunks
              helm-hunks-current-buffer
@@ -1222,9 +1230,6 @@
                     "W" 'avy-goto-word-0-below
                     "c" 'avy-goto-char-2-below
                     "s" 'avy-goto-symbol-1-below)
-
-  (t/declare-prefix "c" "Comment/Complete"
-                    "l" 'helm-lines)
 
   (t/declare-prefix "h" "Highlight"
                     "H" 'highlight-symbol
