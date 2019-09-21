@@ -817,12 +817,15 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/browse-url-at-point ()
   (interactive)
-  (let ((browse-url-browser-function 'browse-url-default-browser))
-    (cond ((equal major-mode 'eww-mode) (eww-browse-with-external-browser))
-          ((equal major-mode 'elfeed-search-mode) (elfeed-search-browse-url))
-          ((equal major-mode 'elfeed-show-mode) (browse-url (elfeed-entry-link elfeed-show-entry)))
-          ((equal major-mode 'hackernews-mode) (hackernews-browse-url-action (button-at (point))))
-          (t (call-interactively 'browse-url-at-point)))))
+  (if (t/prefix-arg-universal?)
+      (let ((browse-url-browser-function 'eww-browse-url)) ;; force eww
+        (browse-url-at-point))
+    (let ((browse-url-browser-function 'browse-url-default-browser))
+      (cond ((equal major-mode 'eww-mode) (eww-browse-with-external-browser))
+            ((equal major-mode 'elfeed-search-mode) (elfeed-search-browse-url))
+            ((equal major-mode 'elfeed-show-mode) (browse-url (elfeed-entry-link elfeed-show-entry)))
+            ((equal major-mode 'hackernews-mode) (hackernews-browse-url-action (button-at (point))))
+            (t (call-interactively 'browse-url-at-point))))))
 
 ;;;###autoload
 (defun t/last-weekday-of-month-p ()
