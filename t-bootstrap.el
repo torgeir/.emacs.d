@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 (defconst t-leader "SPC")
 (defconst t-emacs-leader "C-")
-(defconst t-font-size 17)
+(defconst t-font-size 19)
 
 (defconst is-mac (equal system-type 'darwin))
 (defconst is-cygwin (equal system-type 'cygwin))
