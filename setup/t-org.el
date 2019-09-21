@@ -511,10 +511,10 @@ Locally redefines org-agenda-files not to export all agenda files."
   :commands spray-mode
   :init
   (progn
-    (setq spray-wpm 600
+    (setq spray-wpm 680
           spray-height 170
           spray-margin-top 0
-          spray-margin-left 60)
+          spray-margin-left 0)
     (t/declare-prefix "t" "Toggle"
                       "s" (t/micro-state-in-mode
                            'spray-mode
@@ -525,7 +525,7 @@ Locally redefines org-agenda-files not to export all agenda files."
                            "<right>" 'spray-forward-word))
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
                       (setq-local spray-margin-top (truncate (/ (window-height) 2.7)))
-                      (setq-local spray-margin-left (truncate (/ (window-width) 2.2)))
+                      (setq-local spray-margin-left (truncate (/ (window-width) 2.7)))
                       (set-face-foreground 'spray-accent-face
                                            (face-foreground 'font-lock-keyword-face)))))
 
