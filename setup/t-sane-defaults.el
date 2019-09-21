@@ -41,13 +41,17 @@
    sentence-end-double-space nil ; one space between sentences
    ad-redefinition-action 'accept ; silence useless warnings, e.g. ad-handle-definition: `find-tag-noselect' got redefined
    fill-column 80 ; chars per line
-   gc-cons-threshold 20000000 ; more memory
+
+   gc-cons-threshold (* 8 1024 1024) ; more memory
    indent-tabs-mode nil ; don't use tabs
    tab-width 2 ; two spaces
    cursor-in-non-selected-windows nil ; no cursor in other open windows
    eval-expression-print-length nil ; no length limit when printing sexps in message buffer
    eval-expression-print-level nil ; no level limit when printing sexps in message buffer
    frame-resize-pixelwise t)
+
+  ;;open large files remove heavy modes
+  (global-so-long-mode 1)
 
   ;; y or n will do
   (defalias 'yes-or-no-p 'y-or-n-p)
