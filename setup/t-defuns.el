@@ -405,9 +405,12 @@ Including indent-buffer, which should not be called automatically on save."
                    ;;"IBM Plex Mono"
                    ;;"Roboto Mono"
                    )
-                (list "Inconsolata"
-                      "Ubuntu Mono"));"List of usable fonts to cycle."
-      )
+                (list
+                 "Roboto Mono"
+                 "Hack"
+                 "Fira Code Retina"
+                 "Inconsolata"
+                 "Ubuntu Mono")))
 
 (defun t/cycle-font ()
   "Cycle through list of fonts, setting the front most one."
