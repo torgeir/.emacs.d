@@ -296,8 +296,6 @@
 
 (t/use-package company-box
   :after company
-  ;; :ensure nil
-  ;; :load-path "site-lisp/company-box/"
   :init
   (progn
     (setq company-box-doc-delay 0.01)
