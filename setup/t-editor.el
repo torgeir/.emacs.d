@@ -755,19 +755,37 @@
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
 
 ;; eww-mode
-(defun t/eww-readable-after-render (status url buffer)
-  (eww-render status url nil buffer)
-  (switch-to-buffer buffer)
-  (eww-readable)
-  (writeroom-mode 1))
+(defun t/eww-readable-after-render (plain-text)
+  (lambda (status url buffer)
+    (eww-render status url nil buffer)
+    (switch-to-buffer buffer)
+    (eww-readable)
+    (writeroom-mode 1)
+    (when plain-text
+      (let ((content (buffer-substring-no-properties (point-min) (point-max))))
+        (read-only-mode 0)
+        (erase-buffer)
+        (insert content)
+        ;; clean up empty lines
+        (beginning-of-buffer)
+        (flush-lines "^$")
+        ;; clean up lines beginning with dates, e.g. 20. sept...
+        (beginning-of-buffer)
+        (flush-lines "^[0-9][0-9]\.")
+        ;; clean up lines beginning with -
+        (beginning-of-buffer)
+        (while (re-search-forward "*" nil t)
+          (replace-match "\n-"))
+        (beginning-of-buffer)))))
 
-(defun t/eww-readable (url)
+(defun t/eww-readable (url &optional plain-text)
   (interactive "sEnter URL: ")
-  (let ((buffer (get-buffer-create "*eww*")))
+  (lexical-let ((buffer (get-buffer-create "*eww*"))
+                (plain-text plain-text))
     (with-current-buffer buffer
       (autoload 'eww-setup-buffer "eww")
       (eww-setup-buffer)
-      (url-retrieve url 't/eww-readable-after-render (list url buffer)))))
+      (url-retrieve url (t/eww-readable-after-render plain-text) (list url buffer)))))
 
 (t/after shr
   ;; don't truncate lines in eww-mode
@@ -1065,7 +1083,7 @@
                     "i" 't/open-in-intellij
                     "p" 'proced
                     "m" 'helm-spotify
-                    "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/"))
+                    "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/" t))
                     "R" #'t/toggle-regex-mode
                     "se" 't/eshell
                     "st" 'ansi-term
