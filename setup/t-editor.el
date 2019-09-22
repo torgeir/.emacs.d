@@ -1101,6 +1101,7 @@
                     "i" 't/open-in-intellij
                     "p" 'proced
                     "m" 'helm-spotify
+                    "M" (t/lambda nil (switch-to-buffer "*Messages*") (end-of-buffer))
                     "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/" (t/prefix-arg-universal?)))
                     "R" #'t/toggle-regex-mode
                     "se" 't/eshell
