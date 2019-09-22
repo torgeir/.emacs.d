@@ -1156,7 +1156,8 @@
                     "f" 't/cycle-font
                     "F" 'toggle-frame-fullscreen
                     "t" 't/load-theme-cycle
-                    "m" 'menu-bar-mode
+                    "m" 'imenu-list-smart-toggle
+                    "M" 'menu-bar-mode
                     "n" #'t/toggle-line-numbers
                     "r" #'t/toggle-relative-line-numbers
                     "L" 'hl-line-mode
