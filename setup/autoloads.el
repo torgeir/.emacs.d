@@ -48,7 +48,7 @@
 ;;;### (autoloads nil "t-linux" "t-linux.el" (0 0 0 0))
 ;;; Generated autoloads from t-linux.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-linux" '("t-linux/config")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-linux" '("t-linux/init")))
 
 ;;;***
 
@@ -83,7 +83,7 @@
 ;;;### (autoloads nil "t-org" "t-org.el" (0 0 0 0))
 ;;; Generated autoloads from t-org.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '("lat-trh" "lon-trh" "t-org/")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '("lat-trh" "lon-trh" "t-" "t/")))
 
 ;;;***
 
@@ -98,7 +98,7 @@
 ;;;;;;  0 0))
 ;;; Generated autoloads from t-sane-defaults.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-sane-defaults" '("t-sane-defaults/vars" "t/init-mouse")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-sane-defaults" '("t-sane-defaults/init" "t/init-mouse")))
 
 ;;;***
 
@@ -647,6 +647,9 @@ List interactive functions." nil nil)
 Complete from list with helm, e.g. (t/complete-with-helm-then '(one two) 'insert)
 
 \(fn LIST FN)" t nil)
+
+(autoload 't/locally-disable-cursor "t-defuns" "\
+Locally disable cursor in buffer." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
 

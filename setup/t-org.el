@@ -526,6 +526,8 @@ Locally redefines org-agenda-files not to export all agenda files."
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
                       (setq-local spray-margin-top (truncate (/ (window-height) 2.7)))
                       (setq-local spray-margin-left (truncate (/ (window-width) 2.7)))
+                      (beacon-mode -1)
+                      (t/locally-disable-cursor)
                       (set-face-foreground 'spray-accent-face
                                            (face-foreground 'font-lock-keyword-face)))))
 

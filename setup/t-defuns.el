@@ -1467,5 +1467,14 @@ If FILEXT is provided, return files with extension FILEXT instead."
                    :candidates list)))
 
 
+;;;###autoload
+(defun t/locally-disable-cursor ()
+  "Locally disable cursor in buffer."
+  (interactive)
+  (make-local-variable 'cursor-type)
+  (make-local-variable 'evil-normal-state-cursor)
+  (setq-local cursor-type 'nil)
+  (setq-local evil-normal-state-cursor 'nil))
+
 
 (provide 't-defuns)
