@@ -37,6 +37,8 @@
   (defadvice git-timemachine-mode (after toggle-evil activate)
     (when git-timemachine-mode
       (t/bind-in 'evil-normal-state-local-map
+        "q" 'git-timemachine-quit
+        "C-g" 'git-timemachine-quit
         "C-n" 'git-timemachine-show-next-revision
         "C-p" 'git-timemachine-show-previous-revision))))
 
