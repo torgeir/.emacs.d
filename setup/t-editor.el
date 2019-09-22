@@ -24,10 +24,14 @@
   :init
   (progn
     (setq imenu-list-auto-resize t)
+    (t/after imenu-list
+      (bind-key "j" 'next-line imenu-list-major-mode-map)
+      (bind-key "k" 'previous-line imenu-list-major-mode-map))
     (t/add-hook-defun 'imenu-list-update-hook t-after-imenu-update
                       (with-current-buffer imenu-list-buffer-name
+                        (evil-emacs-state)
                         (text-scale-set 0)
-                        (text-scale-decrease 2)))))
+                        (text-scale-decrease 1)))))
 
 (use-package beacon
   :defer 1
