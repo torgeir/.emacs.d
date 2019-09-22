@@ -23,6 +23,7 @@
                              "p" 'eval-print-last-sexp
                              "R" 't/eval-and-replace)
 
+  (bind-key (kbd "C-c C-c") 'eval-defun emacs-lisp-mode-map)
   (t/add-company-backends-hook 'lisp-interaction-mode-hook 'company-elisp)
   (t/add-company-backends-hook 'lisp-mode-hook 'company-elisp)
   (t/add-company-backends-hook 'emacs-lisp-mode-hook 'company-elisp)
