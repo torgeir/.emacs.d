@@ -537,7 +537,9 @@ Newline like `evil-ret', but expand (), [] and {} with newline in between, and i
 Recompile the elpa/ directory to resolve byte compilation issues." t nil)
 
 (autoload 't/describe "t-defuns" "\
-Describe functions, features, symbols, or run help-apropos if it's not found." t nil)
+Describe functions, features, symbols, or run help-apropos if it's not found.
+
+\(fn &optional SAT)" t nil)
 
 (autoload 't/unbind "t-defuns" "\
 Unbind function or symbol depending on type.
@@ -634,6 +636,17 @@ Search for KEY in all known keymaps.
 Search for KEY as prefix in all known keymaps.
 
 \(fn KEY)" nil nil)
+
+(autoload 't/fns "t-defuns" "\
+List functions." nil nil)
+
+(autoload 't/interactive-fns "t-defuns" "\
+List interactive functions." nil nil)
+
+(autoload 't/complete-with-helm-then "t-defuns" "\
+Complete from list with helm, e.g. (t/complete-with-helm-then '(one two) 'insert)
+
+\(fn LIST FN)" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
 

@@ -1441,4 +1441,31 @@ If FILEXT is provided, return files with extension FILEXT instead."
          (message "%S" ob))))
    obarray))
 
+;;;###autoload
+(defun t/fns ()
+  "List functions."
+  (let ((l))
+    (mapatoms (lambda (a)
+                (when (functionp a)
+                  (push a l))))
+    l))
+
+
+;;;###autoload
+(defun t/interactive-fns ()
+  "List interactive functions."
+  (-filter 'commandp
+           (t/fns)))
+
+
+;;;###autoload
+(defun t/complete-with-helm-then (list fn)
+  "Complete from list with helm, e.g. (t/complete-with-helm-then '(one two) 'insert)"
+  (interactive)
+  (helm :sources (helm-build-sync-source "Choose from list."
+                   :action fn
+                   :candidates list)))
+
+
+
 (provide 't-defuns)

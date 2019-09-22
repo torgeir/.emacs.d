@@ -1247,6 +1247,8 @@
                     "R" 'hs-show-all)
 
   (t/declare-prefix "j" "Jump to"
+                    "f" 'find-function
+                    "k" 'find-function-on-key
                     "w" 'ace-window
                     "j" 'avy-goto-char-timer
                     "t" 'avy-goto-char-timer
