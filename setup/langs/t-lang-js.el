@@ -14,7 +14,8 @@
 (use-package lsp-ui
   :init
   (progn
-    (setq lsp-ui-sideline-enable nil
+    (setq lsp-ui-doc-enable nil
+          lsp-ui-sideline-enable nil
           lsp-ui-sideline-show-code-actions nil)
     (add-hook 'lsp-mode-hook 'lsp-ui-mode))
   :config
@@ -58,6 +59,18 @@
                   js-switch-indent-offset *t-indent*
                   js2-basic-offset *t-indent*)
 
+    (t/declare-prefix-for-mode 'rjsx-mode
+                               "h" "Help"
+                               "h" 'lsp-describe-thing-at-point)
+
+    (t/declare-prefix-for-mode 'js2-mode
+                               "h" "Help"
+                               "h" 'lsp-describe-thing-at-point)
+
+    (t/declare-prefix-for-mode 'js2-mode
+                               "me" "Evaluate"
+                               "b" 't/send-buffer-to-nodejs-repl-process
+                               "r" 't/send-region-to-nodejs-repl-process)
 
     (t/add-hook-defun 'js2-mode-hook t/js2-mode-hook
                       (flycheck-mode)
@@ -70,14 +83,7 @@
   :config
   (progn
     (unbind-key "M-j" js2-mode-map)
-    (unbind-key "M-." js2-mode-map)
-    (t/declare-prefix-for-mode 'js2-mode
-                               "h" "Help"
-                               "h" 'lsp-ui-doc)
-    (t/declare-prefix-for-mode 'js2-mode
-                               "me" "Evaluate"
-                               "b" 't/send-buffer-to-nodejs-repl-process
-                               "r" 't/send-region-to-nodejs-repl-process)))
+    (unbind-key "M-." js2-mode-map)))
 
 (t/use-package js2-refactor
   :after js2-mode
