@@ -315,7 +315,7 @@ Including indent-buffer, which should not be called automatically on save."
 (defun t/previous-window ()
   "Skip back to previous window"
   (interactive)
-  (other-window -1))
+  (call-interactively 'other-window))
 
 ;;;###autoload
 (defun t/buffer-mode (buffer-or-string)
