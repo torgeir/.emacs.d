@@ -41,7 +41,7 @@
 ;;;### (autoloads nil "t-keys" "t-keys.el" (0 0 0 0))
 ;;; Generated autoloads from t-keys.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-keys" '("t-keys/")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-keys" '("t-keys/config")))
 
 ;;;***
 
@@ -553,9 +553,6 @@ Adds items to the list `l'.
 
 (autoload 't/toggle-line-numbers "t-defuns" "\
 Toggle line numbers on or off." t nil)
-
-(autoload 't/toggle-relative-line-numbers "t-defuns" "\
-Toggle relative line numbers on or off." t nil)
 
 (autoload 't/highlight-logging "t-defuns" "\
 Add log highlighting to current major mode." t nil)

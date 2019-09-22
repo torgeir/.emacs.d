@@ -1143,12 +1143,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (nlinum-mode (if nlinum-mode 0 1)))
 
 ;;;###autoload
-(defun t/toggle-relative-line-numbers ()
-  "Toggle relative line numbers on or off."
-  (interactive)
-  (nlinum-relative-toggle))
-
-;;;###autoload
 (defun t/highlight-logging ()
   "Add log highlighting to current major mode."
   (interactive)

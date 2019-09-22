@@ -1161,7 +1161,7 @@
                     "m" 'imenu-list-smart-toggle
                     "M" 'menu-bar-mode
                     "n" #'t/toggle-line-numbers
-                    "r" #'t/toggle-relative-line-numbers
+                    "r" 'nlinum-relative-toggle
                     "L" 'hl-line-mode
                     "l" 'visual-line-mode
                     "W" 'whitespace-mode
