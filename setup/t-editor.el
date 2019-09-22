@@ -772,38 +772,47 @@
 (t/use-package restclient
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
 
+(defun t/clean-nrk-buffer ()
+  (flush-lines "^$")
+  ;; clean up lines beginning with dates, e.g. 20. sept...
+  (beginning-of-buffer)
+  (flush-lines "^[0-9][0-9]\.")
+  ;; clean up lines beginning with -
+  (beginning-of-buffer)
+  (while (re-search-forward "*" nil t)
+    ;; kill lines with dates, all these news are new
+    (when (string-match-p "^* [0-9][0-9]\." (thing-at-point 'line))
+      (kill-line)
+      (forward-line)
+      (join-line))
+    ;; change * to -
+    (replace-match "\n-")
+    ;; highlight the line
+    (add-text-properties (point-at-bol) (point-at-eol) '(face outline-4)))
+  (beginning-of-buffer)
+  (kill-line))
+
 ;; eww-mode
-(defun t/eww-readable-after-render (plain-text)
+(defun t/eww-readable-after-render (&optional fn)
   (lambda (status url buffer)
     (eww-render status url nil buffer)
     (switch-to-buffer buffer)
     (eww-readable)
     (writeroom-mode 1)
-    (when plain-text
-      (let ((content (buffer-substring-no-properties (point-min) (point-max))))
-        (read-only-mode 0)
-        (erase-buffer)
-        (insert content)
-        ;; clean up empty lines
-        (beginning-of-buffer)
-        (flush-lines "^$")
-        ;; clean up lines beginning with dates, e.g. 20. sept...
-        (beginning-of-buffer)
-        (flush-lines "^[0-9][0-9]\.")
-        ;; clean up lines beginning with -
-        (beginning-of-buffer)
-        (while (re-search-forward "*" nil t)
-          (replace-match "\n-"))
-        (beginning-of-buffer)))))
+    (let ((content (buffer-substring-no-properties (point-min) (point-max))))
+      (read-only-mode 0)
+      (erase-buffer)
+      (insert content)
+      (beginning-of-buffer)
+      (when fn (funcall fn)))))
 
-(defun t/eww-readable (url &optional plain-text)
+(defun t/eww-readable (url &optional fn)
   (interactive "sEnter URL: ")
-  (lexical-let ((buffer (get-buffer-create "*eww*"))
-                (plain-text plain-text))
+  (lexical-let ((buffer (get-buffer-create "*eww*")))
     (with-current-buffer buffer
       (autoload 'eww-setup-buffer "eww")
       (eww-setup-buffer)
-      (url-retrieve url (t/eww-readable-after-render plain-text) (list url buffer)))))
+      (url-retrieve url (t/eww-readable-after-render fn) (list url buffer)))))
 
 (t/after shr
   ;; don't truncate lines in eww-mode
@@ -1102,7 +1111,7 @@
                     "p" 'proced
                     "m" 'helm-spotify
                     "M" (t/lambda nil (switch-to-buffer "*Messages*") (end-of-buffer))
-                    "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/" (t/prefix-arg-universal?)))
+                    "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))
                     "R" #'t/toggle-regex-mode
                     "se" 't/eshell
                     "st" 'ansi-term
@@ -1111,7 +1120,7 @@
                     "S" 'suggest
                     "w" 'eww
                     "W" (t/lambda nil
-                          (t/eww-readable "https://en.wikipedia.org/wiki/Special:Random" (t/prefix-arg-universal?))
+                          (t/eww-readable "https://en.wikipedia.org/wiki/Special:Random")
                           (visual-line-mode -1)
                           (visual-line-mode 1)))
 
@@ -1197,6 +1206,8 @@
   (t/declare-prefix "h" "Help"
                     "h" #'t/describe
                     "f" #'t/face-at-point
+                    "F" #'list-faces-display
+                    "C" #'list-colors-display
                     "a" 'helm-apropos
                     "l" 'helm-locate-library
                     "i" 'helm-info-at-point
