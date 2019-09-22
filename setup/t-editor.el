@@ -1274,7 +1274,7 @@
                     "s" 'avy-goto-symbol-1-below)
 
   (t/declare-prefix "h" "Highlight"
-                    "H" 'highlight-symbol
+                    "H" (t/lambda (highlight-symbol (thing-at-point 'symbol)))
                     "n" 'highlight-symbol-next
                     "N" 'highlight-symbol-prev)
 
