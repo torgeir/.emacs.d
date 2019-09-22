@@ -2,6 +2,9 @@
   (setq t-font-size 15
         shell-file-name "/bin/sh")
 
+  ;; intentionally not t/use-package, to make sure it happens at once
+  (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
+
   (t/bind-in 'key-translation-map
     ;; translate norwegian os x keybindings
     "M-7" "|"
