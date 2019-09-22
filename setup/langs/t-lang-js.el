@@ -14,7 +14,7 @@
 (use-package lsp-ui
   :init
   (progn
-    (setq lsp-ui-sideline-enable t
+    (setq lsp-ui-sideline-enable nil
           lsp-ui-sideline-show-code-actions nil)
     (add-hook 'lsp-mode-hook 'lsp-ui-mode))
   :config
