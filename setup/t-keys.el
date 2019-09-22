@@ -76,7 +76,7 @@
     "C-x C-k" 'kill-region
 
     "C-." 't/hippie-expand-no-case-fold
-    "C-," 'completion-at-point
+    "C-," 'company-complete
     "C-:" 't/hippie-expand-lines))
 
 (provide 't-keys)

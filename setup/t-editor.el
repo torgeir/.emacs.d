@@ -280,8 +280,7 @@
      company-abbrev)))
 
 (t/use-package company
-  :diminish company-mode
-  :defer 2
+  :commands company-complete
   :init
   (progn
     (setq company-idle-delay 0.15
@@ -294,25 +293,27 @@
           company-require-match nil
           company-backends (t/company-backends '()))
     (t/after company
-      (global-company-mode)))
-  :config
-  (progn
-    (defun t/company-helm () (interactive) (company-abort) (completion-at-point))
-    (t/bind-in 'company-active-map
-      "TAB" 'company-complete-selection
-      "RET" 'company-complete-selection
-      "C-w" 'evil-delete-backward-word
-      "C-l" 'evil-delete-backward-word
-      "C-u" 'backward-kill-sentence
-      "C-n" 'company-select-next
-      "C-p" 'company-select-previous
-      "C-," #'t/company-helm)))
+      (t/bind-in 'company-active-map
+        "TAB" 'company-complete-selection
+        "RET" 'company-complete-selection
+        "C-w" 'evil-delete-backward-word
+        "C-l" 'evil-delete-backward-word
+        "C-u" 'backward-kill-sentence
+        "C-n" 'company-select-next
+        "C-s" 'company-search-candidates
+        "C-p" 'company-select-previous
+        "C-," #'t/company-helm)
+      (defun t/company-helm ()
+        (interactive)
+        (company-abort)
+        (completion-at-point))
+      (global-company-mode))))
 
 (t/use-package company-box
   :command company-box-mode
   :init
   (progn
-    (setq company-box-doc-delay 0.01
+    (setq company-box-doc-delay 0.05
           company-box-backends-colors nil)
     (t/after company-box
       (add-to-list 'company-box-frame-parameters '(desktop-dont-save . t))
