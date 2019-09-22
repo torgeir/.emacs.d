@@ -1111,10 +1111,10 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (byte-recompile-directory (expand-file-name (t/user-emacs-file "elpa")) 0))
 
 ;;;###autoload
-(defun t/describe ()
+(defun t/describe (&optional sat)
   "Describe functions, features, symbols, or run help-apropos if it's not found."
   (interactive)
-  (let ((s (symbol-at-point)))
+  (let ((s (or sat (symbol-at-point))))
     (cond ((fboundp s) (describe-function s))
           ((featurep s) (describe-package s))
           ((symbolp s) (describe-variable s))
