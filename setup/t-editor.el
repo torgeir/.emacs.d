@@ -23,6 +23,16 @@
   :load-path "site-lisp/imenu-list/"
   :init
   (setq imenu-list-auto-resize t))
+
+(use-package beacon
+  :defer 1
+  :init
+  (setq beacon-size 8
+        beacon-blink-delay 0
+        beacon-blink-duration 0.2
+        beacon-color "#f06")
+  :config (beacon-mode))
+
 (t/use-package subword
   :diminish subword-mode
   :defer 1
