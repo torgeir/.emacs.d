@@ -19,6 +19,10 @@
   (progn
     (setq uniquify-buffer-name-style 'forward)))
 
+(use-package imenu-list
+  :load-path "site-lisp/imenu-list/"
+  :init
+  (setq imenu-list-auto-resize t))
 (t/use-package subword
   :diminish subword-mode
   :defer 1
