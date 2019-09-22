@@ -1123,7 +1123,7 @@
                     "h" 't/hackernews
                     "i" 't/open-in-intellij
                     "p" 'proced
-                    "m" 'helm-spotify
+                    "m" 'popwin:messages
                     "M" (t/lambda nil (switch-to-buffer "*Messages*") (end-of-buffer))
                     "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))
                     "R" #'t/toggle-regex-mode
@@ -1173,8 +1173,7 @@
                     "t" 't/kill-other-buffers
                     "b" 'helm-mini
                     "o" 't/switch-to-previous-buffer
-                    "N" 'previous-buffer
-                    "p" 'previous-buffer
+                    "p" 'popwin:display-buffer
                     "n" 'next-buffer
                     "R" 'revert-buffer)
 
@@ -1275,6 +1274,13 @@
   (t/declare-prefix "j" "Jump to"
                     "f" 'find-function
                     "k" 'find-function-on-key
+                    "p" (lambda (key)
+                          (interactive "kPress keybinding to run in popup: ")
+                          (popwin:display-buffer-1 (popwin:dummy-buffer))
+                          (let ((keys (key-binding key)))
+                            (funcall
+                             (cond ((stringp keys) (symbol-function keys))
+                                   (t keys)))))
                     "w" 'ace-window
                     "j" 'avy-goto-char-timer
                     "t" 'avy-goto-char-timer

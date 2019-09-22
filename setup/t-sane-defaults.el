@@ -116,4 +116,11 @@
     (global-set-key [mouse-5] (t/lambda (scroll-up 2)))
     (mouse-wheel-mode t)))
 
+(use-package popwin
+  :defer 1
+  :init
+  (setq popwin:popup-window-height 25)
+  :config
+  (popwin-mode 1))
+
 (provide 't-sane-defaults)
