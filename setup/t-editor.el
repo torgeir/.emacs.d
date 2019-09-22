@@ -422,7 +422,7 @@
       "M-S-<up>" #'sp-backward-up-sexp
       "M-S-<down>" #'sp-down-sexp
       "M-S-<left>" #'sp-backward-sexp
-      "M-S-<right>" #'sp-forward-sexp)
+      "M-S-<right>" #'sp-next-sexp)
 
     (t/bind-in 'global-map
       "s-(" 't/wrap-with-parens
