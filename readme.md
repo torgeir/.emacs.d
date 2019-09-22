@@ -2,7 +2,6 @@
 
 ```
 cd && git clone git@github.com:torgeir/.emacs.d.git
-ln -s ~/.emacs.d/.emacs
 ```
 
 ### installing emacs
@@ -50,10 +49,8 @@ these need to exist on `PATH`:
 
 - git
 - eslint babel-eslint jsonlint eslint-plugin-react
-  typescript-language-server typescript javascript-language-server
+typescript-language-server typescript jscodeshift browser-sync
 - wordnet
-- browser-sync
-- jscodeshift
 
 #### fonts
 
