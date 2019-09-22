@@ -596,19 +596,20 @@
   (progn
     (defun helm-google--parse-google (buf)
       "Parse the html response from Google. torgeir: fixes issues with google now randomizing css classes."
-      (helm-google--with-buffer buf
-          (let (results result)
-            (while (re-search-forward "<a href=\"/url\\?q=\\(.*?\\)&amp;sa" nil t)
-              (setq result (plist-put result :url (match-string-no-properties 1)))
-              (re-search-forward "<div class=\"[^\"]+\">\\([\0-\377[:nonascii:]]*?\\)</div>" nil t)
-              (when-let ((html (match-string-no-properties 1)))
-                (setq result (plist-put result :title (helm-google--process-html html))))
-              (re-search-forward "<div class=\"[^\"]+\">[\0-\377[:nonascii:]]*?</div><div class=\"[^\"]+\">[\0-\377[:nonascii:]]*?</div><div class=\"[^\"]+\">\\([\0-\377[:nonascii:]]*?\\)</div>" nil t)
-              (when-let ((html (match-string-no-properties 1)))
-                (setq result (plist-put result :content (helm-google--process-html html))))
-              (add-to-list 'results result t)
-              (setq result nil))
-            results)))))
+      (helm-google--with-buffer
+       buf
+       (let (results result)
+         (while (re-search-forward "<a href=\"/url\\?q=\\(.*?\\)&amp;sa" nil t)
+           (setq result (plist-put result :url (match-string-no-properties 1)))
+           (re-search-forward "<div class=\"[^\"]+\">\\([\0-\377[:nonascii:]]*?\\)</div>" nil t)
+           (when-let ((html (match-string-no-properties 1)))
+             (setq result (plist-put result :title (helm-google--process-html html))))
+           (re-search-forward "<div class=\"[^\"]+\">[\0-\377[:nonascii:]]*?</div><div class=\"[^\"]+\">[\0-\377[:nonascii:]]*?</div><div class=\"[^\"]+\">\\([\0-\377[:nonascii:]]*?\\)</div>" nil t)
+           (when-let ((html (match-string-no-properties 1)))
+             (setq result (plist-put result :content (helm-google--process-html html))))
+           (add-to-list 'results result t)
+           (setq result nil))
+         results)))))
 
 (t/use-package swiper-helm
   :commands swiper-helm)
