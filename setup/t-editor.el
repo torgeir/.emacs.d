@@ -36,9 +36,9 @@
 (use-package beacon
   :defer 1
   :init
-  (setq beacon-size 8
+  (setq beacon-size 10
         beacon-blink-delay 0
-        beacon-blink-duration 0.2
+        beacon-blink-duration 0.25
         beacon-color "#f06")
   :config (beacon-mode))
 
