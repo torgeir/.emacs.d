@@ -24,12 +24,12 @@
   :init
   (progn
     (setq imenu-list-auto-resize t)
+    (add-to-list 'evil-emacs-state-modes 'imenu-list-minor-mode)
     (t/after imenu-list
       (bind-key "j" 'next-line imenu-list-major-mode-map)
       (bind-key "k" 'previous-line imenu-list-major-mode-map))
     (t/add-hook-defun 'imenu-list-update-hook t-after-imenu-update
                       (with-current-buffer imenu-list-buffer-name
-                        (evil-emacs-state)
                         (text-scale-set 0)
                         (text-scale-decrease 1)))))
 
