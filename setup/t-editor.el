@@ -264,6 +264,15 @@
     (t/declare-prefix "a" "Applications"
                       "u" 'undo-tree-visualize)))
 
+
+(use-package md4rd
+  :init
+  (progn
+    (t/add-hook 'md4rd-mode-hook 'md4rd-indent-all-the-lines)
+    (setq md4rd-subs-active '(emacs prolog clojure)))
+
+  :config)
+
 (t/use-package smex
   :commands (smex smex-major-mode-commands)
   :init
@@ -1131,6 +1140,7 @@
                     "c" 'calendar
                     "b" #'t/browse-url-at-point
                     "C" 'calc-dispatch
+                    "d" 'md4rd
                     "h" 't/hackernews
                     "i" 't/open-in-intellij
                     "p" 'proced

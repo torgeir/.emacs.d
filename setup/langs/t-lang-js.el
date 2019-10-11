@@ -6,9 +6,14 @@
     (setq lsp-print-io nil
           lsp-prefer-flymake nil)
     (require 'lsp-clients)
-    (add-hook 'css-mode 'lsp-mode))
+    (add-hook 'css-mode-hook 'lsp))
   :config
   (add-to-list 'lsp-language-id-configuration '(rjsx-mode . "javascript")))
+
+
+(use-package lsp-java
+  :init
+  (add-hook 'java-mode-hook 'lsp))
 
 
 (use-package lsp-ui

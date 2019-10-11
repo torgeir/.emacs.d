@@ -119,8 +119,10 @@
 (use-package popwin
   :defer 1
   :init
-  (setq popwin:popup-window-height 25)
+  (progn
+    (setq popwin:popup-window-height 25))
   :config
-  (popwin-mode 1))
+  (popwin-mode 1)
+  (add-to-list 'popwin:special-display-config '("*cider-doc*" :noselect t)))
 
 (provide 't-sane-defaults)
