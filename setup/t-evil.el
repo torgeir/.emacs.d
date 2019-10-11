@@ -1,13 +1,18 @@
 ;;; -*- lexical-binding: t; -*-
+(setq evil-want-C-d-scroll t
+      evil-want-C-u-scroll t
+      evil-want-keybinding nil
+      evil-want-integration t
+      evil-want-Y-yank-to-eol nil
+      evil-move-beyond-eol nil)
+
+(setq evil-default-state 'normal
+      evil-insert-skip-empty-lines t
+      evil-search-module 'evil-search)
+
 (t/use-package evil
   :init
   (progn
-    (setq evil-want-C-d-scroll t
-          evil-want-C-u-scroll t
-          evil-want-keybinding nil
-          evil-want-integration t
-          evil-want-Y-yank-to-eol nil
-          evil-move-beyond-eol nil)
     ;; https://emacs.stackexchange.com/a/15054
     (fset 'evil-visual-update-x-selection 'ignore)))
 
@@ -171,10 +176,6 @@
   (t/add-hook-defun 'after-change-major-mode-hook t/hook-major-mode
                     (when (member major-mode t-evil-major-modes)
                       (evil-emacs-state))))
-
-(setq evil-default-state 'normal
-      evil-insert-skip-empty-lines t
-      evil-search-module 'evil-search)
 
 (defun t-evil/config ()
   (t/add-hook '(git-commit-mode-hook org-capture-mode-hook) 'evil-insert-state)
