@@ -306,9 +306,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
     (progn
       ;; idle timer
-      (when (boundp 'spacemacs-useful-buffers-regexp)
-        (add-to-list 'spacemacs-useful-buffers-regexp "\\*Org Agenda\\*"))
-
       (defun t/jump-to-org-agenda ()
         (interactive)
         (let ((agenda-buffer (get-buffer "*Org Agenda*"))

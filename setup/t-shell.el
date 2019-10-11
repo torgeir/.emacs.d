@@ -192,9 +192,6 @@
           (eshell-life-is-too-much)
         (delete-forward-char 1)))
 
-
-    (when (boundp 'spacemacs-useful-buffers-regexp)
-      (add-to-list 'spacemacs-useful-buffers-regexp "\\*eshell.*"))
     (t/add-hook-defun 'eshell-directory-change-hook t/hook-eshell-dir (rename-buffer (t/eshell-buffer-id) t))
     (t/add-hook-defun 'eshell-mode-hook t/hook-eshell
                       (paredit-mode 1)
