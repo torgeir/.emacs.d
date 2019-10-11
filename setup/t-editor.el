@@ -506,18 +506,19 @@
       "C-<right>" 'sp-forward-slurp-sexp
       "C-<left>" 'sp-forward-barf-sexp)))
 
-(use-package csv-mode
+(t/use-package csv-mode
   :commands csv-mode
   :init
   (setq csv-separators '(";")))
 
 (t/use-package writeroom-mode
-  :commands writeroom-mode
+  :commands (global-writeroom-mode turn-on-writeroom-mode writeroom-mode)
   :init
-  (setq writeroom-width 0.66
+  (setq writeroom-width 0.60
+        writeroom-mode-line t
         writeroom-maximize-window nil
         writeroom-fullscreen-effect 'maximized
-        writeroom-major-modes '(js-mode js2-mode rjsx-mode)))
+        writeroom-major-modes '(js-mode js2-mode rjsx-mode emacs-lisp-mode)))
 
 (t/use-package w3m
   :commands w3m
@@ -1183,7 +1184,8 @@
                     "r" 'nlinum-relative-toggle
                     "L" 'hl-line-mode
                     "l" 'visual-line-mode
-                    "W" 'whitespace-mode
+                    "s" 'whitespace-mode
+                    "W" 'global-writeroom-mode
                     "w" 'writeroom-mode
                     "Cc" 'rainbow-mode
                     "Cd" 'rainbow-delimiters-mode)
