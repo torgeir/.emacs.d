@@ -74,8 +74,7 @@
                                           "ua" 'clojure-unwind-all
                                           "uw" 'clojure-unwind
 
-                                          "ml" 'cljr-move-to-let
-                                          ))))
+                                          "ml" 'cljr-move-to-let))))
 
     (t/add-hook 'clojure-mode-hook (t/lambda (t/init-clj-refactor 'clojure-mode)))
     (t/add-hook 'clojurescript-mode-hook (t/lambda (t/init-clj-refactor 'clojurescript-mode)))))
@@ -115,6 +114,14 @@
       (other-window 1))
 
     (defun t/init-clj-mode-keys-in-mode (mode)
+      (add-hook (intern (concat (symbol-name 'clojurescript-mode) "-hook"))
+                (lambda ()
+                  (bind-key "M-." 'cider-find-dwim evil-normal-state-local-map)
+                  (bind-key "M-." 'cider-find-dwim evil-insert-state-local-map)
+                  (bind-key "C-M-." 'cider-find-dwim evil-normal-state-local-map)
+                  (bind-key "C-M-." 'cider-find-dwim evil-insert-state-local-map)))
+      (t/declare-prefix-for-mode mode "h" "Mode"
+                                 "h" 'cider-doc)
       (t/declare-prefix-for-mode mode "d" "Mode"
                                  "f" 'cider-doc
                                  "j" 'cider-javadoc
@@ -145,7 +152,7 @@
       (t/add-hook '(cider-repl-mode-hook cider-mode-hook) 'company-mode))
 
     ;; match camel-case tokens
-    (t/add-hook 'clojurescript-mode-hook '(subword-mode enable-paredit-mode))
-    (t/add-hook 'clojure-mode-hook '(subword-mode enable-paredit-mode))))
+    (t/add-hook 'clojurescript-mode-hook '(subword-mode smartparens-mode))
+    (t/add-hook 'clojure-mode-hook '(subword-mode smartparens-mode))))
 
 (provide 't-lang-clojure)
