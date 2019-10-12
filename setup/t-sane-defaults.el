@@ -123,6 +123,7 @@
     (setq popwin:popup-window-height 25))
   :config
   (popwin-mode 1)
+  (add-to-list 'popwin:special-display-config "*xref*")
   (add-to-list 'popwin:special-display-config '("*cider-doc*" :noselect t)))
 
 (provide 't-sane-defaults)
