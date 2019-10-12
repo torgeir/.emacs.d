@@ -11,9 +11,9 @@
   (add-to-list 'lsp-language-id-configuration '(rjsx-mode . "javascript")))
 
 
-(use-package lsp-java
-  :init
-  (add-hook 'java-mode-hook 'lsp))
+(comment (use-package lsp-java
+           :init
+           (add-hook 'java-mode-hook 'lsp)))
 
 
 (use-package lsp-ui
