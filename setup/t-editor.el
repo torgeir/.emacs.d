@@ -24,7 +24,8 @@
   :init
   (progn
     (setq imenu-list-auto-resize t)
-    (add-to-list 'evil-emacs-state-modes 'imenu-list-minor-mode)
+    (t/after evil
+      (add-to-list 'evil-emacs-state-modes 'imenu-list-minor-mode))
     (t/after imenu-list
       (bind-key "j" 'next-line imenu-list-major-mode-map)
       (bind-key "k" 'previous-line imenu-list-major-mode-map))
@@ -518,7 +519,15 @@
         writeroom-mode-line t
         writeroom-maximize-window nil
         writeroom-fullscreen-effect 'maximized
-        writeroom-major-modes '(js-mode js2-mode rjsx-mode emacs-lisp-mode)))
+        writeroom-major-modes
+        '(js-mode
+          js2-mode
+          rjsx-mode
+          emacs-lisp-mode
+          dired-mode
+          eshell-mode
+          all-the-icons-dired-mode
+          ruby-mode)))
 
 (t/use-package w3m
   :commands w3m
