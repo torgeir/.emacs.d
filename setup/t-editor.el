@@ -270,9 +270,26 @@
   :init
   (progn
     (t/add-hook 'md4rd-mode-hook 'md4rd-indent-all-the-lines)
-    (setq md4rd-subs-active '(emacs prolog clojure)))
-
-  :config)
+    (t/after evil
+      (t/after md4rd
+        (progn
+          (evil-define-key 'normal md4rd-mode-map (kbd "q") 'kill-current-buffer)
+          (evil-define-key 'normal md4rd-mode-map (kbd "<tab>") 'tree-mode-toggle-expand)
+          (evil-define-key 'normal md4rd-mode-map (kbd "u") 'tree-mode-goto-parent)
+          (evil-define-key 'normal md4rd-mode-map (kbd "j") 'widget-forward)
+          (evil-define-key 'normal md4rd-mode-map (kbd "k") 'widget-backward)
+          (evil-define-key 'normal md4rd-mode-map (kbd "M-q") 'md4rd-indent-all-the-lines)
+          (evil-define-key 'normal md4rd-mode-map (kbd "c") 'md4rd-widget-collapse-all)
+          (evil-define-key 'normal md4rd-mode-map (kbd "t") 'md4rd-widget-toggle-line)
+          (evil-define-key 'normal md4rd-mode-map (kbd "e") 'md4rd-widget-expand-all)
+          (evil-define-key 'normal md4rd-mode-map (kbd "o") (t/lambda nil
+                                                              (forward-word)
+                                                              (md4rd-open)))
+          (evil-define-key 'normal md4rd-mode-map (kbd "<return>") 'md4rd-visit)
+          (evil-define-key 'normal md4rd-mode-map (kbd "v") 'md4rd-visit)
+          (evil-define-key 'normal md4rd-mode-map (kbd "M-u") 'md4rd-upvote)
+          (evil-define-key 'normal md4rd-mode-map (kbd "d") 'md4rd-downvote))))
+    (setq md4rd-subs-active '(MechanicalKeyboards emacs clojure))))
 
 (t/use-package smex
   :commands (smex smex-major-mode-commands)
