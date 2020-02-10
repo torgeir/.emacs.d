@@ -406,6 +406,7 @@ Including indent-buffer, which should not be called automatically on save."
                    ;;"Roboto Mono"
                    )
                 (list
+                 "JetBrains Mono"
                  "Roboto Mono"
                  "Hack"
                  "Fira Code Retina"
