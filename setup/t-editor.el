@@ -534,8 +534,8 @@
   :init
   (setq writeroom-width 0.60
         writeroom-mode-line t
-        writeroom-maximize-window nil
-        writeroom-fullscreen-effect 'maximized
+        writeroom-maximize-window t
+        writeroom-fullscreen-effect nil
         writeroom-major-modes
         '(js-mode
           js2-mode
