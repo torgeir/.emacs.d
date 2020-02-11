@@ -393,6 +393,7 @@ Including indent-buffer, which should not be called automatically on save."
 
 (setq t-fonts (if is-mac
                   (list
+                   "JetBrains Mono"
                    "DejaVu Sans Mono"
                    "Bitstream Vera Sans Mono"
                    "Code New Roman"
