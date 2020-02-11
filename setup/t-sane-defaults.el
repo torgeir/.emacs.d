@@ -7,13 +7,17 @@
   ;; utf-8 ffs
   (setq locale-coding-system 'utf-8
         default-buffer-file-coding-system 'utf-8)
-  (set-default-coding-systems 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-selection-coding-system 'utf-8)
+
+  ;; don't hijack everything
+  ;; (set-default-coding-systems 'utf-8)
+  ;; (set-terminal-coding-system 'utf-8)
+  ;; (set-keyboard-coding-system 'utf-8)
+  ;; (set-selection-coding-system 'utf-8)
+  ;; (modify-coding-system-alist 'file "" 'utf-8)
+
   (add-to-list 'file-coding-system-alist '("\\.org" . utf-8))
   (prefer-coding-system 'utf-8)
-  (modify-coding-system-alist 'file "" 'utf-8)
+
 
   (setq-default
    word-wrap t
