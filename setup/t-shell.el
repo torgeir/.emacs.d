@@ -148,6 +148,7 @@
                       '("l" "ls -H $*")
                       '("lout" "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend")
                       '("md" "mkdir $1; cd $1")
+                      ;;'("merge-pdfs" "gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=merged.pdf *.pdf")
                       '("serve" "python -m SimpleHTTPServer")
                       '("showdesktop" "defaults write com.apple.finder CreateDesktop -bool true && killall Finder")
                       '("showhidden" "defaults write com.apple.finder AppleShowAllFiles -boolean true && killall Finder")
