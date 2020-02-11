@@ -32,7 +32,7 @@
     (t/add-hook-defun 'imenu-list-update-hook t-after-imenu-update
                       (with-current-buffer imenu-list-buffer-name
                         (text-scale-set 0)
-                        (text-scale-decrease 1)))))
+                        (text-scale-decrease 3)))))
 
 (use-package beacon
   :defer 1
