@@ -1397,7 +1397,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/transparency (value)
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
-  (interactive "nTransparency Value 0 - 100 opaque: ")
+  (interactive (list
+                (string-to-number
+                 (read-string (format "Transparency Value 0 - 100 opaque: " (thing-at-point 'symbol))
+                              nil
+                              nil
+                              "100"))))
   (set-frame-parameter (selected-frame) 'alpha value))
 
 
