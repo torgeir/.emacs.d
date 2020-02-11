@@ -87,7 +87,10 @@
 (defmacro t/add-hook-defun (hook-or-hooks fn &rest body)
   "Create a defun `fn' with `body' in `hook-or-hooks'."
   `(progn
-     (defun ,fn () (interactive) ,@body)
+     (defun ,fn ()
+       (interactive)
+       (unless (helm-window)
+         ,@body))
      (t/add-hook ,hook-or-hooks (quote ,fn))))
 
 (defmacro t/macro-helm-ag-insert (thing fn)

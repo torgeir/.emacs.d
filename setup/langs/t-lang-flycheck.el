@@ -10,7 +10,10 @@
     (t/add-to-list 't-evil-major-modes 'flycheck-error-list-mode)
     (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint)))
     (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist)))
-    (t/after js2-mode (flycheck-add-mode 'javascript-eslint 'js2-mode))))
+    (t/after lsp-ui
+      (t/after js2-mode
+        (flycheck-add-mode 'javascript-eslint 'js2-mode)
+        (flycheck-add-next-checker 'lsp-ui 'javascript-eslint)))))
 
 (t/use-package flycheck-clojure
   :pin melpa-stable

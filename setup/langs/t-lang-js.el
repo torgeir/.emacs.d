@@ -22,7 +22,11 @@
     (setq lsp-ui-doc-enable nil
           lsp-ui-sideline-enable nil
           lsp-ui-sideline-show-code-actions nil)
-    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+    (with-eval-after-load 'lsp-mode
+      (add-hook 'lsp-after-open-hook (lambda ()
+                                       (lsp-ui-flycheck-enable 1))))
+    (t/add-hook-defun 'lsp-mode-hook t/lsp-ui-lsp-mode-hook
+                      (lsp-ui-mode)))
   :config
   (progn
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
@@ -81,7 +85,7 @@
                       (flycheck-mode)
                       (turn-on-smartparens-mode)
                       (js2-imenu-extras-mode)
-                      (unless (helm-window) (lsp))
+                      (lsp)
                       (t/set-company-backends 'company-lsp)
                       (t/when-ext "ts" (typescript-mode))))
 
@@ -97,6 +101,7 @@
                     "ef" 'js2r-extract-function
                     "em" 'js2r-extract-method
                     "ev" 'js2r-extract-var
+                    "ec" 'js2r-extract-const
                     "ip" 'js2r-introduce-parameter
                     "iv" 'js2r-inline-var
                     "rv" 'js2r-rename-var
@@ -130,7 +135,8 @@
           prettier-js-show-errors 'buffer)
 
     (defun t/prettier-hook ()
-      (prettier-js-mode))
+      (unless (helm-window)
+        (prettier-js-mode)))
 
     (t/add-hook 'js-mode-hook #'t/prettier-hook)
     (t/add-hook 'js2-mode-hook #'t/prettier-hook)
@@ -151,7 +157,8 @@
              indium-debugger-mode)
   :init
   (t/after js2-mode
-    (t/add-hook '(js2-mode-hook) 'indium-interaction-mode)
+    (t/add-hook-defun 'js2-mode-hook t/indium-js-mode-hook
+                      (indium-interaction-mode))
     (t/after rjsx-mode
       (t/declare-prefix-for-mode 'rjsx-mode
                                  "m" "mode"
