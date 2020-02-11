@@ -155,6 +155,7 @@
       ;; misc
 
       ;;(require 'ox-md)
+      (require 'ox-gfm)
       (require 'ob-clojure)
 
       (setq org-babel-clojure-backend 'cider)

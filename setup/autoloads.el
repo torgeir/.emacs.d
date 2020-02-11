@@ -105,7 +105,7 @@
 ;;;### (autoloads nil "t-shell" "t-shell.el" (0 0 0 0))
 ;;; Generated autoloads from t-shell.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '("t-shell/config")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '("pcomplete/" "t-shell/config")))
 
 ;;;***
 

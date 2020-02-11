@@ -1,6 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
 (progn
 
+  (t/use-package ox-gfm
+    :ensure nil
+    :load-path "site-lisp/ox-gfm")
+
   (t/use-package cloudformation-mode
     :ensure nil
     :load-path "site-lisp/cloudformation/"
