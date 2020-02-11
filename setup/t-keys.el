@@ -13,23 +13,23 @@
         try-expand-list
         try-expand-line))
 
-(progn
-  (defun t/useful-buffer? (b)
-    "Determine if a buffer is useful and you would like to jump to it."
-    (let ((name (buffer-name b)))
-      (and (not (get-buffer-window name nil)) ; not already visible in same frame
-           (not (s-contains? "autoloads.el" name))
-           (or (equal "*scratch*" name)
-               (s-contains? "*eww" name)
-               (s-contains? "*Org" name)
-               (s-contains? "*eshell" name)
-               (s-contains? "*helm ag" name)
-               (not (s-contains? "*" name))))))
-  ;; skip non-useful buffers on next-buffer, prev-buffer, other-buffer
-  (let ((entry-exists (assq 'buffer-predicate default-frame-alist)))
-    (if entry-exists
-        (setcdr entry-exists #'t/useful-buffer?)
-      (push '(buffer-predicate . t/useful-buffer?) default-frame-alist))))
+(comment
+ (defun t/useful-buffer? (b)
+   "Determine if a buffer is useful and you would like to jump to it."
+   (let ((name (buffer-name b)))
+     (and (not (get-buffer-window name nil)) ; not already visible in same frame
+          (not (s-contains? "autoloads.el" name))
+          (or (equal "*scratch*" name)
+              (s-contains? "*eww" name)
+              (s-contains? "*Org" name)
+              (s-contains? "*eshell" name)
+              (s-contains? "*helm ag" name)
+              (not (s-contains? "*" name))))))
+ ;; skip non-useful buffers on next-buffer, prev-buffer, other-buffer
+ (let ((entry-exists (assq 'buffer-predicate default-frame-alist)))
+   (if entry-exists
+       (setcdr entry-exists #'t/useful-buffer?)
+     (push '(buffer-predicate . t/useful-buffer?) default-frame-alist))))
 
 (defun t-keys/config ()
   (t/bind-in 'minibuffer-local-map "C-w" 'backward-kill-word)
