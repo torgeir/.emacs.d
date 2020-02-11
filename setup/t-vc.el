@@ -61,7 +61,10 @@
     (when is-mac
       (setq
        ;; fixes https://github.com/magit/ghub/issues/81 - dont use this on linux
-       gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")))
+       gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"
+
+       ;; https://github.com/magit/ghub/issues/81 - https://github.com/magit/ghub/commit/785cbfd1d48559556f38e9be7c3ed9bc15af12eb
+       ghub-use-workaround-for-emacs-bug 'force)))
 
   :config
   (progn
