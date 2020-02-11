@@ -80,6 +80,7 @@
 
 (setq org-capture-templates
       `(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n")
+        ("s" "Saga" entry (file+headline ,(t/org-directory "saga.org") "Saga") "* TODO %? \n\n%i\n\n")
         ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n")
         ("f" "File location" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n")
         ("e" "Elfeed location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template))
@@ -254,12 +255,14 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                          ("t" todo "TODO" ,(t/org-agenda-todo-type "TODO"))
                                          ("b" todo "STARTED" ,(t/org-agenda-todo-type "STARTED"))
                                          ("c" todo "CANCELLED" ,(t/org-agenda-todo-type "CANCELLED"))
-                                         ("s" tags-todo "serie|film")
+                                         ("m" tags-todo "serie|film")
                                          ("e" tags-todo "emacs")
                                          ("r" tags-todo "book|read|twitter|pocket")
                                          ("v" tags-todo "video")
                                          ("w" "bekk" ,(append (t/org-day-summary "+bekk-home")
                                                               `((tags "+someday+bekk"))))
+                                         ("s" "saga" ,(append (t/org-day-summary "+saga-home")
+                                                              `((tags "+someday+saga"))))
                                          ("d" "datainn" ,(append (t/org-day-summary "+datainn-home")
                                                                  `((tags "+someday+datainn"))))
                                          ("h" "home" ,(append (list (t/org-agenda-read))
@@ -351,6 +354,7 @@ Locally redefines org-agenda-files not to export all agenda files."
                                         (mapcar #'t/org-directory
                                                 '("home.org"
                                                   "bekk/bekk.org"
+                                                  "bekk/saga.org"
                                                   "bekk/datainn.org")))))
             (org-icalendar-export-agenda-files)))
 

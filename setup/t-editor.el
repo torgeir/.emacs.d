@@ -1210,7 +1210,7 @@
                     "r" 'nlinum-relative-toggle
                     "L" 'hl-line-mode
                     "l" 'visual-line-mode
-                    "s" 'whitespace-mode
+                    "." 'whitespace-mode
                     "W" 'global-writeroom-mode
                     "w" 'writeroom-mode
                     "Cc" 'rainbow-mode
