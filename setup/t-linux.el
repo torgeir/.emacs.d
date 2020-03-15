@@ -1,6 +1,6 @@
 (defun t-linux/init ()
-  (setq t-font-size 15
-        shell-file-name "/bin/sh")
+  (setq t-font-size 14
+        shell-file-name "/bin/zsh")
 
   ;; intentionally not t/use-package, to make sure it happens at once
   (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
