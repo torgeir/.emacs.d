@@ -135,6 +135,7 @@
           prettier-js-show-errors 'buffer)
 
     (defun t/prettier-hook ()
+      (prettier-js-mode -1)
       (unless (helm-window)
         (prettier-js-mode)))
 
