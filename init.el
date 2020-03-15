@@ -49,6 +49,7 @@
 (require 't-lang-haskell)
 (require 't-lang-js)
 (require 't-lang-json)
+(require 't-lang-kotlin)
 (require 't-lang-markdown)
 (require 't-lang-pug)
 (require 't-lang-php)
