@@ -335,6 +335,7 @@
         "C-w" 'evil-delete-backward-word
         "C-l" 'evil-delete-backward-word
         "C-u" 'backward-kill-sentence
+        "C-h" 'company-show-doc-buffer
         "C-n" 'company-select-next
         "C-s" 'company-search-candidates
         "C-p" 'company-select-previous
