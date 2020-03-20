@@ -9,6 +9,10 @@
   (setq ns-use-mwheel-momentum t
         ns-use-mwheel-acceleration t
 
+        ;; for some reason makes ci{[ work on os x
+        ;; with evil-surround with a norwegian keyboard..
+        mac-right-option-modifier nil
+
         ;; bind fn to H-
         ns-function-modifier 'hyper
 
