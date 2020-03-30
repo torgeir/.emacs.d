@@ -80,7 +80,7 @@
 
 (setq org-capture-templates
       `(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n")
-        ("s" "Saga" entry (file+headline ,(t/org-directory "saga.org") "Saga") "* TODO %? \n\n%i\n\n")
+        ("s" "Saga" entry (file+headline ,(t/org-directory "bekk/saga.org") "Saga") "* TODO %? \n\n%i\n\n")
         ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n")
         ("f" "File location" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n")
         ("e" "Elfeed location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template))
