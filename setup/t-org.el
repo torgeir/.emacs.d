@@ -44,7 +44,7 @@
       org-outline-path-complete-in-steps nil ; refile to subpaths
       org-tags-column -60           ; tag position after headings
       org-export-coding-system 'utf-8
-      org-default-notes-file (t/org-directory "tasks.org")
+      org-default-notes-file (t/org-directory "home.org")
       org-special-ctrl-k t         ; don't clear tags, etc
       org-adapt-indentation t      ; move text to align with heading bullets
 
@@ -79,12 +79,12 @@
   (concat "* TODO %? :url:%^G\n\n%i\n" (elfeed-entry-link elfeed-show-entry)))
 
 (setq org-capture-templates
-      `(("t" "Task" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n")
-        ("s" "Saga" entry (file+headline ,(t/org-directory "bekk/saga.org") "Saga") "* TODO %? \n\n%i\n\n")
+      `(("t" "Task" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\n%i\n\n")
+        ("s" "Saga" entry (file+olp ,(t/org-directory "bekk/saga.org") "Saga" "Tasks") "* TODO %? \n\n%i\n\n")
         ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n")
-        ("f" "File location" entry (file+headline org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n")
-        ("e" "Elfeed location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template))
-        ("c" "Chrome location" entry (file+headline org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template))))
+        ("f" "File location" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\n%i%a\n\n")
+        ("e" "Elfeed location" entry (file+olp org-default-notes-file "Home" "Tasks") (function t/org-capture-elfeed-link-template))
+        ("c" "Chrome location" entry (file+olp org-default-notes-file "Home" "Tasks") (function t/org-capture-chrome-link-template))))
 
 ;; org-mobile
 (t/use-package request-deferred :after org)
@@ -211,12 +211,13 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 
       (defun t/org-agenda-pri-a (&rest tags)
-        (string-join (-map (lambda (t) (format "%s&PRIORITY=\"A\"" t)) tags) "|"))
+        (string-join (-map (lambda (t) (format "%s+PRIORITY=\"A\"" t)) tags) "|"))
 
       (defun t/org-agenda-pri (header &rest tags)
         (list (apply 't/org-agenda-pri-a tags)
               `((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
                 (org-agenda-overriding-header ,header))))
+
       (defun t/org-agenda-day (tags)
         (list tags '((org-agenda-span 'day)
                      (org-agenda-ndays-to-span 1)
@@ -261,10 +262,8 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                          ("v" tags-todo "video")
                                          ("w" "bekk" ,(append (t/org-day-summary "+bekk-home")
                                                               `((tags "+someday+bekk"))))
-                                         ("s" "saga" ,(append (t/org-day-summary "+saga-home")
+                                         ("s" "saga" ,(append (t/org-day-summary  "+saga-home")
                                                               `((tags "+someday+saga"))))
-                                         ("d" "datainn" ,(append (t/org-day-summary "+datainn-home")
-                                                                 `((tags "+someday+datainn"))))
                                          ("h" "home" ,(append (list (t/org-agenda-read))
                                                               (t/org-day-summary "+home-emacs-someday")
                                                               `((tags-todo "+someday-work" ((org-agenda-overriding-header "Someday"))))))))
