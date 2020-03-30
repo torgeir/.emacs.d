@@ -852,7 +852,16 @@
     ;; highlight the line
     (add-text-properties (point-at-bol) (point-at-eol) '(face outline-4)))
   (beginning-of-buffer)
-  (kill-line))
+  (kill-line)
+  (evil-search "- " t)
+  (t/bind-in 'evil-normal-state-local-map
+    "n" (t/lambda nil
+          (evil-search "- " t)
+          (recenter-top-bottom))
+    "p" (t/lambda nil
+          (evil-search "- " nil)
+          (recenter-top-bottom))))
+
 
 ;; eww-mode
 (defun t/eww-readable-after-render (&optional fn)
