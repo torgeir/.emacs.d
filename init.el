@@ -74,6 +74,8 @@
 
 (t-lang-elisp/config)
 
+(t/set-font (first t-fonts))
+
 (unless (fboundp 'server-running-p) (require 'server))
 (unless (server-running-p) (server-mode))
 
