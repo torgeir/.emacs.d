@@ -171,7 +171,7 @@
         (eshell (t/eshell-buffer-id))
         (when (and hasfile (eq eshell-process-list nil))
           (goto-char (point-max))
-;;          (setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home -v 1.8")))
+          ;;(setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home -v 1.8")))
           (shell-command-to-string "jenv local 1.8")
           (setenv "BOOT_JVM_OPTIONS" "-Djdk.launcher.addmods=java.xml.bind")
           (setenv "PAGER" "cat"))))
@@ -205,9 +205,11 @@
                         ;; C-c c-d sends exit
                         "C-c C-u" 'universal-argument
                         )
-                      (t/bind-in '(eshell-mode-map paredit-mode-map evil-insert-state-local-map evil-normal-state-local-map)
+                      (t/bind-in '(eshell-mode-map paredit-mode-map evil-insert-state-local-map)
                         "C-a" 'eshell-bol
                         "C-d" 't/eshell-quit-or-delete-char)
+                      (t/bind-in '(evil-normal-state-local-map)
+                        "C-a" 'eshell-bol)
                       (progn ;; helm for history
                         (setq eshell-cmpl-ignore-case t)
                         (eshell-cmpl-initialize)
@@ -396,4 +398,3 @@ PWD is not in a git repo (or the git command is not found)."
        ad-return-value)))
 
 (provide 't-shell)
-
