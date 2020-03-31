@@ -854,14 +854,14 @@
   (beginning-of-buffer)
   (kill-line)
   (evil-search "- " t)
-  (t/bind-in 'evil-normal-state-local-map
-    "n" (t/lambda nil
-          (evil-search "- " t)
-          (recenter nil))
-    "p" (t/lambda nil
-          (evil-search "- " nil)
-          (recenter nil))))
-
+  (lexical-let ((keymap (make-sparse-keymap)))
+    (bind-key "n" (t/lambda nil
+                    (evil-search "- " t)
+                    (recenter nil)) keymap)
+    (bind-key "p" (t/lambda nil
+                    (evil-search "- " nil)
+                    (recenter nil)) keymap)
+    (set-temporary-overlay-map keymap t)))
 
 ;; eww-mode
 (defun t/eww-readable-after-render (&optional fn)
@@ -931,6 +931,11 @@
       (call-interactively 'hackernews)))
   :config
   (progn
+    (t/add-hook-defun 'hackernews-mode-hook t-hackernews-hook
+                      (lexical-let ((keymap (make-sparse-keymap)))
+                        (bind-key "n" 'hackernews-next-item keymap)
+                        (bind-key "p" 'hackernews-previous-item keymap)
+                        (set-temporary-overlay-map keymap t)))
     (evil-define-key 'normal hackernews-map
       (kbd "<return>") 'hackernews-button-browse-internal
       (kbd "TAB") 'hackernews-next-comment
