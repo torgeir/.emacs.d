@@ -262,7 +262,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                          ("v" tags-todo "video")
                                          ("w" "bekk" ,(append (t/org-day-summary "+bekk-home")
                                                               `((tags "+someday+bekk"))))
-                                         ("s" "saga" ,(append (t/org-day-summary  "+saga-home")
+                                         ("s" "saga" ,(append (t/org-day-summary "+saga-home")
                                                               `((tags "+someday+saga"))))
                                          ("h" "home" ,(append (list (t/org-agenda-read))
                                                               (t/org-day-summary "+home-emacs-someday")
@@ -614,7 +614,7 @@ Locally redefines org-agenda-files not to export all agenda files."
     (when (boundp 't-org-gcal)
       (setq org-gcal-client-id t-org-gcal-client-id
             org-gcal-client-secret t-org-gcal-client-secret
-            org-gcal-file-alist t-org-gcal-file-alist
+            org-gcal-fetch-file-alist t-org-gcal-file-alist
             org-gcal-header-alist t-org-gcal-header-alist
             org-gcal-up-days 1)
       (add-hook 'org-agenda-mode-hook 'org-gcal-fetch))))
