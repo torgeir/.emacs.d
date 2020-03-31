@@ -857,10 +857,10 @@
   (t/bind-in 'evil-normal-state-local-map
     "n" (t/lambda nil
           (evil-search "- " t)
-          (recenter-top-bottom))
+          (recenter nil))
     "p" (t/lambda nil
           (evil-search "- " nil)
-          (recenter-top-bottom))))
+          (recenter nil))))
 
 
 ;; eww-mode
