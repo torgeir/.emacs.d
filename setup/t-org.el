@@ -140,6 +140,11 @@
   (t/after org
 
     (progn
+      ;; fix https://emacs.stackexchange.com/questions/55690/org-babel-javascript-error
+      (setq org-babel-js-function-wrapper
+            "console.log(require('util').inspect(function(){\n%s\n}(), { depth: 100 }))"))
+
+    (progn
       ;; fix completion dissapearing
       (t/after company
         (t/add-company-backends-hook 'org-mode-hook 'company-capf))
