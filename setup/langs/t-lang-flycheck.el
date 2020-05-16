@@ -13,7 +13,7 @@
     (t/after lsp-ui
       (t/after js2-mode
         (flycheck-add-mode 'javascript-eslint 'js2-mode)
-        (flycheck-add-next-checker 'lsp-ui 'javascript-eslint)))))
+        (flycheck-add-next-checker 'lsp 'javascript-eslint)))))
 
 (t/use-package flycheck-clojure
   :pin melpa-stable
