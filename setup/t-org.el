@@ -27,7 +27,7 @@
            "Seems to have been renamed? Fix missing defun https://lists.gnu.org/archive/html/emacs-orgmode/2016-02/msg00122.html."
            (setq-local var val)))
 
-(setq org-ellipsis " >"
+(setq ;;org-ellipsis " >"
       org-startup-indented t        ; turn on org-indent-mode
       org-return-follows-link t
       org-tab-follows-link nil
