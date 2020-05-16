@@ -34,14 +34,15 @@
                         (text-scale-set 0)
                         (text-scale-decrease 3)))))
 
-(use-package beacon
-  :defer 1
-  :init
-  (setq beacon-size 10
-        beacon-blink-delay 0
-        beacon-blink-duration 0.25
-        beacon-color "#f06")
-  :config (beacon-mode))
+(comment
+ (use-package beacon
+   :defer 1
+   :init
+   (setq beacon-size 10
+         beacon-blink-delay 0
+         beacon-blink-duration 0.25
+         beacon-color "#f06")
+   :config (beacon-mode)))
 
 (t/use-package subword
   :diminish subword-mode
@@ -935,6 +936,7 @@
                       (lexical-let ((keymap (make-sparse-keymap)))
                         (bind-key "n" 'hackernews-next-item keymap)
                         (bind-key "p" 'hackernews-previous-item keymap)
+                        (bind-key "<return>" 'hackernews-button-browse-internal keymap)
                         (set-temporary-overlay-map keymap t)))
     (evil-define-key 'normal hackernews-map
       (kbd "<return>") 'hackernews-button-browse-internal
