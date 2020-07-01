@@ -1305,6 +1305,20 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (user-error "No projects found"))))
 
 ;;;###autoload
+(defun t/projectile-helm-rg ()
+  (interactive)
+  (require 'helm)
+  (let ((projects (projectile-load-known-projects)))
+    (if projects
+        (projectile-completing-read
+         "Switch to project: "
+         projects
+         :action (lambda (project)
+                   (let ((default-directory project))
+                     (helm-projectile-rg))))
+      (user-error "No projects found"))))
+
+;;;###autoload
 (defun t/projectile-visit-git-link-pulls ()
   (interactive)
   (require 'helm)
