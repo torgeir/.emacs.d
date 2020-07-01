@@ -57,7 +57,7 @@
       (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle))
     (progn
       ;; https://github.com/jtbm37/all-the-icons-dired/pull/19
-      (t/after evil-collection-wdired
+      (t/after evil-collection
         (defvar-local +wdired-icons-enabled nil)
         (defun +wdired-before-start-advice ()
           "Execute when switching from `dired' to `wdired'."
