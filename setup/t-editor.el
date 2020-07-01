@@ -563,7 +563,8 @@
              helm
              helm-mini
              helm-projectile
-             helm-projectile-ag)
+             helm-projectile-ag
+             helm-projectile-rg)
   :diminish helm-mode
   :config
   (progn
@@ -623,12 +624,31 @@
           helm-ag-use-grep-ignore-list t
           ;; save edited buffers on completion
           helm-ag-edit-save t)
-    (when is-ms
-      (setq helm-ag-base-command "ag --nocolor --nogroup --vimgrep"))))
+    (setq helm-ag-base-command (if is-ms "ag --nocolor --nogroup --vimgrep"
+                                 "rg --no-heading --smart-case --vimgrep")
+          ;; rg exit-status 2 indicates partial success
+          helm-ag-success-exit-status '(0 2)))
 
+  :config
+  (progn
+    ;; patch helm projectile ag to use rg and its ignore params
+    (defun helm-ag--construct-ignore-option (pattern)
+      "Torgeir modified this as helm-do-ag ends up calling start-file-process
+with what is excpected to be a list of params one after another, with the -g instruction separated from the actual pattern
+
+helm-projectile-ag was modified accordingly.
+
+(when helm-ag-use-grep-ignore-list
+      (setq args (append args (apply 'append (helm-ag--grep-ignore-list-to-options)))))
+"
+      (list "-g" (concat "!" pattern)))))
+
+;; (use-package helm-rg)
+
+;; patched to use helm-ag--construct-ignore-option
 (t/use-package helm-projectile
   :after helm
-  :commands (helm-projectile projectile-load-known-projects helm-projectile-ag))
+  :commands (helm-projectile projectile-load-known-projects helm-projectile-ag helm-projectile-rg))
 
 (t/use-package helm-descbinds
   :commands helm-descbinds
@@ -1022,9 +1042,9 @@
           projectile-project-root-files '(".git" ".hg" ".svn" ".project" "package.json" "setup.py" "Gemfile" "build.gradle")))
   :config
   (progn
-    (t/add-to-list 'projectile-globally-ignored-directories '("elpa-backups" "node_modules" "target" "dist" ".idea"))
-    (t/add-to-list 'projectile-globally-ignored-files '("package-lock.json" "**.bundle.js" "**.build.js" ".DS_Store" "projectile.cache" "custom.el"))
-    (t/add-to-list 'grep-find-ignored-files '("package-lock.json" "**.bundle.js" "**.build.js" ".DS_Store" "custom.el" "node_modules/**"))
+    (t/add-to-list 'projectile-globally-ignored-directories '(".git" "elpy" "elpa-backups" "node_modules" ".idea"))
+    (t/add-to-list 'projectile-globally-ignored-files '("package-lock.json" "*.bundle.js" "*.build.js" ".DS_Store" "projectile.cache" "custom.el"))
+    (t/add-to-list 'grep-find-ignored-files '("package-lock.json" "*.bundle.js" "*.build.js" ".DS_Store" "projectile.cache" "custom.el" "node_modules/*" "elpy/*" "js-codemods/*" "target/*" "elpa-backups/*"))
     (projectile-global-mode +1)))
 
 (t/use-package dumb-jump
@@ -1390,6 +1410,7 @@
                     "L" 'neotree-hide
                     "o" 't/open-in-desktop
                     "p" 't/projectile-visit-git-link-pulls
+                    "r" 't/projectile-helm-rg
                     "s" 't/projectile-helm-ag
                     "R" 'projectile-replace
                     "S" 'projectile-save-project-buffers
@@ -1408,6 +1429,7 @@
                     "r" 'lsp-find-references
                     "d" 'lsp-find-definition
                     "D" 'lsp-find-declaration
+                    "r" 'helm-projectile-rg
                     "p" 'helm-projectile-ag
                     "s" 'swiper-helm
                     "t" 'etags-select-find-tag-at-point
