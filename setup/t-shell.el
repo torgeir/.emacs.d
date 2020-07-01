@@ -1,10 +1,15 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package bash-completion
-  :commands bash-completion-dynamic-complete
-  :init
-  (progn
-    (autoload 'bash-completion-dynamic-complete "bash-completion" "BASH completion hook")
-    (t/add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)))
+
+;; (t/use-package bash-completion
+;;   :commands bash-completion-dynamic-complete
+;;   :init
+;;   (progn
+;;     (autoload 'bash-completion-dynamic-complete "bash-completion" "BASH completion hook")
+;;     (t/add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)))
+
+;; (use-package native-complete
+;;   :init
+;;   (with-eval-after-load 'shell (native-complete-setup-bash)))
 
 (t/use-package esh-help
   :commands setup-esh-help-eldoc
@@ -27,7 +32,8 @@
     ;; shell
     (defun t/shell-mode-kill-buffer-on-exit (process state)
       (shell-write-history-on-exit process state)
-      (kill-buffer-and-window))
+      (when (string-match "\\(finished\\|exited\\)" (buffer-string))
+        (kill-buffer-and-window)))
 
     (defun t/shell-mode-hook ()
       (set-process-sentinel (get-buffer-process (current-buffer))
@@ -56,34 +62,34 @@
 
     (t/add-hook 'term-mode-hook #'t/term-mode-hook))
 
-  (progn
-    ;; ansi-term
-    (defun t/ansi-term-mode-hook ()
-      "Close current term buffer when `exit' or c-d from term buffer."
-      (goto-address-mode)
+  (comment
+   ;; ansi-term
+   (defun t/ansi-term-mode-hook ()
+     "Close current term buffer when `exit' or c-d from term buffer."
+     (goto-address-mode)
 
-      (when (ignore-errors (get-buffer-process (current-buffer)))
-        (set-process-sentinel
-         (get-buffer-process (current-buffer))
-         (lambda (proc change)
-           (message change)
-           (when (string-match "\\(finished\\|exited\\)" change)
-             (kill-buffer (process-buffer proc)))))))
+     (when (ignore-errors (get-buffer-process (current-buffer)))
+       (set-process-sentinel
+        (get-buffer-process (current-buffer))
+        (lambda (proc change)
+          (message change)
+          (when (string-match "\\(finished\\|exited\\)" change)
+            (kill-buffer (process-buffer proc)))))))
 
-    (t/add-hook 'term-mode-hook #'t/ansi-term-mode-hook)
+   (t/add-hook 'term-mode-hook #'t/ansi-term-mode-hook)
 
-    (defconst t-term-name "/bin/zsh")
-    (defadvice ansi-term (before force-bash)
-      (interactive (list t-term-name))
-      (term-line-mode))
-    (ad-activate 'ansi-term)
+   (defconst t-term-name "/bin/zsh")
+   (defadvice ansi-term (before force-bash)
+     (interactive (list t-term-name))
+     (term-line-mode))
+   (ad-activate 'ansi-term)
 
-    (defadvice ansi-term (after always-use-line-mode)
-      (term-line-mode))
-    (ad-activate 'ansi-term)
+   (defadvice ansi-term (after always-use-line-mode)
+     (term-line-mode))
+   (ad-activate 'ansi-term)
 
-    ;; fix tab-completion
-    (t/add-hook-setq 'term-mode-hook yas-dont-activate t))
+   ;; fix tab-completion
+   (t/add-hook-setq 'term-mode-hook yas-dont-activate t))
 
   (progn
     ;; eshell
