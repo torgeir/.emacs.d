@@ -92,6 +92,7 @@
                     "T" 'git-timemachine-toggle
                     "s" 'magit-status
                     "b" 'magit-blame
+                    "d" 'magit-diff
                     "l" 'magit-log-current
                     "L" 'magit-log
                     "C" 'magit-commit-create
