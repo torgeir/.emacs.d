@@ -690,12 +690,12 @@ helm-projectile-ag was modified accordingly.
 (t/use-package dash-at-point
   :commands dash-at-point)
 
-(t/use-package expand-region
-  :commands (er/expand-region er/contract-region)
-  :init
-  (progn
-    (bind-key (if is-mac "M-@" "M-'") 'er/expand-region)
-    (bind-key (if is-mac "M-*" "M-§") 'er/contract-region)))
+;; (t/use-package expand-region
+;;   :commands (er/expand-region er/contract-region)
+;;   :init
+;;   (progn
+;;     (bind-key (if is-mac "M-@" "M-'") 'er/expand-region)
+;;     (bind-key (if is-mac "M-*" "M-§") 'er/contract-region)))
 
 (t/use-package transpose-frame
   :commands transpose-frame)
@@ -1081,6 +1081,9 @@ helm-projectile-ag was modified accordingly.
     (t/add-hook-defun '(prog-mode-hook text-mode-hook git-commit-mode-hook) t/hook-whitespace
                       (setq-local whitespace-style '(face tabs tab-mark trailing))
                       (whitespace-mode 1))))
+
+(use-package wc-mode
+  :commands wc-mode)
 
 (use-package doc-view
   :defer t

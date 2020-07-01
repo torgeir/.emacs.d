@@ -62,7 +62,7 @@
 ;;;### (autoloads nil "t-mac" "t-mac.el" (0 0 0 0))
 ;;; Generated autoloads from t-mac.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-mac" '("t-mac/")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-mac" '("t-mac/init")))
 
 ;;;***
 
@@ -123,8 +123,8 @@
 
 ;;;***
 
-;;;### (autoloads nil nil ("t-calendar.el" "t-lang-graphql.el" "t-site-lisp.el"
-;;;;;;  "t-text-objects.el" "t-which-key.el") (0 0 0 0))
+;;;### (autoloads nil nil ("t-calendar.el" "t-site-lisp.el" "t-text-objects.el"
+;;;;;;  "t-which-key.el") (0 0 0 0))
 
 ;;;***
 
