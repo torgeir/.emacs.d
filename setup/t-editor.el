@@ -1426,8 +1426,8 @@ helm-projectile-ag was modified accordingly.
                     "I" 'helm-imenu-in-all-buffers
                     "T" 'helm-etags-select
                     "a" 'helm-multi-swoop-all
-                    "b" (t/macro-helm-ag-insert 'word helm-ag-buffers)
-                    "f" (t/macro-helm-ag-insert 'word helm-ag-this-file)
+                    "b" 'helm-ag-buffers
+                    "f" 'helm-ag-this-file
                     "g" 'helm-google
                     "G" 'helm-google-suggest
                     "m" 'helm-imenu
