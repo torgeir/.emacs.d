@@ -1237,10 +1237,13 @@ helm-projectile-ag was modified accordingly.
                     "U" 't/upgrade-packages)
 
   (t/declare-prefix "t" "Toggle"
-                    "d" 'toggle-debug-on-error
+                    "D" 'toggle-debug-on-error
                     "f" 't/cycle-font
+                    "dd" 'darkroom-mode
+                    "dt" 'darkroom-tentative-mode
                     "F" 'toggle-frame-fullscreen
                     "t" 't/load-theme-cycle
+                    "T" 't/transparency
                     "m" 'imenu-list-smart-toggle
                     "M" 'menu-bar-mode
                     "n" #'t/toggle-line-numbers
