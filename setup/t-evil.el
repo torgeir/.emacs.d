@@ -187,7 +187,9 @@
                              special-mode
                              calendar-mode
                              git-rebase-mode
-                             diff-mode)
+                             diff-mode
+                             gnus-group-mode
+                             gnus-summary-mode)
   "Major modes that should trigger evil emacs state when changed to.")
 (t/after evil
   (t/add-hook-defun 'after-change-major-mode-hook t/hook-major-mode

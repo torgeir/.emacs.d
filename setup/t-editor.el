@@ -687,6 +687,9 @@ helm-projectile-ag was modified accordingly.
   (progn
     (bind-key "M-%" 'vr/query-replace)))
 
+(use-package nnhackernews)
+(use-package nnreddit)
+
 (t/use-package dash-at-point
   :commands dash-at-point)
 
@@ -1208,6 +1211,7 @@ helm-projectile-ag was modified accordingly.
                     "b" #'t/browse-url-at-point
                     "C" 'calc-dispatch
                     "d" 'md4rd
+                    "g" 'gnus
                     "h" 't/hackernews
                     "i" 't/open-in-intellij
                     "p" 'proced
