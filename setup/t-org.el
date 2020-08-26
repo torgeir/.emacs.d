@@ -630,9 +630,11 @@ Locally redefines org-agenda-files not to export all agenda files."
   :after org
   :commands (helm-org-rifle)
   :init
-  (t/declare-prefix-for-mode 'org-mode "s" "Search"
-                             "p" 'helm-org-rifle
-                             "P" 'helm-projectile-ag))
+  (progn
+    (setq helm-org-rifle-directories-filename-regexp "\.org\\(_archive\\)?$")
+    (t/declare-prefix-for-mode 'org-mode "s" "Search"
+                               "p" 'helm-org-rifle
+                               "P" 'helm-projectile-ag)))
 
 ;; smartparens helpers
 (t/after smartparens
