@@ -1100,68 +1100,86 @@
 ** site lisp
 
    #+BEGIN_SRC emacs-lisp :results silent
-    (use-package ox-gfm)
+   (use-package ox-gfm)
 
-    (use-package cloudformation-mode
-      :ensure nil
-      :straight nil
-      :load-path "site-lisp/cloudformation-mode")
+   (use-package cloudformation-mode
+     :ensure nil
+     :straight nil
+     :load-path "site-lisp/cloudformation-mode")
 
-     (use-package spotify
-       :ensure nil
-       :straight nil
-       :load-path "site-lisp/spotify")
+   (use-package spotify
+     :ensure nil
+     :straight nil
+     :load-path "site-lisp/spotify")
 
-     (use-package nxml-eldoc
-       :ensure nil
-       :straight nil
-       :load-path "site-lisp/nxml-eldoc"
-       :commands turn-on-nxml-eldoc
-       :init
-       (t/add-hook 'nxml-mode-hook 'turn-on-nxml-eldoc))
+   (use-package nxml-eldoc
+     :ensure nil
+     :straight nil
+     :load-path "site-lisp/nxml-eldoc"
+     :commands turn-on-nxml-eldoc
+     :init
+     (t/add-hook 'nxml-mode-hook 'turn-on-nxml-eldoc))
 
-     (use-package json-path-eldoc
-       :ensure nil
-       :straight nil
-       :load-path "site-lisp/json-path-eldoc"
-       :commands turn-on-json-path-eldoc
-       :init
-       (t/add-hook 'json-mode-hook 'turn-on-json-path-eldoc))
+   (use-package json-path-eldoc
+     :ensure nil
+     :straight nil
+     :load-path "site-lisp/json-path-eldoc"
+     :commands turn-on-json-path-eldoc
+     :init
+     (t/add-hook 'json-mode-hook 'turn-on-json-path-eldoc))
 
-     (use-package html2text
-       ;; needed for helm-google
-       :commands helm-google
-       :ensure nil
-       :straight nil
-       :load-path "site-lisp/html2text")
+   (use-package html2text
+     ;; needed for helm-google
+     :commands helm-google
+     :ensure nil
+     :straight nil
+     :load-path "site-lisp/html2text")
 
-     (use-package sgml-mode
-       :ensure nil
-       :straight nil
-       :commands html-mode
-       :init
-       (progn
-         (t/add-hook-defun 'sgml-mode-hook t/hook-sgml
-                           (set (make-local-variable 'sgml-basic-offset) *t-indent*))))
+   (use-package sgml-mode
+     :ensure nil
+     :straight nil
+     :commands html-mode
+     :init
+     (progn
+       (t/add-hook-defun 'sgml-mode-hook t/hook-sgml
+                         (set (make-local-variable 'sgml-basic-offset) *t-indent*))))
 
-     (use-package nxml-mode
-       :ensure nil
-       :straight nil
-       :mode "\\.\\(xml\\|svg\\|rss\\|xsd\\|xslt\\|plist\\)$"
-       :config
-       ;; reindent after deleting tag with C-c DEL
-       (defadvice sgml-delete-tag (after reindent activate)
-         (indent-region (point-min) (point-max)))
+   (use-package nxml-mode
+     :ensure nil
+     :straight nil
+     :mode "\\.\\(xml\\|svg\\|rss\\|xsd\\|xslt\\|plist\\)$"
+     :config
+     ;; reindent after deleting tag with C-c DEL
+     (defadvice sgml-delete-tag (after reindent activate)
+       (indent-region (point-min) (point-max)))
 
-       ;; nxml
-       (setq nxml-child-indent *t-indent-xml*))
+     ;; nxml
+     (setq nxml-child-indent *t-indent-xml*))
 
-     (use-package html
-       :ensure nil
-       :straight nil
-       :mode ("\\.\\(html|htm\\)" . html-mode))
+   (use-package html
+     :ensure nil
+     :straight nil
+     :mode ("\\.\\(html|htm\\)" . html-mode))
    #+END_SRC
    
+** calendar
+   #+BEGIN_SRC emacs-lisp :results silent
+   (t/after calendar
+     ;; show week numbers in calendar
+     (copy-face font-lock-constant-face 'calendar-iso-week-face)
+     (set-face-attribute 'calendar-iso-week-face nil :height 1 :foreground "VioletRed1")
+
+     (copy-face 'default 'calendar-iso-week-header-face)
+     (set-face-attribute 'calendar-iso-week-header-face nil :height 0.5 :foreground "VioletRed4")
+
+     (setq calendar-mark-holidays-flag t
+           calendar-intermonth-header '(propertize " " 'font-lock-face 'calendar-iso-week-header-face)
+           calendar-intermonth-text '(propertize (format "%2d" (car
+                                                                (calendar-iso-from-absolute
+                                                                 (calendar-absolute-from-gregorian
+                                                                  (list month day year)))))
+                                                 'font-lock-face 'calendar-iso-week-face)))
+   #+END_SRC
 ** keys
 
    #+BEGIN_SRC emacs-lisp :results silent
@@ -1264,50 +1282,49 @@
        ;;(t/add-hook 'neotree-mode-hook 'doom-themes-neotree-config)
        (doom-themes-visual-bell-config)))
 
-   (progn
-     (defconst t-themes (list
-                         'doom-one
-                         'doom-one-light) "Themes to cycle")
+   (defconst t-themes (list
+                       'doom-one
+                       'doom-one-light) "Themes to cycle")
 
-     (defun t/cycle-theme ()
-       "Cycles themes in `t-themes'"
-       (interactive)
-       (let ((first (car t-themes))
-             (rest (cdr t-themes)))
-         (setq t-themes (append rest (list first)))
-         (car t-themes)))
+   (defun t/cycle-theme ()
+     "Cycles themes in `t-themes'"
+     (interactive)
+     (let ((first (car t-themes))
+           (rest (cdr t-themes)))
+       (setq t-themes (append rest (list first)))
+       (car t-themes)))
 
-     (defun t/load-theme-cycle ()
-       "Cycles `t-themes' and loads first theme in list"
-       (interactive)
-       (t/switch-theme (t/cycle-theme)))
+   (defun t/load-theme-cycle ()
+     "Cycles `t-themes' and loads first theme in list"
+     (interactive)
+     (t/switch-theme (t/cycle-theme)))
 
-     (defun t/load-theme ()
-       "Loads theme and fixes fringe bg color"
-       (interactive)
-       (t/switch-theme (car t-themes)))
+   (defun t/load-theme ()
+     "Loads theme and fixes fringe bg color"
+     (interactive)
+     (t/switch-theme (car t-themes)))
 
-     (defun t/reset-font-after-load (&rest args) (interactive) (t/reset-font-size))
-     (advice-add 'load-theme :after 't/reset-font-after-load)
+   (defun t/reset-font-after-load (&rest args) (interactive) (t/reset-font-size))
+   (advice-add 'load-theme :after 't/reset-font-after-load)
 
-     (defvar *t-theme-did-load* nil)
-     (defun t/load-theme-once ()
-       (unless *t-theme-did-load*
-         (setq *t-theme-did-load* t)
-         (t/load-theme)))
-     (t/add-hook 'after-init-hook
-                 (lambda ()
-                   (if has-gui
-                       (t/load-theme)
-                     (progn
-                       ;; load-theme after making the frame also when in terminal emacs
-                       (when (daemonp)
-                         (add-hook 'after-make-frame-functions
-                                   (lambda (frame)
-                                     (with-selected-frame frame (t/load-theme-once))
-                                     ;; for some reason opening in terminal gives menu bar
-                                     (menu-bar-mode -1))))
-                       (advice-add server-create-window-system-frame :after 't/load-theme-once))))))
+   (defvar *t-theme-did-load* nil)
+   (defun t/load-theme-once ()
+     (unless *t-theme-did-load*
+       (setq *t-theme-did-load* t)
+       (t/load-theme)))
+   (t/add-hook 'after-init-hook
+               (lambda ()
+                 (if has-gui
+                     (t/load-theme)
+                   (progn
+                     ;; load-theme after making the frame also when in terminal emacs
+                     (when (daemonp)
+                       (add-hook 'after-make-frame-functions
+                                 (lambda (frame)
+                                   (with-selected-frame frame (t/load-theme-once))
+                                   ;; for some reason opening in terminal gives menu bar
+                                   (menu-bar-mode -1))))
+                     (advice-add server-create-window-system-frame :after 't/load-theme-once)))))
    #+END_SRC
 
 ** server

@@ -19,13 +19,13 @@
 ;;(setq custom-file (t/user-emacs-file "custom.el"))
 ;;(load custom-file)
 
-(require 't-site-lisp)
-(require 't-calendar)
+;:(require 't-site-lisp)
+;;(require 't-calendar)
 ;;(require 't-which-key)
 ;;(require 't-load-theme)
 ;;(require 't-evil)
 (require 't-vc)
-(require 't-keys)
+;;(require 't-keys)
 (require 't-editor)
 (require 't-desktop)
 (require 't-shell)
@@ -63,7 +63,7 @@
 
 (dolist (pkg t-use-package-pkgs) (funcall pkg))
 
-(t-load-theme/config)
+;;(t-load-theme/config)
 ;;(t-evil/config)
 (t-vc/config)
 (t-keys/config)
