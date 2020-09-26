@@ -1,0 +1,49 @@
+#+BEGIN_SRC emacs-lisp
+;;; -*- lexical-binding: t; -*-
+(setq load-prefer-newer t) ; don't load outdated bytecode
+(setq package-check-signature nil) ; when checking signatures fail
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+
+(eval-when-compile
+  (require 'use-package)
+  )
+
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(load custom-file)
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :config
+  (progn
+    (setq doom-modeline-height 40
+          doom-themes-padded-modeline 1)
+    ;;(t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")
+))
+
+(use-package doom-themes
+  :config
+  (progn
+    (setq doom-themes-enable-bold t
+          doom-themes-enable-italic t)
+    (doom-themes-visual-bell-config)
+    ;;(t/add-hook 'org-mode-hook 'doom-themes-org-config)
+    ;;(t/add-hook 'neotree-mode-hook 'doom-themes-neotree-config)
+    (load-theme 'doom-one)
+))
+#+END_SRC
