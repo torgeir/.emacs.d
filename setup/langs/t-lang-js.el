@@ -5,7 +5,7 @@
   (progn
     (setq lsp-print-io nil
           lsp-prefer-flymake nil)
-    (require 'lsp-clients)
+    ;;(require 'lsp-clients)
     (add-hook 'css-mode-hook 'lsp)))
 
 

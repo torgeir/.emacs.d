@@ -54,7 +54,8 @@
 (require 't-lang-pug)
 (require 't-lang-php)
 (require 't-lang-remark)
-(require 't-lang-scala)
+;; ensime no longer works
+;;(require 't-lang-scala)
 (require 't-lang-sh)
 (require 't-lang-html)
 (require 't-lang-yaml)
