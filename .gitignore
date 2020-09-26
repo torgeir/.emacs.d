@@ -43,3 +43,4 @@
 /.lsp-session-*
 /.desktop-*
 .cache/projectile.projects
+straight
