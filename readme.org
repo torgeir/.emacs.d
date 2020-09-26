@@ -1252,7 +1252,8 @@
 
      ;; s-w quits like C-x C-w
      "s-w" #'t/delete-frame-or-hide-last-remaining-frame
-     "C-x C-c" #'t/delete-frame-or-hide-last-remaining-frame
+     ;; TODO
+     ;;"C-x C-c" #'t/delete-frame-or-hide-last-remaining-frame
 
      ;; buffer font size adjustment
      "s-?" (t/lambda (text-scale-increase 1))
