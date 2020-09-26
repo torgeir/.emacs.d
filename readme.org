@@ -159,6 +159,21 @@
    (eval-when-compile (require 'use-package))
    #+END_SRC
 
+
+   #+BEGIN_SRC emacs-lisp :results silent
+   (use-package diminish)
+   (require 'bind-key)
+   (use-package dash) ; list helpers
+   (use-package dash-functional) ; fun list helpers
+   (use-package s) ; string helpers
+   (use-package f) ; file helpers
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp :results silent
+   ;;(t/set-font (car t-fonts))
+   ;;(t/transparency 100)
+   #+END_SRC
+
 ** customization
   
    #+BEGIN_SRC emacs-lisp :results silent
@@ -1262,17 +1277,28 @@
      "C-," 'company-complete
      "C-:" 't/hippie-expand-lines)
    #+END_SRC
+   
+** server
 
+   #+BEGIN_SRC emacs-lisp :results silent
+   (unless (fboundp 'server-running-p) (require 'server))
+   (unless (server-running-p) (server-mode))
+   #+END_SRC
+
+** org
+
+   #+BEGIN_SRC emacs-lisp :results silent
+   (setq org-src-window-setup 'current-window ; edit code src blocks in current window
+         org-src-fontify-natively t
+         org-src-tab-acts-natively t
+         org-confirm-babel-evaluate nil ; don't prompt on every code run
+         org-export-babel-evaluate nil ; don't run stuff automatically on export
+         org-edit-src-content-indentation 0)
+   (bind-key "\C-c\C-c" 'org-edit-src-exit 'org-src-mode-map)
+   #+END_SRC
 ** themes
 
    #+BEGIN_SRC emacs-lisp :results silent
-   (use-package doom-modeline
-     :config
-     (progn
-       ;;(t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")
-       (setq doom-modeline-height 40
-             doom-themes-padded-modeline 1)))
-
    (use-package doom-themes
      :config
      (progn
@@ -1281,6 +1307,14 @@
        ;;(t/add-hook 'org-mode-hook 'doom-themes-org-config)
        ;;(t/add-hook 'neotree-mode-hook 'doom-themes-neotree-config)
        (doom-themes-visual-bell-config)))
+
+   (use-package doom-modeline
+     :hook (after-init . doom-modeline-mode)
+     :config
+     (progn
+       ;;(t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")
+       (setq doom-modeline-height 40
+             doom-themes-padded-modeline 1)))
 
    (defconst t-themes (list
                        'doom-one
@@ -1312,8 +1346,10 @@
      (unless *t-theme-did-load*
        (setq *t-theme-did-load* t)
        (t/load-theme)))
+
    (t/add-hook 'after-init-hook
                (lambda ()
+                 (message "her")
                  (if has-gui
                      (t/load-theme)
                    (progn
@@ -1327,24 +1363,6 @@
                      (advice-add server-create-window-system-frame :after 't/load-theme-once)))))
    #+END_SRC
 
-** server
-
-   #+BEGIN_SRC emacs-lisp :results silent
-   (unless (fboundp 'server-running-p) (require 'server))
-   (unless (server-running-p) (server-mode))
-   #+END_SRC
-
-** org
-
-   #+BEGIN_SRC emacs-lisp :results silent
-   (setq org-src-window-setup 'current-window ; edit code src blocks in current window
-         org-src-fontify-natively t
-         org-src-tab-acts-natively t
-         org-confirm-babel-evaluate nil ; don't prompt on every code run
-         org-export-babel-evaluate nil ; don't run stuff automatically on export
-         org-edit-src-content-indentation 0)
-   (bind-key "\C-c\C-c" 'org-edit-src-exit 'org-src-mode-map)
-   #+END_SRC
 ** after
    #+BEGIN_SRC emacs-lisp :results silent
    (t/timing-end)

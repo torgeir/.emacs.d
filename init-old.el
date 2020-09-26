@@ -75,10 +75,7 @@
 
 (t-lang-elisp/config)
 
-(t/set-font (first t-fonts))
-(t/transparency 90)
-
-(unless (fboundp 'server-running-p) (require 'server))
-(unless (server-running-p) (server-mode))
+;; (unless (fboundp 'server-running-p) (require 'server))
+;; (unless (server-running-p) (server-mode))
 
 (t/timing-end)
