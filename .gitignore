@@ -43,4 +43,6 @@
 /.lsp-session-*
 /.desktop-*
 .cache/projectile.projects
-straight
+/straight
+/readme.el
+

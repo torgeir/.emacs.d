@@ -1,8 +1,72 @@
-#+BEGIN_SRC emacs-lisp
-;;; -*- lexical-binding: t; -*-
-(setq load-prefer-newer t) ; don't load outdated bytecode
-(setq package-check-signature nil) ; when checking signatures fail
+* .emacs.d
 
+#+BEGIN_SRC sh :results silent
+cd && git clone git@github.com:torgeir/.emacs.d.git
+#+END_SRC
+
+Load this file when emacs starts.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(find-file (locate-user-emacs-file "readme.org"))
+#+END_SRC
+
+* os setup
+** shortcuts
+
+#+BEGIN_SRC sh :results silent
+ln -s ~/.emacs.d/emacsclient ~/bin/e
+ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
+#+END_SRC
+
+** deps
+
+#+BEGIN_SRC sh :results silent
+npm install eslint babel-eslint jsonlint eslint-plugin-react typescript-language-server typescript jscodeshift browser-sync
+#+END_SRC
+
+** os x
+
+#+BEGIN_SRC sh :results silent
+brew tap d12frosted/emacs-plus
+brew install emacs-plus --HEAD --with-natural-title-bar --without-spacemacs-icon
+#+END_SRC
+
+** ubuntu
+
+#+BEGIN_SRC sh :results silent
+sudo add-apt-repository -y ppa:ubuntu-elisp
+sudo apt update
+sudo apt install emacs-snapshot
+sudo apt install fonts-inconsolata
+sudo fc-cache -fv
+#+END_SRC
+
+* restore sanity
+
+Remove the startup message.
+ 
+#+BEGIN_SRC emacs-lisp :results silent
+(setq inhibit-startup-message t)
+#+END_SRC
+
+Make shift work i org-mode.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(setq org-support-shift-select t)
+#+END_SRC
+
+* bootstrap
+
+Default to calling straigth-use-package when running use-package.
+
+#+BEGIN_SRC emacs-lisp :results silent
+;;; -*- lexical-binding: t; -*-
+(setq straight-use-package-by-default t)
+#+END_SRC
+
+Bootstrap [straight.el](https://github.com/raxod502/straight.el).
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -15,19 +79,25 @@
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
-
-(straight-use-package 'use-package)
-
-(eval-when-compile
-  (require 'use-package)
-  )
-
-(setq custom-file (locate-user-emacs-file "custom.el"))
-(load custom-file)
-
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
+Install [use-package](https://github.com/jwiegley/use-package).
+
+#+BEGIN_SRC emacs-lisp :results silent
+(straight-use-package 'use-package)
+(eval-when-compile (require 'use-package))
+#+END_SRC
+
+* customization
+
+#+BEGIN_SRC emacs-lisp :results silent
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(load custom-file)
+#+END_SRC
+
+* themes
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package doom-modeline
   :config
   (progn

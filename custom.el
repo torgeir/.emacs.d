@@ -54,7 +54,7 @@
    ["#d2ceda" "#f2241f" "#67b11d" "#b1951d" "#3a81c3" "#a31db1" "#21b8c7" "#655370"])
  '(company-box-doc-delay 0.01)
  '(custom-safe-themes
-   '("6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" default))
+   '("2f1518e906a8b60fac943d02ad415f1d8b3933a5a7f75e307e6e9a26ef5bf570" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" default))
  '(flycheck-javascript-flow-args nil)
  '(helm-source-names-using-follow '("home.org_archive" "bekk.org" "Imenu" "AG"))
  '(json-reformat:indent-width 2)
