@@ -1,108 +1,175 @@
 #+STARTUP: overview
 * .emacs.d
 
-#+BEGIN_SRC sh :results silent
+  #+BEGIN_SRC sh :results silent
 cd && git clone git@github.com:torgeir/.emacs.d.git
-#+END_SRC
+  #+END_SRC
 
-Load this file when emacs starts.
+  Load this file when emacs starts.
 
-#+BEGIN_SRC emacs-lisp :results silent
+  #+BEGIN_SRC emacs-lisp :results silent
 (find-file (locate-user-emacs-file "readme.org"))
-#+END_SRC
+  #+END_SRC
 
 * os setup
 ** shortcuts
 
-#+BEGIN_SRC sh :results silent
+   #+BEGIN_SRC sh :results silent
 ln -s ~/.emacs.d/emacsclient ~/bin/e
 ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
-#+END_SRC
+   #+END_SRC
 
 ** deps
 
-#+BEGIN_SRC sh :results silent
+   #+BEGIN_SRC sh :results silent
 npm install eslint babel-eslint jsonlint eslint-plugin-react typescript-language-server typescript jscodeshift browser-sync
-#+END_SRC
+   #+END_SRC
 
 ** os x
 
-#+BEGIN_SRC sh :results silent
+   #+BEGIN_SRC sh :results silent
 brew tap d12frosted/emacs-plus
 brew install emacs-plus --HEAD --with-natural-title-bar --without-spacemacs-icon
-#+END_SRC
+   #+END_SRC
 
 ** ubuntu
 
-#+BEGIN_SRC sh :results silent
+   #+BEGIN_SRC sh :results silent
 sudo add-apt-repository -y ppa:ubuntu-elisp
 sudo apt update
 sudo apt install emacs-snapshot
 sudo apt install fonts-inconsolata
 sudo fc-cache -fv
-#+END_SRC
+   #+END_SRC
 
 * sanity
 
-Remove the startup message.
+  Remove the startup message.
  
-#+BEGIN_SRC emacs-lisp :results silent
+  #+BEGIN_SRC emacs-lisp :results silent
 (setq inhibit-startup-message t)
-#+END_SRC
+  #+END_SRC
 
-Make shift work i org-mode.
+  Make shift work i org-mode.
 
-#+BEGIN_SRC emacs-lisp :results silent
+  #+BEGIN_SRC emacs-lisp :results silent
 (setq org-support-shift-select t)
-#+END_SRC
+  #+END_SRC
 
 * bootstrap
 
-Default to calling straigth-use-package when running use-package.
+  Default to calling straigth-use-package when running use-package.
 
-#+BEGIN_SRC emacs-lisp :results silent
+  #+BEGIN_SRC emacs-lisp :results silent
 ;;; -*- lexical-binding: t; -*-
 (setq straight-use-package-by-default t)
-#+END_SRC
+  #+END_SRC
 
-Bootstrap [straight.el](https://github.com/raxod502/straight.el).
+  Bootstrap [straight.el](https://github.com/raxod502/straight.el).
 
-#+BEGIN_SRC emacs-lisp :results silent
-    (defvar bootstrap-version)
-    (let ((bootstrap-file
-	   (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	  (bootstrap-version 5))
-      (unless (file-exists-p bootstrap-file)
-	(with-current-buffer
-	    (url-retrieve-synchronously
-	     "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-	     'silent 'inhibit-cookies)
-	  (goto-char (point-max))
-	  (eval-print-last-sexp)))
-      (load bootstrap-file nil 'nomessage))
+  #+BEGIN_SRC emacs-lisp :results silent
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
 
-;; todo inline
-(load "~/.emacs.d/t-bootstrap.el")
-#+END_SRC
+  (defconst t-leader "SPC")
+  (defconst t-emacs-leader "C-")
+  (defconst t-font-size 17)
 
-Install [use-package](https://github.com/jwiegley/use-package).
+  (defconst is-mac (equal system-type 'darwin))
+  (defconst is-cygwin (equal system-type 'cygwin))
+  (defconst is-linux (equal system-type 'gnu/linux))
+  (defconst is-win (equal system-type 'windows-nt))
+  (defconst is-ms (or is-cygwin is-win))
+  (defconst has-gui (display-graphic-p))
 
-#+BEGIN_SRC emacs-lisp :results silent
+  (defvar *t-indent* 2)
+  (defvar *t-indent-xml* 4)
+  (defvar *t-debug-init* nil "Debug/time startup")
+  (when *t-debug-init* (setq debug-on-error nil))
+
+  (defconst user-emacs-directory "~/.emacs.d/")
+  (defun t/user-emacs-file (path) (concat user-emacs-directory path))
+  (defun t/user-file (path)
+    (concat (if is-mac "/Users/"
+              (if is-linux "/home/"
+                "c:/Users/"))
+            (if is-win
+                "torgth"
+              (replace-regexp-in-string "\\." "" (getenv "USER")))
+            "/"
+            path))
+
+  (defconst t-dir-setup (t/user-emacs-file "setup"))
+  (defconst t-dir-snippets (t/user-emacs-file "snippets"))
+  (defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
+
+  (add-to-list 'load-path t-dir-setup)
+  (add-to-list 'load-path (t/user-emacs-file "setup/langs"))
+  (let ((dir-site-lisp (t/user-emacs-file "site-lisp")))
+    (add-to-list 'load-path dir-site-lisp)
+    ;; add folders inside site-lisp as well
+    (dolist (project (directory-files dir-site-lisp t "\\w+"))
+      (when (file-directory-p project)
+        (add-to-list 'load-path project))))
+
+  (defun t/timing-start ()
+    (interactive)
+    (when *t-debug-init*
+      (message "t: timing init")
+      (require 't-debug)
+
+      ;; benchmarks
+      (use-package benchmark-init :config (benchmark-init/activate))))
+
+  (defun t/timing-end ()
+    (interactive)
+    (when *t-debug-init*
+      (message "t: timing init complete")
+      (benchmark-init/show-durations-tabulated)
+      (benchmark-init/show-durations-tree)))
+
+  (defun t/reload-autoloads ()
+    "Regenerate and reload autoloads.el."
+    (interactive)
+    (let ((generated-autoload-file t-file-autoloads))
+      (update-directory-autoloads (concat t-dir-setup "/"))
+      (when (called-interactively-p 'interactive) (load t-file-autoloads t t))))
+
+  (unless (require 'autoloads t-file-autoloads t)
+    (t/reload-autoloads)
+    (unless (require 'autoloads t-file-autoloads t) (error "autoloads.el not generated!")))
+
+  (load (t/user-emacs-file "t-before.el") t)
+  #+END_SRC
+
+  Install [use-package](https://github.com/jwiegley/use-package).
+
+  #+BEGIN_SRC emacs-lisp :results silent
 (straight-use-package 'use-package)
 (eval-when-compile (require 'use-package))
-#+END_SRC
+  #+END_SRC
 
 * customization
   
-#+BEGIN_SRC emacs-lisp :results silent
+  #+BEGIN_SRC emacs-lisp :results silent
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file)
-#+END_SRC
+  #+END_SRC
 
 * before
-#+BEGIN_SRC emacs-lisp :results silent
+  #+BEGIN_SRC emacs-lisp :results silent
 (t/timing-start)
-#+END_SRC
+  #+END_SRC
 
 * macros
   #+BEGIN_SRC emacs-lisp :results silent
@@ -335,341 +402,868 @@ for setting up vars and config after load")
                 (interactive "p")
                 (sp-wrap-with-pair ,val)))))
 
-(provide 't-macros)
   #+END_SRC
   
+* os specific
+** mac
+   #+BEGIN_SRC emacs-lisp :results silent
+(when is-mac
+
+(progn
+
+  ;; intentionally not t/use-package, to make sure it happens at once
+  (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
+
+  ;; mouse
+  (setq ns-use-mwheel-momentum t
+        ns-use-mwheel-acceleration t
+
+        ;; for some reason makes ci{[ work on os x
+        ;; with evil-surround with a norwegian keyboard..
+        mac-right-option-modifier nil
+
+        ;; bind fn to H-
+        ns-function-modifier 'hyper
+
+        shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
+
+        trash-directory "~/.Trash/emacs")
+
+  ;; dark title bar
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+
+  (t/bind-in 'key-translation-map
+    ;; translate norwegian os x keybindings
+    "M-7" "|"
+    "M-/" "\\"
+    "M-8" "["
+    "M-9" "]"
+    "M-(" "{"
+    "M-)" "}")
+
+  (t/bind-in 'global-map
+    ;; s-p print dialog kills emacs, so disable it..
+    "s-p" nil
+    ;; don't pop up font menu, makes new tab work in iterm2
+    "s-t" nil)
+
+  ;; make this run also after connecting with emacsclient
+  ;; https://groups.google.com/forum/#!topic/gnu.emacs.help/ZGu2MNkJGrI
+  (defadvice terminal-init-xterm (after map-S-up-escape-sequence activate)
+    (t/bind-in 'input-decode-map
+      ;; fix terminal shortcomings, remap them in iterm2, and bring tem back here
+      ;; unused keys are e.g. above f17 which is ^[[15;2~ in emacs that is \e[15;2\~
+      ;; http://aperiodic.net/phil/archives/Geekery/term-function-keys.html
+      "\e[15;2\~" "C-SPC"
+      "\e[17;2\~" "C-M-SPC"
+      "\e[18;2\~" "C-."
+      "\e[19;2\~" "C-,"
+      ;; c-æ on a norwegian mac keyboard IS the ansi escape character ^[
+      ;; for debugging run: (read-key-sequence "?")
+      "\e[20;2\~" "C-æ"
+      ;; c-ø on a norwegian mac keyboard is ^\
+      "C-\\" "C-ø"
+      ;; c-å on a norwegian mac keyboard is ^]
+      "C-]" "C-å"
+      ;; skip \e21;2~, its f10? what
+      "\e[22;2\~" "C-'")))
+    )
+   #+END_SRC
+
+** linux
+   #+BEGIN_SRC emacs-lisp :results silent
+
+(when is-linux
+(progn
+  (setq t-font-size 14
+        shell-file-name "/bin/zsh")
+
+  ;; intentionally not t/use-package, to make sure it happens at once
+  (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
+
+  (t/bind-in 'key-translation-map
+    ;; translate norwegian os x keybindings
+    "M-7" "|"
+    "M-/" "\\"
+    "M-8" "["
+    "M-9" "]"
+    "M-(" "{"
+    "M-)" "}")
+
+  ;; os x window movement
+  (t/bind-in 'global-map
+    "s-k" 'previous-buffer
+    "s-j" 'next-buffer
+    "s->" 'next-multiframe-window
+    "s-<" 'previous-multiframe-window
+    "s-<left>" 't/smart-beginning-of-line
+    "s-<right>" 'end-of-line
+    "M-s-<up>" 'windmove-up
+    "M-s-<right>" 'windmove-right
+    "M-s-<down>" 'windmove-down
+    "M-s-<left>" 'windmove-left
+    "s-d" 't/split-window-right-and-move-there-dammit
+    "s-D" 't/split-window-below-and-move-there-dammit
+
+    "s-c" 'evil-yank
+    "s-v" 'evil-paste-after
+    "s-z" 'undo-tree-undo
+    "s-s" 'save-buffer
+    "s-a" 'mark-whole-buffer
+    "s-w" 'delete-frame
+    "s-n" 'make-frame
+
+    ;; s-w quits like C-x C-w
+    "s-w" #'t/delete-frame-or-hide-last-remaining-frame
+    "s-q" 'restart-emacs
+
+    ;; buffer font size adjustment
+    "s-?" (t/lambda (text-scale-increase 1))
+    "s-_" (t/lambda (text-scale-decrease 1))
+    "s-=" (t/lambda (text-scale-set 0))
+
+    ;; global font size adjustment
+    "s-+" 't/increase-font-size
+    "s--" 't/decrease-font-size
+    "s-0" 't/reset-font-size)))
+   #+END_SRC
+
+** ms
+   #+BEGIN_SRC emacs-lisp :results silent
+(when is-ms
+(progn
+  (setq t-font-size 12
+        shell-file-name "C:/Program Files/Git/bin/bash.exe")
+
+  (t/bind-in 'global-map
+    "C-+" 't/increase-font-size
+    "C--" 't/decrease-font-size
+    "C-0" 't/reset-font-size)
+
+  (defun make-auto-save-file-name ()
+    "torgeir: copied this from ftp://ftp.gnu.org/old-gnu/emacs/windows/docs/faq8.html. Fixes an issue when in gui emacs on windows it cant save backup files.
+
+  Return file name to use for auto-saves of current buffer.
+Does not consider `auto-save-visited-file-name' as that variable is checked
+before calling this function.  This version stores all auto-save files in the
+same local directory. This is to avoid trying to save files over a dial-up
+connection (which may not be active).  See also `auto-save-file-name-p'."
+    (if buffer-file-name
+        (if (and (eq system-type 'ms-dos)
+                 (not (msdos-long-file-names)))
+            (let ((fn (file-name-nondirectory buffer-file-name)))
+              (string-match "\\`\\([^.]+\\)\\(\\.\\(..?\\)?.?\\|\\)\\'" fn)
+              (concat (expand-file-name "~/save/")
+                      "#" (match-string 1 fn)
+                      "." (match-string 3 fn) "#"))
+          (concat (expand-file-name "~/.save/")
+                  "#"
+                  (file-name-nondirectory buffer-file-name)
+                  "#"
+                  (make-temp-name "")))
+
+      ;; Deal with buffers that don't have any associated files.  (Mail
+      ;; mode tends to create a good number of these.)
+
+      (let ((buf-name (buffer-name))
+            (limit 0))
+
+        ;; Use technique from Sebastian Kremer's auto-save
+        ;; package to turn slashes into \\!.  This ensures that
+        ;; the auto-save buffer name is unique.
+
+        (while (string-match "[/\\*?':]" buf-name limit)
+          (message "%s" buf-name)
+          (setq buf-name (concat (substring buf-name 0 (match-beginning 0))
+                                 (if (string= (substring buf-name
+                                                         (match-beginning 0)
+                                                         (match-end 0))
+                                              "/")
+                                     "\\!"
+                                   (if (string= (substring buf-name
+                                                           (match-beginning 0)
+                                                           (match-end 0))
+                                                "\\\\")
+                                       "\\\\" "__"))
+                                 (substring buf-name (match-end 0))))
+          (setq limit (1+ (match-end 0))))
+
+        (expand-file-name
+         (format "~/.save/#%s#%s#" buf-name (make-temp-name "")))))))
+    )
+   #+END_SRC
+
+* sane defaults
+
+  #+BEGIN_SRC emacs-lisp :results silent
+  (use-package all-the-icons) ; pretty icons
+
+  (use-package better-defaults) ; rid the insanity
+
+    ;; utf-8 ffs
+    (setq locale-coding-system 'utf-8
+          default-buffer-file-coding-system 'utf-8)
+
+    (add-to-list 'file-coding-system-alist '("\\.org" . utf-8))
+    (prefer-coding-system 'utf-8)
+
+    (setq-default
+     word-wrap t
+     delete-by-moving-to-trash t
+     mode-require-final-newline nil ; don't require final newline
+     require-final-newline nil ; don't require final newline
+     redisplay-dont-pause t ; update screen immediately
+     x-underline-at-descent-line t ; draw underline lower
+     help-window-select 't ; focus help buffers
+     visible-bell t ; visible bell
+     ring-bell-function 'ignore ; no bell
+     compilation-scroll-output 'first-error ; scroll compilation to first error
+     window-combination-resize t ; resize proportionally
+     initial-major-mode 'emacs-lisp-mode ; load *scratch* in text-mode
+     initial-scratch-message nil ; clear *scratch* buffer
+     echo-keystrokes 0.001 ; show keystrokes
+     save-interprogram-paste-before-kill t ; clipboard contents into kill-ring before replace
+     font-lock-maximum-decoration t ; gaudiest possible look
+     truncate-partial-width-windows nil ; don't truncate lines
+     indicate-empty-lines nil ; don't show empty lines after buffer
+     indicate-buffer-boundaries nil ; don't show buffer start/end
+     fringes-outside-margins t       ; switches order of fringe and margin
+     frame-title-format "%b (%f)"; full path in titlebar
+     inhibit-startup-message t ; no splash
+     sentence-end-double-space nil ; one space between sentences
+     ad-redefinition-action 'accept ; silence useless warnings, e.g. ad-handle-definition: `find-tag-noselect' got redefined
+     fill-column 80 ; chars per line
+
+     gc-cons-threshold (* 8 1024 1024) ; more memory
+     indent-tabs-mode nil ; don't use tabs
+     tab-width 2 ; two spaces
+     cursor-in-non-selected-windows nil ; no cursor in other open windows
+     eval-expression-print-length nil ; no length limit when printing sexps in message buffer
+     eval-expression-print-level nil ; no level limit when printing sexps in message buffer
+     frame-resize-pixelwise t)
+
+    ;;open large files remove heavy modes
+    (global-so-long-mode 1)
+
+    ;; y or n will do
+    (defalias 'yes-or-no-p 'y-or-n-p)
+
+    ;; dont blink cursor
+    (blink-cursor-mode -1)
+
+    ;; remove menus
+    (when window-system
+      (tooltip-mode -1)
+      (tool-bar-mode -1)
+      (scroll-bar-mode -1)
+      (menu-bar-mode -1))
+
+    ;; show active region
+    (transient-mark-mode 0)
+    (make-variable-buffer-local 'transient-mark-mode)
+    (put 'transient-mark-mode 'permanent-local t)
+    (setq-default transient-mark-mode t)
+
+    ;; show parens
+    (show-paren-mode t)
+    (setq show-paren-delay 0)
+
+    ;; remove selected text when typing
+    (delete-selection-mode t)
+
+    ;; above what sizes can the window split
+    (setq split-height-threshold 0
+          split-width-threshold 0
+          split-window-preferred-function #'t/split-window-sensibly)
+
+    ;; remember file positions, and layout
+    (save-place-mode 1)
+
+    ;; (desktop-save-mode 1)
+    (setq desktop-save 't)
+
+    ;; eldoc everywhere
+    ;; TODO
+    ;;(global-eldoc-mode)
+
+    ;; temp files in..
+    (setq backup-directory-alist `((".*" . ,(locate-user-emacs-file ".backups/")))
+          auto-save-file-name-transforms `((".*" ,(locate-user-emacs-file ".auto-save-list/") t))
+          auto-save-list-file-prefix (locate-user-emacs-file ".auto-save-list/")
+          recentf-save-file (locate-user-emacs-file ".recentf")
+          save-place-file (locate-user-emacs-file ".places")
+          save-place-forget-unreadable-files nil
+          create-lockfiles nil
+          ido-save-directory-list-file (locate-user-emacs-file ".ido.last"))
+
+  ;; mouse, with scroll
+    (xterm-mouse-mode t)
+    (defun trackp-mouse (e))
+    (setq mouse-sel-mode t)
+
+    (when (require 'mwheel nil 'noerror)
+      (global-set-key [wheel-down] (t/lambda (scroll-down 2)))
+      (global-set-key [wheel-up] (t/lambda (scroll-up 2)))
+      (global-set-key [mouse-4] (t/lambda (scroll-down 2)))
+      (global-set-key [mouse-5] (t/lambda (scroll-up 2)))
+      (mouse-wheel-mode t))
+
+  (use-package popwin
+    :defer 1
+    :init
+    (progn
+      (setq popwin:popup-window-height 25))
+    :config
+    (popwin-mode 1)
+    (add-to-list 'popwin:special-display-config "*xref*")
+    (add-to-list 'popwin:special-display-config '("*cider-doc*" :noselect t)))
+
+  #+END_SRC
+
 * evil
 
-#+BEGIN_SRC emacs-lisp :results silent
-    ;;; -*- lexical-binding: t; -*-
-    (setq evil-want-C-d-scroll t
-	  evil-want-C-u-scroll t
-	  evil-want-keybinding nil
-	  evil-want-integration t
-	  evil-want-Y-yank-to-eol nil
-	  evil-move-beyond-eol nil)
+  #+BEGIN_SRC emacs-lisp :results silent
+      ;;; -*- lexical-binding: t; -*-
+  (setq evil-want-C-d-scroll t
+        evil-want-C-u-scroll t
+        evil-want-keybinding nil
+        evil-want-integration t
+        evil-want-Y-yank-to-eol nil
+        evil-move-beyond-eol nil)
 
-    (setq evil-default-state 'normal
-	  evil-insert-skip-empty-lines t
-	  evil-search-module 'evil-search)
+  (setq evil-default-state 'normal
+        evil-insert-skip-empty-lines t
+        evil-search-module 'evil-search)
 
-    (t/use-package evil
+
+  (use-package evil
+    :init
+    (progn
+      ;; https://emacs.stackexchange.com/a/15054
+      (fset 'evil-visual-update-x-selection 'ignore)))
+
+  (use-package evil-anzu
+    :init
+    (progn
+      (setq anzu-cons-mode-line-p nil
+            anzu-minimum-input-length 1
+            anzu-search-threshold 100)))
+
+  (use-package evil-escape
+    :after evil
+    :init
+    (progn
+      (setq-default evil-escape-key-sequence "jk"
+                    evil-escape-delay 0.1))
+    :config
+    (evil-escape-mode))
+
+  (use-package evil-leader
+    :after evil
+    :init
+    (progn
+      (setq evil-leader/in-all-states t
+            evil-leader/non-normal-prefix t-emacs-leader))
+    :config
+    (progn
+      (evil-leader/set-leader t-leader)
+      (t/bind-in '(evil-normal-state-map evil-motion-state-map)
+        "Y" 't/evil-yank-to-end-of-line)))
+
+  (use-package evil-collection
+    :after evil
+    :init
+    (progn
+      (setq evil-collection-key-blacklist '("ZZ" "ZQ"))
+      (evil-collection-init)
+      (t/after org
+        (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle))
+      (progn
+        ;; https://github.com/jtbm37/all-the-icons-dired/pull/19
+        (t/after evil-collection
+          (defvar-local +wdired-icons-enabled nil)
+          (defun +wdired-before-start-advice ()
+            "Execute when switching from `dired' to `wdired'."
+            (setq +wdired-icons-enabled (if (bound-and-true-p all-the-icons-dired-mode)
+                                            1 0))
+            (when (bound-and-true-p all-the-icons-dired-mode)
+              (all-the-icons-dired-mode 0)))
+          (defun +wdired-after-finish-advice ()
+            "Execute when switching from `wdired' to `dired'"
+            (when (boundp 'all-the-icons-dired-mode)
+              (all-the-icons-dired-mode +wdired-icons-enabled)))
+          (advice-add 'wdired-change-to-wdired-mode :before #'+wdired-before-start-advice)
+          (advice-add 'wdired-change-to-dired-mode :after #'+wdired-after-finish-advice)))))
+
+  (use-package evil-matchit
+    :commands evilmi-jump-items
+    :config
+    (progn
+      (global-evil-matchit-mode 1)))
+
+  (use-package evil-visualstar
+    :commands (evil-visualstar/begin-search-forward
+               evil-visualstar/begin-search-backward)
+    :config
+    (progn
+      (t/bind-in 'evil-visual-state-map
+        "*" 'evil-visualstar/begin-search-forward
+        "#" 'evil-visualstar/begin-search-backward)))
+
+  (use-package evil-cleverparens
+    :diminish evil-cleverparens-mode
+    :defer 1
+    :init
+    (progn
+      (t/add-hook-defun
+       'evil-cleverparens-enabled-hook t-evil-cp-mode-hook
+       (evil-define-key 'visual evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next)
+       (evil-define-key 'normal evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next))
+      (setq evil-cleverparens-use-additional-bindings t
+            evil-cleverparens-use-regular-insert t))
+    :config
+    (t/after evil-surround
+      (add-to-list 'evil-surround-operator-alist '(evil-cp-delete . delete))
+      (add-to-list 'evil-surround-operator-alist '(evil-cp-change . change))))
+
+  (use-package evil-surround
+    :defer 1
+    :config
+    (progn
+      (global-evil-surround-mode 1)
+      ;; the opposite of vim, like spacemacs
+      (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
+      (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
+
+  (use-package evil-snipe
+    :defer 1
+    :init
+    (t/add-hook-defun 'prog-mode-hook t-hook-snipe
+                      (evil-snipe-local-mode 1)
+                      (evil-snipe-override-local-mode 1)))
+
+  (use-package evil-multiedit
+    :commands evil-multiedit-match-symbol-and-next
+    :init
+    (progn
+      (setq evil-multiedit-follow-matches t)
+      (t/bind-in 'evil-normal-state-map
+        "M-d" 'evil-multiedit-match-symbol-and-next
+        "C-M-r" 'evil-multiedit-restore))
+    :config
+    (progn
+      (evil-multiedit-default-keybinds)
+      (unbind-key "M-d" evil-insert-state-map)
+      (unbind-key "C-M-D" evil-normal-state-map)
+      (bind-key "gn" 'evil-multiedit--visual-line evil-multiedit-state-map)
+
+      (progn
+        (setq evil-multiedit-store-in-search-history t)
+
+        (defun t/mc-skip-prev ()
+          (interactive)
+          (evil-multiedit-toggle-or-restrict-region)
+          (evil-multiedit-match-and-prev))
+
+        (defun t/mc-skip-next ()
+          (interactive)
+          (evil-multiedit-toggle-or-restrict-region)
+          (evil-multiedit-match-and-next))
+
+        (t/bind-in 'evil-multiedit-state-map
+          "M-j" #'t/mc-skip-next
+          "M-k" #'t/mc-skip-prev))))
+
+  (use-package evil-commentary
+    :defer 1
+    :init (evil-commentary-mode))
+
+  (use-package google-translate
+    :commands google-translate-at-point)
+
+  (use-package evil-goggles
+    :defer 1
+    :init
+    (progn
+      (setq evil-goggles-duration 0.2
+            evil-goggles-async-duration 0.2
+            evil-goggles-pulse t))
+    :config
+    (t/add-hook-defun 'prog-mode-hook t/hook-goggles
+                      (evil-goggles-mode)
+                      (evil-goggles-use-magit-faces)))
+
+  ;; dependencies of evil-extra-operator
+  (use-package highlight)
+  (use-package fold-this
+    :after highlight)
+
+  (use-package evil-extra-operator
+    :after fold-this
+    :defer 1
+    :init
+    (setq evil-extra-operator-org-capture-key "gC")
+    :config
+    (global-evil-extra-operator-mode 1))
+
+  (defvar t-evil-major-modes '(compilation-mode
+                               special-mode
+                               calendar-mode
+                               git-rebase-mode
+                               diff-mode
+                               gnus-group-mode
+                               gnus-summary-mode)
+    "Major modes that should trigger evil emacs state when changed to.")
+
+  (t/after evil
+    (t/add-hook-defun 'after-change-major-mode-hook t/hook-major-mode
+                      (when (member major-mode t-evil-major-modes)
+                        (evil-emacs-state))))
+
+
+  (t/add-hook '(git-commit-mode-hook org-capture-mode-hook) 'evil-insert-state)
+
+  (defun t/init-evil-cursors (&rest _)
+    "Change cursors after theme colors have loaded."
+    (setq evil-default-cursor (face-background 'cursor nil t)
+          evil-emacs-state-cursor  `(,(face-foreground 'warning) box)
+          evil-normal-state-cursor 'box
+          evil-insert-state-cursor 'bar
+          evil-visual-state-cursor 'hollow))
+  (advice-add #'load-theme :after #'t/init-evil-cursors)
+
+  (defvar +evil-esc-hook '(t)
+    "A hook run after ESC is pressed in normal mode (invoked by
+      `evil-force-normal-state'). If a hook returns non-nil, all hooks after it are
+      ignored.")
+
+  (defun +evil*attach-escape-hook (&optional ignore)
+    "Run all `+evil-esc-hook' hooks. If any returns non-nil, stop there."
+    (cond (;; quit the minibuffer if open.
+           (minibuffer-window-active-p (minibuffer-window))
+           (abort-recursive-edit))
+          ;; disable ex search buffer highlights.
+          ((evil-ex-hl-active-p 'evil-ex-search)
+           (evil-ex-nohighlight))
+          ;; escape anzu number of matches
+          ((and (featurep 'anzu)
+                anzu--state)
+           (anzu--reset-status))
+          ;; remove highlights
+          ((and (featurep 'highlight-symbol)
+                highlight-symbol-mode)
+           (highlight-symbol-remove-all))
+          ;; Run all escape hooks. If any returns non-nil, then stop there.
+          (t (run-hook-with-args-until-success '+evil-esc-hook))))
+  (advice-add #'evil-force-normal-state :after #'+evil*attach-escape-hook)
+
+  ;; motions keys for help buffers
+  (evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
+  (evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
+  (evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
+  (evil-define-key 'motion help-mode-map (kbd "L") 'help-go-forward)
+  (evil-define-key 'motion help-mode-map (kbd "H") 'help-go-back)
+  (evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
+  (evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
+  (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)
+
+  ;; motion keys for info mode
+  (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
+  (evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward)
+  (unbind-key (kbd "h") Info-mode-map)
+  (unbind-key (kbd "l") Info-mode-map)
+
+  ;; i_Ctrl-o - C-o from hybrid mode, like in vim insert mode
+  (evil-define-key 'hybrid global-map (kbd "C-o") 'evil-execute-in-normal-state)
+
+  ;; some emacs stuff is useful, in terminals etc
+  ;; http://stackoverflow.com/a/16226006
+  (t/bind-in '(evil-normal-state-map
+               evil-insert-state-map
+               evil-visual-state-map
+               evil-motion-state-map)
+    "C-a" 't/smart-beginning-of-line
+    "C-e" 'end-of-line
+    "C-b" 'evil-backward-char
+    "C-f" 'evil-forward-char
+    "C-k" 'kill-line
+    "C-n" 'evil-next-line
+    "C-p" 'evil-previous-line
+    "C-w" 'evil-delete-backward-word
+    ;; TODO bring back kill ring
+    ;;"M-y" 'helm-show-kill-ring
+    )
+
+  (t/bind-in 'evil-insert-state-map
+    "C-d" 'evil-delete-char
+    "C-u" (t/lambda (kill-line 0)))
+
+  (t/bind-in '(evil-normal-state-map
+               evil-visual-state-map)
+    "Q" 'call-last-kbd-macro
+    "C-y" 'evil-paste-pop ; cycle after pasting with p
+    "C-S-y" (t/lambda (evil-paste-pop-next 1)))
+
+  (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-map)
+  (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-ns-map)
+  (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-completion-map)
+  (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
+  (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
+
+  ;; macro camelCase to snakeCase
+  (evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
+
+  #+END_SRC
+
+* which key
+  
+  #+BEGIN_SRC emacs-lisp :results silent
+    (use-package which-key
+      :diminish which-key-mode
       :init
       (progn
-	;; https://emacs.stackexchange.com/a/15054
-	(fset 'evil-visual-update-x-selection 'ignore)))
+        (setq which-key-sort-order #'which-key-prefix-then-key-order
+              which-key-sort-uppercase-first nil
+              which-key-add-column-padding 1
+              which-key-max-display-columns nil
+              which-key-min-display-lines 1
+              which-key-special-keys nil
+              which-key-side-window-max-height 0.5 ; percentage height
+              which-key-separator " "
+              which-key-idle-delay 0.4 ; time to wait before display
+              which-key-allow-evil-operators t
+              which-key-key-replacement-alist
+              '(("<\\([[:alnum:]-]+\\)>" . "\\1")
+                ("up"                    . "↑")
+                ("right"                 . "→")
+                ("down"                  . "↓")
+                ("left"                  . "←")
+                ("DEL"                   . "⌫")
+                ("deletechar"            . "⌦")
+                ("RET"                   . "⏎")))
 
-    (t/use-package evil-anzu
-      :init
-      (progn
-	(setq anzu-cons-mode-line-p nil
-	      anzu-minimum-input-length 1
-	      anzu-search-threshold 100)))
+        (defun t/prefix-with-leader (key)
+          "Prefixes `key' with `leader' and a space, e.g. 'SPC m'"
+          (concat t-leader " " key))
 
-    (t/use-package evil-escape
-      :after evil
-      :init
-      (progn
-	(setq-default evil-escape-key-sequence "jk"
-		      evil-escape-delay 0.1))
-      :config
-      (evil-escape-mode))
+        (defun t/prefix-with-emacs-leader (key)
+          "Prefixes `key' with emacs `leader' and a space, e.g. 'C-SPC m'"
+          (concat t-emacs-leader t-leader " " key))
 
-    (t/use-package evil-leader
-      :after evil
-      :init
-      (progn
-	(setq evil-leader/in-all-states t
-	      evil-leader/non-normal-prefix t-emacs-leader))
-      :config
-      (progn
-	(evil-leader/set-leader t-leader)
-	;; TODO remove?
-	;;(evil-mode nil)
-	;;(global-evil-leader-mode)
-	;;(evil-mode 1)
-	(t/bind-in '(evil-normal-state-map evil-motion-state-map)
-	  "Y" 't/evil-yank-to-end-of-line)))
+        (defun t/declare-prefix (prefix name &optional key fn &rest bindings)
+          "Declares which-key `prefix' and a display `name' for the prefix.
+           Sets up keybindings for the prefix."
+          (t/after which-key
+            (which-key-declare-prefixes (t/prefix-with-leader prefix) name)
+            (which-key-declare-prefixes (t/prefix-with-emacs-leader prefix) name)
+            (while key
+              (evil-leader/set-key (concat prefix key) fn)
+              (setq key (pop bindings)
+                    fn (pop bindings)))))
 
-    (t/use-package evil-collection
-      :after evil
-      :init
-      (progn
-	(setq evil-collection-key-blacklist '("ZZ" "ZQ"))
-	(evil-collection-init)
-	(t/after org
-	  (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle))
-	(progn
-	  ;; https://github.com/jtbm37/all-the-icons-dired/pull/19
-	  (t/after evil-collection
-	    (defvar-local +wdired-icons-enabled nil)
-	    (defun +wdired-before-start-advice ()
-	      "Execute when switching from `dired' to `wdired'."
-	      (setq +wdired-icons-enabled (if (bound-and-true-p all-the-icons-dired-mode)
-					      1 0))
-	      (when (bound-and-true-p all-the-icons-dired-mode)
-		(all-the-icons-dired-mode 0)))
-	    (defun +wdired-after-finish-advice ()
-	      "Execute when switching from `wdired' to `dired'"
-	      (when (boundp 'all-the-icons-dired-mode)
-		(all-the-icons-dired-mode +wdired-icons-enabled)))
-	    (advice-add 'wdired-change-to-wdired-mode :before #'+wdired-before-start-advice)
-	    (advice-add 'wdired-change-to-dired-mode :after #'+wdired-after-finish-advice)))))
+        (defun t/declare-prefix-for-mode (mode prefix name &optional key fn &rest bindings)
+          "Declares which-key `prefix' and a display `name' for the prefix only in `mode`.
+           Sets up keybindings for the prefix."
+          (t/after which-key
+            (which-key-declare-prefixes-for-mode mode (t/prefix-with-leader prefix) name)
+            (which-key-declare-prefixes-for-mode mode (t/prefix-with-emacs-leader prefix) name)
+            (while key
+              (evil-leader/set-key-for-mode mode (concat prefix key) fn)
+              (setq key (pop bindings)
+                    fn (pop bindings)))))
 
-    (t/use-package evil-matchit
-      :commands evilmi-jump-items
-      :config
-      (progn
-	(global-evil-matchit-mode 1)))
+        (defun t/micro-state-in-mode (mode key fn &rest bindings)
+          "Micro state that temporarily overlays a new key map, kinda like hydra"
+          (lexical-let ((keymap (make-sparse-keymap)))
+                       (while key
+                         (bind-key key fn keymap)
+                         (setq key (pop bindings)
+                               fn (pop bindings)))
+                       (lambda ()
+                         (interactive)
+                         (funcall mode)
+                         (set-temporary-overlay-map keymap t (lambda nil
+                                                               (funcall mode -1))))))
+        ))
+  #+END_SRC
 
-    (t/use-package evil-visualstar
-      :commands (evil-visualstar/begin-search-forward
-		 evil-visualstar/begin-search-backward)
-      :config
-      (progn
-	(t/bind-in 'evil-visual-state-map
-	  "*" 'evil-visualstar/begin-search-forward
-	  "#" 'evil-visualstar/begin-search-backward)))
+** evil leader + which key integration
 
-    (t/use-package evil-cleverparens
-      :diminish evil-cleverparens-mode
-      :defer 1
-      :init
-      (progn
-	(t/add-hook-defun
-	 'evil-cleverparens-enabled-hook t-evil-cp-mode-hook
-	 (evil-define-key 'visual evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next)
-	 (evil-define-key 'normal evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next))
-	(setq evil-cleverparens-use-additional-bindings t
-	      evil-cleverparens-use-regular-insert t))
-      :config
-      (t/after evil-surround
-	(add-to-list 'evil-surround-operator-alist '(evil-cp-delete . delete))
-	(add-to-list 'evil-surround-operator-alist '(evil-cp-change . change))))
+   #+BEGIN_SRC emacs-lisp :results silent
+     (t/declare-prefix "m" "Mode")
+     (evil-mode nil)
+     (global-evil-leader-mode)
+     (evil-mode 1)
+   #+END_SRC
 
-    (t/use-package evil-surround
-      :defer 1
-      :config
-      (progn
-	(global-evil-surround-mode 1)
-	;; the opposite of vim, like spacemacs
-	(evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
-	(evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
+* keys
 
-    (t/use-package evil-snipe
-      :defer 1
-      :init
-      (t/add-hook-defun 'prog-mode-hook t-hook-snipe
-			(evil-snipe-local-mode 1)
-			(evil-snipe-override-local-mode 1)))
+  #+BEGIN_SRC emacs-lisp :results silent
+    ;; lisp-friendly
+    (setq hippie-expand-try-functions-list
+          '(try-complete-file-name-partially
+            try-complete-file-name
+            try-expand-dabbrev-visible
+            try-expand-dabbrev-all-buffers
+            try-expand-dabbrev-from-kill
+            try-expand-all-abbrevs
+            try-complete-lisp-symbol-partially
+            try-complete-lisp-symbol
+            try-expand-list
+            try-expand-line))
 
-    (t/use-package evil-multiedit
-      :commands evil-multiedit-match-symbol-and-next
-      :init
-      (progn
-	(setq evil-multiedit-follow-matches t)
-	(t/bind-in 'evil-normal-state-map
-	  "M-d" 'evil-multiedit-match-symbol-and-next
-	  "C-M-r" 'evil-multiedit-restore))
-      :config
-      (progn
-	(evil-multiedit-default-keybinds)
-	(unbind-key "M-d" evil-insert-state-map)
-	(unbind-key "C-M-D" evil-normal-state-map)
-	(bind-key "gn" 'evil-multiedit--visual-line evil-multiedit-state-map)
-
-	(progn
-	  (setq evil-multiedit-store-in-search-history t)
-
-	  (defun t/mc-skip-prev ()
-	    (interactive)
-	    (evil-multiedit-toggle-or-restrict-region)
-	    (evil-multiedit-match-and-prev))
-
-	  (defun t/mc-skip-next ()
-	    (interactive)
-	    (evil-multiedit-toggle-or-restrict-region)
-	    (evil-multiedit-match-and-next))
-
-	  (t/bind-in 'evil-multiedit-state-map
-	    "M-j" #'t/mc-skip-next
-	    "M-k" #'t/mc-skip-prev))))
-
-    (t/use-package evil-commentary
-      :defer 1
-      :init (evil-commentary-mode))
-
-    (t/use-package google-translate
-      :commands google-translate-at-point)
-
-    (t/use-package evil-goggles
-      :defer 1
-      :init
-      (progn
-	(setq evil-goggles-duration 0.2
-	      evil-goggles-async-duration 0.2
-	      evil-goggles-pulse t))
-      :config
-      (t/add-hook-defun 'prog-mode-hook t/hook-goggles
-			(evil-goggles-mode)
-			(evil-goggles-use-magit-faces)))
-
-    ;; dependencies of evil-extra-operator
-    (use-package highlight)
-    (use-package fold-this
-      :after highlight)
-
-    (t/use-package evil-extra-operator
-      :after fold-this
-      :defer 1
-      :init
-      (setq evil-extra-operator-org-capture-key "gC")
-      :config
-      (global-evil-extra-operator-mode 1))
-
-    (defvar t-evil-major-modes '(compilation-mode
-				 special-mode
-				 calendar-mode
-				 git-rebase-mode
-				 diff-mode
-				 gnus-group-mode
-				 gnus-summary-mode)
-      "Major modes that should trigger evil emacs state when changed to.")
-
-  (evil-mode 1)
-(global-evil-leader-mode)
-
-    (t/after evil
-      (t/add-hook-defun 'after-change-major-mode-hook t/hook-major-mode
-			(when (member major-mode t-evil-major-modes)
-			  (evil-emacs-state))))
+    (comment
+     (defun t/useful-buffer? (b)
+       "Determine if a buffer is useful and you would like to jump to it."
+       (let ((name (buffer-name b)))
+         (and (not (get-buffer-window name nil)) ; not already visible in same frame
+              (not (s-contains? "autoloads.el" name))
+              (or (equal "*scratch*" name)
+                  (s-contains? "*eww" name)
+                  (s-contains? "*Org" name)
+                  (s-contains? "*eshell" name)
+                  (s-contains? "*helm ag" name)
+                  (not (s-contains? "*" name))))))
+     ;; skip non-useful buffers on next-buffer, prev-buffer, other-buffer
+     (let ((entry-exists (assq 'buffer-predicate default-frame-alist)))
+       (if entry-exists
+           (setcdr entry-exists #'t/useful-buffer?)
+         (push '(buffer-predicate . t/useful-buffer?) default-frame-alist))))
 
 
-      (t/add-hook '(git-commit-mode-hook org-capture-mode-hook) 'evil-insert-state)
+    (t/bind-in 'minibuffer-local-map "C-w" 'backward-kill-word)
+    (t/bind-in 'global-map
 
-      (defun t/init-evil-cursors (&rest _)
-	"Change cursors after theme colors have loaded."
-	(setq evil-default-cursor (face-background 'cursor nil t)
-	      evil-emacs-state-cursor  `(,(face-foreground 'warning) box)
-	      evil-normal-state-cursor 'box
-	      evil-insert-state-cursor 'bar
-	      evil-visual-state-cursor 'hollow))
-      (advice-add #'load-theme :after #'t/init-evil-cursors)
+      "s-k" 'previous-buffer
+      "s-j" 'next-buffer
 
-      (defvar +evil-esc-hook '(t)
-	"A hook run after ESC is pressed in normal mode (invoked by
-    `evil-force-normal-state'). If a hook returns non-nil, all hooks after it are
-    ignored.")
+      "s->" 'next-multiframe-window
+      "s-<" 'previous-multiframe-window
 
-      (defun +evil*attach-escape-hook (&optional ignore)
-	"Run all `+evil-esc-hook' hooks. If any returns non-nil, stop there."
-	(cond (;; quit the minibuffer if open.
-	       (minibuffer-window-active-p (minibuffer-window))
-	       (abort-recursive-edit))
-	      ;; disable ex search buffer highlights.
-	      ((evil-ex-hl-active-p 'evil-ex-search)
-	       (evil-ex-nohighlight))
-	      ;; escape anzu number of matches
-	      ((and (featurep 'anzu)
-		    anzu--state)
-	       (anzu--reset-status))
-	      ;; remove highlights
-	      ((and (featurep 'highlight-symbol)
-		    highlight-symbol-mode)
-	       (highlight-symbol-remove-all))
-	      ;; Run all escape hooks. If any returns non-nil, then stop there.
-	      (t (run-hook-with-args-until-success '+evil-esc-hook))))
-      (advice-add #'evil-force-normal-state :after #'+evil*attach-escape-hook)
+      "s-<left>" 't/smart-beginning-of-line
+      "s-<right>" 'end-of-line
 
-      ;; motions keys for help buffers
-      (evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
-      (evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
-      (evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
-      (evil-define-key 'motion help-mode-map (kbd "L") 'help-go-forward)
-      (evil-define-key 'motion help-mode-map (kbd "H") 'help-go-back)
-      (evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
-      (evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
-      (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)
+      "M-s-<up>" 'windmove-up
+      "M-s-<right>" 'windmove-right
+      "M-s-<down>" 'windmove-down
+      "M-s-<left>" 'windmove-left
 
-      ;; motion keys for info mode
-      (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
-      (evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward)
-      (unbind-key (kbd "h") Info-mode-map)
-      (unbind-key (kbd "l") Info-mode-map)
+      "s-d" 't/split-window-right-and-move-there-dammit
+      "s-D" 't/split-window-below-and-move-there-dammit
 
-      ;; i_Ctrl-o - C-o from hybrid mode, like in vim insert mode
-      (evil-define-key 'hybrid global-map (kbd "C-o") 'evil-execute-in-normal-state)
+      ;; s-w quits like C-x C-w
+      "s-w" #'t/delete-frame-or-hide-last-remaining-frame
+      "C-x C-c" #'t/delete-frame-or-hide-last-remaining-frame
 
-      ;; some emacs stuff is useful, in terminals etc
-      ;; http://stackoverflow.com/a/16226006
-      (t/bind-in '(evil-normal-state-map
-		   evil-insert-state-map
-		   evil-visual-state-map
-		   evil-motion-state-map)
-	"C-a" 't/smart-beginning-of-line
-	"C-e" 'end-of-line
-	"C-b" 'evil-backward-char
-	"C-f" 'evil-forward-char
-	"C-k" 'kill-line
-	"C-n" 'evil-next-line
-	"C-p" 'evil-previous-line
-	"C-w" 'evil-delete-backward-word
-	;; TODO bring back kill ring
-	;;"M-y" 'helm-show-kill-ring
-	)
+      ;; buffer font size adjustment
+      "s-?" (t/lambda (text-scale-increase 1))
+      "s-_" (t/lambda (text-scale-decrease 1))
+      "s-=" (t/lambda (text-scale-set 0))
 
-      (t/bind-in 'evil-insert-state-map
-	"C-d" 'evil-delete-char
-	"C-u" (t/lambda (kill-line 0)))
+      ;; global font size adjustment
+      "s-+" 't/increase-font-size
+      "s--" 't/decrease-font-size
+      "s-0" 't/reset-font-size
 
-      (t/bind-in '(evil-normal-state-map
-		   evil-visual-state-map)
-	"Q" 'call-last-kbd-macro
-	"C-y" 'evil-paste-pop ; cycle after pasting with p
-	"C-S-y" (t/lambda (evil-paste-pop-next 1)))
+      "<C-S-up>" 't/move-line-up
+      "<C-S-down>" 't/move-line-down
 
-      (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-map)
-      (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-ns-map)
-      (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-completion-map)
-      (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
-      (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
+      "M-p" 'backward-paragraph
+      "M-n" 'forward-paragraph
 
-      ;; macro camelCase to snakeCase
-      (evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
+      "C-c n" 't/cleanup-buffer-whitespace-and-indent
+      "C-x C-k" 'kill-region
 
-#+END_SRC
+      "C-." 't/hippie-expand-no-case-fold
+      "C-," 'company-complete
+      "C-:" 't/hippie-expand-lines)
+  #+END_SRC
 
 * themes
 
-#+BEGIN_SRC emacs-lisp :results silent
+  #+BEGIN_SRC emacs-lisp :results silent
 (use-package doom-modeline
   :config
   (progn
-    (setq doom-modeline-height 40
-          doom-themes-padded-modeline 1)
     ;;(t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")
-))
+    (setq doom-modeline-height 40
+          doom-themes-padded-modeline 1)))
 
 (use-package doom-themes
   :config
   (progn
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
-    (doom-themes-visual-bell-config)
     ;;(t/add-hook 'org-mode-hook 'doom-themes-org-config)
     ;;(t/add-hook 'neotree-mode-hook 'doom-themes-neotree-config)
-    (load-theme 'doom-one)
-))
-#+END_SRC
+    (doom-themes-visual-bell-config)))
+
+(progn
+  (defconst t-themes (list
+                      'doom-one
+                      'doom-one-light) "Themes to cycle")
+
+  (defun t/cycle-theme ()
+    "Cycles themes in `t-themes'"
+    (interactive)
+    (let ((first (car t-themes))
+          (rest (cdr t-themes)))
+      (setq t-themes (append rest (list first)))
+      (car t-themes)))
+
+  (defun t/load-theme-cycle ()
+    "Cycles `t-themes' and loads first theme in list"
+    (interactive)
+    (t/switch-theme (t/cycle-theme)))
+
+  (defun t/load-theme ()
+    "Loads theme and fixes fringe bg color"
+    (interactive)
+    (t/switch-theme (car t-themes)))
+
+  (defun t/reset-font-after-load (&rest args) (interactive) (t/reset-font-size))
+  (advice-add 'load-theme :after 't/reset-font-after-load)
+
+  (defvar *t-theme-did-load* nil)
+  (defun t/load-theme-once ()
+    (unless *t-theme-did-load*
+      (setq *t-theme-did-load* t)
+      (t/load-theme)))
+  (t/add-hook 'after-init-hook
+              (lambda ()
+                (if has-gui
+                    (t/load-theme)
+                  (progn
+                    ;; load-theme after making the frame also when in terminal emacs
+                    (when (daemonp)
+                      (add-hook 'after-make-frame-functions
+                                (lambda (frame)
+                                  (with-selected-frame frame (t/load-theme-once))
+                                  ;; for some reason opening in terminal gives menu bar
+                                  (menu-bar-mode -1))))
+                    (advice-add server-create-window-system-frame :after 't/load-theme-once))))))
+  #+END_SRC
 
 * server
 
-#+BEGIN_SRC emacs-lisp :results silent
+  #+BEGIN_SRC emacs-lisp :results silent
 (unless (fboundp 'server-running-p) (require 'server))
 (unless (server-running-p) (server-mode))
-#+END_SRC
+  #+END_SRC
 
+* org
+
+  #+BEGIN_SRC emacs-lisp :results silent
+  (setq org-src-window-setup 'current-window ; edit code src blocks in current window
+  org-src-fontify-natively t
+  org-src-tab-acts-natively t
+  org-confirm-babel-evaluate nil ; don't prompt on every code run
+  org-export-babel-evaluate nil ; don't run stuff automatically on export
+  org-edit-src-content-indentation 0)
+  (bind-key "\C-c\C-c" 'org-edit-src-exit 'org-src-mode-map)
+  #+END_SRC
 * after
-#+BEGIN_SRC emacs-lisp :results silent
+  #+BEGIN_SRC emacs-lisp :results silent
 (t/timing-end)
-#+END_SRC
+  #+END_SRC

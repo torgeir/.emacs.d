@@ -15,7 +15,7 @@
     (t/add-hook 'org-mode-hook 'doom-themes-org-config)
     (t/add-hook 'neotree-mode-hook 'doom-themes-neotree-config)))
 
-(defun t-load-theme/config ()
+(progn
   (defconst t-themes (list
                       'doom-one
                       'doom-one-light) "Themes to cycle")
@@ -59,5 +59,3 @@
                                   ;; for some reason opening in terminal gives menu bar
                                   (menu-bar-mode -1))))
                     (advice-add server-create-window-system-frame :after 't/load-theme-once))))))
-
-(provide 't-load-theme)

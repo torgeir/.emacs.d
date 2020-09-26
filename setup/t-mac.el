@@ -1,6 +1,4 @@
-;;; -*- lexical-binding: t; -*-
-
-(defun t-mac/init ()
+(progn
 
   ;; intentionally not t/use-package, to make sure it happens at once
   (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
@@ -59,5 +57,3 @@
       "C-]" "C-å"
       ;; skip \e21;2~, its f10? what
       "\e[22;2\~" "C-'")))
-
-(provide 't-mac)

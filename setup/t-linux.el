@@ -1,4 +1,4 @@
-(defun t-linux/init ()
+(progn
   (setq t-font-size 14
         shell-file-name "/bin/zsh")
 
@@ -50,6 +50,3 @@
     "s-+" 't/increase-font-size
     "s--" 't/decrease-font-size
     "s-0" 't/reset-font-size))
-
-
-(provide 't-linux)

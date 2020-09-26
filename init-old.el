@@ -1,28 +1,28 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'package)
-(unless package--initialized
-  (package-initialize t))
+;;(require 'package)
+;;(unless package--initialized
+;;  (package-initialize t))
 
-(load "~/.emacs.d/t-bootstrap.el")
+;;(load "~/.emacs.d/t-bootstrap.el")
 
-(t/timing-start)
+;;(t/timing-start)
 
-(require 't-macros)
-(require 't-packaging)
-(require 't-sane-defaults)
-(t-sane-defaults/init)
+;;(require 't-macros)
+;;(require 't-packaging)
+;;(require 't-sane-defaults)
+;;(t-sane-defaults/init)
 
-(when is-mac    (require 't-mac)    (t-mac/init))
-(when is-linux  (require 't-linux)  (t-linux/init))
-(when is-ms     (require 't-cygwin) (t-cygwin/init))
+;;(when is-mac    (require 't-mac)    (t-mac/init))
+;;(when is-linux  (require 't-linux)  (t-linux/init))
+;;(when is-ms     (require 't-cygwin) (t-cygwin/init))
 
-(setq custom-file (t/user-emacs-file "custom.el"))
-(load custom-file)
+;;(setq custom-file (t/user-emacs-file "custom.el"))
+;;(load custom-file)
 
 (require 't-site-lisp)
 (require 't-calendar)
-(require 't-which-key)
-(require 't-load-theme)
+;;(require 't-which-key)
+;;(require 't-load-theme)
 ;;(require 't-evil)
 (require 't-vc)
 (require 't-keys)

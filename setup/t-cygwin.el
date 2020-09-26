@@ -1,5 +1,4 @@
-;;; -*- lexical-binding: t; -*-
-(defun t-cygwin/init ()
+(progn
   (setq t-font-size 12
         shell-file-name "C:/Program Files/Git/bin/bash.exe")
 
@@ -58,5 +57,3 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
 
         (expand-file-name
          (format "~/.save/#%s#%s#" buf-name (make-temp-name "")))))))
-
-(provide 't-cygwin)
