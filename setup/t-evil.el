@@ -41,9 +41,10 @@
   :config
   (progn
     (evil-leader/set-leader t-leader)
-    (evil-mode nil)
-    (global-evil-leader-mode)
-    (evil-mode 1)
+    ;; TODO remove?
+    ;;(evil-mode nil)
+    ;;(global-evil-leader-mode)
+    ;;(evil-mode 1)
     (t/bind-in '(evil-normal-state-map evil-motion-state-map)
       "Y" 't/evil-yank-to-end-of-line)))
 
@@ -266,7 +267,9 @@ ignored.")
     "C-n" 'evil-next-line
     "C-p" 'evil-previous-line
     "C-w" 'evil-delete-backward-word
-    "M-y" 'helm-show-kill-ring)
+    ;; TODO bring back kill ring
+    ;;"M-y" 'helm-show-kill-ring
+    )
 
   (t/bind-in 'evil-insert-state-map
     "C-d" 'evil-delete-char

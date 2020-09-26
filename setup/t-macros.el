@@ -1,3 +1,4 @@
+
 ;;; -*- lexical-binding: t; -*-
 (require 'subr-x)
 
@@ -89,16 +90,21 @@
   `(progn
      (defun ,fn ()
        (interactive)
-       (unless (helm-window)
-         ,@body))
+       ;; TODO
+       ;;(unless (helm-window)
+       ,@body)
+     ;;TODO)
      (t/add-hook ,hook-or-hooks (quote ,fn))))
 
 (defmacro t/macro-helm-ag-insert (thing fn)
   `(lambda ()
      (interactive)
-     (setq-local helm-ag-insert-at-point ,thing)
+     ;; TODO 
+     ;;(setq-local helm-ag-insert-at-point ,thing)
      (,fn)
-     (setq-local helm-ag-insert-at-point nil)))
+     ;; TODO 
+     ;;(setq-local helm-ag-insert-at-point nil)
+     ))
 
 (defmacro t/idle-timer (name fn every-minute)
   "Reloadable variant of run-with-idle-timer."

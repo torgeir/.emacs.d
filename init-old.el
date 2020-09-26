@@ -23,7 +23,7 @@
 (require 't-calendar)
 (require 't-which-key)
 (require 't-load-theme)
-(require 't-evil)
+;;(require 't-evil)
 (require 't-vc)
 (require 't-keys)
 (require 't-editor)
@@ -64,7 +64,7 @@
 (dolist (pkg t-use-package-pkgs) (funcall pkg))
 
 (t-load-theme/config)
-(t-evil/config)
+;;(t-evil/config)
 (t-vc/config)
 (t-keys/config)
 (t-typography/config)
