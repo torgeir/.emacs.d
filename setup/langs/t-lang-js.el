@@ -6,9 +6,7 @@
     (setq lsp-print-io nil
           lsp-prefer-flymake nil)
     (require 'lsp-clients)
-    (add-hook 'css-mode-hook 'lsp))
-  :config
-  (add-to-list 'lsp-language-id-configuration '(rjsx-mode . "javascript")))
+    (add-hook 'css-mode-hook 'lsp)))
 
 
 (comment (use-package lsp-java
@@ -19,9 +17,10 @@
 (use-package lsp-ui
   :init
   (progn
-    (setq lsp-ui-doc-enable nil
-          lsp-ui-sideline-enable nil
-          lsp-ui-sideline-show-code-actions nil)
+    (setq lsp-ui-doc-enable t
+          lsp-ui-doc-delay 0.5
+          lsp-ui-sideline-enable t
+          lsp-ui-sideline-show-code-actions t)
     (with-eval-after-load 'lsp-mode
       (add-hook 'lsp-after-open-hook (lambda ()
                                        (lsp-ui-flycheck-enable 1))))
@@ -39,7 +38,9 @@
 
 
 (use-package typescript-mode
-  :mode "\\.ts")
+  :mode "\\.ts"
+  :init
+  (setq-default typescript-indent-level 2))
 
 
 (use-package company-lsp
@@ -85,9 +86,9 @@
                       (flycheck-mode)
                       (turn-on-smartparens-mode)
                       (js2-imenu-extras-mode)
+                      (t/when-ext "ts" (typescript-mode))
                       (lsp)
-                      (t/set-company-backends 'company-lsp)
-                      (t/when-ext "ts" (typescript-mode))))
+                      (t/set-company-backends 'company-lsp)))
 
   :config
   (progn

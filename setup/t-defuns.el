@@ -1492,5 +1492,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (setq-local cursor-type 'nil)
   (setq-local evil-normal-state-cursor 'nil))
 
+;;;###autoload
+(defun t/random-line ()
+  "Goto a random line in the buffer. Useful trying out a random package."
+  (interactive)
+  (push-mark)
+  (goto-char (point-min))
+  (forward-line (random (count-lines (point-min) (point-max)))))
 
 (provide 't-defuns)

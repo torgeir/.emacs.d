@@ -1,16 +1,18 @@
+(when (not (getenv "USER_FULLNAME")) (message "Need env USER_FULLNAME "))
+(when (not (getenv "USER")) (message "Need env USER "))
+
 (setq user-full-name (getenv "USER_FULLNAME")
       user-mail-address (concat (getenv "USER") "@gmail.com")
-      gnus-posting-styles '((".*"
-                             (signature "T"))))
+      gnus-posting-styles '((".*" (signature "T"))))
 
 (setq gnus-activate-level 3
       gnus-use-cache t
       gnus-level-subscribed 3
       gnus-select-method '(nnnil "")
       gnus-secondary-select-methods
-      '((nntp "news.gmane.io")
-        (nnhackernews "")
-        (nnreddit "")
+      '(;; (nntp "news.gmane.io")
+        ;; (nnhackernews "")
+        ;; (nnreddit "")
         (nnimap "gmail"
                 ;; it could also be imap.googlemail.com if that's your server.
                 (nnimap-address "imap.gmail.com")
@@ -21,16 +23,13 @@
                 ;; @see http://www.gnu.org/software/emacs/manual/html_node/gnus/Expiring-Mail.html
                 ;; press 'E' to expire email
                 (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
-                (nnmail-expiry-wait 90))))
-
-;; https://sachachua.com/blog/2008/05/emacs-gnus-organize-your-mail/
-(setq nnimap-split-inbox "INBOX")
-(setq nnimap-split-predicate "UNDELETED")
-(setq nnimap-split-methods
-      '(("INBOX.saga" "^Subject:.*saga.*")
-        ("INBOX.github" "^Subject:.*github.*")
-        ("INBOX.fun" "^From:.*@bikeshop.no")
-        ("INBOX.other" "")))
+                (nnmail-expiry-wait 90)
+                ;; https://sachachua.com/blog/2008/05/emacs-gnus-organize-your-mail/
+                (nnimap-inbox "INBOX")
+                (nnimap-split-methods
+                 '(("mail.saga" "^Subject:.*saga.*")
+                   ("mail.github" "^Subject:.*github.*")
+                   ("mail.fun" "^From:.*@bikeshop.no"))))))
 
 (setq smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587

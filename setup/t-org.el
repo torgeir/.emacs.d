@@ -79,8 +79,8 @@
   (concat "* TODO %? :url:%^G\n\n%i\n" (elfeed-entry-link elfeed-show-entry)))
 
 (setq org-capture-templates
-      `(("t" "Task" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\n%i\n\n")
-        ("s" "Saga" entry (file+olp ,(t/org-directory "bekk/saga.org") "Saga" "Tasks") "* TODO %? \n\n%i\n\n")
+      `(("t" "Task" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\n%i\n\n" :prepend t)
+        ("s" "Saga" entry (file+olp ,(t/org-directory "bekk/saga.org") "Saga" "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
         ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n")
         ("f" "File location" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\n%i%a\n\n")
         ("e" "Elfeed location" entry (file+olp org-default-notes-file "Home" "Tasks") (function t/org-capture-elfeed-link-template))
@@ -621,7 +621,8 @@ Locally redefines org-agenda-files not to export all agenda files."
             org-gcal-fetch-file-alist t-org-gcal-file-alist
             org-gcal-header-alist t-org-gcal-header-alist
             org-gcal-up-days 1)
-      (add-hook 'org-agenda-mode-hook 'org-gcal-fetch))))
+      ;;(add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
+      )))
 
 (t/use-package gnuplot
   :after org)
@@ -645,5 +646,26 @@ Locally redefines org-agenda-files not to export all agenda files."
     (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
     (sp-local-pair "«" "»")))
 
+;;; ORG-MODE:  * My Task
+;;;              SCHEDULED: <%%(diary-last-day-of-month date)>
+;;; DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
+;;; See also:  (setq org-agenda-include-diary t)
+;;; (diary-last-day-of-month '(2 28 2017))
+(defun t/diary-last-day-of-month (date)
+  "Return `t` if DATE is the last day of the month."
+  (let* ((day (calendar-extract-day date))
+         (month (calendar-extract-month date))
+         (year (calendar-extract-year date))
+         (last-day-of-month
+          (calendar-last-day-of-month month year)))
+    (= day last-day-of-month)))
+
+(defun t/diary-last-day-of-week (date)
+  "Return `t` if DATE is the last day of the week."
+  (equal 5
+         (let* ((day (calendar-extract-day date))
+                (month (calendar-extract-month date))
+                (year (calendar-extract-year date)))
+           (org-day-of-week day month year))))
 
 (provide 't-org)

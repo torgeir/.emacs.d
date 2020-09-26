@@ -1,11 +1,14 @@
 ;;; -*- lexical-binding: t; -*-
-(use-package terraform-mode
+(t/use-package terraform-mode
   :mode "\\.tf$"
-  :config (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
+  :init
+  (t/add-hook-defun 'terraform-mode-hook t-hook-terraform
+                    (terraform-format-on-save-mode)
+                    (aggressive-indent-mode -1)))
 
 (t/use-package company-terraform
   :after terraform-mode
-  :config
+  :init
   (t/add-company-backends-hook 'terraform-mode-hook 'company-terraform))
 
 (provide 't-lang-terraform)
