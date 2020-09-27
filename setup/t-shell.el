@@ -26,7 +26,7 @@
   :init
   (t/add-hook-defun 'eshell-mode-hook t/eshell-z-hook (require 'eshell-z)))
 
-(defun t-shell/config ()
+(progn
 
   (progn
     ;; shell

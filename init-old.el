@@ -65,13 +65,13 @@
 
 ;;(t-load-theme/config)
 ;;(t-evil/config)
-(t-vc/config)
-(t-keys/config)
-(t-typography/config)
+;;(t-vc/config)
+;;(t-keys/config)
+;; (t-typography/config)
 (t-editor/config)
-(t-shell/config)
-(t-org/config)
-(t-modeline/config)
+;; (t-shell/config)
+;; (t-org/config)
+;; (t-modeline/config)
 
 (t-lang-elisp/config)
 
