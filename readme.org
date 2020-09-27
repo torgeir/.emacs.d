@@ -839,10 +839,11 @@ Mouse support, with scroll.
   (global-set-key [mouse-4] (t/lambda (scroll-down 2)))
   (global-set-key [mouse-5] (t/lambda (scroll-up 2)))
   (mouse-wheel-mode t))
-
 #+END_SRC
 
 ** Evil
+
+*** Configuration
 
 #+BEGIN_SRC emacs-lisp :results silent
 (setq evil-want-C-d-scroll t
@@ -852,10 +853,14 @@ Mouse support, with scroll.
       evil-want-Y-yank-to-eol nil
       evil-move-beyond-eol t)
 
+#+END_SRC
+
+*** Init evil. Normal mode is default, and search using evil.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (setq evil-default-state 'normal
       evil-insert-skip-empty-lines t
       evil-search-module 'evil-search)
-
 
 (use-package evil
   :init
@@ -863,6 +868,13 @@ Mouse support, with scroll.
     ;; https://emacs.stackexchange.com/a/15054
     (fset 'evil-visual-update-x-selection 'ignore)))
 
+#+END_SRC
+
+*** Show matches
+
+Show current match and total number of matches when searching with evil.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-anzu
   :init
   (progn
@@ -870,6 +882,13 @@ Mouse support, with scroll.
           anzu-minimum-input-length 1
           anzu-search-threshold 100)))
 
+#+END_SRC
+
+*** jk to escape
+
+Escape from evil with a fast ~jk~ combo.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-escape
   :after evil
   :init
@@ -879,6 +898,14 @@ Mouse support, with scroll.
   :config
   (evil-escape-mode))
 
+#+END_SRC
+
+*** Evil leader
+
+Use evil leader to provide a vim-like interface to useful shortcuts
+using ~SPC~.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-leader
   :after evil
   :init
@@ -891,46 +918,61 @@ Mouse support, with scroll.
     (t/bind-in '(evil-normal-state-map evil-motion-state-map)
       "Y" 't/evil-yank-to-end-of-line)))
 
+#+END_SRC
+
+*** More evil bindings
+
+Enables evil keybindings for more modes, e.g. help, calendar, eshell etc
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-collection
   :after evil
   :init
   (progn
+    ;; Don't use zz and zq for org src editing
     (setq evil-collection-key-blacklist '("ZZ" "ZQ"))
     (evil-collection-init)
     (t/after org
-      (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle))
-    (progn
+      ;; still issues with wdired?
       ;; https://github.com/jtbm37/all-the-icons-dired/pull/19
-      (t/after evil-collection
-        (defvar-local +wdired-icons-enabled nil)
-        (defun +wdired-before-start-advice ()
-          "Execute when switching from `dired' to `wdired'."
-          (setq +wdired-icons-enabled (if (bound-and-true-p all-the-icons-dired-mode)
-                                          1 0))
-          (when (bound-and-true-p all-the-icons-dired-mode)
-            (all-the-icons-dired-mode 0)))
-        (defun +wdired-after-finish-advice ()
-          "Execute when switching from `wdired' to `dired'"
-          (when (boundp 'all-the-icons-dired-mode)
-            (all-the-icons-dired-mode +wdired-icons-enabled)))
-        (advice-add 'wdired-change-to-wdired-mode :before #'+wdired-before-start-advice)
-        (advice-add 'wdired-change-to-dired-mode :after #'+wdired-after-finish-advice)))))
 
+      (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle))))
+#+END_SRC
+
+*** Search
+
+Jump between html tags with %, like for parens.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-matchit
   :commands evilmi-jump-items
   :config
-  (progn
-    (global-evil-matchit-mode 1)))
+  (global-evil-matchit-mode 1))
 
+#+END_SRC
+
+Visual followed by ~*~ or ~#~ allows for fast searching, forwards or backwards, for whats selected. Keep
+hitting it to search further. Preserves selection.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-visualstar
   :commands (evil-visualstar/begin-search-forward
              evil-visualstar/begin-search-backward)
   :config
   (progn
+    (setq evil-visualstar/persistent t)
+    (global-evil-visualstar-mode)
     (t/bind-in 'evil-visual-state-map
       "*" 'evil-visualstar/begin-search-forward
       "#" 'evil-visualstar/begin-search-backward)))
 
+#+END_SRC
+
+*** Surroundings
+
+Operate on surrounding parens, brackets etc like with surround.vim.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-surround
   :defer 1
   :config
@@ -940,6 +982,14 @@ Mouse support, with scroll.
     (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
     (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
 
+#+END_SRC
+
+*** Navigate parens
+
+Helps navigating lisps, and makes evil operations, e.g. S-D (delete to end of
+line) lisp aware, so it does not delete trailing parens.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-cleverparens
   :diminish evil-cleverparens-mode
   :defer 1
@@ -956,6 +1006,15 @@ Mouse support, with scroll.
     (add-to-list 'evil-surround-operator-alist '(evil-cp-delete . delete))
     (add-to-list 'evil-surround-operator-alist '(evil-cp-change . change))))
 
+#+END_SRC
+
+*** Snipe
+
+2-char motions for quickly jumping around text, compared to evil's built-in
+f/F/t/T motions, incrementally highlighting candidate targets as you type. E.g.
+hit fe to search for e's. Repeat f to move to the next e.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-snipe
   :defer 1
   :init
@@ -963,6 +1022,14 @@ Mouse support, with scroll.
                     (evil-snipe-local-mode 1)
                     (evil-snipe-override-local-mode 1)))
 
+#+END_SRC
+
+*** Multiple cursors for evil mode.
+
+It actually works. Added bindings M-j and M-k
+skips current match forward or backward while moving through matches using M-d.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-multiedit
   :commands evil-multiedit-match-symbol-and-next
   :init
@@ -995,30 +1062,49 @@ Mouse support, with scroll.
         "M-j" #'t/mc-skip-next
         "M-k" #'t/mc-skip-prev))))
 
+#+END_SRC
+
+*** Commentary
+
+For effectively toggling comments on or off, or combining them
+with vim text objects or other motions. E.g. use gca( to comment out the
+surrounding lisp sexp, respecting the ast.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-commentary
   :defer 1
   :init (evil-commentary-mode))
 
-(use-package google-translate
-  :commands google-translate-at-point)
+#+END_SRC
 
+*** Color highlights evil operations.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-goggles
   :defer 1
   :init
-  (progn
-    (setq evil-goggles-duration 0.2
-          evil-goggles-async-duration 0.2
-          evil-goggles-pulse t))
+  (setq evil-goggles-duration 0.2
+        evil-goggles-async-duration 0.2
+        evil-goggles-pulse t)
   :config
-  (t/add-hook-defun 'prog-mode-hook t/hook-goggles
-                    (evil-goggles-mode)
-                    (evil-goggles-use-magit-faces)))
+  (evil-goggles-mode)
+  (evil-goggles-use-magit-faces))
+#+END_SRC
 
-;; dependencies of evil-extra-operator
+*** Useful extra evil operators
+
+- eval with ~gr~
+- google search with ~gG~
+- google translate with ~g.~
+- highlight with ~gh~
+- fold with ~gs~
+- capture with ~go~
+
+Highlight and fold-this are dependencies of evil-extra-operator.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package highlight)
-(use-package fold-this
-  :after highlight)
-
+(use-package fold-this :after highlight)
 (use-package evil-extra-operator
   :after fold-this
   :defer 1
@@ -1026,7 +1112,11 @@ Mouse support, with scroll.
   (setq evil-extra-operator-org-capture-key "gC")
   :config
   (global-evil-extra-operator-mode 1))
+#+END_SRC
 
+*** Modes starting states; emacs state, insert, normal
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defvar t-evil-major-modes '(compilation-mode
                              special-mode
                              calendar-mode
@@ -1040,10 +1130,17 @@ Mouse support, with scroll.
   (t/add-hook-defun 'after-change-major-mode-hook t/hook-major-mode
                     (when (member major-mode t-evil-major-modes)
                       (evil-emacs-state))))
+#+END_SRC
 
+Commit starts in insert mode
 
+#+BEGIN_SRC emacs-lisp :results silent
 (t/add-hook '(git-commit-mode-hook org-capture-mode-hook) 'evil-insert-state)
+#+END_SRC
 
+*** Cursors
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defun t/init-evil-cursors (&rest _)
   "Change cursors after theme colors have loaded."
   (setq evil-default-cursor (face-background 'cursor nil t)
@@ -1053,6 +1150,13 @@ Mouse support, with scroll.
         evil-visual-state-cursor 'hollow))
 (advice-add #'load-theme :after #'t/init-evil-cursors)
 
+#+END_SRC
+
+*** Esc escapes everything
+
+Escape all the things. Borrowed from doom.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defvar +evil-esc-hook '(t)
   "A hook run after ESC is pressed in normal mode (invoked by
     `evil-force-normal-state'). If a hook returns non-nil, all hooks after it are
@@ -1078,6 +1182,11 @@ Mouse support, with scroll.
         (t (run-hook-with-args-until-success '+evil-esc-hook))))
 (advice-add #'evil-force-normal-state :after #'+evil*attach-escape-hook)
 
+#+END_SRC
+
+*** Help motions
+
+#+BEGIN_SRC emacs-lisp :results silent
 ;; motions keys for help buffers
 (evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
 (evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
@@ -1088,15 +1197,29 @@ Mouse support, with scroll.
 (evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
 (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)
 
+#+END_SRC
+
+*** Info motions
+
+#+BEGIN_SRC emacs-lisp :results silent
 ;; motion keys for info mode
 (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
 (evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward)
 (unbind-key (kbd "h") Info-mode-map)
 (unbind-key (kbd "l") Info-mode-map)
+#+END_SRC
 
-;; i_Ctrl-o - C-o from hybrid mode, like in vim insert mode
+*** C-o from hybrid like in vim
+
+i_Ctrl-o - C-o from hybrid mode, like in vim insert mode
+
+#+BEGIN_SRC emacs-lisp :results silent
 (evil-define-key 'hybrid global-map (kbd "C-o") 'evil-execute-in-normal-state)
+#+END_SRC
 
+*** Useful emacs defaults
+
+#+BEGIN_SRC emacs-lisp :results silent
 ;; some emacs stuff is useful, in terminals etc
 ;; http://stackoverflow.com/a/16226006
 (t/bind-in '(evil-normal-state-map
@@ -1111,9 +1234,7 @@ Mouse support, with scroll.
   "C-n" 'evil-next-line
   "C-p" 'evil-previous-line
   "C-w" 'evil-delete-backward-word
-  ;; TODO bring back kill ring
-  ;;"M-y" 'helm-show-kill-ring
-  )
+  "M-y" 'counsel-yank-pop)
 
 (t/bind-in 'evil-insert-state-map
   "C-d" 'evil-delete-char
@@ -1131,9 +1252,15 @@ Mouse support, with scroll.
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
 
-;; macro camelCase to snakeCase
-(evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
+#+END_SRC
 
+*** Preset registers
+
+Turn camel case into snake case
+
+#+BEGIN_SRC emacs-lisp :results silent
+;; macro camelCase to snake_case
+(evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
 #+END_SRC
 
 *** Text Objects
@@ -1211,6 +1338,8 @@ Mouse support, with scroll.
 
 ** Which key
 
+Some guidance is always welcome.
+
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package which-key
   :diminish which-key-mode
@@ -1234,56 +1363,64 @@ Mouse support, with scroll.
             ("left"                  . "←")
             ("DEL"                   . "⌫")
             ("deletechar"            . "⌦")
-            ("RET"                   . "⏎")))
+            ("RET"                   . "⏎")))))
 
-    (defun t/prefix-with-leader (key)
-      "Prefixes `key' with `leader' and a space, e.g. 'SPC m'"
-      (concat t-leader " " key))
-
-    (defun t/prefix-with-emacs-leader (key)
-      "Prefixes `key' with emacs `leader' and a space, e.g. 'C-SPC m'"
-      (concat t-emacs-leader t-leader " " key))
-
-    (defun t/declare-prefix (prefix name &optional key fn &rest bindings)
-      "Declares which-key `prefix' and a display `name' for the prefix.
-       Sets up keybindings for the prefix."
-      (t/after which-key
-        (which-key-declare-prefixes (t/prefix-with-leader prefix) name)
-        (which-key-declare-prefixes (t/prefix-with-emacs-leader prefix) name)
-        (while key
-          (evil-leader/set-key (concat prefix key) fn)
-          (setq key (pop bindings)
-                fn (pop bindings)))))
-
-    (defun t/declare-prefix-for-mode (mode prefix name &optional key fn &rest bindings)
-      "Declares which-key `prefix' and a display `name' for the prefix only in `mode`.
-       Sets up keybindings for the prefix."
-      (t/after which-key
-        (which-key-declare-prefixes-for-mode mode (t/prefix-with-leader prefix) name)
-        (which-key-declare-prefixes-for-mode mode (t/prefix-with-emacs-leader prefix) name)
-        (while key
-          (evil-leader/set-key-for-mode mode (concat prefix key) fn)
-          (setq key (pop bindings)
-                fn (pop bindings)))))
-
-    (defun t/micro-state-in-mode (mode key fn &rest bindings)
-      "Micro state that temporarily overlays a new key map, kinda like hydra"
-      (lexical-let ((keymap (make-sparse-keymap)))
-                   (while key
-                     (bind-key key fn keymap)
-                     (setq key (pop bindings)
-                           fn (pop bindings)))
-                   (lambda ()
-                     (interactive)
-                     (funcall mode)
-                     (set-temporary-overlay-map keymap t (lambda nil
-                                                           (funcall mode -1))))))
-    (which-key-mode 1)))
 #+END_SRC
 
-*** evil leader + which key integration
+Custom prefix functions for defining named shortcuts accessible through evil leader.
 
 #+BEGIN_SRC emacs-lisp :results silent
+(defun t/prefix-with-leader (key)
+  "Prefixes `key' with `leader' and a space, e.g. 'SPC m'"
+  (concat t-leader " " key))
+
+(defun t/prefix-with-emacs-leader (key)
+  "Prefixes `key' with emacs `leader' and a space, e.g. 'C-SPC m'"
+  (concat t-emacs-leader t-leader " " key))
+
+(defun t/declare-prefix (prefix name &optional key fn &rest bindings)
+  "Declares which-key `prefix' and a display `name' for the prefix.
+       Sets up keybindings for the prefix."
+  (t/after which-key
+    (which-key-declare-prefixes (t/prefix-with-leader prefix) name)
+    (which-key-declare-prefixes (t/prefix-with-emacs-leader prefix) name)
+    (while key
+      (evil-leader/set-key (concat prefix key) fn)
+      (setq key (pop bindings)
+            fn (pop bindings)))))
+
+(defun t/declare-prefix-for-mode (mode prefix name &optional key fn &rest bindings)
+  "Declares which-key `prefix' and a display `name' for the prefix only in `mode`.
+       Sets up keybindings for the prefix."
+  (t/after which-key
+    (which-key-declare-prefixes-for-mode mode (t/prefix-with-leader prefix) name)
+    (which-key-declare-prefixes-for-mode mode (t/prefix-with-emacs-leader prefix) name)
+    (while key
+      (evil-leader/set-key-for-mode mode (concat prefix key) fn)
+      (setq key (pop bindings)
+            fn (pop bindings)))))
+
+(defun t/micro-state-in-mode (mode key fn &rest bindings)
+  "Micro state that temporarily overlays a new key map, kinda like hydra"
+  (lexical-let ((keymap (make-sparse-keymap)))
+    (while key
+      (bind-key key fn keymap)
+      (setq key (pop bindings)
+            fn (pop bindings)))
+    (lambda ()
+      (interactive)
+      (funcall mode)
+      (set-temporary-overlay-map keymap t (lambda nil
+                                            (funcall mode -1))))))
+#+END_SRC
+
+*** Evil leader + Which key integration
+
+Turn on which key. For some reason evil must be turned off before global evil
+leader will actually turn on evil-leader globally. Then turn on evil.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(which-key-mode 1)
 (t/declare-prefix "m" "Mode")
 (evil-mode nil)
 (global-evil-leader-mode)
@@ -1291,6 +1428,7 @@ Mouse support, with scroll.
 #+END_SRC
 
 ** Calendar
+
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package calendar
   :ensure nil
@@ -1576,7 +1714,12 @@ Make testing emacs initialization easier.
                          "R" (t/lambda (restart-emacs '("--no-desktop"))))))
 #+end_src
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package google-translate
+:commands google-translate-at-point)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package winner
   :ensure nil
   :straight nil
@@ -2931,6 +3074,7 @@ use-package helm-js-codemod
                   "t" 'etags-select-find-tag-at-point
                   "w" 'helm-wikipedia-suggest)
 #+end_src
+
 *** Popups
 
 #+BEGIN_SRC emacs-lisp :results silent
