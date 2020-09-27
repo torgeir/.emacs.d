@@ -661,6 +661,23 @@ Moves emacs frame up" t nil)
 (autoload 't/move-frame-down "t-defuns" "\
 Moves emacs frame down" t nil)
 
+(autoload 't/diary-last-day-of-month "t-defuns" "\
+Return `t` if DATE is the last day of the month.
+
+ORG-MODE:  * My Task
+             SCHEDULED: <%%(diary-last-day-of-month date)>
+DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
+
+See also:  (setq org-agenda-include-diary t)
+\(diary-last-day-of-month '(2 28 2017))
+
+\(fn DATE)" nil nil)
+
+(autoload 't/diary-last-day-of-week "t-defuns" "\
+Return `t` if DATE is the last day of the week.
+
+\(fn DATE)" nil nil)
+
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
 
 ;;;***

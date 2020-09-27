@@ -1555,5 +1555,30 @@ If FILEXT is provided, return files with extension FILEXT instead."
          (top (frame-parameter frame 'top)))
     (set-frame-parameter frame 'top (+ top 40))))
 
+;;;###autoload
+(defun t/diary-last-day-of-month (date)
+  "Return `t` if DATE is the last day of the month.
+
+ORG-MODE:  * My Task
+             SCHEDULED: <%%(diary-last-day-of-month date)>
+DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
+
+See also:  (setq org-agenda-include-diary t)
+(diary-last-day-of-month '(2 28 2017))"
+  (let* ((day (calendar-extract-day date))
+         (month (calendar-extract-month date))
+         (year (calendar-extract-year date))
+         (last-day-of-month
+          (calendar-last-day-of-month month year)))
+    (= day last-day-of-month)))
+
+;;;###autoload
+(defun t/diary-last-day-of-week (date)
+  "Return `t` if DATE is the last day of the week."
+  (equal 5
+         (let* ((day (calendar-extract-day date))
+                (month (calendar-extract-month date))
+                (year (calendar-extract-year date)))
+           (org-day-of-week day month year))))
 
 (provide 't-defuns)
