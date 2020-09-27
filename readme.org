@@ -29,6 +29,7 @@ npm -g install eslint babel-eslint jsonlint eslint-plugin-react typescript-langu
 #+BEGIN_SRC sh :results silent
 brew tap d12frosted/emacs-plus
 brew install emacs-plus --HEAD --with-natural-title-bar --without-spacemacs-icon
+brew install wordnet
 #+END_SRC
 
 **** Ubuntu
@@ -39,7 +40,22 @@ sudo apt update
 sudo apt install emacs-snapshot
 sudo apt install fonts-inconsolata
 sudo fc-cache -fv
+sudo apt install wordnet
 #+END_SRC
+
+**** Win
+
+outdated - wsl2 is probably better;
+
+Install from cygwin or https://ftp.gnu.org/gnu/emacs/windows/ or http://alpha.gnu.org/gnu/emacs/pretest/windows/emacs-27/. Win gnu emacs seem to want files in C:\Users\<user>\AppData\Roaming\, and doesn't like symlinks, so you could..
+
+- clone the repo and copy .emacs.d to C:\Users\<user>\AppData\Roaming\.emacs.d
+- copy .emacs.d/.emacs to C:\Users\<user>\AppData\Roaming\.emacs
+
+
+**** Fonts
+
+See ~fonts/~.
 
 ** Bootstrap
 
