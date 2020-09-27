@@ -1579,6 +1579,10 @@ These three actually seem to replace all my previous helm config 😱
 
 ** VC
 
+*** Gutter/fringe
+
+Show git status in the gutter.
+
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package git-gutter+
   :diminish git-gutter+-mode
@@ -1600,18 +1604,34 @@ These three actually seem to replace all my previous helm config 😱
                     (fringe-helper-define 'git-gutter-fr+-deleted '(top repeat) "XXX.....")
                     (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "XXX.....")
                     (git-gutter+-enable-fringe-display-mode)))
+#+END_SRC
 
-(use-package helm-open-github
-  :commands (helm-open-github-from-issues
-             helm-open-github-from-commit
-             helm-open-github-from-file
-             helm-open-github-from-pull-requests))
+*** Links
 
+Open link to line under version control on github.com
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package git-link
   :commands git-link
   :init
   (setq git-link-open-in-browser t))
 
+#+END_SRC
+
+Open link to region under version control on github.com
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package browse-at-remote
+  :init
+  (setq browse-at-remote-add-line-number-if-no-region-selected nil))
+#+END_SRC
+
+Super useful package to skip through time in version control using C-n and C-p.
+Git blame is shown for each hunk as you navigate.
+
+*** Blame
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package git-timemachine
   :commands git-timemachine-toggle
   :config
@@ -1623,13 +1643,26 @@ These three actually seem to replace all my previous helm config 😱
         "C-n" 'git-timemachine-show-next-revision
         "C-p" 'git-timemachine-show-previous-revision))))
 
+#+END_SRC
+
+*** Gist
+
+A gist interface for emacs.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package gist
   :commands (gist-list
              gist-buffer
              gist-buffer-private
              gist-region
              gist-region-private))
+#+END_SRC
 
+*** Magit and Forge
+
+The only git client you will ever need.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package magit
   :commands magit-status
   :init
@@ -1644,9 +1677,9 @@ These three actually seem to replace all my previous helm config 😱
        ;; fixes https://github.com/magit/ghub/issues/81 - dont use this on linux
        gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"
 
-       ;; https://github.com/magit/ghub/issues/81 - https://github.com/magit/ghub/commit/785cbfd1d48559556f38e9be7c3ed9bc15af12eb
+       ;; https://github.com/magit/ghub/issues/81
+       ;; https://github.com/magit/ghub/commit/785cbfd1d48559556f38e9be7c3ed9bc15af12eb
        ghub-use-workaround-for-emacs-bug 'force)))
-
   :config
   (progn
     (bind-key "q" #'magit-quit-session magit-status-mode-map)
@@ -1664,48 +1697,49 @@ These three actually seem to replace all my previous helm config 😱
       (interactive)
       (kill-buffer)
       (git-gutter+-refresh))))
+#+END_SRC
 
-(use-package forge
-  :after magit)
+A pull request interface for emacs.
 
-(use-package browse-at-remote
-  :init
-  (setq browse-at-remote-add-line-number-if-no-region-selected nil))
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package forge :after magit)
+#+END_SRC
 
-(progn
-  (t/declare-prefix "g" "Git"
-                    "T" 'git-timemachine-toggle
-                    "s" 'magit-status
-                    "b" 'magit-blame
-                    "d" 'magit-diff
-                    "l" 'magit-log-current
-                    "L" 'magit-log
-                    "C" 'magit-commit-create
-                    "c" #'t/clone)
+*** Keybindings
 
-  (t/declare-prefix "gh" "Hunk"
-                    "n" 'git-gutter+-next-hunk
-                    "N" 'git-gutter+-previous-hunk
-                    "C" 'git-gutter+-stage-and-commit
-                    "?" 'git-gutter+-show-hunk-inline-at-point
-                    "=" 'git-gutter+-show-hunk
-                    "r" 'git-gutter+-revert-hunks
-                    "s" 'git-gutter+-stage-hunks
-                    "cc" 'magit-commit-create
-                    "ca" 'magit-commit-amend)
+#+BEGIN_SRC emacs-lisp :results silent
+(t/declare-prefix "g" "Git"
+                  "T" 'git-timemachine-toggle
+                  "s" 'magit-status
+                  "b" 'magit-blame
+                  "d" 'magit-diff
+                  "l" 'magit-log-current
+                  "L" 'magit-log
+                  "C" 'magit-commit-create
+                  "c" #'t/clone)
 
-  (t/declare-prefix "go" "Open github"
-                    ;; TODO if region active choose gob
-                    "l" 'git-link
-                    "b" 'browse-at-remote)
+(t/declare-prefix "gh" "Hunk"
+                  "n" 'git-gutter+-next-hunk
+                  "N" 'git-gutter+-previous-hunk
+                  "C" 'git-gutter+-stage-and-commit
+                  "?" 'git-gutter+-show-hunk-inline-at-point
+                  "=" 'git-gutter+-show-hunk
+                  "r" 'git-gutter+-revert-hunks
+                  "s" 'git-gutter+-stage-hunks
+                  "cc" 'magit-commit-create
+                  "ca" 'magit-commit-amend)
 
-  (t/declare-prefix "gg" "Gist"
-                    "l" 'gist-list
-                    "b" 'gist-buffer
-                    "B" 'gist-buffer-private
-                    "r" 'gist-region
-                    "R" 'gist-region-private))
+(t/declare-prefix "go" "Open github"
+                  ;; TODO if region active choose gob
+                  "l" 'git-link
+                  "b" 'browse-at-remote)
 
+(t/declare-prefix "gg" "Gist"
+                  "l" 'gist-list
+                  "b" 'gist-buffer
+                  "B" 'gist-buffer-private
+                  "r" 'gist-region
+                  "R" 'gist-region-private)
 #+END_SRC
 
 ** Editor
