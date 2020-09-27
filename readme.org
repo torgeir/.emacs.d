@@ -1762,6 +1762,36 @@ A pull request interface for emacs.
 
 ** Editor
 
+*** Spray mode
+
+Always had plans to read faster with this one..
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package spray
+  :commands spray-mode
+  :init
+  (progn
+    (setq spray-wpm 680
+          spray-height 170
+          spray-margin-top 0
+          spray-margin-left 0)
+    (t/declare-prefix "t" "Toggle"
+                      "s" (t/micro-state-in-mode
+                           'spray-mode
+                           "s" 'spray-slower
+                           "f" 'spray-faster
+                           "SPC" 'spray-start/stop
+                           "<left>" 'spray-backward-word
+                           "<right>" 'spray-forward-word))
+    (t/add-hook-defun 'spray-mode-hook t/hook-spray
+                      (setq-local spray-margin-top (truncate (/ (window-height) 2.7)))
+                      (setq-local spray-margin-left (truncate (/ (window-width) 2.7)))
+                      (beacon-mode -1)
+                      (t/locally-disable-cursor)
+                      (set-face-foreground 'spray-accent-face
+                                           (face-foreground 'font-lock-keyword-face)))))
+#+END_SRC
+
 *** Restart
 
 Make testing emacs initialization easier.
@@ -2130,6 +2160,18 @@ A rest client interface for elasticsearch, similar to restclient
 
 *** Fun
 
+**** Twitter
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package twittering-mode
+  :commands twittering-mode
+  :init
+  (progn
+    (setq twittering-request-confirmation-on-posting t)
+    (t/declare-prefix "a" "Applications"
+                      "t" 'twittering-mode)))
+#+END_SRC
+
 **** Reddit
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -2497,7 +2539,6 @@ from pressing R in eww mode.
       (autoload 'eww-setup-buffer "eww")
       (eww-setup-buffer)
       (url-retrieve url (t/eww-readable-after-render fn) (list url buffer)))))
-
 #+END_SRC
 
 ***** Images and wrap long lines
@@ -2758,6 +2799,16 @@ Another text based web browser
 
 *** Highlight
 
+**** Todos
+
+Highlight todos across all programming modes.
+
+#+begin_src emacs-lisp :results silent
+(use-package hl-todo
+  :defer 1
+  :config (global-hl-todo-mode))
+#+END_SRC
+
 **** Parens
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -2874,7 +2925,6 @@ A custom function to fetch a clean view of the current news from nrk.no
                     (evil-search "- " nil)
                     (recenter nil)) keymap)
     (set-temporary-overlay-map keymap t)))
-
 #+END_SRC
 
 **** Hackernews
@@ -3172,7 +3222,7 @@ Thesaurus.
   (advice-add 'eval-region :around (lambda (f beg end &rest r) (endless/eval-overlay (apply f beg end r) end)))
   (advice-add 'eval-last-sexp :filter-return (lambda (r) (endless/eval-overlay r (point))))
   (advice-add 'eval-defun :filter-return (lambda (r) (endless/eval-overlay r (save-excursion (end-of-defun) (point))))))
-  #+END_SRC
+#+END_SRC
 
 *** Misc text modes
 
@@ -3473,6 +3523,10 @@ Thesaurus.
 ** Languages
 
 #+begin_src emacs-lisp :results silent
+;TODO inline these some day
+#+end_src
+
+#+begin_src emacs-lisp :results silent
 (require 't-lang-arduino)
 (require 't-lang-applescript)
 (require 't-lang-clojure)
@@ -3500,6 +3554,10 @@ Thesaurus.
 #+end_src
 
 ** Shell
+
+#+begin_src emacs-lisp :results silent
+;TODO restructure these
+#+end_src
 
 #+begin_src emacs-lisp :results silent
 ;; (use-package bash-completion
@@ -3907,7 +3965,11 @@ PWD is not in a git repo (or the git command is not found)."
 
 (provide 't-shell)
 #+end_src
+
 ** Desktop
+
+Store desktop and recall it, e.g. after reboot. Tries to be smart about keeping
+the saved desktop project specific.
 
 #+begin_src emacs-lisp :results silent
 (defun t/desktop-project-name ()
@@ -3947,14 +4009,6 @@ Initial font and window transparency.
 (t/transparency 100)
 #+END_SRC
 
-Highlight todos in all modes.
-
-#+begin_src emacs-lisp :results silent
-(use-package hl-todo
-  :defer 1
-  :config (global-hl-todo-mode))
-#+END_SRC
-
 Shorten ~function~ to ~f~. Can be handy for other annoying stuff as well.
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -3971,7 +4025,7 @@ No emojis in terminal (on os x at least).
   (t/add-hook 'after-make-frame-functions 't/set-emoji-font)) ; hook for when a frame is created with emacsclient
 
 #+END_SRC
-** Keys
+** Global keys and hippie expand
 
 #+BEGIN_SRC emacs-lisp :results silent
 ;; lisp-friendly
@@ -4341,9 +4395,10 @@ Switch around split frame rotation.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package transpose-frame :commands transpose-frame)
 #+END_SRC
+
 *** Window history
 
-Revert to previous window configurations
+Revert to previous window configurations.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package winner
@@ -4391,10 +4446,13 @@ Move window consistently across os'es.
 
 ** Server
 
+Keep a server running, so emacsclient opens in existing windows. E.g. when
+running ~e some-file.el~ on the command line.
+
 #+BEGIN_SRC emacs-lisp :results silent
-  (unless (fboundp 'server-running-p) (require 'server))
-  (unless (server-running-p) (server-mode))
-  (t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
+(unless (fboundp 'server-running-p) (require 'server))
+(unless (server-running-p) (server-mode))
+(t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
 #+END_SRC
 
 ** Org
@@ -4976,52 +5034,7 @@ Fetch stuff easiliy, e.g. urls from Chrome, urls to emails from Mail etc.
              org-mac-chrome-get-frontmost-url))
 
 #+END_SRC
-** Spray mode
-
-Always had plans to read faster with this one..
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package spray
-  :commands spray-mode
-  :init
-  (progn
-    (setq spray-wpm 680
-          spray-height 170
-          spray-margin-top 0
-          spray-margin-left 0)
-    (t/declare-prefix "t" "Toggle"
-                      "s" (t/micro-state-in-mode
-                           'spray-mode
-                           "s" 'spray-slower
-                           "f" 'spray-faster
-                           "SPC" 'spray-start/stop
-                           "<left>" 'spray-backward-word
-                           "<right>" 'spray-forward-word))
-    (t/add-hook-defun 'spray-mode-hook t/hook-spray
-                      (setq-local spray-margin-top (truncate (/ (window-height) 2.7)))
-                      (setq-local spray-margin-left (truncate (/ (window-width) 2.7)))
-                      (beacon-mode -1)
-                      (t/locally-disable-cursor)
-                      (set-face-foreground 'spray-accent-face
-                                           (face-foreground 'font-lock-keyword-face)))))
-
-
-#+END_SRC
-
-** Twitter
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package twittering-mode
-  :commands twittering-mode
-  :init
-  (progn
-    (setq twittering-request-confirmation-on-posting t)
-    (t/declare-prefix "a" "Applications"
-                      "t" 'twittering-mode)))
-
-#+END_SRC
-
-** Sync with gcal
+*** Sync with gcal
 
 There was a time where this was working. For now it only causes problems, hence
 the commented out ~org-gcal-fetch~
@@ -5042,16 +5055,15 @@ the commented out ~org-gcal-fetch~
             org-gcal-up-days 1)
       ;;(add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
       )))
-
 #+END_SRC
 
-** Make org draw charts
+*** Make org draw charts
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package gnuplot :after org)
 #+END_SRC
 
-** Search
+*** Search
 
 #+BEGIN_SRC emacs-lisp :results silent
 (t/declare-prefix-for-mode 'org-mode "s" "Search"
@@ -5059,7 +5071,7 @@ the commented out ~org-gcal-fetch~
                            "P" 'counsel-projectile-rg)
 #+END_SRC
 
-** Smartparens for org symbols
+*** Smartparens for org symbols
 
 #+BEGIN_SRC emacs-lisp :results silent
 (t/after smartparens
@@ -5069,10 +5081,11 @@ the commented out ~org-gcal-fetch~
     (sp-local-pair "<" ">" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
     (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
     (sp-local-pair "«" "»")))
-
 #+END_SRC
 
 ** Themes
+
+Doom themes are nice, so is the modeline.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package doom-themes
@@ -5088,10 +5101,14 @@ the commented out ~org-gcal-fetch~
   :hook (after-init . doom-modeline-mode)
   :config
   (progn
-    ;;(t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")
+    (t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")
     (setq doom-modeline-height 40
           doom-themes-padded-modeline 1)))
+#+END_SRC
 
+Cycle between light and dark themes.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defconst t-themes (list
                     'doom-one
                     'doom-one-light) "Themes to cycle")
