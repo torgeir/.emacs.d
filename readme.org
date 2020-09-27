@@ -1548,32 +1548,33 @@ No longer in use.
 
 ** Ivy
 
+Trying ivy as a helm replacement. https://news.ycombinator.com/item?id=24449883
+
+These three actually seem to replace all my previous helm config 😱
+
 #+BEGIN_SRC emacs-lisp :results silent
- (use-package counsel :init (ivy-mode 1))
+(use-package counsel :init (ivy-mode 1))
+(use-package counsel-projectile)
+(use-package counsel-web)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results silent
- (use-package counsel-projectile)
+;; TODO Is there a counsel-wiki?
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results silent
- (use-package counsel-etags
-   :ensure t
-   :bind (("C-]" . counsel-etags-find-tag-at-point))
-   :init
-   (t/add-hook 'prog-mode-hook
-               (t/lambda
-                   (add-hook 'after-save-hook
-                             'counsel-etags-virtual-update-tags 'append 'local)))
-   :config
-   (setq counsel-etags-update-interval 60)
-   (push "build" counsel-etags-ignore-directories)
-   (push "target" counsel-etags-ignore-directories))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results silent
- (use-package counsel-web)
- ;; todo counsel-wiki?
+(use-package counsel-etags
+  :if nil ; try without it
+  :bind (("C-]" . counsel-etags-find-tag-at-point))
+  :init
+  (t/add-hook 'prog-mode-hook
+              (t/lambda
+                  (add-hook 'after-save-hook
+                            'counsel-etags-virtual-update-tags 'append 'local)))
+  :config
+  (setq counsel-etags-update-interval 60)
+  (push "build" counsel-etags-ignore-directories)
+  (push "target" counsel-etags-ignore-directories))
 #+END_SRC
 
 ** VC
