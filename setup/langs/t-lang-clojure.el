@@ -1,6 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package clojure-mode
-  :pin melpa-stable
+(use-package clojure-mode
   :mode (("\\.\\(edn\\|boot\\|clj\\)$" . clojure-mode)
          ("\\.cljs$" . clojurescript-mode))
   :commands (clojure-mode clojurescript-mode)
@@ -17,8 +16,7 @@
     (defadvice nrepl-load-current-buffer (before save-first activate)
       (save-buffer))))
 
-(t/use-package clj-refactor
-  :pin melpa-stable
+(use-package clj-refactor
   :commands (clj-refactor-mode)
   :init
   (progn
@@ -80,14 +78,13 @@
     (t/add-hook 'clojurescript-mode-hook (t/lambda (t/init-clj-refactor 'clojurescript-mode)))))
 
 
-(t/use-package cljr-helm
-  :commands cljr-helm)
+;; TODO 
+;;(use-package cljr-helm :commands cljr-helm)
 
-(t/use-package clojure-mode-extra-font-locking
+(use-package clojure-mode-extra-font-locking
   :commands clojure-mode) ;; more syntax hilighting
 
-(t/use-package cider
-  :pin melpa-stable
+(use-package cider
   :commands (cider cider-connect cider-jack-in)
   :init
   (progn

@@ -9,11 +9,6 @@
     (add-hook 'css-mode-hook 'lsp)))
 
 
-(comment (use-package lsp-java
-           :init
-           (add-hook 'java-mode-hook 'lsp)))
-
-
 (use-package lsp-ui
   :init
   (progn
@@ -31,11 +26,8 @@
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
     (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)))
 
-(use-package helm-lsp
-  :config
-  (progn
-    (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)))
-
+;; TODO
+;; counsel lsp? instead of helm lsp
 
 (use-package typescript-mode
   :mode "\\.ts"
@@ -50,7 +42,7 @@
         company-lsp-async t))
 
 
-(t/use-package js2-mode
+(use-package js2-mode
   :mode "\\.\\(ts\\|js\\|jsx\\)$"
   :interpreter "node"
   :init
@@ -95,7 +87,7 @@
     (unbind-key "M-j" js2-mode-map)
     (unbind-key "M-." js2-mode-map)))
 
-(t/use-package js2-refactor
+(use-package js2-refactor
   :after js2-mode
   :init
   (t/declare-prefix "mr" "Refactor"
@@ -119,7 +111,7 @@
                          (multiple-cursors-mode -1)
                          (evil-normal-state)) mc/keymap))
 
-(t/use-package cdnjs
+(use-package cdnjs
   :commands (cdnjs-install-gocdnjs
              cdnjs-insert-url
              cdnjs-describe-package
@@ -128,7 +120,7 @@
   :init
   (setq cdnjs-completing-read-function 'completing-read))
 
-(t/use-package prettier-js
+(use-package prettier-js
   :commands prettier-js-mode
   :init
   (progn
@@ -137,8 +129,7 @@
 
     (defun t/prettier-hook ()
       (prettier-js-mode -1)
-      (unless (helm-window)
-        (prettier-js-mode)))
+      (prettier-js-mode))
 
     (t/add-hook 'js-mode-hook #'t/prettier-hook)
     (t/add-hook 'js2-mode-hook #'t/prettier-hook)
@@ -149,11 +140,11 @@
       (interactive)
       (prettier-js-mode -1))))
 
-(t/use-package rjsx-mode
+(use-package rjsx-mode
   :mode "\\.jsx?$"
   :commands (rjsx-mode))
 
-(t/use-package indium
+(use-package indium
   :commands (indium-repl-mode
              indium-interaction-mode
              indium-debugger-mode)
@@ -204,7 +195,7 @@
       (cider--make-result-overlay (indium-fontify-js r) :where (point) :duration 'command))
     (setq indium-interaction-eval-node-hook (list #'t/overlay-indium))))
 
-(t/use-package nodejs-repl
+(use-package nodejs-repl
   :commands nodejs-repl
   :init
   (progn

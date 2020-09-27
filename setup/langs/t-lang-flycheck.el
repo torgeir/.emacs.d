@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package flycheck
+(use-package flycheck
   :commands flycheck-mode
   :init
   (progn
@@ -13,10 +13,10 @@
     (t/after lsp-ui
       (t/after js2-mode
         (flycheck-add-mode 'javascript-eslint 'js2-mode)
-        (flycheck-add-next-checker 'lsp 'javascript-eslint)))))
+        (t/add-hook-defun 'lsp-after-initialize-hook t-lsp-flycheck
+                          (flycheck-add-next-checker 'lsp 'javascript-tslint))))))
 
-(t/use-package flycheck-clojure
-  :pin melpa-stable
+(use-package flycheck-clojure
   :commands flycheck-mode
   :init
   (progn

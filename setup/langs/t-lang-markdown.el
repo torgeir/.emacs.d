@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package markdown-mode
+(use-package markdown-mode
   :mode "\\.\\(markdown\\|md\\)$"
   :config
   (progn

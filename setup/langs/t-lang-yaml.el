@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package yaml-mode
+(use-package yaml-mode
   :commands yaml-mode)
 
 (provide 't-lang-yaml)

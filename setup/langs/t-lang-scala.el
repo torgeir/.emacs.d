@@ -1,6 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package ensime
-  :pin melpa-stable
+(use-package ensime
   :commands (ensime ensime-mode)
   :config
   (progn

@@ -1,6 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package css-mode
+(use-package css-mode
   :ensure nil
+  :straight nil
   :mode "\\.css$"
   :init
   (progn
@@ -11,13 +12,13 @@
     (t/add-company-backends-hook 'css-mode-hook 'company-css)
     (t/add-hook 'css-mode-hook '(turn-on-smartparens-mode rainbow-mode))))
 
-(t/use-package css-eldoc
+(use-package css-eldoc
   :commands turn-on-css-eldoc
   :init
   (progn
     (t/add-hook 'css-mode-hook 'turn-on-css-eldoc)))
 
-(t/use-package less-css-mode
+(use-package less-css-mode
   :mode "\\.less$"
   :commands less-css-mode
   :config

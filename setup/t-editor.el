@@ -1,19 +1,11 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package restart-emacs
-  :commands restart-emacs
-  :init
-  (progn
-    (t/declare-prefix "q" "Quit"
-                      "d" 't/safe-restart-emacs
-                      "r" (t/lambda (restart-emacs))
-                      "R" (t/lambda (restart-emacs '("--no-desktop"))))))
 
-(t/use-package winner
+(use-package winner
   :ensure nil
   :commands (winner-undo winner-redo)
   :config (winner-mode))
 
-(t/use-package uniquify ; add dirs to buffer names when not unique
+(use-package uniquify ; add dirs to buffer names when not unique
   :ensure nil
   :init
   (progn
@@ -44,13 +36,13 @@
          beacon-color "#f06")
    :config (beacon-mode)))
 
-(t/use-package subword
+(use-package subword
   :diminish subword-mode
   :defer 1
   :ensure nil
   :config (subword-mode))
 
-(t/use-package tramp
+(use-package tramp
   :defer t
   :ensure nil
   :init
@@ -58,7 +50,7 @@
                    tramp-default-method "ssh"
                    tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
 
-(t/use-package dired
+(use-package dired
   :ensure nil
   :commands (dired dired-jump)
   :init
@@ -85,17 +77,17 @@
       "M-<down>" (t/lambda (dired-find-alternate-file))
       "M-n" (t/lambda (dired-find-alternate-file)))))
 
-(t/use-package dired-hacks-utils
+(use-package dired-hacks-utils
   :hook dired-mode-hook
   :ensure nil
   :load-path "site-lisp/dired-hacks-utils/")
 
-(t/use-package dired-avfs
+(use-package dired-avfs
   :hook dired-mode-hook
   :ensure nil
   :load-path "site-lisp/dired-avfs/")
 
-(t/use-package dired-details
+(use-package dired-details
   :hook dired-mode-hook
   :ensure nil
   :load-path "site-lisp/dired-details/"
@@ -104,7 +96,7 @@
     (setq dired-details-hidden-string "")
     (add-hook 'dired-mode-hook 'dired-hide-details-mode)))
 
-(t/use-package dired-subtree
+(use-package dired-subtree
   :commands dired-subtree-toggle
   :ensure nil
   :load-path "site-lisp/dired-subtree/"
@@ -113,23 +105,23 @@
     (setq dired-subtree-line-prefix "  ")
     (bind-key (kbd "<tab>") 'dired-subtree-toggle dired-mode-map)))
 
-(t/use-package all-the-icons-dired
+(use-package all-the-icons-dired
   :commands all-the-icons-dired-mode
   :init
   (t/add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
-(t/use-package rainbow-mode
+(use-package rainbow-mode
   :diminish rainbow-mode
   :commands rainbow-mode
   :init
   (t/add-hook '(prog-mode-hook css-mode-hook html-mode-hook) 'rainbow-mode))
 
-(t/use-package rainbow-delimiters
+(use-package rainbow-delimiters
   :commands rainbow-delimiters-mode
   :init
   (t/add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
-(t/use-package neotree
+(use-package neotree
   :commands (neotree-toggle
              neotree-show
              neotree-hide
@@ -183,10 +175,10 @@
                    ("C" . neotree-change-root)))
       (eval `(evil-define-key 'normal neotree-mode-map (kbd ,(car key)) ',(cdr key))))))
 
-(t/use-package ace-window
+(use-package ace-window
   :commands ace-window)
 
-(t/use-package avy
+(use-package avy
   :commands (avy-goto-char
              avy-goto-char-2
              avy-goto-line
@@ -219,7 +211,7 @@
       (set-face-attribute 'avy-lead-face-1 nil :background nil :foreground (face-foreground f))
       (set-face-attribute 'avy-lead-face-2 nil :background nil :foreground (face-foreground f)))))
 
-(t/use-package es-mode
+(use-package es-mode
   :commands es-mode
   :init
   (progn
@@ -231,7 +223,7 @@
   (t/bind-in 'es-mode-map
     "C-c C-v" 'es-execute-request-dwim))
 
-(t/use-package hideshow
+(use-package hideshow
   :commands evil-toggle-fold
   :ensure nil
   :init
@@ -245,7 +237,7 @@
                                                    (overlay-end ov))))))
     (setq hs-set-up-overlay #'display-code-line-counts)))
 
-(t/use-package ace-jump-mode
+(use-package ace-jump-mode
   :commands (ace-jump-mode
              ace-jump-char-mode
              ace-jump-line-mode
@@ -255,7 +247,7 @@
     (setq ace-jump-mode-gray-background t
           ace-jump-mode-case-fold t)))
 
-(t/use-package undo-tree
+(use-package undo-tree
   :diminish undo-tree-mode
   :commands undo-tree-visualize
   :init
@@ -292,7 +284,7 @@
           (evil-define-key 'normal md4rd-mode-map (kbd "d") 'md4rd-downvote))))
     (setq md4rd-subs-active '(MechanicalKeyboards emacs clojure))))
 
-(t/use-package smex
+(use-package smex
   :commands (smex smex-major-mode-commands)
   :init
   (progn
@@ -316,7 +308,7 @@
      company-dabbrev
      company-abbrev)))
 
-(t/use-package company
+(use-package company
   :commands company-complete
   :init
   (progn
@@ -347,7 +339,7 @@
         (completion-at-point))
       (global-company-mode))))
 
-(t/use-package company-box
+(use-package company-box
   :command company-box-mode
   :init
   (progn
@@ -360,43 +352,33 @@
                       (setq company-box-icons-alist 'company-box-icons-all-the-icons)
                       (company-box-mode))))
 
-(t/use-package company-flx
+(use-package company-flx
   :after company
   :config
   (progn
     (company-flx-mode +1)))
 
-(t/use-package company-web
+(use-package company-web
   :after company)
 
-(t/use-package company-restclient
+(use-package company-restclient
   :commands restclient-mode
   :config
   (t/add-company-backends-hook 'restclient-mode-hook 'company-restclient))
 
-(t/use-package helm-xref
-  :commands (helm-xref-show-xrefs
-             xref-find-definitions
-             xref-find-references
-             xfref-pop-marker-stack)
-  :init
-  (progn
-    (setq xref-show-xrefs-function 'helm-xref-show-xrefs))
-  :config
-  (progn
-    (t/bind-in 'global-map
-      "M-." 'xref-find-definitions
-      "M-?" 'xref-find-references
-      "M-," 'xref-pop-marker-stack)))
+;; TODO
+;; counsel xref replace helm-xref
 
-(t/use-package helm-unicode
-  :commands helm-unicode)
+;; TODO
+;; counsel unicode replace helm-unicode
 
-(t/use-package company-emoji
+
+
+(use-package company-emoji
   :command company-mode
   :after company)
 
-(t/use-package emoji-cheat-sheet-plus
+(use-package emoji-cheat-sheet-plus
   :commands (emoji-cheat-sheet-plus-insert)
   :init
   (progn
@@ -430,7 +412,7 @@
                    (t/emoji-cheat-shet-plus--unicode-for-emoji-text emoji)
                  emoji)))))))))
 
-(t/use-package smartparens
+(use-package smartparens
   :diminish smartparens-mode
   :commands turn-on-smartparens-mode
   :init
@@ -526,12 +508,12 @@
       "C-<right>" 'sp-forward-slurp-sexp
       "C-<left>" 'sp-forward-barf-sexp)))
 
-(t/use-package csv-mode
+(use-package csv-mode
   :commands csv-mode
   :init
   (setq csv-separators '(";")))
 
-(t/use-package writeroom-mode
+(use-package writeroom-mode
   :commands (global-writeroom-mode turn-on-writeroom-mode writeroom-mode)
   :init
   (setq writeroom-width 0.60
@@ -548,17 +530,18 @@
           all-the-icons-dired-mode
           ruby-mode)))
 
-(t/use-package w3m
+(use-package w3m
   :commands w3m
   :config
   (t/bind-in 'w3m-mode-map
     "M-p" 'backward-paragraph
     "M-n" 'forward-paragraph))
 
-(t/use-package discover-my-major
+(use-package discover-my-major
   :commands (discover-my-major discover-my-mode))
 
-(t/use-package helm
+(comment
+ use-package helm
   :commands (completion-at-point
              helm
              helm-mini
@@ -614,74 +597,13 @@
     (t/after neotree
       (t/add-hook 'helm-before-initialize-hook 'neotree-hide))))
 
-(t/use-package helm-ag
-  :after helm
-  :commands (helm-ag helm-projectile-ag)
-  :init
-  (progn
-    (setq helm-ag-fuzzy-match t
-          helm-ag-insert-at-point 'symbol
-          helm-ag-use-grep-ignore-list t
-          ;; save edited buffers on completion
-          helm-ag-edit-save t)
-    (setq helm-ag-base-command (if is-ms "ag --nocolor --nogroup --vimgrep"
-                                 "rg --no-heading --smart-case --vimgrep")
-          ;; rg exit-status 2 indicates partial success
-          helm-ag-success-exit-status '(0 2)))
 
-  :config
-  (progn
-    ;; patch helm projectile ag to use rg and its ignore params
-    (defun helm-ag--construct-ignore-option (pattern)
-      "Torgeir modified this as helm-do-ag ends up calling start-file-process
-with what is excpected to be a list of params one after another, with the -g instruction separated from the actual pattern
 
-helm-projectile-ag was modified accordingly.
 
-(when helm-ag-use-grep-ignore-list
-      (setq args (append args (apply 'append (helm-ag--grep-ignore-list-to-options)))))
-"
-      (list "-g" (concat "!" pattern)))))
 
-;; (use-package helm-rg)
 
-;; patched to use helm-ag--construct-ignore-option
-(t/use-package helm-projectile
-  :after helm
-  :commands (helm-projectile projectile-load-known-projects helm-projectile-ag helm-projectile-rg))
 
-(t/use-package helm-descbinds
-  :commands helm-descbinds
-  :config
-  (progn
-    (helm-descbinds-mode)
-    (setq helm-descbinds-window-style 'split)))
-
-(t/use-package helm-google
-  :commands helm-google
-  :config
-  (progn
-    (defun helm-google--parse-google (buf)
-      "Parse the html response from Google. torgeir: fixes issues with google now randomizing css classes."
-      (helm-google--with-buffer
-       buf
-       (let (results result)
-         (while (re-search-forward "<a href=\"/url\\?q=\\(.*?\\)&amp;sa" nil t)
-           (setq result (plist-put result :url (match-string-no-properties 1)))
-           (re-search-forward "<div class=\"[^\"]+\">\\([\0-\377[:nonascii:]]*?\\)</div>" nil t)
-           (when-let ((html (match-string-no-properties 1)))
-             (setq result (plist-put result :title (helm-google--process-html html))))
-           (re-search-forward "<div class=\"[^\"]+\">[\0-\377[:nonascii:]]*?</div><div class=\"[^\"]+\">[\0-\377[:nonascii:]]*?</div><div class=\"[^\"]+\">\\([\0-\377[:nonascii:]]*?\\)</div>" nil t)
-           (when-let ((html (match-string-no-properties 1)))
-             (setq result (plist-put result :content (helm-google--process-html html))))
-           (add-to-list 'results result t)
-           (setq result nil))
-         results)))))
-
-(t/use-package swiper-helm
-  :commands swiper-helm)
-
-(t/use-package visual-regexp
+(use-package visual-regexp
   :commands vr/query-replace
   :config
   (progn
@@ -690,20 +612,20 @@ helm-projectile-ag was modified accordingly.
 (use-package nnhackernews)
 (use-package nnreddit)
 
-(t/use-package dash-at-point
+(use-package dash-at-point
   :commands dash-at-point)
 
-;; (t/use-package expand-region
+;; (use-package expand-region
 ;;   :commands (er/expand-region er/contract-region)
 ;;   :init
 ;;   (progn
 ;;     (bind-key (if is-mac "M-@" "M-'") 'er/expand-region)
 ;;     (bind-key (if is-mac "M-*" "M-§") 'er/contract-region)))
 
-(t/use-package transpose-frame
+(use-package transpose-frame
   :commands transpose-frame)
 
-(t/use-package yasnippet
+(use-package yasnippet
   :diminish yas-minor-mode
   :defer 1
   :init
@@ -759,19 +681,7 @@ helm-projectile-ag was modified accordingly.
       "C-e" 'yas/goto-end-of-active-field
       "C-a" 'yas/goto-start-of-active-field)))
 
-(t/use-package ag
-  :commands ag
-  :config
-  (progn
-    (setq ag-reuse-buffers t
-          ag-reuse-window t
-          ag-highlight-search t
-          ag-project-root-function (lambda (d) (projectile-project-root)))))
-
-(t/use-package wgrep :after ag)
-(t/use-package wgrep-ag :after ag)
-
-(t/use-package autorevert
+(use-package autorevert
   :ensure nil
   :defer t
   :init
@@ -787,7 +697,7 @@ helm-projectile-ag was modified accordingly.
       ;; file notifications aren't supported on os x
       (setq auto-revert-use-notify nil))))
 
-(t/use-package smooth-scrolling
+(use-package smooth-scrolling
   :commands (previous-line next-line isearch-repeat)
   :init
   (progn
@@ -801,7 +711,7 @@ helm-projectile-ag was modified accordingly.
     (enable-smooth-scroll-for-function next-line)
     (enable-smooth-scroll-for-function isearch-repeat)))
 
-(t/use-package highlight-parentheses
+(use-package highlight-parentheses
   :diminish highlight-parentheses-mode
   :defer 1
   :init
@@ -811,7 +721,7 @@ helm-projectile-ag was modified accordingly.
                       (highlight-parentheses-mode)
                       (set-face-foreground 'show-paren-match "Green"))))
 
-(t/use-package highlight-escape-sequences
+(use-package highlight-escape-sequences
   ;; what the 
   :hook (prog-mode-hook hes-mode)
   :config
@@ -819,7 +729,7 @@ helm-projectile-ag was modified accordingly.
     (put 'hes-escape-backslash-face 'face-alias 'font-lock-comment-face)
     (put 'hes-escape-sequence-face 'face-alias 'font-lock-comment-face)))
 
-(t/use-package highlight-symbol
+(use-package highlight-symbol
   :diminish highlight-symbol-mode
   :commands (highlight-symbol-mode
              highlight-symbol
@@ -833,7 +743,7 @@ helm-projectile-ag was modified accordingly.
   ;; highlight-symbol uses hl-line-face
   (require 'hl-line))
 
-(t/use-package highlight-numbers
+(use-package highlight-numbers
   :defer 1
   :init
   (progn
@@ -855,7 +765,7 @@ helm-projectile-ag was modified accordingly.
     (t/after which-key
       (t/declare-prefix "mr" "Refactor" "m" 'helm-js-codemod))))
 
-(t/use-package restclient
+(use-package restclient
   :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
 
 (defun t/clean-nrk-buffer ()
@@ -945,7 +855,7 @@ helm-projectile-ag was modified accordingly.
                       "s-l" 'eww)
                     (visual-line-mode)))
 
-(t/use-package hackernews
+(use-package hackernews
   :commands hackernews
   :init
   (defun t/hackernews ()
@@ -970,7 +880,10 @@ helm-projectile-ag was modified accordingly.
       "gr" 'hackernews-load-more-stories
       "gR" 'hackernews-reload)))
 
-(t/use-package helm-lines
+;; TODO
+;; redo it for counsel?
+(comment
+ use-package helm-lines
   :commands helm-lines
   :init
   (progn
@@ -978,7 +891,9 @@ helm-projectile-ag was modified accordingly.
     (t/declare-prefix "c" "Comment/Complete"
                       "l" 'helm-lines)))
 
-(t/use-package helm-hunks
+;; TODO
+(comment
+ use-package helm-hunks
   :commands (helm-hunks
              helm-hunks-current-buffer
              helm-hunks-staged
@@ -992,20 +907,22 @@ helm-projectile-ag was modified accordingly.
                       "SS" 'helm-hunks-staged
                       "SH" 'helm-hunks-staged-current-buffer)))
 
-(t/use-package calendar
+(use-package calendar
   :ensure nil
+  :straigt nil
   :commands calendar
   :init
   (progn
     (setq calendar-week-start-day 1
           calendar-date-style 'iso)))
 
-(t/use-package suggest
+(use-package suggest
   :commands suggest)
 
 ;; save more recent files
-(t/use-package recentf
+(use-package recentf
   :ensure nil
+  :straight nil
   :defer 1
   :init
   (progn
@@ -1018,17 +935,17 @@ helm-projectile-ag was modified accordingly.
     (t/idle-timer recentf-auto-save-timer #'t/recentf-save-if-recentf-mode 1)
     (recentf-mode 1)))
 
-(t/use-package nlinum
+(use-package nlinum
   :commands nlinum-mode
   :init
   (setq nlinum-format " %d "))
 
-(t/use-package nlinum-relative
+(use-package nlinum-relative
   :commands nlinum-relative-toggle
   :init
   (setq nlinum-relative-redisplay-delay 0))
 
-(t/use-package projectile
+(use-package projectile
   :diminish projectile-mode
   :commands (projectile-mode
              helm-projectile
@@ -1050,7 +967,7 @@ helm-projectile-ag was modified accordingly.
     (t/add-to-list 'grep-find-ignored-files '("package-lock.json" "*.bundle.js" "*.build.js" ".DS_Store" "projectile.cache" "custom.el" "node_modules/*" "elpy/*" "js-codemods/*" "target/*" "elpa-backups/*"))
     (projectile-global-mode +1)))
 
-(t/use-package dumb-jump
+(use-package dumb-jump
   :commands dumb-jump-go
   :init
   (progn
@@ -1063,7 +980,7 @@ helm-projectile-ag was modified accordingly.
                       (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
                       (bind-key "M-." 'xref-find-definitions evil-insert-state-map))))
 
-(t/use-package aggressive-indent
+(use-package aggressive-indent
   :commands (aggressive-indent-mode global-aggressive-indent-mode)
   :init
   (progn
@@ -1149,16 +1066,15 @@ helm-projectile-ag was modified accordingly.
                         "e" 'artist-select-op-ellipse
                         "s" 'artist-select-op-square))))
 
-(t/use-package try
-  :commands try)
 
-(t/use-package dictionary
+
+(use-package dictionary
   :commands (dictionary dictionary-search)
   :init
   (t/declare-prefix "sd" "dictionary"
                     "d" (t/lambda (dictionary-search (t/word-at-point)))))
 
-(t/use-package synosaurus
+(use-package synosaurus
   :commands synosaurus-lookup
   :init
   (progn
@@ -1167,7 +1083,7 @@ helm-projectile-ag was modified accordingly.
     (t/declare-prefix "sd" "dictionary"
                       "s" (t/lambda (synosaurus-lookup (t/word-at-point))))))
 
-(t/use-package selectric-mode ; lol
+(use-package selectric-mode ; lol
   :commands selectric-mode)
 
 (defun t-editor/config ()

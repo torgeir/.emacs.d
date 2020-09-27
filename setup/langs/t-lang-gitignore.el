@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package gitignore-mode
+(use-package gitignore-mode
   :commands gitignore-mode)
 
 (provide 't-lang-gitignore)

@@ -1,8 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package simplezen
+(use-package simplezen
   :commands simplezen-expand-or-indent-for-tab)
 
-(t/use-package tagedit
+(use-package tagedit
   :commands tagedit-mode
   :init
   ;; tagedit does not seem to work well with web-mode

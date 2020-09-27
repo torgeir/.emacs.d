@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package haskell-mode
+(use-package haskell-mode
   :commands haskell-mode)
 
 (provide 't-lang-haskell)

@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package dockerfile-mode
+(use-package dockerfile-mode
   :mode "^Dockerfile$")
 
-(t/use-package docker-tramp)
+(use-package docker-tramp)
 
 (provide 't-lang-docker)

@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(t/use-package elm-mode
+(use-package elm-mode
   :mode "\\.elm$"
   :init
   (progn
@@ -22,7 +22,7 @@
                                    (elm-repl-push start end)
                                    (other-window -1))))
 
-(t/use-package flycheck-elm
+(use-package flycheck-elm
   :commands flycheck-elm-setup
   :init
   (t/add-hook 'flycheck-mode-hook 'flycheck-elm-setup t))

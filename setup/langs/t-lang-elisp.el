@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-(defun t-lang-elisp/config ()
+(progn
   ;; lisp
   (t/declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"
                              "b" 'eval-buffer
