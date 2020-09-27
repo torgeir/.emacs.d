@@ -199,13 +199,25 @@ Customizations go in ~custom.el~.
 #+END_SRC
 
 ** Macros
+
+A couple of macros, probably inspired by doom-emacs trickery.
+
 #+BEGIN_SRC emacs-lisp :results silent
 (require 'subr-x)
+#+END_SRC
 
+So simple, yet so useful. Ignores a complete elisp code block, no matter what
+the contents, like the one clojure <3
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro comment (&rest ignore)
   "Ignore stuff, return `nil'."
   nil)
+#+END_SRC
 
+Shortcut for interactive lambdas, you can omit the arg list as well.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/lambda (&optional args &rest body)
   (declare (indent 1))
   (if body
@@ -216,13 +228,22 @@ Customizations go in ~custom.el~.
  (t/lambda)
  (t/lambda 1)
  (t/lambda (one two) 1))
+#+END_SRC
 
+Shorthand for running code after a file name has been loaded.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/after (file-name &rest body)
   (declare (indent 1))
   (if (locate-library (symbol-name file-name))
       `(with-eval-after-load ',file-name ,@body)
     (message "t/after: for %s is not a filename in load-path?" file-name)))
 
+#+END_SRC
+
+Runs body of code only for buffers with the given extension ~ext~.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/when-ext (ext &rest body)
   "Run `body' when buffer's file has extension `ext'."
   (declare (indent 1))
@@ -231,6 +252,11 @@ Customizations go in ~custom.el~.
                 (string-match ext-re (buffer-file-name)))
        ,@body)))
 
+#+END_SRC
+
+Make parameter a list, if it isn't already.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defun t/ensure-list (i-or-is)
   "Ensure `i-or-is' is a list."
   (if (and (listp i-or-is)
@@ -239,6 +265,11 @@ Customizations go in ~custom.el~.
       i-or-is
     (list i-or-is)))
 
+#+END_SRC
+
+A more forgiving version of add-hook.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/add-hook (hook-or-hooks fn-or-fns &optional append local)
   "Add one or more hook fns."
   (comment (dolist (hook (t/ensure-list (eval hook-or-hooks)))
@@ -250,6 +281,11 @@ Customizations go in ~custom.el~.
        (dolist (fn fns)
          (add-hook hook fn ,append ,local)))))
 
+#+END_SRC
+
+A more forgiving version of remove-hook.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/remove-hook (hook-or-hooks fn-or-fns)
   "Remove one or more hook fns"
   `(let ((hooks (t/ensure-list ,hook-or-hooks))
@@ -257,7 +293,11 @@ Customizations go in ~custom.el~.
      (dolist (hook hooks)
        (dolist (fn fns)
          (remove-hook hook fn)))))
+#+END_SRC
 
+A combined setq and a hook.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/add-hook-setq (hook-or-hooks var_ val_ &rest vars_)
   "A `setq' run in hooks."
   `(t/add-hook ,hook-or-hooks
@@ -272,6 +312,12 @@ Customizations go in ~custom.el~.
                            val (and vars (pop vars))))
                    (eval (nreverse (copy-list bindings)))))))
 
+#+END_SRC
+
+This is probably lefovers from before discovering ~bind-key~ already does this -
+much better.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/bind-in (maps_ key_ fn_ &rest bindings)
   "Bind keys in maps."
   (declare (indent 1))
@@ -285,38 +331,44 @@ Customizations go in ~custom.el~.
        (setq key (and bs (pop bs))
              fn (and bs (pop bs))))))
 
+#+END_SRC
+
+A combined named function definition and a hook.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/add-hook-defun (hook-or-hooks fn &rest body)
   "Create a defun `fn' with `body' in `hook-or-hooks'."
   `(progn
-     (defun ,fn ()
-       (interactive)
-       ;; TODO
-       ;;(unless (helm-window)
-       ,@body)
-     ;;TODO)
+     (defun ,fn () (interactive) ,@body)
      (t/add-hook ,hook-or-hooks (quote ,fn))))
 
-(defmacro t/macro-helm-ag-insert (thing fn)
-  `(lambda ()
-     (interactive)
-     ;; TODO
-     ;;(setq-local helm-ag-insert-at-point ,thing)
-     (,fn)
-     ;; TODO
-     ;;(setq-local helm-ag-insert-at-point nil)
-     ))
+#+END_SRC
 
+A reloadable timer that runs a ~fn~ on a given interval.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/idle-timer (name fn every-minute)
   "Reloadable variant of run-with-idle-timer."
   `(progn
      (when (and (boundp ',name) ,name) (cancel-timer ,name))
      (setq ,name (run-with-idle-timer (* ,every-minute 60) t ,fn))))
 
+#+END_SRC
+
+Call a function that might not be loaded.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/safe-call (fn)
   "Expands to call `fn' only if it is bound to a function."
   `(when (fboundp (quote ,fn))
      (funcall (quote ,fn))))
 
+     #+END_SRC
+
+No longer in use. Useful for tracking what loads, and making the init and config
+process of packages reproducable.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (comment
 
   (defvar t-use-package-pkgs nil
@@ -417,8 +469,13 @@ for setting up vars and config after load")
 (comment
  (symbol-function 't/config-which-key))
 
+ #+END_SRC
+
+Create smart parens wrapping functions.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defmacro t/def-pairs (pairs)
-  "Create smartsmartparens wrapping function, e.g. t/wrap-with-paren"
+  "Create smartparens wrapping function, e.g. t/wrap-with-paren"
   `(progn
      ,@(loop for (key . val) in pairs
              collect
@@ -429,7 +486,6 @@ for setting up vars and config after load")
                   (&optional arg)
                 (interactive "p")
                 (sp-wrap-with-pair ,val)))))
-
 #+END_SRC
 
 ** Os specific
@@ -437,185 +493,183 @@ for setting up vars and config after load")
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-mac
 
-  (progn
+  (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
 
-    (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
+  ;; mouse
+  (setq ns-use-mwheel-momentum t
+        ns-use-mwheel-acceleration t
 
-    ;; mouse
-    (setq ns-use-mwheel-momentum t
-          ns-use-mwheel-acceleration t
+        ;; for some reason makes ci{[ work on os x
+        ;; with evil-surround with a norwegian keyboard..
+        mac-right-option-modifier nil
 
-          ;; for some reason makes ci{[ work on os x
-          ;; with evil-surround with a norwegian keyboard..
-          mac-right-option-modifier nil
+        ;; bind fn to H-
+        ns-function-modifier 'hyper
 
-          ;; bind fn to H-
-          ns-function-modifier 'hyper
+        shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
 
-          shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
+        trash-directory "~/.Trash/emacs")
 
-          trash-directory "~/.Trash/emacs")
+  ;; dark title bar
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
 
-    ;; dark title bar
-    (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-    (add-to-list 'default-frame-alist '(ns-appearance . dark))
+  (t/bind-in 'key-translation-map
+    ;; translate norwegian os x keybindings
+    "M-7" "|"
+    "M-/" "\\"
+    "M-8" "["
+    "M-9" "]"
+    "M-(" "{"
+    "M-)" "}")
 
-    (t/bind-in 'key-translation-map
-      ;; translate norwegian os x keybindings
-      "M-7" "|"
-      "M-/" "\\"
-      "M-8" "["
-      "M-9" "]"
-      "M-(" "{"
-      "M-)" "}")
+  (t/bind-in 'global-map
+    ;; s-p print dialog kills emacs, so disable it..
+    "s-p" nil
+    ;; don't pop up font menu, makes new tab work in iterm2
+    "s-t" nil)
 
-    (t/bind-in 'global-map
-      ;; s-p print dialog kills emacs, so disable it..
-      "s-p" nil
-      ;; don't pop up font menu, makes new tab work in iterm2
-      "s-t" nil)
-
-    ;; make this run also after connecting with emacsclient
-    ;; https://groups.google.com/forum/#!topic/gnu.emacs.help/ZGu2MNkJGrI
-    (defadvice terminal-init-xterm (after map-S-up-escape-sequence activate)
-      (t/bind-in 'input-decode-map
-        ;; fix terminal shortcomings, remap them in iterm2, and bring tem back here
-        ;; unused keys are e.g. above f17 which is ^[[15;2~ in emacs that is \e[15;2\~
-        ;; http://aperiodic.net/phil/archives/Geekery/term-function-keys.html
-        "\e[15;2\~" "C-SPC"
-        "\e[17;2\~" "C-M-SPC"
-        "\e[18;2\~" "C-."
-        "\e[19;2\~" "C-,"
-        ;; c-æ on a norwegian mac keyboard IS the ansi escape character ^[
-        ;; for debugging run: (read-key-sequence "?")
-        "\e[20;2\~" "C-æ"
-        ;; c-ø on a norwegian mac keyboard is ^\
-        "C-\\" "C-ø"
-        ;; c-å on a norwegian mac keyboard is ^]
-        "C-]" "C-å"
-        ;; skip \e21;2~, its f10? what
-        "\e[22;2\~" "C-'")))
-  )
+  ;; make this run also after connecting with emacsclient
+  ;; https://groups.google.com/forum/#!topic/gnu.emacs.help/ZGu2MNkJGrI
+  (defadvice terminal-init-xterm (after map-S-up-escape-sequence activate)
+    (t/bind-in 'input-decode-map
+      ;; fix terminal shortcomings, remap them in iterm2, and bring tem back here
+      ;; unused keys are e.g. above f17 which is ^[[15;2~ in emacs that is \e[15;2\~
+      ;; http://aperiodic.net/phil/archives/Geekery/term-function-keys.html
+      "\e[15;2\~" "C-SPC"
+      "\e[17;2\~" "C-M-SPC"
+      "\e[18;2\~" "C-."
+      "\e[19;2\~" "C-,"
+      ;; c-æ on a norwegian mac keyboard IS the ansi escape character ^[
+      ;; for debugging run: (read-key-sequence "?")
+      "\e[20;2\~" "C-æ"
+      ;; c-ø on a norwegian mac keyboard is ^\
+      "C-\\" "C-ø"
+      ;; c-å on a norwegian mac keyboard is ^]
+      "C-]" "C-å"
+      ;; skip \e21;2~, its f10? what
+      "\e[22;2\~" "C-'")))
 #+END_SRC
 
 *** Linux
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-linux
-  (progn
-    (setq t-font-size 14
-          shell-file-name "/bin/zsh")
+  (setq t-font-size 14
+        shell-file-name "/bin/zsh")
 
-    (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
+  (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
 
-    (t/bind-in 'key-translation-map
-      ;; translate norwegian os x keybindings
-      "M-7" "|"
-      "M-/" "\\"
-      "M-8" "["
-      "M-9" "]"
-      "M-(" "{"
-      "M-)" "}")
+  (t/bind-in 'key-translation-map
+    ;; translate norwegian os x keybindings
+    "M-7" "|"
+    "M-/" "\\"
+    "M-8" "["
+    "M-9" "]"
+    "M-(" "{"
+    "M-)" "}")
 
-    ;; os x window movement
-    (t/bind-in 'global-map
-      "s-k" 'previous-buffer
-      "s-j" 'next-buffer
-      "s->" 'next-multiframe-window
-      "s-<" 'previous-multiframe-window
-      "s-<left>" 't/smart-beginning-of-line
-      "s-<right>" 'end-of-line
-      "M-s-<up>" 'windmove-up
-      "M-s-<right>" 'windmove-right
-      "M-s-<down>" 'windmove-down
-      "M-s-<left>" 'windmove-left
-      "s-d" 't/split-window-right-and-move-there-dammit
-      "s-D" 't/split-window-below-and-move-there-dammit
+  ;; os x window movement
+  (t/bind-in 'global-map
+    "s-k" 'previous-buffer
+    "s-j" 'next-buffer
+    "s->" 'next-multiframe-window
+    "s-<" 'previous-multiframe-window
+    "s-<left>" 't/smart-beginning-of-line
+    "s-<right>" 'end-of-line
+    "M-s-<up>" 'windmove-up
+    "M-s-<right>" 'windmove-right
+    "M-s-<down>" 'windmove-down
+    "M-s-<left>" 'windmove-left
+    "s-d" 't/split-window-right-and-move-there-dammit
+    "s-D" 't/split-window-below-and-move-there-dammit
 
-      "s-c" 'evil-yank
-      "s-v" 'evil-paste-after
-      "s-z" 'undo-tree-undo
-      "s-s" 'save-buffer
-      "s-a" 'mark-whole-buffer
-      "s-w" 'delete-frame
-      "s-n" 'make-frame
+    "s-c" 'evil-yank
+    "s-v" 'evil-paste-after
+    "s-z" 'undo-tree-undo
+    "s-s" 'save-buffer
+    "s-a" 'mark-whole-buffer
+    "s-w" 'delete-frame
+    "s-n" 'make-frame
 
-      ;; s-w quits like C-x C-w
-      "s-w" #'t/delete-frame-or-hide-last-remaining-frame
-      "s-q" 'restart-emacs
+    ;; s-w quits like C-x C-w
+    "s-w" #'t/delete-frame-or-hide-last-remaining-frame
+    "s-q" 'restart-emacs
 
-      ;; buffer font size adjustment
-      "s-?" (t/lambda (text-scale-increase 1))
-      "s-_" (t/lambda (text-scale-decrease 1))
-      "s-=" (t/lambda (text-scale-set 0))
+    ;; buffer font size adjustment
+    "s-?" (t/lambda (text-scale-increase 1))
+    "s-_" (t/lambda (text-scale-decrease 1))
+    "s-=" (t/lambda (text-scale-set 0))
 
-      ;; global font size adjustment
-      "s-+" 't/increase-font-size
-      "s--" 't/decrease-font-size
-      "s-0" 't/reset-font-size)))
+    ;; global font size adjustment
+    "s-+" 't/increase-font-size
+    "s--" 't/decrease-font-size
+    "s-0" 't/reset-font-size))
 #+END_SRC
 
-*** Ms
+*** Cygwin
+
+It was worth a shoot..
+
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-ms
-  (progn
-    (setq t-font-size 12
-          shell-file-name "C:/Program Files/Git/bin/bash.exe")
+  (setq t-font-size 12
+        shell-file-name "C:/Program Files/Git/bin/bash.exe")
 
-    (t/bind-in 'global-map
-      "C-+" 't/increase-font-size
-      "C--" 't/decrease-font-size
-      "C-0" 't/reset-font-size)
+  (t/bind-in 'global-map
+    "C-+" 't/increase-font-size
+    "C--" 't/decrease-font-size
+    "C-0" 't/reset-font-size)
 
-    (defun make-auto-save-file-name ()
-      "torgeir: copied this from ftp://ftp.gnu.org/old-gnu/emacs/windows/docs/faq8.html. Fixes an issue when in gui emacs on windows it cant save backup files.
+  (defun make-auto-save-file-name ()
+    "torgeir: copied this from ftp://ftp.gnu.org/old-gnu/emacs/windows/docs/faq8.html. Fixes an issue when in gui emacs on windows it cant save backup files.
 
   Return file name to use for auto-saves of current buffer.
 Does not consider `auto-save-visited-file-name' as that variable is checked
 before calling this function.  This version stores all auto-save files in the
 same local directory. This is to avoid trying to save files over a dial-up
 connection (which may not be active).  See also `auto-save-file-name-p'."
-      (if buffer-file-name
-          (if (and (eq system-type 'ms-dos)
-                   (not (msdos-long-file-names)))
-              (let ((fn (file-name-nondirectory buffer-file-name)))
-                (string-match "\\`\\([^.]+\\)\\(\\.\\(..?\\)?.?\\|\\)\\'" fn)
-                (concat (expand-file-name "~/save/")
-                        "#" (match-string 1 fn)
-                        "." (match-string 3 fn) "#"))
-            (concat (expand-file-name "~/.save/")
-                    "#"
-                    (file-name-nondirectory buffer-file-name)
-                    "#"
-                    (make-temp-name "")))
+    (if buffer-file-name
+        (if (and (eq system-type 'ms-dos)
+                 (not (msdos-long-file-names)))
+            (let ((fn (file-name-nondirectory buffer-file-name)))
+              (string-match "\\`\\([^.]+\\)\\(\\.\\(..?\\)?.?\\|\\)\\'" fn)
+              (concat (expand-file-name "~/save/")
+                      "#" (match-string 1 fn)
+                      "." (match-string 3 fn) "#"))
+          (concat (expand-file-name "~/.save/")
+                  "#"
+                  (file-name-nondirectory buffer-file-name)
+                  "#"
+                  (make-temp-name "")))
 
-        ;; Deal with buffers that don't have any associated files.  (Mail
-        ;; mode tends to create a good number of these.)
+      ;; Deal with buffers that don't have any associated files.  (Mail
+      ;; mode tends to create a good number of these.)
 
-        (let ((buf-name (buffer-name))
-              (limit 0))
+      (let ((buf-name (buffer-name))
+            (limit 0))
 
-          ;; Use technique from Sebastian Kremer's auto-save
-          ;; package to turn slashes into \\!.  This ensures that
-          ;; the auto-save buffer name is unique.
+        ;; Use technique from Sebastian Kremer's auto-save
+        ;; package to turn slashes into \\!.  This ensures that
+        ;; the auto-save buffer name is unique.
 
-          (while (string-match "[/\\*?':]" buf-name limit)
-            (message "%s" buf-name)
-            (setq buf-name (concat (substring buf-name 0 (match-beginning 0))
+        (while (string-match "[/\\*?':]" buf-name limit)
+          (message "%s" buf-name)
+          (setq buf-name (concat (substring buf-name 0 (match-beginning 0))
+                                 (if (string= (substring buf-name
+                                                         (match-beginning 0)
+                                                         (match-end 0))
+                                              "/")
+                                     "\\!"
                                    (if (string= (substring buf-name
                                                            (match-beginning 0)
                                                            (match-end 0))
-                                                "/")
-                                       "\\!"
-                                     (if (string= (substring buf-name
-                                                             (match-beginning 0)
-                                                             (match-end 0))
-                                                  "\\\\")
-                                         "\\\\" "__"))
-                                   (substring buf-name (match-end 0))))
-            (setq limit (1+ (match-end 0))))
+                                                "\\\\")
+                                       "\\\\" "__"))
+                                 (substring buf-name (match-end 0))))
+          (setq limit (1+ (match-end 0))))
 
-          (expand-file-name
-           (format "~/.save/#%s#%s#" buf-name (make-temp-name "")))))))
+        (expand-file-name
+         (format "~/.save/#%s#%s#" buf-name (make-temp-name ""))))))
   )
 #+END_SRC
 
@@ -3308,7 +3362,7 @@ PWD is not in a git repo (or the git command is not found)."
 Initial font and window transparency.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(t/set-font (car t-fonts))
+(t/set-font (car t-fonts) t)
 (t/transparency 100)
 #+END_SRC
 

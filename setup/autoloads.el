@@ -261,7 +261,7 @@ Grabs the current font. Prints message when called interactively." t nil)
 (autoload 't/set-font "t-defuns" "\
 Change font.
 
-\(fn FONT)" nil nil)
+\(fn FONT &optional SILENCE)" nil nil)
 
 (autoload 't/reload-font "t-defuns" "\
 Reload font to make e.g. font size changes have effect." t nil)

@@ -437,12 +437,13 @@ Including indent-buffer, which should not be called automatically on save."
     font))
 
 ;;;###autoload
-(defun t/set-font (font)
+(defun t/set-font (font &optional silence)
   "Change font."
   (when window-system
     (let ((sized-font (concat font "-" (number-to-string *t-adjusted-font-size*))))
       (set-face-attribute 'default nil :font sized-font)
-      (message "Font: %s." sized-font))))
+      (when (not silence)
+        (message "Font: %s." sized-font)))))
 
 ;;;###autoload
 (defun t/reload-font ()
@@ -1474,8 +1475,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
   "Complete from list with helm, e.g. (t/complete-with-helm-then '(one two) 'insert)"
   (interactive)
   (helm :sources (helm-build-sync-source "Choose from list."
-                   :action fn
-                   :candidates list)))
+                                         :action fn
+                                         :candidates list)))
 
 
 ;;;###autoload
