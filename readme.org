@@ -1105,8 +1105,9 @@ Highlight and fold-this are dependencies of evil-extra-operator.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package highlight)
 (use-package fold-this :after highlight)
+(use-package google-translate :after fold-this)
 (use-package evil-extra-operator
-  :after fold-this
+  :after google-translate
   :defer 1
   :init
   (setq evil-extra-operator-org-capture-key "gC")
@@ -1477,7 +1478,7 @@ Make it Norwegian.
                                                 'font-lock-face 'calendar-iso-week-face))))
 #+END_SRC
 
-** Site lisp
+** Local Site lisp
 
 Useful local copies of elisp programs.
 
@@ -1528,7 +1529,24 @@ Useful local copies of elisp programs.
   :ensure nil
   :straight nil
   :mode ("\\.\\(html|htm\\)" . html-mode))
-#+END_SRC
+
+(use-package imenu-list
+  :ensure nil
+  :straight nil
+  :load-path "site-lisp/imenu-list"
+  :init
+  (progn
+    (setq imenu-list-auto-resize t)
+    (t/after evil
+      (add-to-list 'evil-emacs-state-modes 'imenu-list-minor-mode))
+    (t/after imenu-list
+      (bind-key "j" 'next-line imenu-list-major-mode-map)
+      (bind-key "k" 'previous-line imenu-list-major-mode-map))
+    (t/add-hook-defun 'imenu-list-update-hook t-after-imenu-update
+                      (with-current-buffer imenu-list-buffer-name
+                        (text-scale-set 0)
+                        (text-scale-decrease 3)))))
+  #+END_SRC
 
 No longer in use.
 
@@ -1744,71 +1762,64 @@ A pull request interface for emacs.
 
 ** Editor
 
+*** Restart
+
 Make testing emacs initialization easier.
 
 #+begin_src emacs-lisp :results silent
-   (use-package restart-emacs
-     :commands restart-emacs
-     :init
-     (progn
-       (t/declare-prefix "q" "Quit"
-                         "d" 't/safe-restart-emacs
-                         "r" (t/lambda (restart-emacs))
-                         "R" (t/lambda (restart-emacs '("--no-desktop"))))))
+(use-package restart-emacs
+  :commands restart-emacs
+  :init
+  (t/declare-prefix "q" "Quit"
+                    "d" 't/safe-restart-emacs
+                    "r" (t/lambda (restart-emacs))
+                    "R" (t/lambda (restart-emacs '("--no-desktop")))))
 #+end_src
 
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package google-translate
-:commands google-translate-at-point)
-#+END_SRC
+*** Unique buffer names
+
+Add dir to buffer names when they're not unique.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package winner
-  :ensure nil
-  :straight nil
-  :commands (winner-undo winner-redo)
-  :config (winner-mode))
-
-(comment
-use-package uniquify ; add dirs to buffer names when not unique
+(use-package uniquify
   :ensure nil
   :straight nil
   :init
   (progn
     (setq uniquify-buffer-name-style 'forward)))
 
-(use-package imenu-list
-  :load-path "site-lisp/imenu-list/"
+#+END_SRC
+
+*** Beacon to show the cursor
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package beacon
+  :defer 1
+  :if nil ; no longer use it
   :init
-  (progn
-    (setq imenu-list-auto-resize t)
-    (t/after evil
-      (add-to-list 'evil-emacs-state-modes 'imenu-list-minor-mode))
-    (t/after imenu-list
-      (bind-key "j" 'next-line imenu-list-major-mode-map)
-      (bind-key "k" 'previous-line imenu-list-major-mode-map))
-    (t/add-hook-defun 'imenu-list-update-hook t-after-imenu-update
-                      (with-current-buffer imenu-list-buffer-name
-                        (text-scale-set 0)
-                        (text-scale-decrease 3)))))
+  (setq beacon-size 10
+        beacon-blink-delay 0
+        beacon-blink-duration 0.25
+        beacon-color "#f06")
+  :config (beacon-mode))
+#+END_SRC
 
-(comment
- (use-package beacon
-   :defer 1
-   :init
-   (setq beacon-size 10
-         beacon-blink-delay 0
-         beacon-blink-duration 0.25
-         beacon-color "#f06")
-   :config (beacon-mode)))
+*** Subword are words
 
+Useful for programming
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package subword
   :diminish subword-mode
   :defer 1
   :ensure nil
   :straight nil
   :config (subword-mode))
+#+END_SRC
 
+*** SSH like its local files
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package tramp
   :defer t
   :ensure nil
@@ -1818,6 +1829,11 @@ use-package uniquify ; add dirs to buffer names when not unique
                    tramp-default-method "ssh"
                    tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
 
+#+END_SRC
+
+*** Directory browser
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package dired
   :ensure nil
   :straight nil
@@ -1846,28 +1862,47 @@ use-package uniquify ; add dirs to buffer names when not unique
       "M-<down>" (t/lambda (dired-find-alternate-file))
       "M-n" (t/lambda (dired-find-alternate-file)))))
 
+#+END_SRC
+
+*** Local dired extensions
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package dired-hacks-utils
   :hook dired-mode-hook
   :ensure nil
   :straight nil
-  :load-path "site-lisp/dired-hacks-utils/")
+  :load-path "site-lisp/dired-hacks-utils")
 
+  #+END_SRC
+
+**** Browse archives
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package dired-avfs
   :hook dired-mode-hook
   :ensure nil
   :straight nil
-  :load-path "site-lisp/dired-avfs/")
+  :load-path "site-lisp/dired-avfs")
+#+END_SRC
 
+**** Details
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package dired-details
   :hook dired-mode-hook
   :ensure nil
   :straight nil
-  :load-path "site-lisp/dired-details/"
+  :load-path "site-lisp/dired-details"
   :init
   (progn
     (setq dired-details-hidden-string "")
     (add-hook 'dired-mode-hook 'dired-hide-details-mode)))
 
+#+END_SRC
+
+**** Toggle folders
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package dired-subtree
   :commands dired-subtree-toggle
   :ensure nil
@@ -1878,22 +1913,42 @@ use-package uniquify ; add dirs to buffer names when not unique
     (setq dired-subtree-line-prefix "  ")
     (bind-key (kbd "<tab>") 'dired-subtree-toggle dired-mode-map)))
 
+#+END_SRC
+
+**** Pretty icons
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package all-the-icons-dired
   :commands all-the-icons-dired-mode
   :init
   (t/add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+#+END_SRC
 
+*** Colorize
+
+Colorize inline colors.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package rainbow-mode
   :diminish rainbow-mode
   :commands rainbow-mode
   :init
   (t/add-hook '(prog-mode-hook css-mode-hook html-mode-hook) 'rainbow-mode))
+#+END_SRC
 
+Colorize delimiters.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package rainbow-delimiters
   :commands rainbow-delimiters-mode
   :init
   (t/add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
+#+END_SRC
+
+*** Directory tree
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package neotree
   :commands (neotree-toggle
              neotree-show
@@ -1921,7 +1976,6 @@ use-package uniquify ; add dirs to buffer names when not unique
                      (let ((neo-window (neo-global--get-window)))
                        (unless (null neo-window)
                          (setq neo-window-width (window-width neo-window))))))))
-
   :config
   (progn
     (bind-key [f6] 'neotree-toggle)
@@ -1948,9 +2002,19 @@ use-package uniquify ; add dirs to buffer names when not unique
                    ("C" . neotree-change-root)))
       (eval `(evil-define-key 'normal neotree-mode-map (kbd ,(car key)) ',(cdr key))))))
 
-(use-package ace-window
-  :commands ace-window)
+#+END_SRC
 
+*** Jump
+
+**** Jump between windows
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package ace-window :commands ace-window)
+#+END_SRC
+
+**** Jump to char, chars, lines
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package avy
   :commands (avy-goto-char
              avy-goto-char-2
@@ -1984,6 +2048,38 @@ use-package uniquify ; add dirs to buffer names when not unique
       (set-face-attribute 'avy-lead-face-1 nil :background nil :foreground (face-foreground f))
       (set-face-attribute 'avy-lead-face-2 nil :background nil :foreground (face-foreground f)))))
 
+#+END_SRC
+
+**** Jump ace
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package ace-jump-mode
+  :commands (ace-jump-mode
+             ace-jump-char-mode
+             ace-jump-line-mode
+             ace-jump-word-mode)
+  :init
+  (progn
+    (setq ace-jump-mode-gray-background t
+          ace-jump-mode-case-fold t)))
+
+#+END_SRC
+
+*** REST
+
+**** Restclient
+
+A fantastic rest client interface for emacs.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package restclient :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
+#+END_SRC
+
+**** Elasticsearch
+
+A rest client interface for elasticsearch, similar to restclient
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package es-mode
   :commands es-mode
   :init
@@ -1995,7 +2091,11 @@ use-package uniquify ; add dirs to buffer names when not unique
   :config
   (t/bind-in 'es-mode-map
     "C-c C-v" 'es-execute-request-dwim))
+#+END_SRC
 
+*** Folding
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package hideshow
   :commands evil-toggle-fold
   :ensure nil
@@ -2010,17 +2110,11 @@ use-package uniquify ; add dirs to buffer names when not unique
                                       (count-lines (overlay-start ov)
                                                    (overlay-end ov))))))
     (setq hs-set-up-overlay #'display-code-line-counts)))
+#+END_SRC
 
-(use-package ace-jump-mode
-  :commands (ace-jump-mode
-             ace-jump-char-mode
-             ace-jump-line-mode
-             ace-jump-word-mode)
-  :init
-  (progn
-    (setq ace-jump-mode-gray-background t
-          ace-jump-mode-case-fold t)))
+*** Undo
 
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package undo-tree
   :diminish undo-tree-mode
   :commands undo-tree-visualize
@@ -2032,7 +2126,13 @@ use-package uniquify ; add dirs to buffer names when not unique
     (t/declare-prefix "a" "Applications"
                       "u" 'undo-tree-visualize)))
 
+#+END_SRC
 
+*** Fun
+
+**** Reddit
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package md4rd
   :init
   (progn
@@ -2058,7 +2158,15 @@ use-package uniquify ; add dirs to buffer names when not unique
           (evil-define-key 'normal md4rd-mode-map (kbd "d") 'md4rd-downvote))))
     (setq md4rd-subs-active '(MechanicalKeyboards emacs clojure))))
 
+#+END_SRC
+
+*** Smex
+
+Not nescessary after installing counsel?
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package smex
+  :if nil ; no longer need after counsel?
   :commands (smex smex-major-mode-commands)
   :init
   (progn
@@ -2071,6 +2179,13 @@ use-package uniquify ; add dirs to buffer names when not unique
       "C-c C-M" 'smex-major-mode-commands)
     (smex-initialize)))
 
+#+END_SRC
+
+*** Completion
+
+Useful backends.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defun t/company-backends (&optional backends)
   `((,@backends
      company-files
@@ -2081,7 +2196,11 @@ use-package uniquify ; add dirs to buffer names when not unique
     (company-dabbrev-code
      company-dabbrev
      company-abbrev)))
+#+END_SRC
 
+Complete with company.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package company
   :commands company-complete
   :init
@@ -2113,6 +2232,11 @@ use-package uniquify ; add dirs to buffer names when not unique
         (completion-at-point))
       (global-company-mode))))
 
+#+END_SRC
+
+Company frontend with icons.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package company-box
   :commands company-box-mode
   :init
@@ -2126,15 +2250,28 @@ use-package uniquify ; add dirs to buffer names when not unique
                       (setq company-box-icons-alist 'company-box-icons-all-the-icons)
                       (company-box-mode))))
 
+#+END_SRC
+
+Fuzzy search.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package company-flx
   :after company
   :config
   (progn
     (company-flx-mode +1)))
 
-(use-package company-web
-  :after company)
+#+END_SRC
 
+Html, web, jade etc.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package company-web :after company)
+#+END_SRC
+
+Rest client completions.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package company-restclient
   :commands restclient-mode
   :config
@@ -2145,13 +2282,17 @@ use-package uniquify ; add dirs to buffer names when not unique
 
 ;; TODO
 ;; counsel unicode replace helm-unicode
+#+END_SRC
 
+Emoji completions.
 
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package company-emoji :commands company-mode :after company)
+#+END_SRC
 
-(use-package company-emoji
-  :commands company-mode
-  :after company)
+Insert emojis, literally.
 
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package emoji-cheat-sheet-plus
   :commands (emoji-cheat-sheet-plus-insert)
   :init
@@ -2186,6 +2327,13 @@ use-package uniquify ; add dirs to buffer names when not unique
                    (t/emoji-cheat-shet-plus--unicode-for-emoji-text emoji)
                  emoji)))))))))
 
+#+END_SRC
+
+*** Parens
+
+Lispy paren-like ast editing for other modes as well.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package smartparens
   :diminish smartparens-mode
   :commands turn-on-smartparens-mode
@@ -2282,11 +2430,22 @@ use-package uniquify ; add dirs to buffer names when not unique
       "C-<right>" 'sp-forward-slurp-sexp
       "C-<left>" 'sp-forward-barf-sexp)))
 
+#+END_SRC
+
+*** CSV
+
+Edit csv, transpose columns, delete columns, sort
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package csv-mode
   :commands csv-mode
   :init
   (setq csv-separators '(";")))
+#+END_SRC
 
+*** Distraction free
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package writeroom-mode
   :commands (global-writeroom-mode turn-on-writeroom-mode writeroom-mode)
   :init
@@ -2304,16 +2463,118 @@ use-package uniquify ; add dirs to buffer names when not unique
           all-the-icons-dired-mode
           ruby-mode)))
 
+#+END_SRC
+
+*** Web browser
+
+**** eww
+
+An elisp web browser.
+
+***** Readable
+
+Eww functions that directly enter the eww readability mode normally available
+from pressing R in eww mode.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(defun t/eww-readable-after-render (&optional fn)
+  (lambda (status url buffer)
+    (eww-render status url nil buffer)
+    (switch-to-buffer buffer)
+    (eww-readable)
+    (writeroom-mode 1)
+    (let ((content (buffer-substring-no-properties (point-min) (point-max))))
+      (read-only-mode 0)
+      (erase-buffer)
+      (insert content)
+      (beginning-of-buffer)
+      (when fn (funcall fn)))))
+
+(defun t/eww-readable (url &optional fn)
+  (interactive "sEnter URL: ")
+  (lexical-let ((buffer (get-buffer-create "*eww*")))
+    (with-current-buffer buffer
+      (autoload 'eww-setup-buffer "eww")
+      (eww-setup-buffer)
+      (url-retrieve url (t/eww-readable-after-render fn) (list url buffer)))))
+
+#+END_SRC
+
+***** Images and wrap long lines
+
+#+BEGIN_SRC emacs-lisp :results silent
+(t/after shr
+  ;; don't truncate lines in eww-mode
+  ;;(setq shr-width nil)
+  (defun shr-fill-text (text) text)
+  (defun shr-fill-lines (start end) nil)
+  (defun shr-fill-line () nil)
+
+  ;; wrap lines
+  (t/add-hook-defun 'eww-after-render-hook t/hook-eww-trunc
+                    (toggle-truncate-lines -1)))
+
+;; not to large images
+(setq shr-use-fonts nil
+      shr-max-image-proportion 0.6
+      shr-ignore-cache t)
+
+#+END_SRC
+
+***** Open from chrome
+
+Opens the frontmost chrome url in eww.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(defun t/visit-frontmost-chrome-url-in-eww ()
+  "Visit the front-most url of chrome in eww."
+  (interactive)
+  (eww (t/grab-chrome-url)))
+#+END_SRC
+
+***** Hook and keybindings
+
+#+BEGIN_SRC emacs-lisp :results silent
+(t/after eww
+  (t/add-hook-defun 'eww-mode-hook t/hook-eww
+                    (t/declare-prefix-for-mode 'eww-mode
+                                               "t" "Toggle"
+                                               "i" 't/eww-toggle-images)
+                    (t/bind-in '(evil-normal-state-local-map)
+                      "q" 'quit-window
+                      "S-TAB" 'shr-previous-link
+                      "TAB" 'shr-next-link
+                      "R" 'eww-readable
+                      "M-p" 'backward-paragraph
+                      "M-n" 'forward-paragraph
+                      "s-l" 'eww)
+                    (visual-line-mode)))
+#+END_SRC
+
+**** w3m
+
+Another text based web browser
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package w3m
   :commands w3m
   :config
   (t/bind-in 'w3m-mode-map
     "M-p" 'backward-paragraph
     "M-n" 'forward-paragraph))
+#+END_SRC
 
+*** Major modes
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package discover-my-major
   :commands (discover-my-major discover-my-mode))
 
+#+END_SRC
+
+*** Old helm config - TODO port bindings to ivy?
+
+#+BEGIN_SRC emacs-lisp :results silent
 (comment
  use-package helm
   :commands (completion-at-point
@@ -2371,8 +2632,17 @@ use-package uniquify ; add dirs to buffer names when not unique
     (t/after neotree
       (t/add-hook 'helm-before-initialize-hook 'neotree-hide))))
 
-(use-package nnhackernews)
+#+END_SRC
 
+*** GNUS
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package nnhackernews)
+#+END_SRC
+
+*** External documentation
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package dash-at-point
   :commands dash-at-point)
 
@@ -2383,9 +2653,11 @@ use-package uniquify ; add dirs to buffer names when not unique
 ;;     (bind-key (if is-mac "M-@" "M-'") 'er/expand-region)
 ;;     (bind-key (if is-mac "M-*" "M-§") 'er/contract-region)))
 
-(use-package transpose-frame
-  :commands transpose-frame)
+#+END_SRC
 
+*** Snippets
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package yasnippet
   :diminish yas-minor-mode
   :defer 1
@@ -2442,6 +2714,11 @@ use-package uniquify ; add dirs to buffer names when not unique
       "C-e" 'yas/goto-end-of-active-field
       "C-a" 'yas/goto-start-of-active-field)))
 
+#+END_SRC
+
+*** Reload buffers on external change
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package autorevert
   :ensure nil
   :straight nil
@@ -2459,6 +2736,11 @@ use-package uniquify ; add dirs to buffer names when not unique
       ;; file notifications aren't supported on os x
       (setq auto-revert-use-notify nil))))
 
+#+END_SRC
+
+*** Scrolling
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package smooth-scrolling
   :commands (previous-line next-line isearch-repeat)
   :init
@@ -2472,7 +2754,13 @@ use-package uniquify ; add dirs to buffer names when not unique
     (enable-smooth-scroll-for-function previous-line)
     (enable-smooth-scroll-for-function next-line)
     (enable-smooth-scroll-for-function isearch-repeat)))
+#+END_SRC
 
+*** Highlight
+
+**** Parens
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package highlight-parentheses
   :diminish highlight-parentheses-mode
   :defer 1
@@ -2482,7 +2770,11 @@ use-package uniquify ; add dirs to buffer names when not unique
     (t/add-hook-defun 'prog-mode-hook t-hook-l-parens
                       (highlight-parentheses-mode)
                       (set-face-foreground 'show-paren-match "Green"))))
+#+END_SRC
 
+**** Escape sequences
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package highlight-escape-sequences
   ;; what the 
   :hook (prog-mode-hook hes-mode)
@@ -2490,7 +2782,11 @@ use-package uniquify ; add dirs to buffer names when not unique
   (progn
     (put 'hes-escape-backslash-face 'face-alias 'font-lock-comment-face)
     (put 'hes-escape-sequence-face 'face-alias 'font-lock-comment-face)))
+#+END_SRC
 
+**** Symbols
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package highlight-symbol
   :diminish highlight-symbol-mode
   :commands (highlight-symbol-mode
@@ -2504,19 +2800,31 @@ use-package uniquify ; add dirs to buffer names when not unique
   :config
   ;; highlight-symbol uses hl-line-face
   (require 'hl-line))
+#+END_SRC
 
+**** Numbers
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package highlight-numbers
   :defer 1
   :init
-  (progn
-    (t/add-hook 'prog-mode-hook 'highlight-numbers-mode)))
+  (t/add-hook 'prog-mode-hook 'highlight-numbers-mode))
+#+END_SRC
 
+*** Codemods
+
+**** Js
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package js-codemod
   ;; :ensure nil
   ;; :straight nil
   ;; :load-path "~/Code/js-codemod/js-codemod.el"
   :commands (js-codemod-mod-region))
+#+END_SRC
 
+**** Old helm js codemod
+
+#+BEGIN_SRC emacs-lisp :results silent
 (comment
 use-package helm-js-codemod
   ;; :ensure nil
@@ -2529,10 +2837,15 @@ use-package helm-js-codemod
           (expand-file-name (t/user-emacs-file "js-codemods/")))
     (t/after which-key
       (t/declare-prefix "mr" "Refactor" "m" 'helm-js-codemod))))
+#+END_SRC
 
-(use-package restclient
-  :mode ("\\.\\(http\\|rest\\)$" . restclient-mode))
+*** News
 
+**** Nrk.no
+
+A custom function to fetch a clean view of the current news from nrk.no
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defun t/clean-nrk-buffer ()
   (flush-lines "^$")
   ;; clean up lines beginning with dates, e.g. 20. sept...
@@ -2562,64 +2875,11 @@ use-package helm-js-codemod
                     (recenter nil)) keymap)
     (set-temporary-overlay-map keymap t)))
 
-;; eww-mode
-(defun t/eww-readable-after-render (&optional fn)
-  (lambda (status url buffer)
-    (eww-render status url nil buffer)
-    (switch-to-buffer buffer)
-    (eww-readable)
-    (writeroom-mode 1)
-    (let ((content (buffer-substring-no-properties (point-min) (point-max))))
-      (read-only-mode 0)
-      (erase-buffer)
-      (insert content)
-      (beginning-of-buffer)
-      (when fn (funcall fn)))))
+#+END_SRC
 
-(defun t/eww-readable (url &optional fn)
-  (interactive "sEnter URL: ")
-  (lexical-let ((buffer (get-buffer-create "*eww*")))
-    (with-current-buffer buffer
-      (autoload 'eww-setup-buffer "eww")
-      (eww-setup-buffer)
-      (url-retrieve url (t/eww-readable-after-render fn) (list url buffer)))))
+**** Hackernews
 
-(t/after shr
-  ;; don't truncate lines in eww-mode
-  ;;(setq shr-width nil)
-  (defun shr-fill-text (text) text)
-  (defun shr-fill-lines (start end) nil)
-  (defun shr-fill-line () nil)
-
-  ;; wrap lines
-  (t/add-hook-defun 'eww-after-render-hook t/hook-eww-trunc
-                    (toggle-truncate-lines -1)))
-
-;; not to large images
-(setq shr-use-fonts nil
-      shr-max-image-proportion 0.6
-      shr-ignore-cache t)
-
-(defun t/visit-frontmost-chrome-url-in-eww ()
-  "Visit the front-most url of chrome in eww."
-  (interactive)
-  (eww (t/grab-chrome-url)))
-
-(t/after eww
-  (t/add-hook-defun 'eww-mode-hook t/hook-eww
-                    (t/declare-prefix-for-mode 'eww-mode
-                                               "t" "Toggle"
-                                               "i" 't/eww-toggle-images)
-                    (t/bind-in '(evil-normal-state-local-map)
-                      "q" 'quit-window
-                      "S-TAB" 'shr-previous-link
-                      "TAB" 'shr-next-link
-                      "R" 'eww-readable
-                      "M-p" 'backward-paragraph
-                      "M-n" 'forward-paragraph
-                      "s-l" 'eww)
-                    (visual-line-mode)))
-
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package hackernews
   :commands hackernews
   :init
@@ -2645,37 +2905,36 @@ use-package helm-js-codemod
       "gr" 'hackernews-load-more-stories
       "gR" 'hackernews-reload)))
 
+#+END_SRC
+
+*** Complete lines - TODO implement for counsel
+
+#+BEGIN_SRC emacs-lisp :results silent
 ;; TODO
 ;; redo it for counsel?
 (comment
  use-package helm-lines
-  :commands helm-lines
-  :init
-  (progn
-    (setq helm-lines-project-root-function 't/project-root)
-    (t/declare-prefix "c" "Comment/Complete"
-                      "l" 'helm-lines)))
-
-;; TODO
-(comment
- use-package helm-hunks
- :commands (helm-hunks
-            helm-hunks-current-buffer
-            helm-hunks-staged
-            helm-hunks-staged-current-buffer)
+ :commands helm-lines
  :init
  (progn
-   (setq helm-hunks-preview-diffs t)
-   (t/declare-prefix "gh" "Hunk"
-                     "h" 'helm-hunks
-                     "H" 'helm-hunks-current-buffer
-                     "SS" 'helm-hunks-staged
-                     "SH" 'helm-hunks-staged-current-buffer)))
+   (setq helm-lines-project-root-function 't/project-root)
+   (t/declare-prefix "c" "Comment/Complete"
+                     "l" 'helm-lines)))
 
-(use-package suggest
-  :commands suggest)
+#+END_SRC
 
-;; save more recent files
+*** Command decompiler
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package suggest :commands suggest)
+
+#+END_SRC
+
+*** Recent files
+
+Save more recent files.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package recentf
   :ensure nil
   :straight nil
@@ -2691,16 +2950,32 @@ use-package helm-js-codemod
     (t/idle-timer recentf-auto-save-timer #'t/recentf-save-if-recentf-mode 1)
     (recentf-mode 1)))
 
+#+END_SRC
+
+*** Line numbers
+
+Toggles line numbers on or off.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package nlinum
   :commands nlinum-mode
   :init
   (setq nlinum-format " %d "))
+#+END_SRC
 
+Toggles relative line numbers, like in vim.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package nlinum-relative
   :commands nlinum-relative-toggle
   :init
   (setq nlinum-relative-redisplay-delay 0))
 
+#+END_SRC
+
+*** Projects
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package projectile
   :diminish projectile-mode
   :commands (projectile-mode
@@ -2722,7 +2997,11 @@ use-package helm-js-codemod
     (t/add-to-list 'projectile-globally-ignored-files '("package-lock.json" "*.bundle.js" "*.build.js" ".DS_Store" "projectile.cache" "custom.el"))
     (t/add-to-list 'grep-find-ignored-files '("package-lock.json" "*.bundle.js" "*.build.js" ".DS_Store" "projectile.cache" "custom.el" "node_modules/*" "elpy/*" "js-codemods/*" "target/*" "elpa-backups/*"))
     (projectile-global-mode +1)))
+#+END_SRC
 
+*** Dump jump
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package dumb-jump
   :commands dumb-jump-go
   :init
@@ -2736,6 +3015,13 @@ use-package helm-js-codemod
                       (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
                       (bind-key "M-." 'xref-find-definitions evil-insert-state-map))))
 
+#+END_SRC
+
+*** Intent
+
+Force indents, like you mean it.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package aggressive-indent
   :commands (aggressive-indent-mode global-aggressive-indent-mode)
   :init
@@ -2749,6 +3035,13 @@ use-package helm-js-codemod
     (t/declare-prefix "t" "Toggle"
                       "a" 'aggressive-indent-mode)))
 
+#+END_SRC
+
+*** Whitespace
+
+Clean out whitespace when saving.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package whitespace
   :ensure nil
   :straight nil
@@ -2759,9 +3052,20 @@ use-package helm-js-codemod
                       (setq-local whitespace-style '(face tabs tab-mark trailing))
                       (whitespace-mode 1))))
 
-(use-package wc-mode
-  :commands wc-mode)
+#+END_SRC
 
+*** Word count
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package wc-mode :commands wc-mode)
+
+#+END_SRC
+
+*** Document viewer
+
+View pdfs etc.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package doc-view
   :defer t
   :ensure nil
@@ -2789,8 +3093,13 @@ use-package helm-js-codemod
     (t/bind-in 'doc-view-mode-map
       "C-u" 'doc-view-scroll-down-or-previous-page
       "C-d" 'doc-view-scroll-up-or-next-page)))
+#+END_SRC
 
+*** Drawing
 
+Draw inside emacs. Yes, you read correctly.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package artist-mode
   :ensure nil
   :straight nil
@@ -2824,9 +3133,11 @@ use-package helm-js-codemod
                         "c" 'artist-select-op-circle
                         "e" 'artist-select-op-ellipse
                         "s" 'artist-select-op-square))))
+#+END_SRC
 
+*** Dictionary
 
-
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package dictionary
   :if nil
   :commands (dictionary dictionary-search)
@@ -2834,6 +3145,11 @@ use-package helm-js-codemod
   (t/declare-prefix "s" "dictionary"
                     "dd" (t/lambda (dictionary-search (t/word-at-point)))))
 
+#+END_SRC
+
+Thesaurus.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package synosaurus
   :if nil
   :commands synosaurus-lookup
@@ -2843,16 +3159,11 @@ use-package helm-js-codemod
           synosaurus-backend 'synosaurus-backend-wordnet)
     (t/declare-prefix "s" "dictionary"
                       "ds" (t/lambda (synosaurus-lookup (t/word-at-point))))))
+#+END_SRC
 
-(t/after re-builder (setq reb-re-syntax 'rx))
-(t/add-hook 'text-mode-hook 'auto-fill-mode) ; wrap text in text modes
-(t/add-hook 'text-mode-hook 'goto-address-prog-mode) ; navigate urls
-(t/add-hook 'focus-out-hook #'garbage-collect) ; make it feel snappier
-(t/add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
-(t/add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)
-(setq large-file-warning-threshold (* 20 ; mb
-                                      1024 1024))
+*** Eval overlays cider
 
+#+BEGIN_SRC emacs-lisp :results silent
 (progn
   ;; inline evaled results when in elisp using cider
   (autoload 'cider--make-result-overlay "cider-overlays")
@@ -2861,22 +3172,50 @@ use-package helm-js-codemod
   (advice-add 'eval-region :around (lambda (f beg end &rest r) (endless/eval-overlay (apply f beg end r) end)))
   (advice-add 'eval-last-sexp :filter-return (lambda (r) (endless/eval-overlay r (point))))
   (advice-add 'eval-defun :filter-return (lambda (r) (endless/eval-overlay r (save-excursion (end-of-defun) (point))))))
+  #+END_SRC
 
+*** Misc text modes
+
+#+BEGIN_SRC emacs-lisp :results silent
+(t/add-hook 'text-mode-hook 'auto-fill-mode) ; wrap text in text modes
+(t/add-hook 'text-mode-hook 'goto-address-prog-mode) ; navigate urls
+(t/add-hook 'focus-out-hook #'garbage-collect) ; make it feel snappier
+(t/add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
+(t/add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)
+(setq large-file-warning-threshold (* 20 ; mb
+                                      1024 1024))
+#+END_SRC
+
+*** Misc commands
+
+#+BEGIN_SRC emacs-lisp :results silent
 (evil-leader/set-key "'" 't/eshell)
 (evil-leader/set-key "<" 't/eshell)
 (evil-leader/set-key "|" 't/eshell)
 (evil-leader/set-key "TAB" 't/switch-to-previous-buffer)
 (evil-leader/set-key "u" 'universal-argument)
+#+END_SRC
 
+*** Regex editor
+
+#+BEGIN_SRC emacs-lisp :results silent
+(t/after re-builder (setq reb-re-syntax 'rx))
 (defvar t-regex-mode nil "reb-mode on or not")
 (defun t/toggle-regex-mode ()
   (interactive)
   (if t-regex-mode (reb-quit) (re-builder))
   (setq t-regex-mode (not t-regex-mode)))
+#+END_SRC
 
+*** Diffing
+
+#+BEGIN_SRC emacs-lisp :results silent
 (t/add-hook 'ediff-keymap-setup-hook
             (t/lambda (define-key ediff-mode-map "d" 't/ediff-use-both)))
+#+END_SRC
 
+*** Keybindings
+#+BEGIN_SRC emacs-lisp :results silent
 (t/declare-prefix "a" "Applications"
                   "B" 'w3m
                   "c" 'calendar
@@ -3117,7 +3456,6 @@ use-package helm-js-codemod
                   "t" 'etags-select-find-tag-at-point
                   "w" 'helm-wikipedia-suggest)
 #+end_src
-
 *** Popups
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -3994,13 +4332,36 @@ No emojis in terminal (on os x at least).
                   ;;"w" 'helm-wikipedia-suggest
                   )
 #+END_SRC
-** Window
+** Frame and Window
+
+*** Transpose frame
+
+Switch around split frame rotation.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package transpose-frame :commands transpose-frame)
+#+END_SRC
+*** Window history
+
+Revert to previous window configurations
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package winner
+  :ensure nil
+  :straight nil
+  :commands (winner-undo winner-redo)
+  :config (winner-mode))
+#+END_SRC
+
+*** Margins
 
 Breathing room nice.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (t/margins-global 1)
-#+end_src
+#+END_SRC
+
+*** Frame size
 
 Change frame width and height consistently across os'es.
 
@@ -4013,6 +4374,8 @@ Change frame width and height consistently across os'es.
  ("<C-s-down>" . t/increase-frame-height)
  ("<C-s-up>" . t/decrease-frame-height))
 #+end_src
+
+*** Frame movement
 
 Move window consistently across os'es.
 
