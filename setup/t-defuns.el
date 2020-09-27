@@ -1495,4 +1495,65 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (goto-char (point-min))
   (forward-line (random (count-lines (point-min) (point-max)))))
 
+;;;###autoload
+(defun t/decrease-frame-width ()
+  "Decrease emacs frame size horizontally"
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-width frame (- (frame-width frame) 4))))
+
+;;;###autoload
+(defun t/increase-frame-width ()
+  "Increase emacs frame size horizontally"
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-width frame (+ (frame-width frame) 4))))
+
+;;;###autoload
+(defun t/decrease-frame-height ()
+  "Decrease emacs frame size vertically"
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-height frame (- (frame-height frame) 4))))
+
+;;;###autoload
+(defun t/increase-frame-height ()
+  "Increase emacs frame size vertically"
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-height frame (+ (frame-height frame) 4))))
+
+;;;###autoload
+(defun t/move-frame-right ()
+  "Moves emacs frame right"
+  (interactive)
+  (let* ((frame (selected-frame))
+         (left (frame-parameter frame 'left)))
+    (set-frame-parameter frame 'left (+ left 40))))
+
+;;;###autoload
+(defun t/move-frame-left ()
+  "Moves emacs frame left"
+  (interactive)
+  (let* ((frame (selected-frame))
+         (left (frame-parameter frame 'left)))
+    (set-frame-parameter frame 'left (- left 40))))
+
+;;;###autoload
+(defun t/move-frame-up ()
+  "Moves emacs frame up"
+  (interactive)
+  (let* ((frame (selected-frame))
+         (top (frame-parameter frame 'top)))
+    (set-frame-parameter frame 'top (- top 40))))
+
+;;;###autoload
+(defun t/move-frame-down ()
+  "Moves emacs frame down"
+  (interactive)
+  (let* ((frame (selected-frame))
+         (top (frame-parameter frame 'top)))
+    (set-frame-parameter frame 'top (+ top 40))))
+
+
 (provide 't-defuns)

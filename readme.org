@@ -1324,7 +1324,7 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
           magit-fetch-arguments '("--prune")
           magit-rebase-arguments '("--interactive")
           magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
-          magit-display-buffer-function 'magit-display-buffer-fullframe-status-v1)
+          magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
     (when is-mac
       (setq
        ;; fixes https://github.com/magit/ghub/issues/81 - dont use this on linux
@@ -2680,7 +2680,7 @@ use-package helm-js-codemod
                     "dv" 'describe-variable)
 
   (t/declare-prefix "e" "Errors"
-                    "c" 'flycheck-clear
+  "c" 'flycheck-clear
                     "p" 'flycheck-previous-error
                     "n" 'flycheck-next-error
                     "N" 'flycheck-previous-error
@@ -3636,6 +3636,32 @@ PWD is not in a git repo (or the git command is not found)."
                   ;;"w" 'helm-wikipedia-suggest
                   )
 #+END_SRC
+** Window
+
+Change frame width and height consistently across os'es.
+
+#+begin_src emacs-lisp :results silent
+(bind-keys
+ :map
+ global-map
+ ("<C-s-left>" . t/decrease-frame-width)
+ ("<C-s-right>" . t/increase-frame-width)
+ ("<C-s-down>" . t/increase-frame-height)
+ ("<C-s-up>" . t/decrease-frame-height))
+#+end_src
+
+Move window consistently across os'es.
+
+#+begin_src emacs-lisp :results silent
+(bind-keys
+ :map
+ global-map
+ ("<C-S-s-left>" . t/move-frame-left)
+ ("<C-S-s-right>" . t/move-frame-right)
+ ("<C-S-s-down>" . t/move-frame-down)
+ ("<C-S-s-up>" . t/move-frame-up))
+#+end_src
+
 
 ** Server
 

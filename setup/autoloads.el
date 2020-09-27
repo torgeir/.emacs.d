@@ -77,7 +77,7 @@
 ;;;### (autoloads nil "t-shell" "t-shell.el" (0 0 0 0))
 ;;; Generated autoloads from t-shell.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '("pcomplete/" "t-shell/config")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '("pcomplete/")))
 
 ;;;***
 
@@ -636,6 +636,30 @@ Locally disable cursor in buffer." t nil)
 
 (autoload 't/random-line "t-defuns" "\
 Goto a random line in the buffer. Useful trying out a random package." t nil)
+
+(autoload 't/decrease-frame-width "t-defuns" "\
+Decrease emacs frame size horizontally" t nil)
+
+(autoload 't/increase-frame-width "t-defuns" "\
+Increase emacs frame size horizontally" t nil)
+
+(autoload 't/decrease-frame-height "t-defuns" "\
+Decrease emacs frame size vertically" t nil)
+
+(autoload 't/increase-frame-height "t-defuns" "\
+Increase emacs frame size vertically" t nil)
+
+(autoload 't/move-frame-right "t-defuns" "\
+Moves emacs frame right" t nil)
+
+(autoload 't/move-frame-left "t-defuns" "\
+Moves emacs frame left" t nil)
+
+(autoload 't/move-frame-up "t-defuns" "\
+Moves emacs frame up" t nil)
+
+(autoload 't/move-frame-down "t-defuns" "\
+Moves emacs frame down" t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
 
