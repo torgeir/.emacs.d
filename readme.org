@@ -141,8 +141,8 @@ Make shift work i org-mode.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results silent
-;;(t/set-font (car t-fonts))
-;;(t/transparency 100)
+(t/set-font (car t-fonts))
+(t/transparency 100)
 #+END_SRC
 
 ** customization
@@ -1692,8 +1692,9 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
 ** server
 
 #+BEGIN_SRC emacs-lisp :results silent
-(unless (fboundp 'server-running-p) (require 'server))
-(unless (server-running-p) (server-mode))
+  (unless (fboundp 'server-running-p) (require 'server))
+  (unless (server-running-p) (server-mode))
+  (t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
 #+END_SRC
 
 ** org

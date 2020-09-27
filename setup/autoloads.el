@@ -3,13 +3,6 @@
 ;;; Code:
 
 
-;;;### (autoloads nil "t-cygwin" "t-cygwin.el" (0 0 0 0))
-;;; Generated autoloads from t-cygwin.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-cygwin" '("t-cygwin/")))
-
-;;;***
-
 ;;;### (autoloads nil "t-debug" "t-debug.el" (0 0 0 0))
 ;;; Generated autoloads from t-debug.el
 
@@ -42,27 +35,6 @@
 ;;; Generated autoloads from t-keys.el
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-keys" '("t-keys/config")))
-
-;;;***
-
-;;;### (autoloads nil "t-linux" "t-linux.el" (0 0 0 0))
-;;; Generated autoloads from t-linux.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-linux" '("t-linux/init")))
-
-;;;***
-
-;;;### (autoloads nil "t-load-theme" "t-load-theme.el" (0 0 0 0))
-;;; Generated autoloads from t-load-theme.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-load-theme" '("t-load-theme/config")))
-
-;;;***
-
-;;;### (autoloads nil "t-mac" "t-mac.el" (0 0 0 0))
-;;; Generated autoloads from t-mac.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-mac" '("t-mac/init")))
 
 ;;;***
 
@@ -123,7 +95,8 @@
 
 ;;;***
 
-;;;### (autoloads nil nil ("t-calendar.el" "t-site-lisp.el" "t-text-objects.el"
+;;;### (autoloads nil nil ("t-calendar.el" "t-cygwin.el" "t-linux.el"
+;;;;;;  "t-load-theme.el" "t-mac.el" "t-site-lisp.el" "t-text-objects.el"
 ;;;;;;  "t-which-key.el") (0 0 0 0))
 
 ;;;***
@@ -278,6 +251,17 @@ Switch theme, disabling previously loaded
 
 (autoload 't/toggle-theme-dark-light "t-defuns" "\
 Toggles between themes `doom-vibrant' and `spacemacs-light'" t nil)
+
+(autoload 't/cycle-font "t-defuns" "\
+Cycle through list of fonts, setting the front most one." t nil)
+
+(autoload 't/current-font "t-defuns" "\
+Grabs the current font. Prints message when called interactively." t nil)
+
+(autoload 't/set-font "t-defuns" "\
+Change font.
+
+\(fn FONT)" nil nil)
 
 (autoload 't/reload-font "t-defuns" "\
 Reload font to make e.g. font size changes have effect." t nil)
@@ -586,7 +570,9 @@ Navigate to /pulls for the current git repo." t nil)
 
 (autoload 't/projectile-magit-status "t-defuns" nil t nil)
 
-(autoload 't/projectile-helm-ag "t-defuns" nil t nil)
+(autoload 't/projectile-ag "t-defuns" nil t nil)
+
+(autoload 't/projectile-rg "t-defuns" nil t nil)
 
 (autoload 't/projectile-visit-git-link-pulls "t-defuns" nil t nil)
 
@@ -647,6 +633,9 @@ Complete from list with helm, e.g. (t/complete-with-helm-then '(one two) 'insert
 
 (autoload 't/locally-disable-cursor "t-defuns" "\
 Locally disable cursor in buffer." t nil)
+
+(autoload 't/random-line "t-defuns" "\
+Goto a random line in the buffer. Useful trying out a random package." t nil)
 
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
 

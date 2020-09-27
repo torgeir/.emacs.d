@@ -414,6 +414,7 @@ Including indent-buffer, which should not be called automatically on save."
                  "Inconsolata"
                  "Ubuntu Mono")))
 
+;;;###autoload
 (defun t/cycle-font ()
   "Cycle through list of fonts, setting the front most one."
   (interactive)
@@ -427,6 +428,7 @@ Including indent-buffer, which should not be called automatically on save."
             (append rest (list first)))))
   (t/set-font (car t-fonts)))
 
+;;;###autoload
 (defun t/current-font ()
   "Grabs the current font. Prints message when called interactively."
   (interactive)
@@ -434,6 +436,7 @@ Including indent-buffer, which should not be called automatically on save."
     (when (called-interactively-p) (message font))
     font))
 
+;;;###autoload
 (defun t/set-font (font)
   "Change font."
   (when window-system
@@ -525,8 +528,6 @@ Including indent-buffer, which should not be called automatically on save."
 (defun server-remove-kill-buffer-hook ()
   ;; remove other clients-has-the-file-open-prompt
   (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
-(require'server)
-(t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
 
 ;;;###autoload
 (defun t/prefix-arg-universal? ()
