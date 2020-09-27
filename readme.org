@@ -1437,7 +1437,11 @@ leader will actually turn on evil-leader globally. Then turn on evil.
   :init
   (setq calendar-week-start-day 1
         calendar-date-style 'iso))
+#+end_src
 
+Make it Norwegian.
+
+#+begin_src emacs-lisp :results silent
 (use-package calendar-norway
   :after calendar
   :config
@@ -1475,18 +1479,13 @@ leader will actually turn on evil-leader globally. Then turn on evil.
 
 ** Site lisp
 
+Useful local copies of elisp programs.
+
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package ox-gfm)
-
-(use-package cloudformation-mode
+(use-package ox-gfm
   :ensure nil
   :straight nil
-  :load-path "site-lisp/cloudformation-mode")
-
-(use-package spotify
-  :ensure nil
-  :straight nil
-  :load-path "site-lisp/spotify")
+  :load-path "site-lisp/ox-gfm")
 
 (use-package nxml-eldoc
   :ensure nil
@@ -1503,13 +1502,6 @@ leader will actually turn on evil-leader globally. Then turn on evil.
   :commands turn-on-json-path-eldoc
   :init
   (t/add-hook 'json-mode-hook 'turn-on-json-path-eldoc))
-
-(use-package html2text
-  ;; needed for helm-google
-  :commands helm-google
-  :ensure nil
-  :straight nil
-  :load-path "site-lisp/html2text")
 
 (use-package sgml-mode
   :ensure nil
@@ -1536,6 +1528,22 @@ leader will actually turn on evil-leader globally. Then turn on evil.
   :ensure nil
   :straight nil
   :mode ("\\.\\(html|htm\\)" . html-mode))
+#+END_SRC
+
+No longer in use.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package cloudformation-mode
+  :if nil ; id stay away from cloud formation tbh
+  :ensure nil
+  :straight nil
+  :load-path "site-lisp/cloudformation-mode")
+
+(use-package spotify
+  :if nil ; no longer works after the deprecated spotify api
+  :ensure nil
+  :straight nil
+  :load-path "site-lisp/spotify")
 #+END_SRC
 
 ** Ivy
