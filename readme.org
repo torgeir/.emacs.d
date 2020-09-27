@@ -1,34 +1,37 @@
 #+STARTUP: content
+#+PROPERTY: header-args:emacs-lisp :lexical t
 * .emacs.d
+
+** Install
+
+Install it by cloning the repo.
 
 #+BEGIN_SRC sh :results silent
 cd && git clone git@github.com:torgeir/.emacs.d.git
 #+END_SRC
 
-Load this file when emacs starts.
-
-** Os setup
-*** Shortcuts
+*** Os setup
+**** Shortcuts
 
 #+BEGIN_SRC sh :results silent
 ln -s ~/.emacs.d/emacsclient ~/bin/e
 ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
 #+END_SRC
 
-*** Deps
+**** Deps
 
 #+BEGIN_SRC sh :results silent
 npm -g install eslint babel-eslint jsonlint eslint-plugin-react typescript-language-server typescript jscodeshift browser-sync
 #+END_SRC
 
-*** OS X
+**** OS X
 
 #+BEGIN_SRC sh :results silent
 brew tap d12frosted/emacs-plus
 brew install emacs-plus --HEAD --with-natural-title-bar --without-spacemacs-icon
 #+END_SRC
 
-*** Ubuntu
+**** Ubuntu
 
 #+BEGIN_SRC sh :results silent
 sudo add-apt-repository -y ppa:ubuntu-elisp
@@ -44,12 +47,6 @@ Remove the startup message.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (setq inhibit-startup-message t)
-#+END_SRC
-
-Make shift work i org-mode.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(setq org-support-shift-select t)
 #+END_SRC
 
 ** Bootstrap
@@ -95,6 +92,11 @@ Make shift work i org-mode.
     (when (file-directory-p project)
       (add-to-list 'load-path project))))
 
+#+END_SRC
+
+** Timing functions
+
+#+BEGIN_SRC emacas-lisp :results silent
 (defun t/timing-start ()
   (interactive)
   (when *t-debug-init*
@@ -111,6 +113,13 @@ Make shift work i org-mode.
     (benchmark-init/show-durations-tabulated)
     (benchmark-init/show-durations-tree)))
 
+    #+END_SRC
+
+** Autoloads
+
+Autoloads, that auto reload when you save them. All of them are in ~t-defuns.el~.
+
+#+BEGIN_SRC emacas-lisp :results silent
 (defun t/reload-autoloads ()
   "Regenerate and reload autoloads.el."
   (interactive)
@@ -122,9 +131,18 @@ Make shift work i org-mode.
   (t/reload-autoloads)
   (unless (require 'autoloads t-file-autoloads t) (error "autoloads.el not generated!")))
 
+  #+END_SRC
+
+** Before
+
+Hook for private stuff before the rest. Useful e.g. for gcal tokens etc.
+
+#+BEGIN_SRC emacas-lisp :results silent
 (load (t/user-emacs-file "t-before.el") t)
 #+END_SRC
 
+
+** Implicits
 
 #+BEGIN_SRC emacs-lisp :results silent
 (require 'bind-key)
@@ -134,11 +152,6 @@ Make shift work i org-mode.
 (use-package dash-functional) ; fun list helpers
 (use-package s) ; string helpers
 (use-package f) ; file helpers
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results silent
-(t/set-font (car t-fonts))
-(t/transparency 100)
 #+END_SRC
 
 ** Customization
@@ -704,13 +717,12 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
 ** Evil
 
 #+BEGIN_SRC emacs-lisp :results silent
-    ;;; -*- lexical-binding: t; -*-
 (setq evil-want-C-d-scroll t
       evil-want-C-u-scroll t
       evil-want-keybinding nil
       evil-want-integration t
       evil-want-Y-yank-to-eol nil
-      evil-move-beyond-eol nil)
+      evil-move-beyond-eol t)
 
 (setq evil-default-state 'normal
       evil-insert-skip-empty-lines t
@@ -3265,22 +3277,37 @@ PWD is not in a git repo (or the git command is not found)."
 
 ** Typography
 
+Initial font and window transparency.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(t/set-font (car t-fonts))
+(t/transparency 100)
+#+END_SRC
+
+Highlight todos in all modes.
+
 #+begin_src emacs-lisp :results silent
 (use-package hl-todo
   :defer 1
   :config (global-hl-todo-mode))
+#+END_SRC
 
+Shorten ~function~ to ~f~. Can be handy for other annoying stuff as well.
+
+#+BEGIN_SRC emacas-lisp :results silent
 (t/add-hook-defun '(js2-mode-hook) t/ligatures
                   (push '("function" . ?ƒ) prettify-symbols-alist)
                   (prettify-symbols-mode))
+#+END_SRC
 
+No emojis in terminal (on os x at least).
+
+#+BEGIN_SRC emacas-lisp :results silent
 (progn
   (t/set-emoji-font nil) ; for when Emacs is started in GUI mode
   (t/add-hook 'after-make-frame-functions 't/set-emoji-font)) ; hook for when a frame is created with emacsclient
 
-;; add window margins
-(t/margins-global 1)
-#+end_src
+  #+END_SRC
 ** Keys
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -3644,6 +3671,12 @@ PWD is not in a git repo (or the git command is not found)."
 #+END_SRC
 ** Window
 
+Breathing room nice.
+
+#+BEGIN_SRC emacas-lisp :results silent
+(t/margins-global 1)
+#+end_src
+
 Change frame width and height consistently across os'es.
 
 #+begin_src emacs-lisp :results silent
@@ -3728,11 +3761,15 @@ Handy function to clear out all completed tasks in file.
 
 *** Config
 
+General org config, didn't bother sorting it.
+
 #+BEGIN_SRC emacs-lisp :results silent
-(setq ;;org-ellipsis " >"
- org-startup-indented t        ; turn on org-indent-mode
+(setq
+ ;; org-ellipsis " >" ; the ... is ok
+ org-startup-indented t ; turn on org-indent-mode
  org-return-follows-link t
  org-tab-follows-link nil
+ org-support-shift-select t ; shift can be used to mark multiple lines
  org-hide-leading-stars t
  org-hide-emphasis-markers nil
  org-loop-over-headlines-in-active-region 'start-level ; org-archive with friends work on multiple items
