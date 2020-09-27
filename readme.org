@@ -50,38 +50,64 @@ Remove the startup message.
 #+END_SRC
 
 ** Bootstrap
+
+*** User
+
 #+BEGIN_SRC emacs-lisp :results silent
 (defconst t-leader "SPC")
 (defconst t-emacs-leader "C-")
 (defconst t-font-size 17)
+(defconst lat-trh 63.427)
+(defconst lon-trh 10.391)
+(defconst loc-trh "Trondheim, Norway")
 
+#+END_SRC
+
+*** Operating system
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defconst is-mac (equal system-type 'darwin))
 (defconst is-cygwin (equal system-type 'cygwin))
 (defconst is-linux (equal system-type 'gnu/linux))
 (defconst is-win (equal system-type 'windows-nt))
 (defconst is-ms (or is-cygwin is-win))
 (defconst has-gui (display-graphic-p))
+#+END_SRC
 
+*** Dynamically bound
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defvar *t-indent* 2)
 (defvar *t-indent-xml* 4)
 (defvar *t-debug-init* nil "Debug/time startup")
 (when *t-debug-init* (setq debug-on-error nil))
 
+#+END_SRC
+
+*** User folders
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defconst user-emacs-directory "~/.emacs.d/")
 (defun t/user-emacs-file (path) (concat user-emacs-directory path))
 (defun t/user-file (path)
   (concat (if is-mac "/Users/"
-            (if is-linux "/home/"
-              "c:/Users/"))
-          (if is-win
-              "torgth"
-            (replace-regexp-in-string "\\." "" (getenv "USER")))
+            (if is-linux "/home/" "c:/Users/"))
+          (if is-win "torgth" (replace-regexp-in-string "\\." "" (getenv "USER")))
           "/"
           path))
+(defconst t-user-dropbox-folder (if (or is-mac is-linux)
+                                    (t/user-file "Dropbox")
+                                  "c:/Users/torgth/Dropbox \(Personlig\)"))
+(defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
+#+END_SRC
 
+*** Load path
+
+Add setup and snippets to the load-path.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defconst t-dir-setup (t/user-emacs-file "setup"))
 (defconst t-dir-snippets (t/user-emacs-file "snippets"))
-(defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
 
 (add-to-list 'load-path t-dir-setup)
 (add-to-list 'load-path (t/user-emacs-file "setup/langs"))
@@ -91,12 +117,14 @@ Remove the startup message.
   (dolist (project (directory-files dir-site-lisp t "\\w+"))
     (when (file-directory-p project)
       (add-to-list 'load-path project))))
-
 #+END_SRC
 
 ** Timing functions
 
-#+BEGIN_SRC emacas-lisp :results silent
+Functions to record time spent loading the emacs config. Benchmarks can be
+provided when initialization is complete by setting ~*t-debug-init*~ to ~t~.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defun t/timing-start ()
   (interactive)
   (when *t-debug-init*
@@ -112,14 +140,30 @@ Remove the startup message.
     (message "t: timing init complete")
     (benchmark-init/show-durations-tabulated)
     (benchmark-init/show-durations-tree)))
+#+END_SRC
 
-    #+END_SRC
+** Before
+
+Start the initialization timer.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(t/timing-start)
+#+END_SRC
+
+Hook for private stuff before the rest. Useful e.g. for gcal tokens etc.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(load (t/user-emacs-file "t-before.el") t)
+#+END_SRC
 
 ** Autoloads
 
-Autoloads, that auto reload when you save them. All of them are in ~t-defuns.el~.
+Autoloads, that auto reload when you save them. A myriad of useful functions
+with autoload cookies are in ~t-defuns.el~.
 
-#+BEGIN_SRC emacas-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
+(defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
+
 (defun t/reload-autoloads ()
   "Regenerate and reload autoloads.el."
   (interactive)
@@ -131,16 +175,7 @@ Autoloads, that auto reload when you save them. All of them are in ~t-defuns.el~
   (t/reload-autoloads)
   (unless (require 'autoloads t-file-autoloads t) (error "autoloads.el not generated!")))
 
-  #+END_SRC
-
-** Before
-
-Hook for private stuff before the rest. Useful e.g. for gcal tokens etc.
-
-#+BEGIN_SRC emacas-lisp :results silent
-(load (t/user-emacs-file "t-before.el") t)
 #+END_SRC
-
 
 ** Implicits
 
@@ -154,16 +189,13 @@ Hook for private stuff before the rest. Useful e.g. for gcal tokens etc.
 (use-package f) ; file helpers
 #+END_SRC
 
-** Customization
+** Customize
+
+Customizations go in ~custom.el~.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file)
-#+END_SRC
-
-** Before
-#+BEGIN_SRC emacs-lisp :results silent
-(t/timing-start)
 #+END_SRC
 
 ** Macros
@@ -1164,17 +1196,13 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
 
 ** Calendar
 #+BEGIN_SRC emacs-lisp :results silent
-(defconst lat-trh 63.427)
-(defconst lon-trh 10.391)
-
 (use-package calendar
   :ensure nil
   :straight nil
   :commands calendar
   :init
-  (progn
-    (setq calendar-week-start-day 1
-          calendar-date-style 'iso)))
+  (setq calendar-week-start-day 1
+        calendar-date-style 'iso))
 
 (use-package calendar-norway
   :after calendar
@@ -1193,7 +1221,7 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
 
     (setq calendar-latitude lat-trh
           calendar-longitude lon-trh
-          calendar-location-name "Trondheim, Norway")
+          calendar-location-name loc-trh)
 
     ;; show week numbers in calendar
     (copy-face font-lock-constant-face 'calendar-iso-week-face)
@@ -3294,7 +3322,7 @@ Highlight todos in all modes.
 
 Shorten ~function~ to ~f~. Can be handy for other annoying stuff as well.
 
-#+BEGIN_SRC emacas-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (t/add-hook-defun '(js2-mode-hook) t/ligatures
                   (push '("function" . ?ƒ) prettify-symbols-alist)
                   (prettify-symbols-mode))
@@ -3302,12 +3330,12 @@ Shorten ~function~ to ~f~. Can be handy for other annoying stuff as well.
 
 No emojis in terminal (on os x at least).
 
-#+BEGIN_SRC emacas-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (progn
   (t/set-emoji-font nil) ; for when Emacs is started in GUI mode
   (t/add-hook 'after-make-frame-functions 't/set-emoji-font)) ; hook for when a frame is created with emacsclient
 
-  #+END_SRC
+#+END_SRC
 ** Keys
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -3673,7 +3701,7 @@ No emojis in terminal (on os x at least).
 
 Breathing room nice.
 
-#+BEGIN_SRC emacas-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (t/margins-global 1)
 #+end_src
 
@@ -3730,15 +3758,10 @@ Confirming and exiting src code blocks is much faster like this.
 (bind-key "\C-c\C-c" 'org-edit-src-exit 'org-src-mode-map)
 #+END_SRC
 
-*** Dropbox and .org files
+*** Folders with .org files
 
 #+BEGIN_SRC emacs-lisp :results silent
-(defconst t-user-dropbox-folder (if (or is-mac is-linux)
-                                    (t/user-file "Dropbox")
-                                  "c:/Users/torgth/Dropbox \(Personlig\)"))
-(defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
 (defun t/org-directory (path) (concat org-directory "/" path))
-
 (setq org-directory (t/user-dropbox-folder "org"))
 #+END_SRC
 
@@ -3853,7 +3876,7 @@ Make org-goto play nice with counsel.
   (evil-add-command-properties #'org-previous-visible-heading :jump t)
   (evil-add-command-properties #'org-next-visible-heading :jump t))
 
-  #+END_SRC
+#+END_SRC
 
 *** Keybindings
 
@@ -4248,7 +4271,7 @@ Blank line before new entries with text, but not headings following other headin
 (t/after yasnippet ;; TODO
   (t/add-hook 'org-mode-hook #'yas/org-setup))
 
-  #+END_SRC
+#+END_SRC
 
 *** Fonts
 
@@ -4360,7 +4383,7 @@ the commented out ~org-gcal-fetch~
       ;;(add-hook 'org-agenda-mode-hook 'org-gcal-fetch)
       )))
 
-      #+END_SRC
+#+END_SRC
 
 ** Make org draw charts
 
