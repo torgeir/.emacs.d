@@ -1088,7 +1088,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/helm-files-emacs-init-files ()
   (interactive)
   (let ((default-directory user-emacs-directory))
-    (helm-projectile nil)))
+    (counsel-projectile-find-file-dwim)))
 
 ;;;###autoload
 (defun t/newline-expand-braces ()
@@ -1121,7 +1121,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (cond ((fboundp s) (describe-function s))
           ((featurep s) (describe-package s))
           ((symbolp s) (describe-variable s))
-          (t (call-interactively 'helm-apropos)))))
+          (t (call-interactively 'counsel-apropos)))))
 
 ;;;###autoload
 (defun t/unbind (fn-or-s)
@@ -1252,7 +1252,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-dired ()
   (interactive)
-  (require 'helm)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
@@ -1264,7 +1263,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-desktop ()
   (interactive)
-  (require 'helm)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
@@ -1280,7 +1278,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
 ;;;###autoload
 (defun t/projectile-magit-status ()
   (interactive)
-  (require 'helm)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
@@ -1292,9 +1289,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (user-error "No projects found"))))
 
 ;;;###autoload
-(defun t/projectile-helm-ag ()
+(defun t/projectile-ag ()
   (interactive)
-  (require 'helm)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
@@ -1302,13 +1298,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
          projects
          :action (lambda (project)
                    (let ((default-directory project))
-                     (helm-projectile-ag))))
+                     (counsel-projectile-ag))))
       (user-error "No projects found"))))
 
 ;;;###autoload
-(defun t/projectile-helm-rg ()
+(defun t/projectile-rg ()
   (interactive)
-  (require 'helm)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
@@ -1316,13 +1311,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
          projects
          :action (lambda (project)
                    (let ((default-directory project))
-                     (helm-projectile-rg))))
+                     (counsel-projectile-rg))))
       (user-error "No projects found"))))
 
 ;;;###autoload
 (defun t/projectile-visit-git-link-pulls ()
   (interactive)
-  (require 'helm)
   (require 'ghub)
   (let ((projects (projectile-load-known-projects)))
     (if projects
