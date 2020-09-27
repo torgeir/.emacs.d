@@ -41,14 +41,6 @@ sudo apt install fonts-inconsolata
 sudo fc-cache -fv
 #+END_SRC
 
-** Sanity
-
-Remove the startup message.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(setq inhibit-startup-message t)
-#+END_SRC
-
 ** Bootstrap
 
 *** User
@@ -363,7 +355,7 @@ Call a function that might not be loaded.
   `(when (fboundp (quote ,fn))
      (funcall (quote ,fn))))
 
-     #+END_SRC
+#+END_SRC
 
 No longer in use. Useful for tracking what loads, and making the init and config
 process of packages reproducable.
@@ -469,7 +461,7 @@ for setting up vars and config after load")
 (comment
  (symbol-function 't/config-which-key))
 
- #+END_SRC
+#+END_SRC
 
 Create smart parens wrapping functions.
 
@@ -490,6 +482,7 @@ Create smart parens wrapping functions.
 
 ** Os specific
 *** Mac
+
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-mac
 
@@ -552,6 +545,7 @@ Create smart parens wrapping functions.
 #+END_SRC
 
 *** Linux
+
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-linux
   (setq t-font-size 14
@@ -608,7 +602,7 @@ Create smart parens wrapping functions.
 
 *** Cygwin
 
-It was worth a shoot..
+It was worth a shoot.. WSL2 is probably a better choice these days.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-ms
@@ -673,23 +667,37 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
   )
 #+END_SRC
 
-** Sane defaults
+** Sanity
+
+Utf-8 everywhere.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package all-the-icons) ; pretty icons
-
-(use-package better-defaults) ; rid the insanity
-
 ;; utf-8 ffs
 (setq locale-coding-system 'utf-8
       default-buffer-file-coding-system 'utf-8)
 
 (add-to-list 'file-coding-system-alist '("\\.org" . utf-8))
 (prefer-coding-system 'utf-8)
+#+END_SRC
 
+A modern icon set.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package all-the-icons)
+#+END_SRC
+
+Rid the insanity. Well, try at least.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package better-defaults)
+#+END_SRC
+
+Fix the rest..
+
+#+BEGIN_SRC emacs-lisp :results silent
 (setq-default
- word-wrap t
- delete-by-moving-to-trash t
+ word-wrap t ; wrap for continued lines
+ delete-by-moving-to-trash t ; delete files for realz
  mode-require-final-newline nil ; don't require final newline
  require-final-newline nil ; don't require final newline
  redisplay-dont-pause t ; update screen immediately
@@ -713,60 +721,101 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
  sentence-end-double-space nil ; one space between sentences
  ad-redefinition-action 'accept ; silence useless warnings, e.g. ad-handle-definition: `find-tag-noselect' got redefined
  fill-column 80 ; chars per line
-
  gc-cons-threshold (* 8 1024 1024) ; more memory
  indent-tabs-mode nil ; don't use tabs
- tab-width 2 ; two spaces
+ tab-width *t-indent* ; two spaces
  cursor-in-non-selected-windows nil ; no cursor in other open windows
  eval-expression-print-length nil ; no length limit when printing sexps in message buffer
  eval-expression-print-level nil ; no level limit when printing sexps in message buffer
  frame-resize-pixelwise t)
+#+END_SRC
 
-;;open large files remove heavy modes
+Open large files removing heavy modes.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (global-so-long-mode 1)
 
-;; y or n will do
+#+END_SRC
+
+Y or n will do.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;; dont blink cursor
-(blink-cursor-mode -1)
+#+END_SRC
 
-;; remove menus
+Don't blink cursor.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(blink-cursor-mode -1)
+#+END_SRC
+
+Remove menus.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (when window-system
   (tooltip-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   (menu-bar-mode -1))
 
-;; show active region
+#+END_SRC
+
+Show active region.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (transient-mark-mode 0)
 (make-variable-buffer-local 'transient-mark-mode)
 (put 'transient-mark-mode 'permanent-local t)
 (setq-default transient-mark-mode t)
+#+END_SRC
 
-;; show parens
+Show matching parens.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (show-paren-mode t)
 (setq show-paren-delay 0)
+#+END_SRC
 
-;; remove selected text when typing
+Remove selected text when typing.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (delete-selection-mode t)
 
-;; above what sizes can the window split
+#+END_SRC
+
+Above what sizes can the window split?
+
+#+BEGIN_SRC emacs-lisp :results silent
 (setq split-height-threshold 0
       split-width-threshold 0
       split-window-preferred-function #'t/split-window-sensibly)
 
-;; remember file positions, and layout
+#+END_SRC
+
+Remember file positions, and layout. Super useful, e.g. for dired.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (save-place-mode 1)
+#+END_SRC
 
+Don't save desktop automatically, for now.
+
+#+BEGIN_SRC emacs-lisp :results silent
 ;; (desktop-save-mode 1)
-(setq desktop-save 't)
+;; (setq desktop-save 't)
+#+END_SRC
 
-;; eldoc everywhere
-;; TODO
-;;(global-eldoc-mode)
+Eldoc everywhere.
 
-;; temp files in..
+#+BEGIN_SRC emacs-lisp :results silent
+(global-eldoc-mode)
+
+#+END_SRC
+
+Colocate temporary files.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (setq backup-directory-alist `((".*" . ,(locate-user-emacs-file ".backups/")))
       auto-save-file-name-transforms `((".*" ,(locate-user-emacs-file ".auto-save-list/") t))
       auto-save-list-file-prefix (locate-user-emacs-file ".auto-save-list/")
@@ -775,8 +824,11 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
       save-place-forget-unreadable-files nil
       create-lockfiles nil
       ido-save-directory-list-file (locate-user-emacs-file ".ido.last"))
+#+END_SRC
 
-;; mouse, with scroll
+Mouse support, with scroll.
+
+#+BEGIN_SRC emacs-lisp :results silent
 (xterm-mouse-mode t)
 (defun trackp-mouse (e))
 (setq mouse-sel-mode t)
@@ -787,16 +839,6 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
   (global-set-key [mouse-4] (t/lambda (scroll-down 2)))
   (global-set-key [mouse-5] (t/lambda (scroll-up 2)))
   (mouse-wheel-mode t))
-
-(use-package popwin
-  :defer 1
-  :init
-  (progn
-    (setq popwin:popup-window-height 25))
-  :config
-  (popwin-mode 1)
-  (add-to-list 'popwin:special-display-config "*xref*")
-  (add-to-list 'popwin:special-display-config '("*cider-doc*" :noselect t)))
 
 #+END_SRC
 
@@ -2889,6 +2931,20 @@ use-package helm-js-codemod
                   "t" 'etags-select-find-tag-at-point
                   "w" 'helm-wikipedia-suggest)
 #+end_src
+*** Popups
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package popwin
+  :defer 1
+  :init
+  (progn
+    (setq popwin:popup-window-height 25))
+  :config
+  (popwin-mode 1)
+  (add-to-list 'popwin:special-display-config "*xref*")
+  (add-to-list 'popwin:special-display-config '("*cider-doc*" :noselect t)))
+#+END_SRC
+
 ** Languages
 
 #+begin_src emacs-lisp :results silent
