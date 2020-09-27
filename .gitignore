@@ -45,4 +45,6 @@
 .cache/projectile.projects
 /straight
 /readme.el
-
+.java-version
+/ido.last
+/network-security.data
