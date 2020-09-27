@@ -3,7 +3,6 @@
   (progn
     
     ;; Default to calling straigth-use-package when running use-package.
-
     (setq straight-use-package-by-default t)
 
     ;; Bootstrap [straight.el](https://github.com/raxod502/straight.el).
@@ -23,9 +22,6 @@
     ;; Install [use-package](https://github.com/jwiegley/use-package).
     (straight-use-package 'use-package)
 
-    ;; TODO needed?
-    ;;(eval-when-compile (require 'use-package))
-
+    ;; needs to come before org is loaded for straight.el to choose it instead
     (straight-use-package 'org-plus-contrib)
-    (org-babel-load-file "~/.emacs.d/readme.org")
-    ))
+    (org-babel-load-file "~/.emacs.d/readme.org")))

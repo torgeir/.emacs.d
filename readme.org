@@ -7,32 +7,28 @@ cd && git clone git@github.com:torgeir/.emacs.d.git
 
 Load this file when emacs starts.
 
-#+BEGIN_SRC emacs-lisp :results silent
-(find-file (locate-user-emacs-file "readme.org"))
-#+END_SRC
-
-** os setup
-*** shortcuts
+** Os setup
+*** Shortcuts
 
 #+BEGIN_SRC sh :results silent
 ln -s ~/.emacs.d/emacsclient ~/bin/e
 ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
 #+END_SRC
 
-*** deps
+*** Deps
 
 #+BEGIN_SRC sh :results silent
 npm install eslint babel-eslint jsonlint eslint-plugin-react typescript-language-server typescript jscodeshift browser-sync
 #+END_SRC
 
-*** os x
+*** OS X
 
 #+BEGIN_SRC sh :results silent
 brew tap d12frosted/emacs-plus
 brew install emacs-plus --HEAD --with-natural-title-bar --without-spacemacs-icon
 #+END_SRC
 
-*** ubuntu
+*** Ubuntu
 
 #+BEGIN_SRC sh :results silent
 sudo add-apt-repository -y ppa:ubuntu-elisp
@@ -42,7 +38,7 @@ sudo apt install fonts-inconsolata
 sudo fc-cache -fv
 #+END_SRC
 
-** sanity
+** Sanity
 
 Remove the startup message.
 
@@ -56,7 +52,7 @@ Make shift work i org-mode.
 (setq org-support-shift-select t)
 #+END_SRC
 
-** bootstrap
+** Bootstrap
 #+BEGIN_SRC emacs-lisp :results silent
 (defconst t-leader "SPC")
 (defconst t-emacs-leader "C-")
@@ -145,19 +141,19 @@ Make shift work i org-mode.
 (t/transparency 100)
 #+END_SRC
 
-** customization
+** Customization
 
 #+BEGIN_SRC emacs-lisp :results silent
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file)
 #+END_SRC
 
-** before
+** Before
 #+BEGIN_SRC emacs-lisp :results silent
 (t/timing-start)
 #+END_SRC
 
-** macros
+** Macros
 #+BEGIN_SRC emacs-lisp :results silent
 (require 'subr-x)
 
@@ -390,8 +386,8 @@ for setting up vars and config after load")
 
 #+END_SRC
 
-** os specific
-*** mac
+** Os specific
+*** Mac
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-mac
 
@@ -457,7 +453,7 @@ for setting up vars and config after load")
   )
 #+END_SRC
 
-*** linux
+*** Linux
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-linux
   (progn
@@ -514,7 +510,7 @@ for setting up vars and config after load")
       "s-0" 't/reset-font-size)))
 #+END_SRC
 
-*** ms
+*** Ms
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-ms
   (progn
@@ -579,7 +575,7 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
   )
 #+END_SRC
 
-** sane defaults
+** Sane defaults
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package all-the-icons) ; pretty icons
@@ -706,7 +702,7 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
 
 #+END_SRC
 
-** evil
+** Evil
 
 #+BEGIN_SRC emacs-lisp :results silent
     ;;; -*- lexical-binding: t; -*-
@@ -1001,7 +997,7 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
 
 #+END_SRC
 
-** which key
+** Which key
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package which-key
@@ -1081,37 +1077,26 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
 (global-evil-leader-mode)
 (evil-mode 1)
 #+END_SRC
-** ivy
-
+** Calendar
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package counsel :init (ivy-mode 1))
+(t/after calendar
+  ;; show week numbers in calendar
+  (copy-face font-lock-constant-face 'calendar-iso-week-face)
+  (set-face-attribute 'calendar-iso-week-face nil :height 1 :foreground "VioletRed1")
+
+  (copy-face 'default 'calendar-iso-week-header-face)
+  (set-face-attribute 'calendar-iso-week-header-face nil :height 0.5 :foreground "VioletRed4")
+
+  (setq calendar-mark-holidays-flag t
+        calendar-intermonth-header '(propertize " " 'font-lock-face 'calendar-iso-week-header-face)
+        calendar-intermonth-text '(propertize (format "%2d" (car
+                                                             (calendar-iso-from-absolute
+                                                              (calendar-absolute-from-gregorian
+                                                               (list month day year)))))
+                                              'font-lock-face 'calendar-iso-week-face)))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package counsel-projectile)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package counsel-etags
-  :ensure t
-  :bind (("C-]" . counsel-etags-find-tag-at-point))
-  :init
-  (t/add-hook 'prog-mode-hook
-              (t/lambda
-                  (add-hook 'after-save-hook
-                            'counsel-etags-virtual-update-tags 'append 'local)))
-  :config
-  (setq counsel-etags-update-interval 60)
-  (push "build" counsel-etags-ignore-directories)
-  (push "target" counsel-etags-ignore-directories))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package counsel-web)
-;; todo counsel-wiki?
-#+END_SRC
-
-** site lisp
+** Site lisp
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package ox-gfm)
@@ -1176,26 +1161,37 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
   :mode ("\\.\\(html|htm\\)" . html-mode))
 #+END_SRC
 
-** calendar
-#+BEGIN_SRC emacs-lisp :results silent
-(t/after calendar
-  ;; show week numbers in calendar
-  (copy-face font-lock-constant-face 'calendar-iso-week-face)
-  (set-face-attribute 'calendar-iso-week-face nil :height 1 :foreground "VioletRed1")
+** Ivy
 
-  (copy-face 'default 'calendar-iso-week-header-face)
-  (set-face-attribute 'calendar-iso-week-header-face nil :height 0.5 :foreground "VioletRed4")
+ #+BEGIN_SRC emacs-lisp :results silent
+ (use-package counsel :init (ivy-mode 1))
+ #+END_SRC
 
-  (setq calendar-mark-holidays-flag t
-        calendar-intermonth-header '(propertize " " 'font-lock-face 'calendar-iso-week-header-face)
-        calendar-intermonth-text '(propertize (format "%2d" (car
-                                                             (calendar-iso-from-absolute
-                                                              (calendar-absolute-from-gregorian
-                                                               (list month day year)))))
-                                              'font-lock-face 'calendar-iso-week-face)))
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp :results silent
+ (use-package counsel-projectile)
+ #+END_SRC
 
-** vc
+ #+BEGIN_SRC emacs-lisp :results silent
+ (use-package counsel-etags
+   :ensure t
+   :bind (("C-]" . counsel-etags-find-tag-at-point))
+   :init
+   (t/add-hook 'prog-mode-hook
+               (t/lambda
+                   (add-hook 'after-save-hook
+                             'counsel-etags-virtual-update-tags 'append 'local)))
+   :config
+   (setq counsel-etags-update-interval 60)
+   (push "build" counsel-etags-ignore-directories)
+   (push "target" counsel-etags-ignore-directories))
+ #+END_SRC
+
+ #+BEGIN_SRC emacs-lisp :results silent
+ (use-package counsel-web)
+ ;; todo counsel-wiki?
+ #+END_SRC
+
+** VC
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package git-gutter+
@@ -1326,7 +1322,19 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
 
 #+END_SRC
 
-** keys
+** Editor
+
+   #+begin_src emacs-lisp :results silent
+   (use-package restart-emacs
+     :commands restart-emacs
+     :init
+     (progn
+       (t/declare-prefix "q" "Quit"
+                         "d" 't/safe-restart-emacs
+                         "r" (t/lambda (restart-emacs))
+                         "R" (t/lambda (restart-emacs '("--no-desktop"))))))
+   #+end_src
+** Keys
 
 #+BEGIN_SRC emacs-lisp :results silent
 ;; lisp-friendly
@@ -1689,7 +1697,7 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
                   )
 #+END_SRC
 
-** server
+** Server
 
 #+BEGIN_SRC emacs-lisp :results silent
   (unless (fboundp 'server-running-p) (require 'server))
@@ -1697,7 +1705,7 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
   (t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
 #+END_SRC
 
-** org
+** Org
 
 #+BEGIN_SRC emacs-lisp :results silent
 (setq org-src-window-setup 'current-window ; edit code src blocks in current window
@@ -2372,7 +2380,7 @@ Locally redefines org-agenda-files not to export all agenda files."
 
 (bind-key "\C-c\C-c" 'org-edit-src-exit 'org-src-mode-map)
 #+END_SRC
-** themes
+** Themes
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package doom-themes
@@ -2438,7 +2446,12 @@ Locally redefines org-agenda-files not to export all agenda files."
                   (advice-add server-create-window-system-frame :after 't/load-theme-once)))))
 #+END_SRC
 
-** after
+** After
 #+BEGIN_SRC emacs-lisp :results silent
 (t/timing-end)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results silent
+(find-file (locate-user-emacs-file "readme.org"))
+(doom-modeline-init)
 #+END_SRC
