@@ -3345,7 +3345,7 @@ Thesaurus.
                   "s" 't/switch-to-scratch-buffer
                   "d" 'kill-this-buffer
                   "t" 't/kill-other-buffers
-                  "b" 'helm-mini
+                  "b" 'ivy-switch-buffer
                   "o" 't/switch-to-previous-buffer
                   "p" 'popwin:display-buffer
                   "n" 'next-buffer
@@ -3361,7 +3361,7 @@ Thesaurus.
 (t/declare-prefix "x" "Text manipulation"
                   "a" 'align-regexp
                   "k" 'ido-kill-buffer
-                  "m" 'helm-M-x
+                  "m"  'counsel-M-x
                   "x" 'smex-major-mode-commands
                   "ls" 't/sort-lines
                   "lu" 't/uniquify-lines)
@@ -3379,8 +3379,8 @@ Thesaurus.
                   "r" 'evil-show-registers)
 
 (t/declare-prefix "f" "Files/Frame"
-                  "b" 'helm-bookmarks
-                  "f" 'helm-find-files
+                  "b" 'ivy-switch-buffer
+                  "f" 'counsel-find-file
                   "l" 't/neotree-open-file
                   "L" 'neotree-hide
                   "j" 'dired-jump
@@ -3388,29 +3388,31 @@ Thesaurus.
                   "d" 'delete-frame
                   "g" 'ffap
                   "o" 't/open-in-desktop
-                  "r" 'helm-recentf)
+                  "r" 'counsel-recentf)
 
 (t/declare-prefix "h" "Help"
                   "h" #'t/describe
                   "f" #'t/face-at-point
-                  "F" #'list-faces-display
-                  "C" #'list-colors-display
-                  "a" 'helm-apropos
-                  "l" 'helm-locate-library
-                  "i" 'helm-info-at-point
-                  "I" 'helm-info
-                  "r" 'helm-resume
-                  "db" 'helm-descbinds
+                  "F" 'counsel-faces
+                  "C" 'counsel-colors-emacs
+                  "a" 'counsel-apropos
+                  "l" 'counsel-find-library
+                  "i" 'counsel-info-lookup-symbol
+                  ;; "I" 'helm-info
+                  "r" 'ivy-resume
+                  ;;"Db" 'ivy-descbinds
                   "dd" 'dash-at-point
-                  "df" 'describe-function
+                  "df" 'counsel-describe-function
+                  "dF" 'counsel-describe-face
                   "dk" 'describe-key-briefly
                   "dK" 'describe-key
                   "dc" 'describe-char
                   "dm" 'describe-mode
                   "dM" 'describe-minor-mode
+                  "ds" 'counsel-describe-symbol
                   "dt" 'describe-theme
                   "dp" 'describe-package
-                  "dv" 'describe-variable)
+                  "dv" 'counsel-describe-variable)
 
 (t/declare-prefix "e" "Errors"
                   "c" 'flycheck-clear
@@ -3479,17 +3481,19 @@ Thesaurus.
                   "s" 'avy-goto-symbol-1-below)
 
 (t/declare-prefix "h" "Highlight"
+
                   "H" (t/lambda (highlight-symbol (thing-at-point 'symbol)))
                   "n" 'highlight-symbol-next
                   "N" 'highlight-symbol-prev)
 
 (t/declare-prefix "p" "Project"
-                  "b" 'helm-browse-project
-                  "c" 'projectile-switch-project
+                  "a" 'counsel-projectile-org-agenda
+                  "b" 'counsel-projectile-switch-to-buffer
+                  "c" 'counsel-projectile-switch-project
                   "d" 't/projectile-dired
-                  "w" #'t/projectile-desktop
-                  "f" 'helm-projectile
-                  "F" 'projectile-find-file-dwim
+                  "w" 't/projectile-desktop
+                  "f" 'counsel-projectile-find-file
+                  "F" 'counsel-projectile-find-file-dwim
                   "g" 't/projectile-magit-status
                   "G" 'projectile-regenerate-tags
                   "k" 'projectile-kill-buffers
@@ -3497,30 +3501,29 @@ Thesaurus.
                   "L" 'neotree-hide
                   "o" 't/open-in-desktop
                   "p" 't/projectile-visit-git-link-pulls
-                  "r" 't/projectile-helm-rg
-                  "s" 't/projectile-helm-ag
+                  "r" 't/projectile-rg
+                  "s" 't/projectile-ag
                   "R" 'projectile-replace
                   "S" 'projectile-save-project-buffers
                   "t" 'projectile-find-test-file)
 
 (t/declare-prefix "s" "Search"
-                  "I" 'helm-imenu-in-all-buffers
-                  "T" 'helm-etags-select
-                  "a" 'helm-multi-swoop-all
-                  "b" 'helm-ag-buffers
-                  "f" 'helm-ag-this-file
-                  "g" 'helm-google
-                  "G" 'helm-google-suggest
-                  "m" 'helm-imenu
+                  "I" 'counsel-semantic-or-imenu
+                  "b" 'ivy-switch-buffer
+                  "f" 'counsel-rg
+                  "g" 'counsel-web-thing-at-point
+                  "G" 'counsel-web-search
+                  "m" 'counsel-imenu
                   "i" 'lsp-find-implementation
                   "r" 'lsp-find-references
                   "d" 'lsp-find-definition
                   "D" 'lsp-find-declaration
-                  "r" 'helm-projectile-rg
-                  "p" 'helm-projectile-ag
-                  "s" 'swiper-helm
+                  "a" 'counsel-projectile-ag
+                  "p" 'counsel-projectile-rg
+                  "s" 'swiper
                   "t" 'etags-select-find-tag-at-point
-                  "w" 'helm-wikipedia-suggest)
+                  ;;"w" 'helm-wikipedia-suggest
+                  )
 #+end_src
 *** Popups
 
@@ -4122,285 +4125,6 @@ No emojis in terminal (on os x at least).
   "C-." 't/hippie-expand-no-case-fold
   "C-," 'company-complete
   "C-:" 't/hippie-expand-lines)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results silent
-(t/after re-builder (setq reb-re-syntax 'rx))
-(t/add-hook 'text-mode-hook 'auto-fill-mode) ; wrap text in text modes
-(t/add-hook 'text-mode-hook 'goto-address-prog-mode) ; navigate urls
-(t/add-hook 'focus-out-hook #'garbage-collect) ; make it feel snappier
-(t/add-hook 'before-save-hook #'delete-trailing-whitespace nil t)
-(t/add-hook 'find-file 't/find-file-check-make-large-file-read-only-hook)
-(setq large-file-warning-threshold (* 20 ; mb
-                                      1024 1024))
-
-(t/after cider-overlays
-  ;; inline evaled results when in elisp using cider
-  (autoload 'cider--make-result-overlay "cider-overlays")
-  (defun endless/eval-overlay (value point)
-    (cider--make-result-overlay (format "%S" value) :where point :duration 'command) value) ; preserve the return value
-  (advice-add 'eval-region :around (lambda (f beg end &rest r) (endless/eval-overlay (apply f beg end r) end)))
-  (advice-add 'eval-last-sexp :filter-return (lambda (r) (endless/eval-overlay r (point))))
-  (advice-add 'eval-defun :filter-return (lambda (r) (endless/eval-overlay r (save-excursion (end-of-defun) (point))))))
-
-(evil-leader/set-key "'" 't/eshell)
-(evil-leader/set-key "<" 't/eshell)
-(evil-leader/set-key "|" 't/eshell)
-
-(evil-leader/set-key "TAB" 't/switch-to-previous-buffer)
-(evil-leader/set-key "u" 'universal-argument)
-
-(defvar t-regex-mode nil "reb-mode on or not")
-(defun t/toggle-regex-mode ()
-  (interactive)
-  (if t-regex-mode (reb-quit) (re-builder))
-  (setq t-regex-mode (not t-regex-mode)))
-
-(t/add-hook 'ediff-keymap-setup-hook
-            (t/lambda (define-key ediff-mode-map "d" 't/ediff-use-both)))
-
-(t/declare-prefix "a" "Applications"
-                  "B" 'w3m
-                  "c" 'calendar
-                  "b" #'t/browse-url-at-point
-                  "C" 'calc-dispatch
-                  "d" 'md4rd
-                  "g" 'gnus
-                  "h" 't/hackernews
-                  "i" 't/open-in-intellij
-                  "p" 'proced
-                  "m" 'popwin:messages
-                  "M" (t/lambda nil (switch-to-buffer "*Messages*") (end-of-buffer))
-                  "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))
-                  "R" #'t/toggle-regex-mode
-                  "se" 't/eshell
-                  "st" 'ansi-term
-                  "sT" 'term
-                  "ss" 'shell
-                  "S" 'suggest
-                  "w" 'eww
-                  "W" (t/lambda nil
-                        (t/eww-readable "https://en.wikipedia.org/wiki/Special:Random")
-                        (visual-line-mode -1)
-                        (visual-line-mode 1)))
-
-(t/declare-prefix "fe" "Editor")
-
-(t/declare-prefix "fe" "Files"
-                  "R" 't/config-reload
-                  "i" 't/helm-files-emacs-init-files)
-
-(t/declare-prefix "fep" "Packages"
-                  "i" 'package-install
-                  "r" 'package-refresh-contents
-                  "l" 'paradox-list-packages
-                  "R" 'package-reinstall
-                  "U" 't/upgrade-packages)
-
-(t/declare-prefix "t" "Toggle"
-                  "D" 'toggle-debug-on-error
-                  "f" 't/cycle-font
-                  "dd" 'darkroom-mode
-                  "dt" 'darkroom-tentative-mode
-                  "F" 'toggle-frame-fullscreen
-                  "t" 't/load-theme-cycle
-                  "T" 't/transparency
-                  "m" 'imenu-list-smart-toggle
-                  "M" 'menu-bar-mode
-                  "n" #'t/toggle-line-numbers
-                  "r" 'nlinum-relative-toggle
-                  "L" 'hl-line-mode
-                  "l" 'visual-line-mode
-                  "." 'whitespace-mode
-                  "W" 'global-writeroom-mode
-                  "w" 'writeroom-mode
-                  "Cc" 'rainbow-mode
-                  "Cd" 'rainbow-delimiters-mode)
-
-(t/declare-prefix "b" "Buffers"
-                  "S" 'save-some-buffers
-                  "s" 't/switch-to-scratch-buffer
-                  "d" 'kill-this-buffer
-                  "t" 't/kill-other-buffers
-                  "b" 'ivy-switch-buffer
-                  "o" 't/switch-to-previous-buffer
-                  "p" 'popwin:display-buffer
-                  "n" 'next-buffer
-                  "R" 'revert-buffer)
-
-(t/declare-prefix "d" "Doc/Desktop"
-                  "d" 'dash-at-point
-                  "S" 'dash-at-point-with-docset
-                  "s" #'t/desktop-save
-                  "r" #'t/desktop-restore
-                  "c" 'desktop-clear)
-
-(t/declare-prefix "x" "Text manipulation"
-                  "a" 'align-regexp
-                  "k" 'ido-kill-buffer
-                  "m"  'counsel-M-x
-                  "x" 'smex-major-mode-commands
-                  "ls" 't/sort-lines
-                  "lu" 't/uniquify-lines)
-
-(t/declare-prefix "xt" "Transpose"
-                  "c" 'transpose-chars
-                  "w" 'transpose-words
-                  "l" 'transpose-lines
-                  "f" 'transpose-frame
-                  "s" 'transpose-sexps
-                  "S" 'transpose-sentences
-                  "p" 'transpose-paragraphs)
-
-(t/declare-prefix "r" "Registers"
-                  "r" 'evil-show-registers)
-
-(t/declare-prefix "f" "Files/Frame"
-                  "b" 'ivy-switch-buffer
-                  "f" 'counsel-find-file
-                  "l" 't/neotree-open-file
-                  "L" 'neotree-hide
-                  "j" 'dired-jump
-                  "J" 'dired-jump-other-window
-                  "d" 'delete-frame
-                  "g" 'ffap
-                  "o" 't/open-in-desktop
-                  "r" 'counsel-recentf)
-
-(t/declare-prefix "h" "Help"
-                  "h" #'t/describe
-                  "f" #'t/face-at-point
-                  "F" 'counsel-faces
-                  "C" 'counsel-colors-emacs
-                  "a" 'counsel-apropos
-                  "l" 'counsel-find-library
-                  "i" 'counsel-info-lookup-symbol
-                  ;; "I" 'helm-info
-                  "r" 'ivy-resume
-                  ;;"Db" 'ivy-descbinds
-                  "dd" 'dash-at-point
-                  "df" 'counsel-describe-function
-                  "dF" 'counsel-describe-face
-                  "dk" 'describe-key-briefly
-                  "dK" 'describe-key
-                  "dc" 'describe-char
-                  "dm" 'describe-mode
-                  "dM" 'describe-minor-mode
-                  "ds" 'counsel-describe-symbol
-                  "dt" 'describe-theme
-                  "dp" 'describe-package
-                  "dv" 'counsel-describe-variable)
-
-(t/declare-prefix "e" "Errors"
-                  "c" 'flycheck-clear
-                  "p" 'flycheck-previous-error
-                  "n" 'flycheck-next-error
-                  "N" 'flycheck-previous-error
-                  "l" 'flycheck-list-errors
-                  "v" 'flycheck-verify-setup
-                  "t" 'flycheck-mode)
-
-(t/declare-prefix "w" "Windows"
-                  "h" 'windmove-left
-                  "j" 'windmove-down
-                  "k" 'windmove-up
-                  "l" 'windmove-right
-                  "n" 'make-frame-command
-                  "D" 't/delete-frame-or-hide-last-remaining-frame
-                  "d" 'delete-window
-                  "t" 'delete-other-windows
-                  "o" 't/previous-window
-                  "=" 'balance-windows-area
-                  "-" 'evil-window-decrease-width
-                  "+" 'evil-window-increase-width
-                  "u" 'winner-undo
-                  "R" 'winner-redo
-                  "r" 'transpose-frame)
-
-(t/declare-prefix "z" "Folding"
-                  "z" 'hs-toggle-hiding
-                  "f" 'hs-hide-block
-                  "F" 'hs-hide-all
-                  "r" 'hs-show-block
-                  "R" 'hs-show-all)
-
-(t/declare-prefix "j" "Jump to"
-                  "f" 'find-function
-                  "k" 'find-function-on-key
-                  "p" (lambda (key)
-                        (interactive "kPress keybinding to run in popup: ")
-                        (popwin:display-buffer-1 (popwin:dummy-buffer))
-                        (let ((keys (key-binding key)))
-                          (funcall
-                           (cond ((stringp keys) (symbol-function keys))
-                                 (t keys)))))
-                  "w" 'ace-window
-                  "j" 'avy-goto-char-timer
-                  "t" 'avy-goto-char-timer
-                  "c" 'avy-goto-char
-                  "C" 'avy-goto-char-2
-                  "l" 'avy-goto-line
-                  "L" 'avy-goto-char-in-line
-                  "W" 'avy-goto-word-1)
-
-(t/declare-prefix "ja" "Jump to above"
-                  "l" 'avy-goto-line-above
-                  "W" 'avy-goto-word-0-above
-                  "w" 'avy-goto-word-1-above
-                  "c" 'avy-goto-char-2-above
-                  "s" 'avy-goto-symbol-1-above)
-
-(t/declare-prefix "jb" "Jump to below"
-                  "l" 'avy-goto-line-below
-                  "w" 'avy-goto-word-1-below
-                  "W" 'avy-goto-word-0-below
-                  "c" 'avy-goto-char-2-below
-                  "s" 'avy-goto-symbol-1-below)
-
-(t/declare-prefix "h" "Highlight"
-
-                  "H" (t/lambda (highlight-symbol (thing-at-point 'symbol)))
-                  "n" 'highlight-symbol-next
-                  "N" 'highlight-symbol-prev)
-
-(t/declare-prefix "p" "Project"
-                  "a" 'counsel-projectile-org-agenda
-                  "b" 'counsel-projectile-switch-to-buffer
-                  "c" 'counsel-projectile-switch-project
-                  "d" 't/projectile-dired
-                  "w" 't/projectile-desktop
-                  "f" 'counsel-projectile-find-file
-                  "F" 'counsel-projectile-find-file-dwim
-                  "g" 't/projectile-magit-status
-                  "G" 'projectile-regenerate-tags
-                  "k" 'projectile-kill-buffers
-                  "l" 't/neotree-open-file
-                  "L" 'neotree-hide
-                  "o" 't/open-in-desktop
-                  "p" 't/projectile-visit-git-link-pulls
-                  "r" 't/projectile-rg
-                  "s" 't/projectile-ag
-                  "R" 'projectile-replace
-                  "S" 'projectile-save-project-buffers
-                  "t" 'projectile-find-test-file)
-
-(t/declare-prefix "s" "Search"
-                  "I" 'counsel-semantic-or-imenu
-                  "b" 'ivy-switch-buffer
-                  "f" 'counsel-rg
-                  "g" 'counsel-web-thing-at-point
-                  "G" 'counsel-web-search
-                  "m" 'counsel-imenu
-                  "i" 'lsp-find-implementation
-                  "r" 'lsp-find-references
-                  "d" 'lsp-find-definition
-                  "D" 'lsp-find-declaration
-                  "a" 'counsel-projectile-ag
-                  "p" 'counsel-projectile-rg
-                  "s" 'swiper
-                  "t" 'etags-select-find-tag-at-point
-                  ;;"w" 'helm-wikipedia-suggest
-                  )
 #+END_SRC
 ** Frame and Window
 
