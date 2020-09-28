@@ -1150,7 +1150,7 @@
 
   (t/declare-prefix "fe" "Files"
                     "R" 't/config-reload
-                    "i" 't/helm-files-emacs-init-files)
+                    "i" 't/find-files-emacs-init-files)
 
   (t/declare-prefix "fep" "Packages"
                     "i" 'package-install

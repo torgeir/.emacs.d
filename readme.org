@@ -1095,15 +1095,16 @@ surrounding lisp sexp, respecting the ast.
 *** Color highlights evil operations.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package evil-goggles
-  :defer 1
-  :init
-  (setq evil-goggles-duration 0.2
-        evil-goggles-async-duration 0.2
-        evil-goggles-pulse t)
-  :config
-  (evil-goggles-mode)
-  (evil-goggles-use-magit-faces))
+  (use-package evil-goggles
+    :defer 1
+    :init
+    (setq evil-goggles-duration 0.2
+          evil-goggles-async-duration 0.2
+          evil-goggles-pulse t)
+    :config
+    (evil-goggles-mode)
+    ;; (t/after magit (evil-goggles-use-magit-faces))
+    )
 #+END_SRC
 
 *** Useful extra evil operators
@@ -1561,7 +1562,7 @@ Useful local copies of elisp programs.
                       (with-current-buffer imenu-list-buffer-name
                         (text-scale-set 0)
                         (text-scale-decrease 3)))))
-  #+END_SRC
+#+END_SRC
 
 No longer in use.
 
@@ -1586,7 +1587,23 @@ Trying ivy as a helm replacement. https://news.ycombinator.com/item?id=24449883
 These three actually seem to replace all my previous helm config 😱
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package counsel :init (ivy-mode 1))
+(use-package counsel
+  :init
+  (progn
+    (ivy-mode 1)
+    (add-to-list 'ivy-sort-matches-functions-alist
+                 '(counsel-projectile-rg . ivy--shorter-matches-first))
+    (add-to-list 'ivy-sort-matches-functions-alist
+                 '(counsel-find-find-file . ivy--shorter-matches-first))
+    (add-to-list 'ivy-sort-matches-functions-alist
+                 '(counsel-projectile-find-file . ivy--shorter-matches-first))
+    (add-to-list 'ivy-sort-matches-functions-alist
+                 '(counsel-org-goto . ivy--shorter-matches-first))
+    (t/after counsel
+      (t/bind-in 'counsel-ag-map ;; works in rg as well
+        "C-w" 'backward-kill-word
+        "C-u" 'backward-kill-sentence
+        "C-c u" 'universal-argument))))
 (use-package counsel-projectile)
 (use-package counsel-web)
 #+END_SRC
@@ -1918,7 +1935,7 @@ Useful for programming
   :straight nil
   :load-path "site-lisp/dired-hacks-utils")
 
-  #+END_SRC
+#+END_SRC
 
 **** Browse archives
 
@@ -2282,13 +2299,12 @@ Complete with company.
         "C-n" 'company-select-next
         "C-s" 'company-search-candidates
         "C-p" 'company-select-previous
-        "C-," #'t/company-helm)
-      (defun t/company-helm ()
+        "C-," #'t/company)
+      (defun t/company ()
         (interactive)
         (company-abort)
         (completion-at-point))
       (global-company-mode))))
-
 #+END_SRC
 
 Company frontend with icons.
@@ -2306,7 +2322,6 @@ Company frontend with icons.
     (t/add-hook-defun 'company-mode-hook t/company-box-mode-hook
                       (setq company-box-icons-alist 'company-box-icons-all-the-icons)
                       (company-box-mode))))
-
 #+END_SRC
 
 Fuzzy search.
@@ -2315,9 +2330,7 @@ Fuzzy search.
 (use-package company-flx
   :after company
   :config
-  (progn
-    (company-flx-mode +1)))
-
+  (company-flx-mode +1))
 #+END_SRC
 
 Html, web, jade etc.
@@ -2333,12 +2346,6 @@ Rest client completions.
   :commands restclient-mode
   :config
   (t/add-company-backends-hook 'restclient-mode-hook 'company-restclient))
-
-;; TODO
-;; counsel xref replace helm-xref
-
-;; TODO
-;; counsel unicode replace helm-unicode
 #+END_SRC
 
 Emoji completions.
@@ -2353,13 +2360,12 @@ Insert emojis, literally.
 (use-package emoji-cheat-sheet-plus
   :commands (emoji-cheat-sheet-plus-insert)
   :init
-  (progn
-    (t/declare-prefix "a" "applications"
-                      "e" 'emoji-cheat-sheet-plus-insert
-                      "U" 'helm-unicode))
+  (t/declare-prefix "a" "applications"
+                    "e" 'emoji-cheat-sheet-plus-insert
+                    "U" 'counsel-unicode-char)
   :config
   (progn
-    ;; make `emoji-cheat-sheet-plus' insert unicodes 🎉
+    ;; make `emoji-cheat-sheet-plus' insert unicode 🎉
     (defvar t-emoji-cheat-sheet-plus-use-unicode t)
 
     (defun t/emoji-cheat-shet-plus--unicode-for-emoji-text (text)
@@ -2375,15 +2381,16 @@ Insert emojis, literally.
     (defun emoji-cheat-sheet-plus--insert-selection (_)
       "Override to insert the selected emojis into the buffer."
       (let ((emojis (company-emoji-list-create)))
+        ;; torgeir:
+        ;; this internally uses helm, though this config in general prefers ivy
         (dolist (c (helm-marked-candidates))
           (save-match-data
             (string-match "\:.+?\:" c)
             (let ((emoji (match-string 0 c)))
               (insert
                (if t-emoji-cheat-sheet-plus-use-unicode
-                   (t/emoji-cheat-shet-plus--unicode-for-emoji-text emoji)
-                 emoji)))))))))
-
+               (t/emoji-cheat-shet-plus--unicode-for-emoji-text emoji)
+               emoji)))))))))
 #+END_SRC
 
 *** Parens
@@ -2628,68 +2635,6 @@ Another text based web browser
 
 #+END_SRC
 
-*** Old helm config - TODO port bindings to ivy?
-
-#+BEGIN_SRC emacs-lisp :results silent
-(comment
- use-package helm
-  :commands (completion-at-point
-             helm
-             helm-mini
-             helm-projectile
-             helm-projectile-ag
-             helm-projectile-rg)
-  :diminish helm-mode
-  :config
-  (progn
-    (require 'helm-config)
-    (t/after helm
-      (t/bind-in 'helm-map
-        "C-w" 'backward-kill-word
-        "C-u" 'backward-kill-sentence
-        "C-c u" 'universal-argument))
-    (t/after helm-command
-      (t/bind-in 'helm-M-x-map
-        "C-w" 'backward-kill-word
-        "C-u" 'backward-kill-sentence
-        "C-c u" 'universal-argument))
-    (t/after helm-files
-      (t/bind-in 'helm-find-files-map
-        "M-<down>" 'helm-execute-persistent-action
-        "M-<up>" 'helm-find-files-up-one-level
-        "C-k" 'helm-find-files-up-one-level))
-    (setq-default helm-candidate-number nil
-                  helm-display-header-line nil
-                  helm-M-x-fuzzy-match t
-                  helm-apropos-fuzzy-match t
-                  helm-buffers-fuzzy-matching t
-                  helm-completion-in-region-fuzzy-match t
-                  helm-file-cache-fuzzy-match t
-                  helm-lisp-fuzzy-completion t
-                  helm-mode-fuzzy-match t
-                  helm-projectile-fuzzy-match t
-                  helm-recentf-fuzzy-match t
-                  helm-candidate-number-limit 100
-                  helm-prevent-escaping-from-minibuffer t
-                  helm-always-two-windows t
-                  helm-echo-input-in-header-line t
-                  helm-follow-mode-persistent t ; keep follow mode on, after on once
-                  helm-ff-skip-boring-files t
-                  helm-quick-update t
-                  helm-M-x-requires-pattern nil
-                  helm-show-completion-display-function #'helm-show-completion-default-display-function)
-
-    (require 'helm-mode)
-    (helm-mode 1)
-    (t/add-hook-defun 'helm-after-initialize-hook t/hide-cursor-in-helm-buffer
-                      (with-helm-buffer
-                        (setq cursor-in-non-selected-windows nil)))
-    (set-face-attribute 'helm-source-header nil :height 1)
-    (t/after neotree
-      (t/add-hook 'helm-before-initialize-hook 'neotree-hide))))
-
-#+END_SRC
-
 *** GNUS
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -2888,23 +2833,6 @@ Highlight todos across all programming modes.
   :commands (js-codemod-mod-region))
 #+END_SRC
 
-**** Old helm js codemod
-
-#+BEGIN_SRC emacs-lisp :results silent
-(comment
-use-package helm-js-codemod
-  ;; :ensure nil
-  ;; :straight nil
-  ;; :load-path "~/Code/js-codemod/helm-js-codemod.el"
-  :commands (helm-js-codemod)
-  :init
-  (progn
-    (setq helm-js-codemod-mod-dir
-          (expand-file-name (t/user-emacs-file "js-codemods/")))
-    (t/after which-key
-      (t/declare-prefix "mr" "Refactor" "m" 'helm-js-codemod))))
-#+END_SRC
-
 *** News
 
 **** Nrk.no
@@ -2985,7 +2913,6 @@ A custom function to fetch a clean view of the current news from nrk.no
    (setq helm-lines-project-root-function 't/project-root)
    (t/declare-prefix "c" "Comment/Complete"
                      "l" 'helm-lines)))
-
 #+END_SRC
 
 *** Command decompiler
@@ -3044,7 +2971,6 @@ Toggles relative line numbers, like in vim.
 (use-package projectile
   :diminish projectile-mode
   :commands (projectile-mode
-             helm-projectile
              projectile-project-root
              projectile-relevant-known-projects
              projectile-load-known-projects)
@@ -3068,18 +2994,17 @@ Toggles relative line numbers, like in vim.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package dumb-jump
-  :commands dumb-jump-go
+  :commands (xref-find-definitions)
   :init
   (progn
-    (setq dumb-jump-selector 'helm)
+    (setq dump-jump-prefer-searcher 'rg)
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
     (t/bind-in '(evil-normal-state-map evil-insert-state-map)
       "M-." 'dumb-jump-go
       "M-." 'dumb-jump-go)
-
-    (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-elisp
-                      (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
-                      (bind-key "M-." 'xref-find-definitions evil-insert-state-map))))
-
+    (comment (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-elisp
+                               (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
+                               (bind-key "M-." 'xref-find-definitions evil-insert-state-map)))))
 #+END_SRC
 
 *** Intent
@@ -3310,7 +3235,7 @@ Thesaurus.
 
 (t/declare-prefix "fe" "Files"
                   "R" 't/config-reload
-                  "i" 't/helm-files-emacs-init-files)
+                  "i" 't/find-files-emacs-init-files)
 
 (t/declare-prefix "fep" "Packages"
                   "i" 'package-install
@@ -3397,7 +3322,6 @@ Thesaurus.
                   "a" 'counsel-apropos
                   "l" 'counsel-find-library
                   "i" 'counsel-info-lookup-symbol
-                  ;; "I" 'helm-info
                   "r" 'ivy-resume
                   ;;"Db" 'ivy-descbinds
                   "dd" 'dash-at-point
@@ -3521,6 +3445,7 @@ Thesaurus.
                   "p" 'counsel-projectile-rg
                   "s" 'swiper
                   "t" 'etags-select-find-tag-at-point
+                  ;; TODO is there such a thing for counsel?
                   ;;"w" 'helm-wikipedia-suggest
                   )
 #+end_src
@@ -3711,8 +3636,8 @@ Thesaurus.
                       '("cleanupdsstore" "find . -name '*.DS_Store' -type f -ls -delete")
                       '("d" "dired $1")
                       '("e" "find-file $1")
-                      '("f" "helm-find-files $1")
-                      '("p" "helm-projectile")
+                      '("f" "counsel-find-files $1")
+                      '("p" "counsel-projectile")
                       '("emacs" "find-file $1")
                       '("emptytrash" "sudo rm -rfv /Volumes/*/.Trashes; rm -rfv ~/.Trash")
                       '("esudo" "find-file /sudo::/$1")
@@ -3794,7 +3719,7 @@ Thesaurus.
                         "C-d" 't/eshell-quit-or-delete-char)
                       (t/bind-in '(evil-normal-state-local-map)
                         "C-a" 'eshell-bol)
-                      (progn ;; helm for history
+                      (comment ;; TODO counsel for history?
                         (setq eshell-cmpl-ignore-case t)
                         (eshell-cmpl-initialize)
                         (bind-key "C-r" 'helm-eshell-history evil-insert-state-local-map)

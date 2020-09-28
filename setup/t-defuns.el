@@ -1087,7 +1087,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (evil-cp-backward-up-sexp))))
 
 ;;;###autoload
-(defun t/helm-files-emacs-init-files ()
+(defun t/find-files-emacs-init-files ()
   (interactive)
   (let ((default-directory user-emacs-directory))
     (counsel-projectile-find-file-dwim)))

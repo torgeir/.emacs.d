@@ -512,7 +512,7 @@ Move forward to the end of the previous sexp." t nil)
 
 (autoload 't/backward-sexp "t-defuns" nil t nil)
 
-(autoload 't/helm-files-emacs-init-files "t-defuns" nil t nil)
+(autoload 't/find-files-emacs-init-files "t-defuns" nil t nil)
 
 (autoload 't/newline-expand-braces "t-defuns" "\
 Newline like `evil-ret', but expand (), [] and {} with newline in between, and indent accordingly." t nil)
