@@ -1600,8 +1600,8 @@ These three actually seem to replace all my previous helm config 😱
                  '(counsel-projectile-find-file . ivy--shorter-matches-first))
     (add-to-list 'ivy-sort-matches-functions-alist
                  '(counsel-org-goto . ivy--shorter-matches-first))
-    (t/after counsel
-      (t/bind-in 'counsel-ag-map ;; works in rg as well
+    (t/after ivy
+      (t/bind-in 'ivy-minibuffer-map
         "C-w" 'backward-kill-word
         "C-u" 'backward-kill-sentence
         "C-c u" 'universal-argument))))
