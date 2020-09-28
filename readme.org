@@ -4704,10 +4704,12 @@ There was a time where this was working. For now it only causes problems, hence
 the commented out ~org-gcal-fetch~
 
 #+BEGIN_SRC emacs-lisp :results silent
+(use-package request-deferred)
 (use-package org-gcal
+  :after request-deferred
   :ensure nil
   :straight nil
-  :load-path "site-lisp/org-gcal/"
+  :load-path "site-lisp/org-gcal"
   :commands (org-gcal-sync org-gcal-fetch)
   :init
   (progn
