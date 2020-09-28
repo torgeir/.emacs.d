@@ -4086,13 +4086,13 @@ Breathing room nice.
 Change frame width and height consistently across os'es.
 
 #+begin_src emacs-lisp :results silent
-(bind-keys
- :map
- global-map
- ("<C-s-left>" . t/decrease-frame-width)
- ("<C-s-right>" . t/increase-frame-width)
- ("<C-s-down>" . t/increase-frame-height)
- ("<C-s-up>" . t/decrease-frame-height))
+(when (not is-mac) ; Moom.app
+  (bind-keys
+   :map global-map
+   ("<C-s-left>" . t/decrease-frame-width)
+   ("<C-s-right>" . t/increase-frame-width)
+   ("<C-s-down>" . t/increase-frame-height)
+   ("<C-s-up>" . t/decrease-frame-height)))
 #+end_src
 
 *** Frame movement
