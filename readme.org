@@ -824,8 +824,7 @@ Don't save desktop automatically, for now.
 Eldoc everywhere.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(global-eldoc-mode)
-
+(global-eldoc-mode t)
 #+END_SRC
 
 Colocate temporary files.
@@ -1591,6 +1590,8 @@ These three actually seem to replace all my previous helm config 😱
   :init
   (progn
     (ivy-mode 1)
+    (add-to-list 'ivy-sort-matches-functions-alist
+                 '(counsel-describe-function . ivy--shorter-matches-first))
     (add-to-list 'ivy-sort-matches-functions-alist
                  '(counsel-projectile-rg . ivy--shorter-matches-first))
     (add-to-list 'ivy-sort-matches-functions-alist
@@ -2552,7 +2553,7 @@ from pressing R in eww mode.
       (erase-buffer)
       (insert content)
       (beginning-of-buffer)
-      (when fn (funcall fn)))))
+      (t/safe-call fn))))
 
 (defun t/eww-readable (url &optional fn)
   (interactive "sEnter URL: ")

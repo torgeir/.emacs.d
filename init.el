@@ -1,7 +1,7 @@
 (if nil
     (load "~/.emacs.d/init-old.el")
   (progn
-    
+
     ;; Default to calling straigth-use-package when running use-package.
     (setq straight-use-package-by-default t)
 
@@ -23,5 +23,11 @@
     (straight-use-package 'use-package)
 
     ;; needs to come before org is loaded for straight.el to choose it instead
-    (straight-use-package 'org-plus-contrib)
+    (straight-use-package
+     '(org-plus-contrib
+       :repo "https://code.orgmode.org/bzg/org-mode.git"
+       :local-repo "org"
+       :files (:defaults "contrib/lisp/*.el")
+       :includes (org)))
     (org-babel-load-file "~/.emacs.d/readme.org")))
+
