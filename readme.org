@@ -2510,24 +2510,22 @@ Edit csv, transpose columns, delete columns, sort
 
 *** Distraction free
 
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package writeroom-mode
-  :commands (global-writeroom-mode turn-on-writeroom-mode writeroom-mode)
-  :init
-  (setq writeroom-width 0.60
-        writeroom-mode-line t
-        writeroom-maximize-window t
-        writeroom-fullscreen-effect nil
-        writeroom-major-modes
-        '(js-mode
-          js2-mode
-          rjsx-mode
-          emacs-lisp-mode
-          dired-mode
-          eshell-mode
-          all-the-icons-dired-mode
-          ruby-mode)))
+Darkroom everywhere, but without the font size increase. Toggle it with SPC td,
+also toggles hook to keep it on or off everywhere.
 
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package darkroom
+  :init
+  (progn
+    (setq darkroom-text-scale-increase 0)
+    (add-hook 'after-change-major-mode-hook 'darkroom-tentative-mode)))
+
+(defun t/toggle-distraction-free ()
+  (interactive)
+  (darkroom-tentative-mode (if darkroom-tentative-mode 0 1))
+  (if darkroom-tentative-mode
+    (add-hook 'after-change-major-mode-hook 'darkroom-tentative-mode)
+    (remove-hook 'after-change-major-mode-hook 'darkroom-tentative-mode)))
 #+END_SRC
 
 *** Web browser
@@ -2547,7 +2545,6 @@ from pressing R in eww mode.
     (eww-render status url nil buffer)
     (switch-to-buffer buffer)
     (eww-readable)
-    (writeroom-mode 1)
     (let ((content (buffer-substring-no-properties (point-min) (point-max))))
       (read-only-mode 0)
       (erase-buffer)
@@ -3248,8 +3245,7 @@ Thesaurus.
 (t/declare-prefix "t" "Toggle"
                   "D" 'toggle-debug-on-error
                   "f" 't/cycle-font
-                  "dd" 'darkroom-mode
-                  "dt" 'darkroom-tentative-mode
+                  "d" 't/toggle-distraction-free
                   "F" 'toggle-frame-fullscreen
                   "t" 't/load-theme-cycle
                   "T" 't/transparency
@@ -3260,8 +3256,6 @@ Thesaurus.
                   "L" 'hl-line-mode
                   "l" 'visual-line-mode
                   "." 'whitespace-mode
-                  "W" 'global-writeroom-mode
-                  "w" 'writeroom-mode
                   "Cc" 'rainbow-mode
                   "Cd" 'rainbow-delimiters-mode)
 
