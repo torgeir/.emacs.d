@@ -4754,17 +4754,20 @@ Doom themes are nice, so is the modeline.
   (progn
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
-    ;;(t/add-hook 'org-mode-hook 'doom-themes-org-config)
-    ;;(t/add-hook 'neotree-mode-hook 'doom-themes-neotree-config)
     (doom-themes-visual-bell-config)))
 
-(use-package doom-modeline
+    (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
   :config
   (progn
     (t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")
     (setq doom-modeline-height 40
-          doom-themes-padded-modeline 1)))
+          doom-themes-padded-modeline 1
+          doom-modeline-github t
+          doom-modeline-github-interval (* 30 60)
+          doom-modeline-gnus t
+          doom-modeline-gnus-timer 2
+          doom-modeline-enable-word-count t)))
 #+END_SRC
 
 Cycle between light and dark themes.
