@@ -1590,6 +1590,8 @@ These three actually seem to replace all my previous helm config 😱
   :init
   (progn
     (ivy-mode 1)
+    (setq enable-recursive-minibuffers t
+          ivy-use-virtual-buffers t)
     (add-to-list 'ivy-sort-matches-functions-alist
                  '(counsel-describe-function . ivy--shorter-matches-first))
     (add-to-list 'ivy-sort-matches-functions-alist
