@@ -52,7 +52,6 @@ Install from cygwin or https://ftp.gnu.org/gnu/emacs/windows/ or http://alpha.gn
 - clone the repo and copy .emacs.d to C:\Users\<user>\AppData\Roaming\.emacs.d
 - copy .emacs.d/.emacs to C:\Users\<user>\AppData\Roaming\.emacs
 
-
 **** Fonts
 
 See ~fonts/~.
@@ -3051,7 +3050,7 @@ Toggles relative line numbers, like in vim.
              projectile-load-known-projects)
   :init
   (progn
-    (setq projectile-completion-system 'helm
+    (setq projectile-completion-system 'ivy
           projectile-require-project-root nil
           projectile-known-projects-file (locate-user-emacs-file ".cache/projectile.projects")
           projectile-cache-file (locate-user-emacs-file ".cache/projectile.cache")
