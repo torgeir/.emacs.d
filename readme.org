@@ -4734,7 +4734,7 @@ the commented out ~org-gcal-fetch~
 
 #+BEGIN_SRC emacs-lisp :results silent
 (t/declare-prefix-for-mode 'org-mode "s" "Search"
-                           "p" 'counsel-org-goto
+                           "p" 'counsel-org-goto-all
                            "P" 'counsel-projectile-rg)
 #+END_SRC
 
