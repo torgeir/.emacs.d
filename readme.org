@@ -4760,11 +4760,18 @@ Doom themes are nice, so is the modeline.
           doom-themes-enable-italic t)
     (doom-themes-visual-bell-config)))
 
-    (use-package doom-modeline
+(use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
   :config
   (progn
     (t/add-hook-setq 'js2-mode-hook doom-modeline-env-command "node -v 2>&1")
+    (t/after doom-modeline-env
+      (doom-modeline-def-env terraform
+        :hooks   'terraform-mode-hook
+        :command (lambda () (list "terraform" "--version")) ;; e.g. Terraform v0.13.3
+        :parser  (lambda (line)
+                   (replace-regexp-in-string "[^\.v0-9]" "" ;; remove cruft
+                                             (cadr (split-string line " "))))))
     (setq doom-modeline-height 40
           doom-themes-padded-modeline 1
           doom-modeline-github t
