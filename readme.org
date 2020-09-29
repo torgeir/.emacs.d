@@ -4830,6 +4830,12 @@ Cycle between light and dark themes.
                   (advice-add server-create-window-system-frame :after 't/load-theme-once)))))
 #+END_SRC
 
+** Tricks
+
+*** Insert escape character
+
+Escape chars can be inserted literally by pressing ~c-q~ followed by the char.
+
 ** After
 
 We're done, wrap up timing so we can se how long it took.
