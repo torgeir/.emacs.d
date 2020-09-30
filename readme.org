@@ -763,6 +763,12 @@ Don't blink cursor.
 (blink-cursor-mode -1)
 #+END_SRC
 
+Wrap long lines
+
+#+BEGIN_SRC emacs-lisp :results silent
+(global-visual-line-mode)
+#+END_SRC
+
 Remove menus.
 
 #+BEGIN_SRC emacs-lisp :results silent
