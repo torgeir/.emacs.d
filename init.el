@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (if nil
     (load "~/.emacs.d/init-old.el")
   (progn
@@ -30,4 +31,3 @@
        :files (:defaults "contrib/lisp/*.el")
        :includes (org)))
     (org-babel-load-file "~/.emacs.d/readme.org")))
-

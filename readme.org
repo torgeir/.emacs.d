@@ -61,13 +61,13 @@ See ~fonts/~.
 *** User
 
 #+BEGIN_SRC emacs-lisp :results silent
+;;; -*- lexical-binding: t; -*-
 (defconst t-leader "SPC")
 (defconst t-emacs-leader "C-")
 (defconst t-font-size 17)
 (defconst lat-trh 63.427)
 (defconst lon-trh 10.391)
 (defconst loc-trh "Trondheim, Norway")
-
 #+END_SRC
 
 *** Operating system
@@ -749,14 +749,12 @@ Open large files removing heavy modes.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (global-so-long-mode 1)
-
 #+END_SRC
 
 Y or n will do.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (defalias 'yes-or-no-p 'y-or-n-p)
-
 #+END_SRC
 
 Don't blink cursor.
@@ -2544,25 +2542,24 @@ Eww functions that directly enter the eww readability mode normally available
 from pressing R in eww mode.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(defun t/eww-readable-after-render (&optional fn)
-  (lambda (status url buffer)
-    (eww-render status url nil buffer)
-    (switch-to-buffer buffer)
-    (eww-readable)
-    (let ((content (buffer-substring-no-properties (point-min) (point-max))))
-      (read-only-mode 0)
-      (erase-buffer)
-      (insert content)
-      (beginning-of-buffer)
-      (t/safe-call fn))))
+(defun t/eww-readable-after-render (status url buffer fn)
+  (eww-render status url nil buffer)
+  (switch-to-buffer buffer)
+  (eww-readable)
+  (let ((content (buffer-substring-no-properties (point-min) (point-max))))
+    (read-only-mode 0)
+    (erase-buffer)
+    (insert content)
+    (beginning-of-buffer)
+    (when fn (funcall fn))))
 
 (defun t/eww-readable (url &optional fn)
   (interactive "sEnter URL: ")
-  (lexical-let ((buffer (get-buffer-create "*eww*")))
+  (let ((buffer (get-buffer-create "*eww*")))
     (with-current-buffer buffer
       (autoload 'eww-setup-buffer "eww")
       (eww-setup-buffer)
-      (url-retrieve url (t/eww-readable-after-render fn) (list url buffer)))))
+      (url-retrieve url 't/eww-readable-after-render (list url buffer fn)))))
 #+END_SRC
 
 ***** Images and wrap long lines
@@ -2861,13 +2858,16 @@ A custom function to fetch a clean view of the current news from nrk.no
     (add-text-properties (point-at-bol) (point-at-eol) '(face outline-4)))
   (beginning-of-buffer)
   (kill-line)
-  (evil-search "- " t)
+  (evil-search "^-" t t)
+  (evil-ex-nohighlight)
   (lexical-let ((keymap (make-sparse-keymap)))
     (bind-key "n" (t/lambda nil
-                    (evil-search "- " t)
+                    (evil-search "^-" t t)
+                    (evil-ex-nohighlight)
                     (recenter nil)) keymap)
     (bind-key "p" (t/lambda nil
-                    (evil-search "- " nil)
+                    (evil-search "^-" nil t)
+                    (evil-ex-nohighlight)
                     (recenter nil)) keymap)
     (set-temporary-overlay-map keymap t)))
 #+END_SRC
