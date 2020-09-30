@@ -3423,8 +3423,7 @@ Thesaurus.
                   "L" 'neotree-hide
                   "o" 't/open-in-desktop
                   "p" 't/projectile-visit-git-link-pulls
-                  "r" 't/projectile-rg
-                  "s" 't/projectile-ag
+                  "s" 't/projectile-rg
                   "R" 'projectile-replace
                   "S" 'projectile-save-project-buffers
                   "t" 'projectile-find-test-file)
