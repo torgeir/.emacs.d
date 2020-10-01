@@ -5358,15 +5358,3 @@ We're done, wrap up timing so we can se how long it took.
 #+BEGIN_SRC emacs-lisp :results silent
 (t/timing-end)
 #+END_SRC
-
-Editing the config alot these days.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(find-file (locate-user-emacs-file "readme.org"))
-#+END_SRC
-
-Why, oh, why. It works for the initial file as well, though.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(doom-modeline-init)
-#+END_SRC
