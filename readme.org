@@ -3424,6 +3424,38 @@ Thesaurus.
 
 ** Languages
 
+*** Flycheck
+
+#+begin_src emacs-lisp :results silent
+(use-package flycheck
+  :commands flycheck-mode
+  :init
+  (progn
+    (setq flycheck-display-errors-function #'flycheck-display-error-messages)
+    (t/add-hook '(html-mode-hook js2-mode-hook elm-mode-hook) 'flycheck-mode))
+  :config
+  (progn
+    (t/add-to-list 't-evil-major-modes 'flycheck-error-list-mode)
+    (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint)))
+    (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist)))
+    (t/after lsp-ui
+      (t/after js2-mode
+        (flycheck-add-mode 'javascript-eslint 'js2-mode)
+        (t/add-hook-defun 'lsp-after-initialize-hook t-lsp-flycheck
+                          (flycheck-add-next-checker 'lsp 'javascript-tslint))))))
+#+end_src
+
+*** Applescript
+
+#+begin_src emacs-lisp :results silent
+(use-package applescript-mode :mode "\\.scpt$")
+#+end_src
+
+*** Arduino
+
+#+begin_src emacs-lisp :results silent
+(use-package arduino-mode :mode "\\.ino$" :commands arduino-mode)
+#+end_src
 
 *** Clojure
 
@@ -3582,6 +3614,47 @@ Thesaurus.
     (t/add-hook 'clojure-mode-hook '(subword-mode smartparens-mode))))
 #+end_src
 
+**** Flycheck clojure
+
+#+begin_src emacs-lisp :results silent
+(use-package flycheck-clojure
+  :commands flycheck-mode
+  :init
+  (progn
+    (t/after cider
+      (comment
+       (setq-default flycheck-disabled-checkers
+                     (append flycheck-disabled-checkers '(clojure-cider-typed)))
+       (t/add-hook 'cider-mode-hook 'flycheck-mode)
+       (t/add-hook 'cider-mode-hook 'flycheck-clojure-setup)))))
+#+end_src
+
+*** CSS
+
+#+begin_src emacs-lisp :results silent
+(use-package css-mode
+  :ensure nil
+  :straight nil
+  :mode "\\.css$"
+  :init (setq css-indent-offset *t-indent*)
+  :config
+  (progn
+    (bind-key "M-k" 't/css-kill-value css-mode-map)
+    (t/add-company-backends-hook 'css-mode-hook 'company-css)
+    (t/add-hook 'css-mode-hook '(turn-on-smartparens-mode rainbow-mode))))
+
+(use-package css-eldoc
+  :commands turn-on-css-eldoc
+  :hook (css-mode-hook . turn-on-css-eldoc))
+#+end_src
+
+*** Docker
+
+#+begin_src emacs-lisp :results silent
+(use-package dockerfile-mode :mode "^Dockerfile$")
+(use-package docker-tramp)
+#+end_src
+
 *** Elisp
 
 #+begin_src emacs-lisp :results silent
@@ -3636,6 +3709,82 @@ Thesaurus.
 
 ;; devilspie
 (add-to-list 'auto-mode-alist '("\\.ds\\'" . emacs-lisp-mode))
+#+end_src
+
+*** Elm
+
+#+begin_src emacs-lisp :results silent
+(use-package elm-mode
+  :mode "\\.elm$"
+  :init
+  (progn
+    (setq elm-tags-on-save t
+          elm-format-on-save t
+          elm-sort-imports-on-save t)
+    (t/after dash-at-point
+      (add-to-list 'dash-at-point-mode-alist '(elm-mode . "elm")))
+    (t/after company
+      (t/add-company-backends-hook 'elm-mode-hook 'company-elm))
+    (t/add-hook 'elm-mode-hook 'elm-oracle-setup-completion))
+  :config
+  (t/declare-prefix-for-mode 'elm-mode "me" "Evaluate"
+                             "b" (lambda ()
+                                   (interactive)
+                                   (elm-repl-load)
+                                   (other-window -1))
+                             "r" (lambda (start end)
+                                   (interactive "r")
+                                   (elm-repl-push start end)
+                                   (other-window -1))))
+
+(use-package flycheck-elm
+  :commands flycheck-elm-setup
+  :init
+  (t/add-hook 'flycheck-mode-hook 'flycheck-elm-setup t))
+#+end_src
+
+*** FSharp
+
+#+begin_src emacs-lisp :results silent
+(use-package fsharp-mode
+  :if nil ; disabled this once, because of a security issue
+  :mode "\\.fs[iylx]?$"
+  :config
+  (t/declare-prefix-for-mode 'fsharp-mode "me" "Evaluate"
+                             "r" 'fsharp-eval-region))
+#+end_src
+
+*** Gitconfig
+
+#+begin_src emacs-lisp :results silent
+(use-package gitconfig-mode :commands gitconfig-mode :mode "\\gitconfig$")
+#+end_src
+
+*** Graphql
+
+#+begin_src emacs-lisp :results silent
+(use-package graphql-mode :commands graphql-mode)
+#+end_src
+
+*** Gitignore
+
+#+begin_src emacs-lisp :results silent
+(use-package gitignore-mode :commands gitignore-mode)
+#+end_src
+
+*** Haskell
+
+#+begin_src emacs-lisp :results silent
+(use-package haskell-mode :commands haskell-mode)
+#+end_src
+
+*** Kotlin
+
+#+begin_src emacs-lisp :results silent
+(use-package kotlin-mode
+  :mode "\\.kt$"
+  :commands kotlin-mode
+  :init (t/add-hook 'kotlin-mode-hook 'lsp-mode))
 #+end_src
 
 *** JS
@@ -3853,35 +4002,11 @@ Thesaurus.
       "C-d" #'t/try-quit-nodejs-repl)))
 #+end_src
 
-*** Arduino
+*** JSON
 
 #+begin_src emacs-lisp :results silent
-(use-package arduino-mode :mode "\\.ino$" :commands arduino-mode)
-#+end_src
-
-*** Applescript
-
-#+begin_src emacs-lisp :results silent
-(use-package applescript-mode :mode "\\.scpt$")
-#+end_src
-
-*** CSS
-
-#+begin_src emacs-lisp :results silent
-(use-package css-mode
-  :ensure nil
-  :straight nil
-  :mode "\\.css$"
-  :init (setq css-indent-offset *t-indent*)
-  :config
-  (progn
-    (bind-key "M-k" 't/css-kill-value css-mode-map)
-    (t/add-company-backends-hook 'css-mode-hook 'company-css)
-    (t/add-hook 'css-mode-hook '(turn-on-smartparens-mode rainbow-mode))))
-
-(use-package css-eldoc
-  :commands turn-on-css-eldoc
-  :hook (css-mode-hook . turn-on-css-eldoc))
+(use-package json-mode :mode "\\(json\\|jshintrc\\|eslintrc\\)$")
+(use-package json-reformat :commands json-reformat :init (setq json-reformat:indent-width *t-indent*))
 #+end_src
 
 *** Less
@@ -3892,132 +4017,6 @@ Thesaurus.
   :commands less-css-mode
   :config
   (bind-key "M-k" 't/css-kill-value css-mode-map))
-#+end_src
-
-*** Docker
-
-#+begin_src emacs-lisp :results silent
-(use-package dockerfile-mode :mode "^Dockerfile$")
-(use-package docker-tramp)
-#+end_src
-
-*** Elm
-
-#+begin_src emacs-lisp :results silent
-(use-package elm-mode
-  :mode "\\.elm$"
-  :init
-  (progn
-    (setq elm-tags-on-save t
-          elm-format-on-save t
-          elm-sort-imports-on-save t)
-    (t/after dash-at-point
-      (add-to-list 'dash-at-point-mode-alist '(elm-mode . "elm")))
-    (t/after company
-      (t/add-company-backends-hook 'elm-mode-hook 'company-elm))
-    (t/add-hook 'elm-mode-hook 'elm-oracle-setup-completion))
-  :config
-  (t/declare-prefix-for-mode 'elm-mode "me" "Evaluate"
-                             "b" (lambda ()
-                                   (interactive)
-                                   (elm-repl-load)
-                                   (other-window -1))
-                             "r" (lambda (start end)
-                                   (interactive "r")
-                                   (elm-repl-push start end)
-                                   (other-window -1))))
-
-(use-package flycheck-elm
-  :commands flycheck-elm-setup
-  :init
-  (t/add-hook 'flycheck-mode-hook 'flycheck-elm-setup t))
-#+end_src
-
-*** Flycheck
-
-#+begin_src emacs-lisp :results silent
-(use-package flycheck
-  :commands flycheck-mode
-  :init
-  (progn
-    (setq flycheck-display-errors-function #'flycheck-display-error-messages)
-    (t/add-hook '(html-mode-hook js2-mode-hook elm-mode-hook) 'flycheck-mode))
-  :config
-  (progn
-    (t/add-to-list 't-evil-major-modes 'flycheck-error-list-mode)
-    (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint)))
-    (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist)))
-    (t/after lsp-ui
-      (t/after js2-mode
-        (flycheck-add-mode 'javascript-eslint 'js2-mode)
-        (t/add-hook-defun 'lsp-after-initialize-hook t-lsp-flycheck
-                          (flycheck-add-next-checker 'lsp 'javascript-tslint))))))
-#+end_src
-
-*** Flycheck clojure
-
-#+begin_src emacs-lisp :results silent
-(use-package flycheck-clojure
-  :commands flycheck-mode
-  :init
-  (progn
-    (t/after cider
-      (comment
-       (setq-default flycheck-disabled-checkers
-                     (append flycheck-disabled-checkers '(clojure-cider-typed)))
-       (t/add-hook 'cider-mode-hook 'flycheck-mode)
-       (t/add-hook 'cider-mode-hook 'flycheck-clojure-setup)))))
-#+end_src
-
-*** FSharp
-
-#+begin_src emacs-lisp :results silent
-(use-package fsharp-mode
-  :if nil ; disabled this once, because of a security issue
-  :mode "\\.fs[iylx]?$"
-  :config
-  (t/declare-prefix-for-mode 'fsharp-mode "me" "Evaluate"
-                             "r" 'fsharp-eval-region))
-#+end_src
-
-*** Gitconfig
-
-#+begin_src emacs-lisp :results silent
-(use-package gitconfig-mode :commands gitconfig-mode :mode "\\gitconfig$")
-#+end_src
-
-*** Gitignore
-
-#+begin_src emacs-lisp :results silent
-(use-package gitignore-mode :commands gitignore-mode)
-#+end_src
-
-*** Graphql
-
-#+begin_src emacs-lisp :results silent
-(use-package graphql-mode :commands graphql-mode)
-#+end_src
-
-*** Haskell
-
-#+begin_src emacs-lisp :results silent
-(use-package haskell-mode :commands haskell-mode)
-#+end_src
-
-*** JSON
-
-#+begin_src emacs-lisp :results silent
-(use-package json-mode :mode "\\(json\\|jshintrc\\|eslintrc\\)$")
-(use-package json-reformat :commands json-reformat :init (setq json-reformat:indent-width *t-indent*))
-#+end_src
-
-*** Kotlin
-
-#+begin_src emacs-lisp :results silent
-(use-package kotlin-mode
-  :mode "\\.kt$"
-  :commands kotlin-mode
-  :init (t/add-hook 'kotlin-mode-hook 'lsp-mode))
 #+end_src
 
 *** Markdown
@@ -4069,7 +4068,7 @@ Thesaurus.
                                "r" #'t/send-region-to-scala-repl)))
 #+end_src
 
-*** Shell, sh
+*** SH
 
 #+begin_src emacs-lisp :results silent
 (use-package sh-script
