@@ -3091,7 +3091,7 @@ Thesaurus.
 
 (t/declare-prefix "fe" "Files"
                   "R" 't/config-reload
-                  "i" 't/find-files-emacs-init-files)
+                  "i" (t/lambda () (find-file (t/user-emacs-file "readme.org"))))
 
 (t/declare-prefix "fep" "Packages"
                   "i" 'package-install
