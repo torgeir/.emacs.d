@@ -48,3 +48,10 @@
 .java-version
 /ido.last
 /network-security.data
+/workspace/
+/smex-items
+/elpy/
+/eclipse.jdt.ls/
+/.log/
+/.idea/
+/.cask/
