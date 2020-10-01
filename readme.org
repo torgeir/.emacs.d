@@ -2963,8 +2963,7 @@ Toggles relative line numbers, like in vim.
   (progn
     (setq dump-jump-prefer-searcher 'rg)
     (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-    (t/bind-in '(evil-normal-state-map evil-insert-state-map)
-      "M-." 'dumb-jump-go)
+    (t/bind-in '(evil-normal-state-map evil-insert-state-map) "M-." 'xref-find-definitions)
     (comment (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-elisp
                                (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
                                (bind-key "M-." 'xref-find-definitions evil-insert-state-map)))))
@@ -3421,35 +3420,704 @@ Thesaurus.
 
 ** Languages
 
-#+begin_src emacs-lisp :results silent
-;TODO inline these some day
-#+end_src
+
+*** Clojure
 
 #+begin_src emacs-lisp :results silent
-(require 't-lang-arduino)
-(require 't-lang-applescript)
-(require 't-lang-clojure)
-(require 't-lang-css)
-(require 't-lang-docker)
-(require 't-lang-elisp)
-(require 't-lang-elm)
-(require 't-lang-gitconfig)
-(require 't-lang-gitignore)
-(require 't-lang-graphql)
-(require 't-lang-haskell)
-(require 't-lang-js)
-(require 't-lang-json)
-(require 't-lang-flycheck)
-(require 't-lang-kotlin)
-(require 't-lang-markdown)
-(require 't-lang-pug)
-(require 't-lang-php)
-(require 't-lang-remark)
-(require 't-lang-scala)
-(require 't-lang-sh)
-(require 't-lang-html)
-(require 't-lang-yaml)
-(require 't-lang-terraform)
+(use-package clojure-mode
+  :mode (("\\.\\(edn\\|boot\\|clj\\)$" . clojure-mode)
+         ("\\.cljs$" . clojurescript-mode))
+  :commands (clojure-mode clojurescript-mode)
+  :config
+  (progn
+    (setq clojure-indent-style :align-arguments
+          clojure-align-forms-automatically t)
+    (put-clojure-indent '-> 1)
+    (put-clojure-indent '->> 1)
+    (put-clojure-indent 'doall 1)
+    ;; stop nagging about saving
+    (defadvice clojure-test-run-tests (before save-first activate)
+      (save-buffer))
+    (defadvice nrepl-load-current-buffer (before save-first activate)
+      (save-buffer))))
+
+(use-package clj-refactor
+  :commands (clj-refactor-mode)
+  :init
+  (progn
+    (defun t/init-clj-refactor (mode)
+      (progn
+        (clj-refactor-mode 1)
+        (dolist (mapping '(("maps" . "outpace.util.maps")
+                           ("seqs" . "outpace.util.seqs")
+                           ("string" . "clojure.string")
+                           ("reflect" . "clojure.reflect")
+                           ("edn" . "clojure.edn")
+                           ("time" . "clj-time.core")))
+          (add-to-list 'cljr-magic-require-namespaces mapping t))
+
+        (eval `(t/declare-prefix-for-mode ',mode
+                                          "mr" "Refactor"
+                                          ;; https://github.com/clojure-emacs/clj-refactor.el/wiki
+                                          "?" 'cljr-describe-refactoring
+
+                                          "ar" 'cljr-add-require-to-ns
+                                          "ap" 'cljr-add-project-dependency
+                                          "am" 'cljr-add-missing-libspec
+
+                                          "cc" 'cljr-cycle-coll
+                                          "ct" 'cljr-cycle-thread
+                                          "ci" 'cljr-cycle-if
+
+                                          "dk" 'cljr-destructure-keys
+
+                                          "ec" 'cljr-extract-constant
+                                          "ed" 'cljr-extract-def
+                                          "el" 'cljr-expand-let
+                                          "ef" 'cljr-extract-function
+
+                                          "is" 'cljr-inline-symbol
+                                          "in" 'clojure-insert-ns-form
+                                          "un" 'clojure-update-ns
+                                          "il" 'cljr-introduce-let
+
+                                          "rr" 'cljr-remove-unused-requires
+                                          "rl" 'cljr-remove-let
+                                          "rs" 'cljr-rename-symbol
+                                          "ru" 'cljr-replace-use
+
+                                          "sn" 'cljr-sort-ns
+                                          "sp" 'cljr-sort-project-dependencies
+                                          "sr" 'cljr-stop-referring
+
+                                          "th" 'cljr-thread
+                                          "tf" 'cljr-thread-first-all
+                                          "tl" 'cljr-thread-last-all
+
+                                          "ua" 'clojure-unwind-all
+                                          "uw" 'clojure-unwind
+
+                                          "ml" 'cljr-move-to-let))))
+
+    (t/add-hook 'clojure-mode-hook (t/lambda (t/init-clj-refactor 'clojure-mode)))
+    (t/add-hook 'clojurescript-mode-hook (t/lambda (t/init-clj-refactor 'clojurescript-mode)))))
+
+
+;; TODO
+;;(use-package cljr-helm :commands cljr-helm)
+
+(use-package clojure-mode-extra-font-locking
+  :commands clojure-mode) ;; more syntax hilighting
+
+(use-package cider
+  :commands (cider cider-connect cider-jack-in)
+  :init
+  (progn
+    (setq cider-jack-in-default 'boot
+          cider-boot-parameters "cider repl -s wait"
+          cider-repl-display-help-banner nil
+          cider-inject-dependencies-at-jack-in t ;; unused stuff in ~/.boot/profile.boot
+          cider-repl-pop-to-buffer-on-connect nil
+          cider-overlays-use-font-lock t
+          nrepl-hide-special-buffers t
+          cider-prompt-for-symbol nil))
+  :config
+  (progn
+    (cider-add-to-alist 'cider-jack-in-cljs-dependencies "cider/piggieback" "0.4.0")
+
+    (bind-key "M-." 'cider-find-dwim cider-mode-map)
+    (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
+
+    (t/add-to-list 't-evil-major-modes '(cider-stacktrace-mode cider-docview-mode))
+
+    (defun t/cider-insert-last-sexp-in-repl ()
+      (interactive)
+      (cider-insert-last-sexp-in-repl 't)
+      (other-window 1))
+
+    (defun t/init-clj-mode-keys-in-mode (mode)
+      (add-hook (intern (concat (symbol-name 'clojurescript-mode) "-hook"))
+                (lambda ()
+                  (bind-key "M-." 'cider-find-dwim evil-normal-state-local-map)
+                  (bind-key "M-." 'cider-find-dwim evil-insert-state-local-map)
+                  (bind-key "C-M-." 'cider-find-dwim evil-normal-state-local-map)
+                  (bind-key "C-M-." 'cider-find-dwim evil-insert-state-local-map)))
+      (t/declare-prefix-for-mode mode "h" "Mode"
+                                 "h" 'cider-doc)
+      (t/declare-prefix-for-mode mode "d" "Mode"
+                                 "f" 'cider-doc
+                                 "j" 'cider-javadoc
+                                 "a" 'cider-apropos)
+      (t/declare-prefix-for-mode mode "m" "Mode"
+                                 "j" 'cider-jack-in
+                                 "J" 'cider-quit)
+      (t/declare-prefix-for-mode mode "me" "Evaluate"
+                                 "b" 'cider-eval-buffer
+                                 "r" 'cider-eval-region
+                                 "e" 't/cider-insert-last-sexp-in-repl
+                                 "f" 'cider-eval-defun-at-point
+                                 "R" 'cider-eval-last-sexp-and-replace))
+
+    (t/init-clj-mode-keys-in-mode 'clojure-mode)
+    (t/init-clj-mode-keys-in-mode 'clojurescript-mode)
+
+    (t/add-hook 'cider-docview-mode-hook 'visual-line-mode)
+
+    ;; minibuffer doc in repl
+    (t/add-hook 'cider-repl-mode-hook #'rainbow-delimiters-mode)
+    (t/add-hook 'cider-repl-mode-hook 'paredit-mode)
+    (t/add-hook-defun 'cider--debug-mode-hook t/hook-cider-debug (evil-emacs-state))
+    (t/add-hook 'cider-popup-buffer-mode-hook 'visual-line-mode)
+
+    ;; company
+    (t/after company
+      (t/add-hook '(cider-repl-mode-hook cider-mode-hook) 'company-mode))
+
+    ;; match camel-case tokens
+    (t/add-hook 'clojurescript-mode-hook '(subword-mode smartparens-mode))
+    (t/add-hook 'clojure-mode-hook '(subword-mode smartparens-mode))))
+#+end_src
+
+*** Elisp
+
+#+begin_src emacs-lisp :results silent
+(progn
+  ;; lisp
+  (t/declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"
+                             "b" 'eval-buffer
+                             "e" 't/eval-region-or-last-sexp
+                             "f" 'eval-defun
+                             "r" 'eval-region
+                             "R" 't/eval-and-replace)
+
+  (t/declare-prefix-for-mode 'lisp-mode "me" "Evaluate"
+                             "b" 'eval-buffer
+                             "e" 't/eval-region-or-last-sexp
+                             "f" 'eval-defun
+                             "r" 'eval-region
+                             "R" 't/eval-and-replace)
+
+  (t/declare-prefix-for-mode 'emacs-lisp-mode "me" "Evaluate"
+                             "b" 'eval-buffer
+                             "e" 't/eval-region-or-last-sexp
+                             "f" 'eval-defun
+                             "r" 'eval-region
+                             "p" 'eval-print-last-sexp
+                             "R" 't/eval-and-replace)
+
+  (bind-key (kbd "C-c C-c") 'eval-defun emacs-lisp-mode-map)
+  (t/add-company-backends-hook 'lisp-interaction-mode-hook 'company-elisp)
+  (t/add-company-backends-hook 'lisp-mode-hook 'company-elisp)
+  (t/add-company-backends-hook 'emacs-lisp-mode-hook 'company-elisp)
+
+  (defun t/try-quit-ielm ()
+    (interactive)
+    (t/term-kill-if-finished 'comint-delchar-or-maybe-eof))
+
+  (defun t/elisp-repl ()
+    (interactive)
+    (t/split-window-below-and-move-there-dammit)
+    (ielm))
+
+  (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-emacs-lisp
+                    ;; make clever parens nav move across lines
+                    (make-variable-buffer-local 'evil-move-beyond-eol)
+                    (setq-local evil-move-beyond-eol t)
+
+                    (t/evil-ex-define-cmd-local "repl" #'t/elisp-repl)
+                    (t/after ielm
+                      (t/bind-in 'ielm-map
+                        "C-d" 't/try-quit-ielm))))
+
+
+;; devilspie
+(add-to-list 'auto-mode-alist '("\\.ds\\'" . emacs-lisp-mode))
+#+end_src
+
+*** JS
+
+#+begin_src emacs-lisp :results silent
+(use-package lsp-mode
+  :ensure t
+  :init
+  (progn
+    (setq lsp-print-io nil
+          lsp-prefer-flymake nil)
+    ;;(require 'lsp-clients)
+    (add-hook 'css-mode-hook 'lsp)))
+
+
+(use-package lsp-ui
+  :init
+  (progn
+    (setq lsp-ui-doc-enable t
+          lsp-ui-doc-delay 0.5
+          lsp-ui-sideline-enable t
+          lsp-ui-sideline-show-code-actions t)
+    (with-eval-after-load 'lsp-mode
+      (add-hook 'lsp-after-open-hook (lambda ()
+                                       (lsp-ui-flycheck-enable 1))))
+    (t/add-hook-defun 'lsp-mode-hook t/lsp-ui-lsp-mode-hook
+                      (lsp-ui-mode)))
+  :config
+  (progn
+    (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+    (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)))
+
+;; TODO
+;; counsel lsp? instead of helm lsp
+
+(use-package typescript-mode
+  :mode "\\.ts"
+  :init
+  (setq-default typescript-indent-level 2))
+
+
+(use-package company-lsp
+  :after company
+  :init
+  (setq company-lsp-cache-candidates t
+        company-lsp-async t))
+
+
+(use-package js2-mode
+  :mode "\\.\\(ts\\|js\\|jsx\\)$"
+  :interpreter "node"
+  :init
+  (progn
+    ;; Let flycheck handle parse errors
+    (setq-default js2-show-parse-errors nil
+                  js2-strict-missing-semi-warning nil
+                  js2-strict-inconsistent-return-warning nil
+                  js2-strict-var-hides-function-arg-warning nil
+                  js2-strict-cond-assign-warning nil
+                  js2-strict-var-redeclaration-warning nil
+                  js2-strict-trailing-comma-warning t ;; jshint does not warn about this now for some reason
+                  js2-global-externs '("module" "require" "describe" "it" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON" "process")
+                  js2-highlight-level 3
+                  js-indent-level *t-indent*
+                  js-switch-indent-offset *t-indent*
+                  js2-basic-offset *t-indent*)
+
+    (t/declare-prefix-for-mode 'rjsx-mode
+                               "h" "Help"
+                               "h" 'lsp-describe-thing-at-point)
+
+    (t/declare-prefix-for-mode 'js2-mode
+                               "h" "Help"
+                               "h" 'lsp-describe-thing-at-point)
+
+    (t/declare-prefix-for-mode 'js2-mode
+                               "me" "Evaluate"
+                               "b" 't/send-buffer-to-nodejs-repl-process
+                               "r" 't/send-region-to-nodejs-repl-process)
+
+    (t/add-hook-defun 'js2-mode-hook t/js2-mode-hook
+                      (flycheck-mode)
+                      (turn-on-smartparens-mode)
+                      (js2-imenu-extras-mode)
+                      (t/when-ext "ts" (typescript-mode))
+                      (lsp)
+                      (t/set-company-backends 'company-lsp)))
+
+  :config
+  (progn
+    (unbind-key "M-j" js2-mode-map)
+    (unbind-key "M-." js2-mode-map)))
+
+(use-package js2-refactor
+  :after js2-mode
+  :init
+  (t/declare-prefix "mr" "Refactor"
+                    "ef" 'js2r-extract-function
+                    "em" 'js2r-extract-method
+                    "ev" 'js2r-extract-var
+                    "ec" 'js2r-extract-const
+                    "ip" 'js2r-introduce-parameter
+                    "iv" 'js2r-inline-var
+                    "rv" 'js2r-rename-var
+
+                    "ao" 'js2r-arguments-to-object
+                    "co" 'js2r-contract-object
+                    "eo" 'js2r-expand-object
+                    "lp" 'js2r-localize-parameter
+                    "tf" 'js2r-toggle-function-expression-and-declaration
+                    "vt" 'js2r-var-to-this)
+  :config
+  (t/add-hook 'multiple-cursors-mode-hook 'evil-emacs-state)
+  (bind-key "<return>" (t/lambda nil
+                         (multiple-cursors-mode -1)
+                         (evil-normal-state)) mc/keymap))
+
+(use-package cdnjs
+  :commands (cdnjs-install-gocdnjs
+             cdnjs-insert-url
+             cdnjs-describe-package
+             cdnjs-list-packages
+             cdnjs-update-package-cache)
+  :init
+  (setq cdnjs-completing-read-function 'completing-read))
+
+(use-package prettier-js
+  :commands prettier-js-mode
+  :init
+  (progn
+    (setq prettier-js-args '("--jsx-bracket-same-line")
+          prettier-js-show-errors 'buffer)
+
+    (defun t/prettier-hook ()
+      (prettier-js-mode -1)
+      (prettier-js-mode))
+
+    (t/add-hook 'js-mode-hook #'t/prettier-hook)
+    (t/add-hook 'js2-mode-hook #'t/prettier-hook)
+    (t/add-hook 'css-mode-hook #'t/prettier-hook)
+    (t/add-hook 'json-mode-hook #'t/prettier-hook)
+
+    (defun t/disable-prettier ()
+      (interactive)
+      (prettier-js-mode -1))))
+
+(use-package rjsx-mode
+  :mode "\\.jsx?$"
+  :commands (rjsx-mode))
+
+(use-package indium
+  :commands (indium-repl-mode
+             indium-interaction-mode
+             indium-debugger-mode)
+  :init
+  (t/after js2-mode
+    (t/add-hook-defun 'js2-mode-hook t/indium-js-mode-hook
+                      (indium-interaction-mode))
+    (t/after rjsx-mode
+      (t/declare-prefix-for-mode 'rjsx-mode
+                                 "m" "mode"
+                                 "j" 'indium-launch
+                                 "J" 'indium-quit)
+      (t/declare-prefix-for-mode 'rjsx-mode
+                                 "me" "Evaluate"
+                                 "b" 'indium-eval-buffer
+                                 "f" 'indium-eval-defun
+                                 "e" 'indium-eval-last-node
+                                 "r" 'indium-eval-region)))
+  :config
+  (progn
+    (t/add-hook 'indium-inspector-mode-hook 'evil-emacs-state)
+    (t/add-hook 'indium-debugger-mode-hook 'evil-emacs-state)
+    (t/add-hook 'indium-debugger-locals-mode-hook 'evil-emacs-state)
+    (t/add-hook 'indium-debugger-frames-mode-hook 'evil-emacs-state)
+
+    (defun t/indium-eval ()
+      (interactive)
+      (save-excursion
+        (evil-append-line 0)
+        (call-interactively 'indium-eval-last-node)
+        (sleep-for 0.001)
+        (evil-normal-state nil)))
+
+    (t/add-hook-defun 'indium-interaction-mode-hook t/hook-indium-interaction
+                      (bind-key "C-x C-e" #'t/indium-eval evil-normal-state-local-map)
+                      (bind-key "C-x C-e" #'t/indium-eval evil-insert-state-local-map)
+                      (bind-key "C-c C-c" #'t/indium-eval evil-normal-state-local-map)
+                      (bind-key "C-c C-c" #'t/indium-eval evil-insert-state-local-map))
+
+    (t/add-hook-defun 'indium-repl-mode-hook t/hook-indium-repl
+                      (bind-key "C-d" 'indium-quit indium-repl-mode-map)
+                      (bind-key "C-d" 'indium-quit evil-normal-state-local-map)
+                      (bind-key "C-d" 'indium-quit evil-insert-state-local-map)
+                      (bind-key "C-l" 'indium-repl-clear-output indium-repl-mode-map))
+
+    (autoload 'cider--make-result-overlay "cider-overlays")
+    (defun t/overlay-indium (r)
+      (cider--make-result-overlay (indium-fontify-js r) :where (point) :duration 'command))
+    (setq indium-interaction-eval-node-hook (list #'t/overlay-indium))))
+
+(use-package nodejs-repl
+  :commands nodejs-repl
+  :init
+  (progn
+    (t/after js2-mode
+      (t/add-hook-defun '(js2-mode-hook) t/nodejs-repl-hook
+                        (t/evil-ex-define-cmd-local "repl" 'nodejs-repl))))
+  :config
+  (progn
+    (defun t/try-quit-nodejs-repl ()
+      (interactive)
+      (t/term-kill-if-finished 'comint-delchar-or-maybe-eof))
+    (t/bind-in 'nodejs-repl-mode-map
+      "C-d" #'t/try-quit-nodejs-repl)))
+#+end_src
+
+*** Arduino
+
+#+begin_src emacs-lisp :results silent
+(use-package arduino-mode :mode "\\.ino$" :commands arduino-mode)
+#+end_src
+
+*** Applescript
+
+#+begin_src emacs-lisp :results silent
+(use-package applescript-mode :mode "\\.scpt$")
+#+end_src
+
+*** CSS
+
+#+begin_src emacs-lisp :results silent
+(use-package css-mode
+  :ensure nil
+  :straight nil
+  :mode "\\.css$"
+  :init (setq css-indent-offset *t-indent*)
+  :config
+  (progn
+    (bind-key "M-k" 't/css-kill-value css-mode-map)
+    (t/add-company-backends-hook 'css-mode-hook 'company-css)
+    (t/add-hook 'css-mode-hook '(turn-on-smartparens-mode rainbow-mode))))
+
+(use-package css-eldoc
+  :commands turn-on-css-eldoc
+  :hook (css-mode-hook . turn-on-css-eldoc))
+#+end_src
+
+*** Less
+
+#+begin_src emacs-lisp :results silent
+(use-package less-css-mode
+  :mode "\\.less$"
+  :commands less-css-mode
+  :config
+  (bind-key "M-k" 't/css-kill-value css-mode-map))
+#+end_src
+
+*** Docker
+
+#+begin_src emacs-lisp :results silent
+(use-package dockerfile-mode :mode "^Dockerfile$")
+(use-package docker-tramp)
+#+end_src
+
+*** Elm
+
+#+begin_src emacs-lisp :results silent
+(use-package elm-mode
+  :mode "\\.elm$"
+  :init
+  (progn
+    (setq elm-tags-on-save t
+          elm-format-on-save t
+          elm-sort-imports-on-save t)
+    (t/after dash-at-point
+      (add-to-list 'dash-at-point-mode-alist '(elm-mode . "elm")))
+    (t/after company
+      (t/add-company-backends-hook 'elm-mode-hook 'company-elm))
+    (t/add-hook 'elm-mode-hook 'elm-oracle-setup-completion))
+  :config
+  (t/declare-prefix-for-mode 'elm-mode "me" "Evaluate"
+                             "b" (lambda ()
+                                   (interactive)
+                                   (elm-repl-load)
+                                   (other-window -1))
+                             "r" (lambda (start end)
+                                   (interactive "r")
+                                   (elm-repl-push start end)
+                                   (other-window -1))))
+
+(use-package flycheck-elm
+  :commands flycheck-elm-setup
+  :init
+  (t/add-hook 'flycheck-mode-hook 'flycheck-elm-setup t))
+#+end_src
+
+*** Flycheck
+
+#+begin_src emacs-lisp :results silent
+(use-package flycheck
+  :commands flycheck-mode
+  :init
+  (progn
+    (setq flycheck-display-errors-function #'flycheck-display-error-messages)
+    (t/add-hook '(html-mode-hook js2-mode-hook elm-mode-hook) 'flycheck-mode))
+  :config
+  (progn
+    (t/add-to-list 't-evil-major-modes 'flycheck-error-list-mode)
+    (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint)))
+    (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist)))
+    (t/after lsp-ui
+      (t/after js2-mode
+        (flycheck-add-mode 'javascript-eslint 'js2-mode)
+        (t/add-hook-defun 'lsp-after-initialize-hook t-lsp-flycheck
+                          (flycheck-add-next-checker 'lsp 'javascript-tslint))))))
+#+end_src
+
+*** Flycheck clojure
+
+#+begin_src emacs-lisp :results silent
+(use-package flycheck-clojure
+  :commands flycheck-mode
+  :init
+  (progn
+    (t/after cider
+      (comment
+       (setq-default flycheck-disabled-checkers
+                     (append flycheck-disabled-checkers '(clojure-cider-typed)))
+       (t/add-hook 'cider-mode-hook 'flycheck-mode)
+       (t/add-hook 'cider-mode-hook 'flycheck-clojure-setup)))))
+#+end_src
+
+*** FSharp
+
+#+begin_src emacs-lisp :results silent
+(use-package fsharp-mode
+  :if nil ; disabled this once, because of a security issue
+  :mode "\\.fs[iylx]?$"
+  :config
+  (t/declare-prefix-for-mode 'fsharp-mode "me" "Evaluate"
+                             "r" 'fsharp-eval-region))
+#+end_src
+
+*** Gitconfig
+
+#+begin_src emacs-lisp :results silent
+(use-package gitconfig-mode :commands gitconfig-mode :mode "\\gitconfig$")
+#+end_src
+
+*** Gitignore
+
+#+begin_src emacs-lisp :results silent
+(use-package gitignore-mode :commands gitignore-mode)
+#+end_src
+
+*** Graphql
+
+#+begin_src emacs-lisp :results silent
+(use-package graphql-mode :commands graphql-mode)
+#+end_src
+
+*** Haskell
+
+#+begin_src emacs-lisp :results silent
+(use-package haskell-mode :commands haskell-mode)
+#+end_src
+
+*** JSON
+
+#+begin_src emacs-lisp :results silent
+(use-package json-mode :mode "\\(json\\|jshintrc\\|eslintrc\\)$")
+(use-package json-reformat :commands json-reformat :init (setq json-reformat:indent-width *t-indent*))
+#+end_src
+
+*** Kotlin
+
+#+begin_src emacs-lisp :results silent
+(use-package kotlin-mode
+  :mode "\\.kt$"
+  :commands kotlin-mode
+  :init (t/add-hook 'kotlin-mode-hook 'lsp-mode))
+#+end_src
+
+*** Markdown
+
+#+begin_src emacs-lisp :results silent
+(use-package markdown-mode
+  :mode "\\.\\(markdown\\|md\\)$"
+  :config
+  (progn
+    (unbind-key "M-p" markdown-mode-map)
+    (unbind-key "M-n" markdown-mode-map)))
+#+end_src
+
+*** Pug
+
+#+begin_src emacs-lisp :results silent
+(use-package pug-mode :mode "\\.pug$")
+#+end_src
+
+*** php
+
+#+begin_src emacs-lisp :results silent
+(use-package php-mode :mode "\\.php$")
+#+end_src
+
+*** Remarak
+
+#+begin_src emacs-lisp :results silent
+(use-package remark-mode :commands remark-mode)
+#+end_src
+
+*** Scala
+
+#+begin_src emacs-lisp :results silent
+(use-package ensime
+  :commands (ensime ensime-mode)
+  :config
+  (progn
+    (unbind-key "C-." evil-normal-state-map)
+    (unbind-key "M-." evil-normal-state-map)
+    (require 'ensime)
+    (t/add-hook 'scala-mode-hook 'ensime-mode)
+    (t/add-hook-defun 'scala-mode-hook t/hook-scala (bind-key "M-." 'ensime-edit-definition 'scala-mode-map))
+    (t/declare-prefix-for-mode 'scala-mode "m" "Mode"
+                               "j" 'ensime
+                               "J" 'ensime-shutdown)
+    (t/declare-prefix-for-mode 'scala-mode "me" "Evaluate"
+                               "b" #'t/send-buffer-to-scala-repl
+                               "r" #'t/send-region-to-scala-repl)))
+#+end_src
+
+*** Shell, sh
+
+#+begin_src emacs-lisp :results silent
+(use-package sh-script
+  :mode ("\\.sh\\'" . sh-mode)
+  :init
+  (setq sh-indentation *t-indent*
+        sh-basic-offset *t-indent*))
+#+end_src
+
+*** HTML
+
+#+begin_src emacs-lisp :results silent
+(use-package simplezen
+  :commands simplezen-expand-or-indent-for-tab)
+
+(use-package tagedit
+  :commands tagedit-mode
+  :init
+  ;; tagedit does not seem to work well with web-mode
+  (t/add-hook-defun 'html-mode-hook t/hook-tagedit
+                    (tagedit-mode 1)
+                    (t/bind-in 'html-mode-map
+                      "C-<left>"  'tagedit-forward-barf-tag
+                      "C-<right>" 'tagedit-forward-slurp-tag
+                      "C-k" 'tagedit-kill
+                      "M-k" 'tagedit-kill-attribute
+                      "M-r" 'tagedit-raise-tag
+                      "M-s" 'tagedit-splice-tag
+                      "M-S" 'tagedit-split-tag
+                      "M-J" 'tagedit-join-tags)))
+#+end_src
+
+*** YAML
+
+#+begin_src emacs-lisp :results silent
+(use-package yaml-mode :commands yaml-mode)
+#+end_src
+
+*** Terraform
+
+#+begin_src emacs-lisp :results silent
+(use-package terraform-mode
+  :mode "\\.tf$"
+  :init
+  (t/add-hook-defun 'terraform-mode-hook t-hook-terraform
+                    (terraform-format-on-save-mode)
+                    (aggressive-indent-mode -1)))
+
+(use-package company-terraform
+  :after terraform-mode
+  :init
+  (t/add-company-backends-hook 'terraform-mode-hook 'company-terraform))
 #+end_src
 
 ** Shell
