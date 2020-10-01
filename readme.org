@@ -182,6 +182,11 @@ with autoload cookies are in ~t-defuns.el~.
   (t/reload-autoloads)
   (unless (require 'autoloads t-file-autoloads t) (error "autoloads.el not generated!")))
 
+(t/add-hook-defun 'after-save-hook t/reload-autoloads-on-defuns-save
+                  (when (string-match "\\t-defuns.el$" buffer-file-name)
+                    (eval-buffer)
+                    (t/reload-autoloads)
+                    (message "Reloaded autoloads.")))
 #+END_SRC
 
 ** Implicits
@@ -2685,11 +2690,6 @@ Another text based web browser
         (call-interactively 'yas-skip-and-clear-or-delete-char)))
     (bind-key "<backspace>" #'t/yas-clear-or-delete-char yas-keymap)
 
-    (t/add-hook-defun 'after-save-hook t/reload-autoloads-on-defuns-save
-                      (when (string-match "\\t-defuns.el$" buffer-file-name)
-                        (eval-buffer)
-                        (t/reload-autoloads)
-                        (message "Reloaded autoloads.")))
     (t/add-hook-defun 'after-save-hook t/reload-snippets-on-save
                       (t/when-ext "yasnippet" (yas-reload-all)))
 
