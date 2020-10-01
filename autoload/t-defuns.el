@@ -1,4 +1,4 @@
-;;; setup/t-defuns.el -*- lexical-binding: t; -*-
+;;; t-defuns.el -*- lexical-binding: t; -*-
 ;;;###autoload
 (defun t/exec-org-block (name vars)
   (save-excursion

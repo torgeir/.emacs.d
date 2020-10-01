@@ -58,10 +58,16 @@ See ~fonts/~.
 
 ** Bootstrap
 
-*** User
+
+*** Lexical binding
 
 #+BEGIN_SRC emacs-lisp :results silent
 ;;; -*- lexical-binding: t; -*-
+#+END_SRC
+
+*** User
+
+#+BEGIN_SRC emacs-lisp :results silent
 (defconst t-leader "SPC")
 (defconst t-emacs-leader "C-")
 (defconst t-font-size 17)
@@ -110,14 +116,12 @@ See ~fonts/~.
 
 *** Load path
 
-Add setup and snippets to the load-path.
+Add snippets and site-lisp to the load-path.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(defconst t-dir-setup (t/user-emacs-file "setup"))
 (defconst t-dir-snippets (t/user-emacs-file "snippets"))
+(add-to-list 'load-path "autoload")
 
-(add-to-list 'load-path t-dir-setup)
-(add-to-list 'load-path (t/user-emacs-file "setup/langs"))
 (let ((dir-site-lisp (t/user-emacs-file "site-lisp")))
   (add-to-list 'load-path dir-site-lisp)
   ;; add folders inside site-lisp as well
@@ -665,13 +669,13 @@ Autoloads, that auto reload when you save them. A myriad of useful functions
 with autoload cookies are in ~t-defuns.el~.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
+(defconst t-file-autoloads (t/user-emacs-file "autoload/autoloads.el"))
 
 (defun t/reload-autoloads ()
   "Regenerate and reload autoloads.el."
   (interactive)
   (let ((generated-autoload-file t-file-autoloads))
-    (update-directory-autoloads (concat t-dir-setup "/"))
+    (update-directory-autoloads "autoload/")
     (when (called-interactively-p 'interactive) (load t-file-autoloads t t))))
 
 (unless (require 'autoloads t-file-autoloads t)

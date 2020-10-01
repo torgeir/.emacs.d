@@ -1,103 +1,16 @@
-;;; autoloads.el --- automatically extracted autoloads
-;;
-;;; Code:
-
+(provide 'autoloads)
 
-;;;### (autoloads nil "t-debug" "t-debug.el" (0 0 0 0))
-;;; Generated autoloads from t-debug.el
+;;;### (autoloads nil "readme" "readme.el" (0 0 0 0))
+;;; Generated autoloads from readme.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-debug" '("t-")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "readme" '("*t-" "+evil" "comment" "has-gui" "is-" "lat-trh" "pcomplete/" "t-" "t/" "trackp-mouse" "user-emacs-directory" "yas/org-" "yes-or-no-p")))
 
 ;;;***
 
-;;;### (autoloads nil "t-desktop" "t-desktop.el" (0 0 0 0))
-;;; Generated autoloads from t-desktop.el
+;;;### (autoloads nil "t-bootstrap" "t-bootstrap.el" (0 0 0 0))
+;;; Generated autoloads from t-bootstrap.el
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-desktop" '("t/desktop-")))
-
-;;;***
-
-;;;### (autoloads nil "t-editor" "t-editor.el" (0 0 0 0))
-;;; Generated autoloads from t-editor.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-editor" '("t-editor/config" "t/")))
-
-;;;***
-
-;;;### (autoloads nil "t-evil" "t-evil.el" (0 0 0 0))
-;;; Generated autoloads from t-evil.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-evil" '("t-evil")))
-
-;;;***
-
-;;;### (autoloads nil "t-keys" "t-keys.el" (0 0 0 0))
-;;; Generated autoloads from t-keys.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-keys" '("t-keys/config")))
-
-;;;***
-
-;;;### (autoloads nil "t-macros" "t-macros.el" (0 0 0 0))
-;;; Generated autoloads from t-macros.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-macros" '("comment" "t/")))
-
-;;;***
-
-;;;### (autoloads nil "t-modeline" "t-modeline.el" (0 0 0 0))
-;;; Generated autoloads from t-modeline.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-modeline" '("t-modeline/config")))
-
-;;;***
-
-;;;### (autoloads nil "t-org" "t-org.el" (0 0 0 0))
-;;; Generated autoloads from t-org.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-org" '("lat-trh" "lon-trh" "t-" "t/")))
-
-;;;***
-
-;;;### (autoloads nil "t-packaging" "t-packaging.el" (0 0 0 0))
-;;; Generated autoloads from t-packaging.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-packaging" '("use-package-verbose")))
-
-;;;***
-
-;;;### (autoloads nil "t-sane-defaults" "t-sane-defaults.el" (0 0
-;;;;;;  0 0))
-;;; Generated autoloads from t-sane-defaults.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-sane-defaults" '("t-sane-defaults/init" "t/init-mouse")))
-
-;;;***
-
-;;;### (autoloads nil "t-shell" "t-shell.el" (0 0 0 0))
-;;; Generated autoloads from t-shell.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-shell" '("pcomplete/")))
-
-;;;***
-
-;;;### (autoloads nil "t-typography" "t-typography.el" (0 0 0 0))
-;;; Generated autoloads from t-typography.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-typography" '("t-typography/config")))
-
-;;;***
-
-;;;### (autoloads nil "t-vc" "t-vc.el" (0 0 0 0))
-;;; Generated autoloads from t-vc.el
-
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-vc" '("t-vc/config")))
-
-;;;***
-
-;;;### (autoloads nil nil ("t-calendar.el" "t-cygwin.el" "t-linux.el"
-;;;;;;  "t-load-theme.el" "t-mac.el" "t-site-lisp.el" "t-text-objects.el"
-;;;;;;  "t-which-key.el") (0 0 0 0))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-bootstrap" '("*t-" "has-gui" "is-" "t-" "t/" "user-emacs-directory")))
 
 ;;;***
 
@@ -681,12 +594,15 @@ Return `t` if DATE is the last day of the week.
 (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "t-defuns" '("*t-adjusted-font-size*" "t/")))
 
 ;;;***
+
+;;;### (autoloads nil nil ("custom.el" "init-old.el" "init.el" "t-before.el")
+;;;;;;  (0 0 0 0))
 
-(provide 'autoloads)
-;; Local Variables:
-;; version-control: never
-;; no-byte-compile: t
-;; no-update-autoloads: t
-;; coding: utf-8
-;; End:
-;;; autoloads.el ends here
+;;;***
+
+;;;### (autoloads nil "gnus" "gnus.el" (0 0 0 0))
+;;; Generated autoloads from gnus.el
+
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "gnus" '("t-gnus-group-list-subscribed-groups")))
+
+;;;***
