@@ -163,37 +163,10 @@ Hook for private stuff before the rest. Useful e.g. for gcal tokens etc.
 (load (t/user-emacs-file "t-before.el") t)
 #+END_SRC
 
-** Autoloads
-
-Autoloads, that auto reload when you save them. A myriad of useful functions
-with autoload cookies are in ~t-defuns.el~.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
-
-(defun t/reload-autoloads ()
-  "Regenerate and reload autoloads.el."
-  (interactive)
-  (let ((generated-autoload-file t-file-autoloads))
-    (update-directory-autoloads (concat t-dir-setup "/"))
-    (when (called-interactively-p 'interactive) (load t-file-autoloads t t))))
-
-(unless (require 'autoloads t-file-autoloads t)
-  (t/reload-autoloads)
-  (unless (require 'autoloads t-file-autoloads t) (error "autoloads.el not generated!")))
-
-(t/add-hook-defun 'after-save-hook t/reload-autoloads-on-defuns-save
-                  (when (string-match "\\t-defuns.el$" buffer-file-name)
-                    (eval-buffer)
-                    (t/reload-autoloads)
-                    (message "Reloaded autoloads.")))
-#+END_SRC
-
 ** Implicits
 
 #+BEGIN_SRC emacs-lisp :results silent
 (require 'bind-key)
-(require 'cl) ;; TODO s/lexical-let/let ?
 (use-package diminish)
 (use-package dash) ; list helpers
 (use-package dash-functional) ; fun list helpers
@@ -489,7 +462,7 @@ Create smart parens wrapping functions.
 (defmacro t/def-pairs (pairs)
   "Create smartparens wrapping function, e.g. t/wrap-with-paren"
   `(progn
-     ,@(loop for (key . val) in pairs
+     ,@(cl-loop for (key . val) in pairs
              collect
              `(defun ,(read (concat
                              "t/wrap-with-"
@@ -683,8 +656,33 @@ connection (which may not be active).  See also `auto-save-file-name-p'."
           (setq limit (1+ (match-end 0))))
 
         (expand-file-name
-         (format "~/.save/#%s#%s#" buf-name (make-temp-name ""))))))
-  )
+         (format "~/.save/#%s#%s#" buf-name (make-temp-name "")))))))
+#+END_SRC
+
+** Autoloads
+
+Autoloads, that auto reload when you save them. A myriad of useful functions
+with autoload cookies are in ~t-defuns.el~.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(defconst t-file-autoloads (t/user-emacs-file "setup/autoloads.el"))
+
+(defun t/reload-autoloads ()
+  "Regenerate and reload autoloads.el."
+  (interactive)
+  (let ((generated-autoload-file t-file-autoloads))
+    (update-directory-autoloads (concat t-dir-setup "/"))
+    (when (called-interactively-p 'interactive) (load t-file-autoloads t t))))
+
+(unless (require 'autoloads t-file-autoloads t)
+  (t/reload-autoloads)
+  (unless (require 'autoloads t-file-autoloads t) (error "autoloads.el not generated!")))
+
+(t/add-hook-defun 'after-save-hook t/reload-autoloads-on-defuns-save
+                  (when (string-match "\\t-defuns.el$" buffer-file-name)
+                    (eval-buffer)
+                    (t/reload-autoloads)
+                    (message "Reloaded autoloads.")))
 #+END_SRC
 
 ** Sanity
@@ -716,38 +714,39 @@ Fix the rest..
 
 #+BEGIN_SRC emacs-lisp :results silent
 (setq-default
- word-wrap t ; wrap for continued lines
- delete-by-moving-to-trash t ; delete files for realz
- mode-require-final-newline nil ; don't require final newline
- require-final-newline nil ; don't require final newline
- redisplay-dont-pause t ; update screen immediately
- x-underline-at-descent-line t ; draw underline lower
- help-window-select 't ; focus help buffers
- visible-bell t ; visible bell
- ring-bell-function 'ignore ; no bell
- compilation-scroll-output 'first-error ; scroll compilation to first error
- window-combination-resize t ; resize proportionally
- initial-major-mode 'emacs-lisp-mode ; load *scratch* in text-mode
- initial-scratch-message nil ; clear *scratch* buffer
- echo-keystrokes 0.001 ; show keystrokes
- save-interprogram-paste-before-kill t ; clipboard contents into kill-ring before replace
- font-lock-maximum-decoration t ; gaudiest possible look
- truncate-partial-width-windows nil ; don't truncate lines
- indicate-empty-lines nil ; don't show empty lines after buffer
- indicate-buffer-boundaries nil ; don't show buffer start/end
- fringes-outside-margins t       ; switches order of fringe and margin
- frame-title-format "%b (%f)"; full path in titlebar
- inhibit-startup-message t ; no splash
- sentence-end-double-space nil ; one space between sentences
  ad-redefinition-action 'accept ; silence useless warnings, e.g. ad-handle-definition: `find-tag-noselect' got redefined
- fill-column 80 ; chars per line
- gc-cons-threshold (* 8 1024 1024) ; more memory
- indent-tabs-mode nil ; don't use tabs
- tab-width *t-indent* ; two spaces
+ compilation-scroll-output 'first-error ; scroll compilation to first error
  cursor-in-non-selected-windows nil ; no cursor in other open windows
+ delete-by-moving-to-trash t ; delete files for realz
+ echo-keystrokes 0.001 ; show keystrokes
  eval-expression-print-length nil ; no length limit when printing sexps in message buffer
  eval-expression-print-level nil ; no level limit when printing sexps in message buffer
- frame-resize-pixelwise t)
+ fill-column 80 ; chars per line
+ font-lock-maximum-decoration t ; gaudiest possible look
+ frame-resize-pixelwise t
+ frame-title-format "%b (%f)"; full path in titlebar
+ fringes-outside-margins t       ; switches order of fringe and margin
+ gc-cons-threshold (* 8 1024 1024) ; more memory
+ help-window-select 't ; focus help buffers
+ indent-tabs-mode nil ; don't use tabs
+ indicate-buffer-boundaries nil ; don't show buffer start/end
+ indicate-empty-lines nil ; don't show empty lines after buffer
+ inhibit-startup-message t ; no splash
+ initial-major-mode 'emacs-lisp-mode ; load *scratch* in text-mode
+ initial-scratch-message nil ; clear *scratch* buffer
+ mode-require-final-newline nil ; don't require final newline
+ redisplay-dont-pause t ; update screen immediately
+ require-final-newline nil ; don't require final newline
+ ring-bell-function 'ignore ; no bell
+ save-interprogram-paste-before-kill t ; clipboard contents into kill-ring before replace
+ sentence-end-double-space nil ; one space between sentences
+ tab-width *t-indent* ; two spaces
+ truncate-partial-width-windows nil ; don't truncate lines
+ visible-bell t ; visible bell
+ window-combination-resize t ; resize proportionally
+ word-wrap t ; wrap for continued lines
+ x-underline-at-descent-line t ; draw underline lower
+ )
 #+END_SRC
 
 Open large files removing heavy modes.
@@ -782,7 +781,6 @@ Remove menus.
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   (menu-bar-mode -1))
-
 #+END_SRC
 
 Show active region.
@@ -814,7 +812,6 @@ Above what sizes can the window split?
 (setq split-height-threshold 0
       split-width-threshold 0
       split-window-preferred-function #'t/split-window-sensibly)
-
 #+END_SRC
 
 Remember file positions, and layout. Super useful, e.g. for dired.
@@ -826,8 +823,8 @@ Remember file positions, and layout. Super useful, e.g. for dired.
 Don't save desktop automatically, for now.
 
 #+BEGIN_SRC emacs-lisp :results silent
-;; (desktop-save-mode 1)
-;; (setq desktop-save 't)
+;;(desktop-save-mode 1)
+;;(setq desktop-save 't)
 #+END_SRC
 
 Eldoc everywhere.
@@ -875,7 +872,6 @@ Mouse support, with scroll.
       evil-want-integration t
       evil-want-Y-yank-to-eol nil
       evil-move-beyond-eol t)
-
 #+END_SRC
 
 *** Init evil. Normal mode is default, and search using evil.
@@ -890,7 +886,6 @@ Mouse support, with scroll.
   (progn
     ;; https://emacs.stackexchange.com/a/15054
     (fset 'evil-visual-update-x-selection 'ignore)))
-
 #+END_SRC
 
 *** Show matches
@@ -904,7 +899,6 @@ Show current match and total number of matches when searching with evil.
     (setq anzu-cons-mode-line-p nil
           anzu-minimum-input-length 1
           anzu-search-threshold 100)))
-
 #+END_SRC
 
 *** jk to escape
@@ -920,7 +914,6 @@ Escape from evil with a fast ~jk~ combo.
                   evil-escape-delay 0.1))
   :config
   (evil-escape-mode))
-
 #+END_SRC
 
 *** Evil leader
@@ -971,7 +964,6 @@ Jump between html tags with %, like for parens.
   :commands evilmi-jump-items
   :config
   (global-evil-matchit-mode 1))
-
 #+END_SRC
 
 Visual followed by ~*~ or ~#~ allows for fast searching, forwards or backwards, for whats selected. Keep
@@ -983,12 +975,12 @@ hitting it to search further. Preserves selection.
              evil-visualstar/begin-search-backward)
   :config
   (progn
-    (setq evil-visualstar/persistent t)
+    (setq evil-visualstar/persistent t
+          evil-)
     (global-evil-visualstar-mode)
     (t/bind-in 'evil-visual-state-map
       "*" 'evil-visualstar/begin-search-forward
       "#" 'evil-visualstar/begin-search-backward)))
-
 #+END_SRC
 
 *** Surroundings
@@ -997,14 +989,13 @@ Operate on surrounding parens, brackets etc like with surround.vim.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-surround
-  :defer 1
+  :defer 2
   :config
   (progn
     (global-evil-surround-mode 1)
     ;; the opposite of vim, like spacemacs
     (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
     (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
-
 #+END_SRC
 
 *** Navigate parens
@@ -1028,7 +1019,6 @@ line) lisp aware, so it does not delete trailing parens.
   (t/after evil-surround
     (add-to-list 'evil-surround-operator-alist '(evil-cp-delete . delete))
     (add-to-list 'evil-surround-operator-alist '(evil-cp-change . change))))
-
 #+END_SRC
 
 *** Snipe
@@ -1039,12 +1029,11 @@ hit fe to search for e's. Repeat f to move to the next e.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-snipe
-  :defer 1
+  :commands (evil-snipe-local-mode)
   :init
   (t/add-hook-defun 'prog-mode-hook t-hook-snipe
                     (evil-snipe-local-mode 1)
                     (evil-snipe-override-local-mode 1)))
-
 #+END_SRC
 
 *** Multiple cursors for evil mode.
@@ -1084,7 +1073,6 @@ skips current match forward or backward while moving through matches using M-d.
       (t/bind-in 'evil-multiedit-state-map
         "M-j" #'t/mc-skip-next
         "M-k" #'t/mc-skip-prev))))
-
 #+END_SRC
 
 *** Commentary
@@ -1097,22 +1085,20 @@ surrounding lisp sexp, respecting the ast.
 (use-package evil-commentary
   :defer 1
   :init (evil-commentary-mode))
-
 #+END_SRC
 
 *** Color highlights evil operations.
 
 #+BEGIN_SRC emacs-lisp :results silent
-  (use-package evil-goggles
-    :defer 1
-    :init
-    (setq evil-goggles-duration 0.2
-          evil-goggles-async-duration 0.2
-          evil-goggles-pulse t)
-    :config
-    (evil-goggles-mode)
-    ;; (t/after magit (evil-goggles-use-magit-faces))
-    )
+(use-package evil-goggles
+  :defer 1
+  :init
+  (setq evil-goggles-duration 0.2
+        evil-goggles-async-duration 0.2
+        evil-goggles-pulse t)
+  :config
+  (evil-goggles-mode)
+  (t/after magit (evil-goggles-use-magit-faces)))
 #+END_SRC
 
 *** Useful extra evil operators
@@ -1174,7 +1160,6 @@ Commit starts in insert mode
         evil-insert-state-cursor 'bar
         evil-visual-state-cursor 'hollow))
 (advice-add #'load-theme :after #'t/init-evil-cursors)
-
 #+END_SRC
 
 *** Esc escapes everything
@@ -1206,13 +1191,13 @@ Escape all the things. Borrowed from doom.
         ;; Run all escape hooks. If any returns non-nil, then stop there.
         (t (run-hook-with-args-until-success '+evil-esc-hook))))
 (advice-add #'evil-force-normal-state :after #'+evil*attach-escape-hook)
-
 #+END_SRC
 
 *** Help motions
 
+Motions keys for help buffers.
+
 #+BEGIN_SRC emacs-lisp :results silent
-;; motions keys for help buffers
 (evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
 (evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
 (evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
@@ -1221,13 +1206,13 @@ Escape all the things. Borrowed from doom.
 (evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
 (evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
 (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)
-
 #+END_SRC
 
 *** Info motions
 
+Motion keys for info mode.
+
 #+BEGIN_SRC emacs-lisp :results silent
-;; motion keys for info mode
 (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
 (evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward)
 (unbind-key (kbd "h") Info-mode-map)
@@ -1276,7 +1261,6 @@ i_Ctrl-o - C-o from hybrid mode, like in vim insert mode
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-completion-map)
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-must-match-map)
 (bind-key [escape] 'minibuffer-keyboard-quit minibuffer-local-isearch-map)
-
 #+END_SRC
 
 *** Preset registers
@@ -1389,7 +1373,6 @@ Some guidance is always welcome.
             ("DEL"                   . "⌫")
             ("deletechar"            . "⌦")
             ("RET"                   . "⏎")))))
-
 #+END_SRC
 
 Custom prefix functions for defining named shortcuts accessible through evil leader.
@@ -1427,7 +1410,7 @@ Custom prefix functions for defining named shortcuts accessible through evil lea
 
 (defun t/micro-state-in-mode (mode key fn &rest bindings)
   "Micro state that temporarily overlays a new key map, kinda like hydra"
-  (lexical-let ((keymap (make-sparse-keymap)))
+  (let ((keymap (make-sparse-keymap)))
     (while key
       (bind-key key fn keymap)
       (setq key (pop bindings)
@@ -1592,7 +1575,7 @@ No longer in use.
 
 Trying ivy as a helm replacement. https://news.ycombinator.com/item?id=24449883
 
-These three actually seem to replace all my previous helm config 😱
+These actually seem to replace all my previous helm config 😱
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package counsel
@@ -1679,13 +1662,13 @@ Open link to line under version control on github.com
   :commands git-link
   :init
   (setq git-link-open-in-browser t))
-
 #+END_SRC
 
 Open link to region under version control on github.com
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package browse-at-remote
+  :commands browse-at-remote
   :init
   (setq browse-at-remote-add-line-number-if-no-region-selected nil))
 #+END_SRC
@@ -1706,7 +1689,6 @@ Git blame is shown for each hunk as you navigate.
         "C-g" 'git-timemachine-quit
         "C-n" 'git-timemachine-show-next-revision
         "C-p" 'git-timemachine-show-previous-revision))))
-
 #+END_SRC
 
 *** Gist
@@ -1728,7 +1710,7 @@ The only git client you will ever need.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package magit
-  :commands magit-status
+  :commands (magit-status magit-diff)
   :init
   (progn
     (setq magit-pull-arguments nil
@@ -1863,15 +1845,14 @@ Add dir to buffer names when they're not unique.
   :init
   (progn
     (setq uniquify-buffer-name-style 'forward)))
-
 #+END_SRC
 
 *** Beacon to show the cursor
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package beacon
-  :defer 1
   :if nil ; no longer use it
+  :commands beacon-mode
   :init
   (setq beacon-size 10
         beacon-blink-delay 0
@@ -1904,7 +1885,6 @@ Useful for programming
   (t/add-hook-setq 'eshell-mode-hook
                    tramp-default-method "ssh"
                    tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
-
 #+END_SRC
 
 *** Directory browser
@@ -1937,7 +1917,6 @@ Useful for programming
       "M-p" (t/lambda (find-alternate-file ".."))
       "M-<down>" (t/lambda (dired-find-alternate-file))
       "M-n" (t/lambda (dired-find-alternate-file)))))
-
 #+END_SRC
 
 *** Local dired extensions
@@ -1973,7 +1952,6 @@ Useful for programming
   (progn
     (setq dired-details-hidden-string "")
     (add-hook 'dired-mode-hook 'dired-hide-details-mode)))
-
 #+END_SRC
 
 **** Toggle folders
@@ -1988,7 +1966,6 @@ Useful for programming
   (t/after dired
     (setq dired-subtree-line-prefix "  ")
     (bind-key (kbd "<tab>") 'dired-subtree-toggle dired-mode-map)))
-
 #+END_SRC
 
 **** Pretty icons
@@ -2019,7 +1996,6 @@ Colorize delimiters.
   :commands rainbow-delimiters-mode
   :init
   (t/add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-
 #+END_SRC
 
 *** Directory tree
@@ -2077,7 +2053,6 @@ Colorize delimiters.
                    ("M-<down>" . neotree-enter)
                    ("C" . neotree-change-root)))
       (eval `(evil-define-key 'normal neotree-mode-map (kbd ,(car key)) ',(cdr key))))))
-
 #+END_SRC
 
 *** Jump
@@ -2123,7 +2098,6 @@ Colorize delimiters.
       (set-face-attribute 'avy-lead-face-0 nil :background nil :foreground (face-foreground f))
       (set-face-attribute 'avy-lead-face-1 nil :background nil :foreground (face-foreground f))
       (set-face-attribute 'avy-lead-face-2 nil :background nil :foreground (face-foreground f)))))
-
 #+END_SRC
 
 **** Jump ace
@@ -2138,7 +2112,6 @@ Colorize delimiters.
   (progn
     (setq ace-jump-mode-gray-background t
           ace-jump-mode-case-fold t)))
-
 #+END_SRC
 
 *** REST
@@ -2201,7 +2174,6 @@ A rest client interface for elasticsearch, similar to restclient
           undo-tree-visualizer-diff t)
     (t/declare-prefix "a" "Applications"
                       "u" 'undo-tree-visualize)))
-
 #+END_SRC
 
 *** Fun
@@ -2222,6 +2194,7 @@ A rest client interface for elasticsearch, similar to restclient
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package md4rd
+  :commands md4rd
   :init
   (progn
     (t/add-hook 'md4rd-mode-hook 'md4rd-indent-all-the-lines)
@@ -2245,7 +2218,6 @@ A rest client interface for elasticsearch, similar to restclient
           (evil-define-key 'normal md4rd-mode-map (kbd "M-u") 'md4rd-upvote)
           (evil-define-key 'normal md4rd-mode-map (kbd "d") 'md4rd-downvote))))
     (setq md4rd-subs-active '(MechanicalKeyboards emacs clojure))))
-
 #+END_SRC
 
 *** Smex
@@ -2266,7 +2238,6 @@ Not nescessary after installing counsel?
       "C-x C-m" 'smex
       "C-c C-M" 'smex-major-mode-commands)
     (smex-initialize)))
-
 #+END_SRC
 
 *** Completion
@@ -2422,7 +2393,6 @@ Lispy paren-like ast editing for other modes as well.
 
     (sp-use-paredit-bindings)
 
-    ;; TODO torgeir
     ;; interfers with e.g. org-mode, enable them specifically in lisp modes instead
     (unbind-key "M-?" sp-keymap)
     (comment (unbind-key "M-<up>" sp-keymap)
@@ -2479,7 +2449,7 @@ Lispy paren-like ast editing for other modes as well.
     (t/add-hook 'eval-expression-minibuffer-setup-hook #'(turn-on-smartparens-mode evil-cleverparens-mode))
 
     (defun t/enable-movement-for-lisp-mode (m)
-      (lexical-let* ((mode (symbol-name m))
+      (let* ((mode (symbol-name m))
                      (mode-hook (intern (concat mode "-hook")))
                      (mode-map (intern (concat mode "-map"))))
         (add-hook mode-hook 'turn-on-smartparens-mode)
@@ -2507,7 +2477,6 @@ Lispy paren-like ast editing for other modes as well.
     (t/bind-in 'text-mode-map
       "C-<right>" 'sp-forward-slurp-sexp
       "C-<left>" 'sp-forward-barf-sexp)))
-
 #+END_SRC
 
 *** CSV
@@ -2516,6 +2485,7 @@ Edit csv, transpose columns, delete columns, sort
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package csv-mode
+  :mode ("\\.csv$" . csv-mode)
   :commands csv-mode
   :init
   (setq csv-separators '(";")))
@@ -2528,6 +2498,7 @@ also toggles hook to keep it on or off everywhere.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package darkroom
+  :commands darkroom-tentative-mode
   :init
   (progn
     (setq darkroom-text-scale-increase 0)
@@ -2591,7 +2562,6 @@ from pressing R in eww mode.
 (setq shr-use-fonts nil
       shr-max-image-proportion 0.6
       shr-ignore-cache t)
-
 #+END_SRC
 
 ***** Open from chrome
@@ -2642,7 +2612,6 @@ Another text based web browser
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package discover-my-major
   :commands (discover-my-major discover-my-mode))
-
 #+END_SRC
 
 *** GNUS
@@ -2654,16 +2623,7 @@ Another text based web browser
 *** External documentation
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package dash-at-point
-  :commands dash-at-point)
-
-;; (use-package expand-region
-;;   :commands (er/expand-region er/contract-region)
-;;   :init
-;;   (progn
-;;     (bind-key (if is-mac "M-@" "M-'") 'er/expand-region)
-;;     (bind-key (if is-mac "M-*" "M-§") 'er/contract-region)))
-
+(use-package dash-at-point :commands dash-at-point)
 #+END_SRC
 
 *** Snippets
@@ -2719,7 +2679,6 @@ Another text based web browser
     (t/bind-in 'yas-keymap
       "C-e" 'yas/goto-end-of-active-field
       "C-a" 'yas/goto-start-of-active-field)))
-
 #+END_SRC
 
 *** Reload buffers on external change
@@ -2741,7 +2700,6 @@ Another text based web browser
     (when is-mac
       ;; file notifications aren't supported on os x
       (setq auto-revert-use-notify nil))))
-
 #+END_SRC
 
 *** Scrolling
@@ -2830,6 +2788,7 @@ Highlight todos across all programming modes.
 *** Codemods
 
 **** Js
+
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package js-codemod
   ;; :ensure nil
@@ -2866,7 +2825,7 @@ A custom function to fetch a clean view of the current news from nrk.no
   (kill-line)
   (evil-search "^-" t t)
   (evil-ex-nohighlight)
-  (lexical-let ((keymap (make-sparse-keymap)))
+  (let ((keymap (make-sparse-keymap)))
     (bind-key "n" (t/lambda nil
                     (evil-search "^-" t t)
                     (evil-ex-nohighlight)
@@ -2892,7 +2851,7 @@ A custom function to fetch a clean view of the current news from nrk.no
   :config
   (progn
     (t/add-hook-defun 'hackernews-mode-hook t-hackernews-hook
-                      (lexical-let ((keymap (make-sparse-keymap)))
+                      (let ((keymap (make-sparse-keymap)))
                         (bind-key "n" 'hackernews-next-item keymap)
                         (bind-key "p" 'hackernews-previous-item keymap)
                         (bind-key "<return>" 'hackernews-button-browse-internal keymap)
@@ -2927,7 +2886,6 @@ A custom function to fetch a clean view of the current news from nrk.no
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package suggest :commands suggest)
-
 #+END_SRC
 
 *** Recent files
@@ -2949,7 +2907,6 @@ Save more recent files.
       (when recentf-mode (recentf-save-list)))
     (t/idle-timer recentf-auto-save-timer #'t/recentf-save-if-recentf-mode 1)
     (recentf-mode 1)))
-
 #+END_SRC
 
 *** Line numbers
@@ -2970,7 +2927,6 @@ Toggles relative line numbers, like in vim.
   :commands nlinum-relative-toggle
   :init
   (setq nlinum-relative-redisplay-delay 0))
-
 #+END_SRC
 
 *** Projects
@@ -3002,13 +2958,12 @@ Toggles relative line numbers, like in vim.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package dumb-jump
-  :commands (xref-find-definitions)
+  :commands (dumb-jump-go xref-find-definitions)
   :init
   (progn
     (setq dump-jump-prefer-searcher 'rg)
     (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
     (t/bind-in '(evil-normal-state-map evil-insert-state-map)
-      "M-." 'dumb-jump-go
       "M-." 'dumb-jump-go)
     (comment (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-elisp
                                (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
@@ -3032,7 +2987,6 @@ Force indents, like you mean it.
     (t/add-hook 'prog-mode-hook 'aggressive-indent-mode)
     (t/declare-prefix "t" "Toggle"
                       "a" 'aggressive-indent-mode)))
-
 #+END_SRC
 
 *** Whitespace
@@ -3046,17 +3000,15 @@ Clean out whitespace when saving.
   :init
   (progn
     (t/add-hook 'before-save-hook 'whitespace-cleanup)
-    (t/add-hook-defun '(prog-mode-hook text-mode-hook git-commit-mode-hook) t/hook-whitespace
+     (t/add-hook-defun '(prog-mode-hook text-mode-hook git-commit-mode-hook) t/hook-whitespace
                       (setq-local whitespace-style '(face tabs tab-mark trailing))
                       (whitespace-mode 1))))
-
 #+END_SRC
 
 *** Word count
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package wc-mode :commands wc-mode)
-
 #+END_SRC
 
 *** Document viewer
@@ -3970,7 +3922,6 @@ No emojis in terminal (on os x at least).
 (progn
   (t/set-emoji-font nil) ; for when Emacs is started in GUI mode
   (t/add-hook 'after-make-frame-functions 't/set-emoji-font)) ; hook for when a frame is created with emacsclient
-
 #+END_SRC
 ** Global keys and hippie expand
 
@@ -4054,6 +4005,7 @@ No emojis in terminal (on os x at least).
   "C-," 'company-complete
   "C-:" 't/hippie-expand-lines)
 #+END_SRC
+
 ** Frame and Window
 
 *** Transpose frame
@@ -4175,37 +4127,36 @@ General org config, didn't bother sorting it.
 #+BEGIN_SRC emacs-lisp :results silent
 (setq
  ;; org-ellipsis " >" ; the ... is ok
- org-startup-indented t ; turn on org-indent-mode
- org-return-follows-link t
- org-tab-follows-link nil
- org-support-shift-select t ; shift can be used to mark multiple lines
- org-hide-leading-stars t
- org-hide-emphasis-markers nil
- org-loop-over-headlines-in-active-region 'start-level ; org-archive with friends work on multiple items
- org-blank-before-new-entry '((heading . auto) (plain-list-item . t)) ; newlines
- org-cycle-separator-lines 2 ; number of empty lines after heading needed to show visible newline between headings
- org-catch-invisible-edits 'show ; show invisibles on edit
- org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
- org-refile-targets '((nil :maxlevel . 2)
-                      (org-agenda-files :maxlevel . 2))
- org-refile-use-outline-path 'file ; enable refile to top level in file too
- org-outline-path-complete-in-steps nil ; refile to subpaths
- org-tags-column -60           ; tag position after headings
- org-export-coding-system 'utf-8
- org-default-notes-file (t/org-directory "home.org")
- org-special-ctrl-k t         ; don't clear tags, etc
  org-adapt-indentation t      ; move text to align with heading bullets
+ org-blank-before-new-entry '((heading . auto) (plain-list-item . t)) ; newlines
+ org-catch-invisible-edits 'show ; show invisibles on edit
+ org-cycle-separator-lines 2 ; number of empty lines after heading needed to show visible newline between headings
+ org-default-notes-file (t/org-directory "home.org")
+ org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
+ org-export-coding-system 'utf-8
+ org-hide-emphasis-markers nil
+ org-hide-leading-stars t
+ org-loop-over-headlines-in-active-region 'start-level ; org-archive with friends work on multiple items
+ org-outline-path-complete-in-steps nil ; refile to subpaths
+ org-refile-targets '((nil :maxlevel . 2) (org-agenda-files :maxlevel . 2))
+ org-refile-use-outline-path 'file ; enable refile to top level in file too
+ org-return-follows-link t
+ org-special-ctrl-k t         ; don't clear tags, etc
+ org-startup-indented t ; turn on org-indent-mode
+ org-support-shift-select t ; shift can be used to mark multiple lines
+ org-tab-follows-link nil
+ org-tags-column -60           ; tag position after headings
 
  ;; doom theme
- org-fontify-whole-heading-line t
  org-fontify-done-headline t
- org-fontify-quote-and-verse-blocks t
  org-fontify-emphasized-text t
+ org-fontify-quote-and-verse-blocks t
+ org-fontify-whole-heading-line t
 
- org-reverse-note-order t      ; newest notes first
  org-log-done 'time            ; log when todos are completed
  org-log-redeadline 'time      ; log when deadline changes
  org-log-reschedule 'time      ; log when schedule changes
+ org-reverse-note-order t      ; newest notes first
  org-use-fast-todo-selection t
  org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)")))
 #+END_SRC
@@ -4237,6 +4188,7 @@ Clean export stamp.
         ("e" "Elfeed location" entry (file+olp org-default-notes-file "Home" "Tasks") (function t/org-capture-elfeed-link-template))
         ("c" "Chrome location" entry (file+olp org-default-notes-file "Home" "Tasks") (function t/org-capture-chrome-link-template))))
 #+END_SRC
+
 *** org-goto
 
 Make org-goto play nice with counsel.
@@ -4261,7 +4213,6 @@ Make org-goto play nice with counsel.
   (evil-add-command-properties #'outline-previous-heading :jump t)
   (evil-add-command-properties #'org-previous-visible-heading :jump t)
   (evil-add-command-properties #'org-next-visible-heading :jump t))
-
 #+END_SRC
 
 *** Keybindings
@@ -4373,7 +4324,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
     (if (= pri-value pri-current)
         subtree-end
       nil)))
-
 
 (defun t/org-agenda-todo-type (name)
   `((org-agenda-remove-tags t)
@@ -4635,7 +4585,6 @@ Blank line before new entries with text, but not headings following other headin
                     "M-S-<return>" 't/org-insert-todo-heading-dwim
                     "C-<return>" 't/org-insert-heading-respect-content-dwim
                     "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim))
-
 #+END_SRC
 
 *** Yasnippet
@@ -4656,7 +4605,6 @@ Blank line before new entries with text, but not headings following other headin
 
 (t/after yasnippet ;; TODO
   (t/add-hook 'org-mode-hook #'yas/org-setup))
-
 #+END_SRC
 
 *** Fonts
@@ -4673,7 +4621,6 @@ Equal size fonts. Remove subsequent leading bullets.
                     (set-face-attribute face nil :weight 'semi-bold :height 1.0)))
 (t/add-hook-defun 'org-mode-hook t/remove-org-mode-stars
                   (set-face-attribute 'org-hide nil :foreground (face-attribute 'default :background)))
-
 #+END_SRC
 
 *** Alerts
@@ -4687,7 +4634,6 @@ Equal size fonts. Remove subsequent leading bullets.
     (setq alert-default-style 'osx-notifier
           org-alert-interval (* 1 60 60))
     (org-alert-enable)))
-
 #+END_SRC
 
 *** Links
