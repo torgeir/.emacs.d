@@ -568,7 +568,6 @@ with autoload cookies are in ~t-defuns.el~.
   "Regenerate and reload autoloads.el."
   (interactive)
   (let ((generated-autoload-file t-file-autoloads))
-    (update-directory-autoloads "autoload/")
     (when (called-interactively-p 'interactive) (load t-file-autoloads t t))))
 
 (unless (require 'autoloads t-file-autoloads t)
@@ -576,7 +575,7 @@ with autoload cookies are in ~t-defuns.el~.
   (unless (require 'autoloads t-file-autoloads t) (error "autoloads.el not generated!")))
 
 (t/add-hook-defun 'after-save-hook t/reload-autoloads-on-defuns-save
-                  (when (string-match "\\t-defuns.el$" buffer-file-name)
+                  (when (string-match "t-defuns.el$" buffer-file-name)
                     (eval-buffer)
                     (t/reload-autoloads)
                     (message "Reloaded autoloads.")))
@@ -3061,6 +3060,7 @@ Thesaurus.
 #+END_SRC
 
 *** Keybindings
+
 #+BEGIN_SRC emacs-lisp :results silent
 (t/declare-prefix "a" "Applications"
                   "B" 'w3m
@@ -3226,13 +3226,7 @@ Thesaurus.
 (t/declare-prefix "j" "Jump to"
                   "f" 'find-function
                   "k" 'find-function-on-key
-                  "p" (lambda (key)
-                        (interactive "kPress keybinding to run in popup: ")
-                        (popwin:display-buffer-1 (popwin:dummy-buffer))
-                        (let ((keys (key-binding key)))
-                          (funcall
-                           (cond ((stringp keys) (symbol-function keys))
-                                 (t keys)))))
+                  "p" 't/popwin-next-key
                   "w" 'ace-window
                   "j" 'avy-goto-char-timer
                   "t" 'avy-goto-char-timer
@@ -3301,6 +3295,7 @@ Thesaurus.
                   ;;"w" 'helm-wikipedia-suggest
                   )
 #+END_SRC
+
 *** Popups
 
 #+BEGIN_SRC emacs-lisp :results silent

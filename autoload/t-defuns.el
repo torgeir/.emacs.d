@@ -1582,4 +1582,20 @@ See also:  (setq org-agenda-include-diary t)
                 (year (calendar-extract-year date)))
            (org-day-of-week day month year))))
 
+;;;###autoload
+(defun t/popwin-next-key (key)
+  (interactive "kPress keybinding to run in popup: ")
+  (popwin:display-buffer-1 (popwin:dummy-buffer))
+  (let ((keys (key-binding key)))
+    (funcall
+     (cond ((stringp keys) (symbol-function keys))
+           (t keys)))))
+
+;;;###autoload
+(defun t/popwin (fn)
+  "Run function FN in popwin."
+  (t/lambda ()
+    (popwin:display-buffer-1 (popwin:dummy-buffer))
+    (funcall fn)))
+
 (provide 't-defuns)
