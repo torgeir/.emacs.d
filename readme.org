@@ -1278,7 +1278,7 @@ Turn camel case into snake case
 
 *** Text Objects
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (t/after evil
 
   (evil-define-text-object evil-org-outer-subtree (count &optional beg end type)
@@ -1347,7 +1347,7 @@ Turn camel case into snake case
   (define-key evil-inner-text-objects-map "*" 'evil-org-inner-subtree)
   (define-key evil-inner-text-objects-map "-" 'evil-org-inner-item)
   (define-key evil-outer-text-objects-map "-" 'evil-org-outer-item))
-#+end_src
+#+END_SRC
 
 ** Which key
 
@@ -1449,11 +1449,11 @@ leader will actually turn on evil-leader globally. Then turn on evil.
   :init
   (setq calendar-week-start-day 1
         calendar-date-style 'iso))
-#+end_src
+#+END_SRC
 
 Make it Norwegian.
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package calendar-norway
   :after calendar
   :config
@@ -1828,7 +1828,7 @@ Always had plans to read faster with this one..
 
 Make testing emacs initialization easier.
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package restart-emacs
   :commands restart-emacs
   :init
@@ -1836,7 +1836,7 @@ Make testing emacs initialization easier.
                     "d" 't/safe-restart-emacs
                     "r" (t/lambda (restart-emacs))
                     "R" (t/lambda (restart-emacs '("--no-desktop")))))
-#+end_src
+#+END_SRC
 
 *** Unique buffer names
 
@@ -2730,7 +2730,7 @@ Another text based web browser
 
 Highlight todos across all programming modes.
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package hl-todo
   :defer 1
   :config (global-hl-todo-mode))
@@ -3407,7 +3407,7 @@ Thesaurus.
                   ;; TODO is there such a thing for counsel?
                   ;;"w" 'helm-wikipedia-suggest
                   )
-#+end_src
+#+END_SRC
 *** Popups
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -3426,7 +3426,7 @@ Thesaurus.
 
 *** Flycheck
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package flycheck
   :commands flycheck-mode
   :init
@@ -3443,23 +3443,23 @@ Thesaurus.
         (flycheck-add-mode 'javascript-eslint 'js2-mode)
         (t/add-hook-defun 'lsp-after-initialize-hook t-lsp-flycheck
                           (flycheck-add-next-checker 'lsp 'javascript-tslint))))))
-#+end_src
+#+END_SRC
 
 *** Applescript
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package applescript-mode :mode "\\.scpt$")
-#+end_src
+#+END_SRC
 
 *** Arduino
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package arduino-mode :mode "\\.ino$" :commands arduino-mode)
-#+end_src
+#+END_SRC
 
 *** Clojure
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package clojure-mode
   :mode (("\\.\\(edn\\|boot\\|clj\\)$" . clojure-mode)
          ("\\.cljs$" . clojurescript-mode))
@@ -3612,11 +3612,11 @@ Thesaurus.
     ;; match camel-case tokens
     (t/add-hook 'clojurescript-mode-hook '(subword-mode smartparens-mode))
     (t/add-hook 'clojure-mode-hook '(subword-mode smartparens-mode))))
-#+end_src
+#+END_SRC
 
 **** Flycheck clojure
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package flycheck-clojure
   :commands flycheck-mode
   :init
@@ -3627,11 +3627,11 @@ Thesaurus.
                      (append flycheck-disabled-checkers '(clojure-cider-typed)))
        (t/add-hook 'cider-mode-hook 'flycheck-mode)
        (t/add-hook 'cider-mode-hook 'flycheck-clojure-setup)))))
-#+end_src
+#+END_SRC
 
 *** CSS
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package css-mode
   :ensure nil
   :straight nil
@@ -3646,18 +3646,18 @@ Thesaurus.
 (use-package css-eldoc
   :commands turn-on-css-eldoc
   :hook (css-mode-hook . turn-on-css-eldoc))
-#+end_src
+#+END_SRC
 
 *** Docker
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package dockerfile-mode :mode "^Dockerfile$")
 (use-package docker-tramp)
-#+end_src
+#+END_SRC
 
 *** Elisp
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (progn
   ;; lisp
   (t/declare-prefix-for-mode 'lisp-interaction-mode "me" "Evaluate"
@@ -3709,11 +3709,11 @@ Thesaurus.
 
 ;; devilspie
 (add-to-list 'auto-mode-alist '("\\.ds\\'" . emacs-lisp-mode))
-#+end_src
+#+END_SRC
 
 *** Elm
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package elm-mode
   :mode "\\.elm$"
   :init
@@ -3741,55 +3741,55 @@ Thesaurus.
   :commands flycheck-elm-setup
   :init
   (t/add-hook 'flycheck-mode-hook 'flycheck-elm-setup t))
-#+end_src
+#+END_SRC
 
 *** FSharp
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package fsharp-mode
   :if nil ; disabled this once, because of a security issue
   :mode "\\.fs[iylx]?$"
   :config
   (t/declare-prefix-for-mode 'fsharp-mode "me" "Evaluate"
                              "r" 'fsharp-eval-region))
-#+end_src
+#+END_SRC
 
 *** Gitconfig
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package gitconfig-mode :commands gitconfig-mode :mode "\\gitconfig$")
-#+end_src
+#+END_SRC
 
 *** Graphql
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package graphql-mode :commands graphql-mode)
-#+end_src
+#+END_SRC
 
 *** Gitignore
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package gitignore-mode :commands gitignore-mode)
-#+end_src
+#+END_SRC
 
 *** Haskell
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package haskell-mode :commands haskell-mode)
-#+end_src
+#+END_SRC
 
 *** Kotlin
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package kotlin-mode
   :mode "\\.kt$"
   :commands kotlin-mode
   :init (t/add-hook 'kotlin-mode-hook 'lsp-mode))
-#+end_src
+#+END_SRC
 
 *** JS
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package lsp-mode
   :ensure t
   :init
@@ -4000,57 +4000,57 @@ Thesaurus.
       (t/term-kill-if-finished 'comint-delchar-or-maybe-eof))
     (t/bind-in 'nodejs-repl-mode-map
       "C-d" #'t/try-quit-nodejs-repl)))
-#+end_src
+#+END_SRC
 
 *** JSON
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package json-mode :mode "\\(json\\|jshintrc\\|eslintrc\\)$")
 (use-package json-reformat :commands json-reformat :init (setq json-reformat:indent-width *t-indent*))
-#+end_src
+#+END_SRC
 
 *** Less
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package less-css-mode
   :mode "\\.less$"
   :commands less-css-mode
   :config
   (bind-key "M-k" 't/css-kill-value css-mode-map))
-#+end_src
+#+END_SRC
 
 *** Markdown
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package markdown-mode
   :mode "\\.\\(markdown\\|md\\)$"
   :config
   (progn
     (unbind-key "M-p" markdown-mode-map)
     (unbind-key "M-n" markdown-mode-map)))
-#+end_src
+#+END_SRC
 
 *** Pug
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package pug-mode :mode "\\.pug$")
-#+end_src
+#+END_SRC
 
 *** php
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package php-mode :mode "\\.php$")
-#+end_src
+#+END_SRC
 
 *** Remarak
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package remark-mode :commands remark-mode)
-#+end_src
+#+END_SRC
 
 *** Scala
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package ensime
   :commands (ensime ensime-mode)
   :config
@@ -4066,21 +4066,21 @@ Thesaurus.
     (t/declare-prefix-for-mode 'scala-mode "me" "Evaluate"
                                "b" #'t/send-buffer-to-scala-repl
                                "r" #'t/send-region-to-scala-repl)))
-#+end_src
+#+END_SRC
 
 *** SH
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package sh-script
   :mode ("\\.sh\\'" . sh-mode)
   :init
   (setq sh-indentation *t-indent*
         sh-basic-offset *t-indent*))
-#+end_src
+#+END_SRC
 
 *** HTML
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package simplezen
   :commands simplezen-expand-or-indent-for-tab)
 
@@ -4099,17 +4099,17 @@ Thesaurus.
                       "M-s" 'tagedit-splice-tag
                       "M-S" 'tagedit-split-tag
                       "M-J" 'tagedit-join-tags)))
-#+end_src
+#+END_SRC
 
 *** YAML
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package yaml-mode :commands yaml-mode)
-#+end_src
+#+END_SRC
 
 *** Terraform
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (use-package terraform-mode
   :mode "\\.tf$"
   :init
@@ -4121,15 +4121,15 @@ Thesaurus.
   :after terraform-mode
   :init
   (t/add-company-backends-hook 'terraform-mode-hook 'company-terraform))
-#+end_src
+#+END_SRC
 
 ** Shell
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 ;TODO restructure these
-#+end_src
+#+END_SRC
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 ;; (use-package bash-completion
 ;;   :commands bash-completion-dynamic-complete
 ;;   :init
@@ -4534,14 +4534,14 @@ PWD is not in a git repo (or the git command is not found)."
        ad-return-value)))
 
 (provide 't-shell)
-#+end_src
+#+END_SRC
 
 ** Desktop
 
 Store desktop and recall it, e.g. after reboot. Tries to be smart about keeping
 the saved desktop project specific.
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (defun t/desktop-project-name ()
   (when-let ((root (t/project-root)))
     (concat root
@@ -4568,7 +4568,7 @@ the saved desktop project specific.
           (dired ".")
           (t/desktop-save)))
     (message "Not in a project.")))
-#+end_src
+#+END_SRC
 
 ** Typography
 
@@ -4711,7 +4711,7 @@ Breathing room nice.
 
 Change frame width and height consistently across os'es.
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (when (not is-mac) ; Moom.app
   (bind-keys
    :map global-map
@@ -4719,13 +4719,13 @@ Change frame width and height consistently across os'es.
    ("<C-s-right>" . t/increase-frame-width)
    ("<C-s-down>" . t/increase-frame-height)
    ("<C-s-up>" . t/decrease-frame-height)))
-#+end_src
+#+END_SRC
 
 *** Frame movement
 
 Move window consistently across os'es.
 
-#+begin_src emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent
 (bind-keys
  :map
  global-map
@@ -4733,7 +4733,7 @@ Move window consistently across os'es.
  ("<C-S-s-right>" . t/move-frame-right)
  ("<C-S-s-down>" . t/move-frame-down)
  ("<C-S-s-up>" . t/move-frame-up))
-#+end_src
+#+END_SRC
 
 ** Server
 
@@ -4864,10 +4864,10 @@ Clean export stamp.
 
 Make org-goto play nice with counsel.
 
-#+begin_src elisp-mode :results silent
+#+BEGIN_SRC elisp-mode :results silent
 (setq org-goto-interface 'outline-path-completion)
 (setq org-outline-path-complete-in-steps nil)
-#+end_src
+#+END_SRC
 
 *** Initialize
 
