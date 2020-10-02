@@ -3427,8 +3427,7 @@ Thesaurus.
     (t/add-hook 'clojurescript-mode-hook (t/lambda (t/init-clj-refactor 'clojurescript-mode)))))
 
 
-;; TODO
-;;(use-package cljr-helm :commands cljr-helm)
+(use-package cljr-ivy :commands cljr-ivy)
 
 (use-package clojure-mode-extra-font-locking
   :commands clojure-mode) ;; more syntax hilighting
