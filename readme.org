@@ -1709,8 +1709,8 @@ Always had plans to read faster with this one..
                            "<right>" 'spray-forward-word))
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
                       (setq-local spray-margin-top (truncate (/ (window-height) 2.7)))
-                      (setq-local spray-margin-left (truncate (/ (window-width) 2.7)))
-                      (beacon-mode -1)
+                      (setq-local spray-margin-left (truncate (/ (window-width) 3.1)))
+                      ;;(beacon-mode -1)
                       (t/locally-disable-cursor)
                       (set-face-foreground 'spray-accent-face
                                            (face-foreground 'font-lock-keyword-face)))))
