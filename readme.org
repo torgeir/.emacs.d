@@ -3113,7 +3113,7 @@ Thesaurus.
                   "r" 'nlinum-relative-toggle
                   "L" 'hl-line-mode
                   "l" 'visual-line-mode
-                  "." 'whitespace-mode
+                  "w" 'whitespace-mode
                   "Cc" 'rainbow-mode
                   "Cd" 'rainbow-delimiters-mode)
 
