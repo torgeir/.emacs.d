@@ -5338,3 +5338,56 @@ We're done, wrap up timing so we can se how long it took.
 #+BEGIN_SRC emacs-lisp :results silent
 (t/timing-end)
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results silent
+(defvar t-complete-line--buffer "*rg-complete-line*")
+(defmacro t-complete-line--with-buffer (&rest do)
+  `(condition-case nil
+       (with-current-buffer t-complete-line--buffer
+         ,@do)
+     (error nil)))
+
+(defun t/complete-line ()
+  (interactive)
+  (ivy-read "Complete line: "
+            (lambda (q)
+              (or
+               (ivy-more-chars)
+               (t-complete-line--with-buffer (erase-buffer))
+               (let ((ps (start-process-shell-command
+                          "rg-complete-line"
+                          "*rg-complete-line*"
+                          (string-join (list
+                                        "rg"
+                                        "--no-heading"
+                                        "--no-filename"
+                                        "--no-line-number"
+                                        "--max-columns 500"         ;; remove long lines
+                                        (shell-quote-argument (replace-regexp-in-string " " ".*" q))
+                                        " | grep -Ev \"^$\""        ;; remove empty lines
+                                        " | sed -E \"s/^[ \t]*//\"" ;; remove leading ws
+                                        " | sort -u"                ;; unique
+                                        " | head -n 100")
+                                       " "))))
+                 (set-process-sentinel
+                  ps
+                  (lambda (process msg)
+                    (when (memq (process-status process) '(exit signal))
+                      (ivy-update-candidates
+                       (split-string (t-complete-line--with-buffer (buffer-string)) "\n")))))
+                 0 ;; tell ivy to expect an ivy-update-candidates call instead of returning them
+                 )))
+            :dynamic-collection t
+            :keymap ivy-minibuffer-map
+            :action (lambda (match)
+                      (beginning-of-line)
+                      (when (not (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
+                        (kill-line))
+                      (insert match))
+            :unwind (lambda () (t-complete-line--with-buffer (kill-buffer)))))
+
+(t/declare-prefix "c" "applications" "l" 't/complete-line)
+#+END_SRC
+
+
+
