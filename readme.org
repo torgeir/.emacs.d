@@ -266,7 +266,6 @@ A more forgiving version of add-hook.
      (dolist (hook hooks)
        (dolist (fn fns)
          (add-hook hook fn ,append ,local)))))
-
 #+END_SRC
 
 A more forgiving version of remove-hook.
@@ -825,6 +824,8 @@ Enables evil keybindings for more modes, e.g. help, calendar, eshell etc
 
 *** Search
 
+**** matchit
+
 Jump between html tags with %, like for parens.
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -833,6 +834,8 @@ Jump between html tags with %, like for parens.
   :config
   (global-evil-matchit-mode 1))
 #+END_SRC
+
+**** visualstar
 
 Visual followed by ~*~ or ~#~ allows for fast searching, forwards or backwards, for whats selected. Keep
 hitting it to search further. Preserves selection.
@@ -850,18 +853,18 @@ hitting it to search further. Preserves selection.
       "#" 'evil-visualstar/begin-search-backward)))
 #+END_SRC
 
+**** anzu
 Show current match and total number of matches when searching with evil.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-anzu
-:defer 2
+  :defer 2
   :init
   (progn
     (setq anzu-cons-mode-line-p nil
           anzu-minimum-input-length 1
           anzu-search-threshold 100))
-  :config
-  (global-anzu-mode))
+  :config (global-anzu-mode))
 #+END_SRC
 
 *** Surroundings
@@ -4931,6 +4934,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                    ("h" "home" ,(append (list (t/org-agenda-read))
                                                         (t/org-day-summary "+home-emacs-someday")
                                                         `((tags-todo "+someday-work" ((org-agenda-overriding-header "Someday"))))))))
+(message "org-agenda-files %s" org-agenda-files)
 #+END_SRC
 
 **** Weather
@@ -5142,9 +5146,6 @@ Blank line before new entries with text, but not headings following other headin
   (setq yas-trigger-key [tab])
   (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
   (define-key yas-keymap [tab] 'yas-next-field))
-
-;; See https://github.com/eschulte/emacs24-starter-kit/issues/80.
-(setq org-src-tab-acts-natively nil)
 
 (t/after yasnippet ;; TODO
   (t/add-hook 'org-mode-hook #'yas/org-setup))
