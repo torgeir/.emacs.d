@@ -1,5 +1,4 @@
 ;;; t-defuns.el -*- lexical-binding: t; -*-
-;;;###autoload
 (defun t/exec-org-block (name vars)
   (save-excursion
     (goto-char (org-babel-find-named-block name))
@@ -9,29 +8,26 @@
                                             (cons :var var))
                                           vars))))
 
-;;;###autoload
 (defun t/async-shell-command (name cmd &optional fn)
   "Execute `CMD' async, call `FN' with the result string."
   (lexical-let* ((fn fn)
                  (buf-name (format "*%s*" name))
                  (p (start-process-shell-command name buf-name cmd)))
-    (prog1 p
-      (when fn
-        (set-process-sentinel p (lambda (process event)
-                                  (with-current-buffer buf-name
-                                    (let ((res (buffer-substring-no-properties (point-min) (point-max))))
-                                      (apply fn (list process
-                                                      event
-                                                      (split-string res "\r?\n")))))))))))
+                (prog1 p
+                  (when fn
+                    (set-process-sentinel p (lambda (process event)
+                                              (with-current-buffer buf-name
+                                                (let ((res (buffer-substring-no-properties (point-min) (point-max))))
+                                                  (apply fn (list process
+                                                                  event
+                                                                  (split-string res "\r?\n")))))))))))
 
-;;;###autoload
 (defun t/evil-ex-define-cmd-local (cmd function)
   "Locally binds the function FUNCTION to the command CMD."
   (unless (local-variable-p 'evil-ex-commands)
     (setq-local evil-ex-commands (copy-alist evil-ex-commands)))
   (evil-ex-define-cmd cmd function))
 
-;;;###autoload
 (defun t/send-buffer-to-scala-repl ()
   "Send buffer to ensime repl, starts it if its not running"
   (interactive)
@@ -42,7 +38,6 @@
       (other-window -1)
       (ensime-inf-eval-buffer))))
 
-;;;###autoload
 (defun t/send-region-to-scala-repl (start end)
   "Send region to ensime repl, starts it if its not running"
   (interactive "r")
@@ -53,7 +48,6 @@
       (other-window -1)
       (ensime-inf-eval-region start end))))
 
-;;;###autoload
 (defun t/clean-mode-line ()
   (interactive)
   (loop for cleaner in mode-line-cleaner-alist
@@ -66,7 +60,6 @@
              (when (eq mode major-mode)
                (setq mode-name mode-str)))))
 
-;;;###autoload
 (defun t/css-kill-value ()
   "kills the attribute of a css property"
   (interactive)
@@ -85,14 +78,12 @@
      '(defadvice ,mode (after t/rename-modeline activate)
         (setq mode-name ,new-name))))
 
-;;;###autoload
 (defun t/json-format ()
   "pretty prints json in selected region"
   (interactive)
   (save-excursion
     (shell-command-on-region (mark) (point) "python -m json.tool" (buffer-name) t)))
 
-;;;###autoload
 (defun t/build-tags ()
   "Build ctags file for projectile project, calls load-tags when done.
 
@@ -110,28 +101,26 @@ understands."
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-      (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
-       (root (projectile-project-root))
-       (tags (shell-quote-argument (concat root "TAGS")))
-       (process (start-process-shell-command "build ctags asynchronously"
-                                             "*ctags async*"
-                                             (concat
-                                              "ctags -e -R"          ; recurse
-                                              " --options=" ctags ; use global config
-                                              " -f " tags " "     ; put it in project/TAGS
-                                              " ."                   ; in the current directory
-                                              ))))
-    (set-process-sentinel process (lambda (process event)
-                                    (t/load-tags tags)))))
+   (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
+    (root (projectile-project-root))
+    (tags (shell-quote-argument (concat root "TAGS")))
+    (process (start-process-shell-command "build ctags asynchronously"
+                                          "*ctags async*"
+                                          (concat
+                                           "ctags -e -R"          ; recurse
+                                           " --options=" ctags ; use global config
+                                           " -f " tags " "     ; put it in project/TAGS
+                                           " ."                   ; in the current directory
+                                           ))))
+   (set-process-sentinel process (lambda (process event)
+                                   (t/load-tags tags)))))
 
-;;;###autoload
 (defun t/load-tags (tags)
   "loads project tags into tag table"
   (message "loading project tags..")
   (visit-tags-table tags)
   (message "project tags loaded"))
 
-;;;###autoload
 (defun t/find-tag-at-point ()
   "goes to tag at point, builds and/or loads project TAGS file first"
   (interactive)
@@ -141,7 +130,6 @@ understands."
     (when (find-tag-default)
       (etags-select-find-tag-at-point))))
 
-;;;###autoload
 (defun t/copy-to-clipboard (text &optional push)
   "Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses builtin pbcopy."
   (let* ((process-connection-type nil)
@@ -151,7 +139,6 @@ understands."
     (process-send-eof proc))
   text)
 
-;;;###autoload
 (defun t/open-in-desktop ()
   "Show current file in desktop (OS's file manager).
 URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
@@ -163,7 +150,6 @@ Version 2015-06-12"
    (is-mac (shell-command "open ."))
    (is-linux (shell-command "xdg-open ."))))
 
-;;;###autoload
 (defun t/open-line-above ()
   "Insert a newline above the current line and put point at beginning."
   (interactive)
@@ -173,26 +159,22 @@ Version 2015-06-12"
   (forward-line -1)
   (indent-according-to-mode))
 
-;;;###autoload
 (defun t/hippie-expand-no-case-fold ()
   (interactive)
   (let ((case-fold-search nil))
     (hippie-expand nil)))
 
-;;;###autoload
 (defun t/hippie-expand-lines ()
   (interactive)
   (let ((hippie-expand-try-functions-list '(try-expand-line-all-buffers)))
     (end-of-line)
     (hippie-expand nil)))
 
-;;;###autoload
 (defun t/kill-other-buffers ()
   "Kill all other buffers."
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
-;;;###autoload
 (defun t/rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
   (interactive)
@@ -210,7 +192,6 @@ Version 2015-06-12"
           (message "File '%s' successfully renamed to '%s'"
                    name (file-name-nondirectory new-name)))))))
 
-;;;###autoload
 (defun t/delete-current-buffer-file ()
   "Removes file connected to current buffer and kills buffer."
   (interactive)
@@ -224,7 +205,6 @@ Version 2015-06-12"
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
-;;;###autoload
 (defun t/paredit-wrap-round-from-behind ()
   (interactive)
   (forward-sexp -1)
@@ -232,19 +212,16 @@ Version 2015-06-12"
   (insert " ")
   (forward-char -1))
 
-;;;###autoload
 (defun t/untabify-buffer ()
   "Remove tabs in buffer"
   (interactive)
   (untabify (point-min) (point-max)))
 
-;;;###autoload
 (defun t/indent-buffer ()
   "Correctly indents a buffer"
   (interactive)
   (indent-region (point-min) (point-max)))
 
-;;;###autoload
 (defun t/cleanup-buffer-whitespace-and-indent ()
   "Perform a bunch of operations on the whitespace content of a buffer.
 Including indent-buffer, which should not be called automatically on save."
@@ -253,13 +230,11 @@ Including indent-buffer, which should not be called automatically on save."
   (when (fboundp 'ethan-wspace-clean-all) (ethan-wspace-clean-all))
   (t/indent-buffer))
 
-;;;###autoload
 (defun t/eval-region-or-last-sexp ()
   (interactive)
   (if (region-active-p) (call-interactively 'eval-region)
     (call-interactively 'eval-last-sexp)))
 
-;;;###autoload
 (defun t/eval-and-replace ()
   "Evaluate and replace the preceding sexp with its value."
   (interactive)
@@ -270,7 +245,6 @@ Including indent-buffer, which should not be called automatically on save."
     (error (message "Invalid expression")
            (insert (current-kill 0)))))
 
-;;;###autoload
 (defun t/lorem ()
   "Insert a lorem ipsum."
   (interactive)
@@ -282,7 +256,6 @@ Including indent-buffer, which should not be called automatically on save."
           "pariatur. Excepteur sint occaecat cupidatat non proident, sunt in "
           "culpa qui officia deserunt mollit anim id est laborum."))
 
-;;;###autoload
 (defun t/smart-beginning-of-line ()
   "Move point to first non-whitespace character or beginning-of-line."
   (interactive "^")
@@ -291,7 +264,6 @@ Including indent-buffer, which should not be called automatically on save."
     (and (= oldpos (point))
          (beginning-of-line))))
 
-;;;###autoload
 (defun t/delete-frame-or-hide-last-remaining-frame ()
   "Delete the selected frame. If the last one, hide it instead."
   (interactive)
@@ -301,23 +273,19 @@ Including indent-buffer, which should not be called automatically on save."
                (when is-mac (ns-do-hide-emacs))
              "in terminal, use c-z instead"))))
 
-;;;###autoload
 (defun t/copy-buffer-file-name ()
   (interactive)
   (add-string-to-kill-ring (file-name-nondirectory (buffer-file-name))))
 
-;;;###autoload
 (defun t/copy-buffer-file-path ()
   (interactive)
   (add-string-to-kill-ring (file-relative-name (buffer-file-name) (projectile-project-root))))
 
-;;;###autoload
 (defun t/previous-window ()
   "Skip back to previous window"
   (interactive)
   (call-interactively 'other-window))
 
-;;;###autoload
 (defun t/buffer-mode (buffer-or-string)
   "Returns the major mode associated with a buffer."
   (with-current-buffer buffer-or-string
@@ -327,23 +295,19 @@ Including indent-buffer, which should not be called automatically on save."
   "Direction of cursor movement operations.")
 (make-variable-buffer-local 't/cursors-direction)
 
-;;;###autoload
 (defun t/cursors-direction-is-up ()
   "Returns t if the current cursor movement direction is 'up."
   (eq t/cursors-direction 'up))
 
-;;;###autoload
 (defun t/cursors-direction-is-down ()
   "Returns t if the current cursor movement direction is 'down."
   (eq t/cursors-direction 'down))
 
-;;;###autoload
 (defun t/split-window-right-and-move-there-dammit ()
   (interactive)
   (split-window-right)
   (windmove-right))
 
-;;;###autoload
 (defun t/split-window-below-and-move-there-dammit ()
   (interactive)
   (split-window-below)
@@ -354,20 +318,16 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (evil-yank (point) (point-at-eol)))
 
-;;;###autoload
 (defun t/config-reload () (interactive) (load-file "~/.emacs.d/init.el"))
 
-;;;###autoload
 (defun t/face-color-b (attr)
   "Get `:background' color of `attr'"
   (face-attribute attr :background))
 
-;;;###autoload
 (defun t/face-color-f (attr)
   "Get `:foreground' color of `attr'"
   (face-attribute attr :foreground))
 
-;;;###autoload
 (defun t/switch-theme (theme)
   "Switch theme, disabling previously loaded"
   (interactive
@@ -379,7 +339,6 @@ Including indent-buffer, which should not be called automatically on save."
   (load-theme theme t)
   (message "%s" theme))
 
-;;;###autoload
 (defun t/toggle-theme-dark-light ()
   "Toggles between themes `doom-vibrant' and `spacemacs-light'"
   (interactive)
@@ -414,7 +373,6 @@ Including indent-buffer, which should not be called automatically on save."
                  "Inconsolata"
                  "Ubuntu Mono")))
 
-;;;###autoload
 (defun t/cycle-font ()
   "Cycle through list of fonts, setting the front most one."
   (interactive)
@@ -428,7 +386,6 @@ Including indent-buffer, which should not be called automatically on save."
             (append rest (list first)))))
   (t/set-font (car t-fonts)))
 
-;;;###autoload
 (defun t/current-font ()
   "Grabs the current font. Prints message when called interactively."
   (interactive)
@@ -436,7 +393,6 @@ Including indent-buffer, which should not be called automatically on save."
     (when (called-interactively-p) (message font))
     font))
 
-;;;###autoload
 (defun t/set-font (font &optional silence)
   "Change font."
   (when window-system
@@ -445,13 +401,11 @@ Including indent-buffer, which should not be called automatically on save."
       (when (not silence)
         (message "Font: %s." sized-font)))))
 
-;;;###autoload
 (defun t/reload-font ()
   "Reload font to make e.g. font size changes have effect."
   (interactive)
   (t/set-font (t/current-font)))
 
-;;;###autoload
 (defun t/fix-fira-ligatures ()
   (interactive)
   (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
@@ -484,26 +438,22 @@ Including indent-buffer, which should not be called automatically on save."
       (set-char-table-range composition-function-table (car char-regexp)
                             `([,(cdr char-regexp) 0 font-shape-gstring])))))
 
-;;;###autoload
 (defun t/decrease-font-size ()
   (interactive)
   (setq *t-adjusted-font-size* (- *t-adjusted-font-size* 1))
   (t/reload-font))
 
-;;;###autoload
 (defun t/increase-font-size ()
   (interactive)
   (setq *t-adjusted-font-size* (+ *t-adjusted-font-size* 1))
   (t/reload-font))
 
-;;;###autoload
 (defun t/reset-font-size (&optional args)
   (interactive)
   (setq *t-adjusted-font-size* t-font-size)
   (t/reload-font)
   (text-scale-set 0))
 
-;;;###autoload
 (defun make-orgcapture-frame ()
   "@torgeir: credits https://github.com/jjasghar/alfred-org-capture/blob/master/el/alfred-org-capture.el
   Create a new frame and run org-capture."
@@ -512,7 +462,6 @@ Including indent-buffer, which should not be called automatically on save."
   (select-frame-by-name "remember")
   (org-capture))
 
-;;;###autoload
 (defun t/sudo-edit (&optional arg)
   "Edit currently visited file as root.
 
@@ -525,16 +474,13 @@ Including indent-buffer, which should not be called automatically on save."
                          (ido-read-file-name "Find file(as root): ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 
-;;;###autoload
 (defun server-remove-kill-buffer-hook ()
   ;; remove other clients-has-the-file-open-prompt
   (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
 
-;;;###autoload
 (defun t/prefix-arg-universal? ()
   (equal '(4) current-prefix-arg))
 
-;;;###autoload
 (defun t/indent-after-paste (fn &rest args)
   (evil-start-undo-step)
   (let* ((u-prefix (t/prefix-arg-universal?))
@@ -549,13 +495,11 @@ Including indent-buffer, which should not be called automatically on save."
 (advice-add 'evil-paste-before :around #'t/indent-after-paste)
 (advice-add 'evil-paste-after :around #'t/indent-after-paste)
 
-;;;###autoload
 (defun t/comint-clear-buffer ()
   (interactive)
   (let ((comint-buffer-maximum-size 0))
     (comint-truncate-buffer)))
 
-;;;###autoload
 (defun t/uniquify-lines ()
   "Remove duplicate adjacent lines in region or current buffer"
   (interactive)
@@ -567,7 +511,6 @@ Including indent-buffer, which should not be called automatically on save."
         (while (re-search-forward "^\\(.*\n\\)\\1+" end t)
           (replace-match "\\1"))))))
 
-;;;###autoload
 (defun t/sort-lines ()
   "Sort lines in region or current buffer"
   (interactive)
@@ -575,20 +518,17 @@ Including indent-buffer, which should not be called automatically on save."
         (end (if (region-active-p) (region-end) (point-max))))
     (sort-lines nil beg end)))
 
-;;;###autoload
 (defun t/switch-to-previous-buffer ()
   "Switch to previously open buffer.
 Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-;;;###autoload
 (defun t/switch-to-scratch-buffer ()
   "Switch to the `*scratch*' buffer. Create it first if needed."
   (interactive)
   (switch-to-buffer (get-buffer-create "*scratch*")))
 
-;;;###autoload
 (defun t/shorten-directory (dir max-length)
   "Show up to `max-length' characters of a directory name `dir'."
   (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
@@ -602,7 +542,6 @@ Repeated invocations toggle between the two most recently open buffers."
       (setq output (concat ".../" output)))
     output))
 
-;;;###autoload
 (defun t/find-xml-path ()
   "Display the hierarchy of XML elements the point is on as a path."
   (interactive)
@@ -621,12 +560,10 @@ Repeated invocations toggle between the two most recently open buffers."
             (message "/%s" (mapconcat 'identity path "/"))
           (format "/%s" (mapconcat 'identity path "/")))))))
 
-;;;###autoload
 (defun t/set-emoji-font (frame)
   "Adjust the font settings of FRAME so Emacs can display emoji properly 🚀"
   (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend))
 
-;;;###autoload
 (defun t/split-window-sensibly (&optional window)
   (cond
    ((and (> (window-width window)
@@ -638,7 +575,6 @@ Repeated invocations toggle between the two most recently open buffers."
     (with-selected-window window
       (split-window-below)))))
 
-;;;###autoload
 (defun t/date-time ()
   "Insert current date-time string in full ISO 8601 format.
 Example: 2010-11-29T23:23:35-08:00"
@@ -647,18 +583,15 @@ Example: 2010-11-29T23:23:35-08:00"
    ((lambda (x) (concat (substring x 0 3) ":" (substring x 3 5)))
     (format-time-string "%z"))))
 
-;;;###autoload
 (defun t/date-time-for-filename ()
   "Return date-time iso 8601 string suitable for filename"
   (replace-regexp-in-string ":" "." (t/date-time)))
 
-;;;###autoload
 (defun t/elpa-backup-directory ()
   "Returns the directory name of an elpa backup that would run now."
   (locate-user-emacs-file (format "elpa-backups/elpa-%s"
                                   (t/date-time-for-filename))))
 
-;;;###autoload
 (defun t/elpa-backup ()
   "Backup the current elpa folder to elpa-backups."
   (interactive)
@@ -669,7 +602,6 @@ Example: 2010-11-29T23:23:35-08:00"
    t ; create parents
    ))
 
-;;;###autoload
 (defun t/upgrade-packages ()
   "Upgrade packages after backing up the current elpa files."
   (interactive)
@@ -678,14 +610,12 @@ Example: 2010-11-29T23:23:35-08:00"
   (message "Backing up elpa/: done.")
   (paradox-upgrade-packages))
 
-;;;###autoload
 (defun t/current-line-ends-in-comma ()
   "Return whether the current line is suffixed with ','"
   (save-excursion
     (end-of-line)
     (looking-back ",\s*")))
 
-;;;###autoload
 (defun t/prev-line-ends-in-comma ()
   "Return whether the current line is suffixed with ','"
   (save-excursion
@@ -693,7 +623,6 @@ Example: 2010-11-29T23:23:35-08:00"
     (end-of-line)
     (looking-back ",\s*")))
 
-;;;###autoload
 (defun t/next-line-ends-in-comma ()
   "Return whether the current line is suffixed with ','"
   (save-excursion
@@ -701,7 +630,6 @@ Example: 2010-11-29T23:23:35-08:00"
     (end-of-line)
     (looking-back ",\s*")))
 
-;;;###autoload
 (defun t/move-line-up (arg)
   "Move the current line(s) down one line."
   (interactive "P")
@@ -713,7 +641,6 @@ Example: 2010-11-29T23:23:35-08:00"
          (concat ":m" reg-or-lin "-" (number-to-string num) (kbd "RET") reactivate-region)))
     (move-line-or-region (- arg))))
 
-;;;###autoload
 (defun t/move-line-down (arg)
   "Move the current line(s) down one line."
   (interactive "P")
@@ -726,7 +653,6 @@ Example: 2010-11-29T23:23:35-08:00"
     (backward-move-line-or-region (- arg))))
 
 
-;;;###autoload
 (defun t/find-org-files-recursively (&optional directory filext)
   "Return .org and .org_archive files recursively from DIRECTORY.
 If FILEXT is provided, return files with extension FILEXT instead."
@@ -748,7 +674,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                           org-file-list) ; add files found to result
           (add-to-list 'org-file-list org-file)))))))
 
-;;;###autoload
 (defun t/org-fix-inline-images ()
   "Fix redisplaying images after executing org babel code."
   (dolist (buffer (buffer-list))
@@ -756,13 +681,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (when (eq 'org-mode major-mode)
         (org-redisplay-inline-images)))))
 
-;;;###autoload
 (defun t/project-root ()
   "Get project root without throwing"
   (let (projectile-require-project-root strict-p)
     (projectile-project-root)))
 
-;;;###autoload
 (defun t/volatile-kill-buffer ()
   "Kill current buffer unconditionally."
   (interactive)
@@ -772,7 +695,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (let ((buffer-modified-p nil))
     (kill-this-buffer)))
 
-;;;###autoload
 (defun t/volatile-kill-buffer-and-window ()
   "Kill current buffer and the window unconditionally."
   (interactive)
@@ -782,7 +704,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (let ((buffer-modified-p nil))
     (kill-buffer-and-window)))
 
-;;;###autoload
 (defun t/grab-chrome-url ()
   "Grab the frontmost url out of chrome using `org-mac-grab-link'"
   (interactive)
@@ -790,19 +711,16 @@ If FILEXT is provided, return files with extension FILEXT instead."
              (_ (string-match "\\\[\\\[\\(.*\\)\\\]\\\[" chrome-url)))
     (match-string 1 chrome-url)))
 
-;;;###autoload
 (defun t/browse-chrome-url-in-w3m ()
   "Open the frontmost chrome url in `w3m'. "
   (interactive)
   (w3m (t/grab-chrome-url)))
 
-;;;###autoload
 (defun t/get-url (url)
   "Get url synchronously."
   (with-current-buffer (url-retrieve-synchronously url)
     (buffer-string)))
 
-;;;###autoload
 (defun t/fetch (url)
   "Insert url contents in current buffer. Drops headers and 2x empty lines before content."
   (interactive "sfetch url:")
@@ -812,13 +730,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (kill-line)
   (kill-line))
 
-;;;###autoload
 (defun t/fetch-chrome-url ()
   "Insert contents of frontmost url of chrome in buffer."
   (interactive)
   (t/fetch (t/grab-chrome-url)))
 
-;;;###autoload
 (defun t/browse-url-at-point ()
   (interactive)
   (if (t/prefix-arg-universal?)
@@ -832,7 +748,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
             ((equal major-mode 'hackernews-mode) (hackernews-browse-url-action (button-at (point))))
             (t (call-interactively 'browse-url-at-point))))))
 
-;;;###autoload
 (defun t/last-weekday-of-month-p ()
   (let* ((day-of-week (calendar-day-of-week date))
          (month (calendar-extract-month date))
@@ -851,7 +766,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
           (or (eq month-day (1- last-month-day))
               (eq month-day (1- (1- last-month-day))))))))
 
-;;;###autoload
 (defun t/face-at-point (pos)
   "Echo the face at point."
   (interactive "d")
@@ -859,7 +773,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                   (get-char-property (point) 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-;;;###autoload
 (defun t/font-lock-test-faces ()
   "Outputs test strings with all font lock faces to show colors."
   (interactive)
@@ -884,7 +797,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (insert current-string)
       (when is-font-lock (font-lock-mode 1)))))
 
-;;;###autoload
 (defun t/find-file-check-make-large-file-read-only-hook ()
   "If a file is over a given size, make the buffer read only."
   (when (> (buffer-size) (* 20 1024 1024))
@@ -892,22 +804,18 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (buffer-disable-undo)
     (fundamental-mode)))
 
-;;;###autoload
 (defun t/run-osascript (s)
   "Run applescript."
   (shell-command (format "osascript -e '%s'" s)))
 
-;;;###autoload
 (defun t/osascript-activate (app)
   "Run applescript to activate application."
   (t/run-osascript (format "tell application \"%s\" to activate" app)))
 
-;;;###autoload
 (defun t/osascript-show-url (url)
   (t/run-osascript
    (format "tell application \"Google Chrome\" to set URL of active tab of window 1 to \"%s\"" url)))
 
-;;;###autoload
 (defun t/open-in-intellij ()
   "Opens current file in IntelliJ IDEA."
   (interactive)
@@ -924,20 +832,17 @@ If FILEXT is provided, return files with extension FILEXT instead."
        (format cmd root))))
   (t/osascript-activate "IntelliJ IDEA"))
 
-;;;###autoload
 (defun t/propertize-read-only (str)
   (propertize str
               'read-only t
               'front-sticky 'read-only
               'rear-nonsticky 'read-only))
 
-;;;###autoload
 (defun t/strip-text-properties (txt)
   (with-temp-buffer
     (insert txt)
     (buffer-substring-no-properties (point-min) (point-max))))
 
-;;;###autoload
 (defun t/mobile-inbox-count ()
   "Counts the number of items in `org-mobile-inbox-for-pull'."
   (let ((inbox-file org-mobile-inbox-for-pull))
@@ -947,14 +852,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (let ((matches (count-matches "^\*+ " (point-min) (point-max))))
           (when (> matches 0) matches))))))
 
-;;;###autoload
 (defun t/get-string-from-file (file-path)
   "Return `file-path's file content."
   (with-temp-buffer
     (insert-file-contents file-path)
     (buffer-string)))
 
-;;;###autoload
 (defun t/re-seq (regexp string)
   "Get a list of all regexp matches (from the first group) in a string"
   (save-match-data
@@ -965,11 +868,9 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (setq pos (match-end 0)))
       matches)))
 
-;;;###autoload
 (defun t/re-seq-in-file (regex file)
   (t/re-seq regex (t/get-string-from-file (t/user-emacs-file file))))
 
-;;;###autoload
 (defun t/fn-prefix (prefix module)
   (let ((module (if (stringp module) module (symbol-name module))))
     (mapcar
@@ -978,15 +879,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
      (t/re-seq-in-file (concat "defun " "\\(" prefix "\\)" "[ \\)]")
                        (concat "setup/" module ".el")))))
 
-;;;###autoload
 (defun t/call-fns (fns)
   (mapcar 'funcall fns))
 
-;;;###autoload
 (defun t/call-prefix (prefix module)
   (t/call-fns (t/fn-prefix prefix (symbol-name module))))
 
-;;;###autoload
 (defun t/call-init (prefix-fmt pkg)
   (let ((fn (intern (format prefix-fmt pkg))))
     (when (fboundp fn)
@@ -994,7 +892,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (message "t/call-init: %s" fn))
       (funcall fn))))
 
-;;;###autoload
 (defun t/buffer-finished-p (b)
   "Return non-nil value if the buffer has an ended process."
   (string-match-p
@@ -1008,7 +905,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                 "")))
           "\n")))))
 
-;;;###autoload
 (defun t/term-quit-if-finished (&optional else)
   (interactive)
   (if (t/buffer-finished-p (current-buffer))
@@ -1016,7 +912,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (when (functionp else)
       (call-interactively else))))
 
-;;;###autoload
 (defun t/term-kill-if-finished (&optional else)
   (interactive)
   (if (t/buffer-finished-p (current-buffer))
@@ -1024,7 +919,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (when (functionp else)
       (call-interactively else))))
 
-;;;###autoload
 (defun t/neotree-open-file ()
   (interactive)
   (let ((origin-buffer-file-name (buffer-file-name)))
@@ -1032,7 +926,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (neotree-find (projectile-project-root))
     (neotree-find origin-buffer-file-name)))
 
-;;;###autoload
 (defun t/backward-down-sexp ()
   "Move backward to the start of the previous sexp."
   (interactive)
@@ -1045,7 +938,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
    ((looking-back "(") (evil-cp-backward-up-sexp))
    (t (sp-backward-sexp))))
 
-;;;###autoload
 (defun t/forward-down-sexp ()
   "Move forward to the end of the previous sexp."
   (interactive)
@@ -1061,7 +953,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (looking-at ".$")) (evil-cp-next-opening))
    (t (sp-forward-sexp))))
 
-;;;###autoload
 (defun t/forward-sexp ()
   (interactive)
   (if (looking-at "(")
@@ -1074,7 +965,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
           (evil-normal-state))
       (evil-cp-up-sexp))))
 
-;;;###autoload
 (defun t/backward-sexp ()
   (interactive)
   (if (looking-at ")")
@@ -1086,13 +976,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
           (evil-normal-state))
       (evil-cp-backward-up-sexp))))
 
-;;;###autoload
 (defun t/find-files-emacs-init-files ()
   (interactive)
   (let ((default-directory user-emacs-directory))
     (counsel-projectile-find-file-dwim)))
 
-;;;###autoload
 (defun t/newline-expand-braces ()
   "Newline like `evil-ret', but expand (), [] and {} with newline in between, and indent accordingly."
   (interactive)
@@ -1109,13 +997,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (evil-ret)
         (indent-according-to-mode)))))
 
-;;;###autoload
 (defun t/recompile-elpa ()
   "Recompile the elpa/ directory to resolve byte compilation issues."
   (interactive)
   (byte-recompile-directory (expand-file-name (t/user-emacs-file "elpa")) 0))
 
-;;;###autoload
 (defun t/describe (&optional sat)
   "Describe functions, features, symbols, or run help-apropos if it's not found."
   (interactive)
@@ -1125,7 +1011,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
           ((symbolp s) (describe-variable s))
           (t (call-interactively 'counsel-apropos)))))
 
-;;;###autoload
 (defun t/unbind (fn-or-s)
   "Unbind function or symbol depending on type."
   (interactive)
@@ -1133,7 +1018,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
         ((symbolp fn-or-s) (makunbound fn-or-s))
         (t (message "Can't unbind %s, not a fboundp or symbolp" fn-or-s))))
 
-;;;###autoload
 (defun t/add-to-list (l item-or-items)
   "Adds items to the list `l'."
   (if (listp item-or-items)
@@ -1141,13 +1025,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (add-to-list l item-or-items))
   l)
 
-;;;###autoload
 (defun t/toggle-line-numbers ()
   "Toggle line numbers on or off."
   (interactive)
   (nlinum-mode (if nlinum-mode 0 1)))
 
-;;;###autoload
 (defun t/highlight-logging ()
   "Add log highlighting to current major mode."
   (interactive)
@@ -1203,7 +1085,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (when font-lock-mode
       (with-no-warnings (font-lock-fontify-buffer)))))
 
-;;;###autoload
 (defun t/clone (repo)
   "Clone a github repo to `~/Code/<repo-name>'."
   (interactive "sClone repository: ")
@@ -1221,26 +1102,22 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (message "Cloning %s.. ok." repo repo-name))
     (dired dir)))
 
-;;;###autoload
 (defun t/set-company-backends (&rest backends)
   "Set company backends."
   (make-local-variable 'company-backends)
   (setq-local company-backends backends))
 
-;;;###autoload
 (defun t/add-company-backends (&rest backends)
   "Add list of grouped company backends."
   (make-local-variable 'company-backends)
   (setq-local company-backends (t/company-backends backends)))
 
-;;;###autoload
 (defun t/add-company-backends-hook (mode-hook &rest backends)
   "Add list of grouped company backends for `mode-hook'."
   (add-hook mode-hook
             (lambda nil
               (apply 't/add-company-backends backends))))
 
-;;;###autoload
 (defun t/visit-git-link-pulls ()
   "Navigate to /pulls for the current git repo."
   (interactive)
@@ -1251,7 +1128,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                       (git-link--remote-host (git-link--select-remote)) "/"
                       (git-link--remote-dir (git-link--select-remote)) "/pulls")))
 
-;;;###autoload
 (defun t/projectile-dired ()
   (interactive)
   (let ((projects (projectile-load-known-projects)))
@@ -1262,7 +1138,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
          :action 'dired)
       (user-error "No projects found"))))
 
-;;;###autoload
 (defun t/projectile-desktop ()
   (interactive)
   (let ((projects (projectile-load-known-projects)))
@@ -1277,7 +1152,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                      (t/desktop-restore))))
       (user-error "No projects found"))))
 
-;;;###autoload
 (defun t/projectile-magit-status ()
   (interactive)
   (let ((projects (projectile-load-known-projects)))
@@ -1290,7 +1164,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                      (magit-status project))))
       (user-error "No projects found"))))
 
-;;;###autoload
 (defun t/projectile-ag ()
   (interactive)
   (let ((projects (projectile-load-known-projects)))
@@ -1303,7 +1176,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                      (counsel-projectile-ag))))
       (user-error "No projects found"))))
 
-;;;###autoload
 (defun t/projectile-rg ()
   (interactive)
   (let ((projects (projectile-load-known-projects)))
@@ -1316,7 +1188,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                      (counsel-projectile-rg))))
       (user-error "No projects found"))))
 
-;;;###autoload
 (defun t/projectile-visit-git-link-pulls ()
   (interactive)
   (require 'ghub)
@@ -1332,7 +1203,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                      (browse-url (format "https://github.com/%s/pulls" id)))))
       (user-error "No projects found"))))
 
-;;;###autoload
 (defun t/margins-global (l &optional r)
   "Set global frame margins."
   (interactive "nWidth: ")
@@ -1340,7 +1210,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                 right-margin-width (or r l))
   (set-window-buffer nil (current-buffer)))
 
-;;;###autoload
 (defun t/margins-local (l &optional r)
   "Set buffer local frame margin."
   (interactive "nWidth: ")
@@ -1348,7 +1217,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (setq-local right-margin-width (or r l))
   (set-window-buffer nil (current-buffer)))
 
-;;;###autoload
 (defun t/eww-toggle-images ()
   "Toggle whether images are loaded and reload the current page fro cache."
   (interactive)
@@ -1357,7 +1225,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (message "Images are now %s"
            (if shr-inhibit-images "off" "on")))
 
-;;;###autoload
 (defun t/last-used-window-buffer ()
   "Switch to the window that displays the most recently selected buffer."
   (interactive)
@@ -1367,7 +1234,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (select-window (car windows))
       (message "no suitable window to switch to"))))
 
-;;;###autoload
 (defun t/safe-restart-emacs ()
   "Restart emacs if config parses correctly."
   (interactive)
@@ -1393,12 +1259,10 @@ If FILEXT is provided, return files with extension FILEXT instead."
           (insert output)
           (search-backward "Error!"))))))
 
-;;;###autoload
 (defun t/word-at-point ()
   "Returns word under cursor."
   (thing-at-point 'word t))
 
-;;;###autoload
 (defun t/ip ()
   (interactive)
   (let ((ip (-> "dig +short myip.opendns.com @resolver1.opendns.com" shell-command-to-string s-trim)))
@@ -1406,7 +1270,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (kill-new ip)))
 
 
-;;;###autoload
 (defun t/transparency (value)
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive (list
@@ -1418,13 +1281,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (set-frame-parameter (selected-frame) 'alpha value))
 
 
-;;;###autoload
 (defun t/clone-github-repo-from-chrome ()
   "Clones the github repo of the currently visisble chrome tab."
   (interactive)
   (t/clone (t/grab-chrome-url)))
 
-;;;###autoload
 (defun t/ediff-use-both ()
   (interactive)
   (ediff-copy-diff ediff-current-difference nil 'C nil
@@ -1432,7 +1293,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                     (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
                     (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
 
-;;;###autoload
 (defun t/lookup-key (key)
   "Search for KEY in all known keymaps."
   (mapatoms
@@ -1442,7 +1302,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
          (message "%S" ob))))
    obarray))
 
-;;;###autoload
 (defun t/lookup-key-prefix (key)
   "Search for KEY as prefix in all known keymaps."
   (mapatoms
@@ -1453,7 +1312,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
          (message "%S" ob))))
    obarray))
 
-;;;###autoload
 (defun t/fns ()
   "List functions."
   (let ((l))
@@ -1463,14 +1321,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
     l))
 
 
-;;;###autoload
 (defun t/interactive-fns ()
   "List interactive functions."
   (-filter 'commandp
            (t/fns)))
 
 
-;;;###autoload
 (defun t/complete-with-helm-then (list fn)
   "Complete from list with helm, e.g. (t/complete-with-helm-then '(one two) 'insert)"
   (interactive)
@@ -1479,7 +1335,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                                          :candidates list)))
 
 
-;;;###autoload
 (defun t/locally-disable-cursor ()
   "Locally disable cursor in buffer."
   (interactive)
@@ -1488,7 +1343,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (setq-local cursor-type 'nil)
   (setq-local evil-normal-state-cursor 'nil))
 
-;;;###autoload
 (defun t/random-line ()
   "Goto a random line in the buffer. Useful trying out a random package."
   (interactive)
@@ -1496,35 +1350,30 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (goto-char (point-min))
   (forward-line (random (count-lines (point-min) (point-max)))))
 
-;;;###autoload
 (defun t/decrease-frame-width ()
   "Decrease emacs frame size horizontally"
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-width frame (- (frame-width frame) 4))))
 
-;;;###autoload
 (defun t/increase-frame-width ()
   "Increase emacs frame size horizontally"
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-width frame (+ (frame-width frame) 4))))
 
-;;;###autoload
 (defun t/decrease-frame-height ()
   "Decrease emacs frame size vertically"
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-height frame (- (frame-height frame) 4))))
 
-;;;###autoload
 (defun t/increase-frame-height ()
   "Increase emacs frame size vertically"
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-height frame (+ (frame-height frame) 4))))
 
-;;;###autoload
 (defun t/move-frame-right ()
   "Moves emacs frame right"
   (interactive)
@@ -1532,7 +1381,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
          (left (frame-parameter frame 'left)))
     (set-frame-parameter frame 'left (+ left 40))))
 
-;;;###autoload
 (defun t/move-frame-left ()
   "Moves emacs frame left"
   (interactive)
@@ -1540,7 +1388,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
          (left (frame-parameter frame 'left)))
     (set-frame-parameter frame 'left (- left 40))))
 
-;;;###autoload
 (defun t/move-frame-up ()
   "Moves emacs frame up"
   (interactive)
@@ -1548,7 +1395,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
          (top (frame-parameter frame 'top)))
     (set-frame-parameter frame 'top (- top 40))))
 
-;;;###autoload
 (defun t/move-frame-down ()
   "Moves emacs frame down"
   (interactive)
@@ -1556,7 +1402,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
          (top (frame-parameter frame 'top)))
     (set-frame-parameter frame 'top (+ top 40))))
 
-;;;###autoload
 (defun t/diary-last-day-of-month (date)
   "Return `t` if DATE is the last day of the month.
 
@@ -1573,7 +1418,6 @@ See also:  (setq org-agenda-include-diary t)
           (calendar-last-day-of-month month year)))
     (= day last-day-of-month)))
 
-;;;###autoload
 (defun t/diary-last-day-of-week (date)
   "Return `t` if DATE is the last day of the week."
   (equal 5
@@ -1582,7 +1426,6 @@ See also:  (setq org-agenda-include-diary t)
                 (year (calendar-extract-year date)))
            (org-day-of-week day month year))))
 
-;;;###autoload
 (defun t/popwin-next-key (key)
   (interactive "kPress keybinding to run in popup: ")
   (popwin:display-buffer-1 (popwin:dummy-buffer))
@@ -1591,7 +1434,6 @@ See also:  (setq org-agenda-include-diary t)
      (cond ((stringp keys) (symbol-function keys))
            (t keys)))))
 
-;;;###autoload
 (defun t/popwin (fn)
   "Run function FN in popwin."
   (t/lambda ()
