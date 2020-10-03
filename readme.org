@@ -57,8 +57,6 @@ Install from cygwin or https://ftp.gnu.org/gnu/emacs/windows/ or http://alpha.gn
 See ~fonts/~.
 
 ** Bootstrap
-
-
 *** Lexical binding
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -120,8 +118,7 @@ Add snippets and site-lisp to the load-path.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (defconst t-dir-snippets (t/user-emacs-file "snippets"))
-(add-to-list 'load-path "autoload")
-
+(add-to-list 'load-path t-dir-snippets)
 (let ((dir-site-lisp (t/user-emacs-file "site-lisp")))
   (add-to-list 'load-path dir-site-lisp)
   ;; add folders inside site-lisp as well
@@ -562,23 +559,11 @@ Autoloads, that auto reload when you save them. A myriad of useful functions
 with autoload cookies are in ~t-defuns.el~.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(defconst t-file-autoloads (t/user-emacs-file "autoload/autoloads.el"))
-
-(defun t/reload-autoloads ()
-  "Regenerate and reload autoloads.el."
-  (interactive)
-  (let ((generated-autoload-file t-file-autoloads))
-    (when (called-interactively-p 'interactive) (load t-file-autoloads t t))))
-
-(unless (require 'autoloads t-file-autoloads t)
-  (t/reload-autoloads)
-  (unless (require 'autoloads t-file-autoloads t) (error "autoloads.el not generated!")))
-
-(t/add-hook-defun 'after-save-hook t/reload-autoloads-on-defuns-save
+(require 't-defuns (t/user-emacs-file "t-defuns"))
+(t/add-hook-defun 'after-save-hook t/reload-defuns-on-save
                   (when (string-match "t-defuns.el$" buffer-file-name)
                     (eval-buffer)
-                    (t/reload-autoloads)
-                    (message "Reloaded autoloads.")))
+                    (message "Reloaded defuns.")))
 #+END_SRC
 
 ** Sanity
@@ -784,19 +769,6 @@ Mouse support, with scroll.
     (fset 'evil-visual-update-x-selection 'ignore)))
 #+END_SRC
 
-*** Show matches
-
-Show current match and total number of matches when searching with evil.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package evil-anzu
-  :init
-  (progn
-    (setq anzu-cons-mode-line-p nil
-          anzu-minimum-input-length 1
-          anzu-search-threshold 100)))
-#+END_SRC
-
 *** jk to escape
 
 Escape from evil with a fast ~jk~ combo.
@@ -871,12 +843,25 @@ hitting it to search further. Preserves selection.
              evil-visualstar/begin-search-backward)
   :config
   (progn
-    (setq evil-visualstar/persistent t
-          evil-)
+    (setq evil-visualstar/persistent t)
     (global-evil-visualstar-mode)
     (t/bind-in 'evil-visual-state-map
       "*" 'evil-visualstar/begin-search-forward
       "#" 'evil-visualstar/begin-search-backward)))
+#+END_SRC
+
+Show current match and total number of matches when searching with evil.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package evil-anzu
+:defer 2
+  :init
+  (progn
+    (setq anzu-cons-mode-line-p nil
+          anzu-minimum-input-length 1
+          anzu-search-threshold 100))
+  :config
+  (global-anzu-mode))
 #+END_SRC
 
 *** Surroundings
@@ -980,7 +965,7 @@ surrounding lisp sexp, respecting the ast.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-commentary
   :defer 1
-  :init (evil-commentary-mode))
+  :config (evil-commentary-mode))
 #+END_SRC
 
 *** Color highlights evil operations.
