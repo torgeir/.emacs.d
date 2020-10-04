@@ -1012,7 +1012,7 @@ Highlight and fold-this are dependencies of evil-extra-operator.
   (global-evil-extra-operator-mode 1))
 #+END_SRC
 
-*** Modes starting states; emacs state, insert, normal
+*** Modes starting states
 
 **** Start in emacs state
 
