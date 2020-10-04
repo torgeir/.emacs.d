@@ -843,15 +843,16 @@ hitting it to search further. Preserves selection.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-visualstar
+  :after evil
   :commands (evil-visualstar/begin-search-forward
              evil-visualstar/begin-search-backward)
-  :config
+  :init
   (progn
     (setq evil-visualstar/persistent t)
-    (global-evil-visualstar-mode)
-    (t/bind-in 'evil-visual-state-map
-      "*" 'evil-visualstar/begin-search-forward
-      "#" 'evil-visualstar/begin-search-backward)))
+    (t/add-hook-defun '(org-mode-hook prog-mode-hook) t-visual-start-hook
+                      (t/bind-in 'evil-visual-state-local-map
+                        "*" 'evil-visualstar/begin-search-forward
+                        "#" 'evil-visualstar/begin-search-backward))))
 #+END_SRC
 
 **** anzu
@@ -1522,7 +1523,7 @@ Show git status in the gutter.
 (use-package git-gutter+
   :diminish git-gutter+-mode
   :init
-  (t/add-hook 'prog-mode-hook 'git-gutter+-mode)
+  (t/add-hook '(org-mode-hook prog-mode-hook) 'git-gutter+-mode)
   :config
   (progn
     (evil-add-command-properties #'git-gutter+-next-hunk :jump t)
