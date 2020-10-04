@@ -433,7 +433,7 @@ Create smart parens wrapping functions.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-linux
-  (setq t-font-size 14
+  (setq t-font-size 12
         shell-file-name "/bin/zsh")
 
   (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
