@@ -1489,7 +1489,7 @@ These actually seem to replace all my previous helm config 😱
         "C-u" 'backward-kill-sentence
         "C-c u" 'universal-argument))))
 (use-package counsel-projectile)
-(use-package counsel-web)
+(use-package counsel-web :commands counsel-web-search)
 (use-package all-the-icons-ivy-rich :init (all-the-icons-ivy-rich-mode 1))
 (use-package ivy-rich :config (ivy-rich-mode 1))
 #+END_SRC
