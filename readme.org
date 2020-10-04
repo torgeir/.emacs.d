@@ -1236,6 +1236,8 @@ Turn camel case into snake case
 
 ** Which key
 
+*** which-key
+
 Some guidance is always welcome.
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -1263,6 +1265,8 @@ Some guidance is always welcome.
             ("deletechar"            . "⌦")
             ("RET"                   . "⏎")))))
 #+END_SRC
+
+*** Prefix functions
 
 Custom prefix functions for defining named shortcuts accessible through evil leader.
 

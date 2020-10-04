@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(Info-quoted ((t (:inherit fixed-pitch-serif :foreground "#888"))))
- '(company-box-background ((t (:background "#21242b"))))
+ '(company-box-background ((t (:background "#21242b"))) t)
  '(dictionary-word-definition-face ((t nil)))
  '(eshell-ls-executable ((t (:inherit doom-modeline-info :weight bold))))
  '(evil-goggles-delete-face ((t (:inherit magit-diff-removed))))
@@ -58,10 +58,16 @@
  '(exec-path-from-shell-arguments '("-l"))
  '(flycheck-javascript-flow-args nil)
  '(helm-source-names-using-follow '("home.org_archive" "bekk.org" "Imenu" "AG"))
- '(json-reformat:indent-width 2)
+ '(json-reformat:indent-width 2 t)
  '(lsp-clients-kotlin-server-executable "~/bin/kotlin-language-server")
  '(lsp-kotlin-language-server-path "~/bin/kotlin-language-server")
  '(org-agenda-window-setup 'only-window t)
+ '(org-show-context-detail
+   '((agenda . local)
+     (bookmark-jump . lineage)
+     (isearch . minimal)
+     (default . local)
+     (org-goto . canonical)))
  '(package-selected-packages
    '(darkroom wc-mode eterm-color eterm-256color native-complete kotlin-mode ox-gfm docker-tramp lsp-java java-mode md4rd lsp-typescript lsp-javascript-typescript helm-lsp lsp-ui lsp-mode swiper-helm org-gcal esh-autosuggest synosaurus dictionary benchmark-init request-deferred forge company-box doom-modeline diminish magit-gh-pulls rjsx-mode twittering twittering-mode evil-collection fold-this nav-flash evil-goggles rsjx-mode php-mode applescript-mode es-mode fsharp-mode cdnjs helm-js-codemod js-codemod flow-minor-mode fireplace dired-subtree artist-mode company-tern company-quickhelp company-terraform terraform-mode pcomplete-extension pcomplete-extensions pcmpl-args pcmpl-homebrew pcmpl-git indium esh-help etags-table prettier-js org-plus-contrib smooth-scrolling yasnippet emoji-cheat-sheet-plus company ace-jump-mode magit git-gutter+ solaire-mode spacemacs-theme evil all-the-icons evil-snipe html2text helm-xref helm-hunks eldoc-eval evil-commentary yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic skewer-mode simple-httpd haml-mode anzu highlight bind-map packed auto-complete clojure-snippets clj-refactor inflections edn peg cider-eval-sexp-fu cider queue clojure-mode mmm-mode markdown-toc markdown-mode gh-md nodejs-repl alert log4e gntp noflet elfeed visual-fill-column wgrep hide-lines loop nlinum google makey restclient know-your-http-well flycheck-pos-tip pos-tip flycheck vi-tilde-fringe ws-butler writeroom-mode winum which-key wgrep-ag web-mode web-beautify weather-metno w3m volatile-highlights visual-regexp uuidgen use-package try transpose-frame toc-org tagedit syslog-mode suggest spaceline smex slim-mode selectric-mode scss-mode sass-mode restart-emacs request rainbow-mode rainbow-delimiters pug-mode persp-mode pcre2el paradox org-mac-link org-mac-iCal org-evil org-bullets org-alert open-junk-file ob-restclient nlinum-relative neotree move-text macrostep lorem-ipsum livid-mode linum-relative link-hint less-css-mode json-mode js2-refactor js-doc info+ indent-guide hungry-delete hl-todo highlight-symbol highlight-parentheses highlight-numbers highlight-indentation highlight-escape-sequences hide-comnt help-fns+ helm-unicode helm-themes helm-swoop helm-projectile helm-open-github helm-mode-manager helm-make helm-google helm-flx helm-descbinds helm-dash helm-css-scss helm-company helm-c-yasnippet helm-ag hackernews gruvbox-theme google-translate golden-ratio git-timemachine git-link git-gutter-fringe+ gist fuzzy flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-multiedit evil-mc evil-matchit evil-lisp-state evil-leader evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu etags-select eshell-z emmet-mode elisp-slime-nav elfeed-org elfeed-goodies dumb-jump doom-themes discover-my-major dired-details define-word dash-at-point darktooth-theme csv-mode company-web company-statistics company-restclient company-flx company-emoji company-ansible column-enforce-mode coffee-mode clean-aindent-mode calendar-norway better-defaults bash-completion auto-yasnippet auto-highlight-symbol auto-compile all-the-icons-dired aggressive-indent ag adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))
  '(pos-tip-background-color "#36473A")
