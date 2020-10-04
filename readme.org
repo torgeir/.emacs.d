@@ -1467,6 +1467,7 @@ Trying ivy as a helm replacement. https://news.ycombinator.com/item?id=24449883
 These actually seem to replace all my previous helm config 😱
 
 #+BEGIN_SRC emacs-lisp :results silent
+(use-package rg)
 (use-package counsel
   :init
   (progn
