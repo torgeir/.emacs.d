@@ -92,7 +92,6 @@ See ~fonts/~.
 (defvar *t-indent-xml* 4)
 (defvar *t-debug-init* nil "Debug/time startup")
 (when *t-debug-init* (setq debug-on-error nil))
-
 #+END_SRC
 
 *** User folders
@@ -127,7 +126,7 @@ Add snippets and site-lisp to the load-path.
       (add-to-list 'load-path project))))
 #+END_SRC
 
-** Timing functions
+*** Timing functions
 
 Functions to record time spent loading the emacs config. Benchmarks can be
 provided when initialization is complete by setting ~*t-debug-init*~ to ~t~.
@@ -150,7 +149,7 @@ provided when initialization is complete by setting ~*t-debug-init*~ to ~t~.
     (benchmark-init/show-durations-tree)))
 #+END_SRC
 
-** Before
+*** Before
 
 Start the initialization timer.
 
@@ -164,7 +163,7 @@ Hook for private stuff before the rest. Useful e.g. for gcal tokens etc.
 (load (t/user-emacs-file "t-before.el") t)
 #+END_SRC
 
-** Implicits
+*** Implicits
 
 #+BEGIN_SRC emacs-lisp :results silent
 (require 'bind-key)
@@ -175,7 +174,7 @@ Hook for private stuff before the rest. Useful e.g. for gcal tokens etc.
 (use-package f) ; file helpers
 #+END_SRC
 
-** Customize
+*** Customize
 
 Customizations go in ~custom.el~.
 
@@ -184,7 +183,7 @@ Customizations go in ~custom.el~.
 (load custom-file)
 #+END_SRC
 
-** Macros
+*** Macros
 
 A couple of macros, probably inspired by doom-emacs trickery.
 
@@ -366,7 +365,7 @@ Create smart parens wrapping functions.
                 (sp-wrap-with-pair ,val)))))
 #+END_SRC
 
-** Os specific
+*** Os specific
 *** Mac
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -754,7 +753,9 @@ Mouse support, with scroll.
       evil-move-beyond-eol t)
 #+END_SRC
 
-*** Init evil. Normal mode is default, and search using evil.
+*** Initialize
+
+Normal mode is default, and search using evil.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (setq evil-default-state 'normal
@@ -765,6 +766,7 @@ Mouse support, with scroll.
   :init
   (progn
     ;; https://emacs.stackexchange.com/a/15054
+    ;; don't place visually selected text in clipboard
     (fset 'evil-visual-update-x-selection 'ignore)))
 #+END_SRC
 
@@ -800,7 +802,6 @@ using ~SPC~.
     (evil-leader/set-leader t-leader)
     (t/bind-in '(evil-normal-state-map evil-motion-state-map)
       "Y" 't/evil-yank-to-end-of-line)))
-
 #+END_SRC
 
 *** More evil bindings
@@ -854,6 +855,7 @@ hitting it to search further. Preserves selection.
 #+END_SRC
 
 **** anzu
+
 Show current match and total number of matches when searching with evil.
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -1011,6 +1013,8 @@ Highlight and fold-this are dependencies of evil-extra-operator.
 
 *** Modes starting states; emacs state, insert, normal
 
+**** Start in emacs state
+
 #+BEGIN_SRC emacs-lisp :results silent
 (defvar t-evil-major-modes '(compilation-mode
                              special-mode
@@ -1027,7 +1031,7 @@ Highlight and fold-this are dependencies of evil-extra-operator.
                       (evil-emacs-state))))
 #+END_SRC
 
-Commit starts in insert mode
+**** Start in insert mode
 
 #+BEGIN_SRC emacs-lisp :results silent
 (t/add-hook '(git-commit-mode-hook org-capture-mode-hook) 'evil-insert-state)
@@ -2393,7 +2397,8 @@ also toggles hook to keep it on or off everywhere.
   (darkroom-tentative-mode (if darkroom-tentative-mode 0 1))
   (if darkroom-tentative-mode
     (add-hook 'after-change-major-mode-hook 'darkroom-tentative-mode)
-    (remove-hook 'after-change-major-mode-hook 'darkroom-tentative-mode)))
+    (remove-hook 'after-change-major-mode-hook 'darkroom-tentative-mode))
+  (doom-modeline-init))
 #+END_SRC
 
 *** Web browser
