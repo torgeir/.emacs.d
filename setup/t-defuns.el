@@ -668,11 +668,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (cond
        ((file-regular-p file-or-dir) ; regular files
         (if (string-match fileregex file-or-dir) ; org files
-            (add-to-list 'org-file-list file-or-dir)))
+            (push file-or-dir org-file-list)))
        ((file-directory-p file-or-dir)
         (dolist (org-file (t/find-org-files-recursively file-or-dir filext)
                           org-file-list) ; add files found to result
-          (add-to-list 'org-file-list org-file)))))))
+          (push org-file org-file-list)))))))
 
 (defun t/org-fix-inline-images ()
   "Fix redisplaying images after executing org babel code."

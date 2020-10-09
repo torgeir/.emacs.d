@@ -63,67 +63,11 @@ See ~fonts/~.
 ;;; -*- lexical-binding: t; -*-
 #+END_SRC
 
-*** User
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defconst t-leader "SPC")
-(defconst t-emacs-leader "C-")
-(defconst t-font-size 17)
-(defconst lat-trh 63.427)
-(defconst lon-trh 10.391)
-(defconst loc-trh "Trondheim, Norway")
-#+END_SRC
-
-*** Operating system
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defconst is-mac (equal system-type 'darwin))
-(defconst is-cygwin (equal system-type 'cygwin))
-(defconst is-linux (equal system-type 'gnu/linux))
-(defconst is-win (equal system-type 'windows-nt))
-(defconst is-ms (or is-cygwin is-win))
-(defconst has-gui (display-graphic-p))
-#+END_SRC
-
-*** Dynamically bound
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defvar *t-indent* 2)
-(defvar *t-indent-xml* 4)
-(defvar *t-debug-init* nil "Debug/time startup")
-(when *t-debug-init* (setq debug-on-error nil))
-#+END_SRC
-
-*** User folders
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defconst user-emacs-directory "~/.emacs.d/")
-(defun t/user-emacs-file (path) (concat user-emacs-directory path))
-(defun t/user-file (path)
-  (concat (if is-mac "/Users/"
-            (if is-linux "/home/" "c:/Users/"))
-          (if is-win "torgth" (replace-regexp-in-string "\\." "" (getenv "USER")))
-          "/"
-          path))
-(defconst t-user-dropbox-folder (if (or is-mac is-linux)
-                                    (t/user-file "Dropbox")
-                                  "c:/Users/torgth/Dropbox \(Personlig\)"))
-(defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
-#+END_SRC
-
 *** Load path
 
 Add snippets and site-lisp to the load-path.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(defconst t-dir-snippets (t/user-emacs-file "snippets"))
-(add-to-list 'load-path t-dir-snippets)
-(let ((dir-site-lisp (t/user-emacs-file "site-lisp")))
-  (add-to-list 'load-path dir-site-lisp)
-  ;; add folders inside site-lisp as well
-  (dolist (project (directory-files dir-site-lisp t "\\w+"))
-    (when (file-directory-p project)
-      (add-to-list 'load-path project))))
 #+END_SRC
 
 *** Timing functions
@@ -181,188 +125,7 @@ Customizations go in ~custom.el~.
 #+BEGIN_SRC emacs-lisp :results silent
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file)
-#+END_SRC
-
-*** Macros
-
-A couple of macros, probably inspired by doom-emacs trickery.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(require 'subr-x)
-#+END_SRC
-
-So simple, yet so useful. Ignores a complete elisp code block, no matter what
-the contents, like the one clojure <3
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro comment (&rest ignore)
-  "Ignore stuff, return `nil'."
-  nil)
-#+END_SRC
-
-Shortcut for interactive lambdas, you can omit the arg list as well.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/lambda (&optional args &rest body)
-  (declare (indent 1))
-  (if body
-      `(lambda ,args (interactive) ,@body)
-    `(lambda (&optional &rest ignore) (interactive) ,args)))
-
-(comment
- (t/lambda)
- (t/lambda 1)
- (t/lambda (one two) 1))
-#+END_SRC
-
-Shorthand for running code after a file name has been loaded.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/after (file-name &rest body)
-  (declare (indent 1))
-  (if (locate-library (symbol-name file-name))
-      `(with-eval-after-load ',file-name ,@body)
-    (message "t/after: for %s is not a filename in load-path?" file-name)))
-
-#+END_SRC
-
-Runs body of code only for buffers with the given extension ~ext~.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/when-ext (ext &rest body)
-  "Run `body' when buffer's file has extension `ext'."
-  (declare (indent 1))
-  `(let ((ext-re (concat "\\." ,ext "$")))
-     (when (and (buffer-file-name)
-                (string-match ext-re (buffer-file-name)))
-       ,@body)))
-
-#+END_SRC
-
-Make parameter a list, if it isn't already.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defun t/ensure-list (i-or-is)
-  "Ensure `i-or-is' is a list."
-  (if (and (listp i-or-is)
-           (not (functionp i-or-is)) ; lambda
-           )
-      i-or-is
-    (list i-or-is)))
-
-#+END_SRC
-
-A more forgiving version of add-hook.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/add-hook (hook-or-hooks fn-or-fns &optional append local)
-  "Add one or more hook fns."
-  (comment (dolist (hook (t/ensure-list (eval hook-or-hooks)))
-             (unless (or (boundp hook) (listp hook))
-               (message "%s is not a hook" hook))))
-  `(let ((hooks (t/ensure-list ,hook-or-hooks))
-         (fns (t/ensure-list ,fn-or-fns)))
-     (dolist (hook hooks)
-       (dolist (fn fns)
-         (add-hook hook fn ,append ,local)))))
-#+END_SRC
-
-A more forgiving version of remove-hook.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/remove-hook (hook-or-hooks fn-or-fns)
-  "Remove one or more hook fns"
-  `(let ((hooks (t/ensure-list ,hook-or-hooks))
-         (fns (t/ensure-list ,fn-or-fns)))
-     (dolist (hook hooks)
-       (dolist (fn fns)
-         (remove-hook hook fn)))))
-#+END_SRC
-
-A combined setq and a hook.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/add-hook-setq (hook-or-hooks var_ val_ &rest vars_)
-  "A `setq' run in hooks."
-  `(t/add-hook ,hook-or-hooks
-               (lambda nil
-                 (let ((var (quote ,var_))
-                       (val (quote ,val_))
-                       (vars (quote ,vars_))
-                       (bindings '(setq)))
-                   (while var
-                     (setq bindings (cons val (cons var bindings))
-                           var (and vars (pop vars))
-                           val (and vars (pop vars))))
-                   (eval (nreverse (copy-list bindings)))))))
-
-#+END_SRC
-
-This is probably lefovers from before discovering ~bind-key~ already does this -
-much better.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/bind-in (maps_ key_ fn_ &rest bindings)
-  "Bind keys in maps."
-  (declare (indent 1))
-  `(let ((maps (t/ensure-list ,maps_))
-         (key (quote ,key_))
-         (fn (quote ,fn_))
-         (bs (quote ,bindings)))
-     (while key
-       (dolist (map maps)
-         (eval `(bind-key ,key ,fn ,map)))
-       (setq key (and bs (pop bs))
-             fn (and bs (pop bs))))))
-
-#+END_SRC
-
-A combined named function definition and a hook.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/add-hook-defun (hook-or-hooks fn &rest body)
-  "Create a defun `fn' with `body' in `hook-or-hooks'."
-  `(progn
-     (defun ,fn () (interactive) ,@body)
-     (t/add-hook ,hook-or-hooks (quote ,fn))))
-
-#+END_SRC
-
-A reloadable timer that runs a ~fn~ on a given interval.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/idle-timer (name fn every-minute)
-  "Reloadable variant of run-with-idle-timer."
-  `(progn
-     (when (and (boundp ',name) ,name) (cancel-timer ,name))
-     (setq ,name (run-with-idle-timer (* ,every-minute 60) t ,fn))))
-
-#+END_SRC
-
-Call a function that might not be loaded.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/safe-call (fn)
-  "Expands to call `fn' only if it is bound to a function."
-  `(when (fboundp (quote ,fn))
-     (funcall (quote ,fn))))
-#+END_SRC
-
-Create smart parens wrapping functions.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defmacro t/def-pairs (pairs)
-  "Create smartparens wrapping function, e.g. t/wrap-with-paren"
-  `(progn
-     ,@(cl-loop for (key . val) in pairs
-             collect
-             `(defun ,(read (concat
-                             "t/wrap-with-"
-                             (prin1-to-string key)
-                             "s"))
-                  (&optional arg)
-                (interactive "p")
-                (sp-wrap-with-pair ,val)))))
+(eval-when-compile (require 'macros))
 #+END_SRC
 
 *** Os specific
@@ -557,7 +320,7 @@ Autoloads, that auto reload when you save them. A myriad of useful functions
 with autoload cookies are in ~t-defuns.el~.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(require 't-defuns (t/user-emacs-file "t-defuns"))
+(require 't-defuns (t/user-emacs-file "setup/t-defuns.el"))
 (t/add-hook-defun 'after-save-hook t/reload-defuns-on-save
                   (when (string-match "t-defuns.el$" buffer-file-name)
                     (eval-buffer)
@@ -3309,6 +3072,18 @@ Thesaurus.
   (add-to-list 'popwin:special-display-config '("*cider-doc*" :noselect t)))
 #+END_SRC
 
+*** Edit Chrome text fields
+
+Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc][Atomic Chrome]] extension.
+
+#+begin_src emacs-lisp :results silent
+(use-package atomic-chrome
+  :init
+  (if after-init-time
+      (atomic-chrome-start-server)
+    (add-hook 'after-init-hook
+              #'(lambda() (atomic-chrome-start-server)))))
+#+end_src
 ** Languages
 
 *** Flycheck
@@ -3670,7 +3445,23 @@ Thesaurus.
 (use-package kotlin-mode
   :mode "\\.kt$"
   :commands kotlin-mode
-  :init (t/add-hook 'kotlin-mode-hook 'lsp-mode))
+  :init (t/add-hook-defun 'kotlin-mode-hook t-kotlin-hook
+                          (lsp-register-client
+                           (make-lsp-client :new-connection (lsp-stdio-connection '("/Users/torgeirthoresen/Code/kotlin-language-server/server/build/install/server/bin"))
+                                            :major-modes '(kotlin-mode)
+                                            :priority -1
+                                            :server-id 'kotlin-ls))
+                          (lsp-mode))
+  :config
+  (progn
+    (defun t/gradlew (command)
+      "Run gradlew for this project."
+      (interactive "sCommand: ")
+      (let ((default-directory
+              (locate-dominating-file buffer-file-name "gradlew"))
+            (compilation-read-command nil)
+            (compile-command (format "./gradlew %s" command)))
+        (call-interactively #'compile)))))
 #+END_SRC
 
 *** JS
@@ -3697,6 +3488,7 @@ Thesaurus.
       (add-hook 'lsp-after-open-hook (lambda ()
                                        (lsp-ui-flycheck-enable 1))))
     (t/add-hook-defun 'lsp-mode-hook t/lsp-ui-lsp-mode-hook
+                      (lsp-enable-which-key-integration)
                       (lsp-ui-mode)))
   :config
   (progn
@@ -4337,7 +4129,7 @@ PWD is not in a git repo (or the git command is not found)."
       (let ((ref-list))
         (dolist (type types)
           (while (re-search-forward (concat "^refs/" type "/\\(.+\\)$") nil t)
-            (add-to-list 'ref-list (match-string 1))))
+            (push (match-string 1) ref-list)))
         ref-list)))
 
   (require 'pcomplete)
@@ -4421,6 +4213,18 @@ PWD is not in a git repo (or the git command is not found)."
 
 (provide 't-shell)
 #+END_SRC
+
+Colorize the compilation buffer, e.g. to make gradlew work like you'd expect in
+a terminal.
+
+#+begin_src emacs-lisp
+(use-package ansi-color
+  :config
+  (defun my-colorize-compilation-buffer ()
+    (when (eq major-mode 'compilation-mode)
+      (ansi-color-apply-on-region compilation-filter-start (point-max))))
+  :hook (compilation-filter . my-colorize-compilation-buffer))
+#+end_src
 
 ** Desktop
 
@@ -5400,5 +5204,6 @@ We're done, wrap up timing so we can se how long it took.
 (t/declare-prefix "c" "applications" "l" 't/complete-line)
 #+END_SRC
 
-
-
+#+begin_src emacs-lisp :results silent
+(provide 'readme)
+#+end_src
