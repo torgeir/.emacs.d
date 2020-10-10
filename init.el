@@ -74,5 +74,12 @@
       (add-to-list 'load-path project))))
 
 (if (file-exists-p (expand-file-name "~/.emacs.d/readme.elc"))
+    ;; TODO fix compile errors to enable the 3rd argument to this instead
     (org-babel-load-file "~/.emacs.d/readme.org")
-  (org-babel-load-file "~/.emacs.d/readme.org" t))
+  (progn
+    (require 'org)
+    (org-babel-tangle-file (expand-file-name "~/.emacs.d/readme.org")
+                           (expand-file-name "~/.emacs.d/readme.el")
+                           "emacs-lisp\\|elisp")
+    (byte-compile-file (expand-file-name "~/.emacs.d/readme.el"))
+    (save-buffers-kill-emacs)))

@@ -4263,7 +4263,7 @@ the saved desktop project specific.
 Initial font and window transparency.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(t/set-font (car t-fonts) t)
+;;(t/set-font (car t-fonts) t)
 (t/transparency 100)
 #+END_SRC
 

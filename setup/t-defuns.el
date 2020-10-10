@@ -404,7 +404,7 @@ Including indent-buffer, which should not be called automatically on save."
 (defun t/reload-font ()
   "Reload font to make e.g. font size changes have effect."
   (interactive)
-  (t/set-font (t/current-font)))
+  (t/set-font (t/current-font) t))
 
 (defun t/fix-fira-ligatures ()
   (interactive)
