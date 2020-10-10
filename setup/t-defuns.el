@@ -337,7 +337,7 @@ Including indent-buffer, which should not be called automatically on save."
                                      (custom-available-themes))))))
   (mapcar #'disable-theme custom-enabled-themes)
   (load-theme theme t)
-  (message "%s" theme))
+  (when (called-interactively-p) (message "%s" theme)))
 
 (defun t/toggle-theme-dark-light ()
   "Toggles between themes `doom-vibrant' and `spacemacs-light'"
@@ -384,7 +384,7 @@ Including indent-buffer, which should not be called automatically on save."
           (let ((first (car t-fonts))
                 (rest (cdr t-fonts)))
             (append rest (list first)))))
-  (t/set-font (car t-fonts)))
+  (t/set-font (car t-fonts) (not (called-interactively-p))))
 
 (defun t/current-font ()
   "Grabs the current font. Prints message when called interactively."
@@ -556,7 +556,7 @@ Repeated invocations toggle between the two most recently open buffers."
                           t)
                       (error nil)))
           (setq path (cons (xmltok-start-tag-local-name) path)))
-        (if (called-interactively-p t)
+        (if (called-interactively-p)
             (message "/%s" (mapconcat 'identity path "/"))
           (format "/%s" (mapconcat 'identity path "/")))))))
 

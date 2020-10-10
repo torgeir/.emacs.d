@@ -55,3 +55,4 @@
 /.log/
 /.idea/
 /.cask/
+*.elc

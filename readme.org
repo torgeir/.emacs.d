@@ -624,7 +624,7 @@ Show current match and total number of matches when searching with evil.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-anzu
-  :defer 2
+  :commands (evil-ex-search-forward evil-ex-search-word-forward)
   :init
   (progn
     (setq anzu-cons-mode-line-p nil
@@ -741,7 +741,7 @@ surrounding lisp sexp, respecting the ast.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-goggles
-  :defer 1
+  :defer 2
   :init
   (setq evil-goggles-duration 0.2
         evil-goggles-async-duration 0.2
@@ -768,7 +768,7 @@ Highlight and fold-this are dependencies of evil-extra-operator.
 (use-package google-translate :after fold-this)
 (use-package evil-extra-operator
   :after google-translate
-  :defer 1
+  :defer 3
   :init
   (setq evil-extra-operator-org-capture-key "gC")
   :config
@@ -2394,8 +2394,7 @@ Highlight todos across all programming modes.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package highlight-parentheses
-  :diminish highlight-parentheses-mode
-  :defer 1
+  :commands highlight-parentheses-mode
   :init
   (progn
     (setq hl-paren-colors (-repeat 26 "DeepPink"))
@@ -2438,7 +2437,7 @@ Highlight todos across all programming modes.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package highlight-numbers
-  :defer 1
+  :commands highlight-numbers-mode
   :init
   (t/add-hook 'prog-mode-hook 'highlight-numbers-mode))
 #+END_SRC
@@ -2674,9 +2673,9 @@ View pdfs etc.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package doc-view
-  :defer t
   :ensure nil
   :straight nil
+  :commands doc-view-mode
   :init
   (setq doc-view-continuous t)
   :config
@@ -2710,7 +2709,6 @@ Draw inside emacs. Yes, you read correctly.
 (use-package artist-mode
   :ensure nil
   :straight nil
-  :defer t
   :commands (t/artist-mode artist-mode)
   :init
   (progn
@@ -4749,7 +4747,6 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                    ("h" "home" ,(append (list (t/org-agenda-read))
                                                         (t/org-day-summary "+home-emacs-someday")
                                                         `((tags-todo "+someday-work" ((org-agenda-overriding-header "Someday"))))))))
-(message "org-agenda-files %s" org-agenda-files)
 #+END_SRC
 
 **** Weather
@@ -5013,7 +5010,7 @@ There was a time where this was working. For now it only causes problems, hence
 the commented out ~org-gcal-fetch~
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package request-deferred)
+(use-package request-deferred :commands (deferred:loop))
 (use-package org-gcal
   :after request-deferred
   :ensure nil

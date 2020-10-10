@@ -73,5 +73,6 @@
     (when (file-directory-p project)
       (add-to-list 'load-path project))))
 
-(let ((compiled-readme (expand-file-name "~/.emacs.d/readme.elc")))
-  (org-babel-load-file "~/.emacs.d/readme.org" (not (file-exists-p compiled-readme))))
+(if (file-exists-p (expand-file-name "~/.emacs.d/readme.elc"))
+    (org-babel-load-file "~/.emacs.d/readme.org")
+  (org-babel-load-file "~/.emacs.d/readme.org" t))
