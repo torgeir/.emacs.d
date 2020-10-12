@@ -70,7 +70,7 @@
                      (setq bindings (cons val (cons var bindings))
                            var (and vars (pop vars))
                            val (and vars (pop vars))))
-                   (eval (nreverse (copy-list bindings)))))))
+                   (eval (nreverse (copy-sequence bindings)))))))
 
 (defmacro t/bind-in (maps_ key_ fn_ &rest bindings)
   "Bind keys in maps."

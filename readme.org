@@ -63,27 +63,21 @@ See ~fonts/~.
 ;;; -*- lexical-binding: t; -*-
 #+END_SRC
 
-*** Load path
-
-Add snippets and site-lisp to the load-path.
-
-#+BEGIN_SRC emacs-lisp :results silent
-#+END_SRC
-
 *** Timing functions
 
 Functions to record time spent loading the emacs config. Benchmarks can be
 provided when initialization is complete by setting ~*t-debug-init*~ to ~t~.
 
 #+BEGIN_SRC emacs-lisp :results silent
+(use-package benchmark-init
+  :no-require t
+  :commands (benchmark-init/activate))
+
 (defun t/timing-start ()
   (interactive)
   (when *t-debug-init*
     (message "t: timing init")
-    (require 't-debug)
-
-    ;; benchmarks
-    (use-package benchmark-init :config (benchmark-init/activate))))
+    (benchmark-init/activate)))
 
 (defun t/timing-end ()
   (interactive)
@@ -111,11 +105,6 @@ Hook for private stuff before the rest. Useful e.g. for gcal tokens etc.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (require 'bind-key)
-(use-package diminish)
-(use-package dash) ; list helpers
-(use-package dash-functional) ; fun list helpers
-(use-package s) ; string helpers
-(use-package f) ; file helpers
 #+END_SRC
 
 *** Customize
@@ -125,11 +114,16 @@ Customizations go in ~custom.el~.
 #+BEGIN_SRC emacs-lisp :results silent
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file)
-(eval-when-compile (require 'macros))
+#+END_SRC
+
+*** Macros
+
+#+BEGIN_SRC emacs-lisp :results silent
+(require 'macros)
 #+END_SRC
 
 *** Os specific
-*** Mac
+**** Mac
 
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-mac
@@ -192,7 +186,7 @@ Customizations go in ~custom.el~.
       "\e[22;2\~" "C-'")))
 #+END_SRC
 
-*** Linux
+**** Linux
 
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-linux
@@ -248,7 +242,7 @@ Customizations go in ~custom.el~.
     "s-0" 't/reset-font-size))
 #+END_SRC
 
-*** Cygwin
+**** Cygwin
 
 It was worth a shoot.. WSL2 is probably a better choice these days.
 
@@ -343,7 +337,7 @@ Utf-8 everywhere.
 A modern icon set.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package all-the-icons)
+(use-package all-the-icons :hook after-init-hook)
 #+END_SRC
 
 Rid the insanity. Well, try at least.
@@ -394,7 +388,9 @@ Fix the rest..
 Open large files removing heavy modes.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(global-so-long-mode 1)
+(use-package so-long
+  :straight nil
+  :hook (after-init . global-so-long-mode))
 #+END_SRC
 
 Y or n will do.
@@ -406,13 +402,18 @@ Y or n will do.
 Don't blink cursor.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(blink-cursor-mode -1)
+(use-package frame
+  :straight nil
+  :defer 1
+  :config (blink-cursor-mode -1))
 #+END_SRC
 
-Wrap long lines
+Wrap long lines everywhere
 
 #+BEGIN_SRC emacs-lisp :results silent
-(global-visual-line-mode)
+(use-package simple
+  :straight nil
+  :hook (after-init . global-visual-line-mode))
 #+END_SRC
 
 Remove menus.
@@ -428,24 +429,32 @@ Remove menus.
 Show active region.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(transient-mark-mode 0)
-(make-variable-buffer-local 'transient-mark-mode)
-(put 'transient-mark-mode 'permanent-local t)
-(setq-default transient-mark-mode t)
+(use-package simple
+  :straight nil
+  :defer 1
+  :config
+  (progn
+    (transient-mark-mode 0)
+    (make-variable-buffer-local 'transient-mark-mode)
+    (put 'transient-mark-mode 'permanent-local t)
+    (setq-default transient-mark-mode t)))
 #+END_SRC
 
 Show matching parens.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(show-paren-mode t)
-(setq show-paren-delay 0)
+(use-package paren
+  :init (setq show-paren-delay 0)
+  :config (show-paren-mode t))
 #+END_SRC
 
 Remove selected text when typing.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(delete-selection-mode t)
-
+(use-package delsel
+  :straight nil
+  :defer 4
+  :config (delete-selection-mode t))
 #+END_SRC
 
 Above what sizes can the window split?
@@ -459,7 +468,10 @@ Above what sizes can the window split?
 Remember file positions, and layout. Super useful, e.g. for dired.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(save-place-mode 1)
+(use-package saveplace
+  :straight nil
+  :defer 1
+  :config (save-place-mode 1))
 #+END_SRC
 
 Don't save desktop automatically, for now.
@@ -467,12 +479,15 @@ Don't save desktop automatically, for now.
 #+BEGIN_SRC emacs-lisp :results silent
 ;;(desktop-save-mode 1)
 ;;(setq desktop-save 't)
+;;(add-to-list 'desktop-locals-to-save 'evil-markers-alist) ;; save markers with desktop
 #+END_SRC
 
 Eldoc everywhere.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(global-eldoc-mode t)
+(use-package eldoc
+  :straight nil
+  :hook (after-init . global-eldoc-mode))
 #+END_SRC
 
 Colocate temporary files.
@@ -491,16 +506,22 @@ Colocate temporary files.
 Mouse support, with scroll.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(xterm-mouse-mode t)
-(defun trackp-mouse (e))
-(setq mouse-sel-mode t)
+(use-package xt-mouse
+  :straight nil
+  :defer 1
+  :config
+  (progn
+    (save-place-mode 1)
+    (xterm-mouse-mode t)
+    (defun trackp-mouse (e))
+    (setq mouse-sel-mode t)
 
-(when (require 'mwheel nil 'noerror)
-  (global-set-key [wheel-down] (t/lambda (scroll-down 2)))
-  (global-set-key [wheel-up] (t/lambda (scroll-up 2)))
-  (global-set-key [mouse-4] (t/lambda (scroll-down 2)))
-  (global-set-key [mouse-5] (t/lambda (scroll-up 2)))
-  (mouse-wheel-mode t))
+    (when (require 'mwheel nil 'noerror)
+      (global-set-key [wheel-down] (t/lambda (scroll-down 2)))
+      (global-set-key [wheel-up] (t/lambda (scroll-up 2)))
+      (global-set-key [mouse-4] (t/lambda (scroll-down 2)))
+      (global-set-key [mouse-5] (t/lambda (scroll-up 2)))
+      (mouse-wheel-mode t))))
 #+END_SRC
 
 ** Evil
@@ -574,16 +595,20 @@ Enables evil keybindings for more modes, e.g. help, calendar, eshell etc
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-collection
   :after evil
+  :defer 1
   :init
   (progn
     ;; Don't use zz and zq for org src editing
     (setq evil-collection-key-blacklist '("ZZ" "ZQ"))
-    (evil-collection-init)
-    (t/after org
-      ;; still issues with wdired?
-      ;; https://github.com/jtbm37/all-the-icons-dired/pull/19
-
-      (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle))))
+    ;; TODO replace with individual ones for less magic behavior (evil-collection-init)
+    :config
+    (t/after evil-collection
+      (with-eval-after-load 'calendar (evil-collection-calendar-setup))
+      (with-eval-after-load 'dired (evil-collection-dired-setup))
+      (with-eval-after-load 'outline (evil-collection-outline-setup))
+      (with-eval-after-load 'messages (evil-collection-outline-setup))
+      (t/after org
+        (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle)))))
 #+END_SRC
 
 *** Search
@@ -595,8 +620,7 @@ Jump between html tags with %, like for parens.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-matchit
   :commands evilmi-jump-items
-  :config
-  (global-evil-matchit-mode 1))
+  :hook (after-init . global-evil-matchit-mode))
 #+END_SRC
 
 **** visualstar
@@ -624,13 +648,12 @@ Show current match and total number of matches when searching with evil.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-anzu
-  :commands (evil-ex-search-forward evil-ex-search-word-forward)
   :init
   (progn
     (setq anzu-cons-mode-line-p nil
           anzu-minimum-input-length 1
           anzu-search-threshold 100))
-  :config (global-anzu-mode))
+  :hook (after-init . global-anzu-mode))
 #+END_SRC
 
 *** Surroundings
@@ -639,13 +662,13 @@ Operate on surrounding parens, brackets etc like with surround.vim.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-surround
-  :defer 2
+  :after evil
+  :hook (after-init . global-evil-surround-mode)
   :config
   (progn
-    (global-evil-surround-mode 1)
-    ;; the opposite of vim, like spacemacs
-    (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
-    (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
+    (t/after evil
+      (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
+      (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region))))
 #+END_SRC
 
 *** Navigate parens
@@ -656,13 +679,14 @@ line) lisp aware, so it does not delete trailing parens.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-cleverparens
   :diminish evil-cleverparens-mode
+  :after evil
   :defer 1
   :init
   (progn
-    (t/add-hook-defun
-     'evil-cleverparens-enabled-hook t-evil-cp-mode-hook
-     (evil-define-key 'visual evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next)
-     (evil-define-key 'normal evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next))
+    (t/add-hook-defun 'evil-cleverparens-enabled-hook t-evil-cp-mode-hook
+     (t/after evil
+       (evil-define-key 'visual evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next)
+       (evil-define-key 'normal evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next)))
     (setq evil-cleverparens-use-additional-bindings t
           evil-cleverparens-use-regular-insert t))
   :config
@@ -763,16 +787,12 @@ surrounding lisp sexp, respecting the ast.
 Highlight and fold-this are dependencies of evil-extra-operator.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package highlight)
-(use-package fold-this :after highlight)
-(use-package google-translate :after fold-this)
+(use-package highlight :commands evil-operator-highlight)
+(use-package fold-this :commands evil-operator-fold)
+(use-package google-translate :commands evil-operator-goggle-translate)
 (use-package evil-extra-operator
-  :after google-translate
-  :defer 3
-  :init
-  (setq evil-extra-operator-org-capture-key "gC")
-  :config
-  (global-evil-extra-operator-mode 1))
+  :init (setq evil-extra-operator-org-capture-key "gC")
+  :hook (after-init . global-evil-extra-operator-mode))
 #+END_SRC
 
 *** Modes starting states
@@ -850,14 +870,15 @@ Escape all the things. Borrowed from doom.
 Motions keys for help buffers.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
-(evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
-(evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
-(evil-define-key 'motion help-mode-map (kbd "L") 'help-go-forward)
-(evil-define-key 'motion help-mode-map (kbd "H") 'help-go-back)
-(evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
-(evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
-(evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)
+(t/after evil
+  (evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
+  (evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
+  (evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
+  (evil-define-key 'motion help-mode-map (kbd "L") 'help-go-forward)
+  (evil-define-key 'motion help-mode-map (kbd "H") 'help-go-back)
+  (evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
+  (evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
+  (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol))
 #+END_SRC
 
 *** Info motions
@@ -865,10 +886,11 @@ Motions keys for help buffers.
 Motion keys for info mode.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
-(evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward)
-(unbind-key (kbd "h") Info-mode-map)
-(unbind-key (kbd "l") Info-mode-map)
+(t/after evil
+  (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
+  (evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward))
+  (unbind-key (kbd "h") Info-mode-map)
+  (unbind-key (kbd "l") Info-mode-map)
 #+END_SRC
 
 *** C-o from hybrid like in vim
@@ -876,7 +898,8 @@ Motion keys for info mode.
 i_Ctrl-o - C-o from hybrid mode, like in vim insert mode
 
 #+BEGIN_SRC emacs-lisp :results silent
-(evil-define-key 'hybrid global-map (kbd "C-o") 'evil-execute-in-normal-state)
+(t/after evil
+  (evil-define-key 'hybrid global-map (kbd "C-o") 'evil-execute-in-normal-state))
 #+END_SRC
 
 *** Useful emacs defaults
@@ -939,8 +962,8 @@ Turn camel case into snake case
              ((org-before-first-heading-p) (user-error "Not in a subtree"))
              (t (outline-previous-visible-heading 1))))
 
-      (decf count)
-      (when count (while (and (> count 0) (org-up-heading-safe)) (decf count)))
+      (cl-decf count)
+      (when count (while (and (> count 0) (org-up-heading-safe)) (cl-decf count)))
 
       ;; extract the beginning and end of the tree
       (let ((element (org-element-at-point)))
@@ -957,8 +980,8 @@ Turn camel case into snake case
              ((org-before-first-heading-p) (user-error "Not in a subtree"))
              (t (outline-previous-visible-heading 1))))
 
-      (decf count)
-      (when count (while (and (> count 0) (org-up-heading-safe)) (decf count)))
+      (cl-decf count)
+      (when count (while (and (> count 0) (org-up-heading-safe)) (cl-decf count)))
 
       ;; extract the beginning and end of the tree
       (let* ((element (org-element-at-point))
@@ -1095,9 +1118,8 @@ leader will actually turn on evil-leader globally. Then turn on evil.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package calendar
-  :ensure nil
   :straight nil
-  :commands calendar
+  :commands (org-schedule calendar)
   :init
   (setq calendar-week-start-day 1
         calendar-date-style 'iso))
@@ -1108,7 +1130,8 @@ Make it Norwegian.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package calendar-norway
   :after calendar
-  :config
+  :commands (org-schedule calendar)
+  :init
   (progn
     (setq calendar-holidays
           (append calendar-norway-raude-dagar
@@ -1147,12 +1170,12 @@ Useful local copies of elisp programs.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package ox-gfm
-  :ensure nil
+  :after org
   :straight nil
+  :commands org-export-dispatch
   :load-path "site-lisp/ox-gfm")
 
 (use-package nxml-eldoc
-  :ensure nil
   :straight nil
   :load-path "site-lisp/nxml-eldoc"
   :commands turn-on-nxml-eldoc
@@ -1160,7 +1183,6 @@ Useful local copies of elisp programs.
   (t/add-hook 'nxml-mode-hook 'turn-on-nxml-eldoc))
 
 (use-package json-path-eldoc
-  :ensure nil
   :straight nil
   :load-path "site-lisp/json-path-eldoc"
   :commands turn-on-json-path-eldoc
@@ -1168,7 +1190,6 @@ Useful local copies of elisp programs.
   (t/add-hook 'json-mode-hook 'turn-on-json-path-eldoc))
 
 (use-package sgml-mode
-  :ensure nil
   :straight nil
   :commands html-mode
   :init
@@ -1177,7 +1198,6 @@ Useful local copies of elisp programs.
                       (set (make-local-variable 'sgml-basic-offset) *t-indent*))))
 
 (use-package nxml-mode
-  :ensure nil
   :straight nil
   :mode "\\.\\(xml\\|svg\\|rss\\|xsd\\|xslt\\|plist\\)$"
   :config
@@ -1188,15 +1208,15 @@ Useful local copies of elisp programs.
   ;; nxml
   (setq nxml-child-indent *t-indent-xml*))
 
+(comment
 (use-package html
-  :ensure nil
   :straight nil
-  :mode ("\\.\\(html|htm\\)" . html-mode))
+  :mode ("\\.\\(html|htm\\)" . html-mode)))
 
 (use-package imenu-list
-  :ensure nil
   :straight nil
   :load-path "site-lisp/imenu-list"
+  :commands imenu-list-smart-toggle
   :init
   (progn
     (setq imenu-list-auto-resize t)
@@ -1216,13 +1236,11 @@ No longer in use.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package cloudformation-mode
   :if nil ; id stay away from cloud formation tbh
-  :ensure nil
   :straight nil
   :load-path "site-lisp/cloudformation-mode")
 
 (use-package spotify
   :if nil ; no longer works after the deprecated spotify api
-  :ensure nil
   :straight nil
   :load-path "site-lisp/spotify")
 #+END_SRC
@@ -1234,32 +1252,28 @@ Trying ivy as a helm replacement. https://news.ycombinator.com/item?id=24449883
 These actually seem to replace all my previous helm config 😱
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package rg)
+(use-package rg :defer t)
 (use-package counsel
+  :defer t
   :init
   (progn
     (ivy-mode 1)
     (setq enable-recursive-minibuffers t
           ivy-use-virtual-buffers t)
-    (add-to-list 'ivy-sort-matches-functions-alist
-                 '(counsel-describe-function . ivy--shorter-matches-first))
-    (add-to-list 'ivy-sort-matches-functions-alist
-                 '(counsel-projectile-rg . ivy--shorter-matches-first))
-    (add-to-list 'ivy-sort-matches-functions-alist
-                 '(counsel-find-find-file . ivy--shorter-matches-first))
-    (add-to-list 'ivy-sort-matches-functions-alist
-                 '(counsel-projectile-find-file . ivy--shorter-matches-first))
-    (add-to-list 'ivy-sort-matches-functions-alist
-                 '(counsel-org-goto . ivy--shorter-matches-first))
+    (add-to-list 'ivy-sort-matches-functions-alist '(counsel-org-goto . ivy--shorter-matches-first))
+    (add-to-list 'ivy-sort-matches-functions-alist '(counsel-find-file . ivy--shorter-matches-first))
+    (add-to-list 'ivy-sort-matches-functions-alist '(counsel-projectile-rg . ivy--shorter-matches-first))
+    (add-to-list 'ivy-sort-matches-functions-alist '(counsel-projectile-find-file . ivy--shorter-matches-first))
+    (add-to-list 'ivy-sort-matches-functions-alist '(counsel-describe-function . ivy--shorter-matches-first))
     (t/after ivy
       (t/bind-in 'ivy-minibuffer-map
         "C-w" 'backward-kill-word
         "C-u" 'backward-kill-sentence
         "C-c u" 'universal-argument))))
-(use-package counsel-projectile)
+(use-package counsel-projectile :defer t)
 (use-package counsel-web :commands counsel-web-search)
-(use-package all-the-icons-ivy-rich :init (all-the-icons-ivy-rich-mode 1))
-(use-package ivy-rich :config (ivy-rich-mode 1))
+(use-package all-the-icons-ivy-rich :defer 1 :init (all-the-icons-ivy-rich-mode 1))
+(use-package ivy-rich :defer 1 :config (ivy-rich-mode 1))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -1268,7 +1282,7 @@ These actually seem to replace all my previous helm config 😱
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package counsel-etags
-  :if nil ; try without it
+  :disabled
   :bind (("C-]" . counsel-etags-find-tag-at-point))
   :init
   (t/add-hook 'prog-mode-hook
@@ -1304,10 +1318,11 @@ Show git status in the gutter.
 (use-package git-gutter-fringe+
   :init
   (t/add-hook-defun 'git-gutter+-mode-hook t/hook-git-gutter+
-                    (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "XXX.....")
-                    (fringe-helper-define 'git-gutter-fr+-deleted '(top repeat) "XXX.....")
-                    (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "XXX.....")
-                    (git-gutter+-enable-fringe-display-mode)))
+                    (t/after fringe-helper
+                      (fringe-helper-define 'git-gutter-fr+-added '(top repeat) "XXX.....")
+                      (fringe-helper-define 'git-gutter-fr+-deleted '(top repeat) "XXX.....")
+                      (fringe-helper-define 'git-gutter-fr+-modified '(top repeat) "XXX.....")
+                      (git-gutter+-enable-fringe-display-mode))))
 #+END_SRC
 
 *** Links
@@ -1405,12 +1420,13 @@ The only git client you will ever need.
 A pull request interface for emacs.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package forge :after magit)
+(use-package forge :after magit :commands (forge-add-repository forge-pull forge-create-pullreq))
 #+END_SRC
 
 *** Keybindings
 
 #+BEGIN_SRC emacs-lisp :results silent
+(t/declare-prefix "g" "Git")
 (t/declare-prefix "g" "Git"
                   "T" 'git-timemachine-toggle
                   "s" 'magit-status
@@ -1497,7 +1513,7 @@ Add dir to buffer names when they're not unique.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package uniquify
-  :ensure nil
+  :defer 5
   :straight nil
   :init
   (progn
@@ -1508,7 +1524,7 @@ Add dir to buffer names when they're not unique.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package beacon
-  :if nil ; no longer use it
+  :disabled
   :commands beacon-mode
   :init
   (setq beacon-size 10
@@ -1526,7 +1542,6 @@ Useful for programming
 (use-package subword
   :diminish subword-mode
   :defer 1
-  :ensure nil
   :straight nil
   :config (subword-mode))
 #+END_SRC
@@ -1535,8 +1550,7 @@ Useful for programming
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package tramp
-  :defer t
-  :ensure nil
+  :defer 5
   :straight nil
   :init
   (t/add-hook-setq 'eshell-mode-hook
@@ -1548,7 +1562,6 @@ Useful for programming
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package dired
-  :ensure nil
   :straight nil
   :commands (dired dired-jump)
   :init
@@ -1565,7 +1578,9 @@ Useful for programming
     (bind-key "C-x C-j" 'dired-jump)
     (bind-key "C-c C-e" 'dired-toggle-read-only)
     (bind-key "C-x M-j" (t/lambda (dired-jump 1)))
-    (evil-define-key 'normal dired-mode-map "u" (t/lambda (find-alternate-file "..")))
+    (t/add-hook-defun 'dired-mode-hook t-dired-mode-hook
+                      (t/after evil
+                        (evil-define-key 'normal dired-mode-map "u" (t/lambda (find-alternate-file "..")))))
     (t/bind-in 'dired-mode-map
       "e" 't/eshell
       "C-d" 'dired-kill-subdir
@@ -1581,10 +1596,8 @@ Useful for programming
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package dired-hacks-utils
   :hook dired-mode-hook
-  :ensure nil
   :straight nil
   :load-path "site-lisp/dired-hacks-utils")
-
 #+END_SRC
 
 **** Browse archives
@@ -1592,7 +1605,6 @@ Useful for programming
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package dired-avfs
   :hook dired-mode-hook
-  :ensure nil
   :straight nil
   :load-path "site-lisp/dired-avfs")
 #+END_SRC
@@ -1602,7 +1614,6 @@ Useful for programming
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package dired-details
   :hook dired-mode-hook
-  :ensure nil
   :straight nil
   :load-path "site-lisp/dired-details"
   :init
@@ -1616,7 +1627,6 @@ Useful for programming
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package dired-subtree
   :commands dired-subtree-toggle
-  :ensure nil
   :straight nil
   :load-path "site-lisp/dired-subtree/"
   :init
@@ -1688,28 +1698,29 @@ Colorize delimiters.
   :config
   (progn
     (bind-key [f6] 'neotree-toggle)
-    (dolist (key '(("n" . neotree-next-line)
-                   ("p" . neotree-previous-line)
-                   ("C-n" . neotree-next-line)
-                   ("C-p" . neotree-previous-line)
-                   ("c" . neotree-create-node)
-                   ("R" . neotree-rename-node)
-                   ("D" . neotree-delete-node)
-                   ("i" . neotree-enter-horizontal-split)
-                   ("C-c o" . neotree-enter-vertical-split)
-                   ("s" . neotree-enter-vertical-split)
-                   ("g" . neotree-refresh)
-                   ("u" . neotree-select-up-node)
-                   ("M-<up>" . neotree-select-up-node)
-                   ("I" . neotree-hidden-file-toggle)
-                   ("q" . neotree-hide)
-                   ("q" . neotree-hide)
-                   ("v" . neotree-quick-look)
-                   ("TAB" . neotree-enter)
-                   ("RET" . neotree-enter)
-                   ("M-<down>" . neotree-enter)
-                   ("C" . neotree-change-root)))
-      (eval `(evil-define-key 'normal neotree-mode-map (kbd ,(car key)) ',(cdr key))))))
+    (t/after evil
+      (dolist (key '(("n" . neotree-next-line)
+                     ("p" . neotree-previous-line)
+                     ("C-n" . neotree-next-line)
+                     ("C-p" . neotree-previous-line)
+                     ("c" . neotree-create-node)
+                     ("R" . neotree-rename-node)
+                     ("D" . neotree-delete-node)
+                     ("i" . neotree-enter-horizontal-split)
+                     ("C-c o" . neotree-enter-vertical-split)
+                     ("s" . neotree-enter-vertical-split)
+                     ("g" . neotree-refresh)
+                     ("u" . neotree-select-up-node)
+                     ("M-<up>" . neotree-select-up-node)
+                     ("I" . neotree-hidden-file-toggle)
+                     ("q" . neotree-hide)
+                     ("q" . neotree-hide)
+                     ("v" . neotree-quick-look)
+                     ("TAB" . neotree-enter)
+                     ("RET" . neotree-enter)
+                     ("M-<down>" . neotree-enter)
+                     ("C" . neotree-change-root)))
+        (eval `(evil-define-key 'normal neotree-mode-map (kbd ,(car key)) ',(cdr key)))))))
 #+END_SRC
 
 *** Jump
@@ -1733,6 +1744,7 @@ Colorize delimiters.
              avy-goto-word-0-above
              avy-goto-word-1-above
              avy-goto-char-2-above
+             evil-avy-goto-char-2
              avy-goto-symbol-1-above
              avy-goto-line-below
              avy-goto-word-0-below
@@ -1804,7 +1816,6 @@ A rest client interface for elasticsearch, similar to restclient
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package hideshow
   :commands evil-toggle-fold
-  :ensure nil
   :straight nil
   :init
   (progn
@@ -1877,26 +1888,6 @@ A rest client interface for elasticsearch, similar to restclient
     (setq md4rd-subs-active '(MechanicalKeyboards emacs clojure))))
 #+END_SRC
 
-*** Smex
-
-Not nescessary after installing counsel?
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package smex
-  :if nil ; no longer need after counsel?
-  :commands (smex smex-major-mode-commands)
-  :init
-  (progn
-    (setq smex-flex-matching t
-          smex-save-file (locate-user-emacs-file ".smex-items")))
-  :config
-  (progn
-    (t/bind-in 'global-map
-      "C-x C-m" 'smex
-      "C-c C-M" 'smex-major-mode-commands)
-    (smex-initialize)))
-#+END_SRC
-
 *** Completion
 
 Useful backends.
@@ -1907,7 +1898,6 @@ Useful backends.
      company-files
      company-keywords
      company-capf
-     company-yasnippet
      company-emoji)
     (company-dabbrev-code
      company-dabbrev
@@ -1919,6 +1909,7 @@ Complete with company.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package company
   :commands company-complete
+  :hook (after-init . global-company-mode)
   :init
   (progn
     (setq company-idle-delay 0.15
@@ -1945,8 +1936,7 @@ Complete with company.
       (defun t/company ()
         (interactive)
         (company-abort)
-        (completion-at-point))
-      (global-company-mode))))
+        (completion-at-point)))))
 #+END_SRC
 
 Company frontend with icons.
@@ -1970,6 +1960,7 @@ Fuzzy search.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package company-flx
+  :hook company-mode-hook
   :after company
   :config
   (company-flx-mode +1))
@@ -1978,7 +1969,7 @@ Fuzzy search.
 Html, web, jade etc.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package company-web :after company)
+(use-package company-web :hook company-mode-hook :after company)
 #+END_SRC
 
 Rest client completions.
@@ -2043,6 +2034,7 @@ Lispy paren-like ast editing for other modes as well.
 (use-package smartparens
   :diminish smartparens-mode
   :commands turn-on-smartparens-mode
+  :after evil
   :init
   (progn
     (t/after smartparens
@@ -2107,8 +2099,8 @@ Lispy paren-like ast editing for other modes as well.
 
     (defun t/enable-movement-for-lisp-mode (m)
       (let* ((mode (symbol-name m))
-                     (mode-hook (intern (concat mode "-hook")))
-                     (mode-map (intern (concat mode "-map"))))
+             (mode-hook (intern (concat mode "-hook")))
+             (mode-map (intern (concat mode "-map"))))
         (add-hook mode-hook 'turn-on-smartparens-mode)
         (add-hook mode-hook 'evil-cleverparens-mode)))
 
@@ -2120,8 +2112,9 @@ Lispy paren-like ast editing for other modes as well.
       (sp-local-pair mode "`" nil :actions nil)
       (sp-local-pair mode "'" nil :actions nil))
 
-    (sp-with-modes 'emacs-lisp-mode
-      (sp-local-pair "`" "'" :when '(sp-in-docstring-p)))
+    (comment ;; TODO no longer works with byte compile
+     (sp-with-modes 'emacs-lisp-mode
+       (sp-local-pair "`" "'" :when '(sp-in-docstring-p))))
 
     (t/def-pairs ((paren . "(")
                   (bracket . "[")
@@ -2144,8 +2137,7 @@ Edit csv, transpose columns, delete columns, sort
 (use-package csv-mode
   :mode ("\\.csv$" . csv-mode)
   :commands csv-mode
-  :init
-  (setq csv-separators '(";")))
+  :init (setq csv-separators '(";")))
 #+END_SRC
 
 *** Distraction free
@@ -2156,16 +2148,15 @@ also toggles hook to keep it on or off everywhere.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package darkroom
   :commands darkroom-tentative-mode
-  :init
-  (progn
-    (setq darkroom-text-scale-increase 0)
-    (add-hook 'after-change-major-mode-hook 'darkroom-tentative-mode)))
+  :init (setq darkroom-text-scale-increase 0)
+  :config
+  (add-hook 'after-change-major-mode-hook 'darkroom-tentative-mode))
 
 (defun t/toggle-distraction-free ()
   (interactive)
   (darkroom-tentative-mode (if darkroom-tentative-mode 0 1))
   (if darkroom-tentative-mode
-    (add-hook 'after-change-major-mode-hook 'darkroom-tentative-mode)
+      (add-hook 'after-change-major-mode-hook 'darkroom-tentative-mode)
     (remove-hook 'after-change-major-mode-hook 'darkroom-tentative-mode))
   (doom-modeline-init))
 #+END_SRC
@@ -2205,21 +2196,25 @@ from pressing R in eww mode.
 ***** Images and wrap long lines
 
 #+BEGIN_SRC emacs-lisp :results silent
-(t/after shr
-  ;; don't truncate lines in eww-mode
-  ;;(setq shr-width nil)
-  (defun shr-fill-text (text) text)
-  (defun shr-fill-lines (start end) nil)
-  (defun shr-fill-line () nil)
+(use-package shr
+  :straight nil
+  :commands eww
+  :init
+  (progn
+    ;; don't truncate lines in eww-mode
+    ;;(setq shr-width nil)
+    (defun shr-fill-text (text) text)
+    (defun shr-fill-lines (start end) nil)
+    (defun shr-fill-line () nil)
 
-  ;; wrap lines
-  (t/add-hook-defun 'eww-after-render-hook t/hook-eww-trunc
-                    (toggle-truncate-lines -1)))
+    ;; wrap lines
+    (t/add-hook-defun 'eww-after-render-hook t/hook-eww-trunc
+                      (toggle-truncate-lines -1))
 
-;; not to large images
-(setq shr-use-fonts nil
-      shr-max-image-proportion 0.6
-      shr-ignore-cache t)
+    ;; not to large images
+    (setq shr-use-fonts nil
+          shr-max-image-proportion 0.6
+          shr-ignore-cache t)))
 #+END_SRC
 
 ***** Open from chrome
@@ -2236,7 +2231,9 @@ Opens the frontmost chrome url in eww.
 ***** Hook and keybindings
 
 #+BEGIN_SRC emacs-lisp :results silent
-(t/after eww
+(use-package eww
+  :commands eww
+  :init
   (t/add-hook-defun 'eww-mode-hook t/hook-eww
                     (t/declare-prefix-for-mode 'eww-mode
                                                "t" "Toggle"
@@ -2275,7 +2272,7 @@ Another text based web browser
 *** GNUS
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package nnhackernews)
+(use-package nnhackernews :commands gnus)
 #+END_SRC
 
 *** External documentation
@@ -2287,77 +2284,74 @@ Another text based web browser
 *** Snippets
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package yasnippet
-  :diminish yas-minor-mode
-  :defer 1
-  :init
-  (progn
-    (setq yas-snippet-dirs '(t-dir-snippets)
-          ;; remove dropdowns
-          ;;yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
-          yas-verbosity 0
-          yas-wrap-around-region t))
-  :config
-  (progn
-    (yas-global-mode)
-
-    (defun t/yas-clear-or-delete-char ()
-      "Replace `yas-next-field' with noop `+' to make <backspace> only clear or delete-char."
-      (interactive)
-      (cl-letf (((symbol-function 'yas-next-field) #'+))
-        (call-interactively 'yas-skip-and-clear-or-delete-char)))
-    (bind-key "<backspace>" #'t/yas-clear-or-delete-char yas-keymap)
-
-    (t/add-hook-defun 'after-save-hook t/reload-snippets-on-save
-                      (t/when-ext "yasnippet" (yas-reload-all)))
-
-    ;; make fundamental snippets global snippets
-    (t/add-hook-defun 'yas-minor-mode-hook t/hook-yas (yas-activate-extra-mode 'fundamental-mode))
-
-    ;; jump to end of snippet definition
-    (bind-key "<return>" 'yas-exit-all-snippets yas-keymap)
-
-    ;; inter-field navigation
-    (defun yas/goto-end-of-active-field ()
-      (interactive)
-      (let* ((snippet (car (yas--snippets-at-point)))
-             (position (yas--field-end (yas--snippet-active-field snippet))))
-        (if (= (point) position)
-            (move-end-of-line 1)
-          (goto-char position))))
-
-    (defun yas/goto-start-of-active-field ()
-      (interactive)
-      (let* ((snippet (car (yas--snippets-at-point)))
-             (position (yas--field-start (yas--snippet-active-field snippet))))
-        (if (= (point) position)
-            (move-beginning-of-line 1)
-          (goto-char position))))
-
-    (t/bind-in 'yas-keymap
-      "C-e" 'yas/goto-end-of-active-field
-      "C-a" 'yas/goto-start-of-active-field)))
+;; TODO removed for speed
+;; (use-package yasnippet
+;;   :diminish yas-minor-mode
+;;   :disabled
+;;   :init
+;;   (progn
+;;     (setq yas-snippet-dirs '(t-dir-snippets)
+;;           ;; remove dropdowns
+;;           ;;yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
+;;           yas-verbosity 0
+;;           yas-wrap-around-region t))
+;;   :config
+;;   (progn
+;;     (yas-global-mode)
+;;
+;;     (defun t/yas-clear-or-delete-char ()
+;;       "Replace `yas-next-field' with noop `+' to make <backspace> only clear or delete-char."
+;;       (interactive)
+;;       (cl-letf (((symbol-function 'yas-next-field) #'+))
+;;         (call-interactively 'yas-skip-and-clear-or-delete-char)))
+;;     (bind-key "<backspace>" #'t/yas-clear-or-delete-char yas-keymap)
+;;
+;;     (t/add-hook-defun 'after-save-hook t/reload-snippets-on-save
+;;                       (t/when-ext "yasnippet" (yas-reload-all)))
+;;
+;;     ;; make fundamental snippets global snippets
+;;     (t/add-hook-defun 'yas-minor-mode-hook t/hook-yas (yas-activate-extra-mode 'fundamental-mode))
+;;
+;;     ;; jump to end of snippet definition
+;;     (bind-key "<return>" 'yas-exit-all-snippets yas-keymap)
+;;
+;;     ;; inter-field navigation
+;;     (defun yas/goto-end-of-active-field ()
+;;       (interactive)
+;;       (let* ((snippet (car (yas--snippets-at-point)))
+;;              (position (yas--field-end (yas--snippet-active-field snippet))))
+;;         (if (= (point) position)
+;;             (move-end-of-line 1)
+;;           (goto-char position))))
+;;
+;;     (defun yas/goto-start-of-active-field ()
+;;       (interactive)
+;;       (let* ((snippet (car (yas--snippets-at-point)))
+;;              (position (yas--field-start (yas--snippet-active-field snippet))))
+;;         (if (= (point) position)
+;;             (move-beginning-of-line 1)
+;;           (goto-char position))))
+;;
+;;     (t/bind-in 'yas-keymap
+;;       "C-e" 'yas/goto-end-of-active-field
+;;       "C-a" 'yas/goto-start-of-active-field)))
 #+END_SRC
 
 *** Reload buffers on external change
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package autorevert
-  :ensure nil
   :straight nil
-  :defer t
+  :hook (after-init . global-auto-revert-mode)
   :init
-  (progn
-    (setq auto-revert-interval 1
-          ;; silenced refresh of dired
-          auto-revert-verbose nil
-          global-auto-revert-non-file-buffers t))
+  (setq auto-revert-interval 1
+        ;; silenced refresh of dired
+        auto-revert-verbose nil
+        global-auto-revert-non-file-buffers t)
   :config
-  (progn
-    (global-auto-revert-mode)
-    (when is-mac
-      ;; file notifications aren't supported on os x
-      (setq auto-revert-use-notify nil))))
+  (when is-mac
+    ;; file notifications aren't supported on os x
+    (setq auto-revert-use-notify nil)))
 #+END_SRC
 
 *** Scrolling
@@ -2386,8 +2380,7 @@ Highlight todos across all programming modes.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package hl-todo
-  :defer 1
-  :config (global-hl-todo-mode))
+  :hook (after-init . global-hl-todo-mode))
 #+END_SRC
 
 **** Parens
@@ -2448,7 +2441,6 @@ Highlight todos across all programming modes.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package js-codemod
-  ;; :ensure nil
   ;; :straight nil
   ;; :load-path "~/Code/js-codemod/js-codemod.el"
   :commands (js-codemod-mod-region))
@@ -2513,6 +2505,7 @@ A custom function to fetch a clean view of the current news from nrk.no
                         (bind-key "p" 'hackernews-previous-item keymap)
                         (bind-key "<return>" 'hackernews-button-browse-internal keymap)
                         (set-temporary-overlay-map keymap t)))
+(t/after evil
     (evil-define-key 'normal hackernews-map
       (kbd "<return>") 'hackernews-button-browse-internal
       (kbd "TAB") 'hackernews-next-comment
@@ -2520,23 +2513,60 @@ A custom function to fetch a clean view of the current news from nrk.no
       "j" 'hackernews-next-item
       "k" 'hackernews-previous-item
       "gr" 'hackernews-load-more-stories
-      "gR" 'hackernews-reload)))
+      "gR" 'hackernews-reload))))
 
 #+END_SRC
 
-*** Complete lines - TODO implement for counsel
+*** Complete lines
 
 #+BEGIN_SRC emacs-lisp :results silent
-;; TODO
-;; redo it for counsel?
-(comment
- use-package helm-lines
- :commands helm-lines
- :init
- (progn
-   (setq helm-lines-project-root-function 't/project-root)
-   (t/declare-prefix "c" "Comment/Complete"
-                     "l" 'helm-lines)))
+(defvar t-complete-line--buffer "*rg-complete-line*")
+(defmacro t-complete-line--with-buffer (&rest do)
+  `(condition-case nil
+       (with-current-buffer t-complete-line--buffer
+         ,@do)
+     (error nil)))
+
+(defun t/complete-line ()
+  (interactive)
+  (ivy-read "Complete line: "
+            (lambda (q)
+              (or
+               (ivy-more-chars)
+               (t-complete-line--with-buffer (erase-buffer))
+               (let ((ps (start-process-shell-command
+                          "rg-complete-line"
+                          "*rg-complete-line*"
+                          (string-join (list
+                                        "rg"
+                                        "--no-heading"
+                                        "--no-filename"
+                                        "--no-line-number"
+                                        "--max-columns 500"         ;; remove long lines
+                                        (shell-quote-argument (replace-regexp-in-string " " ".*" q))
+                                        " | grep -Ev \"^$\""        ;; remove empty lines
+                                        " | sed -E \"s/^[ \t]*//\"" ;; remove leading ws
+                                        " | sort -u"                ;; unique
+                                        " | head -n 100")
+                                       " "))))
+                 (set-process-sentinel
+                  ps
+                  (lambda (process msg)
+                    (when (memq (process-status process) '(exit signal))
+                      (ivy-update-candidates
+                       (split-string (t-complete-line--with-buffer (buffer-string)) "\n")))))
+                 0 ;; tell ivy to expect an ivy-update-candidates call instead of returning them
+                 )))
+            :dynamic-collection t
+            :keymap ivy-minibuffer-map
+            :action (lambda (match)
+                      (beginning-of-line)
+                      (when (not (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
+                        (kill-line))
+                      (insert match))
+            :unwind (lambda () (t-complete-line--with-buffer (kill-buffer)))))
+
+(t/declare-prefix "c" "applications" "l" 't/complete-line)
 #+END_SRC
 
 *** Command decompiler
@@ -2551,9 +2581,8 @@ Save more recent files.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package recentf
-  :ensure nil
   :straight nil
-  :defer 1
+  :defer 5
   :init
   (progn
     (setq recentf-max-saved-items 1000
@@ -2626,7 +2655,7 @@ Toggles relative line numbers, like in vim.
                                (bind-key "M-." 'xref-find-definitions evil-insert-state-map)))))
 #+END_SRC
 
-*** Intent
+*** Indent
 
 Force indents, like you mean it.
 
@@ -2651,12 +2680,12 @@ Clean out whitespace when saving.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package whitespace
-  :ensure nil
   :straight nil
+  :commands (whitespace-cleanup whitespace-mode)
   :init
   (progn
     (t/add-hook 'before-save-hook 'whitespace-cleanup)
-     (t/add-hook-defun '(prog-mode-hook text-mode-hook git-commit-mode-hook) t/hook-whitespace
+    (t/add-hook-defun '(prog-mode-hook text-mode-hook git-commit-mode-hook) t/hook-whitespace
                       (setq-local whitespace-style '(face tabs tab-mark trailing))
                       (whitespace-mode 1))))
 #+END_SRC
@@ -2673,7 +2702,6 @@ View pdfs etc.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package doc-view
-  :ensure nil
   :straight nil
   :commands doc-view-mode
   :init
@@ -2706,9 +2734,9 @@ View pdfs etc.
 Draw inside emacs. Yes, you read correctly.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package artist-mode
-  :ensure nil
+(use-package artist
   :straight nil
+  :defer t
   :commands (t/artist-mode artist-mode)
   :init
   (progn
@@ -2743,8 +2771,8 @@ Draw inside emacs. Yes, you read correctly.
 *** Dictionary
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package dictionary
-  :if nil
+(comment use-package dictionary
+  :disabled
   :commands (dictionary dictionary-search)
   :init
   (t/declare-prefix "s" "dictionary"
@@ -2756,7 +2784,7 @@ Thesaurus.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package synosaurus
-  :if nil
+  :disabled
   :commands synosaurus-lookup
   :init
   (progn
@@ -2769,14 +2797,18 @@ Thesaurus.
 *** Eval overlays cider
 
 #+BEGIN_SRC emacs-lisp :results silent
-(progn
-  ;; inline evaled results when in elisp using cider
-  (autoload 'cider--make-result-overlay "cider-overlays")
-  (defun endless/eval-overlay (value point)
-    (cider--make-result-overlay (format "%S" value) :where point :duration 'command) value) ; preserve the return value
-  (advice-add 'eval-region :around (lambda (f beg end &rest r) (endless/eval-overlay (apply f beg end r) end)))
-  (advice-add 'eval-last-sexp :filter-return (lambda (r) (endless/eval-overlay r (point))))
-  (advice-add 'eval-defun :filter-return (lambda (r) (endless/eval-overlay r (save-excursion (end-of-defun) (point))))))
+(use-package cider-overlays
+  :straight nil
+  :hook (clojure-mode-hook clojurescript-mode-hook)
+  :config
+  (progn
+    ;; inline evaled results when in elisp using cider
+    (autoload 'cider--make-result-overlay "cider-overlays")
+    (defun endless/eval-overlay (value point)
+      (cider--make-result-overlay (format "%S" value) :where point :duration 'command) value) ; preserve the return value
+    (advice-add 'eval-region :around (lambda (f beg end &rest r) (endless/eval-overlay (apply f beg end r) end)))
+    (advice-add 'eval-last-sexp :filter-return (lambda (r) (endless/eval-overlay r (point))))
+    (advice-add 'eval-defun :filter-return (lambda (r) (endless/eval-overlay r (save-excursion (end-of-defun) (point)))))))
 #+END_SRC
 
 *** Misc text modes
@@ -2804,8 +2836,14 @@ Thesaurus.
 *** Regex editor
 
 #+BEGIN_SRC emacs-lisp :results silent
-(t/after re-builder (setq reb-re-syntax 'rx))
-(defvar t-regex-mode nil "reb-mode on or not")
+(use-package re-builder
+  :straight nil
+  :commands (t/toggle-regex-mode)
+  :init
+  (progn
+    (setq reb-re-syntax 'rx)
+    (defvar t-regex-mode nil "reb-mode on or not")))
+
 (defun t/toggle-regex-mode ()
   (interactive)
   (if t-regex-mode (reb-quit) (re-builder))
@@ -3060,7 +3098,7 @@ Thesaurus.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package popwin
-  :defer 1
+  :commands popwin:messages
   :init
   (progn
     (setq popwin:popup-window-height 25))
@@ -3076,6 +3114,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 #+begin_src emacs-lisp :results silent
 (use-package atomic-chrome
+  :defer 1
   :init
   (if after-init-time
       (atomic-chrome-start-server)
@@ -3108,7 +3147,10 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 *** Applescript
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package applescript-mode :mode "\\.scpt$")
+(use-package applescript-mode
+  ;; messes up byte compile https://github.com/jwiegley/use-package#prevent-a-package-from-loading-at-compile-time
+  :no-require t
+  :mode "\\.scpt$")
 #+END_SRC
 
 *** Arduino
@@ -3292,7 +3334,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package css-mode
-  :ensure nil
+  :defer t
   :straight nil
   :mode "\\.css$"
   :init (setq css-indent-offset *t-indent*)
@@ -3311,7 +3353,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package dockerfile-mode :mode "^Dockerfile$")
-(use-package docker-tramp)
+(use-package docker-tramp :commands docker-tramp-add-method)
 #+END_SRC
 
 *** Elisp
@@ -3466,16 +3508,15 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package lsp-mode
-  :ensure t
+  :hook css-mode-hook
+  :commands (lsp)
   :init
-  (progn
     (setq lsp-print-io nil
-          lsp-prefer-flymake nil)
-    ;;(require 'lsp-clients)
-    (add-hook 'css-mode-hook 'lsp)))
+          lsp-prefer-flymake nil))
 
 
 (use-package lsp-ui
+  :hook lsp-mode-hook
   :init
   (progn
     (setq lsp-ui-doc-enable t
@@ -3504,6 +3545,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 (use-package company-lsp
   :after company
+  :hook company-mode-hook
   :init
   (setq company-lsp-cache-candidates t
         company-lsp-async t))
@@ -3823,393 +3865,412 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
   (t/add-hook 'eshell-first-time-mode-hook 'setup-esh-help-eldoc))
 
 (use-package esh-autosuggest
+  :hook eshell-mode-hook
   :init
   (t/add-hook 'eshell-mode-hook 'esh-autosuggest-mode)
   :config
   (t/bind-in 'esh-autosuggest-active-map "C-j" 'company-complete-selection))
 
 (use-package eshell-z
+  :hook eshell-mode-hook
   :init
   (t/add-hook-defun 'eshell-mode-hook t/eshell-z-hook (require 'eshell-z)))
 
 (progn
 
-  (progn
-    ;; shell
-    (defun t/shell-mode-kill-buffer-on-exit (process state)
-      (shell-write-history-on-exit process state)
-      (when (string-match "\\(finished\\|exited\\)" (buffer-string))
-        (kill-buffer-and-window)))
-
-    (defun t/shell-mode-hook ()
-      (set-process-sentinel (get-buffer-process (current-buffer))
-                            #'t/shell-mode-kill-buffer-on-exit))
-
-    (t/add-hook 'shell-mode-hook #'t/shell-mode-hook))
-
-  (progn
-    ;; term
-    (setq explicit-shell-file-name "/bin/zsh")
-
-    (defun t/term-mode-hook ()
-      (defun term-window-width () 2000)
-      (setq truncate-lines t)
-      (t/highlight-logging)
-      (evil-define-key 'normal term-raw-map "M-:" 'eval-expression)
-      (evil-define-key 'normal term-raw-map "p" 'term-paste)
-      (evil-define-key 'insert term-raw-map (kbd "<tab>") 'term-send-tab)
-
-      (defun t/term-try-quit ()
-        (interactive)
-        (t/term-quit-if-finished 'term-send-eof))
-
-      (t/bind-in '(evil-normal-state-local-map evil-insert-state-local-map)
-        "C-d" 't/term-try-quit))
-
-    (t/add-hook 'term-mode-hook #'t/term-mode-hook))
-
-  (comment
-   ;; ansi-term
-   (defun t/ansi-term-mode-hook ()
-     "Close current term buffer when `exit' or c-d from term buffer."
-     (goto-address-mode)
-
-     (when (ignore-errors (get-buffer-process (current-buffer)))
-       (set-process-sentinel
-        (get-buffer-process (current-buffer))
-        (lambda (proc change)
-          (message change)
-          (when (string-match "\\(finished\\|exited\\)" change)
-            (kill-buffer (process-buffer proc)))))))
-
-   (t/add-hook 'term-mode-hook #'t/ansi-term-mode-hook)
-
-   (defconst t-term-name "/bin/zsh")
-   (defadvice ansi-term (before force-bash)
-     (interactive (list t-term-name))
-     (term-line-mode))
-   (ad-activate 'ansi-term)
-
-   (defadvice ansi-term (after always-use-line-mode)
-     (term-line-mode))
-   (ad-activate 'ansi-term)
-
-   ;; fix tab-completion
-   (t/add-hook-setq 'term-mode-hook yas-dont-activate t))
-
-  (progn
-    ;; eshell
-
-    (defun t/eshell-init ()
-      "Init eshell."
-      (t/add-hook-defun 'eshell-first-time-mode-hook t/hook-init-eshell
-                        (t/eshell-init-smart)
-                        (t/eshell-init-aliases)
-
-                        ;; fix wierd prompts
-                        (add-to-list 'eshell-preoutput-filter-functions
-                                     (lambda (output)
-                                       (replace-regexp-in-string "\\[[0-9]+[G-K]" "" output))))
-
-      (setq eshell-history-size 10000
-            eshell-hist-ignoredups t
-            eshell-scroll-to-bottom-on-output t
-            eshell-save-history-on-exit t
-            eshell-list-files-after-cd t
-            eshell-banner-message ""
-            eshell-error-if-no-glob t
-            eshell-visual-commands '("less" "ssh" "tmux" "top" "htop" "bash" "vim")
-            eshell-visual-subcommands '(("git" "log" "df" "diff" "show"))
-            eshell-term-name "eterm-color"))
-
-    (t/eshell-init)
-
-
-    (defun t/eshell-init-smart ()
-      "Init smart eshell"
-      (require 'em-smart)
-      (setq eshell-where-to-jump 'begin
-            eshell-review-quick-commands nil
-            eshell-smart-space-goes-to-end t)
-      (eshell-smart-initialize))
-
-    (defun t/eshell-init-aliases ()
-      (require 'em-alias)
-      (dolist (alias (list
-                      '("cleanupdsstore" "find . -name '*.DS_Store' -type f -ls -delete")
-                      '("d" "dired $1")
-                      '("e" "find-file $1")
-                      '("f" "counsel-find-files $1")
-                      '("p" "counsel-projectile")
-                      '("emacs" "find-file $1")
-                      '("emptytrash" "sudo rm -rfv /Volumes/*/.Trashes; rm -rfv ~/.Trash")
-                      '("esudo" "find-file /sudo::/$1")
-                      '("flushyosemitedns" "sudo discoveryutil mdnsflushcache;sudo discoveryutil udnsflushcaches")
-                      '("gd" "magit-diff-unstaged")
-                      '("gds" "magit-diff-staged")
-                      '("grep" "grep --color=always $*")
-                      '("gs" "magit-status")
-                      '("gr" "cd ${git rev-parse --show-toplevel}")
-                      '("gadd-origin-pr" "git config --add remote.origin.fetch \"+refs/pull/*/head:refs/remotes/origin/pr/*\"")
-                      '("hidedesktop" "defaults write com.apple.finder CreateDesktop -bool false && killall Finder")
-                      '("hidehidden" "defaults write com.apple.finder AppleShowAllFiles -boolean false && killall Finder")
-                      '("ip" "dig +short myip.opendns.com @resolver1.opendns.com")
-                      '("localip" "ipconfig getifaddr en0")
-                      '("j" "z $*")
-                      '("ll" "ls -laH $*")
-                      '("l" "ls -H $*")
-                      '("lout" "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend")
-                      '("md" "mkdir $1; cd $1")
-                      ;;'("merge-pdfs" "gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=merged.pdf *.pdf")
-                      '("serve" "http-server")
-                      '("showdesktop" "defaults write com.apple.finder CreateDesktop -bool true && killall Finder")
-                      '("showhidden" "defaults write com.apple.finder AppleShowAllFiles -boolean true && killall Finder")
-                      '("essh" "cd \"/ssh:$1:~\"")
-                      '("sudo" "*sudo $*")))
-        (add-to-list 'eshell-command-aliases-list alias)))
-
-    (defun t/eshell-buffer-id ()
-      "Next eshell buffer id."
-      (concat "*eshell: " (t/eshell-path-of-current-dir) "*"))
-
-    (defun t/eshell-path-of-current-dir ()
-      (file-name-directory (or (buffer-file-name) default-directory)))
-
-    (defun t/eshell ()
-      "Start, or switch to, `eshell' in the current working directory."
-      (interactive)
-      (let ((path (t/eshell-path-of-current-dir))
-            (hasfile (not (eq (buffer-file-name) nil))))
-        (eshell (t/eshell-buffer-id))
-        (when (and hasfile (eq eshell-process-list nil))
-          (goto-char (point-max))
-          ;;(setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home -v 1.8")))
-          (shell-command-to-string "jenv local 1.8")
-          (setenv "BOOT_JVM_OPTIONS" "-Djdk.launcher.addmods=java.xml.bind")
-          (setenv "PAGER" "cat"))))
-
-    (defun t/eshell-clear ()
-      "Clear the eshell buffer."
-      (interactive)
-      (let* ((inhibit-read-only t)
-             (last (and (eolp) (eshell-get-old-input))))
-        (erase-buffer)
-        (eshell-reset)
-        (when last
-          (insert last))
-        (evil-cp-append 1)))
-
-    (defun t/eshell-quit-or-delete-char ()
-      (interactive)
-      (if (and (eolp)
-               (looking-back eshell-prompt-regexp))
-          (eshell-life-is-too-much)
-        (delete-forward-char 1)))
-
-    (t/add-hook-defun 'eshell-directory-change-hook t/hook-eshell-dir (rename-buffer (t/eshell-buffer-id) t))
-    (t/add-hook-defun 'eshell-mode-hook t/hook-eshell
-                      (paredit-mode 1)
-                      (t/bind-in 'eshell-mode-map
-                        "S-<return>" 'newline-and-indent
-                        "C-l" 't/eshell-clear
-                        "C-a" 'eshell-bol
-                        "C-u" 'eshell-kill-input
-                        ;; C-c c-d sends exit
-                        "C-c C-u" 'universal-argument
-                        )
-                      (t/bind-in '(eshell-mode-map paredit-mode-map evil-insert-state-local-map)
-                        "C-a" 'eshell-bol
-                        "C-d" 't/eshell-quit-or-delete-char)
-                      (t/bind-in '(evil-normal-state-local-map)
-                        "C-a" 'eshell-bol)
-                      (comment ;; TODO counsel for history?
-                        (setq eshell-cmpl-ignore-case t)
-                        (eshell-cmpl-initialize)
-                        (bind-key "C-r" 'helm-eshell-history evil-insert-state-local-map)
-                        (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
-                        (define-key eshell-mode-map (kbd "M-P") 'helm-eshell-prompts-all)
-                        (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
-                      (progn
-                        (defun t/eshell-kill-input--go-to-eol ()
-                          "Go to end of line before killing input"
-                          (end-of-line))
-                        (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol)))
-
+  (use-package shell
+    :straight nil
+    :hook shell-mode-hook
+    :init
+    (t/add-hook 'shell-mode-hook #'t/shell-mode-hook)
+    :config
     (progn
-      ;; eshell prompt
+      (defun t/shell-mode-kill-buffer-on-exit (process state)
+        (shell-write-history-on-exit process state)
+        (when (string-match "\\(finished\\|exited\\)" (buffer-string))
+          (kill-buffer-and-window)))
 
-      (defun curr-dir-git-branch-string (pwd)
-        "Returns current git branch as a string, or the empty string if
+      (defun t/shell-mode-hook ()
+        (set-process-sentinel (get-buffer-process (current-buffer))
+                              #'t/shell-mode-kill-buffer-on-exit))))
+
+  (use-package term
+    :hook term-mode-hook
+    :straight nil
+    :init
+    (progn
+      ;; term
+      (setq explicit-shell-file-name "/bin/zsh")
+
+      (defun t/term-mode-hook ()
+        (defun term-window-width () 2000)
+        (setq truncate-lines t)
+        (t/highlight-logging)
+        (t/after evil
+          (evil-define-key 'normal term-raw-map "M-:" 'eval-expression)
+          (evil-define-key 'normal term-raw-map "p" 'term-paste)
+          (evil-define-key 'insert term-raw-map (kbd "<tab>") 'term-send-tab))
+
+        (defun t/term-try-quit ()
+          (interactive)
+          (t/term-quit-if-finished 'term-send-eof))
+
+        (t/bind-in '(evil-normal-state-local-map evil-insert-state-local-map)
+          "C-d" 't/term-try-quit))
+
+      (t/add-hook 'term-mode-hook #'t/term-mode-hook)))
+
+  (use-package ansi-term
+    :hook term-mode-hook
+    :straight nil
+    :init
+    (progn
+      ;; ansi-term
+      (defun t/ansi-term-mode-hook ()
+        "Close current term buffer when `exit' or c-d from term buffer."
+        (goto-address-mode)
+
+        (when (ignore-errors (get-buffer-process (current-buffer)))
+          (set-process-sentinel
+           (get-buffer-process (current-buffer))
+           (lambda (proc change)
+             (message change)
+             (when (string-match "\\(finished\\|exited\\)" change)
+               (kill-buffer (process-buffer proc)))))))
+
+      (t/add-hook 'term-mode-hook #'t/ansi-term-mode-hook)
+
+      (defconst t-term-name "/bin/zsh")
+      (defadvice ansi-term (before force-bash)
+        (interactive (list t-term-name))
+        (term-line-mode))
+      (ad-activate 'ansi-term)
+
+      (defadvice ansi-term (after always-use-line-mode)
+        (term-line-mode))
+      (ad-activate 'ansi-term)
+
+      ;; fix tab-completion
+      (t/add-hook-setq 'term-mode-hook yas-dont-activate t)))
+
+  (use-package eshell
+    :straight nil
+    :commands t/eshell
+    :init
+    (progn
+      ;; eshell
+
+      (defun t/eshell-init ()
+        "Init eshell."
+        (t/add-hook-defun 'eshell-first-time-mode-hook t/hook-init-eshell
+                          (t/eshell-init-smart)
+                          (t/eshell-init-aliases)
+
+                          ;; fix wierd prompts
+                          (add-to-list 'eshell-preoutput-filter-functions
+                                       (lambda (output)
+                                         (replace-regexp-in-string "\\[[0-9]+[G-K]" "" output))))
+
+        (setq eshell-history-size 10000
+              eshell-hist-ignoredups t
+              eshell-scroll-to-bottom-on-output t
+              eshell-save-history-on-exit t
+              eshell-list-files-after-cd t
+              eshell-banner-message ""
+              eshell-error-if-no-glob t
+              eshell-visual-commands '("less" "ssh" "tmux" "top" "htop" "bash" "vim")
+              eshell-visual-subcommands '(("git" "log" "df" "diff" "show"))
+              eshell-term-name "eterm-color"))
+
+      (t/eshell-init)
+
+
+      (defun t/eshell-init-smart ()
+        "Init smart eshell"
+        (require 'em-smart)
+        (setq eshell-where-to-jump 'begin
+              eshell-review-quick-commands nil
+              eshell-smart-space-goes-to-end t)
+        (eshell-smart-initialize))
+
+      (defun t/eshell-init-aliases ()
+        (require 'em-alias)
+        (dolist (alias (list
+                        '("cleanupdsstore" "find . -name '*.DS_Store' -type f -ls -delete")
+                        '("d" "dired $1")
+                        '("e" "find-file $1")
+                        '("f" "counsel-find-files $1")
+                        '("p" "counsel-projectile")
+                        '("emacs" "find-file $1")
+                        '("emptytrash" "sudo rm -rfv /Volumes/*/.Trashes; rm -rfv ~/.Trash")
+                        '("esudo" "find-file /sudo::/$1")
+                        '("flushyosemitedns" "sudo discoveryutil mdnsflushcache;sudo discoveryutil udnsflushcaches")
+                        '("gd" "magit-diff-unstaged")
+                        '("gds" "magit-diff-staged")
+                        '("grep" "grep --color=always $*")
+                        '("gs" "magit-status")
+                        '("gr" "cd ${git rev-parse --show-toplevel}")
+                        '("gadd-origin-pr" "git config --add remote.origin.fetch \"+refs/pull/*/head:refs/remotes/origin/pr/*\"")
+                        '("hidedesktop" "defaults write com.apple.finder CreateDesktop -bool false && killall Finder")
+                        '("hidehidden" "defaults write com.apple.finder AppleShowAllFiles -boolean false && killall Finder")
+                        '("ip" "dig +short myip.opendns.com @resolver1.opendns.com")
+                        '("localip" "ipconfig getifaddr en0")
+                        '("j" "z $*")
+                        '("ll" "ls -laH $*")
+                        '("l" "ls -H $*")
+                        '("lout" "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend")
+                        '("md" "mkdir $1; cd $1")
+                        ;;'("merge-pdfs" "gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=merged.pdf *.pdf")
+                        '("serve" "http-server")
+                        '("showdesktop" "defaults write com.apple.finder CreateDesktop -bool true && killall Finder")
+                        '("showhidden" "defaults write com.apple.finder AppleShowAllFiles -boolean true && killall Finder")
+                        '("essh" "cd \"/ssh:$1:~\"")
+                        '("sudo" "*sudo $*")))
+          (add-to-list 'eshell-command-aliases-list alias)))
+
+      (defun t/eshell-buffer-id ()
+        "Next eshell buffer id."
+        (concat "*eshell: " (t/eshell-path-of-current-dir) "*"))
+
+      (defun t/eshell-path-of-current-dir ()
+        (file-name-directory (or (buffer-file-name) default-directory)))
+
+      (defun t/eshell ()
+        "Start, or switch to, `eshell' in the current working directory."
+        (interactive)
+        (let ((path (t/eshell-path-of-current-dir))
+              (hasfile (not (eq (buffer-file-name) nil))))
+          (eshell (t/eshell-buffer-id))
+          (when (and hasfile (eq eshell-process-list nil))
+            (goto-char (point-max))
+            ;;(setenv "JAVA_HOME" (s-trim (shell-command-to-string "/usr/libexec/java_home -v 1.8")))
+            (shell-command-to-string "jenv local 1.8")
+            (setenv "BOOT_JVM_OPTIONS" "-Djdk.launcher.addmods=java.xml.bind")
+            (setenv "PAGER" "cat"))))
+
+      (defun t/eshell-clear ()
+        "Clear the eshell buffer."
+        (interactive)
+        (let* ((inhibit-read-only t)
+               (last (and (eolp) (eshell-get-old-input))))
+          (erase-buffer)
+          (eshell-reset)
+          (when last
+            (insert last))
+          (evil-cp-append 1)))
+
+      (defun t/eshell-quit-or-delete-char ()
+        (interactive)
+        (if (and (eolp)
+                 (looking-back eshell-prompt-regexp))
+            (eshell-life-is-too-much)
+          (delete-forward-char 1)))
+
+      (t/add-hook-defun 'eshell-directory-change-hook t/hook-eshell-dir (rename-buffer (t/eshell-buffer-id) t))
+      (t/add-hook-defun 'eshell-mode-hook t/hook-eshell
+                        (paredit-mode 1)
+                        (t/bind-in 'eshell-mode-map
+                          "S-<return>" 'newline-and-indent
+                          "C-l" 't/eshell-clear
+                          "C-a" 'eshell-bol
+                          "C-u" 'eshell-kill-input
+                          ;; C-c c-d sends exit
+                          "C-c C-u" 'universal-argument
+                          )
+                        (t/bind-in '(eshell-mode-map paredit-mode-map evil-insert-state-local-map)
+                          "C-a" 'eshell-bol
+                          "C-d" 't/eshell-quit-or-delete-char)
+                        (t/bind-in '(evil-normal-state-local-map)
+                          "C-a" 'eshell-bol)
+                        (comment ;; TODO counsel for history?
+                         (setq eshell-cmpl-ignore-case t)
+                         (eshell-cmpl-initialize)
+                         (bind-key "C-r" 'helm-eshell-history evil-insert-state-local-map)
+                         (define-key eshell-mode-map [remap eshell-pcomplete] 'helm-esh-pcomplete)
+                         (define-key eshell-mode-map (kbd "M-P") 'helm-eshell-prompts-all)
+                         (define-key eshell-mode-map (kbd "M-p") 'helm-eshell-history))
+                        (progn
+                          (defun t/eshell-kill-input--go-to-eol ()
+                            "Go to end of line before killing input"
+                            (end-of-line))
+                          (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol)))
+
+      (progn
+        ;; eshell prompt
+
+        (defun curr-dir-git-branch-string (pwd)
+          "Returns current git branch as a string, or the empty string if
 PWD is not in a git repo (or the git command is not found)."
-        (interactive)
-        (when (and is-mac
-                   (eshell-search-path "git")
-                   (locate-dominating-file pwd ".git"))
-          (let ((git-output (shell-command-to-string (concat "cd " (shell-quote-argument (expand-file-name pwd)) " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
-            (if (> (length git-output) 0)
-                (concat " " (substring git-output 0 -1))
-              " (no branch)"))))
+          (interactive)
+          (when (and is-mac
+                     (eshell-search-path "git")
+                     (locate-dominating-file pwd ".git"))
+            (let ((git-output (shell-command-to-string (concat "cd " (shell-quote-argument (expand-file-name pwd)) " && git branch | grep '\\*' | sed -e 's/^\\* //'"))))
+              (if (> (length git-output) 0)
+                  (concat " " (substring git-output 0 -1))
+                " (no branch)"))))
 
-      (defun pwd-replace-home (pwd)
-        "Replace home in PWD with tilde (~) character."
-        (interactive)
-        (let* ((home (expand-file-name (getenv "HOME")))
-               (home-len (length home)))
-          (if (and
-               (>= (length pwd) home-len)
-               (equal home (substring pwd 0 home-len)))
-              (concat "~" (substring pwd home-len))
-            pwd)))
+        (defun pwd-replace-home (pwd)
+          "Replace home in PWD with tilde (~) character."
+          (interactive)
+          (let* ((home (expand-file-name (getenv "HOME")))
+                 (home-len (length home)))
+            (if (and
+                 (>= (length pwd) home-len)
+                 (equal home (substring pwd 0 home-len)))
+                (concat "~" (substring pwd home-len))
+              pwd)))
 
-      (defun pwd-shorten-dirs (pwd)
-        "Shorten all directory names in PWD except the last two."
-        (let ((p-lst (split-string pwd "/")))
-          (if (> (length p-lst) 2)
-              (concat
-               (mapconcat (lambda (elm) (if (zerop (length elm)) ""
-                                          (substring elm 0 1)))
-                          (butlast p-lst 2)
-                          "/")
-               "/"
-               (mapconcat (lambda (elm) elm)
-                          (last p-lst 2)
-                          "/"))
-            pwd)))  ;; Otherwise, we just return the PWD
+        (defun pwd-shorten-dirs (pwd)
+          "Shorten all directory names in PWD except the last two."
+          (let ((p-lst (split-string pwd "/")))
+            (if (> (length p-lst) 2)
+                (concat
+                 (mapconcat (lambda (elm) (if (zerop (length elm)) ""
+                                            (substring elm 0 1)))
+                            (butlast p-lst 2)
+                            "/")
+                 "/"
+                 (mapconcat (lambda (elm) elm)
+                            (last p-lst 2)
+                            "/"))
+              pwd)))  ;; Otherwise, we just return the PWD
 
-      (defun split-directory-prompt (directory short-dir)
-        (if (string-match-p ".*/.*" short-dir)
-            (list (file-name-directory short-dir)
-                  (if (file-directory-p directory)
-                      (file-name-nondirectory short-dir)
-                    (file-name-base short-dir)))
-          (list "" short-dir)))
+        (defun split-directory-prompt (directory short-dir)
+          (if (string-match-p ".*/.*" short-dir)
+              (list (file-name-directory short-dir)
+                    (if (file-directory-p directory)
+                        (file-name-nondirectory short-dir)
+                      (file-name-base short-dir)))
+            (list "" short-dir)))
 
-      (defvar t-eshell-success-face 'doom-modeline-info)
-      (defvar t-eshell-error-face 'doom-modeline-urgent)
-      (setq eshell-prompt-function
-            (lambda ()
-              (let* ((pwd (eshell/pwd))
-                     (directory (split-directory-prompt pwd (pwd-shorten-dirs (pwd-replace-home pwd))))
-                     (parent (car directory))
-                     (name (cadr directory))
-                     (branch (or (curr-dir-git-branch-string (eshell/pwd)) ""))
-                     (prompt (concat
-                              (propertize parent 'face 'font-lock-builtin-face)
-                              (propertize name 'face 'font-lock-constant-face)
-                              (propertize branch 'face 'font-lock-comment-face)
-                              (propertize " $" 'face (if (zerop eshell-last-command-status) t-eshell-success-face t-eshell-error-face))
-                              (propertize " " 'face 'font-lock-preprocessor-face))))
-                (t/propertize-read-only prompt)))))))
+        (defvar t-eshell-success-face 'doom-modeline-info)
+        (defvar t-eshell-error-face 'doom-modeline-urgent)
+        (setq eshell-prompt-function
+              (lambda ()
+                (let* ((pwd (eshell/pwd))
+                       (directory (split-directory-prompt pwd (pwd-shorten-dirs (pwd-replace-home pwd))))
+                       (parent (car directory))
+                       (name (cadr directory))
+                       (branch (or (curr-dir-git-branch-string (eshell/pwd)) ""))
+                       (prompt (concat
+                                (propertize parent 'face 'font-lock-builtin-face)
+                                (propertize name 'face 'font-lock-constant-face)
+                                (propertize branch 'face 'font-lock-comment-face)
+                                (propertize " $" 'face (if (zerop eshell-last-command-status) t-eshell-success-face t-eshell-error-face))
+                                (propertize " " 'face 'font-lock-preprocessor-face))))
+                  (t/propertize-read-only prompt)))))))
 
-(progn
-  ;; eshell git completion
+  (use-package pcomplete
+    :straight nil
+    :hook eshell-mode-hook
+    :init
+    (progn
+      ;; eshell git completion
+      (defconst pcmpl-git-commands
+        '("pr"
+          "add" "bisect" "branch" "checkout" "clone"
+          "commit" "diff" "fetch" "grep"
+          "init" "log" "merge" "mv" "pull" "push" "rebase"
+          "reset" "rm" "show" "status" "tag" )
+        "List of `git' commands")
 
-  (defconst pcmpl-git-commands
-    '("pr"
-      "add" "bisect" "branch" "checkout" "clone"
-      "commit" "diff" "fetch" "grep"
-      "init" "log" "merge" "mv" "pull" "push" "rebase"
-      "reset" "rm" "show" "status" "tag" )
-    "List of `git' commands")
+      (defun pcmpl-git-remotes ()
+        "Return list of `git' remotes."
+        (-drop-last 1 (s-split "\r?\n" (shell-command-to-string "git remote show"))))
 
-  (defun pcmpl-git-remotes ()
-    "Return list of `git' remotes."
-    (-drop-last 1 (s-split "\r?\n" (shell-command-to-string "git remote show"))))
+      (defvar pcmpl-git-ref-list-cmd "git for-each-ref refs/ --format='%(refname)'"
+        "The `git' command to run to get a list of refs")
 
-  (defvar pcmpl-git-ref-list-cmd "git for-each-ref refs/ --format='%(refname)'"
-    "The `git' command to run to get a list of refs")
+      (defun pcmpl-git-get-refs (types)
+        "Return a list of `git' refs filtered by TYPE."
+        (with-temp-buffer
+          (insert (shell-command-to-string pcmpl-git-ref-list-cmd))
+          (goto-char (point-min))
+          (let ((ref-list))
+            (dolist (type types)
+              (while (re-search-forward (concat "^refs/" type "/\\(.+\\)$") nil t)
+                (push (match-string 1) ref-list)))
+            ref-list)))
 
-  (defun pcmpl-git-get-refs (types)
-    "Return a list of `git' refs filtered by TYPE."
-    (with-temp-buffer
-      (insert (shell-command-to-string pcmpl-git-ref-list-cmd))
-      (goto-char (point-min))
-      (let ((ref-list))
-        (dolist (type types)
-          (while (re-search-forward (concat "^refs/" type "/\\(.+\\)$") nil t)
-            (push (match-string 1) ref-list)))
-        ref-list)))
+      (require 'pcomplete)
+      (defun pcomplete/git ()
+        "Completion for `git'."
 
-  (require 'pcomplete)
-  (defun pcomplete/git ()
-    "Completion for `git'."
+        (pcomplete-here* pcmpl-git-commands)
+        (cond
+         ;; complete files/dirs forever if the command is `add' or `rm'
+         ((pcomplete-match (regexp-opt '("add" "rm")) 1)
+          (while (pcomplete-here (pcomplete-entries))))
+         ((pcomplete-match (regexp-opt '("pr")) 1)
+          (while (pcomplete-here (append (pcmpl-git-get-refs '("heads")) (pcmpl-git-remotes)))))
+         ;; provide branch completion for the command `checkout'.
+         ((pcomplete-match "\\(co\\|checkout\\|merge\\|branch\\|diff\\)" 1)
+          (pcomplete-here* (pcmpl-git-get-refs '("heads"))))))
 
-    (pcomplete-here* pcmpl-git-commands)
-    (cond
-     ;; complete files/dirs forever if the command is `add' or `rm'
-     ((pcomplete-match (regexp-opt '("add" "rm")) 1)
-      (while (pcomplete-here (pcomplete-entries))))
-     ((pcomplete-match (regexp-opt '("pr")) 1)
-      (while (pcomplete-here (append (pcmpl-git-get-refs '("heads")) (pcmpl-git-remotes)))))
-     ;; provide branch completion for the command `checkout'.
-     ((pcomplete-match "\\(co\\|checkout\\|merge\\|branch\\|diff\\)" 1)
-      (pcomplete-here* (pcmpl-git-get-refs '("heads")))))))
+      (defun pcomplete/kill ()
+        (while (pcomplete-match "^-" 'last) (pcomplete-here '("-1" "-2" "-3" "-6" "-9" "-14" "-15" "-l" "-s")))
+        (while (and (pcomplete-match "" 'last)
+                    (pcomplete-match "-s" 'last -1)) (pcomplete-here '("HUP" "SIGHUP" "SIGINT" "SIGKILL" "SIGTERM" "SIGSTOP")))
+        (while (pcomplete-here* (-map 's-trim (-> (shell-command-to-string "ps -eo pid | grep -v PID")
+                                                  (split-string "\n")))))))
 
-(defun pcomplete/kill ()
-  (while (pcomplete-match "^-" 'last) (pcomplete-here '("-1" "-2" "-3" "-6" "-9" "-14" "-15" "-l" "-s")))
-  (while (and (pcomplete-match "" 'last)
-              (pcomplete-match "-s" 'last -1)) (pcomplete-here '("HUP" "SIGHUP" "SIGINT" "SIGKILL" "SIGTERM" "SIGSTOP")))
-  (while (pcomplete-here* (-map 's-trim (-> (shell-command-to-string "ps -eo pid | grep -v PID")
-                                            (split-string "\n"))))))
-
-;; pcomplete example
-(defun pcomplete/torgeir ()
-  (pcomplete-here* '("add" "remove"))
-  (cond
-   ((pcomplete-match "add" 1) (pcomplete-here* '("one" "two")))
-   ((pcomplete-match "remove" 1) (pcomplete-here* '("two" "three")))))
+    ;; pcomplete example
+    (defun pcomplete/torgeir ()
+      (pcomplete-here* '("add" "remove"))
+      (cond
+       ((pcomplete-match "add" 1) (pcomplete-here* '("one" "two")))
+       ((pcomplete-match "remove" 1) (pcomplete-here* '("two" "three"))))))
 
 
-(use-package pcmpl-git
-  :commands eshell)
+  (use-package pcmpl-git
+    :commands eshell)
 
-(use-package pcmpl-args
-  :commands eshell
-  :config
-  (defun pcmpl-args-default-man-function (name)
-    "torgeir: Patched to remove arguments to work on os x."
-    (let ((process-environment process-environment))
-      (push "MANWIDTH=10000" process-environment)
-      (pcmpl-args-process-file "man" "--" name))))
+  (use-package pcmpl-args
+    :commands eshell
+    :config
+    (defun pcmpl-args-default-man-function (name)
+      "torgeir: Patched to remove arguments to work on os x."
+      (let ((process-environment process-environment))
+        (push "MANWIDTH=10000" process-environment)
+        (pcmpl-args-process-file "man" "--" name))))
 
-(use-package pcmpl-homebrew
-  :commands eshell)
+  (use-package pcmpl-homebrew
+    :commands eshell)
 
-(use-package pcomplete-extension
-  :commands eshell)
+  (use-package pcomplete-extension
+    :commands eshell)
 
-;; make ret work on ls results
-(eval-after-load "em-ls"
-  '(progn
-     (defun ted-eshell-ls-find-file-at-point (point)
-       "RET on Eshell's `ls' output to open files."
-       (interactive "d")
-       (find-file (buffer-substring-no-properties
-                   (previous-single-property-change point 'help-echo)
-                   (next-single-property-change point 'help-echo))))
+  ;; make ret work on ls results
+  (eval-after-load "em-ls"
+    '(progn
+       (defun ted-eshell-ls-find-file-at-point (point)
+         "RET on Eshell's `ls' output to open files."
+         (interactive "d")
+         (find-file (buffer-substring-no-properties
+                     (previous-single-property-change point 'help-echo)
+                     (next-single-property-change point 'help-echo))))
 
-     (defun pat-eshell-ls-find-file-at-mouse-click (event)
-       "Middle click on Eshell's `ls' output to open files.
+       (defun pat-eshell-ls-find-file-at-mouse-click (event)
+         "Middle click on Eshell's `ls' output to open files.
  From Patrick Anderson via the wiki."
-       (interactive "e")
-       (ted-eshell-ls-find-file-at-point (posn-point (event-end event))))
+         (interactive "e")
+         (ted-eshell-ls-find-file-at-point (posn-point (event-end event))))
 
-     (let ((map (make-sparse-keymap)))
-       (define-key map (kbd "RET")      'ted-eshell-ls-find-file-at-point)
-       (define-key map (kbd "<return>") 'ted-eshell-ls-find-file-at-point)
-       (define-key map (kbd "<mouse-2>") 'pat-eshell-ls-find-file-at-mouse-click)
-       (defvar ted-eshell-ls-keymap map))
+       (let ((map (make-sparse-keymap)))
+         (define-key map (kbd "RET")      'ted-eshell-ls-find-file-at-point)
+         (define-key map (kbd "<return>") 'ted-eshell-ls-find-file-at-point)
+         (define-key map (kbd "<mouse-2>") 'pat-eshell-ls-find-file-at-mouse-click)
+         (defvar ted-eshell-ls-keymap map))
 
-     (defadvice eshell-ls-decorated-name (after ted-electrify-ls activate)
-       "Eshell's `ls' now lets you click or RET on file names to open them."
-       (add-text-properties 0 (length ad-return-value)
-                            (list 'help-echo "RET, mouse-2: visit this file"
-                                  'mouse-face 'highlight
-                                  'keymap ted-eshell-ls-keymap)
-                            ad-return-value)
-       ad-return-value)))
-
-(provide 't-shell)
+       (defadvice eshell-ls-decorated-name (after ted-electrify-ls activate)
+         "Eshell's `ls' now lets you click or RET on file names to open them."
+         (add-text-properties 0 (length ad-return-value)
+                              (list 'help-echo "RET, mouse-2: visit this file"
+                                    'mouse-face 'highlight
+                                    'keymap ted-eshell-ls-keymap)
+                              ad-return-value)
+         ad-return-value))))
 #+END_SRC
 
 Colorize the compilation buffer, e.g. to make gradlew work like you'd expect in
@@ -4381,7 +4442,6 @@ Revert to previous window configurations.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package winner
-  :ensure nil
   :straight nil
   :commands (winner-undo winner-redo)
   :config (winner-mode))
@@ -4421,7 +4481,7 @@ Move window consistently across os'es.
  ("<C-S-s-right>" . t/move-frame-right)
  ("<C-S-s-down>" . t/move-frame-down)
  ("<C-S-s-up>" . t/move-frame-up))
-#+END_SRC
+ #+END_SRC
 
 ** Server
 
@@ -4429,9 +4489,18 @@ Keep a server running, so emacsclient opens in existing windows. E.g. when
 running ~e some-file.el~ on the command line.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(unless (fboundp 'server-running-p) (require 'server))
-(unless (server-running-p) (server-mode))
-(t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
+(use-package server
+  :straight nil
+  :defer 1
+  :if (or (not (fboundp 'server-running-p))
+          (server-running-p))
+  :config
+  (progn
+    (unless (fboundp 'server-running-p) (require 'server))
+    (unless (server-running-p) (server-mode))
+    ;; TODO needed?
+    ;;(t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
+    ))
 #+END_SRC
 
 ** Org
@@ -4637,30 +4706,33 @@ Fix disappearing company.
 Modules to evaluate.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(setq org-modules '(org-tempo ; templates
-                    org-mouse))
-(org-load-modules-maybe t)
+(use-package org-tempo ; org templates
+  :straight nil
+  :after org
+  :hook org-mode-hook
+  :config (add-to-list 'org-modules 'org-tempo))
+(use-package org-mouse
+  :straight nil
+  :after org
+  :hook org-mode-hook
+  :config (add-to-list 'org-modules 'org-mouse))
 
-;;(require 'ox-md)
-(require 'ox-gfm)
-(require 'ob-clojure)
-(use-package ob-restclient)
+(t/add-hook-defun 'org-mode-hook t-load-org-modules (org-load-modules-maybe t))
 
-(setq org-babel-clojure-backend 'cider)
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '(;;(elasticsearch . t)
-   (emacs-lisp . t)
-   (clojure . t)
-   (dot . t)
-   (gnuplot . t)
-   (js . t)
-   (latex . t)
-   (python . t)
-   (restclient . t)
-   (ruby . t)
-   (shell . t)))
+;; Avoid `org-babel-do-load-languages' since it does an eager require.
+(use-package ox-md :defer t :straight nil :commands (org-export-dispatch))
+(use-package ob-restclient :after restclient :commands org-babel-execute:restclient)
+(use-package ob-emacs-lisp :defer t :straight nil :commands (org-metaup org-babel-execute:elisp org-babel-execute:emacs-lisp))
+(use-package ob-dot :defer t :straight nil :commands (org-babel-execute:dot))
+(use-package ob-gnuplot :defer t :straight nil :commands (org-babel-execute:gnuplot))
+(use-package ob-js :defer t :straight nil :commands (org-babel-execute:js))
+(use-package ob-latex :defer t :straight nil :commands (org-babel-execute:latex))
+(use-package ob-python :defer t :straight nil :commands (org-babel-execute:python))
+(use-package ob-ruby :defer t :straight nil :commands (org-babel-execute:ruby))
+(use-package ob-shell :defer t :straight nil :commands (org-babel-execute:shell))
+(use-package ob-clojure :defer t :straight nil
+  :init (setq org-babel-clojure-backend 'cider)
+  :commands (org-babel-execute:clojure org-babel-execute:clojurescript))
 #+END_SRC
 
 Fix js eval https://emacs.stackexchange.com/questions/55690/org-babel-javascript-error.
@@ -4756,6 +4828,7 @@ Show weather in agenda with ~%%(org-weather-metno)~
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package weather-metno
   :after org
+  :commands org-agenda
   :config
   (progn
     (setq weather-metno-location-name "Trondheim, Norway"
@@ -4949,18 +5022,17 @@ Blank line before new entries with text, but not headings following other headin
 *** Yasnippet
 
 #+BEGIN_SRC emacs-lisp :results silent
-;; yas in org
-(defun yas/org-very-safe-expand ()
-  (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
-
-(defun yas/org-setup ()
-  (make-variable-buffer-local 'yas-trigger-key)
-  (setq yas-trigger-key [tab])
-  (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-  (define-key yas-keymap [tab] 'yas-next-field))
-
-(t/after yasnippet ;; TODO
-  (t/add-hook 'org-mode-hook #'yas/org-setup))
+;; TODO yas in org
+;;(defun yas/org-very-safe-expand ()
+;;  (let ((yas/fallback-behavior 'return-nil)) (yas-expand)))
+;;
+;;(defun yas/org-setup ()
+;;  (make-variable-buffer-local 'yas-trigger-key)
+;;  (setq yas-trigger-key [tab])
+;;  (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+;;  (define-key yas-keymap [tab] 'yas-next-field))
+;;
+;;(t/add-hook 'org-mode-hook #'yas/org-setup)
 #+END_SRC
 
 *** Fonts
@@ -4983,7 +5055,7 @@ Equal size fonts. Remove subsequent leading bullets.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package org-alert
-  :if nil
+  :disabled
   :commands t/org-idle-timer
   :config
   (progn
@@ -5013,7 +5085,6 @@ the commented out ~org-gcal-fetch~
 (use-package request-deferred :commands (deferred:loop))
 (use-package org-gcal
   :after request-deferred
-  :ensure nil
   :straight nil
   :load-path "site-lisp/org-gcal"
   :commands (org-gcal-sync org-gcal-fetch)
@@ -5032,7 +5103,7 @@ the commented out ~org-gcal-fetch~
 *** Make org draw charts
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package gnuplot :after org)
+(use-package gnuplot :commands (org-babel-execute:gnuplot) :after org)
 #+END_SRC
 
 *** Search
@@ -5061,6 +5132,7 @@ Doom themes are nice, so is the modeline.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package doom-themes
+  :hook after-init-hook
   :config
   (progn
     (setq doom-themes-enable-bold t
@@ -5149,56 +5221,6 @@ We're done, wrap up timing so we can se how long it took.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (t/timing-end)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defvar t-complete-line--buffer "*rg-complete-line*")
-(defmacro t-complete-line--with-buffer (&rest do)
-  `(condition-case nil
-       (with-current-buffer t-complete-line--buffer
-         ,@do)
-     (error nil)))
-
-(defun t/complete-line ()
-  (interactive)
-  (ivy-read "Complete line: "
-            (lambda (q)
-              (or
-               (ivy-more-chars)
-               (t-complete-line--with-buffer (erase-buffer))
-               (let ((ps (start-process-shell-command
-                          "rg-complete-line"
-                          "*rg-complete-line*"
-                          (string-join (list
-                                        "rg"
-                                        "--no-heading"
-                                        "--no-filename"
-                                        "--no-line-number"
-                                        "--max-columns 500"         ;; remove long lines
-                                        (shell-quote-argument (replace-regexp-in-string " " ".*" q))
-                                        " | grep -Ev \"^$\""        ;; remove empty lines
-                                        " | sed -E \"s/^[ \t]*//\"" ;; remove leading ws
-                                        " | sort -u"                ;; unique
-                                        " | head -n 100")
-                                       " "))))
-                 (set-process-sentinel
-                  ps
-                  (lambda (process msg)
-                    (when (memq (process-status process) '(exit signal))
-                      (ivy-update-candidates
-                       (split-string (t-complete-line--with-buffer (buffer-string)) "\n")))))
-                 0 ;; tell ivy to expect an ivy-update-candidates call instead of returning them
-                 )))
-            :dynamic-collection t
-            :keymap ivy-minibuffer-map
-            :action (lambda (match)
-                      (beginning-of-line)
-                      (when (not (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
-                        (kill-line))
-                      (insert match))
-            :unwind (lambda () (t-complete-line--with-buffer (kill-buffer)))))
-
-(t/declare-prefix "c" "applications" "l" 't/complete-line)
 #+END_SRC
 
 #+begin_src emacs-lisp :results silent

@@ -1,7 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 
-;; Default to calling straigth-use-package when running use-package.
+;; Default to calling straight-use-package when running use-package.
 (setq straight-use-package-by-default t)
+(setq straight-check-for-modifications 'live)
+(setq gc-cons-threshold (* 1000 1000 1000)) ; 1gb while loading init
 
 ;; Bootstrap [straight.el](https://github.com/raxod502/straight.el).
 (defvar bootstrap-version)
@@ -47,7 +49,7 @@
 
 (defvar *t-indent* 2)
 (defvar *t-indent-xml* 4)
-(defvar *t-debug-init* nil "Debug/time startup")
+(defvar *t-debug-init* t "Debug/time startup")
 (when *t-debug-init* (setq debug-on-error nil))
 
 (defconst user-emacs-directory "~/.emacs.d/")
@@ -64,22 +66,18 @@
 (defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
 
 (defconst t-dir-snippets (t/user-emacs-file "snippets"))
-(add-to-list 'load-path t-dir-snippets)
 (add-to-list 'load-path (t/user-emacs-file "setup"))
-(let ((dir-site-lisp (t/user-emacs-file "site-lisp")))
-  (add-to-list 'load-path dir-site-lisp)
-  ;; add folders inside site-lisp as well
-  (dolist (project (directory-files dir-site-lisp t "\\w+"))
-    (when (file-directory-p project)
-      (add-to-list 'load-path project))))
+(add-to-list 'load-path t-dir-snippets)
 
-(if (file-exists-p (expand-file-name "~/.emacs.d/readme.elc"))
-    ;; TODO fix compile errors to enable the 3rd argument to this instead
-    (org-babel-load-file "~/.emacs.d/readme.org")
-  (progn
-    (require 'org)
-    (org-babel-tangle-file (expand-file-name "~/.emacs.d/readme.org")
-                           (expand-file-name "~/.emacs.d/readme.el")
-                           "emacs-lisp\\|elisp")
-    (byte-compile-file (expand-file-name "~/.emacs.d/readme.el"))
-    (save-buffers-kill-emacs)))
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "Emacs ready in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
+
+(let ((compile (not (file-exists-p (t/user-emacs-file "readme.elc")))))
+  (org-babel-load-file "~/.emacs.d/readme.org" compile)
+  (when compile (restart-emacs)))
+
+(setq gc-cons-threshold (* 2 1000 1000))
