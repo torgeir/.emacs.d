@@ -416,14 +416,10 @@ Wrap long lines everywhere
   :hook (after-init . global-visual-line-mode))
 #+END_SRC
 
-Remove menus.
+Remove tooltips, ~better-defaults.el~ removes the rest of the menus.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(when window-system
-  (tooltip-mode -1)
-  (tool-bar-mode -1)
-  (scroll-bar-mode -1)
-  (menu-bar-mode -1))
+(when window-system (tooltip-mode -1))
 #+END_SRC
 
 Show active region.
@@ -443,9 +439,7 @@ Show active region.
 Show matching parens.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package paren
-  :init (setq show-paren-delay 0)
-  :config (show-paren-mode t))
+(use-package paren :init (setq show-paren-delay 0))
 #+END_SRC
 
 Remove selected text when typing.
@@ -463,15 +457,6 @@ Above what sizes can the window split?
 (setq split-height-threshold 0
       split-width-threshold 0
       split-window-preferred-function #'t/split-window-sensibly)
-#+END_SRC
-
-Remember file positions, and layout. Super useful, e.g. for dired.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package saveplace
-  :straight nil
-  :defer 1
-  :config (save-place-mode 1))
 #+END_SRC
 
 Don't save desktop automatically, for now.
@@ -1505,19 +1490,6 @@ Make testing emacs initialization easier.
                     "d" 't/safe-restart-emacs
                     "r" (t/lambda (restart-emacs))
                     "R" (t/lambda (restart-emacs '("--no-desktop")))))
-#+END_SRC
-
-*** Unique buffer names
-
-Add dir to buffer names when they're not unique.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package uniquify
-  :defer 5
-  :straight nil
-  :init
-  (progn
-    (setq uniquify-buffer-name-style 'forward)))
 #+END_SRC
 
 *** Beacon to show the cursor
