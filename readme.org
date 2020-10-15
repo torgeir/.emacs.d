@@ -576,25 +576,21 @@ using ~SPC~.
 
 *** More evil bindings
 
-Enables evil keybindings for more modes, e.g. help, calendar, eshell etc
+Enables evil keybindings for more modes, e.g. help, calendar etc
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-collection
   :after evil
-  :defer 1
+  :hook (after-init . evil-collection-init)
+  :custom (evil-collection-mode-list '(apropos calendar dired eww hackernews help ivy outline rg w3m wdired xref))
   :init
   (progn
     ;; Don't use zz and zq for org src editing
     (setq evil-collection-key-blacklist '("ZZ" "ZQ"))
-    ;; TODO replace with individual ones for less magic behavior (evil-collection-init)
-    :config
-    (t/after evil-collection
-      (with-eval-after-load 'calendar (evil-collection-calendar-setup))
-      (with-eval-after-load 'dired (evil-collection-dired-setup))
-      (with-eval-after-load 'outline (evil-collection-outline-setup))
-      (with-eval-after-load 'messages (evil-collection-outline-setup))
-      (t/after org
-        (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle)))))
+  :config
+  (t/after evil-collection
+    (t/after org
+      (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle)))))
 #+END_SRC
 
 *** Search
