@@ -344,7 +344,13 @@ A modern icon set.
 Rid the insanity. Well, try at least.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package better-defaults)
+(unless (eq window-system 'ns) (menu-bar-mode -1))
+(when (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(when (fboundp 'horizontal-scroll-bar-mode) (horizontal-scroll-bar-mode -1))
+(use-package paren :straight nil :hook after-init-hook :config (show-paren-mode 1))
+(use-package saveplace :straight nil :hook after-init-hook :config (save-place-mode 1))
+(use-package uniquify :straight nil :hook after-init-hook :init (setq uniquify-buffer-name-style 'forward))
 #+END_SRC
 
 Fix the rest..
@@ -376,6 +382,10 @@ Fix the rest..
  require-final-newline nil ; don't require final newline
  ring-bell-function 'ignore ; no bell
  save-interprogram-paste-before-kill t ; clipboard contents into kill-ring before replace
+ mouse-yank-at-point t
+ load-prefer-newer t
+ ediff-window-setup-function 'ediff-setup-windows-plain
+ apropos-do-all t
  sentence-end-double-space nil ; one space between sentences
  tab-width *t-indent* ; two spaces
  truncate-partial-width-windows nil ; don't truncate lines
@@ -1478,7 +1488,7 @@ Make testing emacs initialization easier.
   :commands restart-emacs
   :init
   (t/declare-prefix "q" "Quit"
-                    "d" 't/safe-restart-emacs
+                    "s" 't/safe-restart-emacs
                     "r" (t/lambda (restart-emacs))
                     "R" (t/lambda (restart-emacs '("--no-desktop")))))
 #+END_SRC
