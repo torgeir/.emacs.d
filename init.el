@@ -3,7 +3,7 @@
 ;; Default to calling straight-use-package when running use-package.
 (setq straight-use-package-by-default t)
 (setq straight-check-for-modifications 'live)
-(setq gc-cons-threshold (* 1000 1000 1000)) ; 1gb while loading init
+(setq gc-cons-threshold most-positive-fixnum) ; while loading init
 
 ;; Bootstrap [straight.el](https://github.com/raxod502/straight.el).
 (defvar bootstrap-version)
