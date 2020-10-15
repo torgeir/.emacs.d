@@ -2077,9 +2077,8 @@ Lispy paren-like ast editing for other modes as well.
       (sp-local-pair mode "`" nil :actions nil)
       (sp-local-pair mode "'" nil :actions nil))
 
-    (comment ;; TODO no longer works with byte compile
      (sp-with-modes 'emacs-lisp-mode
-       (sp-local-pair "`" "'" :when '(sp-in-docstring-p))))
+       (sp-local-pair "`" "'" :when '(sp-in-docstring-p)))
 
     (t/def-pairs ((paren . "(")
                   (bracket . "[")
@@ -4400,8 +4399,6 @@ No emojis in terminal (on os x at least).
 
   ;; s-w quits like C-x C-w
   "s-w" #'t/delete-frame-or-hide-last-remaining-frame
-  ;; TODO
-  ;;"C-x C-c" #'t/delete-frame-or-hide-last-remaining-frame
 
   ;; buffer font size adjustment
   "s-?" (t/lambda (text-scale-increase 1))
@@ -4497,9 +4494,7 @@ running ~e some-file.el~ on the command line.
   (progn
     (unless (fboundp 'server-running-p) (require 'server))
     (unless (server-running-p) (server-mode))
-    ;; TODO needed?
-    ;;(t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
-    ))
+    (t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)))
 #+END_SRC
 
 ** Org
