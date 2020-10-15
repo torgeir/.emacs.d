@@ -1243,28 +1243,28 @@ Trying ivy as a helm replacement. https://news.ycombinator.com/item?id=24449883
 These actually seem to replace all my previous helm config 😱
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package rg :defer t)
+(use-package rg :commands (rg counsel-projectile-rg))
 (use-package counsel
-  :defer t
   :init
+  (setq ivy-use-virtual-buffers t
+        enable-recursive-minibuffers t)
+  :commands (counsel-recentf
+             counsel-find-file
+             counsel-projectile-rg
+             counsel-projectile-find-file)
+  :bind (:map ivy-minibuffer-map
+              ("C-w" . backward-kill-word)
+              ("C-u" . backward-kill-sentence)
+              ("C-c u" . universal-argument))
+  :config
   (progn
     (ivy-mode 1)
-    (setq enable-recursive-minibuffers t
-          ivy-use-virtual-buffers t)
-    (add-to-list 'ivy-sort-matches-functions-alist '(counsel-org-goto . ivy--shorter-matches-first))
-    (add-to-list 'ivy-sort-matches-functions-alist '(counsel-find-file . ivy--shorter-matches-first))
-    (add-to-list 'ivy-sort-matches-functions-alist '(counsel-projectile-rg . ivy--shorter-matches-first))
-    (add-to-list 'ivy-sort-matches-functions-alist '(counsel-projectile-find-file . ivy--shorter-matches-first))
-    (add-to-list 'ivy-sort-matches-functions-alist '(counsel-describe-function . ivy--shorter-matches-first))
-    (t/after ivy
-      (t/bind-in 'ivy-minibuffer-map
-        "C-w" 'backward-kill-word
-        "C-u" 'backward-kill-sentence
-        "C-c u" 'universal-argument))))
-(use-package counsel-projectile :defer t)
+    (dolist (fn '(counsel-org-goto counsel-find-file counsel-projectile-rg counsel-projectile-find-file counsel-describe-function))
+      (add-to-list 'ivy-sort-matches-functions-alist `(,fn . ivy--shorter-matches-first)))))
 (use-package counsel-web :commands counsel-web-search)
-(use-package all-the-icons-ivy-rich :defer 1 :init (all-the-icons-ivy-rich-mode 1))
-(use-package ivy-rich :defer 1 :config (ivy-rich-mode 1))
+(use-package counsel-projectile :commands (counsel-projectile-rg))
+(use-package all-the-icons-ivy-rich :after counsel :config (all-the-icons-ivy-rich-mode 1))
+(use-package ivy-rich :hook all-the-icons-ivy-rich :config (ivy-rich-mode 1))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results silent
