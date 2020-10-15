@@ -49,7 +49,7 @@
 
 (defvar *t-indent* 2)
 (defvar *t-indent-xml* 4)
-(defvar *t-debug-init* t "Debug/time startup")
+(defvar *t-debug-init* nil "Debug/time startup")
 (when *t-debug-init* (setq debug-on-error nil))
 
 (defconst user-emacs-directory "~/.emacs.d/")
