@@ -318,7 +318,11 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (evil-yank (point) (point-at-eol)))
 
-(defun t/config-reload () (interactive) (load-file "~/.emacs.d/init.el"))
+(defun t/config-reload ()
+  (interactive)
+  (delete-file "~/.emacs.d/readme.el")
+  (delete-file "~/.emacs.d/readme.elc")
+  (load-file "~/.emacs.d/init.el"))
 
 (defun t/face-color-b (attr)
   "Get `:background' color of `attr'"
