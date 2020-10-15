@@ -739,8 +739,7 @@ surrounding lisp sexp, respecting the ast.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-commentary
-  :defer 1
-  :config (evil-commentary-mode))
+  :hook (after-init . evil-commentary-mode))
 #+END_SRC
 
 *** Color highlights evil operations.
@@ -1113,7 +1112,7 @@ Make it Norwegian.
 (use-package calendar-norway
   :after calendar
   :commands (org-schedule calendar)
-  :init
+  :config
   (progn
     (setq calendar-holidays
           (append calendar-norway-raude-dagar
@@ -1256,10 +1255,6 @@ These actually seem to replace all my previous helm config 😱
 (use-package counsel-web :commands counsel-web-search)
 (use-package all-the-icons-ivy-rich :defer 1 :init (all-the-icons-ivy-rich-mode 1))
 (use-package ivy-rich :defer 1 :config (ivy-rich-mode 1))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results silent
-;; TODO Is there a counsel-wiki?
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -1431,7 +1426,6 @@ A pull request interface for emacs.
                   "ca" 'magit-commit-amend)
 
 (t/declare-prefix "go" "Open github"
-                  ;; TODO if region active choose gob
                   "l" 'git-link
                   "b" 'browse-at-remote)
 
@@ -3058,8 +3052,6 @@ Thesaurus.
                   "p" 'counsel-projectile-rg
                   "s" 'swiper
                   "t" 'etags-select-find-tag-at-point
-                  ;; TODO is there such a thing for counsel?
-                  ;;"w" 'helm-wikipedia-suggest
                   )
 #+END_SRC
 
@@ -3503,8 +3495,6 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
     (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)))
 
-;; TODO
-;; counsel lsp? instead of helm lsp
 
 (use-package typescript-mode
   :mode "\\.ts"
@@ -4460,9 +4450,7 @@ running ~e some-file.el~ on the command line.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package server
   :straight nil
-  :defer 1
-  :if (or (not (fboundp 'server-running-p))
-          (server-running-p))
+  :hook after-init-hook
   :config
   (progn
     (unless (fboundp 'server-running-p) (require 'server))
@@ -4927,7 +4915,8 @@ Locally redefines org-agenda-files not to export all agenda files."
 
 (when (not is-ms)
   (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
-  (t/idle-timer t-timers-sync-org-gcal 'org-gcal-fetch 30))
+  ;(t/idle-timer t-timers-sync-org-gcal 'org-gcal-fetch 30)
+)
 #+END_SRC
 
 *** Tables
