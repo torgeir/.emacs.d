@@ -1291,8 +1291,8 @@ Show git status in the gutter.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package git-gutter+
   :diminish git-gutter+-mode
-  :init
-  (t/add-hook '(org-mode-hook prog-mode-hook) 'git-gutter+-mode)
+  :commands git-gutter+-mode
+  :init (t/add-hook '(org-mode-hook prog-mode-hook) 'git-gutter+-mode)
   :config
   (progn
     (evil-add-command-properties #'git-gutter+-next-hunk :jump t)
@@ -1303,6 +1303,7 @@ Show git status in the gutter.
           git-gutter+-separator-sign (if has-gui "" " "))))
 
 (use-package git-gutter-fringe+
+  :after git-gutter+
   :init
   (t/add-hook-defun 'git-gutter+-mode-hook t/hook-git-gutter+
                     (t/after fringe-helper
