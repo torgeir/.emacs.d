@@ -1521,7 +1521,7 @@ Useful for programming
                    tramp-auto-save-directory (locate-user-emacs-file ".tramp-auto-save")))
 #+END_SRC
 
-*** Directory browser
+*** Dired directory browser
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package dired
@@ -1543,6 +1543,8 @@ Useful for programming
     (bind-key "C-x M-j" (t/lambda (dired-jump 1)))
     (t/add-hook-defun 'dired-mode-hook t-dired-mode-hook
                       (t/after evil
+                        (evil-define-key 'normal dired-mode-map "s" 'dired-sort-toggle-or-edit)
+                        (evil-define-key 'normal dired-mode-map "o" 'dired-find-file-other-window)
                         (evil-define-key 'normal dired-mode-map "u" (t/lambda (find-alternate-file "..")))))
     (t/bind-in 'dired-mode-map
       "e" 't/eshell
