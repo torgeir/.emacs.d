@@ -316,7 +316,8 @@ with autoload cookies are in ~t-defuns.el~.
 #+BEGIN_SRC emacs-lisp :results silent
 (require 't-defuns (t/user-emacs-file "setup/t-defuns.el"))
 (t/add-hook-defun 'after-save-hook t/reload-defuns-on-save
-                  (when (string-match "t-defuns.el$" buffer-file-name)
+                  (when (and buffer-file-name
+                             (string-match "t-defuns.el$" buffer-file-name))
                     (eval-buffer)
                     (message "Reloaded defuns.")))
 #+END_SRC
