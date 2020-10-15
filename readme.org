@@ -2849,10 +2849,7 @@ Thesaurus.
                   "M" (t/lambda nil (switch-to-buffer "*Messages*") (end-of-buffer))
                   "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))
                   "R" #'t/toggle-regex-mode
-                  "se" 't/eshell
-                  "st" 'ansi-term
-                  "sT" (t/lambda (term "/bin/zsh"))
-                  "ss" 'shell
+                  "s" 'multi-term
                   "S" 'suggest
                   "w" 'eww
                   "W" (t/lambda nil
@@ -3813,22 +3810,6 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 #+END_SRC
 
 ** Shell
-*** bash completion
-
-#+BEGIN_SRC emacs-lisp :results silent
-;; (use-package bash-completion
-;;   :commands bash-completion-dynamic-complete
-;;   :init
-;;   (progn
-;;     (autoload 'bash-completion-dynamic-complete "bash-completion" "BASH completion hook")
-;;     (t/add-hook 'shell-dynamic-complete-functions 'bash-completion-dynamic-complete)))
-
-;; (use-package native-complete
-;;   :init
-;;   (with-eval-after-load 'shell (native-complete-setup-bash)))
-
-#+END_SRC
-
 *** shell mode
 
 #+begin_src emacs-lisp :results silent
@@ -3836,7 +3817,9 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
   :straight nil
   :hook shell-mode-hook
   :init
-  (t/add-hook 'shell-mode-hook #'t/shell-mode-hook)
+  (progn
+    (setq explicit-shell-file-name "/bin/zsh")
+    (t/add-hook 'shell-mode-hook #'t/shell-mode-hook))
   :config
   (progn
     (defun t/shell-mode-kill-buffer-on-exit (process state)
@@ -3848,6 +3831,12 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
       (set-process-sentinel (get-buffer-process (current-buffer))
                             #'t/shell-mode-kill-buffer-on-exit))))
 
+#+end_src
+*** multi-term
+
+#+begin_src emacs-lisp :results silent
+(use-package multi-term
+  :commands multi-term)
 #+end_src
 
 *** term mode
@@ -3872,22 +3861,8 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
         (t/term-quit-if-finished 'term-send-eof))
 
       (t/bind-in '(evil-normal-state-local-map evil-insert-state-local-map)
-        "C-d" 't/term-try-quit))
+        "C-d" 't/term-try-quit)
 
-    (t/add-hook 'term-mode-hook #'t/term-mode-hook)))
-#+end_src
-
-*** ansi-term
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package ansi-term
-  :hook term-mode-hook
-  :straight nil
-  :init
-  (progn
-    ;; ansi-term
-    (defun t/ansi-term-mode-hook ()
-      "Close current term buffer when `exit' or c-d from term buffer."
       (goto-address-mode)
 
       (when (ignore-errors (get-buffer-process (current-buffer)))
@@ -3897,20 +3872,29 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
            (message change)
            (when (string-match "\\(finished\\|exited\\)" change)
              (kill-buffer (process-buffer proc)))))))
+    (t/add-hook 'term-mode-hook #'t/term-mode-hook)))
+#+end_src
 
-    (t/add-hook 'term-mode-hook #'t/ansi-term-mode-hook)
+*** ansi-term
 
-    (defadvice ansi-term (before force-bash)
-      (interactive (list "/bin/zsh"))
-      (term-line-mode))
-    (ad-activate 'ansi-term)
+#+BEGIN_SRC emacs-lisp :results silent
+(comment (use-package ansi-term
+           :hook term-mode-hook
+           :straight nil
+           :init
+           (progn
+             ;; ansi-term
+             (defadvice ansi-term (before force-bash)
+               (interactive (list "/bin/zsh"))
+               (term-line-mode))
+             (ad-activate 'ansi-term)
 
-    (defadvice ansi-term (after always-use-line-mode)
-      (term-line-mode))
-    (ad-activate 'ansi-term)
+             (defadvice ansi-term (after always-use-line-mode)
+               (term-line-mode))
+             (ad-activate 'ansi-term)
 
-    ;; fix tab-completion
-    (t/add-hook-setq 'term-mode-hook yas-dont-activate t)))
+             ;; fix tab-completion
+             (t/add-hook-setq 'term-mode-hook yas-dont-activate t))))
 #+end_src
 
 *** Eshell and tweaks
