@@ -4621,15 +4621,18 @@ Make org-goto play nice with counsel.
 (use-package org
   :straight org-plus-contrib
   :config
-  (t/after org-agenda
-    (bind-key "s-s" 'org-save-all-org-buffers org-agenda-mode-map)
-    (unbind-key "C-," org-mode-map)) ;; don't need to cycle agenda files
+  (progn
+    (t/after org-agenda
+      (bind-key "s-s" 'org-save-all-org-buffers org-agenda-mode-map)
+      (unbind-key "C-," org-mode-map)) ;; don't need to cycle agenda files
 
-  (evil-add-command-properties #'outline-up-heading :jump t)
-  (evil-add-command-properties #'outline-next-heading :jump t)
-  (evil-add-command-properties #'outline-previous-heading :jump t)
-  (evil-add-command-properties #'org-previous-visible-heading :jump t)
-  (evil-add-command-properties #'org-next-visible-heading :jump t))
+    (evil-add-command-properties #'outline-up-heading :jump t)
+    (evil-add-command-properties #'outline-next-heading :jump t)
+    (evil-add-command-properties #'outline-previous-heading :jump t)
+    (evil-add-command-properties #'org-previous-visible-heading :jump t)
+    (evil-add-command-properties #'org-next-visible-heading :jump t)
+    (evil-add-command-properties #'org-previous-block :jump t)
+    (evil-add-command-properties #'org-next-block :jump t)))
 #+END_SRC
 
 *** Keybindings
