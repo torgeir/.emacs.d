@@ -1447,7 +1447,11 @@ A pull request interface for emacs.
                   "n" 'git-gutter+-next-hunk
                   "N" 'git-gutter+-previous-hunk
                   "C" 'git-gutter+-stage-and-commit
-                  "?" 'git-gutter+-show-hunk-inline-at-point
+                  "?" (t/lambda ()
+                        (git-gutter+-show-hunk-inline-at-point)
+                        (funcall
+                         (t/micro-state "r" 'git-gutter+-revert-hunks
+                                        "s" 'git-gutter+-stage-hunks)))
                   "=" 'git-gutter+-show-hunk
                   "r" 'git-gutter+-revert-hunks
                   "s" 'git-gutter+-stage-hunks
@@ -1491,8 +1495,8 @@ Always had plans to read faster with this one..
 
     (t/declare-prefix "t" "Toggle" "s" t-spray-micro-state)
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
-                      (setq-local spray-margin-top (truncate (/ (window-height) 3)))
-                      (setq-local spray-margin-left (truncate (/ (window-width) 2.3)))
+                      (setq-local spray-margin-top (truncate (/ (window-height) 2.5)))
+                      (setq-local spray-margin-left (truncate (/ (window-width) 2.7)))
                       ;;(beacon-mode -1)
                       (t/locally-disable-cursor)
                       (set-face-foreground 'spray-accent-face
@@ -2475,7 +2479,7 @@ A custom function to fetch a clean view of the current news from nrk.no
 
   ;; kill more lines with dates
   (while (re-search-forward "^[0-9][0-9]\." nil t)
-    (when (string-match-p "^[0-9][0-9]\." (thing-at-point 'line))
+    (when (string-match-p "^[0-9][0-9]\. [jfmasond]" (thing-at-point 'line))
       (beginning-of-line) (kill-line) (forward-line) (join-line)))
 
   ;; remove leading line
