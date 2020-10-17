@@ -2185,6 +2185,12 @@ from pressing R in eww mode.
       (autoload 'eww-setup-buffer "eww")
       (eww-setup-buffer)
       (url-retrieve url 't/eww-readable-after-render (list url buffer fn)))))
+
+(comment
+ ;; make eww is readable
+ ;; TODO make toggleable?
+ (add-hook 'eww-after-render-hook 'eww-readable)
+ (remove-hook 'eww-after-render-hook 'eww-readable))
 #+END_SRC
 
 ***** Images and wrap long lines
