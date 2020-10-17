@@ -1479,14 +1479,17 @@ Always had plans to read faster with this one..
           spray-height 170
           spray-margin-top 0
           spray-margin-left 0)
-    (t/declare-prefix "t" "Toggle"
-                      "s" (t/micro-state-in-mode
-                           'spray-mode
-                           "s" 'spray-slower
-                           "f" 'spray-faster
-                           "SPC" 'spray-start/stop
-                           "<left>" 'spray-backward-word
-                           "<right>" 'spray-forward-word))
+
+    (defvar t-spray-micro-state
+      (t/micro-state-in-mode
+       'spray-mode
+       "s" 'spray-slower
+       "f" 'spray-faster
+       "SPC" 'spray-start/stop
+       "<left>" 'spray-backward-word
+       "<right>" 'spray-forward-word))
+
+    (t/declare-prefix "t" "Toggle" "s" t-spray-micro-state)
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
                       (setq-local spray-margin-top (truncate (/ (window-height) 2.7)))
                       (setq-local spray-margin-left (truncate (/ (window-width) 3.1)))
@@ -2463,18 +2466,17 @@ A custom function to fetch a clean view of the current news from nrk.no
     (add-text-properties (point-at-bol) (point-at-eol) '(face outline-4)))
   (beginning-of-buffer)
   (kill-line)
-  (evil-search "^-" t t)
-  (evil-ex-nohighlight)
-  (let ((keymap (make-sparse-keymap)))
-    (bind-key "n" (t/lambda nil
-                    (evil-search "^-" t t)
-                    (evil-ex-nohighlight)
-                    (recenter nil)) keymap)
-    (bind-key "p" (t/lambda nil
-                    (evil-search "^-" nil t)
-                    (evil-ex-nohighlight)
-                    (recenter nil)) keymap)
-    (set-temporary-overlay-map keymap t)))
+  (darkroom-mode)
+  (funcall (t/micro-state
+            "n" (t/lambda nil
+                  (evil-search "^-" t t)
+                  (evil-ex-nohighlight)
+                  (recenter nil))
+            "p" (t/lambda nil
+                  (evil-search "^-" nil t)
+                  (evil-ex-nohighlight)
+                  (recenter nil))
+            "s" t-spray-micro-state)))
 #+END_SRC
 
 **** Hackernews
