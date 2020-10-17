@@ -4876,7 +4876,7 @@ Realign all tags on save.
                     (t/org-mode-realign-all-tags)))
 #+END_SRC
 
-*** Movement
+*** Movement, next prev heading
 
 Reselect visual when moving multiple lines.
 
@@ -4892,6 +4892,44 @@ Reselect visual when moving multiple lines.
 (defadvice org-metaup   (after t/after-org-metaup activate) (t/org-visual-restore))
 (defadvice org-metadown (after t/after-org-metadown activate) (t/org-visual-restore))
 #+END_SRC
+
+#+begin_src emacs-lisp :results silent
+(defun t/org-prev ()
+  (interactive)
+  (let ((pos (point)))
+    (outline-previous-heading)
+    (unless (and (< (point) pos) (bolp) (org-on-heading-p))
+      (goto-char pos)
+      (hide-subtree)
+      (error "Boundary reached"))
+    (org-overview)
+    (org-reveal t)
+    (org-show-entry)
+    (show-children)
+    (call-interactively 'evil-scroll-line-to-center)))
+
+(defun t/org-next ()
+  (interactive)
+  (if (save-excursion (end-of-line) (outline-invisible-p))
+      (progn (org-show-entry)
+             (show-children))
+    (progn
+      (outline-next-heading)
+      (unless (and (bolp) (org-on-heading-p))
+        (org-up-heading-safe)
+        (hide-subtree)
+        (error "Boundary reached"))
+      (org-overview)
+      (org-reveal t)
+      (org-show-entry)
+      (show-children)
+      (call-interactively 'evil-scroll-line-to-center))))
+
+(bind-keys
+ :map org-mode-map
+ ("C-c C-p" . t/org-prev)
+ ("C-c C-n" . t/org-next))
+#+end_src
 
 *** Refile
 
