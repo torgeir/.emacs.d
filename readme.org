@@ -1051,7 +1051,7 @@ Some guidance is always welcome.
 
 Custom prefix functions for defining named shortcuts accessible through evil leader.
 
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp :results silent :lexical t
 (defun t/prefix-with-leader (key)
   "Prefixes `key' with `leader' and a space, e.g. 'SPC m'"
   (concat t-leader " " key))
@@ -2120,14 +2120,14 @@ Edit csv, transpose columns, delete columns, sort
   :init (setq csv-separators '(";")))
 #+END_SRC
 
-*** Distraction free
+*** Distraction free w/darkroom
 
 Darkroom everywhere, but without the font size increase. Toggle it with SPC td,
 also toggles hook to keep it on or off everywhere.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package darkroom
-  :commands darkroom-tentative-mode
+  :commands (darkroom-mode darkroom-tentative-mode)
   :init (setq darkroom-text-scale-increase 0)
   :config
   (add-hook 'after-change-major-mode-hook 'darkroom-tentative-mode))
@@ -2879,6 +2879,7 @@ Thesaurus.
                   "D" 'toggle-debug-on-error
                   "f" 't/cycle-font
                   "d" 't/toggle-distraction-free
+                  "w" 'darkroom-mode
                   "F" 'toggle-frame-fullscreen
                   "t" 't/load-theme-cycle
                   "T" 't/transparency
@@ -2888,7 +2889,7 @@ Thesaurus.
                   "r" 'nlinum-relative-toggle
                   "L" 'hl-line-mode
                   "l" 'visual-line-mode
-                  "w" 'whitespace-mode
+                  "W" 'whitespace-mode
                   "Cc" 'rainbow-mode
                   "Cd" 'rainbow-delimiters-mode)
 
@@ -4426,7 +4427,7 @@ No emojis in terminal (on os x at least).
 
 ** Frame and Window
 
-*** Transpose frame
+*** Transpose
 
 Switch around split frame rotation.
 
@@ -4434,7 +4435,7 @@ Switch around split frame rotation.
 (use-package transpose-frame :commands transpose-frame)
 #+END_SRC
 
-*** Window history
+*** History
 
 Revert to previous window configurations.
 
