@@ -1005,10 +1005,14 @@ Turn camel case into snake case
           nil
         (list begin end))))
 
+  (define-key evil-outer-text-objects-map "h" 'evil-org-outer-subtree)
+  (define-key evil-inner-text-objects-map "h" 'evil-org-inner-subtree)
   (define-key evil-outer-text-objects-map "*" 'evil-org-outer-subtree)
   (define-key evil-inner-text-objects-map "*" 'evil-org-inner-subtree)
-  (define-key evil-inner-text-objects-map "-" 'evil-org-inner-item)
-  (define-key evil-outer-text-objects-map "-" 'evil-org-outer-item))
+  (define-key evil-outer-text-objects-map "i" 'evil-org-outer-item)
+  (define-key evil-inner-text-objects-map "i" 'evil-org-inner-item)
+  (define-key evil-outer-text-objects-map "-" 'evil-org-outer-item)
+  (define-key evil-inner-text-objects-map "-" 'evil-org-inner-item))
 #+END_SRC
 
 ** Which key
