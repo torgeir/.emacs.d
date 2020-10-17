@@ -4666,8 +4666,14 @@ Make org-goto play nice with counsel.
                   "g" 'org-mac-grab-link
                   "a" 'org-agenda
                   "A" 't/org-archive-done-tasks
-                  "n" 'org-alert-check
-                  "hi" 'org-info)
+                  "hi" 'org-info
+                  "ns" 'org-narrow-to-subtree
+                  "ne" 'org-narrow-to-element
+                  "nb" 'org-narrow-to-block
+                  "np" 'narrow-to-page
+                  "nd" 'narrow-to-defun
+                  "nr" 'narrow-to-region
+                  "nw" 'widen)
 
 (t/declare-prefix "ol" "Links"
                   "s" 'org-store-link
