@@ -1082,8 +1082,19 @@ Custom prefix functions for defining named shortcuts accessible through evil lea
       (setq key (pop bindings)
             fn (pop bindings)))))
 
-(defun t/micro-state-in-mode (mode key fn &rest bindings)
+(defun t/micro-state (key fn &rest bindings)
   "Micro state that temporarily overlays a new key map, kinda like hydra"
+  (let ((keymap (make-sparse-keymap)))
+    (while key
+      (bind-key key fn keymap)
+      (setq key (pop bindings)
+            fn (pop bindings)))
+    (lambda ()
+      (interactive)
+      (set-temporary-overlay-map keymap t))))
+
+(defun t/micro-state-in-mode (mode key fn &rest bindings)
+  "Micro state that toggles mode and temporarily overlays a new key map, kinda like hydra"
   (let ((keymap (make-sparse-keymap)))
     (while key
       (bind-key key fn keymap)
@@ -2986,8 +2997,11 @@ Thesaurus.
                   "t" 'delete-other-windows
                   "o" 't/previous-window
                   "=" 'balance-windows-area
-                  "-" 'evil-window-decrease-width
-                  "+" 'evil-window-increase-width
+                  "s" (t/micro-state
+                       "<left>" 'evil-window-decrease-width
+                       "<right>" 'evil-window-increase-width
+                       "<up>" 'evil-window-decrease-height
+                       "<down>" 'evil-window-increase-height)
                   "u" 'winner-undo
                   "R" 'winner-redo
                   "r" 'transpose-frame)
