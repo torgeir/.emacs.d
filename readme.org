@@ -1430,7 +1430,6 @@ A pull request interface for emacs.
 *** Keybindings
 
 #+BEGIN_SRC emacs-lisp :results silent
-(t/declare-prefix "g" "Git")
 (t/declare-prefix "g" "Git"
                   "T" 'git-timemachine-toggle
                   "s" 'magit-status
@@ -1438,6 +1437,9 @@ A pull request interface for emacs.
                   "d" 'magit-diff
                   "l" 'magit-log-current
                   "L" 'magit-log
+                  "f" 'magit-fetch
+                  "p" 'magit-pull
+                  "P" 'magit-push
                   "C" 'magit-commit-create
                   "c" #'t/clone)
 
