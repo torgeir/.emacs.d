@@ -4737,6 +4737,8 @@ Fix js eval https://emacs.stackexchange.com/questions/55690/org-babel-javascript
 
 *** Agenda
 
+**** Priorities
+
 #+BEGIN_SRC emacs-lisp :results silent
 (defun t/org-skip-subtree-if-priority (priority)
   "Skip an agenda subtree if it has a priority of PRIORITY.
