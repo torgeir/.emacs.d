@@ -1476,9 +1476,7 @@ Always had plans to read faster with this one..
   :init
   (progn
     (setq spray-wpm 680
-          spray-height 170
-          spray-margin-top 0
-          spray-margin-left 0)
+          spray-height nil)
 
     (defvar t-spray-micro-state
       (t/micro-state-in-mode
@@ -1491,8 +1489,8 @@ Always had plans to read faster with this one..
 
     (t/declare-prefix "t" "Toggle" "s" t-spray-micro-state)
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
-                      (setq-local spray-margin-top (truncate (/ (window-height) 2.7)))
-                      (setq-local spray-margin-left (truncate (/ (window-width) 3.1)))
+                      (setq-local spray-margin-top (truncate (/ (window-height) 3)))
+                      (setq-local spray-margin-left (truncate (/ (window-width) 2.3)))
                       ;;(beacon-mode -1)
                       (t/locally-disable-cursor)
                       (set-face-foreground 'spray-accent-face
@@ -2458,20 +2456,30 @@ A custom function to fetch a clean view of the current news from nrk.no
   ;; clean up lines beginning with dates, e.g. 20. sept...
   (beginning-of-buffer)
   (flush-lines "^[0-9][0-9]\.")
+
   ;; clean up lines beginning with -
   (beginning-of-buffer)
+  (t/cleanup-buffer-whitespace-and-indent)
   (while (re-search-forward "*" nil t)
     ;; kill lines with dates, all these news are new
     (when (string-match-p "^* [0-9][0-9]\." (thing-at-point 'line))
-      (kill-line)
-      (forward-line)
-      (join-line))
+      (kill-line) (forward-line) (join-line))
     ;; change * to -
     (replace-match "\n-")
     ;; highlight the line
     (add-text-properties (point-at-bol) (point-at-eol) '(face outline-4)))
+
+  (beginning-of-buffer)
+
+  ;; kill more lines with dates
+  (while (re-search-forward "^[0-9][0-9]\." nil t)
+    (when (string-match-p "^[0-9][0-9]\." (thing-at-point 'line))
+      (beginning-of-line) (kill-line) (forward-line) (join-line)))
+
+  ;; remove leading line
   (beginning-of-buffer)
   (kill-line)
+
   (darkroom-mode)
   (funcall (t/micro-state
             "n" (t/lambda nil
