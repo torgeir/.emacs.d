@@ -1253,6 +1253,7 @@ These actually seem to replace all my previous helm config 😱
              counsel-projectile-rg
              counsel-projectile-find-file)
   :bind (:map ivy-minibuffer-map
+              ("C-_" . undo-tree-undo)
               ("C-w" . backward-kill-word)
               ("C-u" . backward-kill-sentence)
               ("C-c u" . universal-argument))
