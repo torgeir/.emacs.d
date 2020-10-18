@@ -591,8 +591,8 @@ Enables evil keybindings for more modes, e.g. help, calendar etc
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-collection
   :after evil
-  :hook (after-init . evil-collection-init)
-  :custom (evil-collection-mode-list '(apropos calendar dired eww hackernews help ivy outline rg w3m wdired xref))
+  :hook (after-init . evil-collection-init) ;
+  :custom (evil-collection-mode-list '(apropos calendar dired eww hackernews help info ivy outline rg w3m wdired xref))
   :init
   (progn
     ;; Don't use zz and zq for org src editing
@@ -878,10 +878,10 @@ Motion keys for info mode.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (t/after evil
-  (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
-  (evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward))
-  (unbind-key (kbd "h") Info-mode-map)
-  (unbind-key (kbd "l") Info-mode-map)
+  (evil-define-key 'normal 'Info-mode-map (kbd "H") 'Info-history-back)
+  (evil-define-key 'normal 'Info-mode-map (kbd "L") 'Info-history-forward))
+  (unbind-key (kbd "h") 'Info-mode-map)
+  (unbind-key (kbd "l") 'Info-mode-map)
 #+END_SRC
 
 *** C-o from hybrid like in vim
