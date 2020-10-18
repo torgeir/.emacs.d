@@ -2985,6 +2985,15 @@ Thesaurus.
                   "a" 'counsel-apropos
                   "l" 'counsel-find-library
                   "i" 'counsel-info-lookup-symbol
+                  "I" (defun counsel-rg-emacs-info (&optional initial-input)
+                        "Search for a pattern in emacs 'info/' directory using rg.
+    INITIAL-INPUT can be given as the initial minibuffer input."
+                        (interactive)
+                        (counsel-rg initial-input
+                                    (car Info-default-directory-list)
+                                    (concat " --ignore-case"
+                                            " --search-zip")
+                                    "Search emacs/elisp info: "))
                   "r" 'ivy-resume
                   ;;"Db" 'ivy-descbinds
                   "dd" 'dash-at-point
