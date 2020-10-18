@@ -4724,6 +4724,8 @@ Make org-goto play nice with counsel.
                   "Tf" 'org-table-formula)
 
 (t/declare-prefix "oC" "Clock"
+                  "g" 'org-clock-goto
+                  "j" 'org-clock-goto
                   "r" 'org-clock-report
                   "i" 'org-clock-in
                   "o" 'org-clock-out)
