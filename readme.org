@@ -1590,6 +1590,18 @@ Useful for programming
       "M-n" (t/lambda (dired-find-alternate-file)))))
 #+END_SRC
 
+Commit or bail from wdired like for magit, org src blocks etc
+
+#+begin_src emacs-lisp :results silent
+(use-package wdired
+  :commands (wdired-change-to-wdired-mode)
+  :config
+  (evil-define-key 'normal 'wdired-mode-map
+    "\C-c\C-k" 'wdired-abort-changes
+    "\C-c\C-c" 'wdired-finish-edit
+    (kbd "<escape>") 'wdired-exit))
+#+end_src
+
 *** Local dired extensions
 
 #+BEGIN_SRC emacs-lisp :results silent
