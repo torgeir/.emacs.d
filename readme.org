@@ -4997,6 +4997,16 @@ Reselect visual when moving multiple lines.
  ("C-c C-p" . t/org-prev)
  ("C-c C-n" . t/org-next))
 #+end_src
+*** Clock
+
+#+begin_src emacs-lisp :results silent
+(defun t/org-clock-start () (interactive) (org-todo "STARTED"))
+(defun t/org-clock-stop () (interactive) (org-todo "DONE"))
+(advice-remove 'org-clock-in 't/org-clock-start)
+(advice-remove 'org-clock-out 't/org-clock-stop)
+(advice-add 'org-clock-in :after 't/org-clock-start)
+(advice-add 'org-clock-out :after 't/org-clock-stop)
+#+end_src
 
 *** Refile
 
