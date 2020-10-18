@@ -2487,6 +2487,7 @@ A custom function to fetch a clean view of the current news from nrk.no
   (kill-line)
 
   (darkroom-mode)
+  (read-only-mode)
   (funcall (t/micro-state
             "n" (t/lambda nil
                   (evil-search "^-" t t)
