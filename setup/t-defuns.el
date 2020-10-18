@@ -1415,20 +1415,19 @@ DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
 
 See also:  (setq org-agenda-include-diary t)
 (diary-last-day-of-month '(2 28 2017))"
-  (let* ((day (calendar-extract-day date))
-         (month (calendar-extract-month date))
-         (year (calendar-extract-year date))
-         (last-day-of-month
-          (calendar-last-day-of-month month year)))
-    (= day last-day-of-month)))
 
-(defun t/diary-last-day-of-week (date)
+  (require 'org-clock)
+  (= (calendar-extract-day date)
+     (calendar-last-day-of-month (calendar-extract-month date)
+                                 (calendar-extract-year date))))
+
+(defun t/diary-last-day-of-week ()
   "Return `t` if DATE is the last day of the week."
-  (equal 5
-         (let* ((day (calendar-extract-day date))
-                (month (calendar-extract-month date))
-                (year (calendar-extract-year date)))
-           (org-day-of-week day month year))))
+  (require 'org-clock)
+  (= 5 ; friday
+     (org-day-of-week (calendar-extract-day date)
+                      (calendar-extract-month date)
+                      (calendar-extract-year date))))
 
 (defun t/popwin-next-key (key)
   (interactive "kPress keybinding to run in popup: ")
