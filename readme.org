@@ -2981,6 +2981,7 @@ Thesaurus.
                   "h" #'t/describe
                   "f" #'t/face-at-point
                   "F" 'counsel-faces
+                  "c" 't/search-cheat-sh
                   "C" 'counsel-colors-emacs
                   "a" 'counsel-apropos
                   "l" 'counsel-find-library

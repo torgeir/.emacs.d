@@ -1443,4 +1443,16 @@ See also:  (setq org-agenda-include-diary t)
     (popwin:display-buffer-1 (popwin:dummy-buffer))
     (funcall fn)))
 
+(defun t/search-cheat-sh ()
+  "Search `http://cheat.sh/' for help on commands and code."
+  (interactive)
+  (ivy-read "Command or Topic: "
+            (process-lines "curl" "--silent" "http://cheat.sh/:list?T&q")
+            :require-match t
+            :sort t
+            :history 't/search-cheat-sh
+            :action (lambda (input)
+                      (eww (concat "http://cheat.sh/" input "?T&q")))
+            :caller 't/search-cheat-sh))
+
 (provide 't-defuns)
