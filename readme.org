@@ -2156,11 +2156,9 @@ Darkroom everywhere, but without the font size increase. Toggle it with SPC td,
 also toggles hook to keep it on or off everywhere.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package darkroom
+ (use-package darkroom
   :commands (darkroom-mode darkroom-tentative-mode)
-  :init (setq darkroom-text-scale-increase 0)
-  :config
-  (add-hook 'after-change-major-mode-hook 'darkroom-tentative-mode))
+  :init (setq darkroom-text-scale-increase 0))
 
 (defun t/toggle-distraction-free ()
   (interactive)

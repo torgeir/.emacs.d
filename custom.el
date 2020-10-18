@@ -63,6 +63,7 @@
    "/Users/torgeirthoresen/bin/kotlin-language-server-install/server/bin/kotlin-language-server")
  '(lsp-kotlin-language-server-path
    "/Users/torgeirthoresen/bin/kotlin-language-server-install/server/bin/kotlin-language-server")
+ '(nntp-authinfo-file "~/.authinfo.gpg")
  '(org-agenda-window-setup 'only-window t)
  '(pos-tip-background-color "#36473A")
  '(pos-tip-foreground-color "#FFFFC8")
