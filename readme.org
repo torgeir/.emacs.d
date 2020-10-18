@@ -4490,7 +4490,9 @@ Revert to previous window configurations.
 (use-package winner
   :straight nil
   :commands (winner-undo winner-redo)
-  :config (winner-mode))
+  :config (winner-mode)
+  :bind (("C-c <left>" . winner-undo)
+         ("C-c <right>" . winner-right)))
 #+END_SRC
 
 *** Margins
