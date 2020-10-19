@@ -1135,8 +1135,7 @@ Make it Norwegian.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package calendar-norway
-  :after calendar
-  :commands (org-schedule calendar)
+  :commands (calendar)
   :config
   (progn
     (setq calendar-holidays
@@ -1146,9 +1145,10 @@ Make it Norwegian.
                   '((holiday-fixed 3 17 "St. Patricksdag") ; extra non-no days
                     (holiday-fixed 10 31 "Hallowe'en")
                     (holiday-float 11 4 4 "Thanksgiving")
-                    (solar-equinoxes-solstices)))
-          calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
-          solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjevndøgn" "Vintersolherv"))
+                    (solar-equinoxes-solstices))))
+    (setq
+     calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
+     solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjevndøgn" "Vintersolherv"))
 
     (setq calendar-latitude lat-trh
           calendar-longitude lon-trh
