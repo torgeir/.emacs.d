@@ -163,7 +163,14 @@
 (evil-define-key 'emacs gnus-summary-mode-map
   ;; motion
   (kbd "p") 'gnus-summary-prev-page
-  (kbd "n") 'gnus-summary-next-page)
+  (kbd "n") 'gnus-summary-next-page
+  (kbd "s") (lambda ()
+              (interactive)
+              (save-excursion
+                (call-interactively 'other-window)
+                (funcall (t-spray-micro-state
+                          (lambda ()
+                            (call-interactively 'other-window)))))))
 
 (t/add-hook-defun 'gnus-summary-mode-hook t-gnus-summary-hook)
 (t/add-hook-defun 'gnus-article-mode-hook t-gnus-article-hook (darkroom-mode))

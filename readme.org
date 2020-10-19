@@ -1093,7 +1093,7 @@ Custom prefix functions for defining named shortcuts accessible through evil lea
       (interactive)
       (set-temporary-overlay-map keymap t))))
 
-(defun t/micro-state-in-mode (mode key fn &rest bindings)
+(defun t/micro-state-in-mode (mode after key fn &rest bindings)
   "Micro state that toggles mode and temporarily overlays a new key map, kinda like hydra"
   (let ((keymap (make-sparse-keymap)))
     (while key
@@ -1104,7 +1104,8 @@ Custom prefix functions for defining named shortcuts accessible through evil lea
       (interactive)
       (funcall mode)
       (set-temporary-overlay-map keymap t (lambda nil
-                                            (funcall mode -1))))))
+                                            (funcall mode -1)
+                                            (when after (after)))))))
 #+END_SRC
 
 *** Evil leader + Which key integration
@@ -1484,16 +1485,17 @@ Always had plans to read faster with this one..
     (setq spray-wpm 680
           spray-height nil)
 
-    (defvar t-spray-micro-state
+    (defun t-spray-micro-state (&optional after)
       (t/micro-state-in-mode
        'spray-mode
+       after
        "s" 'spray-slower
        "f" 'spray-faster
        "SPC" 'spray-start/stop
        "<left>" 'spray-backward-word
        "<right>" 'spray-forward-word))
 
-    (t/declare-prefix "t" "Toggle" "s" t-spray-micro-state)
+    (t/declare-prefix "t" "Toggle" "s" (t-spray-micro-state))
     (t/add-hook-defun 'spray-mode-hook t/hook-spray
                       (setq-local spray-margin-top (truncate (/ (window-height) 2.5)))
                       (setq-local spray-margin-left (truncate (/ (window-width) 2.7)))
@@ -2507,7 +2509,7 @@ A custom function to fetch a clean view of the current news from nrk.no
                   (evil-search "^-" nil t)
                   (evil-ex-nohighlight)
                   (recenter nil))
-            "s" t-spray-micro-state)))
+            "s" (t-spray-micro-state))))
 #+END_SRC
 
 **** Hackernews
