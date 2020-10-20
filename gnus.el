@@ -171,6 +171,7 @@
               (interactive)
               (save-excursion
                 (call-interactively 'other-window)
+                (forward-paragraph)
                 (funcall (t-spray-micro-state
                           (lambda ()
                             (call-interactively 'other-window)))))))
