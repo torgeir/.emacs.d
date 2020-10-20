@@ -1177,7 +1177,6 @@ Useful local copies of elisp programs.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package ox-gfm
-  :after org
   :straight nil
   :commands org-export-dispatch
   :load-path "site-lisp/ox-gfm")
@@ -4670,10 +4669,10 @@ Clean export stamp.
 (setq org-capture-templates
       `(("t" "Task" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\n%i\n\n" :prepend t)
         ("s" "Saga" entry (file+olp ,(t/org-directory "bekk/saga.org") "Saga" "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
-        ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n")
-        ("f" "File location" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\n%i%a\n\n")
-        ("e" "Elfeed location" entry (file+olp org-default-notes-file "Home" "Tasks") (function t/org-capture-elfeed-link-template))
-        ("c" "Chrome location" entry (file+olp org-default-notes-file "Home" "Tasks") (function t/org-capture-chrome-link-template))))
+        ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n" :prepent t)
+        ("l" "Link" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\nLink: %a" :prepend t)
+        ("f" "File" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t)
+        ("c" "Chrome location" entry (file+olp org-default-notes-file "Home" "Tasks") (function t/org-capture-chrome-link-template) :prepend t)))
 #+END_SRC
 
 *** org-goto
