@@ -4706,6 +4706,9 @@ Make org-goto play nice with counsel.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package org
   :straight org-plus-contrib
+  ;; browse org urls in eww
+  ;;:init
+  ;;(setq browse-url-browser-function 'eww)
   :config
   (progn
     (t/after org-agenda
