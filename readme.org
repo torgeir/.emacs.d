@@ -1082,7 +1082,7 @@ Custom prefix functions for defining named shortcuts accessible through evil lea
       (setq key (pop bindings)
             fn (pop bindings)))))
 
-(defun t/micro-state (key fn &rest bindings)
+(defun t/micro-state (quit key fn &rest bindings)
   "Micro state that temporarily overlays a new key map, kinda like hydra"
   (let ((keymap (make-sparse-keymap)))
     (while key
@@ -1091,7 +1091,9 @@ Custom prefix functions for defining named shortcuts accessible through evil lea
             fn (pop bindings)))
     (lambda ()
       (interactive)
-      (set-temporary-overlay-map keymap t))))
+      (let ((exit (set-temporary-overlay-map keymap t (lambda () (when quit (quit-window))))))
+        (bind-key "q" (t/lambda nil
+                        (funcall exit)) keymap)))))
 
 (defun t/micro-state-in-mode (mode after key fn &rest bindings)
   "Micro state that toggles mode and temporarily overlays a new key map, kinda like hydra"
@@ -1450,7 +1452,8 @@ A pull request interface for emacs.
                   "?" (t/lambda ()
                         (git-gutter+-show-hunk-inline-at-point)
                         (funcall
-                         (t/micro-state "r" 'git-gutter+-revert-hunks
+                         (t/micro-state nil
+                                        "r" 'git-gutter+-revert-hunks
                                         "s" 'git-gutter+-stage-hunks)))
                   "=" 'git-gutter+-show-hunk
                   "r" 'git-gutter+-revert-hunks
@@ -2201,10 +2204,11 @@ from pressing R in eww mode.
       (eww-setup-buffer)
       (url-retrieve url 't/eww-readable-after-render (list url buffer fn)))))
 
+(add-hook 'eww-after-render-hook 'eww-readable)
+
 (comment
  ;; make eww is readable
  ;; TODO make toggleable?
- (add-hook 'eww-after-render-hook 'eww-readable)
  (remove-hook 'eww-after-render-hook 'eww-readable))
 #+END_SRC
 
@@ -2499,7 +2503,7 @@ A custom function to fetch a clean view of the current news from nrk.no
 
   (darkroom-mode)
   (read-only-mode)
-  (funcall (t/micro-state
+  (funcall (t/micro-state t
             "n" (t/lambda nil
                   (evil-search "^-" t t)
                   (evil-ex-nohighlight)
@@ -2524,22 +2528,33 @@ A custom function to fetch a clean view of the current news from nrk.no
       (call-interactively 'hackernews)))
   :config
   (progn
-    (t/add-hook-defun 'hackernews-mode-hook t-hackernews-hook
-                      (let ((keymap (make-sparse-keymap)))
-                        (bind-key "n" 'hackernews-next-item keymap)
-                        (bind-key "p" 'hackernews-previous-item keymap)
-                        (bind-key "<return>" 'hackernews-button-browse-internal keymap)
-                        (set-temporary-overlay-map keymap t)))
-(t/after evil
-    (evil-define-key 'normal hackernews-map
-      (kbd "<return>") 'hackernews-button-browse-internal
-      (kbd "TAB") 'hackernews-next-comment
-      "q" 'quit-window
-      "j" 'hackernews-next-item
-      "k" 'hackernews-previous-item
-      "gr" 'hackernews-load-more-stories
-      "gR" 'hackernews-reload))))
-
+    ;; TODO flytt ut
+    (defadvice split-window (after move-point-to-new-window activate)
+      "Moves the point to the newly created window after splitting."
+      (other-window 1))
+    (defun t/hn-open-link-with-keymap ()
+      (interactive)
+      (hackernews--visit
+       (point)
+       (lambda (url)
+         (eww url)
+         (funcall (t/micro-state t
+                                 "s" (t-spray-micro-state)
+                                 "n" (t/lambda nil
+                                       (when (not (eobp)) (evil-scroll-down 0)))
+                                 "p" (t/lambda nil
+                                       (when (not (eobp)) (evil-scroll-up 0))))))))
+    (t/after evil
+      (evil-define-key 'normal hackernews-map
+        (kbd "<return>") #'t/hn-open-link-with-keymap
+        (kbd "TAB") 'hackernews-next-comment
+        "q" 'quit-window
+        "n" 'hackernews-next-item
+        "p" 'hackernews-previous-item
+        "j" 'hackernews-next-item
+        "k" 'hackernews-previous-item
+        "gr" 'hackernews-load-more-stories
+        "gR" 'hackernews-reload))))
 #+END_SRC
 
 *** Complete lines
@@ -3044,7 +3059,7 @@ Thesaurus.
                   "t" 'delete-other-windows
                   "o" 't/previous-window
                   "=" 'balance-windows-area
-                  "s" (t/micro-state
+                  "s" (t/micro-state nil
                        "<left>" 'evil-window-decrease-width
                        "<right>" 'evil-window-increase-width
                        "<up>" 'evil-window-decrease-height
