@@ -5079,7 +5079,8 @@ Save org mode buffers after refile.
     (org-save-all-org-buffers)
     (comment (t/org-export-calendars))
     (setq t-org-file-save-since-last-idle nil)
-    (message "Syncing agenda... done")))
+    (message "Syncing agenda... done"))
+  (t/jump-to-org-agenda))
 
 (defun t/org-export-calendars ()
   "Export given set of calendars to ical files, so you can subscribe to their dropbox links in ical.
@@ -5094,9 +5095,8 @@ Locally redefines org-agenda-files not to export all agenda files."
     (org-icalendar-export-agenda-files)))
 
 (when (not is-ms)
-  (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5)
-  ;(t/idle-timer t-timers-sync-org-gcal 'org-gcal-fetch 30)
-)
+  ;;(t/idle-timer t-timers-sync-org-gcal 'org-gcal-fetch 30)
+  (t/idle-timer t-timers-sync-org-idle #'t/org-idle-timer 5))
 #+END_SRC
 
 *** Tables
