@@ -4684,12 +4684,12 @@ Clean export stamp.
   (concat "* TODO %? :url:%^G\n\n%i\n" (elfeed-entry-link elfeed-show-entry)))
 
 (setq org-capture-templates
-      `(("t" "Task" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\n%i\n\n" :prepend t)
-        ("s" "Saga" entry (file+olp ,(t/org-directory "bekk/saga.org") "Saga" "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
+      `(("t" "Task" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n" :prepend t)
+        ("s" "Saga" entry (file+olp ,(t/org-directory "bekk/saga.org") "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
         ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n" :prepent t)
-        ("l" "Link" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\nLink: %a" :prepend t)
-        ("f" "File" entry (file+olp org-default-notes-file "Home" "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t)
-        ("c" "Chrome location" entry (file+olp org-default-notes-file "Home" "Tasks") (function t/org-capture-chrome-link-template) :prepend t)))
+        ("l" "Link" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\nLink: %a" :prepend t)
+        ("f" "File" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t)
+        ("c" "Chrome location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template) :prepend t)))
 #+END_SRC
 
 *** org-goto
@@ -4860,9 +4860,10 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
           (org-agenda-overriding-header ,header))))
 
 (defun t/org-agenda-day (tags)
-  (list tags '((org-agenda-span 'day)
+  (list tags `((org-agenda-span 'day)
                (org-agenda-ndays-to-span 1)
-               (org-agenda-time-grid nil))))
+               (org-agenda-time-grid nil)
+               (org-agenda-tag-filter-preset ,tags))))
 
 (defun t/org-agenda-not-pri (header tags skip)
   (list tags `((org-agenda-overriding-header ,header)
@@ -4901,7 +4902,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
                                    ("e" tags-todo "emacs")
                                    ("r" tags-todo "book|read|twitter|pocket")
                                    ("v" tags-todo "video")
-                                   ("w" "work" ,(append (t/org-day-summary "+bekk-home" "+saga-home")
+                                   ("w" "work" ,(append (t/org-day-summary "+bekk" "+saga")
                                                         `((tags "+someday+saga")
                                                           (tags "+someday+bekk"))))
                                    ("h" "home" ,(append (list (t/org-agenda-read))
