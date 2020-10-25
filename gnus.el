@@ -1,41 +1,63 @@
 (when (not (getenv "USER_FULLNAME")) (message "Need env USER_FULLNAME "))
 (when (not (getenv "USER")) (message "Need env USER "))
 
-(setq user-full-name (getenv "USER_FULLNAME")
-      user-mail-address (downcase (concat (replace-regexp-in-string
-                                           " " "."
-                                           (getenv "USER_FULLNAME")) "@gmail.com"))
-      gnus-posting-styles '((".*" (signature "T"))))
+(setq t-dotted-fullname (replace-regexp-in-string " " "." (getenv "USER_FULLNAME"))
+      user-full-name (getenv "USER_FULLNAME")
+      user-mail-address (downcase (concat t-dotted-fullname "@gmail.com")))
 
 (darkroom-mode -1)
 (darkroom-tentative-mode -1)
 
+;; search like in gmail in nnimap through nnir
+(add-to-list 'nnir-imap-search-arguments '("gmail" . "X-GM-RAW"))
+
 (setq gnus-activate-level 3
+      gnus-level-subscribed 5
       gnus-use-cache t
-      gnus-level-subscribed 3
       gnus-select-method '(nnnil "")
+      nnimap-split-fancy nnmail-split-fancy
+      nnmail-split-fancy '(| ("Subject" ".*bekk.*" "bekk")
+                             ("Subject" ".*svvsaga.*" "saga")
+                             ("Subject" ".*github.*" "github")
+                             "misc.misc")
+      ;; Reply to mails with matching email address
+      gnus-posting-styles '((".*"
+                             (address (concat user-fullname " <" t-dotted-fullname "@gmail.com>"))
+                             (signature "T"))
+                            ("bekk"
+                             (address (concat user-fullname " <" t-dotted-fullname "@bekk.com>"))
+                             (organization "Bekk")
+                             ("X-Message-SMTP-Method" (concat "smtp smtp.office365.com 587 " t-dotted-fullname "@bekk.no"))))
       gnus-secondary-select-methods
       '((nntp "news.gmane.io")
         (nntp "news.gwene.org")
         (nnimap "gmail"
-                ;; it could also be imap.googlemail.com if that's your server.
                 (nnimap-address "imap.gmail.com")
                 (nnimap-server-port "imaps")
                 (nnimap-stream ssl)
                 (nnimap-authinfo-file "~/.authinfo.gpg")
-                (nnir-search-engine imap)
+                (nnimap-inbox "INBOX")
+                (nnimap-split-methods nnmail-split-fancy)
+                ;; https://sachachua.com/blog/2008/05/emacs-gnus-organize-your-mail/
+                (nnir-search-engine gmail)
                 ;; @see http://www.gnu.org/software/emacs/manual/html_node/gnus/Expiring-Mail.html
                 ;; press 'E' to eire email
                 (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
                 (nnmail-expiry-wait 90)
-                ;; https://sachachua.com/blog/2008/05/emacs-gnus-organize-your-mail/
-                )))
+                (smtpmail-smtp-server "smtp.gmail.com")
+                (smtpmail-smtp-service 587)
+                ;; Make Gnus NOT ignore [Gmail] mailboxes
+                (gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]"))
+        (nnimap "bekk"
+                (nnimap-address "outlook.office365.com")
+                (nnimap-server-port "imaps")
+                (nnimap-stream ssl)
+                (nnimap-authinfo-file "~/.authinfo.gpg")
+                (nnir-search-engine imap)
+                (smtpmail-smtp-server "smtp.office365.com")
+                (smtpmail-smtp-service 587))))
 
-
-(setq smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      ;; Make Gnus NOT ignore [Gmail] mailboxes
-      gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+(t/add-hook-defun 'message-mode-hook t-msg-mode-hook (whitespace-mode -1))
 
 (setq gnus-registry-max-entries 2500
       gnus-registry-track-extra '(sender subject recipient))
@@ -78,6 +100,7 @@
 
 (setq smiley-style 'large
       gnus-mime-display-multipart-related-as-mixed t)
+
 (setq gnus-subscribe-groups-done nil)
 (defvar gnus-subscribe-groups-done nil
   "Only subscribe groups once.  Or else Gnus will NOT restart.")
@@ -86,16 +109,19 @@
 
                   (setq gnus-topic-topology
                         '(("Gnus" visible nil nil)
+                          (("Bekk" visible nil nil))
                           (("Gmail" visible nil nil))
                           (("News" visible nil nil))
                           (("Rss" visible nil nil))))
 
                   (unless gnus-subscribe-groups-done
-
-                    (let ((mail '("nnimap+gmail:INBOX"
-                                  "nnimap+gmail:saga"
-                                  "nnimap+gmail:fun"
-                                  "nnimap+gmail:github"))
+                    (let ((bekk '("nnimap+bekk:INBOX"))
+                          (gmail '("nnimap+gmail:INBOX"
+                                   "nnimap+gmail:bekk"
+                                   "nnimap+gmail:saga"
+                                   "nnimap+gmail:fun"
+                                   "nnimap+gmail:github"
+                                   "nnimap+gmail:misc.misc"))
                           (news '("nntp+news.gmane.io:gmane.comp.java.clojure.user"
                                   "nntp+news.gmane.io:gmane.comp.java.clojure.pedestal.user"
                                   "nntp+news.gmane.io:gmane.comp.lang.javascript.nodejs"
@@ -153,18 +179,17 @@
                                  "nntp+news.gwene.org:gwene.com.addyosmani"
                                  "nntp+news.gwene.org:gwene.com.jonathancreame")))
                       (setq gnus-topic-alist
-                            `(("Gmail" ,@mail)
+                            `(("Bekk" ,@bekk)
+                              ("Gmail" ,@gmail)
                               ("News" ,@news)
                               ("Rss" ,@rss)))
-                      (dolist (sub `(,@mail ,@news ,@rss))
+                      (dolist (sub `(,@bekk ,@gmail ,@news ,@rss))
                         (gnus-subscribe-hierarchically sub)))
 
                     (setq gnus-subscribe-groups-done t)))
 
 ;; (evil-collection-gnus-setup)
-
 (evil-define-key 'emacs gnus-summary-mode-map
-  ;; motion
   (kbd "p") 'gnus-summary-prev-page
   (kbd "n") 'gnus-summary-next-page
   (kbd "s") (lambda ()
@@ -178,6 +203,3 @@
 
 (t/add-hook-defun 'gnus-summary-mode-hook t-gnus-summary-hook)
 (t/add-hook-defun 'gnus-article-mode-hook t-gnus-article-hook (darkroom-mode))
-
-;; (t/add-hook-defun 'gnus-exit-gnus-hook t-gnus-exit-hook
-;;                   (evil-leader-mode 1))
