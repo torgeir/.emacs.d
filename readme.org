@@ -1094,8 +1094,8 @@ Custom prefix functions for defining named shortcuts accessible through evil lea
     (lambda ()
       (interactive)
       (let ((exit (set-temporary-overlay-map keymap t (lambda () (when quit (quit-window))))))
-        (bind-key "q" (t/lambda nil
-                        (funcall exit)) keymap)))))
+        (when quit
+          (bind-key "q" (t/lambda nil (funcall exit)) keymap))))))
 
 (defun t/micro-state-in-mode (mode after key fn &rest bindings)
   "Micro state that toggles mode and temporarily overlays a new key map, kinda like hydra"
@@ -2505,16 +2505,16 @@ A custom function to fetch a clean view of the current news from nrk.no
 
   (darkroom-mode)
   (read-only-mode)
-  (funcall (t/micro-state t
-            "n" (t/lambda nil
-                  (evil-search "^-" t t)
-                  (evil-ex-nohighlight)
-                  (recenter nil))
-            "p" (t/lambda nil
-                  (evil-search "^-" nil t)
-                  (evil-ex-nohighlight)
-                  (recenter nil))
-            "s" (t-spray-micro-state))))
+  (funcall (t/micro-state (not (t/prefix-arg-universal?))
+                          "n" (t/lambda nil
+                                (evil-search "^-" t t)
+                                (evil-ex-nohighlight)
+                                (recenter nil))
+                          "p" (t/lambda nil
+                                (evil-search "^-" nil t)
+                                (evil-ex-nohighlight)
+                                (recenter nil))
+                          "s" (t-spray-micro-state))))
 #+END_SRC
 
 **** Hackernews
@@ -2540,7 +2540,7 @@ A custom function to fetch a clean view of the current news from nrk.no
        (point)
        (lambda (url)
          (eww url)
-         (funcall (t/micro-state t
+         (funcall (t/micro-state (not (t/prefix-arg-universal?))
                                  "s" (t-spray-micro-state)
                                  "n" (t/lambda nil
                                        (when (not (eobp)) (evil-scroll-down 0)))
