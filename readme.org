@@ -3541,15 +3541,10 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package kotlin-mode
-  :mode "\\.kt$"
+  :mode "\\.\\(kt|kts\\)$"
   :commands kotlin-mode
-  :init (t/add-hook-defun 'kotlin-mode-hook t-kotlin-hook
-                          (lsp-register-client
-                           (make-lsp-client :new-connection (lsp-stdio-connection '("/Users/torgeirthoresen/Code/kotlin-language-server/server/build/install/server/bin"))
-                                            :major-modes '(kotlin-mode)
-                                            :priority -1
-                                            :server-id 'kotlin-ls))
-                          (lsp-mode))
+  :hook lsp
+  :custom (lsp-kotlin-language-server-path (t/user-file "bin/kotlin-language-server"))
   :config
   (progn
     (defun t/gradlew (command)
@@ -3566,15 +3561,15 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package lsp-mode
-  :hook css-mode-hook
   :commands (lsp)
+  :hook (lsp-mode . lsp-enable-which-key-integration)
   :init
-    (setq lsp-print-io nil
-          lsp-prefer-flymake nil))
-
+  (setq lsp-log-io t
+        lsp-auto-guess-root t
+        lsp-prefer-flymake nil))
 
 (use-package lsp-ui
-  :hook lsp-mode-hook
+  :commands lsp-ui-mode
   :init
   (progn
     (setq lsp-ui-doc-enable t
@@ -3583,10 +3578,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
           lsp-ui-sideline-show-code-actions t)
     (with-eval-after-load 'lsp-mode
       (add-hook 'lsp-after-open-hook (lambda ()
-                                       (lsp-ui-flycheck-enable 1))))
-    (t/add-hook-defun 'lsp-mode-hook t/lsp-ui-lsp-mode-hook
-                      (lsp-enable-which-key-integration)
-                      (lsp-ui-mode)))
+                                       (lsp-ui-flycheck-enable 1)))))
   :config
   (progn
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
@@ -3598,17 +3590,18 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
   :init
   (setq-default typescript-indent-level 2))
 
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 
-(use-package company-lsp
-  :after company
-  :hook company-mode-hook
-  :init
-  (setq company-lsp-cache-candidates t
-        company-lsp-async t))
+(comment (use-package company-lsp
+           :after company
+           :hook company-mode-hook
+           :init
+           (setq company-lsp-cache-candidates t
+                 company-lsp-async t)))
 
 
 (use-package js2-mode
-  :mode "\\.\\(ts\\|js\\|jsx\\)$"
+  :mode "\\.\\(js\\|jsx\\)$"
   :interpreter "node"
   :init
   (progn
