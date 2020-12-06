@@ -138,7 +138,7 @@ Customizations go in ~custom.el~.
         ;; with evil-surround with a norwegian keyboard..
         mac-right-option-modifier nil
 
-        t-font-size 14
+        t-font-size 19
 
         ;; bind fn to H-
         ns-function-modifier 'hyper
