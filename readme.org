@@ -4038,6 +4038,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
                       '("gs" "magit-status")
                       '("gr" "cd ${git rev-parse --show-toplevel}")
                       '("pr" "cd ${npm root}/..;")
+                      ;; '("gw" "./gradlew")
                       '("gadd-origin-pr" "git config --add remote.origin.fetch \"+refs/pull/*/head:refs/remotes/origin/pr/*\"")
                       '("hidedesktop" "defaults write com.apple.finder CreateDesktop -bool false && killall Finder")
                       '("hidehidden" "defaults write com.apple.finder AppleShowAllFiles -boolean false && killall Finder")
