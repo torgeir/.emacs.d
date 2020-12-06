@@ -5031,7 +5031,7 @@ Reselect visual when moving multiple lines.
 
 #+begin_src emacs-lisp :results silent
 (defun t/org-clock-start () (interactive) (org-todo "STARTED"))
-(defun t/org-clock-stop () (interactive) (org-todo "DONE"))
+(defun t/org-clock-stop () (interactive) (org-todo))
 (advice-remove 'org-clock-in 't/org-clock-start)
 (advice-remove 'org-clock-out 't/org-clock-stop)
 (advice-add 'org-clock-in :after 't/org-clock-start)
