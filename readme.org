@@ -673,14 +673,14 @@ line) lisp aware, so it does not delete trailing parens.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-cleverparens
   :diminish evil-cleverparens-mode
-  :after evil
-  :defer 1
+  :hook ((emacs-lisp-mode
+          clojure-mode) . evil-cleverparens-mode)
   :init
   (progn
     (t/add-hook-defun 'evil-cleverparens-enabled-hook t-evil-cp-mode-hook
-     (t/after evil
-       (evil-define-key 'visual evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next)
-       (evil-define-key 'normal evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next)))
+                      (t/after evil
+                        (evil-define-key 'visual evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next)
+                        (evil-define-key 'normal evil-cleverparens-mode-map (kbd "M-d") 'evil-multiedit-match-symbol-and-next)))
     (setq evil-cleverparens-use-additional-bindings t
           evil-cleverparens-use-regular-insert t))
   :config
