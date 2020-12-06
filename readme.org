@@ -4771,7 +4771,7 @@ Fix disappearing company.
                   (t/add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
 #+END_SRC
 
-*** Hook
+*** Org Initialization Hook
 
 #+BEGIN_SRC emacs-lisp :results silent
 (t/add-hook 'org-babel-after-execute-hook 't/org-fix-inline-images)
