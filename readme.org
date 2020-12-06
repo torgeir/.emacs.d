@@ -3239,6 +3239,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
       (save-buffer))))
 
 (use-package clj-refactor
+  :after clojure-mode
   :commands (clj-refactor-mode)
   :init
   (progn
@@ -3306,7 +3307,6 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
   :commands clojure-mode) ;; more syntax hilighting
 
 (use-package cider
-  :commands (cider cider-connect cider-jack-in)
   :init
   (progn
     (setq cider-jack-in-default 'boot
@@ -3316,20 +3316,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
           cider-repl-pop-to-buffer-on-connect nil
           cider-overlays-use-font-lock t
           nrepl-hide-special-buffers t
-          cider-prompt-for-symbol nil))
-  :config
-  (progn
-    (cider-add-to-alist 'cider-jack-in-cljs-dependencies "cider/piggieback" "0.4.0")
-
-    (bind-key "M-." 'cider-find-dwim cider-mode-map)
-    (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
-
-    (t/add-to-list 't-evil-major-modes '(cider-stacktrace-mode cider-docview-mode))
-
-    (defun t/cider-insert-last-sexp-in-repl ()
-      (interactive)
-      (cider-insert-last-sexp-in-repl 't)
-      (other-window 1))
+          cider-prompt-for-symbol nil)
 
     (defun t/init-clj-mode-keys-in-mode (mode)
       (add-hook (intern (concat (symbol-name 'clojurescript-mode) "-hook"))
@@ -3355,8 +3342,20 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
                                  "R" 'cider-eval-last-sexp-and-replace))
 
     (t/init-clj-mode-keys-in-mode 'clojure-mode)
-    (t/init-clj-mode-keys-in-mode 'clojurescript-mode)
+    (t/init-clj-mode-keys-in-mode 'clojurescript-mode))
+  :config
+  (progn
+    (cider-add-to-alist 'cider-jack-in-cljs-dependencies "cider/piggieback" "0.5.2")
 
+    (bind-key "M-." 'cider-find-dwim cider-mode-map)
+    (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
+
+    (t/add-to-list 't-evil-major-modes '(cider-stacktrace-mode cider-docview-mode))
+
+    (defun t/cider-insert-last-sexp-in-repl ()
+      (interactive)
+      (cider-insert-last-sexp-in-repl 't)
+      (other-window 1))
     (t/add-hook 'cider-docview-mode-hook 'visual-line-mode)
 
     ;; minibuffer doc in repl
