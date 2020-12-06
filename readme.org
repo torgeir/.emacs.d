@@ -1917,9 +1917,9 @@ Useful backends.
 #+BEGIN_SRC emacs-lisp :results silent
 (defun t/company-backends (&optional backends)
   `((,@backends
+     company-capf
      company-files
      company-keywords
-     company-capf
      company-emoji)
     (company-dabbrev-code
      company-dabbrev
