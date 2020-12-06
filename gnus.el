@@ -1,15 +1,13 @@
 (when (not (getenv "USER_FULLNAME")) (message "Need env USER_FULLNAME "))
 (when (not (getenv "USER")) (message "Need env USER "))
 
-(setq t-dotted-fullname (replace-regexp-in-string " " "." (getenv "USER_FULLNAME"))
+(setq t-dotted-full-name (replace-regexp-in-string " " "." (getenv "USER_FULLNAME"))
       user-full-name (getenv "USER_FULLNAME")
-      user-mail-address (downcase (concat t-dotted-fullname "@gmail.com")))
+      user-mail-address (downcase (concat t-dotted-full-name "@gmail.com")))
 
 (darkroom-mode -1)
 (darkroom-tentative-mode -1)
 
-;; search like in gmail in nnimap through nnir
-(add-to-list 'nnir-imap-search-arguments '("gmail" . "X-GM-RAW"))
 
 (setq gnus-activate-level 3
       gnus-level-subscribed 5
@@ -22,12 +20,12 @@
                              "misc.misc")
       ;; Reply to mails with matching email address
       gnus-posting-styles '((".*"
-                             (address (concat user-fullname " <" t-dotted-fullname "@gmail.com>"))
+                             (address (concat user-full-name " <" t-dotted-full-name "@gmail.com>"))
                              (signature "T"))
                             ("bekk"
-                             (address (concat user-fullname " <" t-dotted-fullname "@bekk.com>"))
+                             (address (concat user-full-name " <" t-dotted-full-name "@bekk.com>"))
                              (organization "Bekk")
-                             ("X-Message-SMTP-Method" (concat "smtp smtp.office365.com 587 " t-dotted-fullname "@bekk.no"))))
+                             ("X-Message-SMTP-Method" (concat "smtp smtp.office365.com 587 " t-dotted-full-name "@bekk.no"))))
       gnus-secondary-select-methods
       '((nntp "news.gmane.io")
         (nntp "news.gwene.org")
@@ -56,6 +54,10 @@
                 (nnir-search-engine imap)
                 (smtpmail-smtp-server "smtp.office365.com")
                 (smtpmail-smtp-service 587))))
+
+
+;; search like in gmail in nnimap through nnir
+;;(add-to-list 'nnir-imap-search-arguments '("gmail" . "X-GM-RAW"))
 
 (t/add-hook-defun 'message-mode-hook t-msg-mode-hook (whitespace-mode -1))
 
