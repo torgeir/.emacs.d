@@ -1437,6 +1437,12 @@ A pull request interface for emacs.
 (use-package forge :after magit :commands (forge-add-repository forge-pull forge-create-pullreq))
 #+END_SRC
 
+[[https://magit.vc/manual/forge.html#Token-Creation][Set up an access token with the correct scopes]] and add the following line to ~~/.authinfo.gpg~
+
+#+begin_src
+machine api.github.com login torgeir^forge password <access-token>
+#+end_src
+
 *** Keybindings
 
 #+BEGIN_SRC emacs-lisp :results silent
