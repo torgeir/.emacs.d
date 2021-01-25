@@ -3587,7 +3587,8 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 
 (use-package typescript-mode
-  :mode "\\.ts"
+  :mode "\\.\\(ts\\|tsx\\)$"
+  :hook prettier-mode
   :init
   (setq-default typescript-indent-level 2))
 
