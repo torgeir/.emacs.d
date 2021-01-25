@@ -4052,7 +4052,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
                       '("lout" "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend")
                       '("md" "mkdir $1; cd $1")
                       ;;'("merge-pdfs" "gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=merged.pdf *.pdf")
-                      '("serve" "http-server")
+                      '("serve" "http-server -c-1 -o") ; no cache, open
                       '("showdesktop" "defaults write com.apple.finder CreateDesktop -bool true && killall Finder")
                       '("showhidden" "defaults write com.apple.finder AppleShowAllFiles -boolean true && killall Finder")
                       '("essh" "cd \"/ssh:$1:~\"")
