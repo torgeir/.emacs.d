@@ -542,7 +542,8 @@ Normal mode is default, and search using evil.
 #+BEGIN_SRC emacs-lisp :results silent
 (setq evil-default-state 'normal
       evil-insert-skip-empty-lines t
-      evil-search-module 'evil-search)
+      evil-search-module 'evil-search
+      evil-undo-system 'undo-redo)
 
 (use-package evil
   :init
