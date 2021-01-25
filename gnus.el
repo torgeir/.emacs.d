@@ -1,5 +1,5 @@
-(when (not (getenv "USER_FULLNAME")) (message "Need env USER_FULLNAME "))
-(when (not (getenv "USER")) (message "Need env USER "))
+(when (not (getenv "USER_FULLNAME")) (setenv "USER_FULLNAME" "Torgeir Thoresen"))
+(when (not (getenv "USER")) (message "Need env USER"))
 
 (setq t-dotted-full-name (replace-regexp-in-string " " "." (getenv "USER_FULLNAME"))
       user-full-name (getenv "USER_FULLNAME")
@@ -108,6 +108,12 @@
   "Only subscribe groups once.  Or else Gnus will NOT restart.")
 (t/add-hook-defun 'gnus-group-mode-hook t-gnus-group-mode-hook
                   (gnus-topic-mode)
+
+                  (setq gnus-parameters
+                        '(("nnimap.*"
+                           ;(gnus-use-scoring nil)
+                           (expiry-wait . 2)
+                           (display . all))))
 
                   (setq gnus-topic-topology
                         '(("Gnus" visible nil nil)
