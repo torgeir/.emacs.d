@@ -56,14 +56,15 @@
  '(company-box-doc-delay 0.01)
  '(custom-safe-themes
    '("2f1518e906a8b60fac943d02ad415f1d8b3933a5a7f75e307e6e9a26ef5bf570" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" default))
- '(doom-modeline-gnus nil)
- '(doom-modeline-gnus-timer 0)
+ '(doom-modeline-gnus t)
+ '(doom-modeline-gnus-excluded-groups '("nntp*"))
+ '(doom-modeline-gnus-timer 60)
  '(evil-collection-mode-list
    '(apropos calendar dired eww hackernews help info ivy outline rg w3m wdired xref) nil nil "Customized with use-package evil-collection")
  '(exec-path-from-shell-arguments '("-l"))
  '(flycheck-javascript-flow-args nil)
  '(helm-source-names-using-follow '("home.org_archive" "bekk.org" "Imenu" "AG"))
- '(json-reformat:indent-width *t-indent*)
+ '(json-reformat:indent-width *t-indent* t)
  '(lsp-clients-kotlin-server-executable
    "/Users/torgeirthoresen/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
  '(lsp-kotlin-language-server-path
