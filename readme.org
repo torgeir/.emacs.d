@@ -24,6 +24,8 @@ ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
 npm -g install eslint babel-eslint jsonlint eslint-plugin-react typescript-language-server typescript jscodeshift browser-sync
 #+END_SRC
 
+https://github.com/clojure-lsp/clojure-lsp#manually
+
 **** OS X
 
 #+BEGIN_SRC sh :results silent
@@ -3568,11 +3570,22 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package lsp-mode
   :commands (lsp)
-  :hook (lsp-mode . lsp-enable-which-key-integration)
+  :hook ((lsp-mode . lsp-enable-which-key-integration)
+         (clojure-mode . lsp)
+         (clojurec-mode . lsp)
+         (clojurescript-mode . lsp))
   :init
   (setq lsp-log-io t
         lsp-auto-guess-root t
-        lsp-prefer-flymake nil))
+        lsp-prefer-flymake nil)
+  :config
+  (progn
+    ;; clojure-lsp
+    (dolist (m '(clojure-mode
+                 clojurec-mode
+                 clojurescript-mode
+                 clojurex-mode))
+      (add-to-list 'lsp-language-id-configuration `(,m . "clojure")))))
 
 (use-package lsp-ui
   :commands lsp-ui-mode
@@ -3588,8 +3601,9 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
   :config
   (progn
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-    (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)))
-
+    (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+    (t/bind-in 'lsp-ui-mode-map
+      (kbd "M-<return>") 'lsp-execute-code-action)))
 
 (use-package typescript-mode
   :mode "\\.\\(ts\\|tsx\\)$"
@@ -3599,12 +3613,12 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 
-(comment (use-package company-lsp
-           :after company
-           :hook company-mode-hook
-           :init
-           (setq company-lsp-cache-candidates t
-                 company-lsp-async t)))
+(use-package company-lsp
+  :after company
+  :hook company-mode-hook
+  :init
+  (setq company-lsp-cache-candidates t
+        company-lsp-async t))
 
 
 (use-package js2-mode
