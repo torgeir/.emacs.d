@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:foreground "#ccc"))) t)
  '(Info-quoted ((t (:inherit fixed-pitch-serif :foreground "#888"))))
  '(company-box-background ((t (:background "#21242b"))) t)
  '(dictionary-word-definition-face ((t nil)))
@@ -58,19 +59,30 @@
    '("2f1518e906a8b60fac943d02ad415f1d8b3933a5a7f75e307e6e9a26ef5bf570" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" default))
  '(doom-modeline-gnus t)
  '(doom-modeline-gnus-excluded-groups '("nntp*"))
- '(doom-modeline-gnus-timer 60)
+ '(doom-modeline-gnus-timer 45)
  '(evil-collection-mode-list
    '(apropos calendar dired eww hackernews help info ivy outline rg w3m wdired xref) nil nil "Customized with use-package evil-collection")
  '(exec-path-from-shell-arguments '("-l"))
  '(flycheck-javascript-flow-args nil)
  '(helm-source-names-using-follow '("home.org_archive" "bekk.org" "Imenu" "AG"))
+ '(ivy-initial-inputs-alist
+   '((counsel-minor . "^+")
+     (counsel-package . "^+")
+     (counsel-org-capture . "")
+     (counsel-M-x . "")
+     (counsel-describe-symbol . "")
+     (org-refile . "")
+     (org-agenda-refile . "")
+     (org-capture-refile . "")
+     (Man-completion-table . "^")
+     (woman . "^")) nil nil "Customized with use-package counsel")
  '(json-reformat:indent-width *t-indent* t)
  '(lsp-clients-kotlin-server-executable
    "/Users/torgeirthoresen/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
  '(lsp-kotlin-language-server-path
    "/Users/torgeirthoresen/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
  '(nntp-authinfo-file "~/.authinfo.gpg")
- '(org-agenda-window-setup 'only-window)
+ '(org-agenda-window-setup 'only-window t)
  '(pos-tip-background-color "#36473A")
  '(pos-tip-foreground-color "#FFFFC8")
  '(send-mail-function 'smtpmail-send-it)
