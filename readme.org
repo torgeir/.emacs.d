@@ -140,7 +140,7 @@ Customizations go in ~custom.el~.
         ;; with evil-surround with a norwegian keyboard..
         mac-right-option-modifier nil
 
-        t-font-size 19
+        t-font-size 17
 
         ;; bind fn to H-
         ns-function-modifier 'hyper
@@ -803,7 +803,8 @@ Highlight and fold-this are dependencies of evil-extra-operator.
                              diff-mode
                              gnus-group-mode
                              gnus-summary-mode
-                             forge-topic-mode)
+                             forge-topic-mode
+                             rg-mode)
   "Major modes that should trigger evil emacs state when changed to.")
 
 (t/after evil
@@ -1285,6 +1286,17 @@ These actually seem to replace all my previous helm config 😱
               ("C-w" . backward-kill-word)
               ("C-u" . backward-kill-sentence)
               ("C-c u" . universal-argument))
+  :custom (ivy-initial-inputs-alist
+           '((counsel-minor . "^+")
+             (counsel-package . "^+")
+             (counsel-org-capture . "")
+             (counsel-M-x . "")
+             (counsel-describe-symbol . "")
+             (org-refile . "")
+             (org-agenda-refile . "")
+             (org-capture-refile . "")
+             (Man-completion-table . "^")
+             (woman . "^")) )
   :config
   (progn
     (ivy-mode 1)
@@ -1713,7 +1725,7 @@ Colorize delimiters.
           neo-create-file-auto-open t
           neo-mode-line-type 'none
           neo-force-change-root t
-          neo-theme 'icons
+          neo-theme 'ascii
           neo-show-updir-line nil
           neo-show-hidden-files nil
           neo-auto-indent-point t)
@@ -3594,10 +3606,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
     (setq lsp-ui-doc-enable t
           lsp-ui-doc-delay 0.5
           lsp-ui-sideline-enable t
-          lsp-ui-sideline-show-code-actions t)
-    (with-eval-after-load 'lsp-mode
-      (add-hook 'lsp-after-open-hook (lambda ()
-                                       (lsp-ui-flycheck-enable 1)))))
+          lsp-ui-sideline-show-code-actions t))
   :config
   (progn
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
@@ -3962,7 +3971,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
         (interactive)
         (t/term-quit-if-finished 'term-send-eof))
 
-      (t/bind-in '(evil-normal-state-local-map evil-insert-state-local-map)
+      (t/bind-in '(evil-insert-state-local-map)
         "C-d" 't/term-try-quit)
 
       (goto-address-mode)
@@ -5325,7 +5334,7 @@ Cycle between light and dark themes.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (defconst t-themes (list
-                    'doom-one
+                    'doom-outrun-electric
                     'doom-one-light) "Themes to cycle")
 
 (defun t/cycle-theme ()
