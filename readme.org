@@ -804,7 +804,8 @@ Highlight and fold-this are dependencies of evil-extra-operator.
                              gnus-group-mode
                              gnus-summary-mode
                              forge-topic-mode
-                             rg-mode)
+                             rg-mode
+                             image-mode)
   "Major modes that should trigger evil emacs state when changed to.")
 
 (t/after evil
