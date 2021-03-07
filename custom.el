@@ -3,7 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:foreground "#ccc"))) t)
+ '(default ((t (:foreground "#ccc"))))
  '(Info-quoted ((t (:inherit fixed-pitch-serif :foreground "#888"))))
  '(company-box-background ((t (:background "#21242b"))) t)
  '(dictionary-word-definition-face ((t nil)))
@@ -31,6 +31,7 @@
  '(js2-external-variable ((t nil)))
  '(lazy-highlight ((t (:background "#2266A0" :foreground "#DFDFDF" :weight bold))))
  '(lsp-face-highlight-read ((t (:background "#222" :foreground "#DFDFDF" :weight normal))))
+ '(lsp-face-highlight-textual ((t (:background "#0F085D" :foreground "#919ad9" :weight bold))))
  '(markdown-header-face ((t (:inherit bold :foreground "#66bb5c"))))
  '(org-agenda-dimmed-todo-face ((t (:inherit org-level-2))))
  '(org-checkbox-statistics-todo ((t (:inherit org-todo))))
