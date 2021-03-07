@@ -2531,7 +2531,7 @@ A custom function to fetch a clean view of the current news from nrk.no
   (beginning-of-buffer)
   (kill-line)
 
-  (darkroom-mode)
+  ;;(darkroom-mode)
   (read-only-mode)
   (funcall (t/micro-state (t/prefix-arg-universal?)
                           "n" (t/lambda nil
