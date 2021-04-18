@@ -4730,7 +4730,8 @@ Make org-goto play nice with counsel.
                   "g" 'org-mac-grab-link
                   "a" 'org-agenda
                   "A" 't/org-archive-done-tasks
-                  "hi" 'org-info
+                  "i" 'org-info
+                  "h" (t/lambda (find-file (t/user-dropbox-folder "org/home.org")))
                   "ns" 'org-narrow-to-subtree
                   "ne" 'org-narrow-to-element
                   "nb" 'org-narrow-to-block
