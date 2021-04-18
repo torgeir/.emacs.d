@@ -3884,6 +3884,11 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package simplezen
+  :init
+  (progn
+    (defun --setup-simplezen ()
+      (t/bind-in 'sgml-mode-map "<tab>" 'simplezen-expand-or-indent-for-tab))
+    (add-hook 'sgml-mode-hook '--setup-simplezen))
   :commands simplezen-expand-or-indent-for-tab)
 
 (use-package tagedit
@@ -3989,28 +3994,6 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
            (when (string-match "\\(finished\\|exited\\)" change)
              (kill-buffer (process-buffer proc)))))))
     (t/add-hook 'term-mode-hook #'t/term-mode-hook)))
-#+end_src
-
-*** ansi-term
-
-#+BEGIN_SRC emacs-lisp :results silent
-(comment (use-package ansi-term
-           :hook term-mode-hook
-           :straight nil
-           :init
-           (progn
-             ;; ansi-term
-             (defadvice ansi-term (before force-bash)
-               (interactive (list "/bin/zsh"))
-               (term-line-mode))
-             (ad-activate 'ansi-term)
-
-             (defadvice ansi-term (after always-use-line-mode)
-               (term-line-mode))
-             (ad-activate 'ansi-term)
-
-             ;; fix tab-completion
-             (t/add-hook-setq 'term-mode-hook yas-dont-activate t))))
 #+end_src
 
 *** Eshell and tweaks
@@ -4436,7 +4419,6 @@ the saved desktop project specific.
 Initial font and window transparency.
 
 #+BEGIN_SRC emacs-lisp :results silent
-;;(t/set-font (car t-fonts) t)
 (t/transparency 100)
 #+END_SRC
 
@@ -4470,24 +4452,6 @@ No emojis in terminal (on os x at least).
         try-complete-lisp-symbol
         try-expand-list
         try-expand-line))
-
-(comment
- (defun t/useful-buffer? (b)
-   "Determine if a buffer is useful and you would like to jump to it."
-   (let ((name (buffer-name b)))
-     (and (not (get-buffer-window name nil)) ; not already visible in same frame
-          (not (s-contains? "autoloads.el" name))
-          (or (equal "*scratch*" name)
-              (s-contains? "*eww" name)
-              (s-contains? "*Org" name)
-              (s-contains? "*eshell" name)
-              (not (s-contains? "*" name))))))
- ;; skip non-useful buffers on next-buffer, prev-buffer, other-buffer
- (let ((entry-exists (assq 'buffer-predicate default-frame-alist)))
-   (if entry-exists
-       (setcdr entry-exists #'t/useful-buffer?)
-     (push '(buffer-predicate . t/useful-buffer?) default-frame-alist))))
-
 
 (t/bind-in 'minibuffer-local-map "C-w" 'backward-kill-word)
 (t/bind-in 'global-map
