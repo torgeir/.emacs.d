@@ -373,13 +373,15 @@ Fix the rest..
  frame-resize-pixelwise t
  frame-title-format "%b (%f)"; full path in titlebar
  fringes-outside-margins t       ; switches order of fringe and margin
- gc-cons-threshold (* 8 1024 1024) ; more memory
+ gc-cons-threshold most-positive-fixnum ; no gc
+ gc-cons-percentage 0.6 ; no gc while startup
  help-window-select 't ; focus help buffers
  indent-tabs-mode nil ; don't use tabs
  indicate-buffer-boundaries nil ; don't show buffer start/end
  indicate-empty-lines nil ; don't show empty lines after buffer
  inhibit-startup-message t ; no splash
- initial-major-mode 'emacs-lisp-mode ; load *scratch* in text-mode
+ frame-inhibit-implied-resize t ; prevent resize frame when font is larger than the system default, improves startup time
+ initial-major-mode 'fundamental-mode ; load *scratch* in text-mode
  initial-scratch-message nil ; clear *scratch* buffer
  mode-require-final-newline nil ; don't require final newline
  redisplay-dont-pause t ; update screen immediately
@@ -5391,7 +5393,12 @@ Escape chars can be inserted literally by pressing ~c-q~ followed by the char.
 We're done, wrap up timing so we can se how long it took.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(t/timing-end)
+(add-hook
+ 'emacs-startup-hook
+ (lambda ()
+   (setq gc-cons-threshold (* 16 1024 1024)
+         gc-cons-percentage 0.1)
+   (t/timing-end)))
 #+END_SRC
 
 #+begin_src emacs-lisp :results silent
