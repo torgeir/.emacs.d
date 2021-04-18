@@ -3330,6 +3330,8 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
   :commands clojure-mode) ;; more syntax hilighting
 
 (use-package cider
+  :mode (("\\.\\(edn\\|boot\\|clj\\)$" . clojure-mode)
+         ("\\.cljs$" . clojurescript-mode))
   :init
   (progn
     (setq cider-jack-in-default 'boot
