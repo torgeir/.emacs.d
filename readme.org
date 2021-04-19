@@ -1641,10 +1641,10 @@ Commit or bail from wdired like for magit, org src blocks etc
 (use-package wdired
   :commands (wdired-change-to-wdired-mode)
   :config
-  (evil-define-key 'normal 'wdired-mode-map
-    "\C-c\C-k" 'wdired-abort-changes
-    "\C-c\C-c" 'wdired-finish-edit
-    (kbd "<escape>") 'wdired-exit))
+  (comment evil-define-key 'normal 'wdired-mode-map
+           "\C-c\C-k" 'wdired-abort-changes
+           "\C-c\C-c" 'wdired-finish-edit
+           (kbd "<escape>") 'wdired-exit))
 #+end_src
 
 *** Local dired extensions
