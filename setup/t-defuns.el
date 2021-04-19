@@ -918,12 +918,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (when (functionp else)
       (call-interactively else))))
 
-(defun t/neotree-open-file ()
+(defun t/reveal-file ()
   (interactive)
   (let ((origin-buffer-file-name (buffer-file-name)))
-    (comment (neotree-toggle))
-    (neotree-find (projectile-project-root))
-    (neotree-find origin-buffer-file-name)))
+    (dired-sidebar-point-at-file
+     origin-buffer-file-name
+     (t/project-root))))
 
 (defun t/backward-down-sexp ()
   "Move backward to the start of the previous sexp."

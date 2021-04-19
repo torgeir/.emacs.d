@@ -1724,59 +1724,32 @@ Colorize delimiters.
 *** Directory tree
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package neotree
-  :commands (neotree-toggle
-             neotree-show
-             neotree-hide
-             neotree-find)
+(use-package dired-sidebar
+  :commands (dired-sidebar-toggle-sidebar)
+  :bind (("<f6>" . dired-sidebar-toggle-sidebar))
   :init
   (progn
-    (setq neo-smart-open nil
-          neo-window-fixed-size nil
-          neo-window-width 35
-          neo-create-file-auto-open t
-          neo-mode-line-type 'none
-          neo-force-change-root t
-          neo-theme 'ascii
-          neo-show-updir-line nil
-          neo-show-hidden-files nil
-          neo-auto-indent-point t)
-    (t/add-hook-defun 'neotree-mode-hook t/neotree-hook
-                      (evil-commentary-mode -1)
-                      (evil-extra-operator-mode -1)
-                      (hl-line-mode))
-    (t/after neotree
-      (add-to-list 'window-size-change-functions ;; fixes: https://github.com/jaypei/emacs-neotree/issues/262
-                   (lambda (frame)
-                     (let ((neo-window (neo-global--get-window)))
-                       (unless (null neo-window)
-                         (setq neo-window-width (window-width neo-window))))))))
+    (setq dired-sidebar-use-custom-font t
+          dired-sidebar-use-term-integration t)
+    (t/add-hook-defun 'dired-sidebar-mode-hook t/sidebar-hook
+                      (hl-line-mode)
+                      (evil-define-key 'normal dired-mode-map "u" 'dired-sidebar-up-directory)))
   :config
-  (progn
-    (bind-key [f6] 'neotree-toggle)
-    (t/after evil
-      (dolist (key '(("n" . neotree-next-line)
-                     ("p" . neotree-previous-line)
-                     ("C-n" . neotree-next-line)
-                     ("C-p" . neotree-previous-line)
-                     ("c" . neotree-create-node)
-                     ("R" . neotree-rename-node)
-                     ("D" . neotree-delete-node)
-                     ("i" . neotree-enter-horizontal-split)
-                     ("C-c o" . neotree-enter-vertical-split)
-                     ("s" . neotree-enter-vertical-split)
-                     ("g" . neotree-refresh)
-                     ("u" . neotree-select-up-node)
-                     ("M-<up>" . neotree-select-up-node)
-                     ("I" . neotree-hidden-file-toggle)
-                     ("q" . neotree-hide)
-                     ("q" . neotree-hide)
-                     ("v" . neotree-quick-look)
-                     ("TAB" . neotree-enter)
-                     ("RET" . neotree-enter)
-                     ("M-<down>" . neotree-enter)
-                     ("C" . neotree-change-root)))
-        (eval `(evil-define-key 'normal neotree-mode-map (kbd ,(car key)) ',(cdr key)))))))
+  (t/after evil
+    (dolist (key '(("n" . evil-next-line)
+                   ("p" . evil-previous-line)
+                   ;; ("i" . neotree-enter-horizontal-split)
+                   ;; ("C-c o" . neotree-enter-vertical-split)
+                   ;; ("s" . neotree-enter-vertical-split)
+                   ;; ("g" . neotree-refresh)
+                   ("u" . dired-sidebar-up-directory)
+                   ;; ("I" . neotree-hidden-file-toggle)
+                   ;; ("v" . neotree-quick-look)
+                   ;; ("TAB" . neotree-enter)
+                   ;; ("RET" . neotree-enter)
+                   ;; ("C" . neotree-change-root)
+                   ))
+      (eval `(evil-define-key 'normal dired-sidebar-mode-map (kbd ,(car key)) ',(cdr key))))))
 #+END_SRC
 
 *** Jump
@@ -3033,8 +3006,8 @@ Thesaurus.
 (t/declare-prefix "f" "Files/Frame"
                   "b" 'ivy-switch-buffer
                   "f" 'counsel-find-file
-                  "l" 't/neotree-open-file
-                  "L" 'neotree-hide
+                  "l" 'dired-sidebar-toggle-with-current-directory
+                  "L" 'dired-sidebar-hide-sidebar
                   "j" 'dired-jump
                   "J" 'dired-jump-other-window
                   "d" 'delete-frame
@@ -3098,7 +3071,8 @@ Thesaurus.
                   "t" 'delete-other-windows
                   "o" 't/previous-window
                   "=" 'balance-windows-area
-                  "s" (t/micro-state nil
+                  "s" (t/micro-state
+                       nil
                        "<left>" 'evil-window-decrease-width
                        "<right>" 'evil-window-increase-width
                        "<up>" 'evil-window-decrease-height
@@ -3158,8 +3132,6 @@ Thesaurus.
                   "g" 't/projectile-magit-status
                   "G" 'projectile-regenerate-tags
                   "k" 'projectile-kill-buffers
-                  "l" 't/neotree-open-file
-                  "L" 'neotree-hide
                   "o" 't/open-in-desktop
                   "p" 't/projectile-visit-git-link-pulls
                   "s" 't/projectile-rg
