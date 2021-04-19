@@ -1611,8 +1611,17 @@ Useful for programming
     (bind-key "C-x C-j" 'dired-jump)
     (bind-key "C-c C-e" 'dired-toggle-read-only)
     (bind-key "C-x M-j" (t/lambda (dired-jump 1)))
+    (defun dired-find-file-other-window-until-key ()
+      (interactive)
+      (let ((buffer-count (length (buffer-list))))
+        (dired-find-file-other-window)
+        (isearch-unread (list (read-event)))
+        (if (= (length (buffer-list)) buffer-count)
+            (delete-window)
+          (kill-buffer-and-window))))
     (t/add-hook-defun 'dired-mode-hook t-dired-mode-hook
                       (t/after evil
+                        (evil-define-key 'normal dired-mode-map "v" 'dired-find-file-other-window-until-key)
                         (evil-define-key 'normal dired-mode-map "s" 'dired-sort-toggle-or-edit)
                         (evil-define-key 'normal dired-mode-map "o" 'dired-find-file-other-window)
                         (evil-define-key 'normal dired-mode-map "u" (t/lambda (find-alternate-file "..")))))
