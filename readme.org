@@ -1322,6 +1322,9 @@ These actually seem to replace all my previous helm config 😱
 (use-package counsel-projectile :commands (counsel-projectile-rg))
 (use-package all-the-icons-ivy-rich :after counsel :config (all-the-icons-ivy-rich-mode 1))
 (use-package ivy-rich :hook all-the-icons-ivy-rich :config (ivy-rich-mode 1))
+(use-package ivy-xref
+  :ensure t
+  :init (setq xref-show-definitions-function #'ivy-xref-show-defs))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results silent
