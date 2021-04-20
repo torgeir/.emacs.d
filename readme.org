@@ -372,7 +372,7 @@ Fix the rest..
  font-lock-maximum-decoration t ; gaudiest possible look
  frame-resize-pixelwise t
  frame-title-format "%b (%f)"; full path in titlebar
- fringes-outside-margins t       ; switches order of fringe and margin
+ fringes-outside-margins t ; switches order of fringe and margin
  help-window-select 't ; focus help buffers
  indent-tabs-mode nil ; don't use tabs
  indicate-buffer-boundaries nil ; don't show buffer start/end
@@ -381,8 +381,8 @@ Fix the rest..
  frame-inhibit-implied-resize t ; prevent resize frame when font is larger than the system default, improves startup time
  initial-major-mode 'fundamental-mode ; load *scratch* in text-mode
  initial-scratch-message nil ; clear *scratch* buffer
- mode-require-final-newline nil ; don't require final newline
  redisplay-dont-pause t ; update screen immediately
+ mode-require-final-newline nil ; don't require final newline
  require-final-newline nil ; don't require final newline
  ring-bell-function 'ignore ; no bell
  save-interprogram-paste-before-kill t ; clipboard contents into kill-ring before replace
