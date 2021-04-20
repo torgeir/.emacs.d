@@ -3175,10 +3175,9 @@ Thesaurus.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package popwin
-  :commands popwin:messages
+  :commands (popwin:messages popwin:display-buffer popwin:display-buffer-1)
   :init
-  (progn
-    (setq popwin:popup-window-height 25))
+  (setq popwin:popup-window-height 25)
   :config
   (popwin-mode 1)
   (add-to-list 'popwin:special-display-config "*xref*")
