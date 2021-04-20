@@ -3,7 +3,8 @@
 ;; Default to calling straight-use-package when running use-package.
 (setq straight-use-package-by-default t)
 (setq straight-check-for-modifications 'live)
-(setq gc-cons-threshold most-positive-fixnum) ; while loading init
+(setq gc-cons-threshold most-positive-fixnum  ; no gc while startup
+      gc-cons-percentage 0.6)
 
 ;; Bootstrap [straight.el](https://github.com/raxod502/straight.el).
 (defvar bootstrap-version)
@@ -80,4 +81,8 @@
   (org-babel-load-file "~/.emacs.d/readme.org" compile)
   (when compile (restart-emacs)))
 
-(setq gc-cons-threshold (* 2 1000 1000))
+(add-hook
+ 'emacs-startup-hook
+ (lambda ()
+   (setq gc-cons-threshold (* 16 1024 1024) ; bring back gc settings
+         gc-cons-percentage 0.1)))

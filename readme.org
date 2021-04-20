@@ -373,8 +373,6 @@ Fix the rest..
  frame-resize-pixelwise t
  frame-title-format "%b (%f)"; full path in titlebar
  fringes-outside-margins t       ; switches order of fringe and margin
- gc-cons-threshold most-positive-fixnum ; no gc
- gc-cons-percentage 0.6 ; no gc while startup
  help-window-select 't ; focus help buffers
  indent-tabs-mode nil ; don't use tabs
  indicate-buffer-boundaries nil ; don't show buffer start/end
@@ -5363,12 +5361,7 @@ Escape chars can be inserted literally by pressing ~c-q~ followed by the char.
 We're done, wrap up timing so we can se how long it took.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(add-hook
- 'emacs-startup-hook
- (lambda ()
-   (setq gc-cons-threshold (* 16 1024 1024)
-         gc-cons-percentage 0.1)
-   (t/timing-end)))
+(add-hook 'emacs-startup-hook 't/timing-end)
 #+END_SRC
 
 #+begin_src emacs-lisp :results silent
