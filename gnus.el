@@ -11,6 +11,7 @@
 
 (setq gnus-activate-level 3
       gnus-level-subscribed 5
+      doom-modeline-gnus-timer 45
       gnus-use-cache t
       gnus-select-method '(nnnil "")
       nnimap-split-fancy nnmail-split-fancy
@@ -125,10 +126,12 @@
                   (unless gnus-subscribe-groups-done
                     (let ((bekk '("nnimap+bekk:INBOX"))
                           (gmail '("nnimap+gmail:INBOX"
+                                   "nnimap+gmail:[Gmail]/Drafts"
                                    "nnimap+gmail:bekk"
                                    "nnimap+gmail:saga"
                                    "nnimap+gmail:fun"
                                    "nnimap+gmail:github"
+                                   "nnimap+gmail:github.actions"
                                    "nnimap+gmail:misc.misc"))
                           (news '("nntp+news.gmane.io:gmane.comp.java.clojure.user"
                                   "nntp+news.gmane.io:gmane.comp.java.clojure.pedestal.user"
