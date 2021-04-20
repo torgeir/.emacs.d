@@ -4596,12 +4596,6 @@ Confirming and exiting src code blocks is much faster like this.
 (bind-key "\C-c\C-c" 'org-edit-src-exit 'org-src-mode-map)
 #+END_SRC
 
-*** Folders with .org files
-
-#+BEGIN_SRC emacs-lisp :results silent
-(defun t/org-directory (path) (concat org-directory "/" path))
-(setq org-directory (t/user-dropbox-folder "org"))
-#+END_SRC
 
 *** Archiving
 
@@ -4631,7 +4625,7 @@ General org config, didn't bother sorting it.
  org-blank-before-new-entry '((heading . auto) (plain-list-item . t)) ; newlines
  org-catch-invisible-edits 'show ; show invisibles on edit
  org-cycle-separator-lines 2 ; number of empty lines after heading needed to show visible newline between headings
- org-default-notes-file (t/org-directory "home.org")
+ org-default-notes-file (t/user-dropbox-folder "org/home.org")
  org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
  org-export-coding-system 'utf-8
  org-hide-emphasis-markers nil
@@ -4682,8 +4676,8 @@ Clean export stamp.
 
 (setq org-capture-templates
       `(("t" "Task" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n" :prepend t)
-        ("s" "Saga" entry (file+olp ,(t/org-directory "bekk/saga.org") "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
-        ("d" "Shared calendar event" entry (file ,(t/org-directory "gcal/delt.org")) "* %?\n" :prepent t)
+        ("s" "Saga" entry (file+olp ,(t/user-dropbox-folder "org/bekk/saga.org") "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
+        ("d" "Shared calendar event" entry (file ,(t/user-dropbox-folder "org/gcal/delt.org")) "* %?\n" :prepent t)
         ("l" "Link" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\nLink: %a" :prepend t)
         ("f" "File" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t)
         ("c" "Chrome location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template) :prepend t)))
@@ -4887,11 +4881,11 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   '(tags-todo "book|read|twitter|pocket" ((org-agenda-overriding-header "Read"))))
 
 (setq org-agenda-include-diary t
-      org-agenda-diary-file (t/org-directory "diary.org")
+      org-agenda-diary-file (t/user-dropbox-folder "org/diary.org")
       org-agenda-default-appointment-duration nil
       org-agenda-window-setup 'current-window;;'only-window ; delete other windows when showing agenda
       org-agenda-restore-windows-after-quit t ; restore them again
-      org-agenda-files (t/find-org-files-recursively org-directory "org$\\\|txt$") ; where to look for org files
+      org-agenda-files (t/find-org-files-recursively (t/user-file "Dropbox/org") "org$\\\|txt$") ; where to look for org files
       org-agenda-text-search-extra-files (t/find-org-files-recursively (t/user-file "Dropbox/org") "org_archive$")
       org-agenda-skip-scheduled-if-done nil ; prevent showing done scheduled items
       org-agenda-custom-commands `(("T" alltodo)
@@ -5089,11 +5083,11 @@ Save org mode buffers after refile.
 Locally redefines org-agenda-files not to export all agenda files."
   (interactive)
   (let ((org-agenda-files (cons org-default-notes-file
-                                (mapcar #'t/org-directory
-                                        '("home.org"
-                                          "bekk/bekk.org"
-                                          "bekk/saga.org"
-                                          "bekk/datainn.org")))))
+                                (mapcar #'t/user-dropbox-folder
+                                        '("org/home.org"
+                                          "org/bekk/bekk.org"
+                                          "org/bekk/saga.org"
+                                          "org/bekk/datainn.org")))))
     (org-icalendar-export-agenda-files)))
 
 (when (not is-ms)

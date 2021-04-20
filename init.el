@@ -54,17 +54,10 @@
 (when *t-debug-init* (setq debug-on-error nil))
 
 (defconst user-emacs-directory "~/.emacs.d/")
+(defun t/os-home-prefix () (cond (is-mac "/Users/") (is-linux "/home/") (is-win "c:/Users/")))
 (defun t/user-emacs-file (path) (concat user-emacs-directory path))
-(defun t/user-file (path)
-  (concat (if is-mac "/Users/"
-            (if is-linux "/home/" "c:/Users/"))
-          (if is-win "torgth" (replace-regexp-in-string "\\." "" (getenv "USER")))
-          "/"
-          path))
-(defconst t-user-dropbox-folder (if (or is-mac is-linux)
-                                    (t/user-file "Dropbox")
-                                  "c:/Users/torgth/Dropbox \(Personlig\)"))
-(defun t/user-dropbox-folder (path) (concat t-user-dropbox-folder "/" path))
+(defun t/user-file (path) (concat (t/os-home-prefix) (downcase (replace-regexp-in-string "\\." "" (getenv "USER"))) "/" path))
+(defun t/user-dropbox-folder (path) (concat (t/user-file (concat "Dropbox" (if is-win  "\(Personlig\)"))) "/" path))
 
 (defconst t-dir-snippets (t/user-emacs-file "snippets"))
 (add-to-list 'load-path (t/user-emacs-file "setup"))
