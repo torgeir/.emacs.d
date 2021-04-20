@@ -1229,12 +1229,20 @@ Useful local copies of elisp programs.
   :straight nil
   :mode "\\.\\(xml\\|svg\\|rss\\|xsd\\|xslt\\|plist\\)$"
   :config
-  ;; reindent after deleting tag with C-c DEL
-  (defadvice sgml-delete-tag (after reindent activate)
-    (indent-region (point-min) (point-max)))
+  (progn
+    ;; reindent after deleting tag with C-c DEL
+    (defadvice sgml-delete-tag (after reindent activate)
+      (indent-region (point-min) (point-max)))
 
-  ;; nxml
-  (setq nxml-child-indent *t-indent-xml*))
+    ;; nxml
+    (setq nxml-child-indent *t-indent-xml*)
+    (require 'sgml-mode)
+
+    (defun xml-reformat
+      (interactive)
+      (save-excursion
+        (sgml-pretty-print (point-min) (point-max))
+        (indent-region (point-min) (point-max))))))
 
 (comment
  (use-package html
