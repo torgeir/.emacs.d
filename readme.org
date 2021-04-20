@@ -798,21 +798,26 @@ Highlight and fold-this are dependencies of evil-extra-operator.
 **** Start in emacs state
 
 #+BEGIN_SRC emacs-lisp :results silent
-(defvar t-evil-major-modes '(compilation-mode
+(defvar t-evil-emacs-major-modes '(compilation-mode
                              special-mode
                              calendar-mode
                              git-rebase-mode
                              diff-mode
+                             xref--xref-buffer-mode
                              gnus-group-mode
                              gnus-summary-mode
                              forge-topic-mode
                              rg-mode
-                             image-mode)
+                             image-mode
+                             view-mode
+                             term-mode
+                             cider-error
+                             rg-mode)
   "Major modes that should trigger evil emacs state when changed to.")
 
 (t/after evil
   (t/add-hook-defun 'after-change-major-mode-hook t/hook-major-mode
-                    (when (member major-mode t-evil-major-modes)
+                    (when (member major-mode t-evil-emacs-major-modes)
                       (evil-emacs-state))))
 #+END_SRC
 
@@ -3197,7 +3202,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
     (t/add-hook '(html-mode-hook js2-mode-hook elm-mode-hook) 'flycheck-mode))
   :config
   (progn
-    (t/add-to-list 't-evil-major-modes 'flycheck-error-list-mode)
+    (t/add-to-list 't-evil-emacs-major-modes 'flycheck-error-list-mode)
     (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint)))
     (setq-default flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist)))
     (t/after lsp-ui
@@ -3356,7 +3361,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
     (bind-key "M-." 'cider-find-dwim cider-mode-map)
     (bind-key "C-M-." 'cider-find-dwim cider-mode-map)
 
-    (t/add-to-list 't-evil-major-modes '(cider-stacktrace-mode cider-docview-mode))
+    (t/add-to-list 't-evil-emacs-major-modes '(cider-stacktrace-mode cider-docview-mode))
 
     (defun t/cider-insert-last-sexp-in-repl ()
       (interactive)
