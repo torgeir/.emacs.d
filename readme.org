@@ -3392,7 +3392,11 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
     ;; match camel-case tokens
     (t/add-hook 'clojurescript-mode-hook '(subword-mode smartparens-mode))
-    (t/add-hook 'clojure-mode-hook '(subword-mode smartparens-mode))))
+    (t/add-hook 'clojure-mode-hook '(subword-mode smartparens-mode))
+
+    (t/add-hook-setq 'clojurescript-mode-hook lsp-enable-indentation nil)
+    (t/add-hook-setq 'clojure-mode-hook lsp-enable-indentation nil)))
+
 #+END_SRC
 
 **** Flycheck clojure
