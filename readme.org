@@ -3613,7 +3613,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
     (setq lsp-ui-doc-enable t
           lsp-ui-doc-delay 0.5
           lsp-ui-sideline-enable t
-          lsp-ui-sideline-show-code-actions t))
+          lsp-ui-sideline-show-code-actions nil))
   :config
   (progn
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
