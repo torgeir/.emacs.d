@@ -729,8 +729,8 @@ hit fe to search for e's. Repeat f to move to the next e.
 
 *** Multiple cursors for evil mode.
 
-It actually works. Added bindings M-j and M-k
-skips current match forward or backward while moving through matches using M-d.
+It actually works. Added bindings M-j and M-k. Skips current match forward or
+backward while moving through matches using M-d.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-multiedit
