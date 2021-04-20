@@ -474,12 +474,31 @@ Above what sizes can the window split?
       split-window-preferred-function #'t/split-window-sensibly)
 #+END_SRC
 
-Don't save desktop automatically, for now.
+Don't save desktop automatically, for now, but configure it for manual save /
+restore with ~ds~ and ~dr~.
 
 #+BEGIN_SRC emacs-lisp :results silent
 ;;(desktop-save-mode 1)
-;;(setq desktop-save 't)
-;;(add-to-list 'desktop-locals-to-save 'evil-markers-alist) ;; save markers with desktop
+(setq desktop-save 't
+      desktop-restore-frames t
+      desktop-restore-eager 1 ;; restore 1 buffer immediately, the rest lazily
+      )
+(add-to-list 'desktop-locals-to-save 'evil-markers-alist) ;; save markers with desktop
+#+END_SRC
+
+Make it restore window layout as well
+
+#+BEGIN_SRC emacs-lisp :results silent
+;; https://emacs.stackexchange.com/questions/19190/desktop-save-mode-fails-to-save-window-layout
+(setq desktop-restore-forces-onscreen nil)
+(add-hook 'desktop-after-read-hook
+          (lambda ()
+            (frameset-restore
+             desktop-saved-frameset
+             :reuse-frames (eq desktop-restore-reuses-frames t)
+             :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
+             :force-display desktop-restore-in-current-display
+             :force-onscreen desktop-restore-forces-onscreen)))
 #+END_SRC
 
 Eldoc everywhere.
@@ -676,8 +695,7 @@ line) lisp aware, so it does not delete trailing parens.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-cleverparens
   :diminish evil-cleverparens-mode
-  :hook ((emacs-lisp-mode
-          clojure-mode) . evil-cleverparens-mode)
+  :hook ((emacs-lisp-mode clojure-mode) . evil-cleverparens-mode)
   :init
   (progn
     (t/add-hook-defun 'evil-cleverparens-enabled-hook t-evil-cp-mode-hook
@@ -2993,9 +3011,10 @@ Thesaurus.
 (t/declare-prefix "d" "Doc/Desktop"
                   "d" 'dash-at-point
                   "S" 'dash-at-point-with-docset
-                  "s" #'t/desktop-save
-                  "r" #'t/desktop-restore
-                  "c" 'desktop-clear)
+                  "s" 't/desktop-save
+                  "r" 't/desktop-restore
+                  "c" 't/desktop-change
+                  "C" 't/desktop-clear)
 
 (t/declare-prefix "x" "Text manipulation"
                   "a" 'align-regexp
@@ -4395,23 +4414,28 @@ the saved desktop project specific.
 
 (defun t/desktop-save ()
   (interactive)
-  (if-let ((desktop-base-file-name (t/desktop-project-name)))
-      (desktop-save (or desktop-dirname
-                        (t/project-root)) t)
+  (if-let (project (t/project-root))
+      (desktop-save (t/project-root) t)
     (message "Not in a project.")))
 
 
 (defun t/desktop-restore ()
   (interactive)
-  (if-let (project-name (t/desktop-project-name))
+  (if-let (project (t/project-root))
       (if (file-exists-p (expand-file-name project-name))
-          (when-let ((desktop-base-file-name project-name)
-                     (desktop-dirname (expand-file-name user-emacs-directory)))
-            (desktop-revert))
-        (progn
-          (dired ".")
-          (t/desktop-save)))
+          (desktop-read project)
+        (t/desktop-save))
     (message "Not in a project.")))
+
+
+(defun t/desktop-change ()
+  (interactive)
+  (call-interactively 'desktop-change-dir))
+
+
+(defun t/desktop-clear ()
+  (interactive)
+  (desktop-clear))
 #+END_SRC
 
 ** Typography
