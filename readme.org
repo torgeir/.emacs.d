@@ -649,8 +649,8 @@ Show current match and total number of matches when searching with evil.
   (progn
     (setq anzu-cons-mode-line-p nil
           anzu-minimum-input-length 1
-          anzu-search-threshold 100))
-  :hook (after-init . global-anzu-mode))
+          anzu-search-threshold 1000))
+  (add-hook 'after-init-hook 'global-anzu-mode))
 #+END_SRC
 
 *** Surroundings
