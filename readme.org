@@ -773,21 +773,19 @@ with vim text objects or other motions. E.g. use gca( to comment out the
 surrounding lisp sexp, respecting the ast.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package evil-commentary
-  :hook (after-init . evil-commentary-mode))
+(use-package evil-commentary :hook (after-init . evil-commentary-mode))
 #+END_SRC
 
 *** Color highlights evil operations.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-goggles
-  :defer 2
   :init
-  (setq evil-goggles-duration 0.2
-        evil-goggles-async-duration 0.2
+  (setq evil-goggles-duration 0.1
+        evil-goggles-async-duration 0.1
         evil-goggles-pulse t)
+  :hook (after-init . evil-goggles-mode)
   :config
-  (evil-goggles-mode)
   (t/after magit (evil-goggles-use-magit-faces)))
 #+END_SRC
 
