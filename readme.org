@@ -469,9 +469,11 @@ Remove selected text when typing.
 Above what sizes can the window split?
 
 #+BEGIN_SRC emacs-lisp :results silent
-(setq split-height-threshold 0
-      split-width-threshold 0
-      split-window-preferred-function #'t/split-window-sensibly)
+;; TODO testing tweaks
+(setq split-height-threshold 18
+      split-width-threshold 100
+      ;;split-window-preferred-function #'t/split-window-sensibly
+      )
 #+END_SRC
 
 Don't save desktop automatically, for now, but configure it for manual save /

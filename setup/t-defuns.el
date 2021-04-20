@@ -563,16 +563,15 @@ Repeated invocations toggle between the two most recently open buffers."
   "Adjust the font settings of FRAME so Emacs can display emoji properly 🚀"
   (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend))
 
-(defun t/split-window-sensibly (&optional window)
-  (cond
-   ((and (> (window-width window)
-            (* 2 (window-height window)))
-         (window-splittable-p window 'horizontal))
-    (with-selected-window window
-      (split-window-right)))
-   ((window-splittable-p window)
-    (with-selected-window window
-      (split-window-below)))))
+;; TODO testing tweaks, remove if satisfying
+;; (defun t/split-window-sensibly (&optional window)
+;;   (cond
+;;    ((and (> (window-width window)
+;;             (* 2 (window-height window)))
+;;          (window-splittable-p window 'horizontal))
+;;     (with-selected-window window (split-window-right)))
+;;    ((window-splittable-p window) (with-selected-window window
+;;                                    (split-window-below)))))
 
 (defun t/date-time ()
   "Insert current date-time string in full ISO 8601 format.
