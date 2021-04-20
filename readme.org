@@ -1746,7 +1746,7 @@ Colorize delimiters.
     (setq dired-sidebar-use-custom-font t
           dired-sidebar-use-term-integration t)
     (t/add-hook-defun 'dired-sidebar-mode-hook t/sidebar-hook
-                      (hl-line-mode)
+                      ;;(hl-line-mode)
                       (evil-define-key 'normal dired-mode-map "u" 'dired-sidebar-up-directory)))
   :config
   (t/after evil
