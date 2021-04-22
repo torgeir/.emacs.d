@@ -57,3 +57,4 @@
 /.cask/
 *.elc
 /hackernews/
+/forge-database.sqlite
