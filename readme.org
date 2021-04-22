@@ -3240,17 +3240,14 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 #+begin_src emacs-lisp :results silent
 (use-package atomic-chrome
-  :hook (after-init)
+  :defer 1
   :init
   (progn
     (if after-init-time
         (atomic-chrome-start-server)
-      (add-hook 'after-init-hook 'atomic-chrome-start-server))
-    (bind-key
-     "C-c C-c"
-     'atomic-chrome-close-current-buffer
-     atomic-chrome-edit-mode-map)))
+      (add-hook 'after-init-hook 'atomic-chrome-start-server))))
 #+end_src
+
 ** Languages
 
 *** Flycheck
