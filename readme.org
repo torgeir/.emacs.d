@@ -4486,7 +4486,7 @@ the saved desktop project specific.
 (defun t/desktop-restore ()
   (interactive)
   (if-let (project (t/project-root))
-      (if (file-exists-p (expand-file-name project-name))
+      (if (file-exists-p (expand-file-name project))
           (desktop-read project)
         (t/desktop-save))
     (message "Not in a project.")))
