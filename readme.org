@@ -2385,8 +2385,6 @@ Another text based web browser
   :init
   (progn
     (setq yas-snippet-dirs '(t-dir-snippets)
-          ;; remove dropdowns
-          ;;yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
           yas-verbosity 0
           yas-wrap-around-region t))
   :config
