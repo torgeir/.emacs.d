@@ -3233,18 +3233,22 @@ Thesaurus.
   (add-to-list 'popwin:special-display-config '("*cider-doc*" :noselect t)))
 #+END_SRC
 
-*** Edit Chrome text fields
+*** Edit Chrome text fields with atomic chrome
 
 Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc][Atomic Chrome]] extension.
 
 #+begin_src emacs-lisp :results silent
 (use-package atomic-chrome
-  :defer 1
+  :hook (after-init)
   :init
-  (if after-init-time
-      (atomic-chrome-start-server)
-    (add-hook 'after-init-hook
-              #'(lambda() (atomic-chrome-start-server)))))
+  (progn
+    (if after-init-time
+        (atomic-chrome-start-server)
+      (add-hook 'after-init-hook 'atomic-chrome-start-server))
+    (bind-key
+     "C-c C-c"
+     'atomic-chrome-close-current-buffer
+     atomic-chrome-edit-mode-map)))
 #+end_src
 ** Languages
 
