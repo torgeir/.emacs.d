@@ -1,0 +1,15 @@
+#+srcname: json
+#+begin_src emacs-lisp :var file='() :var url='()
+(require 'json)
+(cond
+ (file
+  (org-babel-with-temp-filebuffer file
+    (goto-char (point-min))
+    (json-read)))
+ (url
+  (require 'w3m)
+  (with-temp-buffer
+    (w3m-retrieve url)
+    (goto-char (point-min))
+    (json-read))))
+#+end_src
