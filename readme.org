@@ -2380,57 +2380,55 @@ Another text based web browser
 *** Snippets
 
 #+BEGIN_SRC emacs-lisp :results silent
-;; TODO removed for speed
-;; (use-package yasnippet
-;;   :diminish yas-minor-mode
-;;   :disabled
-;;   :init
-;;   (progn
-;;     (setq yas-snippet-dirs '(t-dir-snippets)
-;;           ;; remove dropdowns
-;;           ;;yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
-;;           yas-verbosity 0
-;;           yas-wrap-around-region t))
-;;   :config
-;;   (progn
-;;     (yas-global-mode)
-;;
-;;     (defun t/yas-clear-or-delete-char ()
-;;       "Replace `yas-next-field' with noop `+' to make <backspace> only clear or delete-char."
-;;       (interactive)
-;;       (cl-letf (((symbol-function 'yas-next-field) #'+))
-;;         (call-interactively 'yas-skip-and-clear-or-delete-char)))
-;;     (bind-key "<backspace>" #'t/yas-clear-or-delete-char yas-keymap)
-;;
-;;     (t/add-hook-defun 'after-save-hook t/reload-snippets-on-save
-;;                       (t/when-ext "yasnippet" (yas-reload-all)))
-;;
-;;     ;; make fundamental snippets global snippets
-;;     (t/add-hook-defun 'yas-minor-mode-hook t/hook-yas (yas-activate-extra-mode 'fundamental-mode))
-;;
-;;     ;; jump to end of snippet definition
-;;     (bind-key "<return>" 'yas-exit-all-snippets yas-keymap)
-;;
-;;     ;; inter-field navigation
-;;     (defun yas/goto-end-of-active-field ()
-;;       (interactive)
-;;       (let* ((snippet (car (yas--snippets-at-point)))
-;;              (position (yas--field-end (yas--snippet-active-field snippet))))
-;;         (if (= (point) position)
-;;             (move-end-of-line 1)
-;;           (goto-char position))))
-;;
-;;     (defun yas/goto-start-of-active-field ()
-;;       (interactive)
-;;       (let* ((snippet (car (yas--snippets-at-point)))
-;;              (position (yas--field-start (yas--snippet-active-field snippet))))
-;;         (if (= (point) position)
-;;             (move-beginning-of-line 1)
-;;           (goto-char position))))
-;;
-;;     (t/bind-in 'yas-keymap
-;;       "C-e" 'yas/goto-end-of-active-field
-;;       "C-a" 'yas/goto-start-of-active-field)))
+(use-package yasnippet
+  :defer 1
+  :init
+  (progn
+    (setq yas-snippet-dirs '(t-dir-snippets)
+          ;; remove dropdowns
+          ;;yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
+          yas-verbosity 0
+          yas-wrap-around-region t))
+  :config
+  (progn
+    (yas-global-mode)
+
+    (defun t/yas-clear-or-delete-char ()
+      "Replace `yas-next-field' with noop `+' to make <backspace> only clear or delete-char."
+      (interactive)
+      (cl-letf (((symbol-function 'yas-next-field) #'+))
+        (call-interactively 'yas-skip-and-clear-or-delete-char)))
+    (bind-key "<backspace>" #'t/yas-clear-or-delete-char yas-keymap)
+
+    (t/add-hook-defun 'after-save-hook t/reload-snippets-on-save
+                      (t/when-ext "yasnippet" (yas-reload-all)))
+
+    ;; make fundamental snippets global snippets
+    (t/add-hook-defun 'yas-minor-mode-hook t/hook-yas (yas-activate-extra-mode 'fundamental-mode))
+
+    ;; inter-field navigation
+    (defun yas/goto-end-of-active-field ()
+      (interactive)
+      (let* ((snippet (car (yas--snippets-at-point)))
+             (position (yas--field-end (yas--snippet-active-field snippet))))
+        (if (= (point) position)
+            (move-end-of-line 1)
+          (goto-char position))))
+
+    (defun yas/goto-start-of-active-field ()
+      (interactive)
+      (let* ((snippet (car (yas--snippets-at-point)))
+             (position (yas--field-start (yas--snippet-active-field snippet))))
+        (if (= (point) position)
+            (move-beginning-of-line 1)
+          (goto-char position))))
+
+    ;; jump to end of snippet definition
+    (bind-key "<return>" 'yas-exit-all-snippets yas-keymap)
+
+    (t/bind-in 'yas-keymap
+      "C-e" 'yas/goto-end-of-active-field
+      "C-a" 'yas/goto-start-of-active-field)))
 #+END_SRC
 
 *** Reload buffers on external change
