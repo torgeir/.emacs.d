@@ -32,7 +32,6 @@
  '(lazy-highlight ((t (:background "#2266A0" :foreground "#DFDFDF" :weight bold))))
  '(lsp-face-highlight-read ((t (:background "#222" :foreground "#DFDFDF" :weight normal))))
  '(lsp-face-highlight-textual ((t (:background "#0F085D" :foreground "#919ad9" :weight bold))))
- ;;'(lsp-face-highlight-textual ((t (:background "#0F3060" :foreground "#b1baf9" :weight bold))))
  '(markdown-header-face ((t (:inherit bold :foreground "#66bb5c"))))
  '(org-agenda-dimmed-todo-face ((t (:inherit org-level-2))))
  '(org-checkbox-statistics-todo ((t (:inherit org-todo))))
@@ -83,6 +82,7 @@
    "/Users/torgeirthoresen/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
  '(lsp-kotlin-language-server-path
    "/Users/torgeirthoresen/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
+ '(lsp-python-ms-extra-paths ["venv"])
  '(nntp-authinfo-file "~/.authinfo.gpg")
  '(org-agenda-window-setup 'only-window t)
  '(pos-tip-background-color "#36473A")
