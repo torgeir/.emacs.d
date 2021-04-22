@@ -3,4 +3,8 @@ emacsclient=/usr/local/bin/emacsclient
 if [ ! -e "$emacsclient" ]; then
   emacsclient=/usr/bin/emacsclient # linux
 fi
-$emacsclient -a "" -n -c "$@" # 2> /dev/null
+if $INSIDE_EMACS; then
+  $emacsclient -a -c emacs -q "$@"
+else
+  $emacsclient -a "" -n -c "$@" # 2> /dev/null
+fi
