@@ -5438,6 +5438,49 @@ Cycle between light and dark themes.
 
 Escape chars can be inserted literally by pressing ~c-q~ followed by the char.
 
+** Stuff to test
+
+*** Skeleton mode instead of yasnippet
+
+https://www.emacswiki.org/emacs/SkeletonMode
+
+#+begin_src elisp
+(comment
+ (define-skeleton skel-defun
+   "Insert a defun template."
+   "Name: "
+   "(defun " str " (" @ - ")" \n
+   "(" @ _ ")" \n)
+
+ (defvar *skeleton-markers* nil
+   "Markers for locations saved in skeleton-positions")
+
+ (add-hook 'skeleton-end-hook 'skeleton-make-markers)
+
+ (defun skeleton-make-markers ()
+   (while *skeleton-markers*
+     (set-marker (pop *skeleton-markers*) nil))
+   (setq *skeleton-markers*
+         (mapcar 'copy-marker (reverse skeleton-positions))))
+
+ (defun skeleton-next-position (&optional reverse)
+   "Jump to next position in skeleton.
+         REVERSE - Jump to previous position in skeleton"
+   (interactive "P")
+   (let* ((positions (mapcar 'marker-position *skeleton-markers*))
+          (positions (if reverse (reverse positions) positions))
+          (comp (if reverse '> '<))
+          pos)
+     (when positions
+       (if (catch 'break
+             (while (setq pos (pop positions))
+               (when (funcall comp (point) pos)
+                 (throw 'break t))))
+           (goto-char pos)
+         (goto-char (marker-position
+                     (car *skeleton-markers*))))))))
+#+end_src
+
 ** After
 
 We're done, wrap up timing so we can se how long it took.
