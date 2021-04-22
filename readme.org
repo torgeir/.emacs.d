@@ -3849,6 +3849,15 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package pug-mode :mode "\\.pug$")
 #+END_SRC
+*** Python
+
+#+begin_src emacs-lisp :results silent
+(use-package lsp-python-ms
+  :init (setq lsp-python-ms-auto-install-server t)
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-python-ms)
+                         (lsp))))  ; or lsp-deferred
+#+end_src
 
 *** php
 
