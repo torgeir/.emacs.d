@@ -3941,14 +3941,18 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 (use-package terraform-mode
   :mode "\\.tf$"
   :init
-  (t/add-hook-defun 'terraform-mode-hook t-hook-terraform
-                    (terraform-format-on-save-mode)
-                    (aggressive-indent-mode -1)))
-
-(use-package company-terraform
-  :after terraform-mode
-  :init
-  (t/add-company-backends-hook 'terraform-mode-hook 'company-terraform))
+  (progn
+    (t/add-hook-defun 'terraform-mode-hook t-hook-terraform
+                      (terraform-format-on-save-mode)
+                      (aggressive-indent-mode -1)
+                      (lsp)))
+  :config
+  (progn
+    (require 'lsp)
+    (lsp-register-client
+     (make-lsp-client :new-connection (lsp-stdio-connection '("/usr/local/Cellar/terraform-ls/0.15.0/bin/terraform-ls" "serve"))
+                      :major-modes '(terraform-mode)
+                      :server-id 'terraform-ls))))
 #+END_SRC
 
 ** Shell
