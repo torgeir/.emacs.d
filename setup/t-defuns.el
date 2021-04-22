@@ -1075,8 +1075,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
                   (optional (or "Z"
                                 (and "+" (repeat 2 digit) ":" (repeat 2 digit)))))) 1 t-log-comment-face t)
      ;; 14:45:11.067
-     (,(rx (group (repeat 2 digit) ":" (repeat 2 digit) ":" (repeat 2 digit) (optional (or "," ".") (repeat 3 digit)))) 1 t-log-comment-face t)
-     ))
+     (,(rx (group (repeat 2 digit) ":"
+                  (repeat 2 digit) ":"
+                  (repeat 2 digit)
+                  (optional (or "," ".") (repeat 3 digit))))
+      1 t-log-comment-face t)))
 
   (if (fboundp 'font-lock-flush)
       (font-lock-flush)
