@@ -704,10 +704,10 @@ If FILEXT is provided, return files with extension FILEXT instead."
              (_ (string-match "\\\[\\\[\\(.*\\)\\\]\\\[" chrome-url)))
     (match-string 1 chrome-url)))
 
-(defun t/browse-chrome-url-in-w3m ()
-  "Open the frontmost chrome url in `w3m'. "
+(defun t/browse-chrome-url-in-eww ()
+  "Open the frontmost chrome url in `eww'. "
   (interactive)
-  (w3m (t/grab-chrome-url)))
+  (eww (t/grab-chrome-url)))
 
 (defun t/get-url (url)
   "Get url synchronously."
