@@ -1331,14 +1331,49 @@ These actually seem to replace all my previous helm config 😱
 (use-package counsel-projectile :commands (counsel-projectile-rg))
 (use-package all-the-icons-ivy-rich :after counsel :config (all-the-icons-ivy-rich-mode 1))
 (use-package ivy-rich :hook all-the-icons-ivy-rich :config (ivy-rich-mode 1))
-(use-package ivy-hydra :commands ivy-hydra)
+(use-package ivy-avy :commands ivy-avy) ;; c-' avy in ivy
+(use-package ivy-hydra :commands ivy-hydra) ;; c-o hydra in ivy
 (use-package ivy-xref
   :ensure t
   :init (setq xref-show-definitions-function #'ivy-xref-show-defs))
 #+END_SRC
 
+*** Nice to know default bindings
+
+from https://oremacs.com/swiper/
+
+- C-' :: uses avy to select between candidates when in ivy
+- C-o :: opens hydra in ivy when curious about whats possible
+- C-n :: next candidate
+- C-p :: prev candidate
+- C-m :: call default action and exit
+- C-m-j :: complete verbatim, without choosing selected candidate
+- M-o :: presents actions to choose from
+- C-j :: select current, continue completing. TABTAB is the same.
+- ivy-resume :: continue previous session
+
+*** Bindings that run action and keep ivy open
+
+- C-M-m :: calling, non-exiting C-m
+- C-M-o :: calling, non-exiting C-o
+- C-M-n :: calling, non-exiting C-n
+- C-M-p :: calling, non-exiting C-p
+*** Bindings that alter the input
+
+- M-i :: insert candidate as input
+- M-j :: insert sub-word at point from buffer
+- M-n :: next history element / insert symbol at point from buffer
+- M-p :: prev history element
+- S-SPC :: limit candidates to those that match
+
+*** Other bindings
+
+- M-w :: yank the candidate
+
+*** Do I use this?
+
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package counsel-etags
+(comment use-package counsel-etags
   :disabled
   :bind (("C-]" . counsel-etags-find-tag-at-point))
   :init
