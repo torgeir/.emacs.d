@@ -1625,7 +1625,7 @@ Always had plans to read faster with this one..
 
 *** Restart
 
-Make testing emacs initialization easier.
+Make testing emacs initialization easier. ~C-u q r~ restarts with ~--debug-init~.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package restart-emacs
@@ -1634,7 +1634,9 @@ Make testing emacs initialization easier.
   (t/declare-prefix "q" "Quit"
                     "s" 't/safe-restart-emacs
                     "r" (t/lambda (restart-emacs))
-                    "R" (t/lambda (restart-emacs '("--no-desktop")))))
+                    "R" (t/lambda nil
+                          (delete-file (t/user-emacs-file "readme.elc"))
+                          (restart-emacs '("--no-desktop")))))
 #+END_SRC
 
 *** Beacon to show the cursor
