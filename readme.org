@@ -1775,7 +1775,7 @@ Commit or bail from wdired like for magit, org src blocks etc
   :init
   (t/after dired
     (setq dired-subtree-line-prefix "⸺")
-    (bind-key (kbd "<tab>") 'dired-subtree-toggle dired-mode-map))
+    (bind-key (kbd "<tab>") 'dired-subtree-toggle dired-mode-map)))
 #+END_SRC
 
 **** Pretty icons
