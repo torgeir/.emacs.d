@@ -1355,7 +1355,8 @@ These actually seem to replace all my previous helm config 😱
 (use-package ivy-hydra :commands ivy-hydra) ;; c-o hydra in ivy
 (use-package ivy-xref
   :ensure t
-  :init (setq xref-show-definitions-function #'ivy-xref-show-defs))
+  :init (setq xref-show-definitions-function 'ivy-xref-show-defs
+              xref-show-xrefs-function 'ivy-xref-show-xrefs))
 #+END_SRC
 
 *** Nice to know default bindings
