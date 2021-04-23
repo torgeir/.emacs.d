@@ -963,10 +963,10 @@ Turn camel case into snake case
 #+END_SRC
 
 *** Text Objects
+**** evil-org-outer-subtree
 
 #+BEGIN_SRC emacs-lisp :results silent
 (t/after evil
-
   (evil-define-text-object evil-org-outer-subtree (count &optional beg end type)
     "An Org subtree.  Uses code from `org-mark-subtree`"
     :type line
@@ -983,8 +983,13 @@ Turn camel case into snake case
       ;; extract the beginning and end of the tree
       (let ((element (org-element-at-point)))
         (list (org-element-property :end element)
-              (org-element-property :begin element)))))
+              (org-element-property :begin element))))))
+#+END_SRC
 
+**** evil-org-inner-subtre
+
+#+BEGIN_SRC emacs-lisp :results silent
+(t/after evil
   (evil-define-text-object evil-org-inner-subtree (count &optional beg end type)
     "An Org subtree, minus its header and concluding line break.  Uses code from `org-mark-subtree`"
     :type line
@@ -1008,8 +1013,13 @@ Turn camel case into snake case
                     (goto-char (org-element-property :end element))
                     (backward-char 1)
                     (point))))
-        (list end begin))))
+        (list end begin)))))
+#+END_SRC
 
+**** evil-org-outer-item
+
+#+BEGIN_SRC emacs-lisp :results silent
+(t/after evil
   (evil-define-text-object evil-org-outer-item (count &optional beg end type)
     :type line
     (let* ((struct (org-list-struct))
@@ -1017,8 +1027,13 @@ Turn camel case into snake case
            (end (org-list-get-item-end (point-at-bol) struct)))
       (if (or (not begin) (not end))
           nil
-        (list begin end))))
+        (list begin end)))))
+#+END_SRC
 
+**** evil-org-inner-item
+
+#+BEGIN_SRC emacs-lisp :results silent
+(t/after evil
   (evil-define-text-object evil-org-inner-item (count &optional beg end type)
     (let* ((struct (org-list-struct))
            (begin (progn (goto-char (org-list-get-item-begin))
@@ -1027,16 +1042,20 @@ Turn camel case into snake case
            (end (org-list-get-item-end-before-blank (point-at-bol) struct)))
       (if (or (not begin) (not end))
           nil
-        (list begin end))))
+        (list begin end)))))
+#+END_SRC
 
-  (define-key evil-outer-text-objects-map "h" 'evil-org-outer-subtree)
-  (define-key evil-inner-text-objects-map "h" 'evil-org-inner-subtree)
-  (define-key evil-outer-text-objects-map "*" 'evil-org-outer-subtree)
-  (define-key evil-inner-text-objects-map "*" 'evil-org-inner-subtree)
-  (define-key evil-outer-text-objects-map "i" 'evil-org-outer-item)
-  (define-key evil-inner-text-objects-map "i" 'evil-org-inner-item)
-  (define-key evil-outer-text-objects-map "-" 'evil-org-outer-item)
-  (define-key evil-inner-text-objects-map "-" 'evil-org-inner-item))
+**** Bind them
+
+#+BEGIN_SRC emacs-lisp :results silent
+(define-key evil-outer-text-objects-map "h" 'evil-org-outer-subtree)
+(define-key evil-inner-text-objects-map "h" 'evil-org-inner-subtree)
+(define-key evil-outer-text-objects-map "*" 'evil-org-outer-subtree)
+(define-key evil-inner-text-objects-map "*" 'evil-org-inner-subtree)
+(define-key evil-outer-text-objects-map "i" 'evil-org-outer-item)
+(define-key evil-inner-text-objects-map "i" 'evil-org-inner-item)
+(define-key evil-outer-text-objects-map "-" 'evil-org-outer-item)
+(define-key evil-inner-text-objects-map "-" 'evil-org-inner-item)
 #+END_SRC
 
 ** Which key
@@ -1137,7 +1156,7 @@ Custom prefix functions for defining named shortcuts accessible through evil lea
 *** Evil leader + Which key integration
 
 Turn on which key. For some reason evil must be turned off before global evil
-leader will actually turn on evil-leader globally. Then turn on evil.
+leader will actually turn on evil-leader globally? Then turn on evil.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (which-key-mode 1)
