@@ -1379,6 +1379,7 @@ from https://oremacs.com/swiper/
 - C-M-o :: calling, non-exiting C-o
 - C-M-n :: calling, non-exiting C-n
 - C-M-p :: calling, non-exiting C-p
+
 *** Bindings that alter the input
 
 - M-i :: insert candidate as input
