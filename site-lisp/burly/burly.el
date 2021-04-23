@@ -1,10 +1,10 @@
-;;; burly.el --- URLs for buffers and their content  -*- lexical-binding: t; -*-
+;;; burly.el --- Save and restore frame/window configurations with buffers  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2020  Adam Porter
 
 ;; Author: Adam Porter <adam@alphapapa.net>
 ;; URL: https://github.com/alphapapa/burly.el
-;; Package-Version: 0.1-pre
+;; Version: 0.2-pre
 ;; Package-Requires: ((emacs "26.3") (map "2.1"))
 ;; Keywords: convenience
 
@@ -23,39 +23,29 @@
 
 ;;; Commentary:
 
-;; This package provides a way to access buffers and window
-;; configurations with URLs.  Burly URLs have a scheme like
-;; "emacs+burly+TYPE:".  A few different TYPEs are supported, but
-;; users needn't write URLs manually, so most won't need to know the
-;; details (and Burly URLs can be very long strings of percent-encoded
-;; characters, making them human-unreadable anyway).
+;; This package provides tools to save and restore frame and window
+;; configurations in Emacs, including buffers that may not be live
+;; anymore.  In this way, it's like a lightweight "workspace" manager,
+;; allowing you to easily restore one or more frames, including their
+;; windows, the windows' layout, and their buffers.
 
-;; A buffer's URL records the location of the buffer's file (when
-;; applicable) and the location within the buffer (when possible).
+;; Internally it uses Emacs's bookmarks system to restore buffers to
+;; their previous contents and location.  This provides power and
+;; extensibility, since many major modes already integrate with
+;; Emacs's bookmarks system.  However, in case a mode's bookmarking
+;; function isn't satisfactory, Burly allows the user to customize
+;; buffer-restoring functions for specific modes.
 
-;; A window configuration's URL records a frame's window configuration
-;; (number of windows, sizes, splitting, etc) and the URLs of the
-;; buffer in each window.
+;; For Org mode, Burly provides such custom functions so that narrowed
+;; and indirect Org buffers are properly restored, and headings are
+;; located by outline path in case they've moved since a bookmark was
+;; made (the org-bookmark-heading package also provides this through
+;; the Emacs bookmark system, but users may not have it installed, and
+;; the functionality is too useful to not include here by default).
 
-;; When a URL is opened with Burly, the buffer and/or buffers are
-;; restored.  This makes it possible to serialize a set of buffers and
-;; windows into a string and access it again later with that string.
-
-;; Burly makes use of bookmark.el to save and restore buffers, and for
-;; most cases, it's sufficient.  However, if the
-;; `bookmark-make-record-function' for a buffer's major mode isn't
-;; satisfactory, it can be overridden by writing custom functions and
-;; configuring them in `burly-mode-map'.  For example, the default
-;; configuration has special support for Org mode buffers so that
-;; narrowed and indirect buffers are restored to the proper subtree
-;; (the org-bookmark-heading package also provides this through the
-;; Emacs bookmark system, but users may not have it installed, and the
-;; functionality is too useful to not include here).
-
-;; Thanks to HIROSE Yuuji [yuuji>at<gentei.org] for writing revive.el,
-;; parts of which make the window configuration functionality in this
-;; package possible (see burly-revive.el in this package, and
-;; <http://www.gentei.org/~yuuji/software/euc/revive.el>).
+;; Internally, buffers and window configurations are also encoded as
+;; URLs, and users may also save and open those URLs instead of using
+;; Emacs bookmarks.  (The name "Burly" comes from "buffer URL.")
 
 ;;; Code:
 
@@ -69,17 +59,24 @@
 (require 'url-parse)
 (require 'url-util)
 
-(require 'burly-revive)
-
 ;;;; Variables
+
+(defvar burly--window-state nil
+  "Used to work around `bookmark--jump-via' affecting window configuration.")
 
 ;;;; Customization
 
 (defgroup burly nil
-  "Burly."
-  :group 'convenience)
+  "Save and restore window configurations and their buffers."
+  :group 'convenience
+  :link '(url-link "https://github.com/alphapapa/burly.el")
+  :link '(custom-manual "(Burly)Usage"))
 
-(defcustom burly-mode-map
+(defcustom burly-bookmark-prefix "Burly: "
+  "Prefix string prepended to the name of new Burly bookmarks."
+  :type 'string)
+
+(defcustom burly-major-mode-alist
   (list (cons 'org-mode
               (list (cons 'make-url-fn #'burly--org-mode-buffer-url)
                     (cons 'follow-url-fn #'burly-follow-url-org-mode))))
@@ -88,13 +85,38 @@
                 :value-type (set (cons (const make-url-fn) (function :tag "Make-URL function"))
                                  (cons (const follow-url-fn) (function :tag "Follow-URL function")))))
 
+(defcustom burly-frameset-filter-alist '((name . nil))
+  "Alist of frame parameters and filtering functions.
+See variable `frameset-filter-alist'."
+  :type '(alist :key-type (symbol :tag "Frame parameter")
+                :value-type (choice (const :tag "Always copied" nil)
+                                    (const :tag "Never copied" :never)
+                                    (function :tag "Filter function"))))
+
+(defcustom burly-window-persistent-parameters
+  (list (cons 'burly-url 'writable)
+        (cons 'mode-line-format 'writable))
+  "Additional window parameters to persist.
+See Info node `(elisp)Window Parameters'."
+  :type '(alist :key-type (symbol :tag "Window parameter")
+                :value-type (choice (const :tag "Not saved" nil)
+                                    (const :tag "Saved" writable))))
+
 ;;;; Commands
 
 ;;;###autoload
 (defun burly-kill-buffer-url (buffer)
   "Copy BUFFER's URL to the kill ring."
-  (interactive "b")
+  (interactive "bBuffer: ")
   (let ((url (burly-buffer-url (get-buffer buffer))))
+    (kill-new url)
+    (message "%s" url)))
+
+;;;###autoload
+(defun burly-kill-frames-url ()
+  "Copy current frameset's URL to the kill ring."
+  (interactive)
+  (let ((url (burly-frames-url)))
     (kill-new url)
     (message "%s" url)))
 
@@ -113,23 +135,44 @@
   ;; part, `thing-at-point-url-at-point' doesn't pick up the whole URL.
   (interactive (list (or (thing-at-point-url-at-point t)
                          (read-string "URL: "))))
-  (cl-assert (string-prefix-p "emacs+burly+" url) nil
-             "URL not an emacs+burly one: %s" url)
+  (cl-assert (string-prefix-p "emacs+burly+" url) t "burly-open-url: URL not an emacs+burly one:")
   (pcase-let* ((urlobj (url-generic-parse-url url))
                ((cl-struct url type) urlobj)
                (subtype (car (last (split-string type "+" 'omit-nulls)))))
     (pcase-exhaustive subtype
       ((or "bookmark" "file" "name") (pop-to-buffer (burly-url-buffer url)))
+      ("frames" (burly--frameset-restore urlobj))
       ("windows" (burly--windows-set urlobj)))))
 
 ;;;###autoload
-(defun burly-bookmark-windows (name)
-  "Bookmark the current frame's window configuration."
-  (interactive "sBookmark name: ")
-  (let* ((name (concat "Burly: " name))
-         (record (list (cons 'url (burly-windows-url))
-                       (cons 'handler #'burly-bookmark-handler))))
+(defun burly-bookmark-frames (name)
+  "Bookmark the current frames as NAME."
+  (interactive
+   (list (completing-read "Save Burly bookmark: " (burly-bookmark-names)
+                          nil nil burly-bookmark-prefix)))
+  (let ((record (list (cons 'url (burly-frames-url))
+                      (cons 'handler #'burly-bookmark-handler))))
     (bookmark-store name record nil)))
+
+;;;###autoload
+(defun burly-bookmark-windows (name)
+  "Bookmark the current frame's window configuration as NAME."
+  (interactive
+   (list (completing-read "Save Burly bookmark: " (burly-bookmark-names)
+                          nil nil burly-bookmark-prefix)))
+  (let ((record (list (cons 'url (burly-windows-url))
+                      (cons 'handler #'burly-bookmark-handler))))
+    (bookmark-store name record nil)))
+
+;;;###autoload
+(defun burly-open-bookmark (bookmark)
+  "Restore a window configuration to the current frame from a Burly BOOKMARK."
+  (interactive
+   (list (completing-read "Open Burly bookmark: " (burly-bookmark-names)
+			                    nil nil burly-bookmark-prefix)))
+  (cl-assert (and bookmark (not (string-empty-p bookmark))) nil
+             "(burly-open-bookmark): Invalid Burly bookmark: '%s'" bookmark)
+  (bookmark-jump bookmark))
 
 ;;;; Functions
 
@@ -137,8 +180,7 @@
 
 (defun burly-url-buffer (url)
   "Return buffer for URL."
-  (cl-assert (string-prefix-p "emacs+burly+" url) nil
-             "URL not an emacs+burly one: %s" url)
+  (cl-assert (string-prefix-p "emacs+burly+" url) t "burly-url-buffer: URL not an emacs+burly one: %s" url)
   (pcase-let* ((urlobj (url-generic-parse-url url))
                ((cl-struct url type) urlobj)
                (subtype (car (last (split-string type "+" 'omit-nulls)))))
@@ -150,7 +192,7 @@
 (defun burly-buffer-url (buffer)
   "Return URL for BUFFER."
   (let* ((major-mode (buffer-local-value 'major-mode buffer))
-         (make-url-fn (map-nested-elt burly-mode-map (list major-mode 'make-url-fn))))
+         (make-url-fn (map-nested-elt burly-major-mode-alist (list major-mode 'make-url-fn))))
     (cond (make-url-fn (funcall make-url-fn buffer))
           (t (or (with-current-buffer buffer
                    (when-let* ((record (ignore-errors
@@ -171,30 +213,140 @@
                (query (url-parse-query-string query-string))
                (buffer (find-file-noselect path))
                (major-mode (buffer-local-value 'major-mode buffer))
-               (follow-fn (map-nested-elt burly-mode-map (list major-mode 'follow-url-fn))))
-    (cl-assert follow-fn nil "Major mode not in `burly-mode-map': %s" major-mode)
+               (follow-fn (map-nested-elt burly-major-mode-alist (list major-mode 'follow-url-fn))))
+    (cl-assert follow-fn nil "Major mode not in `burly-major-mode-alist': %s" major-mode)
     (funcall follow-fn :buffer buffer :query query)))
+
+;;;;; Frames
+
+;; Looks like frameset.el should make this pretty easy.
+
+(require 'frameset)
+
+(cl-defun burly-frames-url (&optional (frames (frame-list)))
+  "Return URL for frameset of FRAMES.
+FRAMES defaults to all live frames."
+  (dolist (frame frames)
+    ;; Set URL window parameter for each window before saving state.
+    (burly--windows-set-url (window-list frame 'never)))
+  (let* ((window-persistent-parameters (append burly-window-persistent-parameters
+                                               window-persistent-parameters))
+         (frameset-filter-alist (append burly-frameset-filter-alist frameset-filter-alist))
+         (query (frameset-save frames))
+         (filename (concat "?" (url-hexify-string (prin1-to-string query))))
+         (url (url-recreate-url (url-parse-make-urlobj "emacs+burly+frames" nil nil nil nil
+                                                       filename))))
+    (dolist (frame frames)
+      ;; Clear window parameters.
+      (burly--windows-set-url (window-list frame 'never) 'nullify))
+    url))
+
+(defun burly--frameset-restore (urlobj)
+  "Restore FRAMESET according to URLOBJ."
+  (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
+               (frameset (read (url-unhex-string query-string)))
+               (frameset-filter-alist (append burly-frameset-filter-alist frameset-filter-alist)))
+    ;; Restore buffers.  (Apparently `cl-loop''s in-ref doesn't work with
+    ;; its destructuring, so we can't just `setf' on `window-state'.)
+    (setf (frameset-states frameset)
+          (cl-loop for (frame-parameters . window-state) in (frameset-states frameset)
+                   collect (cons frame-parameters (burly--bufferize-window-state window-state))))
+    (frameset-restore frameset)))
 
 ;;;;; Windows
 
 (cl-defun burly-windows-url (&optional (frame (selected-frame)))
   "Return URL for window configuration on FRAME."
   (with-selected-frame frame
-    (let* ((query (burly-revive--window-configuration #'burly-buffer-url))
-           (filename (concat "?" (prin1-to-string query))))
+    (let* ((query (burly--window-state frame))
+           (filename (concat "?" (url-hexify-string (prin1-to-string query)))))
       (url-recreate-url (url-parse-make-urlobj "emacs+burly+windows" nil nil nil nil
                                                filename)))))
 
+(cl-defun burly--window-state (&optional (frame (selected-frame)))
+  "Return window state for FRAME.
+Sets `burly-url' window parameter in each window before
+serializing."
+  (with-selected-frame frame
+    ;; Set URL window parameter for each window before saving state.
+    (burly--windows-set-url (window-list nil 'never))
+    (let* ((window-persistent-parameters (append burly-window-persistent-parameters
+                                                 window-persistent-parameters))
+           (window-state (window-state-get nil 'writable)))
+      ;; Clear window parameters we set (because they aren't kept
+      ;; current, so leaving them could be confusing).
+      (burly--windows-set-url (window-list nil 'never) 'nullify)
+      window-state)))
+
+(defun burly--windows-set-url (windows &optional nullify)
+  "Set `burly-url' window parameter in WINDOWS.
+If NULLIFY, set the parameter to nil."
+  (dolist (window windows)
+    (let ((value (if nullify nil (burly-buffer-url (window-buffer window)))))
+      (set-window-parameter window 'burly-url value))))
+
 (defun burly--windows-set (urlobj)
   "Set window configuration according to URLOBJ."
-  (pcase-let* ((`(,_ . ,query-string) (url-path-and-query urlobj))
-               (config (read query-string)))
-    (burly-revive-restore-window-configuration config)))
+  (pcase-let* ((window-persistent-parameters (append burly-window-persistent-parameters
+                                                     window-persistent-parameters))
+               (`(,_ . ,query-string) (url-path-and-query urlobj))
+               ;; FIXME: Remove this condition-case eventually, after giving users time to update their bookmarks.
+               (state (condition-case nil
+                          (read (url-unhex-string query-string))
+                        (invalid-read-syntax (display-warning 'burly "Please recreate that Burly bookmark (storage format changed)")
+                                             (read query-string))))
+               (state (burly--bufferize-window-state state)))
+    (window-state-put state (frame-root-window))
+    ;; HACK: Since `bookmark--jump-via' insists on calling a
+    ;; buffer-display function after handling the bookmark, we add a
+    ;; function to `bookmark-after-jump-hook' to restore the window
+    ;; configuration that we just set.
+    (setf burly--window-state (window-state-get (frame-root-window) 'writable))
+    (push #'burly--bookmark-window-state-hack bookmark-after-jump-hook)))
+
+(defun burly--bufferize-window-state (state)
+  "Return window state STATE with its buffers reincarnated."
+  (cl-labels ((bufferize-state
+               ;; Set windows' buffers in STATE.
+               (state) (pcase state
+                         (`(leaf . ,_attrs) (bufferize-leaf state))
+                         ((pred atom) state)
+                         (`(,_key . ,(pred atom)) state)
+                         ((pred list) (mapcar #'bufferize-state state))))
+              (bufferize-leaf
+               (leaf) (pcase-let* ((`(leaf . ,attrs) leaf)
+                                   ((map parameters buffer) attrs)
+                                   ((map burly-url) parameters)
+                                   (`(,_buffer-name . ,buffer-attrs) buffer)
+                                   (new-buffer (burly-url-buffer burly-url)))
+                        (setf (map-elt attrs 'buffer) (cons new-buffer buffer-attrs))
+                        (cons 'leaf attrs))))
+    (if-let ((leaf-pos (cl-position 'leaf state)))
+        ;; A one-window frame: the elements following `leaf' are that window's params.
+        (append (cl-subseq state 0 leaf-pos)
+                (bufferize-leaf (cl-subseq state leaf-pos)))
+      ;; Multi-window frame.
+      (bufferize-state state))))
 
 ;;;;; Bookmarks
 
+(defun burly--bookmark-window-state-hack (&optional _)
+  "Put window state from `burly--window-state'.
+This function is to be called in `bookmark-after-jump-hook' to
+work around `bookmark--jump-via's calling a buffer-display
+function which changes the window configuration after
+`burly--windows-set' has set it.  This function removes itself
+from the hook."
+  (unwind-protect
+      (progn
+        (cl-assert burly--window-state)
+        (window-state-put burly--window-state (frame-root-window)))
+    (setf bookmark-after-jump-hook (delete #'burly--bookmark-window-state-hack bookmark-after-jump-hook)
+          burly--window-state nil)))
+
 ;;;###autoload
 (defun burly-bookmark-handler (bookmark)
+  "Handler function for Burly BOOKMARK."
   (burly-open-url (alist-get 'url (bookmark-get-bookmark-record bookmark))))
 
 (defun burly--bookmark-record-url (record)
@@ -228,26 +380,50 @@ URLOBJ should be a URL object as returned by
                                              (_ (read (cadr prop))))
                                collect (cons key value)))
                (record (cons path props)))
-    (save-current-buffer
-      (bookmark-jump record)
+    (save-window-excursion
+      (condition-case err
+          (bookmark-jump record)
+        (error (delay-warning 'burly (format "Error while opening bookmark: ERROR:%S  RECORD:%S" err record))))
       (current-buffer))))
 
+(defun burly-bookmark-names ()
+  "Return list of all Burly bookmark names."
+  (cl-loop for bookmark in bookmark-alist
+           for (_name . params) = bookmark
+           when (equal #'burly-bookmark-handler (alist-get 'handler params))
+           collect (car bookmark)))
+
 ;;;;; Org buffers
+
+;; We only require Org when compiling the file.  At runtime, Org will
+;; be loaded before we call any of its functions, because we load the
+;; Org file into a buffer first, which activates `org-mode'.
 
 (eval-when-compile
   (require 'org))
 
+(declare-function org-before-first-heading-p "org")
+(declare-function org-back-to-heading "org")
+(declare-function org-find-olp "org")
+(declare-function org-tree-to-indirect-buffer "org")
+(declare-function org-narrow-to-subtree "org")
+(declare-function org-heading-components "org")
+(declare-function org-up-heading-safe "org")
+
 (defun burly--org-mode-buffer-url (buffer)
   "Return URL for Org BUFFER."
   (with-current-buffer buffer
-    (cl-assert (not (org-before-first-heading-p)) nil
-               "Before first heading in buffer: %s" buffer)
     (cl-assert (or (buffer-file-name buffer)
                    (buffer-file-name (buffer-base-buffer buffer)))
                nil "Buffer has no file name: %s" buffer)
     (let* ((narrowed (buffer-narrowed-p))
            (indirect (buffer-base-buffer buffer))
-           (outline-path (org-get-outline-path t))
+           (outline-path
+            ;; `org-get-outline-path' replaces links in headings with their
+            ;; descriptions, which prevents using them in regexp searches.
+            (org-with-wide-buffer
+             (nreverse (cl-loop collect (substring-no-properties (nth 4 (org-heading-components)))
+                                while (org-up-heading-safe)))))
            (pos (point))
            (relative-pos (when outline-path
                            (- (point) (save-excursion
@@ -269,7 +445,7 @@ URLOBJ should be a URL object as returned by
                                                filename nil nil 'fullness)))))
 
 (cl-defun burly-follow-url-org-mode (&key buffer query)
-  "In Org BUFFER, navigate to heading and position in QUERY, and return possibly different buffer.
+  "In BUFFER, jump to heading and position from QUERY, and return a buffer.
 If QUERY specifies that the buffer should be indirect, a new,
 indirect buffer is returned.  Otherwise BUFFER is returned."
   ;; `pcase's map support uses `alist-get', which does not work with string keys

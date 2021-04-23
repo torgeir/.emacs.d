@@ -1224,7 +1224,7 @@ Useful local copies of elisp programs.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package burly
   :straight nil
-  :commands (burly-bookmark-windows burly-open-url)
+  :commands (burly-bookmark-windows burly-open-bookmark burly-open-url)
   :load-path "site-lisp/burly")
 
 (use-package ox-gfm
