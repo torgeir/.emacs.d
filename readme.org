@@ -814,20 +814,20 @@ Highlight and fold-this are dependencies of evil-extra-operator.
 **** Start in emacs state
 
 #+BEGIN_SRC emacs-lisp :results silent
-(defvar t-evil-emacs-major-modes '(compilation-mode
-                             special-mode
-                             calendar-mode
-                             git-rebase-mode
-                             diff-mode
-                             xref--xref-buffer-mode
-                             gnus-group-mode
-                             gnus-summary-mode
-                             forge-topic-mode
-                             rg-mode
-                             image-mode
-                             view-mode
-                             cider-error
-                             rg-mode)
+(defvar t-evil-emacs-major-modes
+  '(calendar-mode
+    cider-error
+    compilation-mode special-mode
+    diff-mode
+    forge-topic-mode
+    git-rebase-mode
+    gnus-group-mode
+    gnus-summary-mode
+    image-mode
+    rg-mode
+    rg-mode
+    view-mode
+    xref--xref-buffer-mode)
   "Major modes that should trigger evil emacs state when changed to.")
 
 (t/after evil
@@ -1162,9 +1162,10 @@ Make it Norwegian.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package calendar-norway
-  :commands (calendar)
-  :config
-  (progn
+  :hook calendar-load
+  :init
+  (t/after calendar
+    (require 'calendar-norway)
     (setq calendar-holidays
           (append calendar-norway-raude-dagar
                   calendar-norway-andre-merkedagar
