@@ -77,7 +77,7 @@
      (org-capture-refile . "")
      (Man-completion-table . "^")
      (woman . "^")) nil nil "Customized with use-package counsel")
- '(json-reformat:indent-width *t-indent*)
+ '(json-reformat:indent-width *t-indent* t)
  '(lsp-clients-kotlin-server-executable
    "/Users/torgeirthoresen/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
  '(lsp-kotlin-language-server-path
@@ -88,4 +88,5 @@
  '(pos-tip-background-color "#36473A")
  '(pos-tip-foreground-color "#FFFFC8")
  '(send-mail-function 'smtpmail-send-it)
- '(tags-add-tables t))
+ '(tags-add-tables t)
+ '(visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))

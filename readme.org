@@ -623,11 +623,11 @@ Enables evil keybindings for more modes, e.g. help, calendar etc
   :init
   (progn
     ;; Don't use zz and zq for org src editing
-    (setq evil-collection-key-blacklist '("ZZ" "ZQ"))
+    (setq evil-collection-key-blacklist '("ZZ" "ZQ")))
   :config
   (t/after evil-collection
     (t/after org
-      (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle)))))
+      (evil-collection-define-key 'normal 'outline-mode-map (kbd "<tab>") 'org-cycle))))
 #+END_SRC
 
 *** Search
@@ -904,9 +904,9 @@ Motion keys for info mode.
 #+BEGIN_SRC emacs-lisp :results silent
 (t/after evil
   (evil-define-key 'normal 'Info-mode-map (kbd "H") 'Info-history-back)
-  (evil-define-key 'normal 'Info-mode-map (kbd "L") 'Info-history-forward))
+  (evil-define-key 'normal 'Info-mode-map (kbd "L") 'Info-history-forward)
   (unbind-key (kbd "h") 'Info-mode-map)
-  (unbind-key (kbd "l") 'Info-mode-map)
+  (unbind-key (kbd "l") 'Info-mode-map))
 #+END_SRC
 
 *** C-o from hybrid like in vim
@@ -1268,7 +1268,7 @@ Useful local copies of elisp programs.
     (setq nxml-child-indent *t-indent-xml*)
     (require 'sgml-mode)
 
-    (defun xml-reformat
+    (defun xml-reformat ()
       (interactive)
       (save-excursion
         (sgml-pretty-print (point-min) (point-max))
@@ -1774,8 +1774,8 @@ Commit or bail from wdired like for magit, org src blocks etc
   :load-path "site-lisp/dired-subtree/"
   :init
   (t/after dired
-    (setq dired-subtree-line-prefix "  ")
-    (bind-key (kbd "<tab>") 'dired-subtree-toggle dired-mode-map)))
+    (setq dired-subtree-line-prefix "⸺")
+    (bind-key (kbd "<tab>") 'dired-subtree-toggle dired-mode-map))
 #+END_SRC
 
 **** Pretty icons
@@ -2139,8 +2139,8 @@ Insert emojis, literally.
             (let ((emoji (match-string 0 c)))
               (insert
                (if t-emoji-cheat-sheet-plus-use-unicode
-               (t/emoji-cheat-shet-plus--unicode-for-emoji-text emoji)
-               emoji)))))))))
+                   (t/emoji-cheat-shet-plus--unicode-for-emoji-text emoji)
+                 emoji)))))))))
 #+END_SRC
 
 *** Parens
@@ -2161,10 +2161,6 @@ Lispy paren-like ast editing for other modes as well.
 
     ;; interfers with e.g. org-mode, enable them specifically in lisp modes instead
     (unbind-key "M-?" sp-keymap)
-    (comment (unbind-key "M-<up>" sp-keymap)
-             (unbind-key "M-<down>" sp-keymap)
-             (unbind-key "C-<right>" sp-keymap)
-             (unbind-key "C-<left>" sp-keymap))
 
     (t/bind-in 'sp-keymap
       ;; sp bindings
@@ -2229,8 +2225,8 @@ Lispy paren-like ast editing for other modes as well.
       (sp-local-pair mode "`" nil :actions nil)
       (sp-local-pair mode "'" nil :actions nil))
 
-     (sp-with-modes 'emacs-lisp-mode
-       (sp-local-pair "`" "'" :when '(sp-in-docstring-p)))
+    (sp-with-modes 'emacs-lisp-mode
+      (sp-local-pair "`" "'" :when '(sp-in-docstring-p)))
 
     (t/def-pairs ((paren . "(")
                   (bracket . "[")
@@ -2262,7 +2258,7 @@ Darkroom everywhere, but without the font size increase. Toggle it with SPC td,
 also toggles hook to keep it on or off everywhere.
 
 #+BEGIN_SRC emacs-lisp :results silent
- (use-package darkroom
+(use-package darkroom
   :commands (darkroom-mode darkroom-tentative-mode)
   :init (setq darkroom-text-scale-increase 0))
 
@@ -2307,11 +2303,6 @@ from pressing R in eww mode.
       (url-retrieve url 't/eww-readable-after-render (list url buffer fn)))))
 
 (add-hook 'eww-after-render-hook 'eww-readable)
-
-(comment
- ;; make eww is readable
- ;; TODO make toggleable?
- (remove-hook 'eww-after-render-hook 'eww-readable))
 #+END_SRC
 
 ***** Images and wrap long lines
@@ -2368,19 +2359,6 @@ Opens the frontmost chrome url in eww.
                       "M-n" 'forward-paragraph
                       "s-l" 'eww)
                     (visual-line-mode)))
-#+END_SRC
-
-**** w3m
-
-Another text based web browser
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package w3m
-  :commands w3m
-  :config
-  (t/bind-in 'w3m-mode-map
-    "M-p" 'backward-paragraph
-    "M-n" 'forward-paragraph))
 #+END_SRC
 
 *** Major modes
@@ -2626,10 +2604,6 @@ A custom function to fetch a clean view of the current news from nrk.no
       (call-interactively 'hackernews)))
   :config
   (progn
-    ;; TODO flytt ut
-    (defadvice split-window (after move-point-to-new-window activate)
-      "Moves the point to the newly created window after splitting."
-      (other-window 1))
     (defun t/hn-open-link-with-keymap ()
       (interactive)
       (hackernews--visit
@@ -2805,6 +2779,7 @@ Force indents, like you mean it.
     (t/add-hook-defun 'elm-mode-hook t/hook-aggressive-indent-js (aggressive-indent-mode 0))
     (t/add-hook-defun 'js2-mode-hook t/hook-aggressive-indent-js2 (aggressive-indent-mode 0))
     (t/add-hook-defun 'css-mode-hook t/hook-aggressive-indent-css (aggressive-indent-mode 0))
+    (t/add-hook-defun 'python-mode-hook t/hook-aggressive-indent-python (aggressive-indent-mode 0))
     (t/add-hook 'prog-mode-hook 'aggressive-indent-mode)
     (t/declare-prefix "t" "Toggle"
                       "a" 'aggressive-indent-mode)))
@@ -2872,7 +2847,6 @@ Draw inside emacs. Yes, you read correctly.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package artist
   :straight nil
-  :defer t
   :commands (t/artist-mode artist-mode)
   :init
   (progn
@@ -2907,27 +2881,24 @@ Draw inside emacs. Yes, you read correctly.
 *** Dictionary
 
 #+BEGIN_SRC emacs-lisp :results silent
-(comment use-package dictionary
-  :disabled
+(use-package dictionary
   :commands (dictionary dictionary-search)
   :init
-  (t/declare-prefix "s" "dictionary"
-                    "dd" (t/lambda (dictionary-search (t/word-at-point)))))
-
+  (t/declare-prefix "S" "dictionary"
+                    "D" (t/lambda (dictionary-search (t/word-at-point)))))
 #+END_SRC
 
 Thesaurus.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package synosaurus
-  :disabled
   :commands synosaurus-lookup
   :init
   (progn
     (setq synosaurus-choose-method 'popup
           synosaurus-backend 'synosaurus-backend-wordnet)
-    (t/declare-prefix "s" "dictionary"
-                      "ds" (t/lambda (synosaurus-lookup (t/word-at-point))))))
+    (t/declare-prefix "S" "dictionary"
+                      "S" (t/lambda (synosaurus-lookup (t/word-at-point))))))
 #+END_SRC
 
 *** Eval overlays cider
@@ -2997,7 +2968,7 @@ Thesaurus.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (t/declare-prefix "a" "Applications"
-                  "B" 'w3m
+                  "B" 't/visit-frontmost-chrome-url-in-eww
                   "c" 'calendar
                   "b" #'t/browse-url-at-point
                   "C" 'calc-dispatch
@@ -4424,7 +4395,7 @@ PWD is not in a git repo (or the git command is not found)."
       (while (and (pcomplete-match "" 'last)
                   (pcomplete-match "-s" 'last -1)) (pcomplete-here '("HUP" "SIGHUP" "SIGINT" "SIGKILL" "SIGTERM" "SIGSTOP")))
       (while (pcomplete-here* (-map 's-trim (-> (shell-command-to-string "ps -eo pid | grep -v PID")
-                                                (split-string "\n"))))))
+                                              (split-string "\n"))))))
 
     ;; pcomplete example
     (defun pcomplete/torgeir ()
@@ -4664,7 +4635,7 @@ Move window consistently across os'es.
  ("<C-S-s-right>" . t/move-frame-right)
  ("<C-S-s-down>" . t/move-frame-down)
  ("<C-S-s-up>" . t/move-frame-up))
- #+END_SRC
+#+END_SRC
 
 ** Server
 
