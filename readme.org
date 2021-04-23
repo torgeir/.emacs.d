@@ -1395,7 +1395,7 @@ from https://oremacs.com/swiper/
 *** Do I use this?
 
 #+BEGIN_SRC emacs-lisp :results silent
-(comment use-package counsel-etags
+(use-package counsel-etags
   :disabled
   :bind (("C-]" . counsel-etags-find-tag-at-point))
   :init
