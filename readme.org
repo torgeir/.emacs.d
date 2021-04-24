@@ -2794,8 +2794,8 @@ Clean out whitespace when saving.
   (progn
     (t/add-hook 'before-save-hook 'whitespace-cleanup)
     (t/add-hook-defun '(prog-mode-hook text-mode-hook git-commit-mode-hook) t/hook-whitespace
-                      (setq-local whitespace-style '(face tabs tab-mark trailing))
-                      (whitespace-mode 1))))
+                      (setq-local whitespace-style '(face tabs spaces trailing lines space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark)))
+    (whitespace-mode 1)))
 #+END_SRC
 
 *** Word count
