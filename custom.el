@@ -58,9 +58,6 @@
  '(company-box-doc-delay 0.01)
  '(custom-safe-themes
    '("2f1518e906a8b60fac943d02ad415f1d8b3933a5a7f75e307e6e9a26ef5bf570" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" default))
- '(doom-modeline-gnus t)
- '(doom-modeline-gnus-excluded-groups '("nntp*"))
- '(doom-modeline-gnus-timer 45)
  '(evil-collection-mode-list
    '(apropos calendar dired eww hackernews help info ivy outline rg w3m wdired xref) nil nil "Customized with use-package evil-collection")
  '(exec-path-from-shell-arguments '("-l"))

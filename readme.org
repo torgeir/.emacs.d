@@ -4606,7 +4606,7 @@ Breathing room nice.
 Change frame width and height consistently across os'es.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(when (not is-mac) ; Moom.app
+(when (not is-mac) ; yabai/skhd
   (bind-keys
    :map global-map
    ("<C-s-left>" . t/decrease-frame-width)
@@ -5367,7 +5367,7 @@ Doom themes are nice, so is the modeline.
           doom-modeline-github t
           doom-modeline-github-interval (* 30 60)
           doom-modeline-gnus t
-          doom-modeline-gnus-timer 2
+          doom-modeline-gnus-timer 45
           doom-modeline-enable-word-count t)))
 #+END_SRC
 
@@ -5421,6 +5421,10 @@ Cycle between light and dark themes.
 #+END_SRC
 
 ** Tricks
+
+*** Check for missing parens
+
+~(check-parens)~
 
 *** Insert escape character
 
