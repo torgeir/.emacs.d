@@ -2759,11 +2759,7 @@ Toggles relative line numbers, like in vim.
   :init
   (progn
     (setq dump-jump-prefer-searcher 'rg)
-    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-    ;;(t/bind-in '(evil-normal-state-map evil-insert-state-map) "M-." 'xref-find-definitions)
-    (comment (t/add-hook-defun 'emacs-lisp-mode-hook t/hook-elisp
-                               (bind-key "M-." 'xref-find-definitions evil-normal-state-map)
-                               (bind-key "M-." 'xref-find-definitions evil-insert-state-map)))))
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)))
 #+END_SRC
 
 *** Indent
