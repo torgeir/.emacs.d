@@ -472,9 +472,10 @@ Above what sizes can the window split?
 (setq split-height-threshold nil
       split-window-threshold nil)
 
-(defadvice split-window (after move-point-to-new-window activate)
-  "Moves the point to the newly created window after splitting."
-  (other-window 1))
+;; not so smart now, was it
+(comment (defadvice split-window (after move-point-to-new-window activate)
+          "Moves the point to the newly created window after splitting."
+          (other-window 1)))
 #+END_SRC
 
 Don't save desktop automatically, for now, but configure it for manual save /
@@ -618,7 +619,7 @@ Enables evil keybindings for more modes, e.g. help, calendar etc
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-collection
   :after evil
-  :hook (after-init . evil-collection-init) ;
+  :hook (after-init . evil-collection-init)
   :custom (evil-collection-mode-list '(apropos calendar dired eww hackernews help info ivy outline rg w3m wdired xref))
   :init
   (progn
