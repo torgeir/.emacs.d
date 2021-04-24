@@ -462,8 +462,7 @@ Remove selected text when typing.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package delsel
   :straight nil
-  :defer 4
-  :config (delete-selection-mode t))
+  :hook (after-init . delete-selection-mode))
 #+END_SRC
 
 Above what sizes can the window split?
@@ -1663,9 +1662,8 @@ Useful for programming
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package subword
   :diminish subword-mode
-  :defer 1
-  :straight nil
-  :config (subword-mode))
+  :hook (prog-mode-hook . subword-mode)
+  :straight nil)
 #+END_SRC
 
 *** SSH like its local files
@@ -2696,7 +2694,7 @@ Save more recent files.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package recentf
   :straight nil
-  :defer 5
+  :hook (after-init . recentf-mode)
   :init
   (progn
     (setq recentf-max-saved-items 1000
@@ -2705,8 +2703,7 @@ Save more recent files.
   (progn
     (defun t/recentf-save-if-recentf-mode ()
       (when recentf-mode (recentf-save-list)))
-    (t/idle-timer recentf-auto-save-timer #'t/recentf-save-if-recentf-mode 1)
-    (recentf-mode 1)))
+    (t/idle-timer recentf-auto-save-timer #'t/recentf-save-if-recentf-mode 1)))
 #+END_SRC
 
 *** Line numbers
@@ -3457,7 +3454,6 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package css-mode
-  :defer t
   :straight nil
   :mode "\\.css$"
   :init (setq css-indent-offset *t-indent*)
@@ -4587,7 +4583,7 @@ Revert to previous window configurations.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package winner
   :straight nil
-  :hook after-init
+  :hook (after-init . winner-mode)
   :commands (winner-undo winner-redo)
   :config (winner-mode)
   :bind (("C-c <left>" . winner-undo)
