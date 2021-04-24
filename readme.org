@@ -4586,6 +4586,7 @@ Revert to previous window configurations.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package winner
   :straight nil
+  :hook after-init
   :commands (winner-undo winner-redo)
   :config (winner-mode)
   :bind (("C-c <left>" . winner-undo)
