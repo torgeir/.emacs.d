@@ -3210,7 +3210,8 @@ Thesaurus.
                   "p" 'counsel-projectile-rg
                   "s" 'swiper
                   "t" 'etags-select-find-tag-at-point
-                  )
+                  "w" 'lsp-ivy-workspace-symbol
+                  "W" 'lsp-ivy-global-workspace-symbol)
 #+END_SRC
 
 *** Popups
@@ -3667,15 +3668,8 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
   :init
   (setq-default typescript-indent-level 2))
 
-(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-
-(use-package company-lsp
-  :after company
-  :hook company-mode-hook
-  :init
-  (setq company-lsp-cache-candidates t
-        company-lsp-async t))
-
+(use-package lsp-ivy
+  :commands (lsp-ivy-workspace-symbol lsp-ivy-global-workspace-symbol))
 
 (use-package js2-mode
   :mode "\\.\\(js\\|jsx\\)$"
