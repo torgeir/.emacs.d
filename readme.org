@@ -2745,9 +2745,9 @@ Toggles relative line numbers, like in vim.
           projectile-project-root-files '(".git" ".hg" ".svn" ".project" "package.json" "setup.py" "Gemfile" "build.gradle")))
   :config
   (progn
-    (t/add-to-list 'projectile-globally-ignored-directories '(".git" "elpy" "elpa-backups" "node_modules" ".idea"))
+    (t/add-to-list 'projectile-globally-ignored-directories '(".git" "elpy" "elpa-backups" "node_modules" ".idea" "venv"))
     (t/add-to-list 'projectile-globally-ignored-files '("package-lock.json" "*.bundle.js" "*.build.js" ".DS_Store" "projectile.cache" "custom.el"))
-    (t/add-to-list 'grep-find-ignored-files '("package-lock.json" "*.bundle.js" "*.build.js" ".DS_Store" "projectile.cache" "custom.el" "node_modules/*" "elpy/*" "js-codemods/*" "target/*" "elpa-backups/*"))
+    (t/add-to-list 'grep-find-ignored-files '("package-lock.json" "*.bundle.js" "*.build.js" ".DS_Store" "projectile.cache" "custom.el" "node_modules/*" "elpy/*" "js-codemods/*" "target/*" "elpa-backups/*" "venv/*"))
     (projectile-global-mode +1)))
 #+END_SRC
 
