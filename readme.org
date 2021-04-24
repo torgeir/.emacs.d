@@ -808,7 +808,8 @@ Highlight and fold-this are dependencies of evil-extra-operator.
 (use-package google-translate :commands evil-operator-goggle-translate)
 (use-package evil-extra-operator
   :init (setq evil-extra-operator-org-capture-key "gC")
-  :hook (after-init . global-evil-extra-operator-mode))
+  :defer 1
+  :config (global-evil-extra-operator-mode))
 #+END_SRC
 
 *** Modes starting states
