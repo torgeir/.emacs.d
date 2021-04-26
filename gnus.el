@@ -10,6 +10,8 @@
 
 (setq gnus-activate-level 3
       gnus-level-subscribed 5
+      doom-modeline-gnus-timer 45
+      gnus-use-full-window nil ; don't hijack window configuration
       gnus-use-cache t
       gnus-select-method '(nnnil "")
       nnimap-split-fancy nnmail-split-fancy
