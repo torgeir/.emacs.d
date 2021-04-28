@@ -3046,7 +3046,7 @@ Thesaurus.
                   "c" 'transpose-chars
                   "w" 'transpose-words
                   "l" 'transpose-lines
-                  "f" 'transpose-frame
+                  "f" 'rotate-window
                   "s" 'transpose-sexps
                   "S" 'transpose-sentences
                   "p" 'transpose-paragraphs)
@@ -3128,9 +3128,8 @@ Thesaurus.
                        "<right>" 'evil-window-increase-width
                        "<up>" 'evil-window-decrease-height
                        "<down>" 'evil-window-increase-height)
-                  "u" 'winner-undo
-                  "R" 'winner-redo
-                  "r" 'transpose-frame)
+                  "R" 'rotate-layout
+                  "r" 'rotate-window)
 
 (t/declare-prefix "z" "Folding"
                   "z" 'hs-toggle-hiding
@@ -4573,7 +4572,7 @@ No emojis in terminal (on os x at least).
 Switch around split frame rotation.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package transpose-frame :commands transpose-frame)
+(use-package rotate :commands (rotate-layout rotate-window))
 #+END_SRC
 
 *** History
