@@ -4799,7 +4799,9 @@ Make org-goto play nice with counsel.
                   "a" 'org-agenda
                   "A" 't/org-archive-done-tasks
                   "i" 'org-info
+                  "b" (t/lambda (find-file (t/user-dropbox-folder "org/bekk/bekk.org")))
                   "h" (t/lambda (find-file (t/user-dropbox-folder "org/home.org")))
+                  "s" (t/lambda (find-file (t/user-dropbox-folder "org/bekk/saga.org")))
                   "ns" 'org-narrow-to-subtree
                   "ne" 'org-narrow-to-element
                   "nb" 'org-narrow-to-block
