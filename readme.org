@@ -5470,6 +5470,19 @@ https://www.emacswiki.org/emacs/SkeletonMode
          (goto-char (marker-position
                      (car *skeleton-markers*))))))))
 #+end_src
+*** Sticky buffer mode
+
+Useful e.g. to make dired act like a directory tree sidebar
+
+#+BEGIN_SRC emacs-lisp :results silent
+(define-minor-mode sticky-buffer-mode
+  "Make the current window always display this buffer."
+  nil " sticky" nil
+  (set-window-dedicated-p (selected-window) sticky-buffer-mode)
+  (setq window-size-fixed 'width))
+#+end_src
+
+*** TODO What about saving window configurations across emacs sessions and restoring them?
 
 ** After
 
