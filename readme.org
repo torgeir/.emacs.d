@@ -5470,6 +5470,7 @@ https://www.emacswiki.org/emacs/SkeletonMode
          (goto-char (marker-position
                      (car *skeleton-markers*))))))))
 #+end_src
+
 *** Sticky buffer mode
 
 Useful e.g. to make dired act like a directory tree sidebar
@@ -5483,6 +5484,9 @@ Useful e.g. to make dired act like a directory tree sidebar
 #+end_src
 
 *** TODO What about saving window configurations across emacs sessions and restoring them?
+
+*** ob-async
+https://github.com/astahlman/ob-async
 
 ** After
 
