@@ -1447,4 +1447,17 @@ See also:  (setq org-agenda-include-diary t)
                       (eww (concat "http://cheat.sh/" input "?T&q")))
             :caller 't/search-cheat-sh))
 
+
+(defun t/toggle-dedicated-window ()
+  (interactive)
+  (let ((dedicated (not (window-dedicated-p (selected-window)))))
+    (set-window-dedicated-p (selected-window) dedicated)
+    (set-window-parameter (selected-window) 'no-delete-other-windows dedicated)
+    (message (if dedicated "Window dedicated." "Window not dedicated."))))
+
+(defun t/compile (dir)
+  (interactive "DCompile in directory: ")
+  (let ((default-directory (expand-file-name dir)))
+    (compile "make")))
+
 (provide 't-defuns)
