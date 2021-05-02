@@ -1774,7 +1774,7 @@ Commit or bail from wdired like for magit, org src blocks etc
   :load-path "site-lisp/dired-subtree/"
   :init
   (t/after dired
-    (setq dired-subtree-line-prefix "⸺")
+    (setq dired-subtree-line-prefix "‒")
     (bind-key (kbd "<tab>") 'dired-subtree-toggle dired-mode-map)))
 #+END_SRC
 
@@ -1808,36 +1808,31 @@ Colorize delimiters.
   (t/add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 #+END_SRC
 
-*** Directory tree
+*** Directory sidebar
 
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package dired-sidebar
-  :commands (dired-sidebar-toggle-sidebar)
-  :bind (("<f6>" . dired-sidebar-toggle-sidebar))
-  :init
-  (progn
-    (setq dired-sidebar-use-custom-font t
-          dired-sidebar-use-term-integration t)
-    (t/add-hook-defun 'dired-sidebar-mode-hook t/sidebar-hook
-                      ;;(hl-line-mode)
-                      (evil-define-key 'normal dired-mode-map "u" 'dired-sidebar-up-directory)))
-  :config
-  (t/after evil
-    (dolist (key '(("n" . evil-next-line)
-                   ("p" . evil-previous-line)
-                   ;; ("i" . neotree-enter-horizontal-split)
-                   ;; ("C-c o" . neotree-enter-vertical-split)
-                   ;; ("s" . neotree-enter-vertical-split)
-                   ;; ("g" . neotree-refresh)
-                   ("u" . dired-sidebar-up-directory)
-                   ;; ("I" . neotree-hidden-file-toggle)
-                   ;; ("v" . neotree-quick-look)
-                   ;; ("TAB" . neotree-enter)
-                   ;; ("RET" . neotree-enter)
-                   ;; ("C" . neotree-change-root)
-                   ))
-      (eval `(evil-define-key 'normal dired-sidebar-mode-map (kbd ,(car key)) ',(cdr key))))))
-#+END_SRC
+#+begin_src emacs-lisp :results silent
+(define-minor-mode t-sidebar-mode
+  "Make the current window always display this buffer."
+  :global t
+  :init-value nil
+  :lighter " sticky"
+  :keymap '((q . t-sidebar-mode))
+  (if t-sidebar-mode
+      (progn
+        (split-window-right)
+        (other-window 0)
+        (shrink-window-horizontally (truncate (* (window-width) (/ (float 2) 3))))
+        (dired ".")
+        (rename-buffer "*sidebar*")
+        (set-window-dedicated-p (selected-window) t-sidebar-mode)
+        (set-window-parameter (selected-window) 'no-delete-other-windows t)
+        (setq window-size-fixed (if t-sidebar-mode 'width nil)))
+    (with-current-buffer "*sidebar*"
+      (set-window-dedicated-p (selected-window) nil)
+      (setq window-size-fixed nil)
+      (set-window-parameter (selected-window) 'no-delete-other-windows nil)
+      (kill-buffer-and-window))))
+#+end_src
 
 *** Jump
 
@@ -3010,7 +3005,8 @@ Thesaurus.
                   "n" #'t/toggle-line-numbers
                   "r" 'nlinum-relative-toggle
                   "L" 'hl-line-mode
-                  "l" 'visual-line-mode
+                  "v" 'visual-line-mode
+                  "l" 't/toggle-dedicated-window
                   "W" 'whitespace-mode
                   "Cc" 'rainbow-mode
                   "Cd" 'rainbow-delimiters-mode)
@@ -3057,8 +3053,7 @@ Thesaurus.
 (t/declare-prefix "f" "Files/Frame"
                   "b" 'ivy-switch-buffer
                   "f" 'counsel-find-file
-                  "l" 'dired-sidebar-toggle-with-current-directory
-                  "L" 'dired-sidebar-hide-sidebar
+                  "l" 't-sidebar-mode
                   "j" 'dired-jump
                   "J" 'dired-jump-other-window
                   "d" 'delete-frame
@@ -5475,12 +5470,12 @@ https://www.emacswiki.org/emacs/SkeletonMode
 
 Useful e.g. to make dired act like a directory tree sidebar
 
-#+BEGIN_SRC emacs-lisp :results silent
+#+begin_src emacs-lisp :results silent
 (define-minor-mode sticky-buffer-mode
   "Make the current window always display this buffer."
   nil " sticky" nil
   (set-window-dedicated-p (selected-window) sticky-buffer-mode)
-  (setq window-size-fixed 'width))
+  (setq window-size-fixed (if sticky-buffer-mode 'width nil)))
 #+end_src
 
 *** TODO What about saving window configurations across emacs sessions and restoring them?
