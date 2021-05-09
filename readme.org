@@ -1347,6 +1347,7 @@ These actually seem to replace all my previous helm config 😱
   :config
   (progn
     (ivy-mode 1)
+    (minibuffer-depth-indicate-mode)
     (dolist (fn '(counsel-org-goto counsel-find-file counsel-projectile-rg counsel-projectile-find-file counsel-describe-function))
       (add-to-list 'ivy-sort-matches-functions-alist `(,fn . ivy--shorter-matches-first)))))
 (use-package counsel-web :commands counsel-web-search)
@@ -1812,26 +1813,32 @@ Colorize delimiters.
 
 #+begin_src emacs-lisp :results silent
 (define-minor-mode t-sidebar-mode
-  "Make the current window always display this buffer."
+  "A dired sidebar."
   :global t
   :init-value nil
   :lighter " sticky"
   :keymap '((q . t-sidebar-mode))
-  (if t-sidebar-mode
-      (progn
-        (split-window-right)
-        (other-window 0)
-        (shrink-window-horizontally (truncate (* (window-width) (/ (float 2) 3))))
-        (dired ".")
-        (rename-buffer "*sidebar*")
-        (set-window-dedicated-p (selected-window) t-sidebar-mode)
-        (set-window-parameter (selected-window) 'no-delete-other-windows t)
-        (setq window-size-fixed (if t-sidebar-mode 'width nil)))
-    (with-current-buffer "*sidebar*"
-      (set-window-dedicated-p (selected-window) nil)
-      (setq window-size-fixed nil)
-      (set-window-parameter (selected-window) 'no-delete-other-windows nil)
-      (kill-buffer-and-window))))
+  (progn
+    (defun t/sidebar-init ()
+      (split-window-right)
+      (other-window 0)
+      (shrink-window-horizontally (truncate (* (window-width) (/ (float 2) 3))))
+      (dired ".")
+      (rename-buffer "*sidebar*")
+      (set-window-dedicated-p (selected-window) t)
+      (set-window-parameter (selected-window) 'no-delete-other-windows t)
+      (setq window-size-fixed 'width)
+      (add-hook 'kill-buffer-hook 't/sidebar-teardown nil t))
+    (defun t/sidebar-teardown ()
+      (remove-hook 'kill-buffer-hook 't/sidebar-teardown t)
+      (with-current-buffer "*sidebar*"
+        (set-window-dedicated-p (selected-window) nil)
+        (setq window-size-fixed nil)
+        (set-window-parameter (selected-window) 'no-delete-other-windows nil)
+        (kill-buffer-and-window)))
+    (if t-sidebar-mode
+        (t/sidebar-init)
+      (t/sidebar-teardown))))
 #+end_src
 
 *** Jump
@@ -3063,6 +3070,7 @@ Thesaurus.
                   "r" 'counsel-recentf)
 
 (t/declare-prefix "h" "Help"
+                  "w" 't/where-am-i
                   "h" #'t/describe
                   "f" #'t/face-at-point
                   "F" 'counsel-faces
@@ -3640,10 +3648,32 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
   :commands lsp-ui-mode
   :init
   (progn
-    (setq lsp-ui-doc-enable t
+
+    (setq lsp-enable-symbol-highlighting t
+          lsp-eldoc-enable-hover t
+          lsp-lens-enable nil
+          lsp-ui-doc-enable t
+          lsp-ui-doc-show-with-cursor t
+          lsp-ui-doc-show-with-mouse t
           lsp-ui-doc-delay 0.5
+          lsp-ui-doc-max-width 100
+          lsp-ui-doc-max-height 30
+          lsp-ui-doc-use-webkit nil
+          lsp-ui-doc-use-childframe t
           lsp-ui-sideline-enable t
-          lsp-ui-sideline-show-code-actions nil))
+          lsp-ui-sideline-show-hover nil
+          lsp-ui-sideline-show-code-actions nil
+          lsp-ui-sideline-show-diagnostics t
+          lsp-diagnostics-provider :flycheck
+          lsp-completion-show-detail t
+          lsp-completion-show-kind t
+          lsp-signature-auto-activate nil
+          lsp-signature-render-documentation t
+          lsp-headerline-breadcrumb-enable t
+          lsp-headerline-breadcrumb-enable-diagnostics nil
+          lsp-modeline-code-actions-enable t
+          lsp-modeline-diagnostics-enable t
+          ))
   :config
   (progn
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
@@ -5485,6 +5515,7 @@ Useful e.g. to make dired act like a directory tree sidebar
 *** ob-async
 https://github.com/astahlman/ob-async
 
+
 *** gh run watch
 
 #+begin_src emacs-lisp :results silent
@@ -5492,6 +5523,18 @@ https://github.com/astahlman/ob-async
   (interactive)
   (multi-term)
   (term-send-raw-string "gh run watch\C-m"))
+#+end_src
+
+
+*** xref jump to selection
+
+#+begin_src emacs-lisp
+(let ((l (xref-location-marker
+          (xref-make-file-location
+           "/home/torgeir/.config/emacs/test-files/index.js"
+           27
+           11))))
+  (xref--show-pos-in-buf l (marker-buffer l)))
 #+end_src
 
 ** After

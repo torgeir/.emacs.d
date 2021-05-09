@@ -1447,7 +1447,6 @@ See also:  (setq org-agenda-include-diary t)
                       (eww (concat "http://cheat.sh/" input "?T&q")))
             :caller 't/search-cheat-sh))
 
-
 (defun t/toggle-dedicated-window ()
   (interactive)
   (let ((dedicated (not (window-dedicated-p (selected-window)))))
@@ -1459,5 +1458,14 @@ See also:  (setq org-agenda-include-diary t)
   (interactive "DCompile in directory: ")
   (let ((default-directory (expand-file-name dir)))
     (compile "make")))
+
+(defun t/where-am-i ()
+  (interactive)
+  (let ((l (xref-location-marker
+            (xref-make-file-location
+             (buffer-file-name)
+             (line-number-at-pos)
+             (current-column)))))
+    (xref--show-pos-in-buf l (marker-buffer l))))
 
 (provide 't-defuns)
