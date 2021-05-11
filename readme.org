@@ -4479,7 +4479,7 @@ the saved desktop project specific.
 Initial font and window transparency.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(t/transparency 90)
+(t/transparency 95)
 #+END_SRC
 
 Shorten ~function~ to ~f~. Can be handy for other annoying stuff as well.
