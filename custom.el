@@ -28,6 +28,7 @@
  '(highlight-symbol-face ((t (:inherit hl-line))))
  '(hl-line ((t (:extend t :background "#202020"))))
  '(holiday ((t (:foreground "OliveDrab3"))))
+ '(ivy-current-match ((t (:extend t :background "#2f2157"))))
  '(js2-external-variable ((t nil)))
  '(lazy-highlight ((t (:background "#2266A0" :foreground "#DFDFDF" :weight bold))))
  '(lsp-face-highlight-read ((t (:background "#222" :foreground "#DFDFDF" :weight normal))))
@@ -53,6 +54,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(all-the-icons-ivy-rich-mode t)
  '(ansi-color-names-vector
    ["#d2ceda" "#f2241f" "#67b11d" "#b1951d" "#3a81c3" "#a31db1" "#21b8c7" "#655370"])
  '(company-box-doc-delay 0.01)
@@ -74,11 +76,14 @@
      (org-capture-refile . "")
      (Man-completion-table . "^")
      (woman . "^")) nil nil "Customized with use-package counsel")
+ '(ivy-mode t)
+ '(ivy-rich-mode t)
+ '(ivy-use-virtual-buffers t)
  '(json-reformat:indent-width *t-indent* t)
  '(lsp-clients-kotlin-server-executable
-   "/Users/torgeirthoresen/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
+   "/Users/torgeir/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
  '(lsp-kotlin-language-server-path
-   "/Users/torgeirthoresen/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
+   "/Users/torgeir/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
  '(lsp-python-ms-extra-paths ["venv"])
  '(nntp-authinfo-file "~/.authinfo.gpg")
  '(org-agenda-window-setup 'only-window t)

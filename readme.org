@@ -2607,6 +2607,7 @@ A custom function to fetch a clean view of the current news from nrk.no
          (eww url)
          (funcall (t/micro-state (not (t/prefix-arg-universal?))
                                  "s" (t-spray-micro-state)
+                                 "w" 't/browse-url-at-point
                                  "n" (t/lambda nil
                                        (when (not (eobp)) (evil-scroll-down 0)))
                                  "p" (t/lambda nil
@@ -3971,7 +3972,7 @@ notice it.
   (progn
     (require 'lsp)
     (lsp-register-client
-     (make-lsp-client :new-connection (lsp-stdio-connection '("/usr/local/Cellar/terraform-ls/0.15.0/bin/terraform-ls" "serve"))
+     (make-lsp-client :new-connection (lsp-stdio-connection '("/usr/local/Cellar/terraform-ls/0.16.1/bin/terraform-ls" "serve"))
                       :major-modes '(terraform-mode)
                       :server-id 'terraform-ls))))
 #+END_SRC
@@ -4805,6 +4806,7 @@ Make org-goto play nice with counsel.
                   "nw" 'widen)
 
 (t/declare-prefix "ol" "Links"
+                  "t" 'org-toggle-link-display
                   "s" 'org-store-link
                   "i" 'org-insert-link)
 
@@ -5482,6 +5484,15 @@ Useful e.g. to make dired act like a directory tree sidebar
 
 *** ob-async
 https://github.com/astahlman/ob-async
+
+*** gh run watch
+
+#+begin_src emacs-lisp :results silent
+(defun t/gha ()
+  (interactive)
+  (multi-term)
+  (term-send-raw-string "gh run watch\C-m"))
+#+end_src
 
 ** After
 
