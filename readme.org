@@ -1816,29 +1816,29 @@ Colorize delimiters.
   "A dired sidebar."
   :global t
   :init-value nil
-  :lighter " sticky"
-  :keymap '((q . t-sidebar-mode))
+  :lighter ""
   (progn
-    (defun t/sidebar-init ()
-      (split-window-right)
-      (other-window 0)
-      (shrink-window-horizontally (truncate (* (window-width) (/ (float 2) 3))))
-      (dired ".")
-      (rename-buffer "*sidebar*")
-      (set-window-dedicated-p (selected-window) t)
-      (set-window-parameter (selected-window) 'no-delete-other-windows t)
-      (setq window-size-fixed 'width)
-      (add-hook 'kill-buffer-hook 't/sidebar-teardown nil t))
-    (defun t/sidebar-teardown ()
-      (remove-hook 'kill-buffer-hook 't/sidebar-teardown t)
-      (with-current-buffer "*sidebar*"
-        (set-window-dedicated-p (selected-window) nil)
-        (setq window-size-fixed nil)
-        (set-window-parameter (selected-window) 'no-delete-other-windows nil)
-        (kill-buffer-and-window)))
+    (defun t/sidebar-off ()
+      (interactive)
+      (message "t-sidebar-mode: off")
+      (t-sidebar-mode 0))
     (if t-sidebar-mode
-        (t/sidebar-init)
-      (t/sidebar-teardown))))
+        (save-selected-window
+          (split-window-right)
+          (shrink-window-horizontally (truncate (* (window-width) .6)))
+          (dired ".")
+          (rename-buffer "*sidebar*")
+          (setq window-size-fixed 'width)
+          (set-window-dedicated-p (selected-window) t)
+          (set-window-parameter (selected-window) 'no-delete-other-windows t)
+          (add-hook 'kill-buffer-hook 't/sidebar-off nil t))
+      (with-current-buffer "*sidebar*"
+        (setq window-size-fixed nil)
+        (set-window-dedicated-p (selected-window) nil)
+        (set-window-parameter (selected-window) 'no-delete-other-windows nil)
+        (remove-hook 'kill-buffer-hook 't/sidebar-off t)
+        (kill-buffer-and-window)
+        ))))
 #+end_src
 
 *** Jump
