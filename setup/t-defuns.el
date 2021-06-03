@@ -738,6 +738,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
             ((equal major-mode 'elfeed-search-mode) (elfeed-search-browse-url))
             ((equal major-mode 'elfeed-show-mode) (browse-url (elfeed-entry-link elfeed-show-entry)))
             ((equal major-mode 'gnus-summary-mode) (gnus-summary-browse-url))
+            ((equal major-mode 'magit-status-mode) (call-interactively 'forge-browse-dwim))
             ((equal major-mode 'hackernews-mode) (hackernews-browse-url-action (button-at (point))))
             (t (call-interactively 'browse-url-at-point))))))
 
