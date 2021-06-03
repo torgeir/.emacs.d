@@ -4080,7 +4080,9 @@ notice it.
         (evil-define-key 'normal term-raw-map (kbd "M-<left>") 'term-send-backward-word)
         (evil-define-key 'normal term-raw-map (kbd "M-<right>") 'term-send-forward-word)
         (evil-define-key 'insert term-raw-map (kbd "M-<left>") 'term-send-backward-word)
-        (evil-define-key 'insert term-raw-map (kbd "M-<right>") 'term-send-forward-word))
+        (evil-define-key 'insert term-raw-map (kbd "M-<right>") 'term-send-forward-word)
+        (evil-define-key 'normal term-raw-map (kbd "C-c C-k") 'term-char-mode)
+        (evil-define-key 'normal term-raw-map (kbd "C-c C-l") 'term-line-mode))
 
       (t/bind-in '(evil-insert-state-local-map evil-emacs-state-local-map)
         "C-d" (t/lambda
