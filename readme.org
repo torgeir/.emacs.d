@@ -3134,10 +3134,10 @@ Thesaurus.
                   "=" 'balance-windows-area
                   "s" (t/micro-state
                        nil
-                       "<left>" 'evil-window-decrease-width
-                       "<right>" 'evil-window-increase-width
-                       "<up>" 'evil-window-decrease-height
-                       "<down>" 'evil-window-increase-height)
+                       "<left>" 'evil-window-increase-width
+                       "<right>" 'evil-window-decrease-width
+                       "<up>" 'evil-window-increase-height
+                       "<down>" 'evil-window-decrease-height)
                   "R" 'rotate-layout
                   "r" 'rotate-window)
 
