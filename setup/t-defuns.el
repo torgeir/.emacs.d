@@ -1469,4 +1469,13 @@ See also:  (setq org-agenda-include-diary t)
              (current-column)))))
     (xref--show-pos-in-buf l (marker-buffer l))))
 
+(defun t/format-xml ()
+  "Reformat and replace buffer content using xmllint. Install on macos using `brew install libxml2`"
+  (interactive)
+  (shell-command-on-region
+   (point-min)
+   (point-max)
+   "xmllint --format -"
+   (current-buffer) t))
+
 (provide 't-defuns)
