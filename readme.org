@@ -1243,9 +1243,7 @@ Useful local copies of elisp programs.
 (use-package nxml-eldoc
   :straight nil
   :load-path "site-lisp/nxml-eldoc"
-  :commands turn-on-nxml-eldoc
-  :init
-  (t/add-hook 'nxml-mode-hook 'turn-on-nxml-eldoc))
+  :commands turn-on-nxml-eldoc)
 
 (use-package json-path-eldoc
   :straight nil
@@ -1265,6 +1263,11 @@ Useful local copies of elisp programs.
 (use-package nxml-mode
   :straight nil
   :mode "\\.\\(xml\\|svg\\|rss\\|xsd\\|xslt\\|plist\\)$"
+  :init
+  (progn
+    (t/add-hook-defun 'nxml-mode-hook t-nxml-turn-off-slow-stuff
+                      (turn-off-smartparens-mode)
+                      (show-paren-mode nil)))
   :config
   (progn
     ;; reindent after deleting tag with C-c DEL
