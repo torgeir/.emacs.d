@@ -1278,11 +1278,14 @@ Useful local copies of elisp programs.
     (setq nxml-child-indent *t-indent-xml*)
     (require 'sgml-mode)
 
-    (defun xml-reformat ()
-      (interactive)
-      (save-excursion
-        (sgml-pretty-print (point-min) (point-max))
-        (indent-region (point-min) (point-max))))))
+    ;; fold xml
+    (add-to-list 'hs-special-modes-alist
+                 '(nxml-mode
+                   "<!--\\|<[^/>]*[^/]>"
+                   "-->\\|</[^/>]*[^/]>"
+                   "<!--"
+                   sgml-skip-tag-forward
+                   nil))))
 
 (comment
  (use-package html
