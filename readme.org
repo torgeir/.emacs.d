@@ -1831,7 +1831,7 @@ Colorize delimiters.
 
 #+begin_src emacs-lisp :results silent
 ;; refactored as suggested in https://www.reddit.com/r/emacs/comments/nlefvx/weekly_tips_and_trickso
-(defun toggle-sidebar-dired ()
+(defun t-toggle-sidebar ()
   (interactive)
   (unless t-sidebar-mode (t-sidebar-mode 1))
   (let* ((sidebar-buffer (get-buffer "*sidebar*"))
@@ -1866,7 +1866,7 @@ Colorize delimiters.
       (add-to-list 'display-buffer-alist
                    '("\\*sidebar\\*"
                      (display-buffer-in-side-window)
-                     (side . right)
+                     (side . left)
                      (window-height . fit-window-to-buffer)
                      (body-function . (lambda (window)
                                         ;; display-buffer-in-side-window already set
@@ -1876,7 +1876,6 @@ Colorize delimiters.
                                         ;; this is a know bug, so necessary yes.
                                         (add-hook 'kill-buffer-hook #'delete-window nil t)))
                      (window-parameters . ((no-other-window . t)))))
-    ;; that's a lot of display-buffer-alist :/
     (setq display-buffer-alist
           (delq (assoc "\\*sidebar\\*" display-buffer-alist)
                 display-buffer-alist))))
@@ -3108,7 +3107,7 @@ Thesaurus.
 (t/declare-prefix "f" "Files/Frame"
                   "b" 'ivy-switch-buffer
                   "f" 'counsel-find-file
-                  "l" 't-sidebar-mode
+                  "l" 't-toggle-sidebar
                   "j" 'dired-jump
                   "J" 'dired-jump-other-window
                   "d" 'delete-frame
