@@ -5,6 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:foreground "#ccc"))))
  '(Info-quoted ((t (:inherit fixed-pitch-serif :foreground "#888"))))
+ '(bookmark-face ((t (:underline "DarkOrange1"))))
  '(company-box-background ((t (:background "#21242b"))) t)
  '(dictionary-word-definition-face ((t nil)))
  '(eshell-ls-executable ((t (:inherit doom-modeline-info :weight bold))))
