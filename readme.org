@@ -1830,33 +1830,56 @@ Colorize delimiters.
 *** Directory sidebar
 
 #+begin_src emacs-lisp :results silent
+;; refactored as suggested in https://www.reddit.com/r/emacs/comments/nlefvx/weekly_tips_and_trickso
+(defun toggle-sidebar-dired ()
+  (interactive)
+  (unless t-sidebar-mode (t-sidebar-mode 1))
+  (let* ((sidebar-buffer (get-buffer "*sidebar*"))
+         (sidebar-displayed
+          (and sidebar-buffer
+               (get-buffer-window sidebar-buffer))))
+    (if sidebar-displayed
+        (kill-buffer sidebar-buffer)
+      ;; buffer may exist without being displayed
+      (and (get-buffer "*sidebar*") (kill-buffer "*sidebar*"))
+      ;; do not uses directly dired to no trigger display-buffer !
+      ;; so if you have special rules for dired, they are not executed for the sidebar.
+      ;; instead we create it in the background and display it only when it is renamed.
+      (with-current-buffer (dired-noselect ".")
+        ;; eventually hide details to get a slim version of dired
+        (dired-hide-details-mode)
+        (rename-buffer "*sidebar*"))
+      ;; select it with pop-to-buffer. uses display-buffer otherwise
+      ;; or tweak the 'select property of display-buffer-alist
+      (pop-to-buffer "*sidebar*"))))
+
+;; at this point using a mode is just about being listed
+;; in the list of modes ... you can totally skip it and only
+;; keep the tweaks of display-buffer-alist I think or melt the
+;; previous function in the mode definition
 (define-minor-mode t-sidebar-mode
   "A dired sidebar."
   :global t
   :init-value nil
   :lighter ""
-  (progn
-    (defun t/sidebar-off ()
-      (interactive)
-      (message "t-sidebar-mode: off")
-      (t-sidebar-mode 0))
-    (if t-sidebar-mode
-        (save-selected-window
-          (split-window-right)
-          (shrink-window-horizontally (truncate (* (window-width) .6)))
-          (dired ".")
-          (rename-buffer "*sidebar*")
-          (setq window-size-fixed 'width)
-          (set-window-dedicated-p (selected-window) t)
-          (set-window-parameter (selected-window) 'no-delete-other-windows t)
-          (add-hook 'kill-buffer-hook 't/sidebar-off nil t))
-      (with-current-buffer "*sidebar*"
-        (setq window-size-fixed nil)
-        (set-window-dedicated-p (selected-window) nil)
-        (set-window-parameter (selected-window) 'no-delete-other-windows nil)
-        (remove-hook 'kill-buffer-hook 't/sidebar-off t)
-        (kill-buffer-and-window)
-        ))))
+  (if t-sidebar-mode
+      (add-to-list 'display-buffer-alist
+                   '("\\*sidebar\\*"
+                     (display-buffer-in-side-window)
+                     (side . right)
+                     (window-height . fit-window-to-buffer)
+                     (body-function . (lambda (window)
+                                        ;; display-buffer-in-side-window already set
+                                        ;; set-window-dedicated-p to 'side but you ask
+                                        ;; for a stronger dedication
+                                        (set-window-dedicated-p window t)
+                                        ;; this is a know bug, so necessary yes.
+                                        (add-hook 'kill-buffer-hook #'delete-window nil t)))
+                     (window-parameters . ((no-other-window . t)))))
+    ;; that's a lot of display-buffer-alist :/
+    (setq display-buffer-alist
+          (delq (assoc "\\*sidebar\\*" display-buffer-alist)
+                display-buffer-alist))))
 #+end_src
 
 *** Jump
