@@ -56,7 +56,7 @@ Install from cygwin or https://ftp.gnu.org/gnu/emacs/windows/ or http://alpha.gn
 
 **** Fonts
 
-See ~fonts/~.
+See ~fonts/~. Also install Apple Color Emoji, e.g. with `ttf-apple-emoji` on arch.
 
 ** Bootstrap
 *** Lexical binding
