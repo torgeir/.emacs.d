@@ -165,7 +165,19 @@
         "nntp+news.gmane.io:gmane.linux.ubuntu.user.ubuntu-studio"))
 
 (t/after doom-modeline
-  (setq doom-modeline-gnus-excluded-groups (-concat t-gnus-groups-rss t-gnus-groups-news)))
+  (setq doom-modeline-gnus-excluded-groups
+        (-concat
+         t-gnus-groups-rss
+         t-gnus-groups-news
+         '("nnfolder+archive:sent.2020-10"
+           "nnfolder+archive:sent.2021-01"
+           "nnfolder+archive:sent.2021-04"
+           "nnimap+bekk:Deleted Items"
+           "nnimap+bekk:Junk Email"
+           "nnimap+gmail:[Gmail]/All Mail"
+           "nnimap+gmail:[Gmail]/Important"
+           "nnimap+gmail:[Gmail]/Spam"
+           ))))
 
 (setq gnus-subscribe-groups-done nil)
 (defvar gnus-subscribe-groups-done nil
