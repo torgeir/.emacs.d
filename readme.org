@@ -3074,7 +3074,13 @@ Thesaurus.
                   "p" 'transpose-paragraphs)
 
 (t/declare-prefix "r" "Registers"
-                  "r" 'evil-show-registers)
+                  "r" 'counsel-register
+                  "a" 'append-to-register
+                  "p" 'point-to-register
+                  "j" 'jump-to-register
+                  "w" 'window-configuration-to-register
+                  "f" 'frameset-to-register
+                  "e" 'evil-show-registers)
 
 (t/declare-prefix "f" "Files/Frame"
                   "b" 'ivy-switch-buffer
