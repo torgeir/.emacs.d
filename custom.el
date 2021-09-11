@@ -48,8 +48,8 @@
  '(rainbow-delimiters-unmatched-face ((t (:foreground "#e0211d" :overline nil :underline t))))
  '(spray-accent-face ((t (:inherit spray-base-face :foreground "#51afef"))))
  '(terraform--resource-name-face ((t nil)))
- '(twittering-uri-face ((t (:underline nil))))
- '(twittering-username-face ((t (:foreground "#98da65" :underline nil)))))
+ '(twittering-uri-face ((t (:foreground "gray30" :underline nil))))
+ '(twittering-username-face ((t (:foreground "#98da75" :underline nil)))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
