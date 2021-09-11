@@ -1266,7 +1266,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (message ip)
     (kill-new ip)))
 
-
 (defun t/transparency (value)
   "Sets the transparency of the frame window. 0=transparent/100=opaque"
   (interactive (list
