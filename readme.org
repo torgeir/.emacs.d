@@ -3676,7 +3676,8 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
          (c++-mode . lsp)
          (clojure-mode . lsp)
          (clojurec-mode . lsp)
-         (clojurescript-mode . lsp))
+         (clojurescript-mode . lsp)
+         (typescript-mode . lsp))
   :init
   (setq lsp-log-io t
         lsp-auto-guess-root t
@@ -3728,82 +3729,12 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
       (kbd "M-<return>") 'lsp-execute-code-action)))
 
 (use-package typescript-mode
-  :mode "\\.\\(ts\\|tsx\\)$"
-  :hook (prettier-mode lsp)
+  :mode "\\.\\(js\\|jsx\\|ts\\|tsx\\)$"
   :init
   (setq-default typescript-indent-level 2))
 
 (use-package lsp-ivy
   :commands (lsp-ivy-workspace-symbol lsp-ivy-global-workspace-symbol))
-
-(use-package js2-mode
-  :mode "\\.\\(js\\|jsx\\)$"
-  :interpreter "node"
-  :init
-  (progn
-    ;; Let flycheck handle parse errors
-    (setq-default js2-show-parse-errors nil
-                  js2-strict-missing-semi-warning nil
-                  js2-strict-inconsistent-return-warning nil
-                  js2-strict-var-hides-function-arg-warning nil
-                  js2-strict-cond-assign-warning nil
-                  js2-strict-var-redeclaration-warning nil
-                  js2-strict-trailing-comma-warning t ;; jshint does not warn about this now for some reason
-                  js2-global-externs '("module" "require" "describe" "it" "window" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON" "process")
-                  js2-highlight-level 3
-                  js-indent-level *t-indent*
-                  js-switch-indent-offset *t-indent*
-                  js2-basic-offset *t-indent*)
-
-    (t/declare-prefix-for-mode 'rjsx-mode
-                               "h" "Help"
-                               "h" 'lsp-describe-thing-at-point)
-
-    (t/declare-prefix-for-mode 'js2-mode
-                               "h" "Help"
-                               "h" 'lsp-describe-thing-at-point)
-
-    (t/declare-prefix-for-mode 'js2-mode
-                               "me" "Evaluate"
-                               "b" 't/send-buffer-to-nodejs-repl-process
-                               "r" 't/send-region-to-nodejs-repl-process)
-
-    (t/add-hook-defun 'js2-mode-hook t/js2-mode-hook
-                      (flycheck-mode)
-                      (turn-on-smartparens-mode)
-                      (js2-imenu-extras-mode)
-                      (t/when-ext "ts" (typescript-mode))
-                      (lsp)
-                      (t/set-company-backends 'company-lsp)))
-
-  :config
-  (progn
-    (unbind-key "M-j" js2-mode-map)
-    (unbind-key "M-." js2-mode-map)))
-
-(use-package js2-refactor
-  :after js2-mode
-  :init
-  (t/declare-prefix "mr" "Refactor"
-                    "ef" 'js2r-extract-function
-                    "em" 'js2r-extract-method
-                    "ev" 'js2r-extract-var
-                    "ec" 'js2r-extract-const
-                    "ip" 'js2r-introduce-parameter
-                    "iv" 'js2r-inline-var
-                    "rv" 'js2r-rename-var
-
-                    "ao" 'js2r-arguments-to-object
-                    "co" 'js2r-contract-object
-                    "eo" 'js2r-expand-object
-                    "lp" 'js2r-localize-parameter
-                    "tf" 'js2r-toggle-function-expression-and-declaration
-                    "vt" 'js2r-var-to-this)
-  :config
-  (t/add-hook 'multiple-cursors-mode-hook 'evil-emacs-state)
-  (bind-key "<return>" (t/lambda nil
-                         (multiple-cursors-mode -1)
-                         (evil-normal-state)) mc/keymap))
 
 (use-package cdnjs
   :commands (cdnjs-install-gocdnjs
@@ -3816,6 +3747,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 
 (use-package prettier-js
   :commands prettier-js-mode
+  :hook ((typescript-mode js-mode css-mode json-mode) . t/prettier-hook)
   :init
   (progn
     (setq prettier-js-args '("--jsx-bracket-same-line")
@@ -3825,18 +3757,9 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
       (prettier-js-mode -1)
       (prettier-js-mode))
 
-    (t/add-hook 'js-mode-hook #'t/prettier-hook)
-    (t/add-hook 'js2-mode-hook #'t/prettier-hook)
-    (t/add-hook 'css-mode-hook #'t/prettier-hook)
-    (t/add-hook 'json-mode-hook #'t/prettier-hook)
-
     (defun t/disable-prettier ()
       (interactive)
       (prettier-js-mode -1))))
-
-(use-package rjsx-mode
-  :mode "\\.jsx?$"
-  :commands (rjsx-mode))
 
 (use-package indium
   :commands (indium-repl-mode
@@ -3888,21 +3811,6 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
     (defun t/overlay-indium (r)
       (cider--make-result-overlay (indium-fontify-js r) :where (point) :duration 'command))
     (setq indium-interaction-eval-node-hook (list #'t/overlay-indium))))
-
-(use-package nodejs-repl
-  :commands nodejs-repl
-  :init
-  (progn
-    (t/after js2-mode
-      (t/add-hook-defun '(js2-mode-hook) t/nodejs-repl-hook
-                        (t/evil-ex-define-cmd-local "repl" 'nodejs-repl))))
-  :config
-  (progn
-    (defun t/try-quit-nodejs-repl ()
-      (interactive)
-      (t/term-kill-if-finished 'comint-delchar-or-maybe-eof))
-    (t/bind-in 'nodejs-repl-mode-map
-      "C-d" #'t/try-quit-nodejs-repl)))
 #+END_SRC
 
 *** JSON
