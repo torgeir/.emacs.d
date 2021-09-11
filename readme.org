@@ -345,6 +345,12 @@ A modern icon set.
 (use-package all-the-icons :hook after-init-hook)
 #+END_SRC
 
+Remember to install the fonts used by doom modeline on the first install
+
+#+begin_quote
+(call-interactively 'all-the-icons-install-fonts)
+#+end_quote
+
 Rid the insanity. Well, try at least.
 
 #+BEGIN_SRC emacs-lisp :results silent
