@@ -5073,7 +5073,7 @@ Reselect visual when moving multiple lines.
       (show-children)
       (call-interactively 'evil-scroll-line-to-center))))
 
-(bind-keys
+(comment bind-keys
  :map org-mode-map
  ("C-c C-p" . t/org-prev)
  ("C-c C-n" . t/org-next))
