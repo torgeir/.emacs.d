@@ -62,9 +62,12 @@
   "Timer to trigger highlighting.")
 
 (defun idle-highlight-in-visible-buffers-buffers-list ()
-  "Given a list of buffers, return buffers which are currently visible."
+  "Given a list of buffers, return which are currently visible. Ignores the minibuffer."
   (let ((buffers '()))
-    (walk-windows (lambda (w) (push (window-buffer w) buffers))) buffers))
+    (walk-windows (lambda (w)
+                    (when (not (equal w (minibuffer-window)))
+                      (push (window-buffer w) buffers))))
+    buffers))
 
 (defun idle-highlight-in-visible-buffers-unhighlight-word ()
   "Remove highlighting from all visible buffers."
@@ -98,7 +101,10 @@
                      (run-with-idle-timer idle-highlight-in-visible-buffers-idle-time
                                           :repeat 'idle-highlight-in-visible-buffers-highlight-word-at-point)))
              (set (make-local-variable 'idle-highlight-in-visible-buffers-regexp) nil))
-    (idle-highlight-in-visible-buffers-unhighlight-word)))
+    (progn
+      (cancel-timer idle-highlight-in-visible-buffers-global-timer)
+      (setq idle-highlight-in-visible-buffers-global-timer nil)
+      (idle-highlight-in-visible-buffers-unhighlight-word))))
 
 (provide 'idle-highlight-in-visible-buffers-mode)
 ;;; idle-highlight-in-visible-buffers-mode.el ends here

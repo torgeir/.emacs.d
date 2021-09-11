@@ -2564,12 +2564,12 @@ Highlight todos across all programming modes.
              highlight-symbol-prev)
   :init
   (progn
-    (setq highlight-symbol-idle-delay 0.5)
+    (setq highlight-symbol-idle-delay 0.5
+          idle-highlight-in-visible-buffers-idle-time 0.5)
     (t/add-hook 'prog-mode-hook 'highlight-symbol-mode))
-:config
-;; highlight-symbol uses hl-line-face
-(require 'hl-line)
-(idle-highlight-in-visible-buffers-mode))
+  :config
+  ;; highlight-symbol uses hl-line-face
+  (require 'hl-line))
 #+END_SRC
 
 **** Numbers
@@ -3054,6 +3054,7 @@ Thesaurus.
                   "f" 't/cycle-font
                   "d" 't/toggle-distraction-free
                   "w" 'darkroom-mode
+                  "h" 'idle-highlight-in-visible-buffers-mode
                   "F" 'toggle-frame-fullscreen
                   "t" 't/load-theme-cycle
                   "T" 't/transparency
