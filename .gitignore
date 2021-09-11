@@ -58,3 +58,4 @@
 *.elc
 /hackernews/
 /forge-database.sqlite
+/eln-cache/
