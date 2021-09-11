@@ -1383,7 +1383,8 @@ from https://oremacs.com/swiper/
 - C-n :: next candidate
 - C-p :: prev candidate
 - C-m :: call default action and exit
-- C-m-j :: complete verbatim, without choosing selected candidate
+- C-M-j :: complete verbatim, without choosing selected candidate, e.g. to
+  rename a file to the starting part of its original name
 - M-o :: presents actions to choose from
 - C-j :: select current, continue completing. TABTAB is the same.
 - ivy-resume :: continue previous session
