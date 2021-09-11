@@ -1240,6 +1240,7 @@ Useful local copies of elisp programs.
   :commands org-export-dispatch
   :load-path "site-lisp/ox-gfm")
 
+;; don't use this for large files, e.g. like 15MB, it really brings emacs to a stall
 (use-package nxml-eldoc
   :straight nil
   :load-path "site-lisp/nxml-eldoc"
@@ -1251,6 +1252,13 @@ Useful local copies of elisp programs.
   :commands turn-on-json-path-eldoc
   :init
   (t/add-hook 'json-mode-hook 'turn-on-json-path-eldoc))
+
+(use-package idle-highlight-in-visible-buffers-mode
+  :straight nil
+  :load-path "site-lisp/idle-highlight-in-visible-buffers-mode"
+  :commands idle-highlight-in-visible-buffers-mode
+  :config
+  (set-face-attribute 'idle-highlight-in-visible-buffers nil :inherit 'highlight-symbol-face))
 
 (use-package sgml-mode
   :straight nil
@@ -2558,9 +2566,10 @@ Highlight todos across all programming modes.
   (progn
     (setq highlight-symbol-idle-delay 0.5)
     (t/add-hook 'prog-mode-hook 'highlight-symbol-mode))
-  :config
-  ;; highlight-symbol uses hl-line-face
-  (require 'hl-line))
+:config
+;; highlight-symbol uses hl-line-face
+(require 'hl-line)
+(idle-highlight-in-visible-buffers-mode))
 #+END_SRC
 
 **** Numbers
