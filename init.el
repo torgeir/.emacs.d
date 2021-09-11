@@ -1,5 +1,8 @@
 ;;; -*- lexical-binding: t; -*-
 
+;; TODO remove torgeir
+(setq comp-deferred-compilation-deny-list '())
+
 ;; Default to calling straight-use-package when running use-package.
 (setq straight-use-package-by-default t)
 (setq straight-check-for-modifications 'live)
