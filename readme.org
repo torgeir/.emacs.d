@@ -3053,6 +3053,7 @@ Thesaurus.
                   "D" 'toggle-debug-on-error
                   "f" 't/cycle-font
                   "d" 't/toggle-distraction-free
+                  "e" 't/toggle-dedicated-window
                   "w" 'darkroom-mode
                   "h" 'idle-highlight-in-visible-buffers-mode
                   "F" 'toggle-frame-fullscreen
@@ -3063,8 +3064,7 @@ Thesaurus.
                   "n" #'t/toggle-line-numbers
                   "r" 'nlinum-relative-toggle
                   "L" 'hl-line-mode
-                  "v" 'visual-line-mode
-                  "l" 't/toggle-dedicated-window
+                  "l" 'visual-line-mode
                   "W" 'whitespace-mode
                   "Cc" 'rainbow-mode
                   "Cd" 'rainbow-delimiters-mode)
