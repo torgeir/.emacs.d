@@ -4253,7 +4253,6 @@ notice it.
                           "Go to end of line before killing input"
                           (end-of-line))
                         (advice-add 'eshell-kill-input :before #'t/eshell-kill-input--go-to-eol)))))
-
 #+end_src
 
 **** Prompt
