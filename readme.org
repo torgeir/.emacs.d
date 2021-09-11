@@ -29,7 +29,7 @@ https://github.com/clojure-lsp/clojure-lsp#manually
 **** OS X
 
 #+BEGIN_SRC sh :results silent
-brew tap d12frosted/emacs-plus
+brew tap d12frosted/emacs-plus@28
 brew install emacs-plus --HEAD --with-natural-title-bar --without-spacemacs-icon
 brew install wordnet
 #+END_SRC
