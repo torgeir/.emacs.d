@@ -1109,8 +1109,8 @@ Custom prefix functions for defining named shortcuts accessible through evil lea
   "Declares which-key `prefix' and a display `name' for the prefix.
        Sets up keybindings for the prefix."
   (t/after which-key
-    (which-key-declare-prefixes (t/prefix-with-leader prefix) name)
-    (which-key-declare-prefixes (t/prefix-with-emacs-leader prefix) name)
+    (which-key-add-key-based-replacements (t/prefix-with-leader prefix) name)
+    (which-key-add-key-based-replacements (t/prefix-with-emacs-leader prefix) name)
     (while key
       (evil-leader/set-key (concat prefix key) fn)
       (setq key (pop bindings)
@@ -1120,8 +1120,8 @@ Custom prefix functions for defining named shortcuts accessible through evil lea
   "Declares which-key `prefix' and a display `name' for the prefix only in `mode`.
        Sets up keybindings for the prefix."
   (t/after which-key
-    (which-key-declare-prefixes-for-mode mode (t/prefix-with-leader prefix) name)
-    (which-key-declare-prefixes-for-mode mode (t/prefix-with-emacs-leader prefix) name)
+    (which-key-add-major-mode-key-based-replacements mode (t/prefix-with-leader prefix) name)
+    (which-key-add-major-mode-key-based-replacements mode (t/prefix-with-emacs-leader prefix) name)
     (while key
       (evil-leader/set-key-for-mode mode (concat prefix key) fn)
       (setq key (pop bindings)
