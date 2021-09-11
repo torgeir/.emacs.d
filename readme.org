@@ -4700,6 +4700,7 @@ General org config, didn't bother sorting it.
  org-refile-use-outline-path 'file ; enable refile to top level in file too
  org-return-follows-link t
  org-special-ctrl-k t         ; don't clear tags, etc
+ org-special-ctrl-a/e t         ; don't move past ellipsis on c-e
  org-startup-indented t ; turn on org-indent-mode
  org-support-shift-select t ; shift can be used to mark multiple lines
  org-tab-follows-link nil
