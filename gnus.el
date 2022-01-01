@@ -15,46 +15,16 @@
       gnus-use-cache t
       gnus-select-method '(nnnil "")
       nnimap-split-fancy nnmail-split-fancy
-      nnmail-split-fancy '(| ("Subject" ".*bekk.*" "bekk")
-                             ("Subject" ".*svvsaga.*" "saga")
-                             ("Subject" ".*github.*" "github")
+      nnmail-split-fancy '(| ("Subject" ".*github.*" "github")
                              "misc.misc")
       ;; Reply to mails with matching email address
       gnus-posting-styles '((".*"
                              (address (concat user-full-name " <" t-dotted-full-name "@gmail.com>"))
-                             (signature "T"))
-                            ("bekk"
-                             (address (concat user-full-name " <" t-dotted-full-name "@bekk.com>"))
-                             (organization "Bekk")
-                             ("X-Message-SMTP-Method" (concat "smtp smtp.office365.com 587 " t-dotted-full-name "@bekk.no"))))
+                             (signature "T")))
       gnus-secondary-select-methods
       '((nntp "news.gmane.io")
         (nntp "news.gwene.org")
-        (nnimap "gmail"
-                (nnimap-address "imap.gmail.com")
-                (nnimap-server-port "imaps")
-                (nnimap-stream ssl)
-                (nnimap-authinfo-file "~/.authinfo.gpg")
-                (nnimap-inbox "INBOX")
-                (nnimap-split-methods nnmail-split-fancy)
-                ;; https://sachachua.com/blog/2008/05/emacs-gnus-organize-your-mail/
-                (nnir-search-engine gmail)
-                ;; @see http://www.gnu.org/software/emacs/manual/html_node/gnus/Expiring-Mail.html
-                ;; press 'E' to eire email
-                (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
-                (nnmail-expiry-wait 90)
-                (smtpmail-smtp-server "smtp.gmail.com")
-                (smtpmail-smtp-service 587)
-                ;; Make Gnus NOT ignore [Gmail] mailboxes
-                (gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]"))
-        (nnimap "bekk"
-                (nnimap-address "outlook.office365.com")
-                (nnimap-server-port "imaps")
-                (nnimap-stream ssl)
-                (nnimap-authinfo-file "~/.authinfo.gpg")
-                (nnir-search-engine imap)
-                (smtpmail-smtp-server "smtp.office365.com")
-                (smtpmail-smtp-service 587))))
+        ))
 
 
 ;; search like in gmail in nnimap through nnir
@@ -75,6 +45,7 @@
 ;; machine smtp.gmail.com login torgeir.thoresen@gmail.com port 587 password <pwd>
 ;;
 ;; -- gpg howto --
+;; https://unix.stackexchange.com/questions/184947/how-to-import-secret-gpg-key-copied-from-one-machine-to-another
 ;; https://www.elliotblackburn.com/importing-pgp-keys-from-keybase-into-gpg/
 ;;
 ;; gpg --allow-secret-key-import --batch --import keybase-private-key
@@ -193,29 +164,16 @@
 
                   (setq gnus-topic-topology
                         '(("Gnus" visible nil nil)
-                          (("Bekk" visible nil nil))
-                          (("Gmail" visible nil nil))
                           (("News" visible nil nil))
                           (("Rss" visible nil nil))))
 
                   (unless gnus-subscribe-groups-done
-                    (let ((bekk '("nnimap+bekk:INBOX"))
-                          (gmail '("nnimap+gmail:INBOX"
-                                   "nnimap+gmail:[Gmail]/Drafts"
-                                   "nnimap+gmail:bekk"
-                                   "nnimap+gmail:saga"
-                                   "nnimap+gmail:fun"
-                                   "nnimap+gmail:github"
-                                   "nnimap+gmail:github.actions"
-                                   "nnimap+gmail:misc.misc"))
-                          (news t-gnus-groups-news)
+                    (let ((news t-gnus-groups-news)
                           (rss t-gnus-groups-rss))
                       (setq gnus-topic-alist
-                            `(("Bekk" ,@bekk)
-                              ("Gmail" ,@gmail)
-                              ("News" ,@news)
+                            `(("News" ,@news)
                               ("Rss" ,@rss)))
-                      (dolist (sub `(,@bekk ,@gmail ,@news ,@rss))
+                      (dolist (sub `(,@news ,@rss))
                         (gnus-subscribe-hierarchically sub)))
 
                     (setq gnus-subscribe-groups-done t)))
