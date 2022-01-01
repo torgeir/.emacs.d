@@ -2342,6 +2342,7 @@ from pressing R in eww mode.
     (erase-buffer)
     (insert content)
     (beginning-of-buffer)
+    (toggle-truncate-lines -1)
     (when fn (funcall fn))))
 
 (defun t/eww-readable (url &optional fn)
@@ -2363,15 +2364,10 @@ from pressing R in eww mode.
   :commands eww
   :init
   (progn
-    ;; don't truncate lines in eww-mode
-    ;;(setq shr-width nil)
+    ;; don't truncate lines in
     (defun shr-fill-text (text) text)
     (defun shr-fill-lines (start end) nil)
     (defun shr-fill-line () nil)
-
-    ;; wrap lines
-    (t/add-hook-defun 'eww-after-render-hook t/hook-eww-trunc
-                      (toggle-truncate-lines -1))
 
     ;; not to large images
     (setq shr-use-fonts nil
@@ -2407,8 +2403,7 @@ Opens the frontmost chrome url in eww.
                       "R" 'eww-readable
                       "M-p" 'backward-paragraph
                       "M-n" 'forward-paragraph
-                      "s-l" 'eww)
-                    (visual-line-mode)))
+                      "s-l" 'eww)))
 #+END_SRC
 
 *** Major modes
@@ -2664,6 +2659,7 @@ A custom function to fetch a clean view of the current news from nrk.no
          (funcall (t/micro-state (not (t/prefix-arg-universal?))
                                  "s" (t-spray-micro-state)
                                  "w" 't/browse-url-at-point
+                                 "l" 'toggle-truncate-lines
                                  "n" (t/lambda nil
                                        (when (not (eobp)) (evil-scroll-down 0)))
                                  "p" (t/lambda nil
@@ -4120,6 +4116,7 @@ notice it.
                       '("l" "ls -H $*")
                       '("lout" "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend")
                       '("md" "mkdir $1; cd $1")
+                      '("osstatus" "inxi --full --verbosity=7 --filter --no-host")
                       ;;'("merge-pdfs" "gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=merged.pdf *.pdf")
                       '("serve" "http-server -c-1 -o") ; no cache, open
                       '("showdesktop" "defaults write com.apple.finder CreateDesktop -bool true && killall Finder")
