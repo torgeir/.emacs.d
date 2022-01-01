@@ -556,7 +556,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (defun t/set-emoji-font (frame)
   "Adjust the font settings of FRAME so Emacs can display emoji properly 🚀"
-  (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
+  ;;(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
+  (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend))
 
 ;; TODO testing tweaks, remove if satisfying
 ;; (defun t/split-window-sensibly (&optional window)
