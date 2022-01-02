@@ -429,26 +429,18 @@ Don't blink cursor.
   :config (blink-cursor-mode -1))
 #+END_SRC
 
-Wrap long lines everywhere
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package simple
-  :straight nil
-  :hook (after-init . global-visual-line-mode))
-#+END_SRC
-
 Remove tooltips, ~better-defaults.el~ removes the rest of the menus.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (when window-system (tooltip-mode -1))
 #+END_SRC
 
-Show active region.
+Show active region. Wrap long lines everywhere
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package simple
   :straight nil
-  :defer 1
+  :hook (after-init . global-visual-line-mode)
   :config
   (progn
     (transient-mark-mode 0)
