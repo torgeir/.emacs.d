@@ -3024,7 +3024,7 @@ Thesaurus.
                   "M" (t/lambda nil (switch-to-buffer "*Messages*") (end-of-buffer))
                   "n" (t/lambda (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))
                   "R" #'t/toggle-regex-mode
-                  "s" 'multi-term
+                  "s" 'multi-vterm
                   "S" 'suggest
                   "w" 'eww
                   "W" (t/lambda nil
@@ -3968,6 +3968,7 @@ notice it.
 #+END_SRC
 
 ** Shell
+
 *** shell mode
 
 #+begin_src emacs-lisp :results silent
@@ -3990,6 +3991,13 @@ notice it.
                             #'t/shell-mode-kill-buffer-on-exit))))
 
 #+end_src
+*** vterm
+
+#+begin_src emacs-lisp :results silent
+(use-package term)
+(use-package multi-vterm)
+#+end_src
+
 *** multi-term
 
 #+begin_src emacs-lisp :results silent
@@ -4400,7 +4408,7 @@ PWD is not in a git repo (or the git command is not found)."
       (push "MANWIDTH=10000" process-environment)
       (pcmpl-args-process-file "man" "--" name))))
 
-#+END_SRC
+      #+END_SRC
 
 ***** pcomplete homebrew
 
@@ -5478,16 +5486,14 @@ Useful e.g. to make dired act like a directory tree sidebar
 *** ob-async
 https://github.com/astahlman/ob-async
 
-
 *** gh run watch
 
 #+begin_src emacs-lisp :results silent
 (defun t/gha ()
   (interactive)
-  (multi-term)
+  (multi-vterm)
   (term-send-raw-string "gh run watch\C-m"))
 #+end_src
-
 
 *** xref jump to selection
 
