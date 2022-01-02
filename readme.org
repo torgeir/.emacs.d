@@ -1377,6 +1377,7 @@ These actually seem to replace all my previous helm config 😱
 (use-package ivy-avy :commands ivy-avy) ;; c-' avy in ivy
 (use-package ivy-hydra :commands ivy-hydra) ;; c-o hydra in ivy
 (use-package ivy-xref
+  :defer t
   :ensure t
   :init (setq xref-show-definitions-function 'ivy-xref-show-defs
               xref-show-xrefs-function 'ivy-xref-show-xrefs))
@@ -3892,12 +3893,14 @@ notice it.
 *** Rust
 
 #+begin_src emacs-lisp :results silent
-(use-package flycheck-rust)
+(use-package flycheck-rust
+  :commands flycheck-rust-setup)
 #+end_src
 
 #+begin_src emacs-lisp :results silent
 (use-package rust-mode
   :hook ((flycheck-mode-hook . flycheck-rust-setup))
+  :mode "\\.\\(rs\\)$"
   :init
   (setq indent-tabs-mode nil
         rust-format-on-save t))
@@ -4072,13 +4075,15 @@ Try vterm for now.
 *** vterm
 
 #+begin_src emacs-lisp :results silent
-(use-package vterm)
+(use-package vterm
+  :commands vterm)
 #+end_src
 
 #+begin_src emacs-lisp :results silent
 ;; https://github.com/suonlight/multi-vterm
 (use-package multi-vterm
   :custom (multi-vterm-program "/bin/zsh")
+  :commands multi-vterm
   :config
   (progn
     (add-hook 'vterm-mode-hook (t/lambda nil
@@ -5574,8 +5579,8 @@ https://github.com/astahlman/ob-async
 
 #+begin_src emacs-lisp
 (use-package perspective
-  :config
-  (persp-mode))
+  :commands persp-mode
+  :config (persp-mode))
 #+end_src
 
 #+RESULTS:
