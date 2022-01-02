@@ -3635,7 +3635,13 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 Through the magit package https://github.com/magit/git-modes
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package git-modes :commands gitconfig-mode :mode "\\gitconfig$")
+(use-package git-modes
+  :commands (gitconfig-mode gitignore-mode)
+  :init
+  (progn
+    (add-to-list 'auto-mode-alist (cons "/.gitconfig\\'" 'gitconfig-mode))
+    (add-to-list 'auto-mode-alist (cons "/.gitignore\\'" 'gitignore-mode))
+    (add-to-list 'auto-mode-alist (cons "/.dockerignore\\'" 'gitignore-mode))))
 #+END_SRC
 
 *** Graphql
