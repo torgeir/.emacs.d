@@ -3679,6 +3679,7 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 (use-package lsp-mode
   :commands (lsp)
   :hook ((lsp-mode . lsp-enable-which-key-integration)
+         (rust-mode . lsp)
          (c++-mode . lsp)
          (clojure-mode . lsp)
          (clojurec-mode . lsp)
@@ -3882,6 +3883,19 @@ notice it.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package remark-mode :commands remark-mode)
 #+END_SRC
+*** Rust
+
+#+begin_src emacs-lisp :results silent
+(use-package flycheck-rust)
+#+end_src
+
+#+begin_src emacs-lisp :results silent
+(use-package rust-mode
+  :hook ((flycheck-mode-hook . flycheck-rust-setup))
+  :init
+  (setq indent-tabs-mode nil
+        rust-format-on-save t))
+#+end_src
 
 *** Scala
 
