@@ -3856,11 +3856,13 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
 *** Python
 
 #+begin_src emacs-lisp :results silent
-(use-package lsp-python-ms
-  :init (setq lsp-python-ms-auto-install-server t)
-  :hook (python-mode . (lambda ()
-                         (require 'lsp-python-ms)
-                         (lsp))))  ; or lsp-deferred
+;; TODO torgeir feiler etter oppgradering
+;;(use-package lsp-python-ms
+;;  :init (setq lsp-python-ms-auto-install-server t)
+;;  :hook (python-mode . (lambda ()
+;;                         ;;(require 'lsp-python-ms)
+;;                         (lsp)))
+;;  )  ; or lsp-deferred
 #+end_src
 
 If some of your files resides in a nested directory, e.g. like `template/` under
@@ -5353,7 +5355,9 @@ Doom themes are nice, so is the modeline.
   (progn
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
-    (doom-themes-visual-bell-config)))
+    ;; TODO torgeir feiler etter oppgradering
+    ;;(doom-themes-visual-bell-config)
+    ))
 
 (use-package doom-modeline
   :hook (after-init . doom-modeline-mode)
