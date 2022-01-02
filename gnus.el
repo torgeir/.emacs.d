@@ -103,7 +103,8 @@
         "nntp+news.gwene.org:gwene.com.bostonglobe.rss.bigpicture"
         "nntp+news.gwene.org:gwene.com.humanwhocodes.feeds.blog"
         "nntp+news.gwene.org:gwene.com.addyosmani"
-        "nntp+news.gwene.org:gwene.com.jonathancreame"))
+        "nntp+news.gwene.org:gwene.com.jonathancreame"
+        "nntp+news.gwene.org:gwene.com.echojs"))
 
 (setq t-gnus-groups-news
       '("nntp+news.gmane.io:gmane.comp.java.clojure.user"
