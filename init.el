@@ -29,6 +29,10 @@
   (add-to-list 'load-path "~/.emacs.d/straight/build/use-package/")
   (require 'use-package))
 
+;; TODO torgeir remove
+;; https://github.com/hlissner/doom-emacs/issues/4534
+(load "~/.emacs.d/fix-wrong-args.el" nil 'nomessage)
+
 ;; needs to come before org is loaded for straight.el to choose it instead
 (straight-use-package
  '(org-plus-contrib
