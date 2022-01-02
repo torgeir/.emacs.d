@@ -5515,6 +5515,16 @@ https://github.com/astahlman/ob-async
   (xref--show-pos-in-buf l (marker-buffer l))))
 #+end_src
 
+*** Perspective mode?
+
+#+begin_src emacs-lisp
+(use-package perspective
+  :config
+  (persp-mode))
+#+end_src
+
+#+RESULTS:
+
 ** After
 
 We're done, wrap up timing so we can se how long it took.
