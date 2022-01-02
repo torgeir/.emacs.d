@@ -130,6 +130,8 @@ Customizations go in ~custom.el~.
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-mac
 
+  (setq shell-file-name "/bin/zsh")
+
   (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
 
   ;; mouse
@@ -144,8 +146,6 @@ Customizations go in ~custom.el~.
 
         ;; bind fn to H-
         ns-function-modifier 'hyper
-
-        shell-file-name "/bin/sh" ; cause zsh makes projectile unable to find the git repo
 
         trash-directory "~/.Trash/emacs")
 
@@ -194,8 +194,8 @@ Customizations go in ~custom.el~.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (when is-linux
-  (setq t-font-size 11
-        shell-file-name "/bin/zsh")
+  (setq t-font-size 11)
+  (setq shell-file-name "/bin/zsh")
 
   (use-package exec-path-from-shell :config (exec-path-from-shell-initialize))
 
@@ -3972,18 +3972,10 @@ notice it.
     (t/add-hook-defun 'terraform-mode-hook t-hook-terraform
                       (terraform-format-on-save-mode)
                       (aggressive-indent-mode -1)
-                      (lsp)
-                      )))
+                      (lsp))))
 #+END_SRC
 
 ** Shell
-
-Set it like you mean it.
-
-#+begin_src emacs-lisp :results silent
-(setq shell-file-name "/bin/zsh"
-      explicit-shell-file-name "/bin/zsh")
-#+end_src
 
 *** vterm + multi-vterm
 
