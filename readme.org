@@ -2026,6 +2026,14 @@ A rest client interface for elasticsearch, similar to restclient
 
 **** Reddit
 
+This fixes https://github.com/ahungry/md4rd/issues/34
+
+#+BEGIN_SRC emacs-lisp :results silent
+(use-package cl-extra :straight (:type built-in))
+#+END_SRC
+
+This installs the package
+
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package md4rd
   :commands md4rd
