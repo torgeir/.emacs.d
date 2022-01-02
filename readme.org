@@ -3957,14 +3957,8 @@ notice it.
     (t/add-hook-defun 'terraform-mode-hook t-hook-terraform
                       (terraform-format-on-save-mode)
                       (aggressive-indent-mode -1)
-                      (lsp)))
-  :config
-  (progn
-    (require 'lsp)
-    (lsp-register-client
-     (make-lsp-client :new-connection (lsp-stdio-connection '("/usr/local/Cellar/terraform-ls/0.16.1/bin/terraform-ls" "serve"))
-                      :major-modes '(terraform-mode)
-                      :server-id 'terraform-ls))))
+                      (lsp)
+                      )))
 #+END_SRC
 
 ** Shell
