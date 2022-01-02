@@ -3993,90 +3993,10 @@ Set it like you mean it.
       explicit-shell-file-name "/bin/zsh")
 #+end_src
 
-*** shell mode
-
-Try vterm for now.
+*** vterm + multi-vterm
 
 #+begin_src emacs-lisp :results silent
-;;(use-package shell
-;;  :straight nil
-;;  :hook shell-mode-hook
-;;  :init
-;;  (progn
-;;    (t/add-hook 'shell-mode-hook #'t/shell-mode-hook))
-;;  :config
-;;  (progn
-;;    (defun t/shell-mode-kill-buffer-on-exit (process state)
-;;      (shell-write-history-on-exit process state)
-;;      (when (string-match "\\(finished\\|exited\\)" (buffer-string))
-;;        (kill-buffer-and-window)))
-;;
-;;    (defun t/shell-mode-hook ()
-;;      (set-process-sentinel (get-buffer-process (current-buffer))
-;;                            #'t/shell-mode-kill-buffer-on-exit))))
-#+end_src
-
-*** multi-term
-
-Try vterm for now.
-
-#+begin_src emacs-lisp :results silent
-;;(use-package multi-term
-;;  :commands multi-term
-;;  :hook term-mode-hook
-;;  :init
-;;  (progn
-;;    (defun t/term-mode-hook ()
-;;      (defun term-window-width () 2000)
-;;      (setq truncate-lines t)
-;;      (t/highlight-logging)
-;;      (goto-address-mode)
-;;      (t/after evil
-;;        (evil-define-key 'normal term-raw-map "M-:" 'eval-expression)
-;;        (evil-define-key 'normal term-raw-map "p" 'term-paste)
-;;        (dolist (k '("C-c" ;; interrupt (kill)
-;;                     "C-z" ;; suspend
-;;                     "C-g" ;; quit
-;;                     "C-s" ;; stop output to screen
-;;                     "C-a" ;; beginning of line (bol)
-;;                     "C-e" ;; end of line (eol)
-;;                     "C-l" ;; clear
-;;                     "C-k" ;; kill from cursor
-;;                     "C-u" ;; clear to start of line
-;;                     "C-y" ;; paste/yank
-;;                     "C-b" ;; move left
-;;                     "C-f" ;; move right
-;;                     "C-h" ;; backspace
-;;                     "C-t" ;; transpose char with prev char
-;;                     "C-w" ;; delete word
-;;                     "C-r" ;; search history
-;;                     "C-n" ;; next
-;;                     "C-p" ;; prev
-;;                     ;; "C-o" ;; choose
-;;                     "TAB" ;; complete
-;;                     "C-x C-x" ;; swap cursor and bol
-;;                     ))
-;;          (eval `(evil-define-key 'insert term-raw-map (kbd ,k) 'term-send-raw)))
-;;        (evil-define-key 'normal term-raw-map (kbd "M-<backspace>") 'term-send-backward-kill-word)
-;;        (evil-define-key 'insert term-raw-map (kbd "M-<backspace>") 'term-send-backward-kill-word)
-;;        (evil-define-key 'normal term-raw-map (kbd "M-<left>") 'term-send-backward-word)
-;;        (evil-define-key 'normal term-raw-map (kbd "M-<right>") 'term-send-forward-word)
-;;        (evil-define-key 'insert term-raw-map (kbd "M-<left>") 'term-send-backward-word)
-;;        (evil-define-key 'insert term-raw-map (kbd "M-<right>") 'term-send-forward-word)
-;;        (evil-define-key 'normal term-raw-map (kbd "C-c C-k") 'term-char-mode)
-;;        (evil-define-key 'normal term-raw-map (kbd "C-c C-l") 'term-line-mode))
-;;
-;;      (t/bind-in '(evil-insert-state-local-map evil-emacs-state-local-map)
-;;        "C-d" (t/lambda
-;;                  (t/term-quit-if-finished 'term-send-eof))))
-;;    (t/add-hook 'term-mode-hook #'t/term-mode-hook)))
-#+end_src
-
-*** vterm
-
-#+begin_src emacs-lisp :results silent
-(use-package vterm
-  :commands vterm)
+(use-package vterm :commands vterm)
 #+end_src
 
 #+begin_src emacs-lisp :results silent
