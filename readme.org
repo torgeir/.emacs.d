@@ -3637,22 +3637,18 @@ Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/web
                              "r" 'fsharp-eval-region))
 #+END_SRC
 
-*** Gitconfig
+*** Gitconfig & Gitignore
+
+Through the magit package https://github.com/magit/git-modes
 
 #+BEGIN_SRC emacs-lisp :results silent
-(use-package gitconfig-mode :commands gitconfig-mode :mode "\\gitconfig$")
+(use-package git-modes :commands gitconfig-mode :mode "\\gitconfig$")
 #+END_SRC
 
 *** Graphql
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package graphql-mode :commands graphql-mode)
-#+END_SRC
-
-*** Gitignore
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package gitignore-mode :commands gitignore-mode)
 #+END_SRC
 
 *** Haskell
