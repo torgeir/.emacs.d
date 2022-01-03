@@ -2325,6 +2325,27 @@ also toggles hook to keep it on or off everywhere.
   (doom-modeline-init))
 #+END_SRC
 
+**** Focus
+
+#+begin_src emacs-lisp :results silent
+(use-package focus
+  :hook (prog-mode)
+  :init
+  (setq focus-mode-to-thing
+        '((prog-mode . paragraph)
+          (text-mode . sentence)))
+  :config
+  (t/declare-prefix "t" "Toggle"
+                    "c" (t/micro-state
+                         nil
+                         "c" 'focus-mode
+                         "t" 'focus-change-thing
+                         "n" 'focus-next-thing
+                         "p" 'focus-prev-thing
+                         "P" 'focus-pin
+                         "U" 'focus-unpin)))
+#+end_src
+
 *** Web browser
 
 **** eww
