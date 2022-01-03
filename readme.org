@@ -4745,10 +4745,10 @@ Clean export stamp.
 
 Make org-goto play nice with counsel.
 
-#+BEGIN_SRC elisp-mode :results silent
+#+begin_src emacs-lisp :results silent
 (setq org-goto-interface 'outline-path-completion)
 (setq org-outline-path-complete-in-steps nil)
-#+END_SRC
+#+end_src
 
 *** Initialize
 
@@ -5488,23 +5488,25 @@ https://github.com/astahlman/ob-async
 *** xref jump to selection
 
 #+begin_src emacs-lisp
-(comment (let ((l (xref-location-marker
-          (xref-make-file-location
-           "/home/torgeir/.config/emacs/test-files/index.js"
-           27
-           11))))
-  (xref--show-pos-in-buf l (marker-buffer l))))
+(comment
+
+ (let ((l (xref-location-marker
+           (xref-make-file-location
+            (t/user-emacs-file "test-files/index.js")
+            27
+            11))))
+   (xref--show-pos-in-buf l (marker-buffer l)))
+
+ )
 #+end_src
 
 *** Perspective mode?
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 (use-package perspective
   :commands persp-mode
   :config (persp-mode))
 #+end_src
-
-#+RESULTS:
 
 ** After
 
