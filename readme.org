@@ -4649,7 +4649,6 @@ Confirming and exiting src code blocks is much faster like this.
 (bind-key "\C-c\C-c" 'org-edit-src-exit 'org-src-mode-map)
 #+END_SRC
 
-
 *** Archiving
 
 Handy function to clear out all completed tasks in file.
@@ -4729,8 +4728,10 @@ Clean export stamp.
   (concat "* TODO %? :url:%^G\n\n%i\n" (elfeed-entry-link elfeed-show-entry)))
 
 (setq org-capture-templates
-      `(("t" "Task" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n" :prepend t)
-        ("s" "Saga" entry (file+olp ,(t/user-dropbox-folder "org/bekk/saga.org") "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
+      `(;;("t" "Task" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n" :prepend t)
+        ("t" "Task" entry (file+olp org-default-notes-file "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
+        ("s" "Saga" entry (file+olp ,(t/user-dropbox-folder "org/saga.org") "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
+        ("b" "bekk" entry (file+olp ,(t/user-dropbox-folder "org/bekk.org") "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
         ("d" "Shared calendar event" entry (file ,(t/user-dropbox-folder "org/gcal/delt.org")) "* %?\n" :prepent t)
         ("l" "Link" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\nLink: %a" :prepend t)
         ("f" "File" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t)
@@ -4779,9 +4780,9 @@ Make org-goto play nice with counsel.
                   "a" 'org-agenda
                   "A" 't/org-archive-done-tasks
                   "i" 'org-info
-                  "b" (t/lambda (find-file (t/user-dropbox-folder "org/bekk/bekk.org")))
+                  "b" (t/lambda (find-file (t/user-dropbox-folder "org/bekk.org")))
                   "h" (t/lambda (find-file (t/user-dropbox-folder "org/home.org")))
-                  "s" (t/lambda (find-file (t/user-dropbox-folder "org/bekk/saga.org")))
+                  "s" (t/lambda (find-file (t/user-dropbox-folder "org/saga.org")))
                   "ns" 'org-narrow-to-subtree
                   "ne" 'org-narrow-to-element
                   "nb" 'org-narrow-to-block
