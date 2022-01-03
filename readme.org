@@ -1509,6 +1509,12 @@ A gist interface for emacs.
              gist-region-private))
 #+END_SRC
 
+*** Helm hunks
+
+#+begin_src emacs-lisp :results silent
+(use-package helm-hunks)
+#+end_src
+
 *** Magit and Forge
 
 The only git client you will ever need.
