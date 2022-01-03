@@ -471,8 +471,8 @@ Above what sizes can the window split?
 
 ;; not so smart now, was it
 (comment (defadvice split-window (after move-point-to-new-window activate)
-          "Moves the point to the newly created window after splitting."
-          (other-window 1)))
+           "Moves the point to the newly created window after splitting."
+           (other-window 1)))
 #+END_SRC
 
 Don't save desktop automatically, for now, but configure it for manual save /
@@ -2306,7 +2306,9 @@ Edit csv, transpose columns, delete columns, sort
   :init (setq csv-separators '(";")))
 #+END_SRC
 
-*** Distraction free w/darkroom
+*** Distraction free
+
+**** Darkroom
 
 Darkroom everywhere, but without the font size increase. Toggle it with SPC td,
 also toggles hook to keep it on or off everywhere.
@@ -3694,7 +3696,7 @@ Through the magit package https://github.com/magit/git-modes
       "Run gradlew for this project."
       (interactive "sCommand: ")
       (let ((default-directory
-              (locate-dominating-file buffer-file-name "gradlew"))
+             (locate-dominating-file buffer-file-name "gradlew"))
             (compilation-read-command nil)
             (compile-command (format "./gradlew %s" command)))
         (call-interactively #'compile)))))
@@ -4379,7 +4381,7 @@ PWD is not in a git repo (or the git command is not found)."
       (while (and (pcomplete-match "" 'last)
                   (pcomplete-match "-s" 'last -1)) (pcomplete-here '("HUP" "SIGHUP" "SIGINT" "SIGKILL" "SIGTERM" "SIGSTOP")))
       (while (pcomplete-here* (-map 's-trim (-> (shell-command-to-string "ps -eo pid | grep -v PID")
-                                              (split-string "\n"))))))
+                                                (split-string "\n"))))))
 
     ;; pcomplete example
     (defun pcomplete/torgeir ()
@@ -4409,7 +4411,7 @@ PWD is not in a git repo (or the git command is not found)."
       (push "MANWIDTH=10000" process-environment)
       (pcmpl-args-process-file "man" "--" name))))
 
-      #+END_SRC
+#+END_SRC
 
 ***** pcomplete homebrew
 
@@ -5099,9 +5101,9 @@ Reselect visual when moving multiple lines.
       (call-interactively 'evil-scroll-line-to-center))))
 
 (comment bind-keys
- :map org-mode-map
- ("C-c C-p" . t/org-prev)
- ("C-c C-n" . t/org-next))
+         :map org-mode-map
+         ("C-c C-p" . t/org-prev)
+         ("C-c C-n" . t/org-next))
 #+end_src
 *** Clock
 
@@ -5158,7 +5160,7 @@ Save org mode buffers after refile.
     (setq t-org-file-save-since-last-idle nil)
     (message "Syncing agenda... done"))
   ;;(t/jump-to-org-agenda)
-)
+  )
 
 (defun t/org-export-calendars ()
   "Export given set of calendars to ical files, so you can subscribe to their dropbox links in ical.
