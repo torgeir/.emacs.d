@@ -1579,6 +1579,9 @@ machine api.github.com login torgeir^forge password <access-token>
                   "c" #'t/clone)
 
 (t/declare-prefix "gh" "Hunk"
+                  "h" 'helm-hunks
+                  "H" 'helm-hunks-current-buffer
+                  "S" 'helm-hunks-staged
                   "n" 'git-gutter+-next-hunk
                   "N" 'git-gutter+-previous-hunk
                   "C" 'git-gutter+-stage-and-commit
