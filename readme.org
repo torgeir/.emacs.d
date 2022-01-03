@@ -4610,7 +4610,7 @@ running ~e some-file.el~ on the command line.
   :config
   (progn
     (unless (fboundp 'server-running-p) (require 'server))
-    (unless (server-running-p) (server-mode))
+    (unless (server-running-p) (setq server-name "torgemacs") (server-mode))
     (t/add-hook 'server-visit-hook 'server-remove-kill-buffer-hook)
     (t/add-hook-defun
      'server-switch-hook t-server-visit-hook
@@ -4620,6 +4620,13 @@ running ~e some-file.el~ on the command line.
        (bind-key "C-c C-k" (t/lambda (server-kill-buffer)) evil-insert-state-local-map)
        (bind-key "C-c C-c" (t/lambda nil (save-buffer) (server-done)) evil-insert-state-local-map)))))
 #+END_SRC
+
+Why the ~server-name~? So that alfred (on os x) can bring it back, give it
+focus and call up org capture with
+
+#+begin_quote
+emacsclient -s torgemacs -e "(progn (select-frame-set-input-focus (selected-frame)) (org-capture))"
+#+end_quote
 
 ** Org
 *** Src code blocks
