@@ -29,7 +29,7 @@
  '(highlight-symbol-face ((t (:inherit hl-line))))
  '(hl-line ((t (:extend t :background "#202020"))))
  '(holiday ((t (:foreground "OliveDrab3"))))
- '(ivy-current-match ((t (:extend t :background "#2f2157"))))
+ '(ivy-current-match ((t (:extend t :background "#3f2157"))))
  '(js2-external-variable ((t nil)))
  '(lazy-highlight ((t (:background "#2266A0" :foreground "#DFDFDF" :weight bold))))
  '(lsp-face-highlight-read ((t (:background "#222" :foreground "#DFDFDF" :weight normal))))
