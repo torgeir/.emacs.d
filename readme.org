@@ -696,7 +696,7 @@ line) lisp aware, so it does not delete trailing parens.
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package evil-cleverparens
   :diminish evil-cleverparens-mode
-  :hook ((emacs-lisp-mode clojure-mode) . evil-cleverparens-mode)
+  :hook ((org-mode emacs-lisp-mode clojure-mode) . evil-cleverparens-mode)
   :init
   (progn
     (t/add-hook-defun 'evil-cleverparens-enabled-hook t-evil-cp-mode-hook
