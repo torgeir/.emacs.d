@@ -3079,21 +3079,21 @@ Thesaurus.
                   "U" 't/upgrade-packages)
 
 (t/declare-prefix "t" "Toggle"
-                  "D" 'toggle-debug-on-error
-                  "f" 't/cycle-font
                   "d" 't/toggle-distraction-free
+                  "D" 'toggle-debug-on-error
                   "e" 't/toggle-dedicated-window
+                  "f" 't/cycle-font
+                  "F" 'focus-read-only-mode
                   "w" 'darkroom-mode
                   "h" 'idle-highlight-in-visible-buffers-mode
-                  "F" 'toggle-frame-fullscreen
+                  "H" 'hl-line-mode
                   "t" 't/load-theme-cycle
                   "T" 't/transparency
                   "m" 'imenu-list-smart-toggle
                   "M" 'menu-bar-mode
                   "n" #'t/toggle-line-numbers
-                  "r" 'nlinum-relative-toggle
-                  "L" 'hl-line-mode
-                  "l" 'visual-line-mode
+                  "l" 'nlinum-relative-toggle
+                  "L" 'visual-line-mode
                   "W" 'whitespace-mode
                   "Cc" 'rainbow-mode
                   "Cd" 'rainbow-delimiters-mode)
