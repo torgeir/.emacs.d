@@ -5242,7 +5242,6 @@ Blank line before new entries with text, but not headings following other headin
                     "C-<return>" 't/org-insert-heading-respect-content-dwim
                     "C-S-<return>" 't/org-insert-todo-heading-respect-content-dwim))
 #+END_SRC
-
 *** Yasnippet
 
 #+BEGIN_SRC emacs-lisp :results silent
