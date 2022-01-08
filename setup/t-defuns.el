@@ -1,5 +1,7 @@
+;;; t-defuns.el --- first line summary
 ;;; t-defuns.el -*- lexical-binding: t; -*-
 (defun t/exec-org-block (name vars)
+  "Excecute `NAME'd org block."
   (save-excursion
     (goto-char (org-babel-find-named-block name))
     (org-babel-execute-src-block nil
@@ -29,7 +31,7 @@
   (evil-ex-define-cmd cmd function))
 
 (defun t/send-buffer-to-scala-repl ()
-  "Send buffer to ensime repl, starts it if its not running"
+  "Send buffer to ensime repl, starts it if its not running."
   (interactive)
   (if (ensime-inf-process-live-p ensime-inf-buffer-name)
       (ensime-inf-eval-buffer)
@@ -39,7 +41,7 @@
       (ensime-inf-eval-buffer))))
 
 (defun t/send-region-to-scala-repl (start end)
-  "Send region to ensime repl, starts it if its not running"
+  "Send region to ensime repl, starts it if its not running."
   (interactive "r")
   (if (ensime-inf-process-live-p ensime-inf-buffer-name)
       (ensime-inf-eval-region start end)
@@ -61,7 +63,7 @@
                (setq mode-name mode-str)))))
 
 (defun t/css-kill-value ()
-  "kills the attribute of a css property"
+  "kills the attribute of a css property."
   (interactive)
   (let ((pos (point)))
     (move-beginning-of-line 1)
@@ -73,19 +75,19 @@
       (move-to-column pos))))
 
 (defmacro t/rename-modeline (package-name mode new-name)
-  "per package modeline rename for mode"
+  "per package modeline rename for mode."
   `(eval-after-load ,package-name
      '(defadvice ,mode (after t/rename-modeline activate)
         (setq mode-name ,new-name))))
 
 (defun t/json-format ()
-  "pretty prints json in selected region"
+  "pretty prints json in selected region."
   (interactive)
   (save-excursion
     (shell-command-on-region (mark) (point) "python -m json.tool" (buffer-name) t)))
 
 (defun t/build-tags ()
-  "Build ctags file for projectile project, calls load-tags when done.
+  "Build ctags file for projectile project, call load-tags when done.
 
 Effectively runs this for the current git project, e.g:
 
@@ -95,34 +97,34 @@ The same can be done for the current folder only to place a TAGS file in it:
 
 ctags -e -R .
 
-Remember to build emacs --without-ctags and use the one from `brew' instead,
-it's the one with the correct options needed to generate ctags that emacs
+Remember to build Emacs --without-ctags and use the one from `brew' instead,
+it's the one with the correct options needed to generate ctags that Emacs
 understands."
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-   (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
-    (root (projectile-project-root))
-    (tags (shell-quote-argument (concat root "TAGS")))
-    (process (start-process-shell-command "build ctags asynchronously"
-                                          "*ctags async*"
-                                          (concat
-                                           "ctags -e -R"          ; recurse
-                                           " --options=" ctags ; use global config
-                                           " -f " tags " "     ; put it in project/TAGS
-                                           " ."                   ; in the current directory
-                                           ))))
-   (set-process-sentinel process (lambda (process event)
-                                   (t/load-tags tags)))))
+      (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
+       (root (projectile-project-root))
+       (tags (shell-quote-argument (concat root "TAGS")))
+       (process (start-process-shell-command "build ctags asynchronously"
+                                             "*ctags async*"
+                                             (concat
+                                              "ctags -e -R"          ; recurse
+                                              " --options=" ctags ; use global config
+                                              " -f " tags " "     ; put it in project/TAGS
+                                              " ."                   ; in the current directory
+                                              ))))
+    (set-process-sentinel process (lambda (process event)
+                                    (t/load-tags tags)))))
 
 (defun t/load-tags (tags)
-  "loads project tags into tag table"
+  "Loads project tags into tag table."
   (message "loading project tags..")
   (visit-tags-table tags)
   (message "project tags loaded"))
 
 (defun t/find-tag-at-point ()
-  "goes to tag at point, builds and/or loads project TAGS file first"
+  "Go to tag at point, builds and/or load project TAGS file first."
   (interactive)
   (let* ((root (projectile-project-root))
          (tags (shell-quote-argument (concat root "TAGS"))))
@@ -193,7 +195,7 @@ Version 2015-06-12"
                    name (file-name-nondirectory new-name)))))))
 
 (defun t/delete-current-buffer-file ()
-  "Removes file connected to current buffer and kills buffer."
+  "Remove file connected to current buffer and kill buffer."
   (interactive)
   (let ((filename (buffer-file-name))
         (buffer (current-buffer))
@@ -213,12 +215,12 @@ Version 2015-06-12"
   (forward-char -1))
 
 (defun t/untabify-buffer ()
-  "Remove tabs in buffer"
+  "Remove tabs in buffer."
   (interactive)
   (untabify (point-min) (point-max)))
 
 (defun t/indent-buffer ()
-  "Correctly indents a buffer"
+  "Correctly indent a buffer."
   (interactive)
   (indent-region (point-min) (point-max)))
 
@@ -277,7 +279,7 @@ Including indent-buffer, which should not be called automatically on save."
   (add-string-to-kill-ring (file-relative-name (buffer-file-name) (projectile-project-root))))
 
 (defun t/previous-window ()
-  "Skip back to previous window"
+  "Skip back to previous window."
   (interactive)
   (call-interactively 'other-window))
 
@@ -291,11 +293,11 @@ Including indent-buffer, which should not be called automatically on save."
 (make-variable-buffer-local 't/cursors-direction)
 
 (defun t/cursors-direction-is-up ()
-  "Returns t if the current cursor movement direction is 'up."
+  "Return t if the current cursor movement direction is 'up."
   (eq t/cursors-direction 'up))
 
 (defun t/cursors-direction-is-down ()
-  "Returns t if the current cursor movement direction is 'down."
+  "Return t if the current cursor movement direction is 'down."
   (eq t/cursors-direction 'down))
 
 (defun t/split-window-right-and-move-there-dammit ()
@@ -320,11 +322,11 @@ Including indent-buffer, which should not be called automatically on save."
   (load-file "~/.emacs.d/init.el"))
 
 (defun t/face-color-b (attr)
-  "Get `:background' color of `attr'"
+  "Get `:background' color of `ATTR'."
   (face-attribute attr :background))
 
 (defun t/face-color-f (attr)
-  "Get `:foreground' color of `attr'"
+  "Get `:foreground' color of `ATTR'."
   (face-attribute attr :foreground))
 
 (defun t/switch-theme (theme)
@@ -388,7 +390,7 @@ Including indent-buffer, which should not be called automatically on save."
     font))
 
 (defun t/set-font (font &optional silence)
-  "Change font."
+  "Change FONT."
   (when window-system
     (let ((sized-font (concat font "-" (number-to-string *t-adjusted-font-size*))))
       (set-face-attribute 'default nil :font sized-font)
@@ -396,7 +398,7 @@ Including indent-buffer, which should not be called automatically on save."
         (message "Font: %s." sized-font)))))
 
 (defun t/reload-font ()
-  "Reload font to make e.g. font size changes have effect."
+  "Reload font to make e.g. font size change have effect."
   (interactive)
   (t/set-font (car t-fonts) t))
 
@@ -450,7 +452,7 @@ Including indent-buffer, which should not be called automatically on save."
 
 (defun make-orgcapture-frame ()
   "@torgeir: credits https://github.com/jjasghar/alfred-org-capture/blob/master/el/alfred-org-capture.el
-  Create a new frame and run org-capture."
+Create a new frame and run org-capture."
   (interactive)
   (make-frame '((name . "remember") (width . 80) (height . 16) (top . 400) (left . 300)))
   (select-frame-by-name "remember")
@@ -473,6 +475,7 @@ Including indent-buffer, which should not be called automatically on save."
   (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
 
 (defun t/prefix-arg-universal? ()
+  "Check if the function was called with the c-u universal prefix."
   (equal '(4) current-prefix-arg))
 
 (defun t/indent-after-paste (fn &rest args)
@@ -495,7 +498,7 @@ Including indent-buffer, which should not be called automatically on save."
     (comint-truncate-buffer)))
 
 (defun t/uniquify-lines ()
-  "Remove duplicate adjacent lines in region or current buffer"
+  "Remove duplicate adjacent lines in region or current buffer."
   (interactive)
   (save-excursion
     (save-restriction
@@ -506,7 +509,7 @@ Including indent-buffer, which should not be called automatically on save."
           (replace-match "\\1"))))))
 
 (defun t/sort-lines ()
-  "Sort lines in region or current buffer"
+  "Sort lines in region or current buffer."
   (interactive)
   (let ((beg (if (region-active-p) (region-beginning) (point-min)))
         (end (if (region-active-p) (region-end) (point-max))))
@@ -524,7 +527,7 @@ Repeated invocations toggle between the two most recently open buffers."
   (switch-to-buffer (get-buffer-create "*scratch*")))
 
 (defun t/shorten-directory (dir max-length)
-  "Show up to `max-length' characters of a directory name `dir'."
+  "Show up to `MAX-LENGTH' characters of a directory name `DIR'."
   (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
         (output ""))
     (when (and path (equal "" (car path)))
@@ -555,7 +558,7 @@ Repeated invocations toggle between the two most recently open buffers."
           (format "/%s" (mapconcat 'identity path "/")))))))
 
 (defun t/set-emoji-font (frame)
-  "Adjust the font settings of FRAME so Emacs can display emoji properly 🚀"
+  "Adjust the font settings of FRAME so Emacs can display emoji properly 🚀."
   ;;(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
   (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend))
 
@@ -578,11 +581,11 @@ Example: 2010-11-29T23:23:35-08:00"
     (format-time-string "%z"))))
 
 (defun t/date-time-for-filename ()
-  "Return date-time iso 8601 string suitable for filename"
+  "Return date-time iso 8601 string suitable for filename."
   (replace-regexp-in-string ":" "." (t/date-time)))
 
 (defun t/elpa-backup-directory ()
-  "Returns the directory name of an elpa backup that would run now."
+  "Return the directory name of an elpa backup that would run now."
   (locate-user-emacs-file (format "elpa-backups/elpa-%s"
                                   (t/date-time-for-filename))))
 
@@ -605,20 +608,20 @@ Example: 2010-11-29T23:23:35-08:00"
   (paradox-upgrade-packages))
 
 (defun t/current-line-ends-in-comma ()
-  "Return whether the current line is suffixed with ','"
+  "Return whether the current line is suffixed with ','."
   (save-excursion
     (end-of-line)
     (looking-back ",\s*")))
 
 (defun t/prev-line-ends-in-comma ()
-  "Return whether the current line is suffixed with ','"
+  "Return whether the current line is suffixed with ','."
   (save-excursion
     (forward-line -1)
     (end-of-line)
     (looking-back ",\s*")))
 
 (defun t/next-line-ends-in-comma ()
-  "Return whether the current line is suffixed with ','"
+  "Return whether the current line is suffixed with ','."
   (save-excursion
     (forward-line)
     (end-of-line)
@@ -676,7 +679,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (org-redisplay-inline-images)))))
 
 (defun t/project-root ()
-  "Get project root without throwing"
+  "Get project root without throwing."
   (let (projectile-require-project-root strict-p)
     (projectile-project-root)))
 
@@ -699,19 +702,19 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (kill-buffer-and-window)))
 
 (defun t/grab-chrome-url ()
-  "Grab the frontmost url out of chrome using `org-mac-grab-link'"
+  "Grab the frontmost url out of chrome using `org-mac-grab-link'."
   (interactive)
   (when-let ((chrome-url (org-mac-chrome-get-frontmost-url))
              (_ (string-match "\\\[\\\[\\(.*\\)\\\]\\\[" chrome-url)))
     (match-string 1 chrome-url)))
 
 (defun t/browse-chrome-url-in-eww ()
-  "Open the frontmost chrome url in `eww'. "
+  "Open the frontmost chrome url in `eww'."
   (interactive)
   (eww (t/grab-chrome-url)))
 
 (defun t/get-url (url)
-  "Get url synchronously."
+  "Get URL synchronously."
   (with-current-buffer (url-retrieve-synchronously url)
     (buffer-string)))
 
@@ -848,13 +851,13 @@ If FILEXT is provided, return files with extension FILEXT instead."
           (when (> matches 0) matches))))))
 
 (defun t/get-string-from-file (file-path)
-  "Return `file-path's file content."
+  "Return `FILE-PATH's file content."
   (with-temp-buffer
     (insert-file-contents file-path)
     (buffer-string)))
 
 (defun t/re-seq (regexp string)
-  "Get a list of all regexp matches (from the first group) in a string"
+  "Get a list of all REGEXP matches (from the first group) in a string."
   (save-match-data
     (let ((pos 0)
           matches)
@@ -1014,7 +1017,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (t (message "Can't unbind %s, not a fboundp or symbolp" fn-or-s))))
 
 (defun t/add-to-list (l item-or-items)
-  "Adds items to the list `l'."
+  "Adds items to the list `L'."
   (if (listp item-or-items)
       (dolist (item item-or-items) (add-to-list l item t))
     (add-to-list l item-or-items))
@@ -1107,7 +1110,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (with-no-warnings (font-lock-fontify-buffer)))))
 
 (defun t/clone (repo)
-  "Clone a github repo to `~/Code/<repo-name>'."
+  "Clone a github REPO to `~/Code/<repo-name>'."
   (interactive "sClone repository: ")
   (require 'magit)
   (when-let* ((repo-name (or (and (s-starts-with? "https://github.com" repo)
@@ -1124,17 +1127,17 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (dired dir)))
 
 (defun t/set-company-backends (&rest backends)
-  "Set company backends."
+  "Set company BACKENDS."
   (make-local-variable 'company-backends)
   (setq-local company-backends backends))
 
 (defun t/add-company-backends (&rest backends)
-  "Add list of grouped company backends."
+  "Add list of grouped company BACKENDS."
   (make-local-variable 'company-backends)
   (setq-local company-backends (t/company-backends backends)))
 
 (defun t/add-company-backends-hook (mode-hook &rest backends)
-  "Add list of grouped company backends for `mode-hook'."
+  "Add list of grouped company BACKENDS for `MODE-HOOK'."
   (add-hook mode-hook
             (lambda nil
               (apply 't/add-company-backends backends))))
@@ -1256,7 +1259,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (message "no suitable window to switch to"))))
 
 (defun t/safe-restart-emacs ()
-  "Restart emacs if config parses correctly."
+  "Restart Emacs if config parse correctly."
   (interactive)
   (if (eq last-command this-command)
       (save-buffers-kill-terminal)
@@ -1281,7 +1284,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
           (search-backward "Error!"))))))
 
 (defun t/word-at-point ()
-  "Returns word under cursor."
+  "Return word under cursor."
   (thing-at-point 'word t))
 
 (defun t/ip ()
@@ -1291,7 +1294,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (kill-new ip)))
 
 (defun t/transparency (value)
-  "Sets the transparency of the frame window. 0=transparent/100=opaque"
+  "Sets the transparency of the frame window. 0=transparent/100=opaque."
   (interactive (list
                 (string-to-number
                  (read-string (format "Transparency Value 0 - 100 opaque: " (thing-at-point 'symbol))
@@ -1348,11 +1351,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
 
 
 (defun t/complete-with-helm-then (list fn)
-  "Complete from list with helm, e.g. (t/complete-with-helm-then '(one two) 'insert)"
+  "Complete from LIST with helm, e.g. (t/complete-with-helm-then '(one two) 'insert)."
   (interactive)
   (helm :sources (helm-build-sync-source "Choose from list."
-                                         :action fn
-                                         :candidates list)))
+                   :action fn
+                   :candidates list)))
 
 
 (defun t/locally-disable-cursor ()
@@ -1371,52 +1374,52 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (forward-line (random (count-lines (point-min) (point-max)))))
 
 (defun t/decrease-frame-width ()
-  "Decrease emacs frame size horizontally"
+  "Decrease Emacs frame size horizontally."
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-width frame (- (frame-width frame) 4))))
 
 (defun t/increase-frame-width ()
-  "Increase emacs frame size horizontally"
+  "Increase Emacs frame size horizontally."
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-width frame (+ (frame-width frame) 4))))
 
 (defun t/decrease-frame-height ()
-  "Decrease emacs frame size vertically"
+  "Decrease Emacs frame size vertically."
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-height frame (- (frame-height frame) 4))))
 
 (defun t/increase-frame-height ()
-  "Increase emacs frame size vertically"
+  "Increase Emacs frame size vertically."
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-height frame (+ (frame-height frame) 4))))
 
 (defun t/move-frame-right ()
-  "Moves emacs frame right"
+  "Move Emacs frame right."
   (interactive)
   (let* ((frame (selected-frame))
          (left (frame-parameter frame 'left)))
     (set-frame-parameter frame 'left (+ left 40))))
 
 (defun t/move-frame-left ()
-  "Moves emacs frame left"
+  "Move Emacs frame left."
   (interactive)
   (let* ((frame (selected-frame))
          (left (frame-parameter frame 'left)))
     (set-frame-parameter frame 'left (- left 40))))
 
 (defun t/move-frame-up ()
-  "Moves emacs frame up"
+  "Move Emacs frame up."
   (interactive)
   (let* ((frame (selected-frame))
          (top (frame-parameter frame 'top)))
     (set-frame-parameter frame 'top (- top 40))))
 
 (defun t/move-frame-down ()
-  "Moves emacs frame down"
+  "Move Emacs frame down."
   (interactive)
   (let* ((frame (selected-frame))
          (top (frame-parameter frame 'top)))
@@ -1430,7 +1433,7 @@ ORG-MODE:  * My Task
 DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
 
 See also:  (setq org-agenda-include-diary t)
-(diary-last-day-of-month '(2 28 2017))"
+\(diary-last-day-of-month '(2 28 2017))"
 
   (require 'org-clock)
   (= (calendar-extract-day date)
@@ -1493,7 +1496,7 @@ See also:  (setq org-agenda-include-diary t)
     (xref--show-pos-in-buf l (marker-buffer l))))
 
 (defun t/format-xml ()
-  "Reformat and replace buffer content using xmllint. Install on macos using `brew install libxml2`"
+  "Reformat and replace buffer content using xmllint. Install on macos using `brew install libxml2`."
   (interactive)
   (shell-command-on-region
    (point-min)
@@ -1501,4 +1504,23 @@ See also:  (setq org-agenda-include-diary t)
    "xmllint --format -"
    (current-buffer) t))
 
+(defun t/kbi-link ()
+  "Fetch link to frontmost chrome tab if it hold a kanbanize card."
+  (let ((res (s-trim
+              (shell-command-to-string
+               "obb -e '
+(let [url (-> (js/Application \"Google Chrome\") (.-windows) (aget 0) (.activeTab) (.url))]
+  (when (clojure.string/includes? url \"kanbanize\")
+    (let [kbi (re-find #\"[0-9]{4}\" url)]
+      (str \"[[\" url \"][kbi-\" kbi \"]]\"))))'"))))
+    res))
+
+(defun t/insert-kbi-link ()
+  "Insert link to frontmost chrome tab that hold a kanbanize card url."
+  (interactive)
+  (insert (t/kbi-link)))
+
 (provide 't-defuns)
+(provide 't-defuns)
+
+;;; t-defuns.el ends here

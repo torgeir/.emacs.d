@@ -2337,7 +2337,7 @@ also toggles hook to keep it on or off everywhere.
 
 #+begin_src emacs-lisp :results silent
 (use-package focus
-  :hook (prog-mode)
+  :commands focus-mode
   :init
   (setq focus-mode-to-thing
         '((prog-mode . paragraph)
@@ -3719,6 +3719,7 @@ Through the magit package https://github.com/magit/git-modes
          (clojure-mode . lsp)
          (clojurec-mode . lsp)
          (clojurescript-mode . lsp)
+         (terraform-mode . lsp)
          (typescript-mode . lsp))
   :init
   (setq lsp-log-io t
@@ -4009,8 +4010,7 @@ notice it.
   (progn
     (t/add-hook-defun 'terraform-mode-hook t-hook-terraform
                       (terraform-format-on-save-mode)
-                      (aggressive-indent-mode -1)
-                      (lsp))))
+                      (aggressive-indent-mode -1))))
 #+END_SRC
 
 ** Shell
@@ -4899,7 +4899,7 @@ Modules to evaluate.
 (use-package ob-latex :defer t :straight nil :commands (org-babel-execute:latex))
 (use-package ob-python :defer t :straight nil :commands (org-babel-execute:python))
 (use-package ob-ruby :defer t :straight nil :commands (org-babel-execute:ruby))
-(use-package ob-shell :defer t :straight nil :commands (org-babel-execute:shell))
+(use-package ob-shell :defer t :straight nil :commands (org-babel-execute-src-block org-babel-execute:shell))
 (use-package ob-clojure :defer t :straight nil
   :init (setq org-babel-clojure-backend 'cider)
   :commands (org-babel-execute:clojure org-babel-execute:clojurescript))
