@@ -1,4 +1,3 @@
-;;; t-defuns.el --- first line summary
 ;;; t-defuns.el -*- lexical-binding: t; -*-
 (defun t/exec-org-block (name vars)
   "Excecute `NAME'd org block."
