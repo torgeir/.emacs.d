@@ -4021,7 +4021,22 @@ notice it.
 *** vterm + multi-vterm
 
 #+begin_src emacs-lisp :results silent
-(use-package vterm :commands vterm)
+(use-package vterm
+  :commands vterm
+  :init
+  (progn
+    ;; https://github.com/akermu/emacs-libvterm#how-can-i-get-the-directory-tracking-in-a-more-understandable-way
+    ;; see dotfiles/source/functions
+    (add-to-list
+     'vterm-eval-cmds
+     '("update-pwd" (lambda (path)
+                      (setq default-directory path))))
+    ;; magit-status
+    (add-to-list
+     'vterm-eval-cmds
+     '("magit-status" (lambda (path)
+                        (let ((default-directory path))
+                          (call-interactively' magit-status)))))))
 #+end_src
 
 #+begin_src emacs-lisp :results silent
