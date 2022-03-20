@@ -816,15 +816,16 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/open-in-intellij ()
   "Opens current file in IntelliJ IDEA."
   (interactive)
-  (shell-command
+  (async-shell-command
    (let* ((cmd "/Applications/IntelliJ\\ IDEA.app/Contents/MacOS/idea %s")
-          (args " --line %d %s")
+          (args " --line %d --column %d %s")
           (root (t/project-root))
           (file-name (buffer-file-name)))
      (if file-name
          (format (concat cmd args)
                  root
                  (line-number-at-pos)
+                 (current-column)
                  (shell-quote-argument file-name))
        (format cmd root))))
   (t/osascript-activate "IntelliJ IDEA"))

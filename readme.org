@@ -4024,12 +4024,17 @@ notice it.
 
 ** Shell
 
+*** ignore async shell command output buffer
+
+#+begin_src emacs-lisp :results silent
+(add-to-list 'display-buffer-alist '("*Async Shell Command*" display-buffer-no-window (nil)))
+#+end_src
 *** vterm + multi-vterm
 
 #+begin_src emacs-lisp :results silent
 (use-package vterm
   :commands vterm
-  :init
+  :config
   (progn
     ;; https://github.com/akermu/emacs-libvterm#how-can-i-get-the-directory-tracking-in-a-more-understandable-way
     ;; see dotfiles/source/functions
