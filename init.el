@@ -34,10 +34,10 @@
 
 ;; needs to come before org is loaded for straight.el to choose it instead
 (straight-use-package
- '(org-plus-contrib
-   :repo "https://code.orgmode.org/bzg/org-mode.git"
+ '(t-org
+   :repo "https://git.savannah.gnu.org/git/emacs/org-mode.git"
    :local-repo "org"
-   :files (:defaults "contrib/lisp/*.el")
+   :files (:defaults "lisp/*.el")
    :includes (org)))
 
 (defconst t-leader "SPC")
