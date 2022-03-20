@@ -5335,31 +5335,18 @@ Equal size fonts. Remove subsequent leading bullets.
                   (set-face-attribute 'org-hide nil :foreground (face-attribute 'default :background)))
 #+END_SRC
 
-*** Alerts
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package org-alert
-  :disabled
-  :commands t/org-idle-timer
-  :config
-  (progn
-    (setq alert-default-style 'osx-notifier
-          org-alert-interval (* 1 60 60))
-    (org-alert-enable)))
-#+END_SRC
-
 *** Links
 
 Fetch stuff easiliy, e.g. urls from Chrome, urls to emails from Mail etc.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package org-mac-link
-  :straight org-plus-contrib
-  :load-path "lisp/org-mode/contrib/lisp"
-  :commands (org-mac-grab-link
-             org-mac-chrome-get-frontmost-url))
-
+  :commands (org-mac-grab-link org-mac-chrome-get-frontmost-url)
+  :straight (org-contrib :type git
+                         :repo "https://git.sr.ht/~bzg/org-contrib"
+                         :files (:defaults "lisp/*.el")))
 #+END_SRC
+
 *** Sync with gcal
 
 There was a time where this was working. For now it only causes problems, hence
