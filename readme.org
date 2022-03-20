@@ -4816,7 +4816,7 @@ Clean export stamp.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (defun t/org-capture-chrome-link-template (&optional &rest args)
-  (concat "* TODO %? :url:%^G\n\n" (t/grab-chrome-url)))
+  (concat "* TODO %? :url:\n\n" (t/grab-chrome-url)))
 
 (defun t/org-capture-elfeed-link-template (&optional &rest args)
   (concat "* TODO %? :url:%^G\n\n%i\n" (elfeed-entry-link elfeed-show-entry)))
