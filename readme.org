@@ -513,7 +513,8 @@ Eldoc everywhere.
 Colocate temporary files.
 
 #+BEGIN_SRC emacs-lisp :results silent
-(setq backup-directory-alist `((".*" . ,(locate-user-emacs-file ".backups/")))
+(setq make-backups-files nil ;; don't make backups for now
+      backup-directory-alist `((".*" . ,(locate-user-emacs-file ".backups/")))
       auto-save-file-name-transforms `((".*" ,(locate-user-emacs-file ".auto-save-list/") t))
       auto-save-list-file-prefix (locate-user-emacs-file ".auto-save-list/")
       recentf-save-file (locate-user-emacs-file ".recentf")
@@ -1387,7 +1388,7 @@ from https://oremacs.com/swiper/
 - C-M-j :: complete verbatim, without choosing selected candidate, e.g. to
   rename a file to the starting part of its original name
 - M-o :: presents actions to choose from
-- C-j :: select current, continue completing. TABTAB is the same.
+- C-j :: OK/select current, continue completing. TABTAB is the same.
 - ivy-resume :: continue previous session
 
 *** Bindings that run action and keep ivy open
@@ -1616,6 +1617,23 @@ machine api.github.com login torgeir^forge password <access-token>
 #+END_SRC
 
 ** Editor
+
+*** EPA keys mode, gpg
+
+Encrypt files with .gpg extension automatically with trusted gpg key.
+
+#+begin_src emacs-lisp :results silent
+(t/add-hook-defun 'org-mode-hook t-org-mode-encryption-hook
+          ;; auto encrypt/decrypt org files
+          (require 'epa-file)
+          (epa-file-enable))
+#+end_src
+
+Switch to emacs state so that `m` works for marking keys
+
+#+begin_src emacs-lisp :results silent
+(add-hook 'epa-key-list-mode-hook 'evil-emacs-state)
+#+end_src
 
 *** Spray mode
 
@@ -4752,7 +4770,7 @@ General org config, didn't bother sorting it.
  org-blank-before-new-entry '((heading . auto) (plain-list-item . t)) ; newlines
  org-catch-invisible-edits 'show ; show invisibles on edit
  org-cycle-separator-lines 2 ; number of empty lines after heading needed to show visible newline between headings
- org-default-notes-file (t/user-dropbox-folder "org/home.org")
+ org-default-notes-file (t/user-dropbox-folder "org/home.org.gpg")
  org-enforce-todo-dependencies t ; block parent TODOs if child is not completed
  org-export-coding-system 'utf-8
  org-hide-emphasis-markers nil
@@ -4805,9 +4823,9 @@ Clean export stamp.
 (setq org-capture-templates
       `(;;("t" "Task" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i\n\n" :prepend t)
         ("t" "Task" entry (file+olp org-default-notes-file "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
-        ("s" "Saga" entry (file+olp ,(t/user-dropbox-folder "org/saga.org") "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
-        ("b" "bekk" entry (file+olp ,(t/user-dropbox-folder "org/bekk.org") "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
-        ("d" "Shared calendar event" entry (file ,(t/user-dropbox-folder "org/gcal/delt.org")) "* %?\n" :prepent t)
+        ("s" "Saga" entry (file+olp ,(t/user-dropbox-folder "org/saga.org.gpg") "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
+        ("b" "bekk" entry (file+olp ,(t/user-dropbox-folder "org/bekk.org.gpg") "Tasks") "* TODO %? \n\n%i\n\n" :prepend t)
+        ;;("d" "Shared calendar event" entry (file ,(t/user-dropbox-folder "org/gcal/delt.org.gpg")) "* %?\n" :prepent t)
         ("l" "Link" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\nLink: %a" :prepend t)
         ("f" "File" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t)
         ("c" "Chrome location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template) :prepend t)))
@@ -4826,15 +4844,14 @@ Make org-goto play nice with counsel.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package org
-  :straight org-plus-contrib
-  ;; browse org urls in eww
-  ;;:init
-  ;;(setq browse-url-browser-function 'eww)
+  :straight t-org
+  :init
+  (setq org-archive-location "%s_archive.gpg::") ; so files are encrypted automatically
   :config
   (progn
+    (unbind-key "C-," org-mode-map) ;; don't need to cycle agenda files
     (t/after org-agenda
-      (bind-key "s-s" 'org-save-all-org-buffers org-agenda-mode-map)
-      (unbind-key "C-," org-mode-map)) ;; don't need to cycle agenda files
+      (bind-key "s-s" 'org-save-all-org-buffers org-agenda-mode-map))
 
     (evil-add-command-properties #'outline-up-heading :jump t)
     (evil-add-command-properties #'outline-next-heading :jump t)
@@ -4855,9 +4872,9 @@ Make org-goto play nice with counsel.
                   "a" 'org-agenda
                   "A" 't/org-archive-done-tasks
                   "i" 'org-info
-                  "b" (t/lambda (find-file (t/user-dropbox-folder "org/bekk.org")))
-                  "h" (t/lambda (find-file (t/user-dropbox-folder "org/home.org")))
-                  "s" (t/lambda (find-file (t/user-dropbox-folder "org/saga.org")))
+                  "b" (t/lambda (find-file (t/user-dropbox-folder "org/bekk.org.gpg")))
+                  "h" (t/lambda (find-file (t/user-dropbox-folder "org/home.org.gpg")))
+                  "s" (t/lambda (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
                   "ns" 'org-narrow-to-subtree
                   "ne" 'org-narrow-to-element
                   "nb" 'org-narrow-to-block
@@ -5217,10 +5234,10 @@ Locally redefines org-agenda-files not to export all agenda files."
   (interactive)
   (let ((org-agenda-files (cons org-default-notes-file
                                 (mapcar #'t/user-dropbox-folder
-                                        '("org/home.org"
-                                          "org/bekk/bekk.org"
-                                          "org/bekk/saga.org"
-                                          "org/bekk/datainn.org")))))
+                                        '("org/home.org.gpg"
+                                          "org/bekk/bekk.org.gpg"
+                                          "org/bekk/saga.org.gpg"
+                                          "org/bekk/datainn.org.gpg")))))
     (org-icalendar-export-agenda-files)))
 
 (when (not is-ms)
