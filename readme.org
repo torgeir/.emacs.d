@@ -4035,9 +4035,10 @@ notice it.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package terraform-mode
-  :mode "\\.tf$"
+  :mode ("\\.tf$")
   :init
   (progn
+    (add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "Downloads/") "tf_plan_.*") 'terraform-mode))
     (t/add-hook-defun 'terraform-mode-hook t-hook-terraform
                       (terraform-format-on-save-mode)
                       (aggressive-indent-mode -1))))
