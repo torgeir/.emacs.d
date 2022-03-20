@@ -2466,49 +2466,52 @@ Opens the frontmost chrome url in eww.
   :defer 1
   :init
   (progn
-    (setq yas-snippet-dirs '(t-dir-snippets)
+    (setq yas-snippet-dirs (list (expand-file-name t-dir-snippets))
           yas-verbosity 0
           yas-wrap-around-region t))
   :config
   (progn
     (yas-global-mode)
 
-    (defun t/yas-clear-or-delete-char ()
-      "Replace `yas-next-field' with noop `+' to make <backspace> only clear or delete-char."
-      (interactive)
-      (cl-letf (((symbol-function 'yas-next-field) #'+))
-        (call-interactively 'yas-skip-and-clear-or-delete-char)))
-    (bind-key "<backspace>" #'t/yas-clear-or-delete-char yas-keymap)
+    (comment
+     (yas-global-mode)
 
-    (t/add-hook-defun 'after-save-hook t/reload-snippets-on-save
-                      (t/when-ext "yasnippet" (yas-reload-all)))
+     (defun t/yas-clear-or-delete-char ()
+       "Replace `yas-next-field' with noop `+' to make <backspace> only clear or delete-char."
+       (interactive)
+       (cl-letf (((symbol-function 'yas-next-field) #'+))
+         (call-interactively 'yas-skip-and-clear-or-delete-char)))
+     (bind-key "<backspace>" #'t/yas-clear-or-delete-char yas-keymap)
 
-    ;; make fundamental snippets global snippets
-    (t/add-hook-defun 'yas-minor-mode-hook t/hook-yas (yas-activate-extra-mode 'fundamental-mode))
+     (t/add-hook-defun 'after-save-hook t/reload-snippets-on-save
+                       (t/when-ext "yasnippet" (yas-reload-all)))
 
-    ;; inter-field navigation
-    (defun yas/goto-end-of-active-field ()
-      (interactive)
-      (let* ((snippet (car (yas--snippets-at-point)))
-             (position (yas--field-end (yas--snippet-active-field snippet))))
-        (if (= (point) position)
-            (move-end-of-line 1)
-          (goto-char position))))
+     ;; make fundamental snippets global snippets
+     (t/add-hook-defun 'yas-minor-mode-hook t/hook-yas (yas-activate-extra-mode 'fundamental-mode))
 
-    (defun yas/goto-start-of-active-field ()
-      (interactive)
-      (let* ((snippet (car (yas--snippets-at-point)))
-             (position (yas--field-start (yas--snippet-active-field snippet))))
-        (if (= (point) position)
-            (move-beginning-of-line 1)
-          (goto-char position))))
+     ;; inter-field navigation
+     (defun yas/goto-end-of-active-field ()
+       (interactive)
+       (let* ((snippet (car (yas--snippets-at-point)))
+              (position (yas--field-end (yas--snippet-active-field snippet))))
+         (if (= (point) position)
+             (move-end-of-line 1)
+           (goto-char position))))
 
-    ;; jump to end of snippet definition
-    (bind-key "<return>" 'yas-exit-all-snippets yas-keymap)
+     (defun yas/goto-start-of-active-field ()
+       (interactive)
+       (let* ((snippet (car (yas--snippets-at-point)))
+              (position (yas--field-start (yas--snippet-active-field snippet))))
+         (if (= (point) position)
+             (move-beginning-of-line 1)
+           (goto-char position))))
 
-    (t/bind-in 'yas-keymap
-      "C-e" 'yas/goto-end-of-active-field
-      "C-a" 'yas/goto-start-of-active-field)))
+     ;; jump to end of snippet definition
+     (bind-key "<return>" 'yas-exit-all-snippets yas-keymap)
+
+     (t/bind-in 'yas-keymap
+       "C-e" 'yas/goto-end-of-active-field
+       "C-a" 'yas/goto-start-of-active-field))))
 #+END_SRC
 
 *** Reload buffers on external change
@@ -2852,6 +2855,7 @@ Force indents, like you mean it.
   :init
   (progn
     (t/add-hook-defun 'json-mode-hook t/hook-aggressive-indent-json (aggressive-indent-mode 0))
+    (t/add-hook-defun 'typescript-mode-hook t/hook-aggressive-indent-ts (aggressive-indent-mode 0))
     (t/add-hook-defun 'js-mode-hook t/hook-aggressive-indent-js (aggressive-indent-mode 0))
     (t/add-hook-defun 'elm-mode-hook t/hook-aggressive-indent-js (aggressive-indent-mode 0))
     (t/add-hook-defun 'js2-mode-hook t/hook-aggressive-indent-js2 (aggressive-indent-mode 0))
@@ -3717,13 +3721,13 @@ Through the magit package https://github.com/magit/git-modes
 (use-package lsp-mode
   :commands (lsp)
   :hook ((lsp-mode . lsp-enable-which-key-integration)
-         (rust-mode . lsp)
-         (c++-mode . lsp)
-         (clojure-mode . lsp)
-         (clojurec-mode . lsp)
-         (clojurescript-mode . lsp)
-         (terraform-mode . lsp)
-         (typescript-mode . lsp))
+         (rust-mode . lsp-deferred)
+         (c++-mode . lsp-deferred)
+         (clojure-mode . lsp-deferred)
+         (clojurec-mode . lsp-deferred)
+         (clojurescript-mode . lsp-deferred)
+         (terraform-mode . lsp-deferred)
+         (typescript-mode . lsp-deferred))
   :init
   (setq lsp-log-io t
         lsp-auto-guess-root t
@@ -3977,8 +3981,10 @@ notice it.
   :init
   (progn
     (defun --setup-simplezen ()
-      (t/bind-in 'sgml-mode-map "<tab>" 'simplezen-expand-or-indent-for-tab))
-    (add-hook 'sgml-mode-hook '--setup-simplezen))
+      (t/bind-in 'sgml-mode-map "<tab>" 'simplezen-expand-or-indent-for-tab)
+      (t/bind-in 'typescript-mode-map "<tab>" 'simplezen-expand-or-indent-for-tab))
+    (add-hook 'sgml-mode-hook '--setup-simplezen)
+    (add-hook 'typescript-mode-hook '--setup-simplezen))
   :commands simplezen-expand-or-indent-for-tab)
 
 (use-package tagedit
