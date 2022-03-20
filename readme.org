@@ -3114,18 +3114,21 @@ Thesaurus.
                   "n" 'next-buffer
                   "R" 'revert-buffer)
 
-(t/declare-prefix "d" "Doc/Desktop"
+(t/declare-prefix "d" "Doc/Desktop/Display"
                   "d" 'dash-at-point
                   "S" 'dash-at-point-with-docset
-                  "s" 't/desktop-save
-                  "r" 't/desktop-restore
+                  "s" 'persp-switch
+                  "p" 'persp-prev
+                  "n" 'persp-next
+                  "k" 'persp-kill
+                  "r" 'persp-rename
                   "c" 't/desktop-change
                   "C" 't/desktop-clear)
 
 (t/declare-prefix "x" "Text manipulation"
                   "a" 'align-regexp
                   "k" 'ido-kill-buffer
-                  "m"  'counsel-M-x
+                  "m" 'counsel-M-x
                   "x" 'smex-major-mode-commands
                   "ls" 't/sort-lines
                   "lu" 't/uniquify-lines)
@@ -3210,7 +3213,6 @@ Thesaurus.
                   "j" 'windmove-down
                   "k" 'windmove-up
                   "l" 'windmove-right
-                  "n" 'make-frame-command
                   "D" 't/delete-frame-or-hide-last-remaining-frame
                   "d" 'delete-window
                   "t" 'delete-other-windows
@@ -3277,7 +3279,8 @@ Thesaurus.
                   "G" 'projectile-regenerate-tags
                   "k" 'projectile-kill-buffers
                   "o" 't/open-in-desktop
-                  "p" 't/projectile-visit-git-link-pulls
+                  "p" 'projectile-persp-switch-project
+                  "P" 't/projectile-visit-git-link-pulls
                   "s" 't/projectile-rg
                   "R" 'projectile-replace
                   "S" 'projectile-save-project-buffers
@@ -4002,7 +4005,7 @@ notice it.
                       "M-s" 'tagedit-splice-tag
                       "M-S" 'tagedit-split-tag
                       "M-J" 'tagedit-join-tags)))
-#+END_SRC
+                      #+END_SRC
 
 *** YAML
 
@@ -4511,6 +4514,18 @@ the saved desktop project specific.
   (interactive)
   (desktop-clear))
 #+END_SRC
+
+*** Perspective mode
+
+#+begin_src emacs-lisp :results silent
+(use-package perspective
+  :commands (persp-mode persp-switch persp-next persp-prev))
+#+end_src
+
+#+begin_src emacs-lisp :results silent
+(use-package persp-projectile
+  :commands (projectile-persp-switch-project))
+#+end_src
 
 ** Typography
 
@@ -5527,11 +5542,6 @@ Useful e.g. to make dired act like a directory tree sidebar
   (setq window-size-fixed (if sticky-buffer-mode 'width nil)))
 #+end_src
 
-*** TODO What about saving window configurations across emacs sessions and restoring them?
-
-*** ob-async
-https://github.com/astahlman/ob-async
-
 *** gh run watch
 
 #+begin_src emacs-lisp :results silent
@@ -5556,14 +5566,6 @@ https://github.com/astahlman/ob-async
               11))))
      (xref--show-pos-in-buf l (marker-buffer l))))
 )
-#+end_src
-
-*** Perspective mode?
-
-#+begin_src emacs-lisp :results silent
-(use-package perspective
-  :commands persp-mode
-  :config (persp-mode))
 #+end_src
 
 ** After
