@@ -1618,6 +1618,12 @@ Switch to emacs state so that `m` works for marking keys
 (add-hook 'epa-key-list-mode-hook 'evil-emacs-state)
 #+end_src
 
+Make emacs receive the gpg password prompt, like this https://colinxy.github.io/software-installation/2016/09/24/emacs25-easypg-issue.html
+
+#+begin_src emacs-lisp :results silent
+(setq epa-pinentry-mode 'loopback)
+#+end_src
+
 *** Spray mode
 
 Always had plans to read faster with this one..
