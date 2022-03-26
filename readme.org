@@ -512,7 +512,6 @@ Mouse support, with scroll.
       (global-set-key [mouse-5] (t/lambda (scroll-up 2)))
       (mouse-wheel-mode t))))
 #+END_SRC
-
 ** Evil
 
 *** Configuration
@@ -714,7 +713,7 @@ backward while moving through matches using M-d.
     (evil-multiedit-default-keybinds)
     (unbind-key "M-d" evil-insert-state-map)
     (unbind-key "C-M-D" evil-normal-state-map)
-    (bind-key "gn" 'evil-multiedit--visual-line evil-multiedit-mode-map)
+    (bind-key "gn" 'evil-multiedit--visual-line evil-multiedit-state-map)
 
     (progn
       (setq evil-multiedit-store-in-search-history t)
@@ -729,10 +728,18 @@ backward while moving through matches using M-d.
         (evil-multiedit-toggle-or-restrict-region)
         (evil-multiedit-match-and-next))
 
-      (t/bind-in 'evil-multiedit-mode-map
+      (t/bind-in 'evil-multiedit-state-map
         "M-j" #'t/mc-skip-next
         "M-k" #'t/mc-skip-prev))))
 #+END_SRC
+
+Multiedit calls iedit which is missing all-caps in emacs 29.
+
+#+begin_src elisp
+(when (version< "29.0" emacs-version)
+  (defun all-caps (smtn)
+    (upper smtn)))
+#+end_src
 
 *** Commentary
 
