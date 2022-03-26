@@ -3947,6 +3947,7 @@ notice it.
   :init
   (progn
     (defun --setup-simplezen ()
+      (require 'sgml-mode)
       (t/bind-in 'sgml-mode-map "<tab>" 'simplezen-expand-or-indent-for-tab)
       (t/bind-in 'typescript-mode-map "<tab>" 'simplezen-expand-or-indent-for-tab))
     (add-hook 'sgml-mode-hook '--setup-simplezen)
