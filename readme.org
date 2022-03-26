@@ -21,7 +21,7 @@ ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
 **** Deps
 
 #+BEGIN_SRC sh :results silent
-npm -g install eslint babel-eslint jsonlint eslint-plugin-react typescript-language-server typescript jscodeshift browser-sync
+npm -g install eslint babel-eslint jsonlint eslint-plugin-react typescript-language-server typescript jscodeshift
 #+END_SRC
 
 https://github.com/clojure-lsp/clojure-lsp#manually
@@ -468,38 +468,6 @@ Above what sizes can the window split?
 #+BEGIN_SRC emacs-lisp :results silent
 (setq split-height-threshold nil
       split-window-threshold nil)
-
-;; not so smart now, was it
-(comment (defadvice split-window (after move-point-to-new-window activate)
-           "Moves the point to the newly created window after splitting."
-           (other-window 1)))
-#+END_SRC
-
-Don't save desktop automatically, for now, but configure it for manual save /
-restore with ~ds~ and ~dr~.
-
-#+BEGIN_SRC emacs-lisp :results silent
-;;(desktop-save-mode 1)
-(setq desktop-save 't
-      desktop-restore-frames t
-      desktop-restore-eager 1 ;; restore 1 buffer immediately, the rest lazily
-      )
-(add-to-list 'desktop-locals-to-save 'evil-markers-alist) ;; save markers with desktop
-#+END_SRC
-
-Make it restore window layout as well
-
-#+BEGIN_SRC emacs-lisp :results silent
-;; https://emacs.stackexchange.com/questions/19190/desktop-save-mode-fails-to-save-window-layout
-(setq desktop-restore-forces-onscreen nil)
-(add-hook 'desktop-after-read-hook
-          (lambda ()
-            (frameset-restore
-             desktop-saved-frameset
-             :reuse-frames (eq desktop-restore-reuses-frames t)
-             :cleanup-frames (not (eq desktop-restore-reuses-frames 'keep))
-             :force-display desktop-restore-in-current-display
-             :force-onscreen desktop-restore-forces-onscreen)))
 #+END_SRC
 
 Eldoc everywhere.
@@ -816,8 +784,7 @@ Highlight and fold-this are dependencies of evil-extra-operator.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (defvar t-evil-emacs-major-modes
-  '(calendar-mode
-    cider-error
+  '(cider-error
     compilation-mode special-mode
     diff-mode
     forge-topic-mode
@@ -2042,44 +2009,6 @@ A rest client interface for elasticsearch, similar to restclient
     (setq twittering-request-confirmation-on-posting t)
     (t/declare-prefix "a" "Applications"
                       "t" 'twittering-mode)))
-#+END_SRC
-
-**** Reddit
-
-This fixes https://github.com/ahungry/md4rd/issues/34
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package cl-extra :straight (:type built-in))
-#+END_SRC
-
-This installs the package
-
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package md4rd
-  :commands md4rd
-  :init
-  (progn
-    (t/add-hook 'md4rd-mode-hook 'md4rd-indent-all-the-lines)
-    (t/after evil
-      (t/after md4rd
-        (progn
-          (evil-define-key 'normal md4rd-mode-map (kbd "q") 'kill-current-buffer)
-          (evil-define-key 'normal md4rd-mode-map (kbd "<tab>") 'tree-mode-toggle-expand)
-          (evil-define-key 'normal md4rd-mode-map (kbd "u") 'tree-mode-goto-parent)
-          (evil-define-key 'normal md4rd-mode-map (kbd "j") 'widget-forward)
-          (evil-define-key 'normal md4rd-mode-map (kbd "k") 'widget-backward)
-          (evil-define-key 'normal md4rd-mode-map (kbd "M-q") 'md4rd-indent-all-the-lines)
-          (evil-define-key 'normal md4rd-mode-map (kbd "c") 'md4rd-widget-collapse-all)
-          (evil-define-key 'normal md4rd-mode-map (kbd "t") 'md4rd-widget-toggle-line)
-          (evil-define-key 'normal md4rd-mode-map (kbd "e") 'md4rd-widget-expand-all)
-          (evil-define-key 'normal md4rd-mode-map (kbd "o") (t/lambda nil
-                                                              (forward-word)
-                                                              (md4rd-open)))
-          (evil-define-key 'normal md4rd-mode-map (kbd "<return>") 'md4rd-visit)
-          (evil-define-key 'normal md4rd-mode-map (kbd "v") 'md4rd-visit)
-          (evil-define-key 'normal md4rd-mode-map (kbd "M-u") 'md4rd-upvote)
-          (evil-define-key 'normal md4rd-mode-map (kbd "d") 'md4rd-downvote))))
-    (setq md4rd-subs-active '(MechanicalKeyboards emacs clojure))))
 #+END_SRC
 
 *** Completion
