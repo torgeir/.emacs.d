@@ -1143,53 +1143,58 @@ leader will actually turn on evil-leader globally? Then turn on evil.
 
 ** Calendar
 
+Calendar, and make it Norwegian.
+
 #+BEGIN_SRC emacs-lisp :results silent
 (use-package calendar
   :straight nil
   :commands (org-schedule calendar)
   :init
   (setq calendar-week-start-day 1
-        calendar-date-style 'iso))
-#+END_SRC
+        calendar-date-style 'iso
+        t-calendar-first-time t)
+  :config
+  (t/add-hook-defun
+   'calendar-initial-window-hook t-calendar-hook
+   (use-package calendar-norway
+     :init
+     (progn
+       (require 'calendar-norway)
+       (setq calendar-holidays
+             (append calendar-norway-raude-dagar
+                     calendar-norway-andre-merkedagar
+                     calendar-norway-dst
+                     '((holiday-fixed 3 17 "St. Patricksdag") ; extra non-no days
+                       (holiday-fixed 10 31 "Hallowe'en")
+                       (holiday-float 11 4 4 "Thanksgiving")
+                       (solar-equinoxes-solstices))))
+       (setq
+        calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
+        calendar-day-header-array ["sø" "ma" "ti" "on" "to" "fr" "lø"]
+        solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjevndøgn" "Vintersolherv"))
 
-Make it Norwegian.
+       (setq calendar-latitude lat-trh
+             calendar-longitude lon-trh
+             calendar-location-name loc-trh)
 
-#+BEGIN_SRC emacs-lisp :results silent
-(use-package calendar-norway
-  :hook calendar-load
-  :init
-  (t/after calendar
-    (require 'calendar-norway)
-    (setq calendar-holidays
-          (append calendar-norway-raude-dagar
-                  calendar-norway-andre-merkedagar
-                  calendar-norway-dst
-                  '((holiday-fixed 3 17 "St. Patricksdag") ; extra non-no days
-                    (holiday-fixed 10 31 "Hallowe'en")
-                    (holiday-float 11 4 4 "Thanksgiving")
-                    (solar-equinoxes-solstices))))
-    (setq
-     calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
-     solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjevndøgn" "Vintersolherv"))
+       ;; show week numbers in calendar
+       (copy-face font-lock-constant-face 'calendar-iso-week-face)
+       (set-face-attribute 'calendar-iso-week-face nil :height 1 :foreground "VioletRed1")
 
-    (setq calendar-latitude lat-trh
-          calendar-longitude lon-trh
-          calendar-location-name loc-trh)
+       (copy-face 'default 'calendar-iso-week-header-face)
+       (set-face-attribute 'calendar-iso-week-header-face nil :height 0.5 :foreground "VioletRed4")
 
-    ;; show week numbers in calendar
-    (copy-face font-lock-constant-face 'calendar-iso-week-face)
-    (set-face-attribute 'calendar-iso-week-face nil :height 1 :foreground "VioletRed1")
-
-    (copy-face 'default 'calendar-iso-week-header-face)
-    (set-face-attribute 'calendar-iso-week-header-face nil :height 0.5 :foreground "VioletRed4")
-
-    (setq calendar-mark-holidays-flag t
-          calendar-intermonth-header '(propertize " " 'font-lock-face 'calendar-iso-week-header-face)
-          calendar-intermonth-text '(propertize (format "%2d" (car
-                                                               (calendar-iso-from-absolute
-                                                                (calendar-absolute-from-gregorian
-                                                                 (list month day year)))))
-                                                'font-lock-face 'calendar-iso-week-face))))
+       (setq calendar-mark-holidays-flag t
+             calendar-intermonth-text
+             '(propertize (format "%2d" (car
+                                         (calendar-iso-from-absolute
+                                          (calendar-absolute-from-gregorian
+                                           (list month day year)))))
+                          'font-lock-face 'calendar-iso-week-face))
+       (when t-calendar-first-time
+         (setq t-calendar-first-time nil)
+         (quit-window)
+         (call-interactively 'calendar))))))
 #+END_SRC
 
 ** Local Site lisp
@@ -1487,7 +1492,11 @@ A gist interface for emacs.
 *** Helm hunks
 
 #+begin_src emacs-lisp :results silent
-(use-package helm-hunks)
+(use-package helm-hunks
+  :commands (helm-hunks
+             helm-hunks-current-buffer
+             helm-hunks-staged
+             helm-hunks-staged-current-buffer))
 #+end_src
 
 *** Magit and Forge
