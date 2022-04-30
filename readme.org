@@ -2235,7 +2235,7 @@ Lispy paren-like ast editing for other modes as well.
     (t/add-hook '(js-mode-hook
                   text-mode-hook
                   restclient-mode-hook
-                  rjsx-mode
+                  typescript-mode
                   ruby-mode
                   mark-down-mode
                   es-mode-hook) 'turn-on-smartparens-mode)
@@ -3295,13 +3295,14 @@ Thesaurus.
 Edit text fields from Chrome in emacs, using the [[https://chrome.google.com/webstore/detail/atomic-chrome/lhaoghhllmiaaagaffababmkdllgfcmc][Atomic Chrome]] extension.
 
 #+begin_src emacs-lisp :results silent
-(use-package atomic-chrome
-  :defer 1
-  :init
-  (progn
-    (if after-init-time
-        (atomic-chrome-start-server)
-      (add-hook 'after-init-hook 'atomic-chrome-start-server))))
+(comment
+ (use-package atomic-chrome
+   :defer 1
+   :init
+   (progn
+     (if after-init-time
+         (atomic-chrome-start-server)
+       (add-hook 'after-init-hook 'atomic-chrome-start-server)))))
 #+end_src
 
 ** Languages
