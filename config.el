@@ -131,6 +131,7 @@
  :leader :desc "Show saga" "o s" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
  :leader :desc "Open rss" "o S" #'=rss
  :leader :desc "Eval and replace" "m e R" #'t/eval-and-replace
+ :leader :desc "Toggle transparency" "t T" #'t/transparency
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error)
 
 (after! org
