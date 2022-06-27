@@ -1,0 +1,9 @@
+{
+  "configurations": [
+    {
+      "name": "typescript",
+      "type": "node",
+      "program": "ts-node"
+    }
+  ]
+}
