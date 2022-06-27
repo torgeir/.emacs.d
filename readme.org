@@ -1,5 +1,45 @@
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+#+STARTUP: show2levels
+* torgeir/.doom.d
+:PROPERTIES:
+:header-args:emacs-lisp: :lexical t :results silent
+:END:
 
+#+begin_src emacs-lisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+#+end_src
+
+** Install
+
+First, install doom emacs.
+
+#+begin_src sh :tangle no
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.emacs.d
+~/.emacs.d/bin/doom install
+#+end_src
+
+Then the config.
+
+#+begin_src sh :tangle no
+cd && git clone git@github.com:torgeir/.emacs.d.git ~/.doom.d
+#+end_src
+
+And some terminal shortcuts
+
+#+begin_src sh :tangle no
+ln -s ~/.emacs.d/emacsclient ~/bin/e
+ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
+#+end_src
+
+** Reload config and doom sync automatically
+
+#+begin_quote
+;; Place your private configuration here! Remember, you do not need to run 'doom
+;; sync' after modifying this file!
+#+end_quote
+
+That's kinda tedious, tho. Let's automate it
+
+#+begin_src emacs-lisp
 (add-to-list 'display-buffer-alist '("\\*t-doom-sync\\*.*" display-buffer-no-window))
 (defun t/reload-config ()
   "Used in `after-save-hook'."
@@ -8,12 +48,20 @@
       (org-babel-tangle-file "~/.doom.d/readme.org" "~/.doom.d/config.el")
       (async-shell-command "doom sync" "*t-doom-sync*" "*t-doom-sync*"))))
 (add-hook 'after-save-hook #'t/reload-config)
+#+end_src
 
+** Whoami
+
+#+begin_src emacs-lisp
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
 (setq user-full-name "Torgeir Thoresen"
       user-mail-address "torgeir.thoresen@gmail.com")
+#+end_src
 
+** Font
+
+#+begin_src emacs-lisp
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
 ;; - `doom-font' -- the primary font to use
@@ -35,29 +83,47 @@
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
+#+end_src
 
+** Theme
+
+#+begin_src emacs-lisp
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-nord)
+#+end_src
 
+#+begin_src emacs-lisp
 (defun t/cycle-theme ()
   (interactive)
   (if (eq doom-theme 'doom-nord)
       (load-theme 'doom-nord-light)
     (load-theme 'doom-nord)))
 (map! :leader "t t" #'t/cycle-theme)
+#+end_src
 
+** Editor
+
+#+begin_src emacs-lisp
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
+#+end_src
 
+** Org agenda file setup
+
+#+begin_src emacs-lisp
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory (expand-file-name "~/Dropbox/org/")
       org-agenda-files
       org-archive-location) ; so files are encrypted automatically
+#+end_src
 
+** Doom description
+
+#+begin_src emacs-lisp
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
@@ -89,7 +155,13 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+#+end_src
 
+** t-defuns
+
+My old collection of more or less usefull defuns.
+
+#+begin_src emacs-lisp
 (progn
   (defun t/user-emacs-file (path) (concat user-emacs-directory path))
   (defun t/user-dropbox-folder (path) (expand-file-name (concat "~/Dropbox (Personal)/" path)))
@@ -98,15 +170,33 @@
   (defconst is-mac IS-MAC)
   (defconst is-linux IS-LINUX)
   (load! "./t-defuns.el"))
+#+end_src
 
+** Evil early config
+
+Useful for ~c-e~ followed by ~c-x c-e~ to eval a s-exp.
+
+#+begin_src emacs-lisp
 (setq evil-move-beyond-eol t)
+#+end_src
 
+** Macros
+
+A useful macro one for testing stuff out
+
+#+begin_src emacs-lisp
 (defmacro comment (&rest ignore)
   nil)
 
 (comment
  (funcall (t/micro-state nil "m" (cmd! (message "1")))))
+#+end_src
 
+** Micro state
+
+A small overlay map that exposes a set of key bindings until you press q, or something else not in the keymap.
+
+#+begin_src emacs-lisp
 (defun t/micro-state (quit key fn &rest bindings)
   "Micro state that temporarily overlays a new key map, kinda like hydra"
   (let ((keymap (make-sparse-keymap)))
@@ -119,7 +209,11 @@
       (let ((exit (set-temporary-overlay-map keymap t (lambda () (when quit (quit-window))))))
         (when quit
           (bind-key "q" (cmd! (funcall exit)) keymap))))))
+#+end_src
 
+And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off again if you hit a key not in the map.
+
+#+begin_src emacs-lisp
 (defun t/micro-state-in-mode (mode after key fn &rest bindings)
   "Micro state that toggles mode and temporarily overlays a new key map, kinda like hydra"
   (let ((keymap (make-sparse-keymap)))
@@ -133,7 +227,13 @@
       (set-temporary-overlay-map keymap t (lambda nil
                                             (funcall mode -1)
                                             (when after (after)))))))
+#+end_src
 
+** Keybindings
+
+[[file:~/.emacs.d/modules/editor/evil/config.el::(map! :v "@" #'+evil:apply-macro][Doom editor keybindings]]
+
+#+begin_src emacs-lisp
 (map!
  :n "s-0" nil
  "s-0" #'doom/reset-font-size
@@ -178,7 +278,11 @@
  :leader :desc "Toggle transparency" "t T" #'t/transparency
  :leader :desc "Toggle zen" "t d" #'olivetti-mode
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error)
+#+end_src
 
+** Rss (elfeed)
+
+#+begin_src emacs-lisp
 (after! elfeed
   (setq rmh-elfeed-org-files '("~/Dropbox/org/feeds.org")
         elfeed-search-filter "@2-week-ago +unread")
@@ -208,7 +312,11 @@
                      (let ((shr-inhibit-images t)) (elfeed-show-refresh))
                      (funcall (t/spray-micro-state))) map)
       (set-temporary-overlay-map map t (lambda () (equal major-mode 'elfeed-show-mode))))))
+#+end_src
 
+** Reading
+
+#+begin_src emacs-lisp
 (defun t/spray-micro-state (&optional after)
   (t/micro-state-in-mode
    'spray-mode
@@ -232,12 +340,24 @@
     (setq-local spray-margin-left (truncate (/ (window-width) 3.5)))
     (set-face-foreground 'spray-accent-face
                          (face-foreground 'font-lock-keyword-face))))
+#+end_src
 
+** Help
+
+#+begin_src emacs-lisp
 (map! :leader :n "h h" #'t/describe)
+#+end_src
 
+** Smartparens
+
+#+begin_src emacs-lisp
 (after! smartparens
   (sp-local-pair 'emacs-lisp-mode "`" "'" :when '(sp-in-docstring-p)))
+#+end_src
 
+And some extra for org mode
+
+#+begin_src emacs-lisp
 (after! smartparens
   (sp-with-modes 'org-mode
     (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
@@ -245,7 +365,11 @@
     (sp-local-pair "<" ">" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
     (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
     (sp-local-pair "«" "»")))
+#+end_src
 
+** Org
+
+#+begin_src emacs-lisp
 (after! org
 
   (defun t/open-prev-heading ()
@@ -317,18 +441,42 @@
           ;; ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :heading "Changelog" :prepend t)
 
           )))
+#+end_src
 
+** Frame
+
+Show the buffer and the file
+
+#+begin_src emacs-lisp
 ;; general
 (setq frame-title-format "%b (%f)")
+#+end_src
 
+** Dired
+
+#+begin_src emacs-lisp
 (after! dired
   (add-hook 'dired-mode-hook 'dired-hide-details-mode))
+#+end_src
 
+** Ediff
+
+#+begin_src emacs-lisp
 ;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+end_src
 
+** Emacs lisp
+
+#+begin_src emacs-lisp
 (after! evil
   (add-hook 'emacs-lisp-mode-hook #'evil-cleverparens-mode))
+#+end_src
 
+** Calendar
+
+Weeks on start on monday in Norway, and weeks have numbers.
+
+#+begin_src emacs-lisp
 (after! calendar
   (setq calendar-week-start-day 1
         calendar-intermonth-text
@@ -339,13 +487,43 @@
                      'font-lock-face 'calendar-iso-week-face))
   (copy-face font-lock-constant-face 'calendar-iso-week-face)
   (copy-face 'default 'calendar-iso-week-header-face))
+#+end_src
 
+** Server mode
+
+Emacs server setup. This name is used from ~/.emacs.d/emacsclient~ and ~/.emacs.d/emacsclient~, linked as ~e~ and ~em~ on the command line, to target the running emacs server instance.
+
+#+begin_src emacs-lisp
 (setq server-name "torgemacs")
+#+end_src
 
+I also use this from Alfred, as a quick way of capturing from anywhere on os x.
+
+#+begin_src sh :tangle no
+/usr/local/bin/emacsclient -s torgemacs -e '(progn (select-frame-set-input-focus (selected-frame)) (org-capture))'
+#+end_src
+
+** Which key
+
+Don't bother waiting
+
+#+begin_src emacs-lisp
 (setq which-key-idle-delay 0.1)
+#+end_src
 
+** Evil registers
+
+Some macros I once used.
+
+This one makes camelCaseWords into to snake_case_words. Run it with ~@c~
+
+#+begin_src emacs-lisp
 (evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
+#+end_src
 
+** Distraction free, writeroom
+
+#+begin_src emacs-lisp
 (after! olivetti
   (setq olivetti-style t
         olivetti-minimum-body-width 40)
@@ -358,17 +536,29 @@
           indicate-empty-lines t))
   (add-hook 'olivetti-mode-on-hook #'olivetti-turn-off-line-numbers)
   (add-hook 'olivetti-mode-off-hook #'olivetti-bring-back-line-numbers))
+#+end_src
 
+** Magit and Forge
+
+#+begin_src emacs-lisp
 (after! magit
   (setq magit-fetch-arguments '("--prune")
         magit-rebase-arguments '("--interactive")
         magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
         git-commit-summary-max-length 72 ;; like github
         magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
+#+end_src
 
+** Embark
+
+#+begin_src emacs-lisp
 (map! :map org-mode-map "C-," #'embark-act
       :map minibuffer-mode-map "C-," #'embark-act)
+#+end_src
 
+** Multiple cursors
+
+#+begin_src emacs-lisp
 (after! evil
 
   (defun t/mc-skip-prev ()
@@ -380,7 +570,11 @@
     (interactive)
     (evil-multiedit-toggle-or-restrict-region)
     (evil-multiedit-match-and-next)))
+#+end_src
 
+Make cursor follow matches so ~m-n~ or ~m-p~ can be used to skip matches easily, depending on what direction you are moving in.
+
+#+begin_src emacs-lisp
 (after! evil
   (setq evil-multiedit-follow-matches t)
   (map!
@@ -389,11 +583,25 @@
    ;; for some reason m-j does not work, use m-n and m-p instead
    :n "M-n"   #'t/mc-skip-next
    :n "M-p"   #'t/mc-skip-prev))
+#+end_src
 
+Multiedit calls iedit which is missing all-caps in emacs 29.
+
+#+begin_src elisp
 (when (version< "29.0" emacs-version)
   (defun all-caps (smtn)
     (upper smtn)))
+#+end_src
 
+
+
+** Stuff to test
+
+*** Skeleton mode instead of yasnippet?
+
+https://www.emacswiki.org/emacs/SkeletonMode
+
+#+begin_src elisp
 (comment
  (define-skeleton skel-defun
    "Insert a defun template."
@@ -428,18 +636,32 @@
            (goto-char pos)
          (goto-char (marker-position
                      (car *skeleton-markers*))))))))
+#+end_src
 
+*** Sticky buffer mode
+
+Useful e.g. to make dired act like a directory tree sidebar
+
+#+begin_src emacs-lisp :results silent
 (define-minor-mode sticky-buffer-mode
   "Make the current window always display this buffer."
   nil " sticky" nil
   (set-window-dedicated-p (selected-window) sticky-buffer-mode)
   (setq window-size-fixed (if sticky-buffer-mode 'width nil)))
+#+end_src
 
+*** gh run watch
+
+#+begin_src emacs-lisp :results silent
 (defun t/gha ()
   (interactive)
   (multi-vterm)
   (term-send-raw-string "gh run watch\C-m"))
+#+end_src
 
+*** xref jump to selection
+
+#+begin_src emacs-lisp
 (comment
 
  (progn
@@ -452,3 +674,4 @@
               11))))
      (xref--show-pos-in-buf l (marker-buffer l))))
  )
+#+end_src

@@ -53,3 +53,4 @@
 (package! evil-cleverparens)
 
 (package! olivetti)
+(package! spray)
