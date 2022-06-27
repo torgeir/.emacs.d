@@ -117,7 +117,6 @@
  "s-<left>" 't/smart-beginning-of-line
  "s-<right>" 'end-of-line
 
-
  "C-a" 't/smart-beginning-of-line
  :m "C-e" 'end-of-line
 
@@ -132,6 +131,7 @@
  :leader :desc "Open rss" "o S" #'=rss
  :leader :desc "Eval and replace" "m e R" #'t/eval-and-replace
  :leader :desc "Toggle transparency" "t T" #'t/transparency
+ :leader :desc "Toggle zen" "t d" #'olivetti-mode
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error)
 
 (after! org
@@ -219,3 +219,15 @@
 
 ;; macro camelCase to snake_case
 (evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
+
+(after! olivetti
+  (setq olivetti-style t
+        olivetti-body-width .75)
+  (defun olivetti-turn-off-line-numbers ()
+    (setq display-line-numbers-type nil)
+    (doom/toggle-line-numbers))
+  (defun olivetti-bring-back-line-numbers ()
+    (setq display-line-numbers-type 'relative)
+    (doom/toggle-line-numbers))
+  (add-hook 'olivetti-mode-on-hook #'olivetti-turn-off-line-numbers)
+  (add-hook 'olivetti-mode-off-hook #'olivetti-bring-back-line-numbers))

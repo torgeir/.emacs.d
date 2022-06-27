@@ -51,3 +51,5 @@
 ;
 ;
 (package! evil-cleverparens)
+
+(package! olivetti)
