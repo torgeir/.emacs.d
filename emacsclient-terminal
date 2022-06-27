@@ -1,0 +1,16 @@
+#!/bin/bash
+# TODO torgeir is this longer needed?
+case $(uname) in
+  Linux)
+    emacsclient=/usr/bin/emacsclient
+    ;;
+  Darwin)
+    emacsclient=/usr/local/bin/emacsclient
+    ;;
+esac
+
+if [ -z $INSIDE_EMACS ]; then
+  $emacsclient -s torgemacs -a "" -t "$@" # 2> /dev/null
+else
+  $emacsclient -s torgemacs -a -c -q "$@"
+fi
