@@ -89,6 +89,8 @@
 
 (setq doom-font-increment 1)
 
+(setq evil-move-beyond-eol t)
+
 (map!
  :n "s-0" nil
  "s-0" #'doom/reset-font-size
