@@ -19,7 +19,6 @@ old/proxy.el
 old/eshell/*
 old/.nrepl-history
 old/bookmarks
-old/.DS_Store
 old/.tern-port
 old/test-files/.tern-port
 old/elpa-backups
@@ -59,3 +58,4 @@ old*.elc
 old/hackernews/
 old/forge-database.sqlite
 old/eln-cache/
+.DS_Store
