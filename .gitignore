@@ -59,3 +59,4 @@ old/hackernews/
 old/forge-database.sqlite
 old/eln-cache/
 .DS_Store
+config.el
