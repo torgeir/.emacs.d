@@ -50,6 +50,15 @@ That's kinda tedious, tho. Let's automate it
 (add-hook 'after-save-hook #'t/reload-config)
 #+end_src
 
+** Recentf
+
+Ignore some of the cached emacs files in recent files
+
+#+begin_src emacs-lisp
+(after! recentf
+  (add-to-list 'recentf-exclude "\.emacs\.d/\.local"))
+#+end_src
+
 ** Whoami
 
 #+begin_src emacs-lisp
