@@ -13,6 +13,8 @@
   "Execute `CMD' async, call `FN' with the result string."
   (lexical-let* ((fn fn)
                  (buf-name (format "*%s*" name))
+                 (_ (when (get-buffer buf-name)
+                      (with-current-buffer buf-name (erase-buffer))))
                  (p (start-process-shell-command name buf-name cmd)))
                 (prog1 p
                   (when fn
