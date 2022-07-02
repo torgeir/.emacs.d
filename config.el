@@ -55,8 +55,8 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory (expand-file-name "~/Dropbox/org/")
-      org-agenda-files
-      org-archive-location) ; so files are encrypted automatically
+      org-agenda-files '("~/Dropbox/org")
+      org-archive-location "%s_archive.gpg::") ; so files are encrypted automatically
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -366,8 +366,13 @@
         git-commit-summary-max-length 72 ;; like github
         magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
 
-(map! :map org-mode-map "C-," #'embark-act
-      :map minibuffer-mode-map "C-," #'embark-act)
+(map!
+ ;; global
+ :g "C-," #'embark-act
+ :map org-mode-map "C-," #'embark-act
+ :map minibuffer-mode-map "C-," #'embark-act)
+
+(add-hook 'completion-list-mode-hook #'consult-preview-at-point-mode)
 
 (after! evil
 
@@ -393,6 +398,9 @@
 (when (version< "29.0" emacs-version)
   (defun all-caps (smtn)
     (upper smtn)))
+
+(after! org
+  (use-package! ox-gfm :load-path "site-lisp/ox-gfm/"))
 
 (comment
  (define-skeleton skel-defun
