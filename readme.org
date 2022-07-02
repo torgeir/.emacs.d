@@ -163,7 +163,7 @@ My old collection of more or less usefull defuns.
 
 #+begin_src emacs-lisp
 (progn
-  (defun t/user-emacs-file (path) (concat user-emacs-directory path))
+  (defun t/user-emacs-file (path) (concat (expand-file-name "~/.doom.d/") path))
   (defun t/user-dropbox-folder (path) (expand-file-name (concat "~/Dropbox (Personal)/" path)))
   (defconst is-win IS-WINDOWS)
   (defconst is-cygwin IS-WINDOWS)
@@ -266,6 +266,7 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
  :m "C-e" 'end-of-line
 
  "s-n" 'make-frame
+ "s-s" 'save-buffer
 
  ;; op -- :leader :desc "Toggle treemacs" "f L" #'+treemacs/toggle
  ;; oO -- :leader :desc "Open folder" "p o" #'t/open-in-desktop
@@ -597,7 +598,6 @@ Multiedit calls iedit which is missing all-caps in emacs 29.
   (defun all-caps (smtn)
     (upper smtn)))
 #+end_src
-
 
 ** Site lisp
 
