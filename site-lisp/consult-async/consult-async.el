@@ -34,6 +34,8 @@
 (require 'cl-lib)
 (require 'subr-x)
 (require 'consult)
+(require 'dom)
+(require 'request)
 
 (defvar consult-t-history nil)
 
@@ -42,19 +44,35 @@
   (consult--read (consult-t--search-generator fn)
                  :prompt (format "Search: ")
                  ;;:lookup #'consult--lookup-member
+                 :state (lambda (action q)
+                          (message "action: %s, q: %s" action q)
+                          (when (and (not (null q))
+                                     (s-starts-with? "http" q))
+                            (eww q)
+                            ))
                  ;;:category 'spotify-search-item
                  :history '(:input consult-t-history)
                  :initial (consult--async-split-initial "")
                  ;;:require-match t
-                 ))
+                 :keymap (let ((map (make-sparse-keymap)))
+                           (define-key map (kbd "C-M-S-v") (lambda ()
+                                                             (interactive)
+                                                             (save-excursion
+                                                               (with-selected-window (get-buffer-window "*eww*")
+                                                                 (scroll-down)))))
+                           (define-key map (kbd "C-M-v") (lambda ()
+                                                           (interactive)
+                                                           (save-excursion
+                                                             (with-selected-window (get-buffer-window "*eww*")
+                                                               (scroll-up)))))
+                           map)))
 
 (defun consult-t--search-generator (fn)
   "Generate an async search closure for filter."
   (thread-first (consult--async-sink)
                 (consult--async-refresh-immediate)
-                (consult--async-map #'(lambda (n) (concat "" n)))
                 (consult-t--async-search fn)
-                (consult--async-throttle)
+                (consult--async-throttle .1 .2)
                 (consult--async-split)))
 
 (defun consult-t--async-search (next fn)
@@ -67,16 +85,76 @@
                           (when action
                             (funcall next 'flush)
                             (funcall fn action (lambda (res)
-                                                 (funcall next (remove-if
-                                                                (lambda (n)
-                                                                  (or (null n) (string-empty-p n)))
-                                                                res)))))))
+                                                 (funcall next res))))))
         (_ (funcall next action))))))
 
-(message "result: %s" (consult-t-async (lambda (action fn)
-                                       (message "%s" (type-of fn))
-                                       (t/async-shell-command
-                                        "file listing"
-                                        (concat "ls -l " action)
-                                        (lambda (p code res)
-                                          (funcall fn res))))))
+(defun consult-web--format-candidate (text url)
+  "Format TEXT and URL as an `ivy-read' candidate."
+  (let ((url (url-unhex-string url)))
+    (propertize (concat text "\n" (propertize url 'face 'shadow)) 'shr-url url)))
+
+(cl-defun consult-web--handle-error (&rest args &key error-thrown &allow-other-keys)
+  "Handle error from `request' with ARGS.
+Display a message with the ERROR-THROWN."
+  (error "Web search error: %S" error-thrown))
+
+(defun consult--clear-text-properties (foo)
+  (set-text-properties 0 (length foo) nil foo)
+  foo)
+
+(defun consult-web--request (fn url parser &optional placeholder)
+  (message "searching: %s" url)
+  (request
+    url
+    :sync t
+    :headers '(("User-Agent" . "Emacs"))
+    :parser parser
+    :error #'consult-web--handle-error
+    :success (cl-function (lambda (&key data &allow-other-keys)
+                            (funcall fn (mapcar
+                                         (lambda (e)
+                                           (cadr (split-string (consult--clear-text-properties e) "\n")))
+                                         (cddr data)))))))
+
+(defun consult-web-search--ddg (string fn)
+  "Retrieve search results from DuckDuckGo for STRING."
+  (consult-web--request
+   fn
+   (concat "https://duckduckgo.com/html/?q=" (url-hexify-string string))
+   (lambda ()
+     (mapcar
+      (lambda (a)
+        (let* ((href (assoc-default 'href (dom-attributes a))))
+          (consult-web--format-candidate
+           (dom-texts a)
+           ;; DDG sometimes appends "&rut...", which I can only guess is an
+           ;; anti-bot measure. See https://github.com/mnewt/counsel-web/issues/3.
+           (substring href (string-match "http" href) (string-match "&rut=" href)))))
+      (dom-by-class (libxml-parse-html-region (point-min) (point-max)) "result__a")))
+   "Searching DuckDuckGo..."))
+
+(defun consult-web-search ()
+  (interactive)
+  (consult-t-async (lambda (q fn)
+                     (consult-web-search--ddg q fn))))
+
+
+(progn
+  (defvar-local consult-toggle-preview-orig nil)
+
+  (defun consult-toggle-preview ()
+    "Command to enable/disable preview."
+    (interactive)
+    (if consult-toggle-preview-orig
+        (setq consult--preview-function consult-toggle-preview-orig
+              consult-toggle-preview-orig nil)
+      (setq consult-toggle-preview-orig consult--preview-function
+            consult--preview-function #'ignore)))
+
+  ;; Bind to `vertico-map' or `selectrum-minibuffer-map'
+  (after! vertico
+    (define-key vertico-map (kbd "M-p") #'consult-toggle-preview))
+
+  )
+
+(provide 'consult-async)
