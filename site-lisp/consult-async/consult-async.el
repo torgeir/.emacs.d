@@ -1,7 +1,37 @@
-;;; init.el -*- lexical-binding: t; -*-
+;;; consult-async.el --- Simplified with consult -*- lexical-binding: t -*-
+
+;; Copyright (C) 2021, 2022  Free Software Foundation, Inc.
+
+;; Author: Torgeir Thoresen
+;; Maintainer: Torgeir Thoresen <torgeir.thoresen@gmail.com>
+;; Created: 2022
+;; Version: 0.1
+;; Package-Requires: ((emacs "27.1") (consult "0.18"))
+;; Homepage: nil
+
+;; This file is part of GNU Emacs.
+
+;; This program is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+
+;; A simple library for simplified async consult actions with callbacks.
+
+;;; Code:
 
 (require 'seq)
-(require 'cl)
+(require 'cl-lib)
 (require 'subr-x)
 (require 'consult)
 
