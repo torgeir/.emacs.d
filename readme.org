@@ -88,11 +88,23 @@ Ignore some of the cached emacs files in recent files
 ;;
 #+end_quote
 
+#+begin_quote
+JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:spacing=100:scalable=true
+#+end_quote
+
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrains Mono" :size 14)
-      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 14)
+(setq doom-font
+      (font-spec :family "JetBrains Mono" :size 14  :weight 'medium :slant 'normal :width 'normal)
+      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium :slant 'normal :width 'normal)
       ;; font resize increments
       doom-font-increment 1)
+#+end_src
+
+To list available fontsets, do
+
+#+begin_src emacs-lisp
+(comment
+ (call-interactively 'describe-font))
 #+end_src
 
 #+begin_quote
