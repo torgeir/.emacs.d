@@ -423,15 +423,21 @@ And some extra for org mode
 
   (defun t/open-prev-heading ()
     (interactive)
-    (outline-hide-sublevels (org-outline-level))
-    (org-previous-visible-heading 1)
-    (outline-show-subtree))
+    (let ((was-narrowed (buffer-narrowed-p)))
+      (when was-narrowed (widen))
+      (outline-hide-sublevels (org-outline-level))
+      (org-previous-visible-heading 1)
+      (outline-show-subtree)
+      (when was-narrowed (org-narrow-to-subtree))))
 
   (defun t/open-next-heading ()
     (interactive)
-    (outline-hide-sublevels (org-outline-level))
-    (org-next-visible-heading 1)
-    (outline-show-subtree))
+    (let ((was-narrowed (buffer-narrowed-p)))
+      (when was-narrowed (widen))
+      (outline-hide-sublevels (org-outline-level))
+      (org-next-visible-heading 1)
+      (outline-show-subtree)
+      (when was-narrowed (org-narrow-to-subtree))))
 
   ;; like in normal org, not like in doom
   (map! :after evil-org
