@@ -299,6 +299,9 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
  "M-n" 'forward-paragraph
  "M-p" 'backward-paragraph
 
+ ;; g = global
+ ;;:i "C-d" 'delete-char
+
  "s-k" 'previous-buffer
  "s-j" 'next-buffer
  "s->" 'next-multiframe-window
@@ -434,6 +437,9 @@ And some extra for org mode
   (map! :after evil-org
         :map evil-org-mode-map
         :ni "C-<return>" #'org-insert-heading-respect-content
+
+        ;; bring back deleting characters from insert in org mode
+        :i "C-d" nil
 
         :map org-mode-map
         :ni "C-c C-p" #'t/open-prev-heading
