@@ -4,6 +4,8 @@
 :header-args:emacs-lisp: :lexical t :results silent
 :END:
 
+** Lexical scoping everywhere
+
 #+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
@@ -636,6 +638,8 @@ This one makes camelCaseWords into to snake_case_words. Run it with ~@c~
 ;;(add-hook 'completion-list-mode-hook #'consult-preview-at-point-mode)
 #+end_src
 
+Embark improve prefix help commands, e.g. ~C-c C-h~, by showing auto complete.
+
 ** Multiple cursors
 
 #+begin_src emacs-lisp
@@ -693,6 +697,19 @@ Multiedit calls iedit which is missing all-caps in emacs 29.
                               (lambda (p code res)
                                 (funcall fn res)))))))
 #+end_src
+
+** Terminal from everywhere with s-return
+:PROPERTIES:
+:ID:       607b5e84-af21-4da9-80a9-8a44c2d12f0b
+:END:
+
+Make super+enter create a vterm terminal window inside emacs
+
+#+begin_src emacs-lisp
+(map! :gn [s-return] #'+vterm/here)
+#+end_src
+
+Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
 
 ** Stuff to test
 
@@ -774,3 +791,4 @@ Useful e.g. to make dired act like a directory tree sidebar
      (xref--show-pos-in-buf l (marker-buffer l))))
  )
 #+end_src
+
