@@ -280,12 +280,6 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
  "s-+" #'doom/increase-font-size
  "s--" #'doom/decrease-font-size
 
- ;; that's irritating
- "<M-up>"    #'drag-stuff-up
- "<M-down>"  #'drag-stuff-down
- "<M-left>"  #'evil-backward-word-begin
- "<M-right>" #'evil-forward-word-begin
-
  "s-?" (lambda () (interactive) (text-scale-increase 1))
  "s-_" (lambda () (interactive) (text-scale-decrease 1))
  "s-=" (lambda () (interactive) (text-scale-set 0))
@@ -335,6 +329,20 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
  :leader :desc "Widen" "m s w" 'widen
  )
 #+end_src
+
+#+begin_src emacs-lisp
+(map!
+ ;; that's irritating
+ :after drag-stuff-mode
+ :map drag-stuff-mode-map
+ "<M-up>"    #'drag-stuff-up ;; messes up org mode
+ "<M-down>"  #'drag-stuff-down ;; messes up org mode
+ ;; :ni "<M-left>"  #'evil-backward-word-begin
+ ;; :ni "<M-right>" #'evil-forward-word-begin
+ )
+#+end_src
+
+#+RESULTS:
 
 ** Rss (elfeed)
 
