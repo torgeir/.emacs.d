@@ -330,6 +330,8 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
  )
 #+end_src
 
+Prevent drag-stuff-mode from messing things up
+
 #+begin_src emacs-lisp
 (map!
  ;; that's irritating
@@ -632,7 +634,7 @@ This one makes camelCaseWords into to snake_case_words. Run it with ~@c~
         magit-rebase-arguments '("--interactive")
         magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
         git-commit-summary-max-length 72 ;; like github
-        magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
+        magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1))
 #+end_src
 
 ** Embark
