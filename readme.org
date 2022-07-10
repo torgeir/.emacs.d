@@ -520,6 +520,11 @@ And some extra for org mode
           )))
 #+end_src
 
+#+begin_src emacs-lisp
+(after! org
+  (require 'ob-async))
+#+end_src
+
 ** Frame
 
 Show the buffer and the file
