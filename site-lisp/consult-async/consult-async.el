@@ -39,21 +39,38 @@
 
 (defvar consult-t-history nil)
 
+(defvar-local consult-toggle-preview-orig nil)
+
+(defun consult-t-async-toggle-preview ()
+  "Command to enable/disable preview."
+  (interactive)
+  (if consult-toggle-preview-orig
+      (progn
+        (setq consult--preview-function consult-toggle-preview-orig
+              consult-toggle-preview-orig nil))
+    (progn
+      (with-selected-window (get-buffer-window "*eww*") (delete-window))
+      (setq consult-toggle-preview-orig consult--preview-function
+            consult--preview-function #'ignore))))
+
 (defun consult-t-async (&optional fn)
   "Consult spotify by filter."
   (consult--read (consult-t--search-generator fn)
                  :prompt (format "Search: ")
                  ;;:lookup #'consult--lookup-member
-                 :state (lambda (action q)
-                          (message "action: %s, q: %s" action q)
-                          (when (and (not (null q))
-                                     (s-starts-with? "http" q))
-                            (eww q)
-                            ))
-                 ;;:category 'spotify-search-item
+                 :state (lambda (action cand)
+                          (when (and cand (not (string-equal "#" cand)))
+                            (let* ((s (split-string cand "\n"))
+                                   (q (car s))
+                                   (url (cadr s)))
+                              ;; (message "action: %s, q: %s, url: %s" action q url)
+                              (when url
+                                (when (s-starts-with? "http" url)
+                                  (eww q))))))
+                 :category 'spotify-search-item
                  :history '(:input consult-t-history)
                  :initial (consult--async-split-initial "")
-                 ;;:require-match t
+                 :require-match nil
                  :keymap (let ((map (make-sparse-keymap)))
                            (define-key map (kbd "C-M-S-v") (lambda ()
                                                              (interactive)
@@ -65,6 +82,7 @@
                                                            (save-excursion
                                                              (with-selected-window (get-buffer-window "*eww*")
                                                                (scroll-up)))))
+                           (define-key map (kbd "C-SPC") #'consult-t-async-toggle-preview)
                            map)))
 
 (defun consult-t--search-generator (fn)
@@ -103,7 +121,7 @@ Display a message with the ERROR-THROWN."
   foo)
 
 (defun consult-web--request (fn url parser &optional placeholder)
-  (message "searching: %s" url)
+  ;; (message "searching: %s" url)
   (request
     url
     :sync t
@@ -112,9 +130,9 @@ Display a message with the ERROR-THROWN."
     :error #'consult-web--handle-error
     :success (cl-function (lambda (&key data &allow-other-keys)
                             (funcall fn (mapcar
-                                         (lambda (e)
-                                           (cadr (split-string (consult--clear-text-properties e) "\n")))
+                                         #'consult--clear-text-properties
                                          (cddr data)))))))
+
 
 (defun consult-web-search--ddg (string fn)
   "Retrieve search results from DuckDuckGo for STRING."
@@ -137,24 +155,5 @@ Display a message with the ERROR-THROWN."
   (interactive)
   (consult-t-async (lambda (q fn)
                      (consult-web-search--ddg q fn))))
-
-
-(progn
-  (defvar-local consult-toggle-preview-orig nil)
-
-  (defun consult-toggle-preview ()
-    "Command to enable/disable preview."
-    (interactive)
-    (if consult-toggle-preview-orig
-        (setq consult--preview-function consult-toggle-preview-orig
-              consult-toggle-preview-orig nil)
-      (setq consult-toggle-preview-orig consult--preview-function
-            consult--preview-function #'ignore)))
-
-  ;; Bind to `vertico-map' or `selectrum-minibuffer-map'
-  (after! vertico
-    (define-key vertico-map (kbd "M-p") #'consult-toggle-preview))
-
-  )
 
 (provide 'consult-async)
