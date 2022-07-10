@@ -442,7 +442,8 @@ And some extra for org mode
     (interactive)
     (let ((was-narrowed (buffer-narrowed-p)))
       (when was-narrowed (widen))
-      (outline-hide-sublevels (org-outline-level))
+      (when (org-at-heading-p)
+        (outline-hide-sublevels (org-outline-level)))
       (org-previous-visible-heading 1)
       (outline-show-subtree)
       (when was-narrowed (org-narrow-to-subtree))))
@@ -451,7 +452,8 @@ And some extra for org mode
     (interactive)
     (let ((was-narrowed (buffer-narrowed-p)))
       (when was-narrowed (widen))
-      (outline-hide-sublevels (org-outline-level))
+      (when (org-at-heading-p)
+        (outline-hide-sublevels (org-outline-level)))
       (org-next-visible-heading 1)
       (outline-show-subtree)
       (when was-narrowed (org-narrow-to-subtree))))
@@ -644,7 +646,6 @@ This one makes camelCaseWords into to snake_case_words. Run it with ~@c~
  :g "C-," #'embark-act ; global
  :map org-mode-map "C-," #'embark-act
  :map minibuffer-mode-map "C-," #'embark-act)
-
 ;;(add-hook 'completion-list-mode-hook #'consult-preview-at-point-mode)
 #+end_src
 
