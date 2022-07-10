@@ -542,6 +542,14 @@ Use ~R~ when in eww, to be smart about what text to show.
 (add-hook 'eww-after-render-hook 'eww-readable)
 #+end_src
 
+#+begin_src emacs-lisp
+(after! evil
+  ;; the original way
+  ;;(setf (alist-get 'size (display-buffer-assq-regexp "*eww*" display-buffer-alist nil)) 0.8)
+  ;; the doom way
+  (set-popup-rule! "^\\*eww*" :side 'bottom :size 0.8))
+#+end_src
+
 ** Dired
 
 #+begin_src emacs-lisp
@@ -636,7 +644,9 @@ This one makes camelCaseWords into to snake_case_words. Run it with ~@c~
         magit-rebase-arguments '("--interactive")
         magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
         git-commit-summary-max-length 72 ;; like github
-        magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1))
+        magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1)
+  (set-popup-rule! "^\\magit-log" :side 'right :size 0.5)
+  (set-popup-rule! "^\\magit-revision" :side 'right :size 0.5))
 #+end_src
 
 ** Embark
