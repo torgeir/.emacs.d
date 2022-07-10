@@ -296,7 +296,7 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
  "M-p" 'backward-paragraph
 
  ;; g = global
- ;;:i "C-d" 'delete-char
+ :i "C-d" 'delete-char
 
  "s-k" 'previous-buffer
  "s-j" 'next-buffer
