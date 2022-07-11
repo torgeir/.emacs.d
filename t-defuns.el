@@ -1005,11 +1005,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/describe (&optional sat)
   "Describe functions, features, symbols, or run help-apropos if it's not found."
   (interactive)
-  (let ((s (or sat (symbol-at-point))))
+  (if-let ((s (or sat (symbol-at-point))))
     (cond ((fboundp s) (helpful-function s))
           ((featurep s) (doom/help-packages s))
           ((symbolp s) (helpful-variable s))
-          (t (call-interactively 'apropos)))))
+          (t (call-interactively 'apropos)))
+    (message "No symbol at point.")))
 
 (defun t/unbind (fn-or-s)
   "Unbind function or symbol depending on type."
