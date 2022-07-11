@@ -745,6 +745,16 @@ Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.s
         twittering-use-master-password t))
 #+end_src
 
+** Info mode
+
+#+begin_src emacs-lisp
+(after! info-mode
+  (map!
+   :map Info-mode-map
+   "M-n" #'forward-paragraph
+   "M-p" #'backward-paragraph))
+#+end_src
+
 ** Stuff to test
 
 *** Skeleton mode instead of yasnippet?
