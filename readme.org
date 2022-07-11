@@ -514,8 +514,9 @@ Make it possible to use the header argument ~:async true~ for async execution of
   (with-eval-after-load 'org-capture
     (defun org-hugo-new-subtree-post-capture-template ()
       "Returns `org-capture' template string for new Hugo post.
-See `org-capture-templates' for more information."
-      (let* ((title (read-from-minibuffer "Post Title: ")) ;; Prompt to enter the post title
+See `org-capture-templates' for more information.
+https://ox-hugo.scripter.co/doc/org-capture-setup/"
+      (let* ((title (read-from-minibuffer "Post Title: "))
              (fname (org-hugo-slug title)))
         (mapconcat #'identity
                    `(,(concat "* TODO " title)
@@ -537,7 +538,7 @@ See `org-capture-templates' for more information."
         ("f" "File" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t :empty-lines-after 1)
         ("c" "Chrome location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template) :prepend t :empty-lines-after 1)
         ("e" "Elfeed location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template) :prepend t :empty-lines-after 1)
-        ("p" "Post" entry (file+olp "~/Code/posts/content-org/blog.org" "") (function org-hugo-new-subtree-post-capture-template))
+        ("p" "Post" entry (file+olp "~/Code/posts/content-org/blog.org" "Drafts") (function org-hugo-new-subtree-post-capture-template))
         ;; ("T" "Personal todo" entry (file+headline +org-capture-todo-file "Inbox") "* %?\n %i\n %a" :prepend t)
         ;; ("j" "Journal" entry (file+olp+datetree +org-capture-journal-file) "* %U %?\n %i\n %a" :prepend t)
         ;; ("n" "Personal notes" entry (file+headline +org-capture-notes-file "Inbox") "* %u %?\n %i\n %a" :prepend t)
