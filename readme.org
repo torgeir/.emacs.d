@@ -737,6 +737,14 @@ Make super+enter create a vterm terminal window inside emacs
 
 Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
 
+** Twitter
+
+#+begin_src emacs-lisp
+(after! twittering-mode
+  (setq twittering-initial-timeline-spec-string '(":mentions" ":home")
+        twittering-use-master-password t))
+#+end_src
+
 ** Stuff to test
 
 *** Skeleton mode instead of yasnippet?
