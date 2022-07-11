@@ -434,6 +434,7 @@ And some extra for org mode
 #+end_src
 
 ** Org
+*** Org settings
 
 #+begin_src emacs-lisp
 (after! org
@@ -562,17 +563,17 @@ Show the buffer and the file
 
 ** Eww
 
+An elisp web browser.
+
+*** Lookup
+
 Make ~SPC s o~ open in eww first, then use ~&~ to go to the default browser if needed.
 
 #+begin_src emacs-lisp
 (setq +lookup-open-url-fn #'eww)
 #+end_src
 
-Use ~R~ when in eww, to be smart about what text to show.
-
-#+begin_src emacs-lisp
-(add-hook 'eww-after-render-hook 'eww-readable)
-#+end_src
+*** Popup size
 
 #+begin_src emacs-lisp
 (after! evil
@@ -582,11 +583,149 @@ Use ~R~ when in eww, to be smart about what text to show.
   (set-popup-rule! "^\\*eww*" :side 'bottom :size 0.8))
 #+end_src
 
+*** Readability
+
+Enter readable mode automatically, normally available from pressing ~R~ in eww mode.
+
+#+begin_src emacs-lisp
+(add-hook 'eww-after-render-hook 'eww-readable)
+#+end_src
+
+Eww functions that directly enter the eww readability mode after loading a given url
+
+#+BEGIN_SRC emacs-lisp :results silent
+(defun t/eww-readable-after-render (status url buffer fn)
+  (eww-render status url nil buffer)
+  (switch-to-buffer buffer)
+  (eww-readable)
+  (let ((content (buffer-substring-no-properties (point-min) (point-max))))
+    (read-only-mode 0)
+    (erase-buffer)
+    (insert content)
+    (beginning-of-buffer)
+    (toggle-truncate-lines -1)
+    (when fn (funcall fn))))
+
+(defun t/eww-readable (url &optional fn)
+  (interactive "sEnter URL: ")
+  (let ((buffer (get-buffer-create "*eww*")))
+    (with-current-buffer buffer
+      (autoload 'eww-setup-buffer "eww")
+      (eww-setup-buffer)
+      (url-retrieve url 't/eww-readable-after-render (list url buffer fn)))))
+#+END_SRC
+
+*** Images and wrap long lines
+
+#+BEGIN_SRC emacs-lisp :results silent
+(after! shr
+  ;; don't truncate lines in
+  (defun shr-fill-text (text) text)
+  (defun shr-fill-lines (start end) nil)
+  (defun shr-fill-line () nil)
+
+  ;; not too large images
+  (setq shr-use-fonts nil
+        shr-max-image-proportion 0.6
+        shr-ignore-cache t))
+#+END_SRC
+
+*** TODO Open from chrome
+
+Opens the frontmost chrome url in eww.
+
+This does not work atm, ~(void-function org-mac-chrome-get-frontmost-url)~.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(comment defun t/visit-frontmost-chrome-url-in-eww ()
+  "Visit the front-most url of chrome in eww."
+  (interactive)
+  (eww (t/grab-chrome-url)))
+#+END_SRC
+
+*** Hook and keybindings
+
+Some useful eww keybindings
+
+#+BEGIN_SRC emacs-lisp :results silent
+(after! eww
+  (defun t/eww-hook ()
+    (map!
+     :map evil-normal-state-local-map
+     "q" 'quit-window
+     "S-TAB" 'shr-previous-link
+     "TAB" 'shr-next-link
+     "R" 'eww-readable
+     "M-p" 'backward-paragraph
+     "M-n" 'forward-paragraph
+     "s-l" 'eww
+     "s" (t/spray-micro-state))))
+(add-hook 'eww-mode-hook #'t/eww-hook)
+#+END_SRC
+
+
 ** Dired
 
 #+begin_src emacs-lisp
 (after! dired
   (add-hook 'dired-mode-hook 'dired-hide-details-mode))
+#+end_src
+
+** Nrk.no
+
+A custom function to fetch a clean view of the current news from nrk.no
+
+#+BEGIN_SRC emacs-lisp :results silent
+(defun t/clean-nrk-buffer ()
+  (flush-lines "^$")
+  ;; clean up lines beginning with dates, e.g. 20. sept...
+  (beginning-of-buffer)
+  (flush-lines "^[0-9][0-9]\.")
+
+  ;; clean up lines beginning with -
+  (beginning-of-buffer)
+  (t/cleanup-buffer-whitespace-and-indent)
+  (while (re-search-forward "*" nil t)
+    ;; kill lines with dates, all these news are new
+    (when (string-match-p "^* [0-9][0-9]\." (thing-at-point 'line))
+      (kill-line) (forward-line) (join-line))
+    ;; change * to -
+    (replace-match "\n-")
+    ;; highlight the line
+    (add-text-properties (point-at-bol) (point-at-eol) '(face outline-4)))
+
+  (beginning-of-buffer)
+
+  ;; kill more lines with dates
+  (while (re-search-forward "^[0-9][0-9]\." nil t)
+    (when (string-match-p "^[0-9][0-9]\. [jfmasond]" (thing-at-point 'line))
+      (beginning-of-line) (kill-line) (forward-line) (join-line)))
+
+  ;; remove leading line
+  (beginning-of-buffer)
+  (kill-line)
+
+  ;;(darkroom-mode)
+  (read-only-mode)
+  (funcall (t/micro-state (t/prefix-arg-universal?)
+                          "n" (cmd! nil
+                                        (evil-search "^-" t t)
+                                        (evil-ex-nohighlight)
+                                        (recenter nil))
+                          "p" (cmd! nil
+                                        (evil-search "^-" nil t)
+                                        (evil-ex-nohighlight)
+                                        (recenter nil))
+                          "s" (t/spray-micro-state))))
+#+END_SRC
+
+Bind it to ~SPC o n~
+
+#+begin_src emacs-lisp
+(map!
+ :leader
+ (:prefix ("o" . "open")
+  :desc "Show nrk.no" "n" (cmd! (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))))
 #+end_src
 
 ** Ediff
