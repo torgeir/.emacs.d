@@ -633,7 +633,8 @@ This one makes camelCaseWords into to snake_case_words. Run it with ~@c~
   (defun olivetti-turn-off-line-numbers ()
     (setq display-line-numbers nil
           indicate-empty-lines nil
-          olivetti-body-width (if (< (frame-width (selected-frame)) 300) 0.7 0.5)))
+          ;; and set max width
+          olivetti-body-width (if (< (frame-width (selected-frame)) 300) 0.6 0.5)))
   (defun olivetti-bring-back-line-numbers ()
     (setq display-line-numbers 'relative
           indicate-empty-lines t))
