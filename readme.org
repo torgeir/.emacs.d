@@ -495,34 +495,60 @@ And some extra for org mode
         org-log-reschedule 'time     ; log when schedule changes
         org-reverse-note-order t     ; newest notes first
         org-return-follows-link t    ; go to http links in browser
-        org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)"))
-        org-capture-templates
-        `(("t" "Task" entry (file+olp org-default-notes-file "Tasks") "* TODO %? \n\n%i\n\n" :prepend t :empty-lines-after 1)
-          ("s" "Saga" entry (file+olp ,(t/user-dropbox-folder "org/saga.org.gpg") "Tasks") "* TODO %? \n\n%i" :prepend t :empty-lines-after 1)
-          ("b" "bekk" entry (file+olp ,(t/user-dropbox-folder "org/bekk.org.gpg") "Tasks") "* TODO %? \n\n%i" :prepend t :empty-lines-after 1)
-          ;;("d" "Shared calendar event" entry (file ,(t/user-dropbox-folder "org/gcal/delt.org.gpg")) "* %?\n" :prepent t)
-          ("l" "Link" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\nLink: %a" :prepend t :empty-lines-after 1)
-          ("f" "File" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t :empty-lines-after 1)
-          ("c" "Chrome location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template) :prepend t :empty-lines-after 1)
-          ("e" "Elfeed location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template) :prepend t :empty-lines-after 1)
-
-          ;; ("T" "Personal todo" entry (file+headline +org-capture-todo-file "Inbox") "* %?\n %i\n %a" :prepend t)
-          ;; ("j" "Journal" entry (file+olp+datetree +org-capture-journal-file) "* %U %?\n %i\n %a" :prepend t)
-          ;; ("n" "Personal notes" entry (file+headline +org-capture-notes-file "Inbox") "* %u %?\n %i\n %a" :prepend t)
-          ;; ("p" "Templates for projects") ("pt" "Project-local todo" entry (file+headline +org-capture-project-todo-file "Inbox") "* TODO %?\n %i\n %a" :prepend t)
-          ;; ("pn" "Project-local notes" entry (file+headline +org-capture-project-notes-file "Inbox") "* %U %?\n %i\n %a" :prepend t)
-          ;; ("pc" "Project-local changelog" entry (file+headline +org-capture-project-changelog-file "Unreleased") "* %U %?\n %i\n %a" :prepend t)
-          ;; ("o" "Centralized templates for projects")
-          ;; ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
-          ;; ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :heading "Notes" :prepend t)
-          ;; ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :heading "Changelog" :prepend t)
-
-          )))
+        org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)"))))
 #+end_src
+
+*** Async source code blocks
+
+Make it possible to use the header argument ~:async true~ for async execution of begin_src code blocks.
 
 #+begin_src emacs-lisp
 (after! org
   (require 'ob-async))
+#+end_src
+
+*** Hugo capture template
+
+#+begin_src emacs-lisp
+(after! org
+  (with-eval-after-load 'org-capture
+    (defun org-hugo-new-subtree-post-capture-template ()
+      "Returns `org-capture' template string for new Hugo post.
+See `org-capture-templates' for more information."
+      (let* ((title (read-from-minibuffer "Post Title: ")) ;; Prompt to enter the post title
+             (fname (org-hugo-slug title)))
+        (mapconcat #'identity
+                   `(,(concat "* TODO " title)
+                     ":PROPERTIES:"
+                     ,(concat ":EXPORT_FILE_NAME: " fname)
+                     ":END:" "%?\n")
+                   "\n")))))
+#+end_src
+
+**** Capture templates
+
+#+begin_src emacs-lisp
+(setq org-capture-templates
+      `(("t" "Task" entry (file+olp org-default-notes-file "Tasks") "* TODO %? \n\n%i\n\n" :prepend t :empty-lines-after 1)
+        ("s" "Saga" entry (file+olp ,(t/user-dropbox-folder "org/saga.org.gpg") "Tasks") "* TODO %? \n\n%i" :prepend t :empty-lines-after 1)
+        ("b" "bekk" entry (file+olp ,(t/user-dropbox-folder "org/bekk.org.gpg") "Tasks") "* TODO %? \n\n%i" :prepend t :empty-lines-after 1)
+        ;;("d" "Shared calendar event" entry (file ,(t/user-dropbox-folder "org/gcal/delt.org.gpg")) "* %?\n" :prepent t)
+        ("l" "Link" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\nLink: %a" :prepend t :empty-lines-after 1)
+        ("f" "File" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t :empty-lines-after 1)
+        ("c" "Chrome location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template) :prepend t :empty-lines-after 1)
+        ("e" "Elfeed location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template) :prepend t :empty-lines-after 1)
+        ("p" "Post" entry (file+olp "~/Code/posts/content-org/blog.org" "") (function org-hugo-new-subtree-post-capture-template))
+        ;; ("T" "Personal todo" entry (file+headline +org-capture-todo-file "Inbox") "* %?\n %i\n %a" :prepend t)
+        ;; ("j" "Journal" entry (file+olp+datetree +org-capture-journal-file) "* %U %?\n %i\n %a" :prepend t)
+        ;; ("n" "Personal notes" entry (file+headline +org-capture-notes-file "Inbox") "* %u %?\n %i\n %a" :prepend t)
+        ;; ("p" "Templates for projects") ("pt" "Project-local todo" entry (file+headline +org-capture-project-todo-file "Inbox") "* TODO %?\n %i\n %a" :prepend t)
+        ;; ("pn" "Project-local notes" entry (file+headline +org-capture-project-notes-file "Inbox") "* %U %?\n %i\n %a" :prepend t)
+        ;; ("pc" "Project-local changelog" entry (file+headline +org-capture-project-changelog-file "Unreleased") "* %U %?\n %i\n %a" :prepend t)
+        ;; ("o" "Centralized templates for projects")
+        ;; ("ot" "Project todo" entry #'+org-capture-central-project-todo-file "* TODO %?\n %i\n %a" :heading "Tasks" :prepend nil)
+        ;; ("on" "Project notes" entry #'+org-capture-central-project-notes-file "* %U %?\n %i\n %a" :heading "Notes" :prepend t)
+        ;; ("oc" "Project changelog" entry #'+org-capture-central-project-changelog-file "* %U %?\n %i\n %a" :heading "Changelog" :prepend t)
+        ))
 #+end_src
 
 ** Frame
