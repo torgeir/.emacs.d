@@ -593,7 +593,7 @@ Enter readable mode automatically, normally available from pressing ~R~ in eww m
 
 Eww functions that directly enter the eww readability mode after loading a given url
 
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp
 (defun t/eww-readable-after-render (status url buffer fn)
   (eww-render status url nil buffer)
   (switch-to-buffer buffer)
@@ -617,7 +617,7 @@ Eww functions that directly enter the eww readability mode after loading a given
 
 *** Images and wrap long lines
 
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp
 (after! shr
   ;; don't truncate lines in
   (defun shr-fill-text (text) text)
@@ -636,7 +636,7 @@ Opens the frontmost chrome url in eww.
 
 This does not work atm, ~(void-function org-mac-chrome-get-frontmost-url)~.
 
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp
 (comment defun t/visit-frontmost-chrome-url-in-eww ()
   "Visit the front-most url of chrome in eww."
   (interactive)
@@ -647,7 +647,7 @@ This does not work atm, ~(void-function org-mac-chrome-get-frontmost-url)~.
 
 Some useful eww keybindings
 
-#+BEGIN_SRC emacs-lisp :results silent
+#+BEGIN_SRC emacs-lisp
 (after! eww
   (defun t/eww-hook ()
     (map!
@@ -662,7 +662,6 @@ Some useful eww keybindings
      "s" (t/spray-micro-state))))
 (add-hook 'eww-mode-hook #'t/eww-hook)
 #+END_SRC
-
 
 ** Dired
 
