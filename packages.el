@@ -54,3 +54,4 @@
 
 (package! olivetti)
 (package! spray)
+(package! dired-subtree)
