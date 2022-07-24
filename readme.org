@@ -48,7 +48,8 @@ That's kinda tedious, tho. Let's automate it
   (when (string-equal "~/.doom.d/readme.org" buffer-file-truename)
     (progn
       (org-babel-tangle-file "~/.doom.d/readme.org" "~/.doom.d/config.el")
-      (async-shell-command "doom sync" "*t-doom-sync*" "*t-doom-sync*"))))
+      (async-shell-command "doom sync" "*t-doom-sync*" "*t-doom-sync*")
+      (with-current-buffer "*t-doom-sync*" (evil-normal-state)))))
 (add-hook 'after-save-hook #'t/reload-config)
 #+end_src
 
