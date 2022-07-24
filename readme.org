@@ -352,7 +352,7 @@ Prevent drag-stuff-mode from messing things up
 #+begin_src emacs-lisp
 (after! elfeed
   (setq rmh-elfeed-org-files '("~/Dropbox/org/feeds.org")
-        elfeed-search-filter "@2-week-ago +unread")
+        elfeed-search-filter "@2-week-ago +unread -news -tech")
 
   (map!
    (:after elfeed
