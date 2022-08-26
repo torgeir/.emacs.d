@@ -158,7 +158,7 @@ To list available fontsets, do
 #+end_quote
 
 #+begin_src emacs-lisp
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type nil)
 #+end_src
 
 ** Org agenda file setup
