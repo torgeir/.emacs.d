@@ -540,12 +540,12 @@ https://ox-hugo.scripter.co/doc/org-capture-setup/"
                    "\n")))))
 #+end_src
 
-**** Capture templates
+*** Capture templates
 
 #+begin_src emacs-lisp
 (after! org
   (setq org-capture-templates
-        `(("t" "Task" entry (file+olp org-default-notes-file "Tasks") "* TODO %? \n\n%i\n\n" :prepend t :empty-lines-after 1)
+        `(("t" "Task" entry (file+olp org-default-notes-file "tasks") "* TODO %? \n\n%i\n\n" :prepend t :empty-lines-after 1)
           ("s" "Saga" entry (file+olp ,(t/user-dropbox-folder "org/saga.org.gpg") "Tasks") "* TODO %? \n\n%i" :prepend t :empty-lines-after 1)
           ("b" "bekk" entry (file+olp ,(t/user-dropbox-folder "org/bekk.org.gpg") "Tasks") "* TODO %? \n\n%i" :prepend t :empty-lines-after 1)
           ;;("d" "Shared calendar event" entry (file ,(t/user-dropbox-folder "org/gcal/delt.org.gpg")) "* %?\n" :prepent t)
