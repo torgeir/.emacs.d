@@ -419,6 +419,14 @@ Prevent drag-stuff-mode from messing things up
 (map! :leader :n "h h" #'t/describe)
 #+end_src
 
+** Vertico
+
+#+begin_src emacs-lisp
+(after! vertico
+  (map! :map vertico-map
+        :g "C-k" 'kill-line))
+#+end_src
+
 ** Smartparens
 
 #+begin_src emacs-lisp
@@ -852,6 +860,12 @@ Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindin
   (:when (featurep! :tools magit)
    (:prefix ("c" . "create")
     :desc "Ammend"                    "a"   #'magit-commit-amend))))
+#+end_src
+
+#+begin_src emacs-lisp
+(map!
+ :map magit-status-mode-map
+ :desc "Show process buffer" :n "$" #'magit-process-buffer)
 #+end_src
 
 ** Embark
