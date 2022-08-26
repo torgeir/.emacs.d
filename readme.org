@@ -216,6 +216,7 @@ My old collection of more or less usefull defuns.
 
 #+begin_src emacs-lisp
 (progn
+  (defun t/user-file (path) (concat (expand-file-name "~/") path))
   (defun t/user-emacs-file (path) (concat (expand-file-name "~/.doom.d/") path))
   (defun t/user-dropbox-folder (path) (expand-file-name (concat "~/Dropbox (Personal)/" path)))
   (defconst is-win IS-WINDOWS)
@@ -730,6 +731,20 @@ Bind it to ~SPC o n~
  :leader
  (:prefix ("o" . "open")
   :desc "Show nrk.no" "n" (cmd! (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))))
+#+end_src
+
+** Terraform
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "Downloads/") "tf_plan_.*") 'terraform-mode))
+(add-hook! 'terraform-mode-hook
+  (cmd!
+   (when (s-contains-p "tf_plan_" buffer-file-name)
+     (beginning-of-buffer)
+     (evil-search "^───" t t)
+     (call-interactively 'evil-scroll-line-to-top))
+   (terraform-format-on-save-mode)
+   (aggressive-indent-mode -1)))
 #+end_src
 
 ** Ediff
