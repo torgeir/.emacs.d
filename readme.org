@@ -420,6 +420,50 @@ Prevent drag-stuff-mode from messing things up
 (map! :leader :n "h h" #'t/describe)
 #+end_src
 
+** Jumping around
+
+#+begin_src emacs-lisp
+(map!
+ :leader
+ (:prefix-map ("j" . "jump")
+  (:when t
+   :desc "Jump to line"        "l" #'avy-goto-line
+   :desc "org: Jump to header" "h" #'avy-org-goto-heading-timer
+   :desc "Jump to char"        "c" #'avy-goto-char-2
+   :desc "Jump to char"        "C" #'avy-goto-char)
+ ))
+#+end_src
+
+** Help motions
+
+Motions keys for help buffers.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(after! evil
+  (after! help-mode
+         (evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
+         (evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
+         (evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
+         (evil-define-key 'motion help-mode-map (kbd "L") 'help-go-forward)
+         (evil-define-key 'motion help-mode-map (kbd "H") 'help-go-back)
+         (evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
+         (evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
+         (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)))
+#+END_SRC
+
+** Info motions
+
+Motion keys for info mode.
+
+#+BEGIN_SRC emacs-lisp :results silent
+(after! evil
+  (after! Info-mode
+         (evil-define-key 'normal 'Info-mode-map (kbd "H") 'Info-history-back)
+         (evil-define-key 'normal 'Info-mode-map (kbd "L") 'Info-history-forward)
+         (unbind-key (kbd "h") 'Info-mode-map)
+         (unbind-key (kbd "l") 'Info-mode-map)))
+#+END_SRC
+
 ** Vertico
 
 #+begin_src emacs-lisp
