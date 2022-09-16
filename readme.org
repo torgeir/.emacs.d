@@ -476,7 +476,8 @@ Motion keys for info mode.
 
 #+begin_src emacs-lisp
 (after! smartparens
-  (sp-local-pair 'emacs-lisp-mode "`" "'" :when '(sp-in-docstring-p)))
+  (sp-local-pair 'emacs-lisp-mode "`" "'" :when '(sp-in-docstring-p))
+  (sp-use-paredit-bindings))
 #+end_src
 
 And some extra for org mode
@@ -981,6 +982,15 @@ Multiedit calls iedit which is missing all-caps in emacs 29.
                               (concat "ls -l " action)
                               (lambda (p code res)
                                 (funcall fn res)))))))
+#+end_src
+
+** Clojure
+
+#+begin_src emacs-lisp
+(after! clojure
+  (add-hook 'clojurescript-mode-hook 'evil-cleverparens-mode)
+  (add-hook 'clojure-mode-hook 'evil-cleverparens-mode)
+  (use-package! ox-gfm :load-path "site-lisp/ox-gfm/"))
 #+end_src
 
 ** Terminal from everywhere with s-return
