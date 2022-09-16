@@ -144,9 +144,16 @@ To list available fontsets, do
 #+begin_src emacs-lisp
 (defun t/cycle-theme ()
   (interactive)
-  (if (eq doom-theme 'doom-nord)
-      (load-theme 'doom-nord-light)
-    (load-theme 'doom-nord)))
+  (cl-case doom-theme
+    (doom-outrun-electric (load-theme 'doom-moonlight))
+    (doom-moonlight (load-theme 'doom-tokyo-night))
+    (doom-tokyo-night (load-theme 'doom-oceanic-next))
+    (doom-oceanic-next (load-theme 'doom-vibrant))
+    (doom-vibrant (load-theme 'doom-laserwave))
+    (doom-laserwave (load-theme 'doom-flatwhite))
+    (doom-flatwhite (load-theme 'doom-nord))
+    (t (load-theme 'doom-outrun-electric)))
+  (message "Theme: %s" doom-theme))
 (map! :leader "t t" #'t/cycle-theme)
 #+end_src
 
