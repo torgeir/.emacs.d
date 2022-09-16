@@ -734,6 +734,7 @@ Some useful eww keybindings
 
 #+begin_src emacs-lisp
 (after! dired
+  (add-hook 'dired-mode-hook 'dired-subtree-toggle)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode))
 #+end_src
 
