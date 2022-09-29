@@ -1524,5 +1524,18 @@ See also:  (setq org-agenda-include-diary t)
   (interactive)
   (insert (t/kbi-link)))
 
+(defun t/trim-final-newline (string)
+  (let ((len (length string)))
+    (cond
+     ((and (> len 0) (eql (aref string (- len 1)) ?\n))
+      (substring string 0 (- len 1)))
+     (t string))))
+
+(defun t/read-file (file)
+  "File to string function"
+  (with-temp-buffer
+    (insert-file-contents file)
+    (t/trim-final-newline (buffer-string))))
+
 (provide 't-defuns)
 ;;; t-defuns.el ends here
