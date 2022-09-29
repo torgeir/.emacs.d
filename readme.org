@@ -319,6 +319,7 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 
  "s-n" 'make-frame
  "s-s" 'save-buffer
+ "s-w" #'t/delete-frame-or-hide-last-remaining-frame
 
  ;; op -- :leader :desc "Toggle treemacs" "f L" #'+treemacs/toggle
  ;; oO -- :leader :desc "Open folder" "p o" #'t/open-in-desktop
@@ -333,11 +334,20 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
  :leader :desc "Toggle transparency" "t T" #'t/transparency
  :leader :desc "Toggle zen" "t d" #'olivetti-mode
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error
+ :leader :desc "Close window unconditionally" "w d" #'delete-window
+ :leader :desc "Projectile git" "p g" #'t/projectile-magit-status
+ :leader :desc "Open scratch buffer" "b s" #'doom/open-scratch-buffer)
 
- :leader :desc "Open scratch buffer" "b s" #'doom/open-scratch-buffer
- :mode org-mode
- :leader :desc "Widen" "m s w" 'widen
- )
+(map!
+ :map doom-leader-workspace-map
+ :leader :desc "Next workspace" "TAB j" '+workspace:switch-next
+ :leader :desc "Previous workspace" "TAB k" '+workspace:switch-previous
+ :leader :desc "Swap next" "TAB J" '+workspace/swap-right
+ :leader :desc "Swap previous" "TAB K" '+workspace/swap-left)
+
+(map!
+ :map org-mode-map
+ :leader :desc "Widen" "m s w" 'widen)
 #+end_src
 
 Prevent drag-stuff-mode from messing things up
@@ -497,6 +507,11 @@ And some extra for org mode
     (sp-local-pair "<" ">" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
     (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
     (sp-local-pair "«" "»")))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! org
+  (add-hook 'org-mode-hook #'turn-off-smartparens-mode))
 #+end_src
 
 ** Org
@@ -795,6 +810,18 @@ Bind it to ~SPC o n~
   :desc "Show nrk.no" "n" (cmd! (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))))
 #+end_src
 
+** Dotfiles
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "dotfiles/source")) 'shell-mode))
+#+end_src
+
+** Vterm
+
+#+begin_src emacs-lisp
+(add-to-list 'vterm-eval-cmds '("update-pwd" (lambda (path) (setq default-directory path))))
+#+end_src
+
 ** Terraform
 
 #+begin_src emacs-lisp
@@ -897,7 +924,8 @@ This one makes camelCaseWords into to snake_case_words. Run it with ~@c~
         magit-rebase-arguments '("--interactive")
         magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
         git-commit-summary-max-length 72 ;; like github
-        magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1)
+        magit-display-buffer-function 'magit-display-buffer-traditional ;'magit-display-buffer-fullcolumn-most-v1
+        )
   (set-popup-rule! "^\\magit-log" :side 'right :size 0.5)
   (set-popup-rule! "^\\magit-revision" :side 'right :size 0.5))
 #+end_src
@@ -994,10 +1022,25 @@ Multiedit calls iedit which is missing all-caps in emacs 29.
 
 ** Clojure
 
+Adapt cleverparens keys that clash with my M-[hjkl] bindings in [[file:~/.skhdrc][~/.skhdrc]]
+
 #+begin_src emacs-lisp
-(after! clojure
-  (add-hook 'clojurescript-mode-hook 'evil-cleverparens-mode)
+(after! evil
+  (map! :map evil-cleverparens-mode-map
+        "C-M-h" 'evil-cp-beginning-of-defun
+        "C-M-l" 'evil-cp-end-of-defun
+        "C-M-k" 'evil-cp-drag-backward
+        "C-M-j" 'evil-cp-drag-forward))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! clojure-mode
   (add-hook 'clojure-mode-hook 'evil-cleverparens-mode)
+  (add-hook 'clojurescript-mode-hook 'evil-cleverparens-mode))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! org
   (use-package! ox-gfm :load-path "site-lisp/ox-gfm/"))
 #+end_src
 
