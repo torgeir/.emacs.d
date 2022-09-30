@@ -819,7 +819,8 @@ Bind it to ~SPC o n~
 ** Vterm
 
 #+begin_src emacs-lisp
-(add-to-list 'vterm-eval-cmds '("update-pwd" (lambda (path) (setq default-directory path))))
+(after! vterm
+  (add-to-list 'vterm-eval-cmds '("update-pwd" (lambda (path) (setq default-directory path)))))
 #+end_src
 
 ** Terraform
