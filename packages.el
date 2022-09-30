@@ -52,6 +52,8 @@
 ;
 (package! evil-cleverparens)
 
+(package! transpose-frame)
+
 (package! olivetti)
 (package! spray)
 (package! dired-subtree)

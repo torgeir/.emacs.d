@@ -333,6 +333,7 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
  :leader :desc "Eval and replace" "m e R" #'t/eval-and-replace
  :leader :desc "Toggle transparency" "t T" #'t/transparency
  :leader :desc "Toggle zen" "t d" #'olivetti-mode
+ :leader :desc "Rotate frame" "w r" #'rotate-frame-clockwise
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error
  :leader :desc "Close window unconditionally" "w d" #'delete-window
  :leader :desc "Projectile git" "p g" #'t/projectile-magit-status
