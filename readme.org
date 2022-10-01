@@ -55,8 +55,7 @@ That's kinda tedious, tho. Let's automate it
       (async-shell-command "doom sync" "*t-doom-sync*" "*t-doom-sync*")
       (with-current-buffer "*t-doom-sync*" (evil-normal-state)))))
 
-;; TODO this was a bit annoying, remove it for now. Use SPC h r r instead.
-;;(add-hook 'after-save-hook #'t/reload-config)
+(add-hook 'after-save-hook #'t/reload-config)
 #+end_src
 
 ** Recentf
@@ -162,8 +161,9 @@ Useful for ~c-e~ followed by ~c-x c-e~ to eval a s-exp. Makes ~cleverparens~ nav
 Don't use zz and zq for org src editing
 
 #+begin_src emacs-lisp
-(add-to-list 'evil-collection-key-blacklist "ZZ")
-(add-to-list 'evil-collection-key-blacklist "ZQ")
+(after! evil-collection
+  (add-to-list 'evil-collection-key-blacklist "ZZ")
+  (add-to-list 'evil-collection-key-blacklist "ZQ"))
 #+end_src
 
 **** Registers
@@ -804,16 +804,18 @@ https://ox-hugo.scripter.co/doc/org-capture-setup/"
 Remove the ~s~ mapping for source code blocks.
 
 #+begin_src emacs-lisp
-(setq org-structure-template-alist (remove '("s" "src") org-structure-template-alist))
+(after! org
+  (setq org-structure-template-alist (remove '("s" "src") org-structure-template-alist)))
 #+end_src
 
-Replace it with ~ss~ so we can add some more along side it.
+Replace it with ~ss~ (its faster than the default ~s ~) so we can add some more along side it.
 
 #+begin_src emacs-lisp
-(add-to-list 'org-structure-template-alist (cons "ss" "src"))
-(add-to-list 'org-structure-template-alist (cons "se" "src emacs-lisp"))
-(add-to-list 'org-structure-template-alist (cons "sp" "src python"))
-(add-to-list 'org-structure-template-alist (cons "sh" "src shell"))
+(after! org
+  (add-to-list 'org-structure-template-alist (cons "ss" "src"))
+  (add-to-list 'org-structure-template-alist (cons "se" "src emacs-lisp"))
+  (add-to-list 'org-structure-template-alist (cons "sp" "src python"))
+  (add-to-list 'org-structure-template-alist (cons "sh" "src shell")))
 #+end_src
 
 *** Capture templates
