@@ -272,9 +272,9 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 #+end_quote
 
 #+begin_src emacs-lisp
-(setq doom-font
-      (font-spec :family "JetBrains Mono" :size 14  :weight 'medium :slant 'normal :width 'normal)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 14  :weight 'medium :slant 'normal :width 'normal)
       doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium :slant 'normal :width 'normal)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 20 :weight 'medium :slant 'normal :width 'normal)
       ;; font resize increments
       doom-font-increment 1)
 #+end_src
@@ -389,7 +389,11 @@ For a while, I turned it off. Can't remember why.
 ;; (after! org (add-hook 'org-mode-hook #'turn-off-smartparens-mode))
 #+end_src
 
-*** Distraction free, writeroom, olivetti
+*** Distraction free / Zen
+
+**** Olivetti
+
+Seems like a light weight alternative, I feel like the below writeroom config suits me better, tho.
 
 #+begin_src emacs-lisp
 (after! olivetti
@@ -406,6 +410,31 @@ For a while, I turned it off. Can't remember why.
   (add-hook 'olivetti-mode-on-hook #'olivetti-turn-off-line-numbers)
   (add-hook 'olivetti-mode-off-hook #'olivetti-bring-back-line-numbers))
 #+end_src
+
+A _really global_ global writeroom mode. The function is redefined such that if writeroom-major-modes is nil, writeroom-mode is activated in ALL buffers.
+
+#+begin_src emacs-lisp
+(setq writeroom-major-modes nil)
+(after! writeroom-mode
+  (defun turn-on-writeroom-mode ()
+    (when (or (not writeroom-major-modes)
+              (apply 'derived-mode-p writeroom-major-modes))
+      (writeroom-mode 1))))
+#+end_src
+
+The [[https://docs.doomemacs.org/latest/modules/ui/zen/][doom default text scale of 2]] is a bit heavy
+
+#+begin_src emacs-lisp
+(setq +zen-text-scale 1.1)
+#+end_src
+
+
+And screens are big, so a bit more space for text is nice.
+
+#+begin_src emacs-lisp
+(setq writeroom-width 120)
+#+end_src
+
 
 ** Dotfiles
 
@@ -477,7 +506,7 @@ Don't bother waiting
  :leader :desc "Search the web" "s w" #'consult-web-search
  :leader :desc "Eval and replace" "m e R" #'t/eval-and-replace
  :leader :desc "Toggle transparency" "t T" #'t/transparency
- :leader :desc "Toggle zen" "t d" #'olivetti-mode
+ :leader :desc "Toggle zen" "t d" #'global-writeroom-mode
  :leader :desc "Rotate frame" "w r" #'rotate-frame-clockwise
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error
  :leader :desc "Close window unconditionally" "w d" #'delete-window
