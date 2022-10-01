@@ -1129,6 +1129,15 @@ Useful elisp I committed, or decided to work on.
 #+end_src
 
 ** Stuff to test
+*** Run in every file opened
+
+#+begin_src emacs-lisp
+(add-hook 'find-file-hook 't/in-every-file)
+(defun t/in-every-file ()
+  ;;(when (string= (file-name-extension buffer-file-name) "ts") (typescript-mode))
+  )
+#+end_src
+
 *** Skeleton mode instead of yasnippet?
 
 https://www.emacswiki.org/emacs/SkeletonMode
