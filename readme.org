@@ -376,6 +376,7 @@ Show the buffer and the file
  :leader
  (:prefix-map ("j" . "jump")
   (:when t
+   :desc "Jump to window"      "w" #'ace-window
    :desc "Jump to line"        "l" #'avy-goto-line
    :desc "org: Jump to header" "h" #'avy-org-goto-heading-timer
    :desc "Jump to char"        "c" #'avy-goto-char-2
