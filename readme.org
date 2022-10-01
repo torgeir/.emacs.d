@@ -1221,7 +1221,9 @@ Useful elisp I committed, or decided to work on.
 
 #+begin_src emacs-lisp
 (after! org
-  (use-package! ox-gfm :load-path "site-lisp/ox-gfm/"))
+  (use-package! ox-gfm
+    :commands org-export-dispatch
+    :load-path "site-lisp/ox-gfm/"))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1229,7 +1231,24 @@ Useful elisp I committed, or decided to work on.
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! org-mac-link :load-path "site-lisp/org-mac-link/")
+(after! org
+  (use-package! org-mac-link :load-path "site-lisp/org-mac-link/"))
+#+end_src
+
+TODO idle highlight in visible buffers
+
+#+begin_src emacs-lisp
+;; don't use this for large files, e.g. like 15MB, it really brings emacs to a stall
+(use-package! nxml-eldoc
+  :load-path "site-lisp/nxml-eldoc/"
+  :commands turn-on-nxml-eldoc)
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! json-path-eldoc
+  :commands turn-on-json-path-eldoc
+  :init (add-hook! 'json-mode-hook 'turn-on-json-path-eldoc)
+  :load-path "site-lisp/json-path-eldoc/")
 #+end_src
 
 #+begin_src emacs-lisp
