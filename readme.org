@@ -795,7 +795,7 @@ Opens the frontmost chrome url in eww.
 This does not work atm, ~(void-function org-mac-chrome-get-frontmost-url)~.
 
 #+BEGIN_SRC emacs-lisp
-(comment defun t/visit-frontmost-chrome-url-in-eww ()
+(defun t/visit-frontmost-chrome-url-in-eww ()
   "Visit the front-most url of chrome in eww."
   (interactive)
   (eww (t/grab-chrome-url)))
@@ -1096,6 +1096,10 @@ Useful elisp I committed, or decided to work on.
 
 #+begin_src emacs-lisp
 (use-package! consult-async :load-path "site-lisp/consult-async/")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! org-mac-link :load-path "site-lisp/org-mac-link/")
 #+end_src
 
 #+begin_src emacs-lisp
