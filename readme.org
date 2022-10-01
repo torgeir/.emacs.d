@@ -249,9 +249,16 @@ Make cursor follow matches so ~m-n~ or ~m-p~ can be used to skip matches easily,
    :n "M-n"   #'t/mc-skip-next
    :n "M-p"   #'t/mc-skip-prev
 
-   ;; don't clash with evil-cp-delete-sexp
+   ;; don't clash with ~evil-cp-delete-sexp~, require visual mode for multi edit
    :mode emacs-lisp-mode
-   :i "M-d" 'evil-multiedit-match-symbol-and-next))
+   :v "M-d" 'evil-multiedit-match-symbol-and-next))
+#+end_src
+
+Restores a lost multiedit selection.
+
+#+begin_src emacs-lisp
+(map!
+ :g "C-M-r" 'evil-multiedit-restore)
 #+end_src
 
 Multiedit calls iedit which is missing all-caps in emacs 29.
