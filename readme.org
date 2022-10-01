@@ -605,6 +605,7 @@ Motion keys for info mode.
 (after! org
 
   (add-hook! 'org-mode-hook 'hl-todo-mode)
+  (add-hook! 'org-mode-hook 'evil-cleverparens-mode)
 
   (defun t/open-prev-heading ()
     (interactive)
