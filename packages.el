@@ -54,6 +54,7 @@
 
 (package! transpose-frame)
 
+(package! highlight-symbol)
 (package! olivetti)
 (package! focus)
 (package! spray)
