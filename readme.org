@@ -679,7 +679,7 @@ Make helpful buffers more navigable by removing doom popup's /dedication/. This 
          (set-window-parameter (selected-window) 'no-delete-other-windows nil)))
 #+end_src
 
-** Info mode
+*** Info mode
 
 #+begin_src emacs-lisp
 (after! info
@@ -689,7 +689,7 @@ Make helpful buffers more navigable by removing doom popup's /dedication/. This 
    "M-p" #'backward-paragraph))
 #+end_src
 
-*** Motions
+**** Motions
 
 Motion keys for info mode.
 
