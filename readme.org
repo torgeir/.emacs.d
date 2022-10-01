@@ -546,32 +546,28 @@ Prevent drag-stuff-mode from messing things up
 
 ** Help
 
+One help shortcut, everywhere.
+
 #+begin_src emacs-lisp
-(map! :leader :n "h h" #'t/describe)
+(map! :leader :n "h h" #'helpful-at-point)
 #+end_src
 
 *** Motions
 
+Make helpful buffers more navigable by removing doom popup's /dedication/. This makes ~q~ fall back to the previous help buffer after a help link click that made you navigate to the next help topic.
 
-Motions keys for help buffers.
-
-#+BEGIN_SRC emacs-lisp :results silent
-(after! evil
-  (after! help-mode
-         (evil-define-key 'motion help-mode-map (kbd "q") 'quit-window)
-         (evil-define-key 'motion help-mode-map (kbd "<tab>") 'forward-button)
-         (evil-define-key 'motion help-mode-map (kbd "S-<tab>") 'backward-button)
-         (evil-define-key 'motion help-mode-map (kbd "L") 'help-go-forward)
-         (evil-define-key 'motion help-mode-map (kbd "H") 'help-go-back)
-         (evil-define-key 'motion help-mode-map (kbd "gf") 'help-go-forward)
-         (evil-define-key 'motion help-mode-map (kbd "gb") 'help-go-back)
-         (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)))
-#+END_SRC
+#+begin_src emacs-lisp
+(advice-add
+ #'push-button
+ :after (cmd!
+         (set-window-dedicated-p (selected-window) nil)
+         (set-window-parameter (selected-window) 'no-delete-other-windows nil)))
+#+end_src
 
 ** Info mode
 
 #+begin_src emacs-lisp
-(after! info-mode
+(after! info
   (map!
    :map Info-mode-map
    "M-n" #'forward-paragraph
