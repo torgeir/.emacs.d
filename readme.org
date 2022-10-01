@@ -6,14 +6,6 @@
 
 Managing [[https://github.com/torgeir/.emacs.d/tree/d1c9dec646824ab7396b8a35fd7da1416a0580d3][a plain emacs config]] that got closer and closer to what you get ootb with [[https://github.com/doomemacs/doomemacs][doom emacs]] was beginning to feel tedious, so this is an attempt to for a setup with ~feature parity on top of doom emacs. It was probably due a clean up after all these years.
 
-** Lexical scoping everywhere
-
-The madness that is dynamic is too much for anyone, really.
-
-#+begin_src emacs-lisp
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-#+end_src
-
 ** Install
 
 First, install doom emacs.
@@ -34,6 +26,14 @@ And some terminal shortcuts
 #+begin_src sh :tangle no
 ln -s ~/.emacs.d/emacsclient ~/bin/e
 ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
+#+end_src
+
+** Lexical scoping everywhere
+
+The madness that is dynamic is too much for anyone, really.
+
+#+begin_src emacs-lisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
 
 ** Reload config and doom sync on save
