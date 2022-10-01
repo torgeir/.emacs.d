@@ -354,6 +354,14 @@ To list available fontsets, do
 
 **** Rainbow mode
 
+***** Rainbow mode in prog modes
+
+#+begin_src emacs-lisp
+(add-hook! '(prog-mode-hook css-mode-hook html-mode-hook) 'rainbow-mode)
+#+end_src
+
+***** Color parens uniformly
+
 #+begin_src emacs-lisp
 (custom-set-faces!
   '(show-paren-match :background nil :foreground "yellow" :weight bold)
