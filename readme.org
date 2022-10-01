@@ -146,6 +146,14 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 #+end_src
 
 ** Editor
+*** Which key
+
+Don't bother waiting
+
+#+begin_src emacs-lisp
+(setq which-key-idle-delay 0.1)
+#+end_src
+
 *** Evil
 
 I spent so much time with vim, I will probably never give it up.
@@ -553,14 +561,6 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
 
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "dotfiles/source")) 'shell-mode))
-#+end_src
-
-** Which key
-
-Don't bother waiting
-
-#+begin_src emacs-lisp
-(setq which-key-idle-delay 0.1)
 #+end_src
 
 ** Keybindings
