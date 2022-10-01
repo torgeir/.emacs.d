@@ -1192,6 +1192,17 @@ Weeks on start on monday in Norway, and weeks have numbers.
   (copy-face 'default 'calendar-iso-week-header-face))
 #+end_src
 
+Evil like navigation.
+
+#+begin_src emacs-lisp
+(after! calendar
+  (add-hook! 'calendar-mode-hook
+    (map!
+     :map calendar-mode-map
+     :m "H"   #'calendar-scroll-left
+     :m "L"   #'calendar-scroll-right)))
+#+end_src
+
 *** Twitter
 
 #+begin_src emacs-lisp
