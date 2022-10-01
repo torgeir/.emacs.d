@@ -1232,10 +1232,12 @@ Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.s
 ** VC
 *** Ediff
 
-Don't remember what this was used for.
+Sometimes you need both changes.
 
 #+begin_src emacs-lisp
-;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(after! ediff
+  (add-hook! 'ediff-keymap-setup-hook
+            (cmd! (define-key ediff-mode-map "d" 't/ediff-use-both))))
 #+end_src
 
 *** Magit and Forge
