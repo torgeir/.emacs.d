@@ -51,7 +51,9 @@ That's kinda tedious, tho. Let's automate it
       (org-babel-tangle-file "~/.doom.d/readme.org" "~/.doom.d/config.el")
       (async-shell-command "doom sync" "*t-doom-sync*" "*t-doom-sync*")
       (with-current-buffer "*t-doom-sync*" (evil-normal-state)))))
-(add-hook 'after-save-hook #'t/reload-config)
+
+;; TODO this was a bit annoying, remove it for now. Use SPC h r r instead.
+;;(add-hook 'after-save-hook #'t/reload-config)
 #+end_src
 
 ** Recentf
