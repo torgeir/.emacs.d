@@ -783,6 +783,113 @@ Make it possible to use the header argument ~:async true~ for async execution of
   (require 'ob-async))
 #+end_src
 
+*** Agenda
+
+**** Custom commands
+
+Org agenda customizations
+
+#+begin_src emacs-lisp
+(defun t/org-skip-subtree-if-priority (priority)
+  "Skip an agenda subtree if it has a priority of PRIORITY.
+
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+        (pri-value (* 1000 (- org-lowest-priority priority)))
+        (pri-current (org-get-priority (thing-at-point 'line t))))
+    (if (= pri-value pri-current)
+        subtree-end
+      nil)))
+
+(defun t/org-agenda-todo-type (name)
+  `((org-agenda-remove-tags t)
+    (org-agenda-sorting-strategy '(tag-up priority-down))
+    (org-agenda-todo-keyword-format "")
+    (org-agenda-overriding-header ,name)))
+
+
+(defun t/org-agenda-pri-a (&rest tags)
+  (string-join (-map (lambda (tag) (format "%s+PRIORITY=\"A\"" tag)) tags) "|"))
+
+(defun t/org-agenda-pri (header &rest tags)
+  (list (apply 't/org-agenda-pri-a tags)
+        `((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+          (org-agenda-overriding-header ,header))))
+
+(defun t/org-agenda-day (tags)
+  (list tags `((org-agenda-span 'day)
+               (org-agenda-ndays-to-span 1)
+               (org-agenda-time-grid nil)
+               (org-agenda-tag-filter-preset ,tags))))
+
+(defun t/org-agenda-not-pri (header tags skip)
+  (list tags `((org-agenda-overriding-header ,header)
+               (org-agenda-skip-function '(or (t/org-skip-subtree-if-priority ?A)
+                                              (org-agenda-skip-if nil (quote ,skip)))))))
+
+(defun t/org-agenda-todos (header tags)
+  (t/org-agenda-not-pri header tags '(scheduled deadline)))
+
+(defun t/org-agenda-todos-scheduled (header tags)
+  (t/org-agenda-not-pri header tags '(notscheduled deadline)))
+
+(defun t/org-day-summary (&rest tags)
+  `((tags ,@(apply 't/org-agenda-pri (append (list "Pri") tags)))
+    (agenda ,@(t/org-agenda-day (string-join tags "|")))
+    (tags-todo ,@(t/org-agenda-todos "Todo" (string-join tags "|")))
+    (tags-todo ,@(t/org-agenda-todos-scheduled "Scheduled todo" (string-join tags "|")))))
+
+(defun t/org-agenda-read ()
+  '(tags-todo "book|read|twitter|pocket" ((org-agenda-overriding-header "Read"))))
+#+end_src
+
+And some custom agenda shortcuts
+
+#+begin_src emacs-lisp
+(setq org-agenda-custom-commands `(("n" "Agenda and all TODOs" ((agenda "") (alltodo "")))
+                                   ("m" tags-todo "serie|film")
+                                   ("e" tags-todo "emacs")
+                                   ("r" tags-todo "book|read|twitter|pocket")
+                                   ("v" tags-todo "video")
+                                   ("T" alltodo)
+                                   ("C" todo "DONE" ,(t/org-agenda-todo-type "DONE"))
+                                   ("t" todo "TODO" ,(t/org-agenda-todo-type "TODO"))
+                                   ("b" todo "STARTED" ,(t/org-agenda-todo-type "STARTED"))
+                                   ("c" todo "CANCELLED" ,(t/org-agenda-todo-type "CANCELLED"))
+                                   ))
+#+end_src
+
+**** Clock
+
+#+begin_src emacs-lisp
+(defun t/org-clock-start () (interactive) (org-todo "STARTED"))
+(defun t/org-clock-stop () (interactive) (org-todo))
+(advice-remove 'org-clock-in 't/org-clock-start)
+(advice-remove 'org-clock-out 't/org-clock-stop)
+(advice-add 'org-clock-in :after 't/org-clock-start)
+(advice-add 'org-clock-out :after 't/org-clock-stop)
+#+end_src
+
+*** Refile
+
+Save org mode buffers after refile
+
+#+begin_src emacs-lisp
+(defadvice org-refile (after t/after-org-refile activate)
+  (org-save-all-org-buffers))
+#+end_src
+
+*** Tables
+
+#+begin_src emacs-lisp
+(after! evil
+  (when (boundp 'org-evil-table-mode-map)
+    (map!
+     :map org-evil-table-mode-map
+     "M-S-<left>" 'org-table-delete-column
+     "M-S-<right>" 'org-table-insert-column)))
+#+end_src
+
 *** Hugo capture template
 
 #+begin_src emacs-lisp
@@ -1428,6 +1535,16 @@ Useful elisp I committed, or decided to work on.
 #+begin_src emacs-lisp
 (use-package! consult-async :load-path "site-lisp/consult-async/")
 #+end_src
+
+TODO can you do this instead?
+
+#+begin_quote
+(use-package org-mac-link
+  :commands (org-mac-grab-link org-mac-chrome-get-frontmost-url)
+  :straight (org-contrib :type git
+                         :repo "https://git.sr.ht/~bzg/org-contrib"
+                         :files (:defaults "lisp/*.el")))
+#+end_quote
 
 #+begin_src emacs-lisp
 (after! org
