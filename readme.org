@@ -153,10 +153,17 @@ I spent so much time with vim, I will probably never give it up.
 
 **** Config
 
-Useful for ~c-e~ followed by ~c-x c-e~ to eval a s-exp.
+Useful for ~c-e~ followed by ~c-x c-e~ to eval a s-exp. Makes ~cleverparens~ nav commands like ~L~ and ~H~ move across sexps
 
 #+begin_src emacs-lisp
 (setq evil-move-beyond-eol t)
+#+end_src
+
+Don't use zz and zq for org src editing
+
+#+begin_src emacs-lisp
+(add-to-list 'evil-collection-key-blacklist "ZZ")
+(add-to-list 'evil-collection-key-blacklist "ZQ")
 #+end_src
 
 **** Registers
