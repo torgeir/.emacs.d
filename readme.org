@@ -712,6 +712,102 @@ https://ox-hugo.scripter.co/doc/org-capture-setup/"
           )))
 #+end_src
 
+*** Text Objects
+**** evil-org-outer-subtree
+
+#+BEGIN_SRC emacs-lisp :results silent
+(after! evil
+  (evil-define-text-object evil-org-outer-subtree (count &optional beg end type)
+    "An Org subtree.  Uses code from `org-mark-subtree`"
+    :type line
+    (save-excursion
+      ;; get to the top of the tree
+      (org-with-limited-levels
+       (cond ((org-at-heading-p) (beginning-of-line))
+             ((org-before-first-heading-p) (user-error "Not in a subtree"))
+             (t (outline-previous-visible-heading 1))))
+
+      (cl-decf count)
+      (when count (while (and (> count 0) (org-up-heading-safe)) (cl-decf count)))
+
+      ;; extract the beginning and end of the tree
+      (let ((element (org-element-at-point)))
+        (list (org-element-property :end element)
+              (org-element-property :begin element))))))
+#+END_SRC
+
+**** evil-org-inner-subtre
+
+#+BEGIN_SRC emacs-lisp :results silent
+(after! evil
+  (evil-define-text-object evil-org-inner-subtree (count &optional beg end type)
+    "An Org subtree, minus its header and concluding line break.  Uses code from `org-mark-subtree`"
+    :type line
+    (save-excursion
+      ;; get to the top of the tree
+      (org-with-limited-levels
+       (cond ((org-at-heading-p) (beginning-of-line))
+             ((org-before-first-heading-p) (user-error "Not in a subtree"))
+             (t (outline-previous-visible-heading 1))))
+
+      (cl-decf count)
+      (when count (while (and (> count 0) (org-up-heading-safe)) (cl-decf count)))
+
+      ;; extract the beginning and end of the tree
+      (let* ((element (org-element-at-point))
+             (begin (save-excursion
+                      (goto-char (org-element-property :begin element))
+                      (next-line)
+                      (point)))
+             (end (save-excursion
+                    (goto-char (org-element-property :end element))
+                    (backward-char 1)
+                    (point))))
+        (list end begin)))))
+#+END_SRC
+
+**** evil-org-outer-item
+
+#+BEGIN_SRC emacs-lisp :results silent
+(after! evil
+  (evil-define-text-object evil-org-outer-item (count &optional beg end type)
+    :type line
+    (let* ((struct (org-list-struct))
+           (begin (org-list-get-item-begin))
+           (end (org-list-get-item-end (point-at-bol) struct)))
+      (if (or (not begin) (not end))
+          nil
+        (list begin end)))))
+#+END_SRC
+
+**** evil-org-inner-item
+
+#+BEGIN_SRC emacs-lisp :results silent
+(after! evil
+  (evil-define-text-object evil-org-inner-item (count &optional beg end type)
+    (let* ((struct (org-list-struct))
+           (begin (progn (goto-char (org-list-get-item-begin))
+                         (forward-char 2)
+                         (point)))
+           (end (org-list-get-item-end-before-blank (point-at-bol) struct)))
+      (if (or (not begin) (not end))
+          nil
+        (list begin end)))))
+#+END_SRC
+
+**** Bind them
+
+#+BEGIN_SRC emacs-lisp :results silent
+(define-key evil-outer-text-objects-map "h" 'evil-org-outer-subtree)
+(define-key evil-inner-text-objects-map "h" 'evil-org-inner-subtree)
+(define-key evil-outer-text-objects-map "*" 'evil-org-outer-subtree)
+(define-key evil-inner-text-objects-map "*" 'evil-org-inner-subtree)
+(define-key evil-outer-text-objects-map "i" 'evil-org-outer-item)
+(define-key evil-inner-text-objects-map "i" 'evil-org-inner-item)
+(define-key evil-outer-text-objects-map "-" 'evil-org-outer-item)
+(define-key evil-inner-text-objects-map "-" 'evil-org-inner-item)
+#+END_SRC
+
 ** Reading
 *** Fast
 
