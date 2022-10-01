@@ -390,26 +390,7 @@ For a while, I turned it off. Can't remember why.
 #+end_src
 
 *** Distraction free / Zen
-
-**** Olivetti
-
-Seems like a light weight alternative, I feel like the below writeroom config suits me better, tho.
-
-#+begin_src emacs-lisp
-(after! olivetti
-  (setq olivetti-style t
-        olivetti-minimum-body-width 40)
-  (defun olivetti-turn-off-line-numbers ()
-    (setq display-line-numbers nil
-          indicate-empty-lines nil
-          ;; and set max width
-          olivetti-body-width (if (< (frame-width (selected-frame)) 300) 0.6 0.5)))
-  (defun olivetti-bring-back-line-numbers ()
-    (setq display-line-numbers 'relative
-          indicate-empty-lines t))
-  (add-hook 'olivetti-mode-on-hook #'olivetti-turn-off-line-numbers)
-  (add-hook 'olivetti-mode-off-hook #'olivetti-bring-back-line-numbers))
-#+end_src
+**** Writeroom
 
 A _really global_ global writeroom mode. The function is redefined such that if writeroom-major-modes is nil, writeroom-mode is activated in ALL buffers.
 
