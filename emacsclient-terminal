@@ -1,11 +1,16 @@
 #!/bin/bash
-emacsclient=/usr/local/bin/emacsclient
-if [ ! -e "$emacsclient" ]; then
-  emacsclient=/usr/bin/emacsclient # linux
-fi
+# TODO torgeir is this longer needed?
+case $(uname) in
+  Linux)
+    emacsclient=/usr/bin/emacsclient
+    ;;
+  Darwin)
+    emacsclient=/usr/local/bin/emacsclient
+    ;;
+esac
 
 if [ -z $INSIDE_EMACS ]; then
-  $emacsclient -a "" -t "$@" # 2> /dev/null
+  $emacsclient -s torgemacs -a "" -t "$@" # 2> /dev/null
 else
-  $emacsclient -a -c -q "$@"
+  $emacsclient -s torgemacs -a -c -q "$@"
 fi
