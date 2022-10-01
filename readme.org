@@ -1242,6 +1242,8 @@ Make super+enter create a vterm terminal window inside emacs
 
 Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
 
+*** TODO Port eshell stuff?
+
 ** VC
 *** Ediff
 
