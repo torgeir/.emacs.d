@@ -232,6 +232,61 @@ Embark improve prefix help commands, e.g. ~C-c C-h~, by showing auto complete.
    "M-<up>" (cmd! (find-alternate-file ".."))))
 #+end_src
 
+*** STARTED Directory sidebar
+
+A diy directory sidebar using dired. Refactored as suggested in https://www.reddit.com/r/emacs/comments/nlefvx/weekly_tips_and_tricks/.
+
+#+begin_src emacs-lisp
+(defun t-toggle-sidebar ()
+  (interactive)
+  (unless t-sidebar-mode (t-sidebar-mode 1))
+  (let* ((sidebar-buffer (get-buffer "*sidebar*"))
+         (sidebar-displayed
+          (and sidebar-buffer
+               (get-buffer-window sidebar-buffer))))
+    (if sidebar-displayed
+        (kill-buffer sidebar-buffer)
+      ;; buffer may exist without being displayed
+      (and (get-buffer "*sidebar*") (kill-buffer "*sidebar*"))
+      ;; do not uses directly dired to no trigger display-buffer !
+      ;; so if you have special rules for dired, they are not executed for the sidebar.
+      ;; instead we create it in the background and display it only when it is renamed.
+      (with-current-buffer (dired-noselect ".")
+        ;; eventually hide details to get a slim version of dired
+        (dired-hide-details-mode)
+        (rename-buffer "*sidebar*"))
+      ;; select it with pop-to-buffer. uses display-buffer otherwise
+      ;; or tweak the 'select property of display-buffer-alist
+      (pop-to-buffer "*sidebar*"))))
+
+;; at this point using a mode is just about being listed
+;; in the list of modes ... you can totally skip it and only
+;; keep the tweaks of display-buffer-alist I think or melt the
+;; previous function in the mode definition
+(define-minor-mode t-sidebar-mode
+  "A dired sidebar."
+  :global t
+  :init-value nil
+  :lighter ""
+  (if t-sidebar-mode
+      (add-to-list 'display-buffer-alist
+                   '("\\*sidebar\\*"
+                     (display-buffer-in-side-window)
+                     (side . left)
+                     (window-height . fit-window-to-buffer)
+                     (body-function . (lambda (window)
+                                        ;; display-buffer-in-side-window already set
+                                        ;; set-window-dedicated-p to 'side but you ask
+                                        ;; for a stronger dedication
+                                        (set-window-dedicated-p window t)
+                                        ;; this is a know bug, so necessary yes.
+                                        (add-hook 'kill-buffer-hook #'delete-window nil t)))
+                     (window-parameters . ((no-other-window . t)))))
+    (setq display-buffer-alist
+          (delq (assoc "\\*sidebar\\*" display-buffer-alist)
+                display-buffer-alist))))
+#+end_src
+
 *** Multiple cursors
 
 #+begin_src emacs-lisp
@@ -521,6 +576,10 @@ Don't bother waiting
 
  ;; op -- :leader :desc "Toggle treemacs" "f L" #'+treemacs/toggle
  ;; oO -- :leader :desc "Open folder" "p o" #'t/open-in-desktop
+
+ :leader :desc "Toggle directory sidebar" "f L" #'t-toggle-sidebar
+ :leader :desc "Locate" "f L" #'consult-locate
+ :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
 
  :leader :desc "Show calendar" "o c" #'calendar
  :leader :desc "Show home" "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
