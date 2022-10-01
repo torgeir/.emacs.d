@@ -594,6 +594,8 @@ Motion keys for info mode.
 #+begin_src emacs-lisp
 (after! org
 
+  (add-hook! 'org-mode-hook 'hl-todo-mode)
+
   (defun t/open-prev-heading ()
     (interactive)
     (let ((was-narrowed (buffer-narrowed-p)))
