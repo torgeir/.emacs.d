@@ -589,7 +589,7 @@ Don't bother waiting
  :leader :desc "Search the web" "s w" #'consult-web-search
  :leader :desc "Eval and replace" "m e R" #'t/eval-and-replace
  :leader :desc "Toggle transparency" "t T" #'t/transparency
- :leader :desc "Toggle zen" "t d" #'global-writeroom-mode
+ :leader :desc "Toggle writeroom" "t d" #'global-writeroom-mode
  :leader :desc "Rotate frame" "w r" #'rotate-frame-clockwise
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error
  :leader :desc "Close window unconditionally" "w d" #'delete-window
