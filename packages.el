@@ -55,5 +55,6 @@
 (package! transpose-frame)
 
 (package! olivetti)
+(package! focus)
 (package! spray)
 (package! dired-subtree)
