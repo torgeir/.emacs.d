@@ -380,7 +380,7 @@ To list available fontsets, do
 *** Theme
 
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-nord)
+(setq doom-theme 'doom-laserwave)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -545,9 +545,6 @@ And screens are big, so a bit more space for text is nice.
                 '(face tabs spaces trailing lines space-before-tab newline indentation
                        empty space-after-tab space-mark tab-mark newline-mark))
     (whitespace-mode 1)))
-#+end_src
-
-#+begin_src
 #+end_src
 
 ** Dotfiles
@@ -800,6 +797,23 @@ https://ox-hugo.scripter.co/doc/org-capture-setup/"
                      ,(concat ":EXPORT_FILE_NAME: " fname)
                      ":END:" "%?\n")
                    "\n")))))
+#+end_src
+
+*** Structure templates
+
+Remove the ~s~ mapping for source code blocks.
+
+#+begin_src emacs-lisp
+(setq org-structure-template-alist (remove '("s" "src") org-structure-template-alist))
+#+end_src
+
+Replace it with ~ss~ so we can add some more along side it.
+
+#+begin_src emacs-lisp
+(add-to-list 'org-structure-template-alist (cons "ss" "src"))
+(add-to-list 'org-structure-template-alist (cons "se" "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist (cons "sp" "src python"))
+(add-to-list 'org-structure-template-alist (cons "sh" "src shell"))
 #+end_src
 
 *** Capture templates
