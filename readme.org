@@ -551,7 +551,7 @@ And screens are big, so a bit more space for text is nice.
   (add-hook! '(prog-mode-hook text-mode-hook git-commit-mode-hook)
     (setq-local whitespace-style
                 '(face tabs spaces trailing lines space-before-tab newline indentation
-                       empty space-after-tab space-mark tab-mark newline-mark))
+                       empty space-after-tab tab-mark newline-mark))
     (whitespace-mode 1)))
 #+end_src
 
@@ -1534,4 +1534,3 @@ Useful e.g. to make dired act like a directory tree sidebar
      (xref--show-pos-in-buf l (marker-buffer l))))
  )
 #+end_src
-
