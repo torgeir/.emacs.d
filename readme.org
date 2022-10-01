@@ -548,10 +548,10 @@ And screens are big, so a bit more space for text is nice.
 #+begin_src emacs-lisp
 (after! whitespace
   (add-hook! 'before-save-hook 'whitespace-cleanup)
-  (add-hook! '(prog-mode-hook text-mode-hook git-commit-mode-hook)
+  (add-hook! '(text-mode-hook git-commit-mode-hook)
     (setq-local whitespace-style
                 '(face tabs spaces trailing lines space-before-tab newline indentation
-                       empty space-after-tab tab-mark newline-mark))
+                       empty space-after-tab space-mark tab-mark newline-mark))
     (whitespace-mode 1)))
 #+end_src
 
@@ -612,6 +612,9 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Toggle directory sidebar" "f L" #'t-toggle-sidebar
  :leader :desc "Locate" "f L" #'consult-locate
  :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
+
+ :leader :desc "Soft line wrapping" "t W" #'visual-line-mode
+ :leader :desc "Show whitespace" "t w" #'whitespace-mode
 
  :leader :desc "Show calendar" "o c" #'calendar
  :leader :desc "Show home" "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
