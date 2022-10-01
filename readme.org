@@ -3,8 +3,9 @@
 :PROPERTIES:
 :header-args:emacs-lisp: :lexical t :results silent
 :END:
-
 ** Lexical scoping everywhere
+
+The madness that is dynamic is too much for anyone, really.
 
 #+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
@@ -32,7 +33,7 @@ ln -s ~/.emacs.d/emacsclient ~/bin/e
 ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
 #+end_src
 
-** Reload config and doom sync automatically
+** Reload config and doom sync on save
 
 #+begin_quote
 ;; Place your private configuration here! Remember, you do not need to run 'doom
@@ -74,7 +75,96 @@ Ignore some of the cached emacs files in recent files
       user-mail-address "torgeir.thoresen@gmail.com")
 #+end_src
 
-** Macros
+** Org file location setup
+
+#+begin_quote
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+#+end_quote
+
+#+begin_src emacs-lisp
+(setq org-directory (expand-file-name "~/Dropbox/org/")
+      org-agenda-files '("~/Dropbox/org")
+      org-archive-location "%s_archive.gpg::") ; so files are encrypted automatically
+#+end_src
+
+** t-defuns
+
+My old collection of more or less usefull defuns.
+
+#+begin_src emacs-lisp
+(progn
+  (defun t/user-file (path) (concat (expand-file-name "~/") path))
+  (defun t/user-emacs-file (path) (concat (expand-file-name "~/.doom.d/") path))
+  (defun t/user-dropbox-folder (path) (expand-file-name (concat "~/Dropbox (Personal)/" path)))
+  (defconst is-win IS-WINDOWS)
+  (defconst is-cygwin IS-WINDOWS)
+  (defconst is-mac IS-MAC)
+  (defconst is-linux IS-LINUX)
+  (load! "./t-defuns.el"))
+#+end_src
+
+** Micro state
+
+A small overlay map that exposes a set of key bindings until you press q, or something else not in the keymap.
+
+#+begin_src emacs-lisp
+(defun t/micro-state (quit key fn &rest bindings)
+  "Micro state that temporarily overlays a new key map, kinda like hydra"
+  (let ((keymap (make-sparse-keymap)))
+    (while key
+      (bind-key key fn keymap)
+      (setq key (pop bindings)
+            fn (pop bindings)))
+    (lambda ()
+      (interactive)
+      (let ((exit (set-temporary-overlay-map keymap t (lambda () (when quit (quit-window))))))
+        (when quit
+          (bind-key "q" (cmd! (funcall exit)) keymap))))))
+#+end_src
+
+And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off again if you hit a key not in the map.
+
+#+begin_src emacs-lisp
+(defun t/micro-state-in-mode (mode after key fn &rest bindings)
+  "Micro state that toggles mode and temporarily overlays a new key map, kinda like hydra"
+  (let ((keymap (make-sparse-keymap)))
+    (while key
+      (bind-key key fn keymap)
+      (setq key (pop bindings)
+            fn (pop bindings)))
+    (lambda ()
+      (interactive)
+      (funcall mode)
+      (set-temporary-overlay-map keymap t (lambda nil
+                                            (funcall mode -1)
+                                            (when after (after)))))))
+#+end_src
+
+** Editor
+*** Evil
+
+I spent so much time with vim, I will probably never give it up.
+
+**** Config
+
+Useful for ~c-e~ followed by ~c-x c-e~ to eval a s-exp.
+
+#+begin_src emacs-lisp
+(setq evil-move-beyond-eol t)
+#+end_src
+
+**** Registers
+
+Some macros I once used.
+
+This one makes camelCaseWords into to snake_case_words. Run it with ~@c~
+
+#+begin_src emacs-lisp
+(evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
+#+end_src
+
+*** Macros
 
 A useful macro one for testing stuff out
 
@@ -86,7 +176,81 @@ A useful macro one for testing stuff out
  (funcall (t/micro-state nil "m" (cmd! (message "1")))))
 #+end_src
 
-** Font
+*** Embark
+
+#+begin_src emacs-lisp
+(map!
+ :g "C-," #'embark-act ; global
+ :map org-mode-map "C-," #'embark-act
+ :map minibuffer-mode-map "C-," #'embark-act)
+#+end_src
+
+#+begin_src emacs-lisp
+;; Don't need this? You can C-SPC to preview
+;;(add-hook 'completion-list-mode-hook #'consult-preview-at-point-mode)
+#+end_src
+
+Embark improve prefix help commands, e.g. ~C-c C-h~, by showing auto complete.
+
+*** Vertico
+
+~C-a c-k~ is so engrained in my fingers, I need it everywhere. ~C-a~ seems to work out of the box.
+
+#+begin_src emacs-lisp
+(after! vertico
+  (map! :map vertico-map
+        :g "C-k" 'kill-line))
+#+end_src
+
+*** Dired
+
+#+begin_src emacs-lisp
+(after! dired
+  (add-hook 'dired-mode-hook 'dired-subtree-toggle)
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode))
+#+end_src
+
+*** Multiple cursors
+
+#+begin_src emacs-lisp
+(after! evil
+  (defun t/mc-skip-prev ()
+    (interactive)
+    (evil-multiedit-toggle-or-restrict-region)
+    (evil-multiedit-match-and-prev))
+
+  (defun t/mc-skip-next ()
+    (interactive)
+    (evil-multiedit-toggle-or-restrict-region)
+    (evil-multiedit-match-and-next)))
+#+end_src
+
+Make cursor follow matches so ~m-n~ or ~m-p~ can be used to skip matches easily, depending on what direction you are moving in.
+
+#+begin_src emacs-lisp
+(after! evil
+  (setq evil-multiedit-follow-matches t)
+  (map!
+   :after evil
+   :mode evil-multiedit-mode
+   ;; for some reason m-j does not work, use m-n and m-p instead
+   :n "M-n"   #'t/mc-skip-next
+   :n "M-p"   #'t/mc-skip-prev
+
+   ;; don't clash with evil-cp-delete-sexp
+   :mode emacs-lisp-mode
+   :i "M-d" 'evil-multiedit-match-symbol-and-next))
+#+end_src
+
+Multiedit calls iedit which is missing all-caps in emacs 29.
+
+#+begin_src elisp
+(when (version< "29.0" emacs-version)
+  (defun all-caps (smtn)
+    (upper smtn)))
+#+end_src
+
+*** Font
 
 #+begin_quote
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
@@ -129,13 +293,7 @@ To list available fontsets, do
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 #+end_quote
 
-** Theme
-
-#+begin_quote
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
-#+end_quote
+*** Theme
 
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-nord)
@@ -157,144 +315,112 @@ To list available fontsets, do
 (map! :leader "t t" #'t/cycle-theme)
 #+end_src
 
-** Editor
-
-#+begin_quote
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-#+end_quote
+**** Line numbers
 
 #+begin_src emacs-lisp
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type nil)
 #+end_src
 
-*** Rainbow mode
+**** Rainbow mode
 
 #+begin_src emacs-lisp
 (custom-set-faces!
   '(show-paren-match :background nil :foreground "yellow" :weight bold)
-  '(rainbow-delimiters-depth-1-face :foreground "DeepPink1" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-2-face :foreground "DeepPink2" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-3-face :foreground "DeepPink3" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-4-face :foreground "DeepPink4" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-5-face :foreground "maroon1" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-6-face :foreground "maroon2" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-7-face :foreground "maroon3" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-8-face :foreground "maroon4" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-9-face :foreground "VioletRed1" :overline nil :underline nil)
+  '(rainbow-delimiters-depth-1-face :foreground "DeepPink4" :overline nil :underline nil)
+  '(rainbow-delimiters-depth-2-face :foreground "DeepPink3" :overline nil :underline nil)
+  '(rainbow-delimiters-depth-3-face :foreground "DeepPink2" :overline nil :underline nil)
+  '(rainbow-delimiters-depth-4-face :foreground "DeepPink1" :overline nil :underline nil)
+  '(rainbow-delimiters-depth-5-face :foreground "maroon4" :overline nil :underline nil)
+  '(rainbow-delimiters-depth-6-face :foreground "maroon3" :overline nil :underline nil)
+  '(rainbow-delimiters-depth-7-face :foreground "maroon2" :overline nil :underline nil)
+  '(rainbow-delimiters-depth-8-face :foreground "maroon1" :overline nil :underline nil)
+  '(rainbow-delimiters-depth-9-face :foreground "VioletRed3" :overline nil :underline nil)
   '(rainbow-delimiters-depth-10-face :foreground "VioletRed2" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-11-face :foreground "VioletRed3" :overline nil :underline nil)
+  '(rainbow-delimiters-depth-11-face :foreground "VioletRed1" :overline nil :underline nil)
   '(rainbow-delimiters-unmatched-face :foreground "Red" :overline nil :underline nil))
 #+end_src
 
-** Org agenda file setup
+*** Frame
 
-#+begin_quote
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-#+end_quote
+Show the buffer and the file
 
 #+begin_src emacs-lisp
-(setq org-directory (expand-file-name "~/Dropbox/org/")
-      org-agenda-files '("~/Dropbox/org")
-      org-archive-location "%s_archive.gpg::") ; so files are encrypted automatically
+(setq frame-title-format "%b (%f)")
 #+end_src
 
-** Doom description
-
-#+begin_quote
-;; Whenever you reconfigure a package, make sure to wrap your config in an
-;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
-;;
-;;   (after! PACKAGE
-;;     (setq x y))
-;;
-;; The exceptions to this rule:
-;;
-;;   - Setting file/directory variables (like `org-directory')
-;;   - Setting variables which explicitly tell you to set them before their
-;;     package is loaded (see 'C-h v VARIABLE' to look up their documentation).
-;;   - Setting doom variables (which start with 'doom-' or '+').
-;;
-;; Here are some additional functions/macros that will help you configure Doom.
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;; Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
-;; etc).
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
-#+end_quote
-
-** t-defuns
-
-My old collection of more or less usefull defuns.
+*** Jump around
 
 #+begin_src emacs-lisp
-(progn
-  (defun t/user-file (path) (concat (expand-file-name "~/") path))
-  (defun t/user-emacs-file (path) (concat (expand-file-name "~/.doom.d/") path))
-  (defun t/user-dropbox-folder (path) (expand-file-name (concat "~/Dropbox (Personal)/" path)))
-  (defconst is-win IS-WINDOWS)
-  (defconst is-cygwin IS-WINDOWS)
-  (defconst is-mac IS-MAC)
-  (defconst is-linux IS-LINUX)
-  (load! "./t-defuns.el"))
+(map!
+ :leader
+ (:prefix-map ("j" . "jump")
+  (:when t
+   :desc "Jump to line"        "l" #'avy-goto-line
+   :desc "org: Jump to header" "h" #'avy-org-goto-heading-timer
+   :desc "Jump to char"        "c" #'avy-goto-char-2
+   :desc "Jump to char"        "C" #'avy-goto-char)))
 #+end_src
 
-** Evil early config
-
-Useful for ~c-e~ followed by ~c-x c-e~ to eval a s-exp.
+*** Smartparens
 
 #+begin_src emacs-lisp
-(setq evil-move-beyond-eol t)
+(after! smartparens
+  (sp-local-pair 'emacs-lisp-mode "`" "'" :when '(sp-in-docstring-p))
+  (sp-use-paredit-bindings))
 #+end_src
 
-** Micro state
-
-A small overlay map that exposes a set of key bindings until you press q, or something else not in the keymap.
+And some extra for org mode
 
 #+begin_src emacs-lisp
-(defun t/micro-state (quit key fn &rest bindings)
-  "Micro state that temporarily overlays a new key map, kinda like hydra"
-  (let ((keymap (make-sparse-keymap)))
-    (while key
-      (bind-key key fn keymap)
-      (setq key (pop bindings)
-            fn (pop bindings)))
-    (lambda ()
-      (interactive)
-      (let ((exit (set-temporary-overlay-map keymap t (lambda () (when quit (quit-window))))))
-        (when quit
-          (bind-key "q" (cmd! (funcall exit)) keymap))))))
+(after! smartparens
+  (sp-with-modes 'org-mode
+    (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
+    (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "<" ">" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "«" "»")))
 #+end_src
 
-And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off again if you hit a key not in the map.
+For a while, I turned it off. Can't remember why.
 
 #+begin_src emacs-lisp
-(defun t/micro-state-in-mode (mode after key fn &rest bindings)
-  "Micro state that toggles mode and temporarily overlays a new key map, kinda like hydra"
-  (let ((keymap (make-sparse-keymap)))
-    (while key
-      (bind-key key fn keymap)
-      (setq key (pop bindings)
-            fn (pop bindings)))
-    (lambda ()
-      (interactive)
-      (funcall mode)
-      (set-temporary-overlay-map keymap t (lambda nil
-                                            (funcall mode -1)
-                                            (when after (after)))))))
+;; (after! org (add-hook 'org-mode-hook #'turn-off-smartparens-mode))
+#+end_src
+
+*** Distraction free, writeroom, olivetti
+
+#+begin_src emacs-lisp
+(after! olivetti
+  (setq olivetti-style t
+        olivetti-minimum-body-width 40)
+  (defun olivetti-turn-off-line-numbers ()
+    (setq display-line-numbers nil
+          indicate-empty-lines nil
+          ;; and set max width
+          olivetti-body-width (if (< (frame-width (selected-frame)) 300) 0.6 0.5)))
+  (defun olivetti-bring-back-line-numbers ()
+    (setq display-line-numbers 'relative
+          indicate-empty-lines t))
+  (add-hook 'olivetti-mode-on-hook #'olivetti-turn-off-line-numbers)
+  (add-hook 'olivetti-mode-off-hook #'olivetti-bring-back-line-numbers))
+#+end_src
+
+** Dotfiles
+
+Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on their file location.
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "dotfiles/source")) 'shell-mode))
+#+end_src
+
+** Which key
+
+Don't bother waiting
+
+#+begin_src emacs-lisp
+(setq which-key-idle-delay 0.1)
 #+end_src
 
 ** Keybindings
@@ -384,94 +510,14 @@ Prevent drag-stuff-mode from messing things up
  )
 #+end_src
 
-#+RESULTS:
-
-** Rss (elfeed)
-
-#+begin_src emacs-lisp
-(after! elfeed
-  (setq rmh-elfeed-org-files '("~/Dropbox/org/feeds.org")
-        elfeed-search-filter "@2-week-ago +unread -news -tech")
-
-  (map!
-   (:after elfeed
-    :map elfeed-search-mode-map
-    ;; switcharoo
-    :n "gR" #'elfeed-search-update--force
-    :n "gr" #'elfeed-search-fetch))
-
-  (add-hook 'elfeed-show-mode-hook #'t/elfeed-show-mode-hook)
-  (defun t/elfeed-show-mode-hook ()
-    (interactive)
-    (olivetti-mode)
-    (visual-line-mode 0)
-    (visual-line-mode nil)
-    (let ((map (make-sparse-keymap)))
-      (bind-key "n" (lambda ()
-                      (interactive)
-                      (condition-case nil
-                          (scroll-up-command)
-                        (error (elfeed-show-next)))) map)
-      (bind-key "p" (lambda ()
-                      (interactive)
-                      (condition-case nil
-                          (scroll-down-command)
-                        (error (elfeed-show-prev)))) map)
-      (bind-key "s" (cmd!
-                     (let ((shr-inhibit-images t)) (elfeed-show-refresh))
-                     (funcall (t/spray-micro-state))) map)
-      (set-temporary-overlay-map map t (lambda () (equal major-mode 'elfeed-show-mode))))))
-#+end_src
-
-** Reading
-
-#+begin_src emacs-lisp
-(defun t/spray-micro-state (&optional after)
-  (t/micro-state-in-mode
-   'spray-mode
-   after
-   "s" 'spray-slower
-   "f" 'spray-faster
-   "SPC" 'spray-start/stop
-   "b" 'spray-backward-word
-   "w" 'spray-forward-word
-   "<left>" 'spray-backward-word
-   "<right>" 'spray-forward-word))
-
-(map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
-
-(after! spray
-  (setq spray-wpm 720
-        spray-height nil)
-  (add-hook 'spray-mode-hook #'t/spray-mode-hook)
-  (defun t/spray-mode-hook ()
-    (setq-local spray-margin-top (truncate (/ (window-height) 2.5)))
-    (setq-local spray-margin-left (truncate (/ (window-width) 3.5)))
-    (set-face-foreground 'spray-accent-face
-                         (face-foreground 'font-lock-keyword-face))))
-#+end_src
-
 ** Help
 
 #+begin_src emacs-lisp
 (map! :leader :n "h h" #'t/describe)
 #+end_src
 
-** Jumping around
+*** Motions
 
-#+begin_src emacs-lisp
-(map!
- :leader
- (:prefix-map ("j" . "jump")
-  (:when t
-   :desc "Jump to line"        "l" #'avy-goto-line
-   :desc "org: Jump to header" "h" #'avy-org-goto-heading-timer
-   :desc "Jump to char"        "c" #'avy-goto-char-2
-   :desc "Jump to char"        "C" #'avy-goto-char)
- ))
-#+end_src
-
-** Help motions
 
 Motions keys for help buffers.
 
@@ -488,7 +534,17 @@ Motions keys for help buffers.
          (evil-define-key 'motion help-mode-map (kbd "gh") 'help-follow-symbol)))
 #+END_SRC
 
-** Info motions
+** Info mode
+
+#+begin_src emacs-lisp
+(after! info-mode
+  (map!
+   :map Info-mode-map
+   "M-n" #'forward-paragraph
+   "M-p" #'backward-paragraph))
+#+end_src
+
+*** Motions
 
 Motion keys for info mode.
 
@@ -500,39 +556,6 @@ Motion keys for info mode.
          (unbind-key (kbd "h") 'Info-mode-map)
          (unbind-key (kbd "l") 'Info-mode-map)))
 #+END_SRC
-
-** Vertico
-
-#+begin_src emacs-lisp
-(after! vertico
-  (map! :map vertico-map
-        :g "C-k" 'kill-line))
-#+end_src
-
-** Smartparens
-
-#+begin_src emacs-lisp
-(after! smartparens
-  (sp-local-pair 'emacs-lisp-mode "`" "'" :when '(sp-in-docstring-p))
-  (sp-use-paredit-bindings))
-#+end_src
-
-And some extra for org mode
-
-#+begin_src emacs-lisp
-(after! smartparens
-  (sp-with-modes 'org-mode
-    (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
-    (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-    (sp-local-pair "<" ">" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-    (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-    (sp-local-pair "«" "»")))
-#+end_src
-
-#+begin_src emacs-lisp
-(after! org
-  (add-hook 'org-mode-hook #'turn-off-smartparens-mode))
-#+end_src
 
 ** Org
 *** Org settings
@@ -655,19 +678,42 @@ https://ox-hugo.scripter.co/doc/org-capture-setup/"
           )))
 #+end_src
 
-** Frame
+** Reading
+*** Fast
 
-Show the buffer and the file
+I never really got into to this.
 
 #+begin_src emacs-lisp
-(setq frame-title-format "%b (%f)")
+(defun t/spray-micro-state (&optional after)
+  (t/micro-state-in-mode
+   'spray-mode
+   after
+   "s" 'spray-slower
+   "f" 'spray-faster
+   "SPC" 'spray-start/stop
+   "b" 'spray-backward-word
+   "w" 'spray-forward-word
+   "<left>" 'spray-backward-word
+   "<right>" 'spray-forward-word))
+
+(map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
+
+(after! spray
+  (setq spray-wpm 720
+        spray-height nil)
+  (add-hook 'spray-mode-hook #'t/spray-mode-hook)
+  (defun t/spray-mode-hook ()
+    (setq-local spray-margin-top (truncate (/ (window-height) 2.5)))
+    (setq-local spray-margin-left (truncate (/ (window-width) 3.5)))
+    (set-face-foreground 'spray-accent-face
+                         (face-foreground 'font-lock-keyword-face))))
 #+end_src
 
-** Eww
+*** Eww
 
 An elisp web browser.
 
-*** Lookup
+**** Lookup
 
 Make ~SPC s o~ open in eww first, then use ~&~ to go to the default browser if needed.
 
@@ -675,7 +721,7 @@ Make ~SPC s o~ open in eww first, then use ~&~ to go to the default browser if n
 (setq +lookup-open-url-fn #'eww)
 #+end_src
 
-*** Popup size
+**** Popup size
 
 #+begin_src emacs-lisp
 (after! evil
@@ -685,7 +731,7 @@ Make ~SPC s o~ open in eww first, then use ~&~ to go to the default browser if n
   (set-popup-rule! "^\\*eww*" :side 'bottom :size 0.8))
 #+end_src
 
-*** Readability
+**** Readability
 
 Enter readable mode automatically, normally available from pressing ~R~ in eww mode.
 
@@ -717,7 +763,7 @@ Eww functions that directly enter the eww readability mode after loading a given
       (url-retrieve url 't/eww-readable-after-render (list url buffer fn)))))
 #+END_SRC
 
-*** Images and wrap long lines
+**** Images and wrap long lines
 
 #+BEGIN_SRC emacs-lisp
 (after! shr
@@ -732,7 +778,7 @@ Eww functions that directly enter the eww readability mode after loading a given
         shr-ignore-cache t))
 #+END_SRC
 
-*** TODO Open from chrome
+**** TODO Open from chrome
 
 Opens the frontmost chrome url in eww.
 
@@ -745,7 +791,7 @@ This does not work atm, ~(void-function org-mac-chrome-get-frontmost-url)~.
   (eww (t/grab-chrome-url)))
 #+END_SRC
 
-*** Hook and keybindings
+**** Hook and keybindings
 
 Some useful eww keybindings
 
@@ -765,15 +811,7 @@ Some useful eww keybindings
 (add-hook 'eww-mode-hook #'t/eww-hook)
 #+END_SRC
 
-** Dired
-
-#+begin_src emacs-lisp
-(after! dired
-  (add-hook 'dired-mode-hook 'dired-subtree-toggle)
-  (add-hook 'dired-mode-hook 'dired-hide-details-mode))
-#+end_src
-
-** Nrk.no
+*** Nrk.no
 
 A custom function to fetch a clean view of the current news from nrk.no
 
@@ -830,20 +868,52 @@ Bind it to ~SPC o n~
   :desc "Show nrk.no" "n" (cmd! (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))))
 #+end_src
 
-** Dotfiles
+** Languages
+*** Clojure
+
+Adapt cleverparens keys that clash with my M-[hjkl] bindings in [[file:~/.skhdrc][~/.skhdrc]]
 
 #+begin_src emacs-lisp
-(add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "dotfiles/source")) 'shell-mode))
+(after! evil
+  (map! :map evil-cleverparens-mode-map
+        "C-M-h" 'evil-cp-beginning-of-defun
+        "C-M-l" 'evil-cp-end-of-defun
+        "C-M-k" 'evil-cp-drag-backward
+        "C-M-j" 'evil-cp-drag-forward))
 #+end_src
-
-** Vterm
 
 #+begin_src emacs-lisp
-(after! vterm
-  (add-to-list 'vterm-eval-cmds '("update-pwd" (lambda (path) (setq default-directory path)))))
+(after! clojure-mode
+  (add-hook 'clojure-mode-hook 'evil-cleverparens-mode)
+  (add-hook 'clojurescript-mode-hook 'evil-cleverparens-mode))
 #+end_src
 
-** Terraform
+#+begin_src emacs-lisp
+(after! org
+  (use-package! ox-gfm :load-path "site-lisp/ox-gfm/"))
+#+end_src
+
+*** Emacs lisp
+
+#+begin_src emacs-lisp
+(after! evil
+  (add-hook 'emacs-lisp-mode-hook #'evil-cleverparens-mode))
+#+end_src
+
+Show containing parens, when the cursor is inside theme
+
+#+begin_src emacs-lisp
+(define-advice show-paren-function (:around (fn) fix)
+  "Highlight enclosing parens."
+  (cond ((looking-at-p "\\s(") (funcall fn))
+        (t (save-excursion
+             (ignore-errors (backward-up-list))
+             (funcall fn)))))
+#+end_src
+
+*** Terraform
+
+Highlight terraform plans in ~terraform-mode~ based on their file name.
 
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "Downloads/") "tf_plan_.*") 'terraform-mode))
@@ -857,39 +927,11 @@ Bind it to ~SPC o n~
    (aggressive-indent-mode -1)))
 #+end_src
 
-** Ediff
-
-#+begin_src emacs-lisp
-;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-#+end_src
-
-** Emacs lisp
-
-#+begin_src emacs-lisp
-(after! evil
-  (add-hook 'emacs-lisp-mode-hook #'evil-cleverparens-mode))
-#+end_src
-
-** Calendar
-
-Weeks on start on monday in Norway, and weeks have numbers.
-
-#+begin_src emacs-lisp
-(after! calendar
-  (setq calendar-week-start-day 1
-        calendar-intermonth-text
-        '(propertize (format "%2d" (car
-                                    (calendar-iso-from-absolute
-                                     (calendar-absolute-from-gregorian
-                                      (list month day year)))))
-                     'font-lock-face 'calendar-iso-week-face))
-  (copy-face font-lock-constant-face 'calendar-iso-week-face)
-  (copy-face 'default 'calendar-iso-week-header-face))
-#+end_src
-
 ** Server mode
 
-Emacs server setup. This name is used from ~/.emacs.d/emacsclient~ and ~/.emacs.d/emacsclient~, linked as ~e~ and ~em~ on the command line, to target the running emacs server instance.
+Emacs server setup.
+
+This name is used from skhdrc, ~/.emacs.d/emacsclient~, ~/.emacs.d/emacsclient~ and other places. The latter two are linked as ~e~ and ~em~ on the command line, to target the running emacs server instance, to quickly open a file or folder.
 
 #+begin_src emacs-lisp
 (setq server-name "torgemacs")
@@ -901,43 +943,39 @@ I also use this from Alfred, as a quick way of capturing from anywhere on os x.
 /usr/local/bin/emacsclient -s torgemacs -e '(progn (select-frame-set-input-focus (selected-frame)) (org-capture))'
 #+end_src
 
-** Which key
+** Terminal
+*** Vterm
 
-Don't bother waiting
-
-#+begin_src emacs-lisp
-(setq which-key-idle-delay 0.1)
-#+end_src
-
-** Evil registers
-
-Some macros I once used.
-
-This one makes camelCaseWords into to snake_case_words. Run it with ~@c~
+This is paired with the bash function [[https://github.com/torgeir/dotfiles/blob/5a4909422f0822016a4e3745e919d7ca246872ec/source/functions#L280-L282][vterm_set_directory]] that updates the current working directory for emacs as the vterm path changes.
 
 #+begin_src emacs-lisp
-(evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
+(after! vterm
+  (add-to-list 'vterm-eval-cmds '("update-pwd" (lambda (path) (setq default-directory path)))))
 #+end_src
 
-** Distraction free, writeroom, olivetti
+*** Terminal from everywhere with s-return
+:PROPERTIES:
+:ID:       607b5e84-af21-4da9-80a9-8a44c2d12f0b
+:END:
+
+Make super+enter create a vterm terminal window inside emacs
 
 #+begin_src emacs-lisp
-(after! olivetti
-  (setq olivetti-style t
-        olivetti-minimum-body-width 40)
-  (defun olivetti-turn-off-line-numbers ()
-    (setq display-line-numbers nil
-          indicate-empty-lines nil
-          ;; and set max width
-          olivetti-body-width (if (< (frame-width (selected-frame)) 300) 0.6 0.5)))
-  (defun olivetti-bring-back-line-numbers ()
-    (setq display-line-numbers 'relative
-          indicate-empty-lines t))
-  (add-hook 'olivetti-mode-on-hook #'olivetti-turn-off-line-numbers)
-  (add-hook 'olivetti-mode-off-hook #'olivetti-bring-back-line-numbers))
+(map! :gn [s-return] #'+vterm/here)
 #+end_src
 
-** Magit and Forge
+Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
+
+** VC
+*** Ediff
+
+Don't remember what this was used for.
+
+#+begin_src emacs-lisp
+;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+#+end_src
+
+*** Magit and Forge
 
 #+begin_src emacs-lisp
 (after! magit
@@ -965,61 +1003,81 @@ Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindin
     :desc "Ammend"                    "a"   #'magit-commit-amend))))
 #+end_src
 
+I have been trying to get used to magit in evil mode for a while now. But the magit-process-buffer keybinding is crazy on a norwegian keyboard, so this brings back the binding from the emacs mode magit.
+
 #+begin_src emacs-lisp
 (map!
  :map magit-status-mode-map
  :desc "Show process buffer" :n "$" #'magit-process-buffer)
 #+end_src
 
-** Embark
+** Applications
+*** Elfeed RSS
 
 #+begin_src emacs-lisp
-(map!
- :g "C-," #'embark-act ; global
- :map org-mode-map "C-," #'embark-act
- :map minibuffer-mode-map "C-," #'embark-act)
-;;(add-hook 'completion-list-mode-hook #'consult-preview-at-point-mode)
-#+end_src
+(after! elfeed
+  (setq rmh-elfeed-org-files '("~/Dropbox/org/feeds.org")
+        elfeed-search-filter "@2-week-ago +unread -news -tech")
 
-Embark improve prefix help commands, e.g. ~C-c C-h~, by showing auto complete.
-
-** Multiple cursors
-
-#+begin_src emacs-lisp
-(after! evil
-  (defun t/mc-skip-prev ()
-    (interactive)
-    (evil-multiedit-toggle-or-restrict-region)
-    (evil-multiedit-match-and-prev))
-
-  (defun t/mc-skip-next ()
-    (interactive)
-    (evil-multiedit-toggle-or-restrict-region)
-    (evil-multiedit-match-and-next)))
-#+end_src
-
-Make cursor follow matches so ~m-n~ or ~m-p~ can be used to skip matches easily, depending on what direction you are moving in.
-
-#+begin_src emacs-lisp
-(after! evil
-  (setq evil-multiedit-follow-matches t)
   (map!
-   :after evil
-   :mode evil-multiedit-mode
-   ;; for some reason m-j does not work, use m-n and m-p instead
-   :n "M-n"   #'t/mc-skip-next
-   :n "M-p"   #'t/mc-skip-prev))
+   (:after elfeed
+    :map elfeed-search-mode-map
+    ;; switcharoo
+    :n "gR" #'elfeed-search-update--force
+    :n "gr" #'elfeed-search-fetch))
+
+  (add-hook 'elfeed-show-mode-hook #'t/elfeed-show-mode-hook)
+  (defun t/elfeed-show-mode-hook ()
+    (interactive)
+    (olivetti-mode)
+    (visual-line-mode 0)
+    (visual-line-mode nil)
+    (let ((map (make-sparse-keymap)))
+      (bind-key "n" (lambda ()
+                      (interactive)
+                      (condition-case nil
+                          (scroll-up-command)
+                        (error (elfeed-show-next)))) map)
+      (bind-key "p" (lambda ()
+                      (interactive)
+                      (condition-case nil
+                          (scroll-down-command)
+                        (error (elfeed-show-prev)))) map)
+      (bind-key "s" (cmd!
+                     (let ((shr-inhibit-images t)) (elfeed-show-refresh))
+                     (funcall (t/spray-micro-state))) map)
+      (set-temporary-overlay-map map t (lambda () (equal major-mode 'elfeed-show-mode))))))
 #+end_src
 
-Multiedit calls iedit which is missing all-caps in emacs 29.
+*** Calendar
 
-#+begin_src elisp
-(when (version< "29.0" emacs-version)
-  (defun all-caps (smtn)
-    (upper smtn)))
+Weeks on start on monday in Norway, and weeks have numbers.
+
+#+begin_src emacs-lisp
+(after! calendar
+  (setq calendar-week-start-day 1
+        calendar-intermonth-text
+        '(propertize (format "%2d" (car
+                                    (calendar-iso-from-absolute
+                                     (calendar-absolute-from-gregorian
+                                      (list month day year)))))
+                     'font-lock-face 'calendar-iso-week-face))
+  (copy-face font-lock-constant-face 'calendar-iso-week-face)
+  (copy-face 'default 'calendar-iso-week-header-face))
+#+end_src
+
+*** Twitter
+
+#+begin_src emacs-lisp
+(after! twittering-mode
+  (setq twittering-initial-timeline-spec-string '(":mentions" ":home")
+        twittering-request-confirmation-on-posting t
+        twittering-use-master-password t))
 #+end_src
 
 ** Site lisp
+
+Useful elisp I committed, or decided to work on.
 
 #+begin_src emacs-lisp
 (after! org
@@ -1041,63 +1099,7 @@ Multiedit calls iedit which is missing all-caps in emacs 29.
                                 (funcall fn res)))))))
 #+end_src
 
-** Clojure
-
-Adapt cleverparens keys that clash with my M-[hjkl] bindings in [[file:~/.skhdrc][~/.skhdrc]]
-
-#+begin_src emacs-lisp
-(after! evil
-  (map! :map evil-cleverparens-mode-map
-        "C-M-h" 'evil-cp-beginning-of-defun
-        "C-M-l" 'evil-cp-end-of-defun
-        "C-M-k" 'evil-cp-drag-backward
-        "C-M-j" 'evil-cp-drag-forward))
-#+end_src
-
-#+begin_src emacs-lisp
-(after! clojure-mode
-  (add-hook 'clojure-mode-hook 'evil-cleverparens-mode)
-  (add-hook 'clojurescript-mode-hook 'evil-cleverparens-mode))
-#+end_src
-
-#+begin_src emacs-lisp
-(after! org
-  (use-package! ox-gfm :load-path "site-lisp/ox-gfm/"))
-#+end_src
-
-** Terminal from everywhere with s-return
-:PROPERTIES:
-:ID:       607b5e84-af21-4da9-80a9-8a44c2d12f0b
-:END:
-
-Make super+enter create a vterm terminal window inside emacs
-
-#+begin_src emacs-lisp
-(map! :gn [s-return] #'+vterm/here)
-#+end_src
-
-Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
-
-** Twitter
-
-#+begin_src emacs-lisp
-(after! twittering-mode
-  (setq twittering-initial-timeline-spec-string '(":mentions" ":home")
-        twittering-use-master-password t))
-#+end_src
-
-** Info mode
-
-#+begin_src emacs-lisp
-(after! info-mode
-  (map!
-   :map Info-mode-map
-   "M-n" #'forward-paragraph
-   "M-p" #'backward-paragraph))
-#+end_src
-
 ** Stuff to test
-
 *** Skeleton mode instead of yasnippet?
 
 https://www.emacswiki.org/emacs/SkeletonMode
