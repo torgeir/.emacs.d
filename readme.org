@@ -580,9 +580,9 @@ Motion keys for info mode.
 
 #+BEGIN_SRC emacs-lisp :results silent
 (after! evil
-  (after! Info-mode
-         (evil-define-key 'normal 'Info-mode-map (kbd "H") 'Info-history-back)
-         (evil-define-key 'normal 'Info-mode-map (kbd "L") 'Info-history-forward)
+  (after! info
+         (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
+         (evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward)
          (unbind-key (kbd "h") 'Info-mode-map)
          (unbind-key (kbd "l") 'Info-mode-map)))
 #+END_SRC
