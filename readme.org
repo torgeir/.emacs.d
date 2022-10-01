@@ -385,10 +385,16 @@ And some extra for org mode
     (sp-local-pair "«" "»")))
 #+end_src
 
-For a while, I turned it off. Can't remember why.
+Smartparens-mode paredit bindings in org mode messes up M-up and M-down, bring them back.
 
 #+begin_src emacs-lisp
-;; (after! org (add-hook 'org-mode-hook #'turn-off-smartparens-mode))
+(add-hook! 'org-mode-hook
+  (map!
+   :map evil-motion-state-local-map
+   "M-<up>"    'org-metaup
+   "M-<down>"  'org-metadown
+   "M-S-<right>" 'org-shiftmetaright
+   "M-S-<left>" 'org-shiftmetaleft))
 #+end_src
 
 *** Distraction free / Zen
@@ -417,7 +423,6 @@ And screens are big, so a bit more space for text is nice.
 #+begin_src emacs-lisp
 (setq writeroom-width 120)
 #+end_src
-
 
 ** Dotfiles
 
