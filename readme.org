@@ -222,6 +222,16 @@ Embark improve prefix help commands, e.g. ~C-c C-h~, by showing auto complete.
   (add-hook 'dired-mode-hook 'dired-hide-details-mode))
 #+end_src
 
+#+begin_src emacs-lisp
+(after! dired
+  (map!
+   :map dired-mode-map
+   "C-k" 'dired-kill-subdir
+   "<backspace>" 'dired-kill-subdir
+   "M-<down>" (cmd! (dired-find-alternate-file))
+   "M-<up>" (cmd! (find-alternate-file ".."))))
+#+end_src
+
 *** Multiple cursors
 
 #+begin_src emacs-lisp
