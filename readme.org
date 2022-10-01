@@ -1275,6 +1275,41 @@ I have been trying to get used to magit in evil mode for a while now. But the ma
 #+end_src
 
 ** Applications
+*** Artist
+
+#+begin_src emacs-lisp
+(defun t/artist-mode ()
+  (interactive)
+  (if (and (boundp 'artist-mode)
+           artist-mode)
+      (progn
+        (artist-mode-off)
+        (evil-normal-state))
+    (progn
+      (switch-to-buffer "*scratch*")
+      (evil-insert-state)
+      (artist-mode t))))
+
+(after! artist
+  (add-hook! 'artist-mode-hook
+    (map!
+     :map evil-insert-state-local-map "q" 'artist-mode-off
+     :map evil-normal-state-local-map "q" 'artist-mode-off)))
+
+(map!
+ :leader
+ (:prefix-map ("z" . "misc")
+  (:prefix ("z" . "artist")
+   (:when t
+    :desc "Enable"      "t" 't/artist-mode
+    :desc "Draw: pen"       "p" 'artist-select-op-pen-line
+    :desc "Draw: line"      "l" 'artist-select-op-line
+    :desc "Draw: rectangle" "r" 'artist-select-op-rectangle
+    :desc "Draw: circle"    "c" 'artist-select-op-circle
+    :desc "Draw: ellips"    "e" 'artist-select-op-ellipse
+    :desc "Draw: square"    "s" 'artist-select-op-square))))
+#+end_src
+
 *** Elfeed RSS
 
 #+begin_src emacs-lisp
