@@ -1375,6 +1375,19 @@ Evil like navigation.
      :m "L"   #'calendar-scroll-right)))
 #+end_src
 
+*** Re-builder
+
+#+begin_src emacs-lisp
+(after! re-builder
+  (setq reb-re-syntax 'rx)
+  (defvar t-regex-mode nil "reb-mode on or not"))
+
+(defun t/toggle-regex-mode ()
+  (interactive)
+  (if t-regex-mode (reb-quit) (re-builder))
+  (setq t-regex-mode (not t-regex-mode)))
+#+end_src
+
 *** Twitter
 
 #+begin_src emacs-lisp
