@@ -1666,3 +1666,13 @@ Useful e.g. to make dired act like a directory tree sidebar
      (xref--show-pos-in-buf l (marker-buffer l))))
  )
 #+end_src
+
+** Fun stuff
+
+*** Macro numbered list
+
+Type ~qq~ to record a macro to ~q~. Move to where you want the number and press ~C-x C-k C-i~. Move to the next line start to make the macro repeatble. Type ~q~. Undo. Select the list and hit ~@q~.
+
+- one
+- two
+- three
