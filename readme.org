@@ -665,6 +665,7 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Toggle flycheck" "t F" #'flycheck-mode
  :leader :desc "Close window unconditionally" "w d" #'delete-window
  :leader :desc "Projectile git" "p g" #'t/projectile-magit-status
+ :leader :desc "Twitter" "o w" #'=twitter
  :leader :desc "Open scratch buffer" "b s" #'doom/open-scratch-buffer
 
  :leader :desc "Previous occurrence" "h p" #'highlight-symbol-prev
