@@ -1275,11 +1275,6 @@ Adapt cleverparens keys that clash with my M-[hjkl] bindings in [[file:~/.skhdrc
   (add-hook 'clojurescript-mode-hook 'evil-cleverparens-mode))
 #+end_src
 
-#+begin_src emacs-lisp
-(after! org
-  (use-package! ox-gfm :load-path "site-lisp/ox-gfm/"))
-#+end_src
-
 *** Emacs lisp
 
 #+begin_src emacs-lisp
