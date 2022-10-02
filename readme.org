@@ -1557,13 +1557,12 @@ Useful elisp I committed, or decided to work on.
 
 #+begin_src emacs-lisp
 (after! org
-  (use-package! ox-gfm
-    :commands org-export-dispatch
-    :load-path "site-lisp/ox-gfm/"))
+  (use-package! ox-gfm :commands org-export-dispatch :load-path "site-lisp/ox-gfm/"))
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package! consult-async :load-path "site-lisp/consult-async/")
+;; TODO why is ~/.doom.d, tho
+(use-package! consult-async :load-path "~/.doom.d/site-lisp/consult-async/")
 #+end_src
 
 TODO can you do this instead?
