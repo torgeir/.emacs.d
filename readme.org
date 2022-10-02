@@ -421,7 +421,7 @@ Navigate flycheck errors
                 :desc "Jump to previous error" "N" #'flycheck-previous-error)))
 #+end_src
 
-*** Theme
+*** Themes
 
 There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]].
 
@@ -433,14 +433,11 @@ There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][do
 (defun t/cycle-theme ()
   (interactive)
   (cl-case doom-theme
-    (doom-outrun-electric (load-theme 'doom-moonlight))
-    (doom-moonlight (load-theme 'doom-tokyo-night))
-    (doom-tokyo-night (load-theme 'doom-oceanic-next))
-    (doom-oceanic-next (load-theme 'doom-vibrant))
-    (doom-vibrant (load-theme 'doom-laserwave))
-    (doom-laserwave (load-theme 'doom-flatwhite))
+    (doom-laserwave (load-theme 'doom-moonlight))
+    (doom-moonlight (load-theme 'doom-vibrant))
+    (doom-vibrant (load-theme 'doom-flatwhite))
     (doom-flatwhite (load-theme 'doom-nord))
-    (t (load-theme 'doom-outrun-electric)))
+    (t (load-theme 'doom-laserwave)))
   (message "Theme: %s" doom-theme))
 (map! :leader "t t" #'t/cycle-theme)
 #+end_src
