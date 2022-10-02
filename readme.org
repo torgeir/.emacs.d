@@ -399,6 +399,21 @@ To list available fontsets, do
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 #+end_quote
 
+*** Errors
+
+Navigate flycheck errors
+
+#+begin_src emacs-lisp
+(map!
+ :leader
+ (:prefix-map ("e" . "errors")
+              (:when t
+                :desc "Toggle flycheck"        "t" #'flycheck-mode
+                :desc "List errors"            "l" #'flycheck-list-errors
+                :desc "Jump to next error"     "n" #'flycheck-next-error
+                :desc "Jump to previous error" "N" #'flycheck-previous-error)))
+#+end_src
+
 *** Theme
 
 #+begin_src emacs-lisp
