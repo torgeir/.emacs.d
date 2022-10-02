@@ -557,18 +557,6 @@ And screens are big, so a bit more space for text is nice.
 (setq writeroom-width 120)
 #+end_src
 
-*** Whitespace
-
-#+begin_src emacs-lisp
-(after! whitespace
-  (add-hook! 'before-save-hook 'whitespace-cleanup)
-  (add-hook! '(git-commit-mode-hook)
-    (setq-local whitespace-style
-                '(face tabs spaces trailing lines space-before-tab newline indentation
-                       empty space-after-tab space-mark tab-mark newline-mark))
-    (whitespace-mode 1)))
-#+end_src
-
 ** Dotfiles
 
 Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on their file location.
