@@ -379,7 +379,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 #+end_quote
 
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrains Mono" :size 14  :weight 'medium :slant 'normal :width 'normal)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium :slant 'normal :width 'normal)
       doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium :slant 'normal :width 'normal)
       doom-big-font (font-spec :family "JetBrains Mono" :size 20 :weight 'medium :slant 'normal :width 'normal)
       ;; font resize increments
