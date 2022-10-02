@@ -32,6 +32,7 @@ ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
 
 The built in emacs help is fantastic. The doom one on ~SPC h d~ is even better! Here's a few examples.
 
+- [[file:~/.emacs.d/docs/examples.org][Browse examples of useful apis]]
 - [[elisp:(call-interactively 'doom/help-modules)][Lookup help for doom modules]]
 - [[elisp:(call-interactively 'doom/help-search)][Search for in the doom .emacs.d folder]]
 - ~SPC h d~ followed by ~C-h~ invokes a fuzzy search of keys available in the formerly pressed binding.
