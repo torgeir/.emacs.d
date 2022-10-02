@@ -423,6 +423,8 @@ Navigate flycheck errors
 
 *** Theme
 
+There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]].
+
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-laserwave)
 #+end_src
