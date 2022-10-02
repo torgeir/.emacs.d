@@ -627,6 +627,7 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  ;; op -- :leader :desc "Toggle treemacs" "f L" #'+treemacs/toggle
  ;; oO -- :leader :desc "Open folder" "p o" #'t/open-in-desktop
 
+ :leader :desc "Browse" "o e" #'eww
  :leader :desc "Toggle directory sidebar" "f L" #'t-toggle-sidebar
  :leader :desc "Locate" "f L" #'consult-locate
  :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
