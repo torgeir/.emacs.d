@@ -214,12 +214,18 @@ A useful macro one for testing stuff out
  :map minibuffer-mode-map "C-," #'embark-act)
 #+end_src
 
+Prevent =embark-export=, ~C-e~, from being "popupized" by doom's ~:ui popup~ and its ~(popup +all)~ setting.
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^*Embark" :ignore t)
+#+end_src
+
 #+begin_src emacs-lisp
 ;; Don't need this? You can C-SPC to preview
 ;;(add-hook 'completion-list-mode-hook #'consult-preview-at-point-mode)
 #+end_src
 
-Embark improve prefix help commands, e.g. ~C-c C-h~, by showing auto complete.
+Embark improves prefix help commands, e.g. ~C-c C-h~, by showing auto complete that is fuzzy searchable.
 
 *** Vertico
 
