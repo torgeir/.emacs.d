@@ -1378,16 +1378,32 @@ Sometimes you need both changes.
 
 *** Magit and Forge
 
+Magit log keybindings
+
+- ~S-SPC~ :: preview commit
+- ~gj~ :: next and preview
+- ~j~ :: next
+
 #+begin_src emacs-lisp
 (after! magit
   (setq magit-fetch-arguments '("--prune")
         magit-rebase-arguments '("--interactive")
         magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
         git-commit-summary-max-length 72 ;; like github
-        magit-display-buffer-function 'magit-display-buffer-traditional ;'magit-display-buffer-fullcolumn-most-v1
+        magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1 ;; 'magit-display-buffer-traditional
         )
-  (set-popup-rule! "^\\magit-log" :side 'right :size 0.5)
-  (set-popup-rule! "^\\magit-revision" :side 'right :size 0.5))
+
+  (set-popup-rule! "^magit:" :ignore t)
+  (set-popup-rule! "^magit-revision" :side 'right :size 0.5)
+  ;;(set-popup-rule! "^magit-log" :side 'right :size 0.5)
+
+  ;; equivalent using display-buffer-alist
+  ;; (add-to-list 'display-buffer-alist '("magit-revision"
+  ;;                                      (display-buffer-in-side-window)
+  ;;                                      (window-width . 0.5)
+  ;;                                      (side . right)
+  ;;                                      (slot . -1)))
+  )
 #+end_src
 
 Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindings never made sense to me. And ~gca~ for amending.
