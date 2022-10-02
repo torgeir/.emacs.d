@@ -649,7 +649,9 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Eval and replace" "m e R" #'t/eval-and-replace
  :leader :desc "Toggle transparency" "t T" #'t/transparency
  :leader :desc "Toggle writeroom" "t d" #'global-writeroom-mode
- :leader :desc "Rotate frame" "w r" #'rotate-frame-clockwise
+ :leader :desc "Flip frame" "w f" #'rotate-frame
+ :leader :desc "Rotate frame" "w r" #'rotate-frame-anticlockwise
+ :leader :desc "Rotate frame clockwise" "w R" #'rotate-frame-clockwise
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error
  :leader :desc "Toggle focus mode" "t f" #'focus-mode
  :leader :desc "Toggle flycheck" "t F" #'flycheck-mode
