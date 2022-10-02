@@ -183,6 +183,14 @@ Don't use zz and zq for org src editing
   (add-to-list 'evil-collection-key-blacklist "ZQ"))
 #+end_src
 
+**** Unbind C-h in evil window bindings
+
+I use ~SPC w h~ instead of ~SPC w C-h~ to move to the left window. ~C-h~ is more useful as =embark-prefix-help-command=, which this falls back to, like in all other keymaps
+
+#+begin_src emacs-lisp
+(map! :after evil :map evil-window-map "C-h" nil)
+#+end_src
+
 **** Registers
 
 Some macros I once used.
@@ -1725,7 +1733,6 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 
 * Someday
 ** TODO universal arg save readme org
-** TODO unbind c-h in spc w
 ** STARTED Prot's Orderless
 
 ..or is [[https://kristofferbalintona.me/posts/202202211546/][this approach better]]?
