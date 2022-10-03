@@ -266,6 +266,14 @@ Embark improves prefix help commands, e.g. ~C-c C-h~, by showing auto complete t
    "M-<up>" (cmd! (find-alternate-file ".."))))
 #+end_src
 
+*** Customize
+
+Doom doesnt use the customize interface. It is useful nonetheless for experimenting with face colors etc
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^*Customize" :ignore t)
+#+end_src
+
 *** STARTED Directory sidebar
 
 A diy directory sidebar using dired. Refactored as suggested in https://www.reddit.com/r/emacs/comments/nlefvx/weekly_tips_and_tricks/.
