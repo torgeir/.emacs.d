@@ -1780,7 +1780,19 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 - three
 
 * Someday
-** TODO universal arg save readme org
+** TODO universal arg save readme org.
+** TODO :emacs dired +ranger - Doom Emacs v21.08 documentation :emacs:
+[2022-10-02 Sun 23:30]
+https://docs.doomemacs.org/latest/modules/emacs/dired/#/description/module-flags/ranger
+** TODO :config literate - Doom Emacs v21.08 documentation :emacs:
+[2022-10-02 Sun 23:26]
+https://docs.doomemacs.org/latest/modules/config/literate/
+** TODO Org pomodoro? - Doom Emacs v21.08 documentation :emacs:
+[2022-10-02 Sun 23:34]
+https://docs.doomemacs.org/latest/#/manual/intro/why-use-doom
+** TODO :editor format +onsave - Doom Emacs v21.08 documentation :emacs:
+[2022-10-02 Sun 23:27]
+https://docs.doomemacs.org/latest/modules/editor/format/
 ** STARTED Prot's Orderless
 
 ..or is [[https://kristofferbalintona.me/posts/202202211546/][this approach better]]?
