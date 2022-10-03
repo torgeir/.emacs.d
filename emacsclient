@@ -1,7 +1,6 @@
 #!/bin/bash
 source ~/dotfiles/source/functions
 
-# TODO torgeir is this longer needed?
 case $(uname) in
   Linux)
     emacsclient=/usr/bin/emacsclient

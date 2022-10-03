@@ -1,5 +1,4 @@
 #!/bin/bash
-# TODO torgeir is this longer needed?
 case $(uname) in
   Linux)
     emacsclient=/usr/bin/emacsclient

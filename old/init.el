@@ -1,5 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
-;; TODO torgeir remove
+;; todo: torgeir remove - not gonna happen
 (setq comp-deferred-compilation-deny-list '())
 
 ;; Default to calling straight-use-package when running use-package.
@@ -28,7 +28,7 @@
   (add-to-list 'load-path "~/.emacs.d/straight/build/use-package/")
   (require 'use-package))
 
-;; TODO torgeir remove
+;; todo: torgeir remove - not gonna happen
 ;; https://github.com/hlissner/doom-emacs/issues/4534
 (load "~/.emacs.d/fix-wrong-args.el" nil 'nomessage)
 
