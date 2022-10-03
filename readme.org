@@ -532,7 +532,7 @@ Show the buffer and the file
    :desc "Jump to char"        "C" #'avy-goto-char)))
 #+end_src
 
-**** Avy tweaks
+**** STARTED Avy tweaks
 
 #+begin_src emacs-lisp
 (after! avy
@@ -544,13 +544,21 @@ Show the buffer and the file
         avy-style 'at-full
         avy-background t)
 
-  (let ((f 'font-lock-keyword-face)
-        (c "yellow"))
+  (let* ((f 'font-lock-keyword-face)
+         (c "#FFB85B")
+         (c "#B4DCE7")
+         (c "#FFE261")
+         (c "yellow")
+         (b "black")
+         (c "#ED60BA")
+         (c "white")
+         (c "yellow")
+         )
     ;;(set-face-attribute 'avy-lead-face nil   :background nil :foreground (face-foreground f))
-    (set-face-attribute 'avy-lead-face nil   :background nil :foreground c)
-    (set-face-attribute 'avy-lead-face-0 nil :background nil :foreground c)
-    (set-face-attribute 'avy-lead-face-1 nil :background nil :foreground c)
-    (set-face-attribute 'avy-lead-face-2 nil :background nil :foreground c)))
+    (set-face-attribute 'avy-lead-face nil   :background b :weight 'bold :foreground c)
+    (set-face-attribute 'avy-lead-face-0 nil :background b :weight 'bold :foreground c)
+    (set-face-attribute 'avy-lead-face-1 nil :background b :weight 'bold :foreground c)
+    (set-face-attribute 'avy-lead-face-2 nil :background b :weight 'bold :foreground c)))
 #+end_src
 
 *** Smartparens
