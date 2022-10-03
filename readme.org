@@ -524,6 +524,13 @@ Show the buffer and the file
 **** STARTED Avy tweaks
 
 #+begin_src emacs-lisp
+(after! magit
+  (set-face-attribute 'magit-diff-hunk-heading nil :background "#513d5b" :foreground "#07010E")
+  (set-face-attribute 'magit-diff-hunk-heading-highlight nil :background "#ED60BA" :foreground "#01010E" :weight 'bold)
+  (set-face-attribute 'magit-diff-revision-summary nil :inherit 'magit-diff-hunk-heading :foreground "#ED60BA"))
+#+end_src
+
+#+begin_src emacs-lisp
 (after! avy
   (setq avy-keys '(?j ?f ?d ?k ?s ?a)
         avy-timeout-seconds 0.2
@@ -936,6 +943,13 @@ Extensions of some of the [[file:~/.emacs.d/modules/lang/org/config.el::(map! :m
 #+begin_src emacs-lisp
 (map! :map org-mode-map
       :localleader "g a" #'consult-org-agenda)
+#+end_src
+
+*** Colors
+
+#+begin_src emacs-lisp
+(after! org
+  (set-face-attribute 'org-todo nil :foreground "#94fFe4" :weight 'bold))
 #+end_src
 
 *** Refile
