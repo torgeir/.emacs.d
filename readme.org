@@ -648,8 +648,8 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Locate" "f L" #'consult-locate
  :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
 
- :leader :desc "Soft line wrapping" "t W" #'visual-line-mode
- :leader :desc "Show whitespace" "t w" #'whitespace-mode
+ :leader :desc "Soft line wrapping" "t w" #'visual-line-mode
+ :leader :desc "Show whitespace" "t W" #'whitespace-mode
 
  :leader :desc "Show calendar" "o c" #'calendar
  :leader :desc "Show home" "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
