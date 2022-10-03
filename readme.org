@@ -440,18 +440,11 @@ Navigate flycheck errors
                 :desc "Jump to previous error" "N" #'flycheck-previous-error)))
 #+end_src
 
-*** TODO Visual line mode
+*** Visual line mode
 
 #+begin_src emacs-lisp
 (add-hook 'after-init-hook (cmd! (global-visual-line-mode 1)))
-#+end_src
-
-Is this ☝️ enough? Or do you need this 👇?
-
-#+begin_src emacs-lisp
-(comment
-  (global-visual-line-mode 1)
-  (add-hook 'prog-mode-hook (cmd! (toggle-truncate-lines 1)))
+(add-hook 'prog-mode-hook  (cmd! (toggle-truncate-lines 1)))
 #+end_src
 
 *** Themes
