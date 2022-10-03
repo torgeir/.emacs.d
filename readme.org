@@ -40,34 +40,30 @@ The built in emacs help is fantastic. The doom one on ~SPC h d~ is even better! 
 - ~K~ on a module to view its documentation
 - ~gd~ on a module to browse its directory
 
+** Literate config
+
+This config uses the =:config literal= that tangles this file to ~config.el~ on save. The [[file:init.el::setq +literate-config-file (concat (getenv "HOME") "/.doom.d/readme.org")][+literate-config-file]] is set in ~init.el~ and points to this file.
+
+** Packages
+
+This is tangled to ~packages.el~ on save.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! evil-cleverparens)
+(package! transpose-frame)
+(package! highlight-symbol)
+(package! olivetti)
+(package! focus)
+(package! spray)
+(package! dired-subtree)
+#+end_src
+
 ** Lexical scoping everywhere
 
 The madness that is dynamic is too much for anyone, really.
 
 #+begin_src emacs-lisp
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-#+end_src
-
-** Reload config and doom sync on save
-
-#+begin_quote
-;; Place your private configuration here! Remember, you do not need to run 'doom
-;; sync' after modifying this file!
-#+end_quote
-
-That's kinda tedious, tho. Let's automate it
-
-#+begin_src emacs-lisp
-(add-to-list 'display-buffer-alist '("\\*t-doom-sync\\*.*" display-buffer-no-window))
-(defun t/reload-config ()
-  "Used in `after-save-hook'."
-  (when (string-equal "~/.doom.d/readme.org" buffer-file-truename)
-    (progn
-      (org-babel-tangle-file "~/.doom.d/readme.org" "~/.doom.d/config.el")
-      (async-shell-command "doom sync" "*t-doom-sync*" "*t-doom-sync*")
-      (with-current-buffer "*t-doom-sync*" (evil-normal-state)))))
-
-(add-hook 'after-save-hook #'t/reload-config)
 #+end_src
 
 ** Recentf
@@ -1785,9 +1781,6 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 ** TODO :emacs dired +ranger - Doom Emacs v21.08 documentation :emacs:
 [2022-10-02 Sun 23:30]
 https://docs.doomemacs.org/latest/modules/emacs/dired/#/description/module-flags/ranger
-** TODO :config literate - Doom Emacs v21.08 documentation :emacs:
-[2022-10-02 Sun 23:26]
-https://docs.doomemacs.org/latest/modules/config/literate/
 ** TODO Org pomodoro? - Doom Emacs v21.08 documentation :emacs:
 [2022-10-02 Sun 23:34]
 https://docs.doomemacs.org/latest/#/manual/intro/why-use-doom
