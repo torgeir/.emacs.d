@@ -1402,6 +1402,17 @@ This is paired with the bash function [[https://github.com/torgeir/dotfiles/blob
                         (call-interactively' magit-status))))))
 #+end_src
 
+**** Keybindings
+
+Some keybindings are so engrained I can't live without them.
+
+#+begin_src emacs-lisp
+(map! :map vterm-mode-map
+      :m "C-a" 'vterm-send-C-a
+      :m "M-<backspace>" 'vterm-send-C-w
+      :i "M-<backspace>" 'vterm-send-C-w)
+#+end_src
+
 *** Terminal from everywhere with s-return
 :PROPERTIES:
 :ID:       607b5e84-af21-4da9-80a9-8a44c2d12f0b
@@ -1430,7 +1441,7 @@ Sometimes you need both changes.
 
 *** Magit and Forge
 
-Magit log keybindings
+Useful magit keybindings:
 
 - ~S-SPC~ :: preview commit
 - ~gj~ :: next and preview
