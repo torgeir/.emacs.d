@@ -35,7 +35,10 @@ The built in emacs help is fantastic. The doom one on ~SPC h d~ is even better! 
 - [[file:~/.emacs.d/docs/examples.org][Browse examples of useful apis]]
 - [[elisp:(call-interactively 'doom/help-modules)][Lookup help for doom modules]]
 - [[elisp:(call-interactively 'doom/help-search)][Search for in the doom .emacs.d folder]]
+- ~SPC h d h~  to access documentation
 - ~SPC h d~ followed by ~C-h~ invokes a fuzzy search of keys available in the formerly pressed binding.
+- ~K~ on a module to view its documentation
+- ~gd~ on a module to browse its directory
 
 ** Lexical scoping everywhere
 
