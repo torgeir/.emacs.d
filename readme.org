@@ -908,6 +908,17 @@ And some custom agenda shortcuts
 (advice-add 'org-clock-out :after 't/org-clock-stop)
 #+end_src
 
+*** Keybindings
+
+Extensions of some of the [[file:~/.emacs.d/modules/lang/org/config.el::(map! :map org-mode-map][Doom org mode map bindings]].
+
+~SPC g a~ seems more reasonable than ~SPC g G~
+
+#+begin_src emacs-lisp
+(map! :map org-mode-map
+      :localleader "g a" #'consult-org-agenda)
+#+end_src
+
 *** Refile
 
 Save org mode buffers after refile
