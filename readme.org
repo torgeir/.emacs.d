@@ -450,6 +450,21 @@ Ignore some extra folders from projectile
 #+begin_src emacs-lisp
 (add-to-list 'projectile-globally-ignored-directories "^\\.log$")
 #+end_src
+
+*** Workspaces
+
+#+begin_src emacs-lisp
+(map! :leader "1" '+workspace/switch-to-0)
+(map! :leader "2" '+workspace/switch-to-1)
+(map! :leader "3" '+workspace/switch-to-2)
+(map! :leader "4" '+workspace/switch-to-3)
+(map! :leader "5" '+workspace/switch-to-4)
+(map! :leader "6" '+workspace/switch-to-5)
+(map! :leader "7" '+workspace/switch-to-6)
+(map! :leader "8" '+workspace/switch-to-7)
+(map! :leader "0" '+workspace/switch-to-final)
+#+end_src
+
 *** Themes
 
 There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]].
