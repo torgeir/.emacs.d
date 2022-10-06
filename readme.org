@@ -779,6 +779,7 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Open scratch buffer" "b s" #'doom/open-scratch-buffer
 
  :leader :desc "Previous occurrence" "h p" #'highlight-symbol-prev
+ :leader :desc "Previous occurrence" "h N" #'highlight-symbol-prev
  :leader :desc "Next occurrence" "h n" #'highlight-symbol-next)
 
 (map!
