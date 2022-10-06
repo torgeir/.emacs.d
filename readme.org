@@ -443,6 +443,13 @@ Navigate flycheck errors
 (add-hook 'prog-mode-hook  (cmd! (toggle-truncate-lines 1)))
 #+end_src
 
+*** Projects
+
+Ignore some extra folders from projectile
+
+#+begin_src emacs-lisp
+(add-to-list 'projectile-globally-ignored-directories "^\\.log$")
+#+end_src
 *** Themes
 
 There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]].
