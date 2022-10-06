@@ -154,6 +154,7 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 #+end_src
 
 ** Editor
+
 *** Which key
 
 Don't bother waiting
@@ -316,7 +317,10 @@ A diy directory sidebar using dired. Refactored as suggested in https://www.redd
                                         ;; display-buffer-in-side-window already set
                                         ;; set-window-dedicated-p to 'side but you ask
                                         ;; for a stronger dedication
-                                        (set-window-dedicated-p window t)
+                                        ;;TODO torgeir try without this, its annoying when moving up the directory tree
+                                        ;; which throws you to a new buffer
+                                        ;;(set-window-dedicated-p window t)
+
                                         ;; this is a know bug, so necessary yes.
                                         (add-hook 'kill-buffer-hook #'delete-window nil t)))
                      (window-parameters . ((no-other-window . t)))))
