@@ -589,6 +589,61 @@ Smartparens-mode paredit bindings in org mode messes up M-up and M-down, bring t
    "M-S-<left>" 'org-shiftmetaleft))
 #+end_src
 
+**** Wrap around
+
+Support wrapping sexps by holding super, both in normal mode and insert mode, from the front and the back of expressions.
+
+#+begin_src emacs-lisp
+(map! :map smartparens-mode-map
+      ;; literally S-s-8 on a norwegian mac keyboard
+      :n "s-(" (cmd! (evil-emacs-state nil)
+                     (sp-wrap-with-pair "\(")
+                     (evil-normal-state nil))
+      :i "s-(" (cmd! (sp-wrap-with-pair "\("))
+
+      ;; literally S-s-MetaRight-8 on my norwegian mac keyboard
+      :n "s-{" (cmd! (evil-emacs-state nil)
+                     (sp-wrap-with-pair "\{")
+                     (evil-normal-state nil))
+      :i "s-{" (cmd! (sp-wrap-with-pair "\{"))
+
+      ;; literally S-MetaRight-8 on my norwegian mac keyboard
+      :n "s-[" (cmd! (evil-emacs-state nil)
+                     (sp-wrap-with-pair "\[")
+                     (evil-normal-state nil))
+      :i "s-[" (cmd! (sp-wrap-with-pair "\["))
+
+      ;; literally S-s-9 on a norwegian mac keyboard
+      :n "s-)" (cmd! (evil-emacs-state nil)
+                     (backward-sexp)
+                     (sp-wrap-with-pair "\(")
+                     (forward-sexp)
+                     (evil-normal-state nil))
+      :i "s-)" (cmd! (backward-sexp)
+                     (sp-wrap-with-pair "(")
+                     (forward-sexp))
+
+      ;; literally S-s-MetaRight-9 on my norwegian mac keyboard
+      :n "s-}" (cmd! (evil-emacs-state nil)
+                     (backward-sexp)
+                     (sp-wrap-with-pair "\{")
+                     (forward-sexp)
+                     (evil-normal-state nil))
+      :i "s-}" (cmd! (backward-sexp)
+                     (sp-wrap-with-pair "\{")
+                     (forward-sexp))
+
+      ;; literally S-MetaRight-9 on my norwegian mac keyboard
+      :n "s-]" (cmd! (evil-emacs-state nil)
+                     (backward-sexp)
+                     (sp-wrap-with-pair "\[")
+                     (forward-sexp)
+                     (evil-normal-state nil))
+      :i "s-]" (cmd! (backward-sexp)
+                     (sp-wrap-with-pair "\[")
+                     (forward-sexp)))
+#+end_src
+
 *** Distraction free / Zen
 **** Writeroom
 
