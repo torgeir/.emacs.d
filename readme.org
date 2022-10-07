@@ -614,6 +614,16 @@ Smartparens-mode paredit bindings in org mode messes up M-up and M-down, bring t
    "M-S-<left>" 'org-shiftmetaleft))
 #+end_src
 
+Bring back ~C-k~ in the minibuffer. Overrides [[file:~/.emacs.d/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]].
+
+#+begin_src emacs-lisp
+(map! :map (evil-ex-completion-map evil-ex-search-keymap)
+      :gi "C-k" #'kill-line)
+(define-key!
+  :keymaps +default-minibuffer-maps
+  "C-k" #'kill-line)
+#+end_src
+
 **** Wrap around
 
 Support wrapping sexps by holding super, both in normal mode and insert mode, from the front and the back of expressions.
