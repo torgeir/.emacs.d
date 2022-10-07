@@ -802,6 +802,12 @@ Be explicit about when deleting workspaces
  :leader :desc "Swap previous" "TAB K" '+workspace/swap-left)
 #+end_src
 
+Hide the last frame on os x instead of nuking it
+
+#+begin_src emacs-lisp
+(map! :leader "q f" 't/delete-frame-or-hide-last-remaining-frame)
+#+end_src
+
 Prevent drag-stuff-mode from messing things up
 
 #+begin_src emacs-lisp
