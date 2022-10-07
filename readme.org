@@ -1774,23 +1774,6 @@ Useful elisp I committed, or decided to work on.
   :load-path "~/.doom.d/site-lisp/consult-async/")
 #+end_src
 
-TODO can you do this instead?
-
-#+begin_quote
-(use-package org-mac-link
-  :commands (org-mac-grab-link org-mac-chrome-get-frontmost-url)
-  :straight (org-contrib :type git
-                         :repo "https://git.sr.ht/~bzg/org-contrib"
-                         :files (:defaults "lisp/*.el")))
-#+end_quote
-
-#+begin_src emacs-lisp
-(after! org
-  (use-package! org-mac-link
-    :commands (org-mac-grab-link org-mac-chrome-get-frontmost-url)
-    :load-path "site-lisp/org-mac-link/"))
-#+end_src
-
 TODO idle highlight in visible buffers
 
 #+begin_src emacs-lisp
