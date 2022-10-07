@@ -452,7 +452,8 @@ Navigate flycheck errors
 Ignore some extra folders from projectile
 
 #+begin_src emacs-lisp
-(add-to-list 'projectile-globally-ignored-directories "^\\.log$")
+(after! projectile
+  (add-to-list 'projectile-globally-ignored-directories "^\\.log$"))
 #+end_src
 
 *** Workspaces
