@@ -1045,6 +1045,13 @@ Widen
  :leader :desc "Widen" "m s w" 'widen)
 #+end_src
 
+Save
+
+#+begin_src emacs-lisp
+(map! :map org-agenda-mode-map
+      "s-s" #'org-save-all-org-buffers)
+#+end_src
+
 *** Colors
 
 #+begin_src emacs-lisp
