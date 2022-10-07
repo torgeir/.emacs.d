@@ -760,6 +760,7 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Show calendar" "o c" #'calendar
  :leader :desc "Show home" "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
  :leader :desc "Show saga" "o s" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
+ :leader :desc "Browse at point" "o b" #'t/browse-url-at-point
  :leader :desc "Open rss" "o S" #'=rss
  :leader :desc "Open Intellij" "o i" #'t/open-in-intellij
  :leader :desc "Search the web" "s w" #'consult-web-search
