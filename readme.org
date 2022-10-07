@@ -1609,6 +1609,7 @@ Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindin
    :desc "Jump to next hunk"     "n" #'git-gutter:next-hunk
    :desc "Jump to previous hunk" "N" #'git-gutter:previous-hunk)
   (:when (featurep! :tools magit)
+   :desc "Visit pulls"           "p" #'t/visit-git-link-pulls
    (:prefix ("c" . "create")
     :desc "Ammend"               "a"   #'magit-commit-amend))))
 #+end_src
