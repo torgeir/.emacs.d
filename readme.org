@@ -715,7 +715,8 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
 
 ** Keybindings
 
-[[file:~/.emacs.d/modules/editor/evil/config.el::(map! :v "@" #'+evil:apply-macro][Doom editor keybindings]]
+- [[file:~/.emacs.d/modules/editor/evil/config.el::(map! :v "@" #'+evil:apply-macro][Doom editor keybindings]]
+- [[file:~/.emacs.d/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]]
 
 #+begin_src emacs-lisp
 (map!
