@@ -1117,6 +1117,13 @@ Replace it with ~ss~ (its faster than the default ~s ~) so we can add some more 
   (add-to-list 'org-structure-template-alist (cons "sh" "src shell")))
 #+end_src
 
+Don't popupize the org code block editor with doom's popup framework, so it opens split wherever it fits like it is by default.
+
+#+begin_src emacs-lisp
+(after! org
+  (set-popup-rule! "^*Org Src" :ignore t))
+#+end_src
+
 *** Capture templates
 
 #+begin_src emacs-lisp
