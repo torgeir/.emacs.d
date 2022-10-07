@@ -51,18 +51,6 @@
       (other-window -1)
       (ensime-inf-eval-region start end))))
 
-(defun t/clean-mode-line ()
-  (interactive)
-  (loop for cleaner in mode-line-cleaner-alist
-        do (let* ((mode (car cleaner))
-                  (mode-str (cdr cleaner))
-                  (old-mode-str (cdr (assq mode minor-mode-alist))))
-             (when old-mode-str
-               (setcar old-mode-str mode-str))
-             ;; major mode
-             (when (eq mode major-mode)
-               (setq mode-name mode-str)))))
-
 (defun t/css-kill-value ()
   "kills the attribute of a css property."
   (interactive)
@@ -78,8 +66,8 @@
 (defmacro t/rename-modeline (package-name mode new-name)
   "per package modeline rename for mode."
   `(eval-after-load ,package-name
-     '(defadvice ,mode (after t/rename-modeline activate)
-        (setq mode-name ,new-name))))
+    '(defadvice ,mode (after t/rename-modeline activate)
+       (setq mode-name ,new-name))))
 
 (defun t/json-format ()
   "pretty prints json in selected region."
@@ -104,19 +92,19 @@ understands."
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-      (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
-       (root (projectile-project-root))
-       (tags (shell-quote-argument (concat root "TAGS")))
-       (process (start-process-shell-command "build ctags asynchronously"
-                                             "*ctags async*"
-                                             (concat
-                                              "ctags -e -R"          ; recurse
-                                              " --options=" ctags ; use global config
-                                              " -f " tags " "     ; put it in project/TAGS
-                                              " ."                   ; in the current directory
-                                              ))))
-    (set-process-sentinel process (lambda (process event)
-                                    (t/load-tags tags)))))
+   (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
+    (root (projectile-project-root))
+    (tags (shell-quote-argument (concat root "TAGS")))
+    (process (start-process-shell-command "build ctags asynchronously"
+                                          "*ctags async*"
+                                          (concat
+                                           "ctags -e -R"          ; recurse
+                                           " --options=" ctags ; use global config
+                                           " -f " tags " "     ; put it in project/TAGS
+                                           " ."                   ; in the current directory
+                                           ))))
+   (set-process-sentinel process (lambda (process event)
+                                   (t/load-tags tags)))))
 
 (defun t/load-tags (tags)
   "Loads project tags into tag table."
@@ -152,15 +140,6 @@ Version 2015-06-12"
    (is-cygwin (shell-command (concat "cygstart " (shell-quote-argument default-directory))))
    (is-mac (shell-command "open ."))
    (is-linux (shell-command "thunar ."))))
-
-(defun t/open-line-above ()
-  "Insert a newline above the current line and put point at beginning."
-  (interactive)
-  (unless (bolp)
-    (beginning-of-line))
-  (newline)
-  (forward-line -1)
-  (indent-according-to-mode))
 
 (defun t/hippie-expand-no-case-fold ()
   (interactive)
@@ -208,13 +187,6 @@ Version 2015-06-12"
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
 
-(defun t/paredit-wrap-round-from-behind ()
-  (interactive)
-  (forward-sexp -1)
-  (t/wrap-with-parens)
-  (insert " ")
-  (forward-char -1))
-
 (defun t/untabify-buffer ()
   "Remove tabs in buffer."
   (interactive)
@@ -230,7 +202,7 @@ Version 2015-06-12"
 Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (t/untabify-buffer)
-  (when (fboundp 'ethan-wspace-clean-all) (ethan-wspace-clean-all))
+  (when (fboundp 'whitespace-cleanup) (whitespace-cleanup))
   (t/indent-buffer))
 
 (defun t/eval-region-or-last-sexp ()
@@ -284,10 +256,13 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (call-interactively 'other-window))
 
-(defun t/buffer-mode (buffer-or-string)
+(defun t/buffer-mode (&optional buffer-or-string)
   "Returns the major mode associated with a buffer."
-  (with-current-buffer buffer-or-string
-    major-mode))
+  (interactive)
+  (let ((mode (with-current-buffer (or buffer-or-string (current-buffer))
+                major-mode)))
+    (message "major mode: %s" mode)
+    mode))
 
 (defvar t/cursors-direction 'down
   "Direction of cursor movement operations.")
@@ -316,140 +291,24 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (evil-yank (point) (point-at-eol)))
 
-(defun t/config-reload ()
+(defun t/face-color-b (&optional face)
+  "Get `:background' color of `FACE'."
   (interactive)
-  (delete-file "~/.emacs.d/readme.el")
-  (delete-file "~/.emacs.d/readme.elc")
-  (load-file "~/.emacs.d/init.el"))
+  (face-attribute (or face (face-at-point)) :background))
 
-(defun t/face-color-b (attr)
-  "Get `:background' color of `ATTR'."
-  (face-attribute attr :background))
-
-(defun t/face-color-f (attr)
-  "Get `:foreground' color of `ATTR'."
-  (face-attribute attr :foreground))
-
-(defun t/switch-theme (theme)
-  "Switch theme, disabling previously loaded"
-  (interactive
-   (list
-    (intern (completing-read "Load custom theme: "
-                             (mapcar 'symbol-name
-                                     (custom-available-themes))))))
-  (mapcar #'disable-theme custom-enabled-themes)
-  (load-theme theme t)
-  (when (called-interactively-p) (message "%s" theme)))
+(defun t/face-color-f (&optional face)
+  "Get `:foreground' color of `FACE'."
+  (interactive)
+  (face-attribute (or face (face-at-point)) :foreground))
 
 (defun t/toggle-theme-dark-light ()
-  "Toggles between themes `doom-vibrant' and `spacemacs-light'"
+  "Toggles between themes dark and light theme."
   (interactive)
   (let* ((enabled-theme (car custom-enabled-themes))
-         (next-theme (if (equal 'doom-vibrant enabled-theme)
-                         'spacemacs-light
-                       'doom-vibrant)))
+         (next-theme (if (equal 'doom-moonlight enabled-theme)
+                         'doom-one-light
+                       'doom-moonlight)))
     (t/switch-theme next-theme)))
-
-;; (defvar *t-adjusted-font-size* t-font-size "Dynamically changed to adjust font with keybindings.")
-
-;; (setq t-fonts (if is-mac
-;;                   (list
-;;                    "JetBrains Mono"
-;;                    "DejaVu Sans Mono"
-;;                    "Bitstream Vera Sans Mono"
-;;                    "Code New Roman"
-;;                    "Input Mono"
-;;                    "Ubuntu Mono"
-;;                    "Borg Sans Mono"
-;;                    "Fira Code Retina"
-;;                    )
-;;                 (list
-;;                  "JetBrains Mono"
-;;                  "Hack"
-;;                  "Fira Code Retina"
-;;                  "Inconsolata"
-;;                  "Ubuntu Mono")))
-
-;; (defun t/cycle-font ()
-;;   "Cycle through list of fonts, setting the front most one."
-;;   (interactive)
-;;   (setq t-fonts
-;;         (if (t/prefix-arg-universal?)
-;;             (let ((first (car t-fonts))
-;;                   (rest (cdr t-fonts)))
-;;               (append (last t-fonts 1) (seq-take t-fonts (- (length t-fonts) 1))))
-;;           (let ((first (car t-fonts))
-;;                 (rest (cdr t-fonts)))
-;;             (append rest (list first)))))
-;;   (t/set-font (car t-fonts) (not (called-interactively-p))))
-
-;; (defun t/current-font ()
-;;   "Grabs the current font. Prints message when called interactively."
-;;   (interactive)
-;;   (let ((font (face-attribute 'default :family)))
-;;     (when (called-interactively-p) (message font))
-;;     font))
-
-;; (defun t/set-font (font &optional silence)
-;;   "Change FONT."
-;;   (when window-system
-;;     (let ((sized-font (concat font "-" (number-to-string *t-adjusted-font-size*))))
-;;       (set-face-attribute 'default nil :font sized-font)
-;;       (when (not silence)
-;;         (message "Font: %s." sized-font)))))
-
-;; (defun t/reload-font ()
-;;   "Reload font to make e.g. font size change have effect."
-;;   (interactive)
-;;   (t/set-font (car t-fonts) t))
-
-;; (defun t/fix-fira-ligatures ()
-;;   (interactive)
-;;   (let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
-;;                  (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-;;                  (36 . ".\\(?:>\\)")
-;;                  (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
-;;                  (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-;;                  (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
-;;                  (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
-;;                  ;;(45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
-;;                  ;;(46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-;;                  (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
-;;                  (48 . ".\\(?:x[a-zA-Z]\\)")
-;;                  (58 . ".\\(?:::\\|[:=]\\)")
-;;                  (59 . ".\\(?:;;\\|;\\)")
-;;                             (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
-;;                             (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
-;;                             (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-;;                             (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
-;;                             (91 . ".\\(?:]\\)")
-;;                             (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
-;;                             (94 . ".\\(?:=\\)")
-;;                             (119 . ".\\(?:ww\\)")
-;;                             (123 . ".\\(?:-\\)")
-;;                             (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
-;;                             (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
-;;                             )
-;;                  ))
-;;                                           (dolist (char-regexp alist)
-;;                                             (set-char-table-range composition-function-table (car char-regexp)
-;;                                                                   `([,(cdr char-regexp) 0 font-shape-gstring])))))
-
-;; (defun t/decrease-font-size ()
-;;   (interactive)
-;;   (setq *t-adjusted-font-size* (- *t-adjusted-font-size* 1))
-;;   (t/reload-font))
-
-;; (defun t/increase-font-size ()
-;;   (interactive)
-;;   (setq *t-adjusted-font-size* (+ *t-adjusted-font-size* 1))
-;;   (t/reload-font))
-
-;; (defun t/reset-font-size (&optional args)
-;;   (interactive)
-;;   (setq *t-adjusted-font-size* t-font-size)
-;;   (t/reload-font)
-;;   (text-scale-set 0))
 
 (defun make-orgcapture-frame ()
   "@torgeir: credits https://github.com/jjasghar/alfred-org-capture/blob/master/el/alfred-org-capture.el
@@ -585,72 +444,6 @@ Example: 2010-11-29T23:23:35-08:00"
   "Return date-time iso 8601 string suitable for filename."
   (replace-regexp-in-string ":" "." (t/date-time)))
 
-(defun t/elpa-backup-directory ()
-  "Return the directory name of an elpa backup that would run now."
-  (locate-user-emacs-file (format "elpa-backups/elpa-%s"
-                                  (t/date-time-for-filename))))
-
-(defun t/elpa-backup ()
-  "Backup the current elpa folder to elpa-backups."
-  (interactive)
-  (copy-directory
-   (locate-user-emacs-file "elpa")
-   (t/elpa-backup-directory)
-   t ; keep last modified time
-   t ; create parents
-   ))
-
-(defun t/upgrade-packages ()
-  "Upgrade packages after backing up the current elpa files."
-  (interactive)
-  (message "Backing up elpa/")
-  (t/elpa-backup)
-  (message "Backing up elpa/: done.")
-  (paradox-upgrade-packages))
-
-(defun t/current-line-ends-in-comma ()
-  "Return whether the current line is suffixed with ','."
-  (save-excursion
-    (end-of-line)
-    (looking-back ",\s*")))
-
-(defun t/prev-line-ends-in-comma ()
-  "Return whether the current line is suffixed with ','."
-  (save-excursion
-    (forward-line -1)
-    (end-of-line)
-    (looking-back ",\s*")))
-
-(defun t/next-line-ends-in-comma ()
-  "Return whether the current line is suffixed with ','."
-  (save-excursion
-    (forward-line)
-    (end-of-line)
-    (looking-back ",\s*")))
-
-(defun t/move-line-up (arg)
-  "Move the current line(s) down one line."
-  (interactive "P")
-  (if (or (not arg) (>= arg 0))
-      (let ((reg-or-lin (if (region-active-p) "'<" "."))
-            (reactivate-region (if (region-active-p) "gv=gv" ""))
-            (num (if arg (+ arg 1) 2)))
-        (execute-kbd-macro
-         (concat ":m" reg-or-lin "-" (number-to-string num) (kbd "RET") reactivate-region)))
-    (move-line-or-region (- arg))))
-
-(defun t/move-line-down (arg)
-  "Move the current line(s) down one line."
-  (interactive "P")
-  (if (or (not arg) (>= arg 0))
-      (let ((reg-or-lin (if (region-active-p) "'>" "."))
-            (reactivate-region (if (region-active-p) "gv=gv" ""))
-            (num (if arg arg 1)))
-        (execute-kbd-macro
-         (concat ":m" reg-or-lin "+" (number-to-string num) (kbd "RET") reactivate-region)))
-    (backward-move-line-or-region (- arg))))
-
-
 (defun t/find-org-files-recursively (&optional directory filext)
   "Return .org and .org_archive files recursively from DIRECTORY.
 If FILEXT is provided, return files with extension FILEXT instead."
@@ -702,12 +495,15 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (let ((buffer-modified-p nil))
     (kill-buffer-and-window)))
 
+(defun t/replace-newlines (str)
+  (replace-regexp-in-string "[\r\n]+" "" str))
+
 (defun t/grab-chrome-url ()
   "Grab the frontmost url out of chrome using `org-mac-grab-link'."
   (interactive)
-  (when-let ((chrome-url (org-mac-chrome-get-frontmost-url))
-             (_ (string-match "\\\[\\\[\\(.*\\)\\\]\\\[" chrome-url)))
-    (match-string 1 chrome-url)))
+  (t/replace-newlines
+   (shell-command-to-string
+    "osascript -l JavaScript -e 'Application(\"Google Chrome\").windows.at(0).activeTab.url()'")))
 
 (defun t/browse-chrome-url-in-eww ()
   "Open the frontmost chrome url in `eww'."
@@ -843,16 +639,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (insert txt)
     (buffer-substring-no-properties (point-min) (point-max))))
 
-(defun t/mobile-inbox-count ()
-  "Counts the number of items in `org-mobile-inbox-for-pull'."
-  (let ((inbox-file org-mobile-inbox-for-pull))
-    (when (file-exists-p inbox-file)
-      (with-temp-buffer
-        (insert-file-contents inbox-file)
-        (let ((matches (count-matches "^\*+ " (point-min) (point-max))))
-          (when (> matches 0) matches))))))
-
-(defun t/get-string-from-file (file-path)
+(defun t/get-file-string (file-path)
   "Return `FILE-PATH's file content."
   (with-temp-buffer
     (insert-file-contents file-path)
@@ -869,7 +656,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
       matches)))
 
 (defun t/re-seq-in-file (regex file)
-  (t/re-seq regex (t/get-string-from-file (t/user-emacs-file file))))
+  (t/re-seq regex (t/get-file-string (t/user-emacs-file file))))
 
 (defun t/fn-prefix (prefix module)
   (let ((module (if (stringp module) module (symbol-name module))))
@@ -926,61 +713,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
      origin-buffer-file-name
      (t/project-root))))
 
-(defun t/backward-down-sexp ()
-  "Move backward to the start of the previous sexp."
-  (interactive)
-  (cond
-   ((looking-back "^\s*?") (backward-word))
-   ((or (looking-back " ")
-        (looking-back ")")) (backward-char))
-   ((and (looking-back "(")
-         (looking-at "(")) (backward-char))
-   ((looking-back "(") (evil-cp-backward-up-sexp))
-   (t (sp-backward-sexp))))
-
-(defun t/forward-down-sexp ()
-  "Move forward to the end of the previous sexp."
-  (interactive)
-  (cond
-   ((looking-at "\"") (forward-sexp))
-   ((looking-at "\)\)$") (forward-char))
-   ((or (looking-at "\s(")
-        (looking-at "(")) (forward-char))
-   ((and (looking-at "[^\s]")
-         (not (looking-at ".$"))) (forward-sexp))
-   ((looking-at "\s*[^\s]") (evil-forward-word-begin))
-   ((or (looking-at "\s)")
-        (looking-at ".$")) (evil-cp-next-opening))
-   (t (sp-forward-sexp))))
-
-(defun t/forward-sexp ()
-  (interactive)
-  (if (looking-at "(")
-      (evil-jump-item)
-    (if (looking-at ")")
-        (progn
-          (evil-emacs-state)
-          (forward-char)
-          (sp-forward-sexp)
-          (evil-normal-state))
-      (evil-cp-up-sexp))))
-
-(defun t/backward-sexp ()
-  (interactive)
-  (if (looking-at ")")
-      (evil-jump-item)
-    (if (looking-at "(")
-        (progn
-          (evil-emacs-state)
-          (sp-backward-sexp)
-          (evil-normal-state))
-      (evil-cp-backward-up-sexp))))
-
-(defun t/find-files-emacs-init-files ()
-  (interactive)
-  (let ((default-directory user-emacs-directory))
-    (counsel-projectile-find-file-dwim)))
-
 (defun t/newline-expand-braces ()
   "Newline like `evil-ret', but expand (), [] and {} with newline in between, and indent accordingly."
   (interactive)
@@ -997,21 +729,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (evil-ret)
         (indent-according-to-mode)))))
 
-(defun t/recompile-elpa ()
-  "Recompile the elpa/ directory to resolve byte compilation issues."
-  (interactive)
-  (byte-recompile-directory (expand-file-name (t/user-emacs-file "elpa")) 0))
-
-(defun t/describe (&optional sat)
-  "Describe functions, features, symbols, or run help-apropos if it's not found."
-  (interactive)
-  (if-let ((s (or sat (symbol-at-point))))
-    (cond ((fboundp s) (helpful-function s))
-          ((featurep s) (doom/help-packages s))
-          ((symbolp s) (helpful-variable s))
-          (t (call-interactively 'apropos)))
-    (message "No symbol at point.")))
-
 (defun t/unbind (fn-or-s)
   "Unbind function or symbol depending on type."
   (interactive)
@@ -1025,11 +742,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
       (dolist (item item-or-items) (add-to-list l item t))
     (add-to-list l item-or-items))
   l)
-
-(defun t/toggle-line-numbers ()
-  "Toggle line numbers on or off."
-  (interactive)
-  (nlinum-mode (if nlinum-mode 0 1)))
 
 (defun t/highlight-logging ()
   "Add log highlighting to current major mode."
@@ -1148,35 +860,25 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/visit-git-link-pulls ()
   "Navigate to /pulls for the current git repo."
   (interactive)
-  (autoload 'git-link--remote-host "git-link")
-  (autoload 'git-link--remote-dir "git-link")
-  (autoload 'git-link--select-remote "git-link")
-  (browse-url (concat "https://"
-                      (git-link--remote-host (git-link--select-remote)) "/"
-                      (git-link--remote-dir (git-link--select-remote)) "/pulls")))
+  (let* ((origin (magit-get
+                  "remote"
+                  (or (magit-get-remote "main")
+                      (magit-get-remote "master")) "url"))
+         (url (replace-regexp-in-string
+               ".+\\.com:\\(.+\\)\\.git"
+               "\\1"
+               origin)))
+    (browse-url
+     (format "https://www.github.com/%s/pulls" url))))
 
 (defun t/projectile-dired ()
   (interactive)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
-         "Switch to project: "
+         "dired in project: "
          projects
          :action 'dired)
-      (user-error "No projects found"))))
-
-(defun t/projectile-desktop ()
-  (interactive)
-  (let ((projects (projectile-load-known-projects)))
-    (if projects
-        (projectile-completing-read
-         "Switch to project: "
-         projects
-         :action (lambda (project)
-                   (when (t/desktop-project-name)
-                     (t/desktop-save))
-                   (let ((default-directory project))
-                     (t/desktop-restore))))
       (user-error "No projects found"))))
 
 (defun t/projectile-magit-status ()
@@ -1184,23 +886,11 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
-         "Switch to project: "
+         "magit status in project: "
          projects
          :action (lambda (project)
                    (let ((default-directory project))
                      (magit-status project))))
-      (user-error "No projects found"))))
-
-(defun t/projectile-ag ()
-  (interactive)
-  (let ((projects (projectile-load-known-projects)))
-    (if projects
-        (projectile-completing-read
-         "Switch to project: "
-         projects
-         :action (lambda (project)
-                   (let ((default-directory project))
-                     (counsel-projectile-ag))))
       (user-error "No projects found"))))
 
 (defun t/projectile-rg ()
@@ -1208,7 +898,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
-         "Switch to project: "
+         "rg in project: "
          projects
          :action (lambda (project)
                    (let ((default-directory project))
@@ -1217,18 +907,29 @@ If FILEXT is provided, return files with extension FILEXT instead."
 
 (defun t/projectile-visit-git-link-pulls ()
   (interactive)
-  (require 'ghub)
   (let ((projects (projectile-load-known-projects)))
     (if projects
         (projectile-completing-read
          "Visit pulls for project: "
          projects
          :action (lambda (project)
-                   (let* ((default-directory (expand-file-name project))
-                          (url (magit-get "remote" (magit-get-remote "master") "url"))
-                          (id (replace-regexp-in-string "\\`.+github\\.com:\\(.+\\)\\.git\\'" "\\1" url)))
-                     (browse-url (format "https://github.com/%s/pulls" id)))))
+                   (let* ((default-directory (expand-file-name project)))
+                     (t/visit-git-link-pulls))))
       (user-error "No projects found"))))
+
+(defun t/visit-git-link-pulls ()
+  "Navigate to /pulls for the current git repo."
+  (interactive)
+  (let* ((origin (magit-get
+                  "remote"
+                  (or (magit-get-remote "main")
+                      (magit-get-remote "master")) "url"))
+         (url (replace-regexp-in-string
+               ".+\\.com:\\(.+\\)\\.git"
+               "\\1"
+               origin)))
+    (browse-url
+     (format "https://www.github.com/%s/pulls" url))))
 
 (defun t/margins-global (l &optional r)
   "Set global frame margins."
@@ -1353,14 +1054,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
            (t/fns)))
 
 
-(defun t/complete-with-helm-then (list fn)
-  "Complete from LIST with helm, e.g. (t/complete-with-helm-then '(one two) 'insert)."
-  (interactive)
-  (helm :sources (helm-build-sync-source "Choose from list."
-                   :action fn
-                   :candidates list)))
-
-
 (defun t/locally-disable-cursor ()
   "Locally disable cursor in buffer."
   (interactive)
@@ -1462,8 +1155,8 @@ See also:  (setq org-agenda-include-diary t)
 (defun t/popwin (fn)
   "Run function FN in popwin."
   (t/lambda ()
-    (popwin:display-buffer-1 (popwin:dummy-buffer))
-    (funcall fn)))
+            (popwin:display-buffer-1 (popwin:dummy-buffer))
+            (funcall fn)))
 
 (defun t/search-cheat-sh ()
   "Search `http://cheat.sh/' for help on commands and code."
