@@ -788,10 +788,6 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Previous workspace" "TAB k" '+workspace:switch-previous
  :leader :desc "Swap next" "TAB J" '+workspace/swap-right
  :leader :desc "Swap previous" "TAB K" '+workspace/swap-left)
-
-(map!
- :map org-mode-map
- :leader :desc "Widen" "m s w" 'widen)
 #+end_src
 
 Prevent drag-stuff-mode from messing things up
@@ -1025,6 +1021,14 @@ Extensions of some of the [[file:~/.emacs.d/modules/lang/org/config.el::(map! :m
 #+begin_src emacs-lisp
 (map! :map org-mode-map
       :localleader "g a" #'consult-org-agenda)
+#+end_src
+
+Widen
+
+#+begin_src emacs-lisp
+(map!
+ :map org-mode-map
+ :leader :desc "Widen" "m s w" 'widen)
 #+end_src
 
 *** Colors
