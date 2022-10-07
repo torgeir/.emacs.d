@@ -774,7 +774,9 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Toggle focus mode" "t f" #'focus-mode
  :leader :desc "Toggle flycheck" "t F" #'flycheck-mode
  :leader :desc "Close window unconditionally" "w d" #'delete-window
+ :leader :desc "Projectile dired" "p d" #'t/projectile-dired
  :leader :desc "Projectile git" "p g" #'t/projectile-magit-status
+ :leader :desc "Projectile pulls" "p P" #'t/projectile-visit-git-link-pulls
  :leader :desc "Twitter" "o w" #'=twitter
  :leader :desc "Open scratch buffer" "b s" #'doom/open-scratch-buffer
  :leader :desc "Toggle dedication" "t e" #'t/toggle-dedicated-window
