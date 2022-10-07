@@ -542,6 +542,8 @@ Show the buffer and the file
 
 *** Jump around
 
+Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
+
 #+begin_src emacs-lisp
 (map!
  :leader
