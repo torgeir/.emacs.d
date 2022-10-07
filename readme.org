@@ -332,7 +332,11 @@ A diy directory sidebar using dired. Refactored as suggested in https://www.redd
 ~(popup +all)~ steals this, so move it to the left
 
 #+begin_src emacs-lisp
-(set-popup-rule! "^*sidebar*" :side 'left)
+(set-popup-rule! "^*sidebar*"
+  :side 'left
+  :ttl nil ;; don't kill it on C-g
+  :parameters '((slot . -1)
+                (window-parameters . ((no-other-window . t)))))
 #+end_src
 
 *** Multiple cursors
