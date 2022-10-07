@@ -781,6 +781,15 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Previous occurrence" "h p" #'highlight-symbol-prev
  :leader :desc "Previous occurrence" "h N" #'highlight-symbol-prev
  :leader :desc "Next occurrence" "h n" #'highlight-symbol-next)
+ #+end_src
+
+Be explicit about when deleting workspaces
+
+#+begin_src emacs-lisp
+(after! (:and evil persp-mode)
+  (define-key! persp-mode-map
+    [remap delete-window] #'delete-window
+    [remap evil-window-delete] #'delete-window))
 
 (map!
  :map doom-leader-workspace-map
