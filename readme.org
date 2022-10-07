@@ -245,6 +245,8 @@ Embark improves prefix help commands, e.g. ~C-c C-h~, by showing auto complete t
         :g "C-k" 'kill-line))
 #+end_src
 
+Exclude stuff from ~+default/search-project~ by placing excludes in [[file:~/.rgignore][~/.rgignore]]
+
 *** Dired
 
 #+begin_src emacs-lisp
