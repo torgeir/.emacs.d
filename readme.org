@@ -1046,10 +1046,11 @@ Widen
 #+begin_src emacs-lisp
 (map!
  :map org-mode-map
- :leader :desc "Widen" "m s w" 'widen)
+ :leader :desc "Widen" "m s w" 'widen
+ :leader :desc "Narrow to subtree" "m s n" 'org-narrow-to-subtree)
 #+end_src
 
-Save
+Save from agenda
 
 #+begin_src emacs-lisp
 (map! :map org-agenda-mode-map
