@@ -520,8 +520,9 @@ Navigate flycheck errors
 *** Visual line mode
 
 #+begin_src emacs-lisp
-(add-hook 'after-init-hook (cmd! (global-visual-line-mode 1)))
-(add-hook 'prog-mode-hook  (cmd! (toggle-truncate-lines 1)))
+;; TODO torgeir fjerna for å teste elfeed
+;;(add-hook 'after-init-hook (cmd! (global-visual-line-mode 1)))
+;;(add-hook 'prog-mode-hook  (cmd! (toggle-truncate-lines 1)))
 #+end_src
 
 *** Projects
