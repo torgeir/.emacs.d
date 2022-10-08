@@ -481,7 +481,7 @@ Ignore some extra folders from projectile
 There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]].
 
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-laserwave)
+(setq doom-theme 'doom-moonlight)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1925,6 +1925,15 @@ https://docs.doomemacs.org/latest/#/manual/intro/why-use-doom
 [2022-10-02 Sun 23:27]
 https://docs.doomemacs.org/latest/modules/editor/format/
 ** STARTED Prot's Orderless
+
+** TODO Show workspace in modeline
+
+(+workspace--tabline)
+
+** TODO Doom modeline additions ws
+
+** TODO avy farge som i branchnacn
+** TODO dired som bare flytter til venstre og blir dedicated
 
 ..or is [[https://kristofferbalintona.me/posts/202202211546/][this approach better]]?
 
