@@ -352,6 +352,13 @@ Doom doesnt use the customize interface. It is useful nonetheless for experiment
 (set-popup-rule! "^*Customize" :ignore t)
 #+end_src
 
+Make ~s-s~ save in =customize=. Look up the function of a button using =describe-text-properties= on a button, like the "Apply and Save"
+
+#+begin_src emacs-lisp
+(map! :map custom-mode-map
+      "s-s" 'Custom-save)
+#+end_src
+
 *** STARTED Directory sidebar
 
 A diy directory sidebar using dired. Refactored as suggested in https://www.reddit.com/r/emacs/comments/nlefvx/weekly_tips_and_tricks/.
@@ -2005,4 +2012,3 @@ https://docs.doomemacs.org/latest/modules/editor/format/
 ** TODO insert mode org src drag left on meta left
 ** TODO avy farge som i branchnacn
 ** TODO dired som bare flytter til venstre og blir dedicated
-
