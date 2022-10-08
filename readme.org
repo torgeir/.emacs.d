@@ -496,11 +496,30 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 #+end_quote
 
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium :slant 'normal :width 'normal)
-      doom-variable-pitch-font (font-spec :family "JetBrains Mono" :size 14 :weight 'medium :slant 'normal :width 'normal)
-      doom-big-font (font-spec :family "JetBrains Mono" :size 20 :weight 'medium :slant 'normal :width 'normal)
-      ;; font resize increments
-      doom-font-increment 1)
+(defun t/font-spec (f &optional s)
+  (font-spec :family f
+             :size (or s 13)
+             :weight 'medium
+             :slant 'normal
+             :width 'normal))
+
+(setq t-fonts '("JetBrains Mono"
+                "Input Mono"
+                "Fira Code"))
+
+(defun t/cycle-fonts ()
+  (interactive)
+  (setq t-fonts (nconc (last t-fonts) (butlast t-fonts)))
+  (let ((f (car t-fonts)))
+    (message "Font: %s" f)
+    (setq doom-font (t/font-spec f)
+          doom-variable-pitch-font (t/font-spec f)
+          doom-big-font (t/font-spec f 20)
+          doom-font-increment 1)
+    (doom/reload-font)
+    f))
+
+(t/cycle-fonts)
 #+end_src
 
 To list available fontsets, do
@@ -882,8 +901,8 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Rotate frame" "w r" #'rotate-frame-anticlockwise
  :leader :desc "Rotate frame clockwise" "w R" #'rotate-frame-clockwise
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error
- :leader :desc "Toggle focus mode" "t f" #'focus-mode
- :leader :desc "Toggle flycheck" "t F" #'flycheck-mode
+ :leader :desc "Toggle focus mode" "t F" #'focus-mode
+ :leader :desc "Cycle fonts" "t f" #'t/cycle-fonts
  :leader :desc "Close window unconditionally" "w d" #'delete-window
  :leader :desc "Projectile dired" "p d" #'t/projectile-dired
  :leader :desc "Projectile git" "p g" #'t/projectile-magit-status
@@ -2009,6 +2028,3 @@ https://docs.doomemacs.org/latest/#/manual/intro/why-use-doom
 [2022-10-02 Sun 23:27]
 https://docs.doomemacs.org/latest/modules/editor/format/
 
-** TODO insert mode org src drag left on meta left
-** TODO avy farge som i branchnacn
-** TODO dired som bare flytter til venstre og blir dedicated
