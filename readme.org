@@ -1929,10 +1929,17 @@ https://docs.doomemacs.org/latest/modules/editor/format/
 
 (+workspace--tabline)
 
-** TODO Doom modeline additions ws
-
+** TODO insert mode org src drag left on meta left
 ** TODO avy farge som i branchnacn
 ** TODO dired som bare flytter til venstre og blir dedicated
+
+** Workspace in doom mode line
+
+#+begin_src emacs-lisp
+(after! doom-modeline
+  (setq doom-modeline-persp-name t
+        doom-modeline-persp-icon nil))
+#+end_src
 
 ** Prot's Orderless
 
