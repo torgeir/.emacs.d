@@ -843,6 +843,13 @@ One help shortcut, everywhere.
 (map! :leader :n "h h" #'helpful-at-point)
 #+end_src
 
+Keep them on the side for some more room.
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^*info" :side 'right :width 82)
+(set-popup-rule! "^*help" :side 'right :width 82)
+#+end_src
+
 *** Motions
 
 Make helpful buffers more navigable by removing doom popup's /dedication/. This makes ~q~ fall back to the previous help buffer after a help link click that made you navigate to the next help topic.
