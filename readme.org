@@ -1461,19 +1461,6 @@ Eww functions that directly enter the eww readability mode after loading a given
         shr-ignore-cache t))
 #+END_SRC
 
-**** TODO Open from chrome
-
-Opens the frontmost chrome url in eww.
-
-This does not work atm, ~(void-function org-mac-chrome-get-frontmost-url)~.
-
-#+BEGIN_SRC emacs-lisp
-(defun t/visit-frontmost-chrome-url-in-eww ()
-  "Visit the front-most url of chrome in eww."
-  (interactive)
-  (eww (t/grab-chrome-url)))
-#+END_SRC
-
 **** Hook and keybindings
 
 Some useful eww keybindings
@@ -1665,7 +1652,6 @@ Make super+enter create a vterm terminal window inside emacs
 
 Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
 
-*** TODO Port eshell stuff?
 
 ** VC
 *** Ediff
