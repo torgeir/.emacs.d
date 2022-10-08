@@ -1924,7 +1924,6 @@ https://docs.doomemacs.org/latest/#/manual/intro/why-use-doom
 ** TODO :editor format +onsave - Doom Emacs v21.08 documentation :emacs:
 [2022-10-02 Sun 23:27]
 https://docs.doomemacs.org/latest/modules/editor/format/
-** STARTED Prot's Orderless
 
 ** TODO Show workspace in modeline
 
@@ -1935,7 +1934,15 @@ https://docs.doomemacs.org/latest/modules/editor/format/
 ** TODO avy farge som i branchnacn
 ** TODO dired som bare flytter til venstre og blir dedicated
 
-..or is [[https://kristofferbalintona.me/posts/202202211546/][this approach better]]?
+** Prot's Orderless
+
+A tuned version of [[https://protesilaos.com/codelog/2021-01-06-emacs-default-completion/][Prot's]] and [[https://kristofferbalintona.me/posts/202202211546/][Kristoffer Balintona's]] vertico, maginalia and orderless setup
+
+Some examples and explanations
+
+- m-x: name= ^[m] :: contains chars of name in word in order AND starts with regex m
+- m-x: Buffer= e nm= :: contains chars of Buffer in word in order AND contains e AND contains chars of nm in word in order (e.g. like in u<nm>ark)
+- SPC s p: #defun#j gjp, ha, :: rg search for defun, in-emacs matching for long words that have leading inner words starting with g j and p in order, and have leading inner words starting with h and a
 
 #+begin_src emacs-lisp
 (after! orderless
@@ -1945,39 +1952,54 @@ https://docs.doomemacs.org/latest/modules/editor/format/
   (progn
 
     (setq orderless-matching-styles
-          '(orderless-prefixes
-            orderless-strict-leading-initialism
-            orderless-flex orderless-regexp))
+          '(orderless-initialism
+            orderless-literal
+            orderless-regexp
+            orderless-flex))
 
     (setq orderless-style-dispatchers
           '(prot-orderless-literal-dispatcher
             prot-orderless-initialism-dispatcher
-            prot-orderless-flex-dispatcher))
+            prot-orderless-flex-dispatcher
+            ))
 
     (defun prot-orderless-literal-dispatcher (pattern _index _total)
-      "Literal style dispatcher using the equals sign as a suffix."
+      "Literal style dispatcher using the equals sign as a suffix.
+E.g.
+Buffer= e nm=
+Buffer-menu-unmark
+^^^^^^       ^^
+Buffer-menu-unmark-all
+^^^^^^       ^^
+Buffer-menu-backup-unmark
+^^^^^^              ^^
+Buffer-menu-unmark-all-buffers
+^^^^^^       ^^
+"
       (when (string-suffix-p "=" pattern)
         `(orderless-literal . ,(substring pattern 0 -1))))
 
     ;;;###autoload
     (defun prot-orderless-initialism-dispatcher (pattern _index _total)
-      "Leading initialism  dispatcher using the comma suffix."
+      "Matches leading on words in order
+E.g.
+#defun#j gjp, ha,
+(defun t/js2-get-json-path (&optional hardcoded-array-index))
+ ^^^^^       ^   ^    ^               ^         ^
+
+#defun#j gjp, hi,
+Would not match the above as no leading words start h then another word starting with i
+"
       (when (string-suffix-p "," pattern)
-        `(orderless-strict-leading-initialism . ,(substring pattern 0 -1))))
+        `(orderless-strict-initialism . ,(substring pattern 0 -1))))
 
     ;;;###autoload
     (defun prot-orderless-flex-dispatcher (pattern _index _total)
-      "Flex dispatcher using the tilde suffix. "
-      (when (string-suffix-p "~" pattern)
+      "Matches using any group in any order."
+      (when (string-suffix-p "." pattern)
         `(orderless-flex . ,(substring pattern 0 -1))))
 
-    ;;;; Initialisms
-
-    ;; All of the following are a copy of code that was removed from
-    ;; orderless.el. I was using it, so I want to keep it, at least until
-    ;; some new version is provided upstream.
-
-    (defun orderless--strict-*-initialism (component &optional anchored)
+    (defun orderless-strict-initialism (component)
       "Match a COMPONENT as a strict initialism, optionally ANCHORED.
 The characters in COMPONENT must occur in the candidate in that
 order at the beginning of subsequent words comprised of letters.
@@ -1990,29 +2012,5 @@ that the first and last initials appear in the first and last
 words of the candidate, respectively."
       (orderless--separated-by
           '(seq (zero-or-more alpha) word-end (zero-or-more (not alpha)))
-        (cl-loop for char across component collect `(seq word-start ,char))
-        (when anchored '(seq (group buffer-start) (zero-or-more (not alpha))))
-        (when (eq anchored 'both)
-          '(seq (zero-or-more alpha) word-end (zero-or-more (not alpha)) eol))))
-
-    (defun orderless-strict-initialism (component)
-      "Match a COMPONENT as a strict initialism.
-This means the characters in COMPONENT must occur in the
-candidate in that order at the beginning of subsequent words
-comprised of letters.  Only non-letters can be in between the
-words that start with the initials."
-      (orderless--strict-*-initialism component))
-
-    (defun orderless-strict-leading-initialism (component)
-      "Match a COMPONENT as a strict initialism, anchored at start.
-See `orderless-strict-initialism'.  Additionally require that the
-first initial appear in the first word of the candidate."
-      (orderless--strict-*-initialism component 'start))
-
-    (defun orderless-strict-full-initialism (component)
-      "Match a COMPONENT as a strict initialism, anchored at both ends.
-See `orderless-strict-initialism'.  Additionally require that the
-first and last initials appear in the first and last words of the
-candidate, respectively."
-      (orderless--strict-*-initialism component 'both))))
+        (cl-loop for char across component collect `(seq word-start ,char))))))
 #+end_src
