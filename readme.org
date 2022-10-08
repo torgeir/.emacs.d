@@ -2002,6 +2002,16 @@ https://docs.doomemacs.org/latest/#/manual/intro/why-use-doom
 [2022-10-02 Sun 23:27]
 https://docs.doomemacs.org/latest/modules/editor/format/
 
+** TODO God doom config
+
+https://github.com/zzamboni/dot-doom/blob/master/doom.org
+
+** TODO auth-source
+
+#+begin_src emacs-lisp
+(after! auth-source (setq auth-sources (nreverse auth-sources)))
+#+end_src
+
 ** TODO Email via mu4e
 
 Settings from [[file:~/.emacs.d/modules/email/mu4e/README.org][modules/email/mu4e/README.org]]
