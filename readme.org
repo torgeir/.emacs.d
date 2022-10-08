@@ -653,9 +653,10 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
         avy-style 'at-full
         avy-background t)
 
-  (set-face-attribute 'avy-background-face :foreground "#3a485f")
+  (set-face-attribute 'avy-background-face nil :foreground "#3a485f")
 
   (let* ((f 'font-lock-keyword-face)
+         (b nil)
          (c "#77e0c6")
          (c "#ffc777"))
     (set-face-attribute 'avy-lead-face   nil :background b :weight 'bold :foreground c)
