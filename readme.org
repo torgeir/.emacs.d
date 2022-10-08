@@ -604,6 +604,12 @@ There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][do
   '(rainbow-delimiters-unmatched-face :foreground "Red" :overline nil :underline nil))
 #+end_src
 
+*** Transparency
+
+#+begin_src emacs-lisp
+(t/transparency 95)
+#+end_src
+
 *** Frame
 
 Show the buffer and the file
