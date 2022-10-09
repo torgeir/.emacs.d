@@ -473,7 +473,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 (defun t/font-spec (f &optional s)
   (font-spec :family f
              :size (or s 15)
-             :weight 'medium
+             :weight 'normal
              :slant 'normal
              :width 'normal))
 
