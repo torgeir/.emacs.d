@@ -1965,8 +1965,9 @@ Go to Gmail IMAP/POP settings (in normal view; the options are not available in 
 Create ~.msmtprc~ config for sending email
 
 #+begin_src emacs-lisp
-(f-write-text
- (concat "defaults
+(after! f
+  (f-write-text
+   (concat "defaults
 auth on
 port 465
 protocol smtp
@@ -1985,7 +1986,7 @@ from " (getenv "USER_EMAIL_2") "
 user " (replace-regexp-in-string "@gmail.com" "" (getenv "USER_EMAIL_2")) "
 passwordeval op read 'op://Personal/mu4e junk/password'
 tls_starttls off")
- 'utf-8 (t/user-file ".msmtprc"))
+   'utf-8 (t/user-file ".msmtprc")))
 #+end_src
 
 **** Mbsync
@@ -1993,8 +1994,9 @@ tls_starttls off")
 =brew install isync=
 
 #+begin_src emacs-lisp
-(f-write-text
- (concat "
+(after! f
+  (f-write-text
+   (concat "
  # gmail ========================
  IMAPAccount gmail
  Host imap.gmail.com
@@ -2052,10 +2054,11 @@ tls_starttls off")
  Sync All
  Expunge Both
  SyncState *")
- 'utf-8 (t/user-file ".mbsyncrc"))
+   'utf-8 (t/user-file ".mbsyncrc")))
 #+end_src
 
 Then sync it with =mbsync -aV=.
+
 ** Site lisp
 
 Useful elisp I committed, or decided to work on.
