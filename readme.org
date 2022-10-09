@@ -77,14 +77,14 @@ Ignore some of the cached emacs files in recent files
 
 ** Whoami
 
-#+begin_quote
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets. It is optional.
-#+end_quote
-
 #+begin_src emacs-lisp
-(setq user-full-name "Torgeir Thoresen"
-      user-mail-address "torgeir.thoresen@gmail.com")
+(let ((email   (getenv "USER_EMAIL"))
+      (email-2 (getenv "USER_EMAIL_2")))
+  (when (not email)   (error "No USER_EMAIL set?"))
+  (when (not email-2) (error "No USER_EMAIL_2 set?"))
+  (setq user-full-name "Torgeir Thoresen"
+        user-mail-address   email
+        user-mail-address-2 email-2))
 #+end_src
 
 ** Org file location setup
