@@ -1670,7 +1670,6 @@ Make super+enter create a vterm terminal window inside emacs
 
 Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
 
-
 ** VC
 *** Ediff
 
@@ -1861,6 +1860,191 @@ Evil like navigation.
         twittering-use-master-password t))
 #+end_src
 
+*** Email
+
+Settings from [[file:~/.emacs.d/modules/email/mu4e/README.org][modules/email/mu4e/README.org]]
+
+Inspiration:
+- https://macowners.club/posts/email-emacs-mu4e-macos/
+- https://www.reddit.com/r/emacs/comments/8q84dl/tip_how_to_easily_manage_your_emails_with_mu4e/
+- https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/
+- https://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html
+- https://f-santos.gitlab.io/2020-04-24-mu4e.html
+- https://www.erichgrunewald.com/posts/setting-up-gmail-in-doom-emacs-using-mbsync-and-mu4e/
+
+**** Mu4e
+
+#+begin_src emacs-lisp
+(after! mu4e
+  (setq mu4e-maildir "~/.maildir"
+        mu4e-update-interval (* 5 60)
+        mu4e-context-policy 'pick-first
+        mu4e-attachment-dir "~/Desktop"
+        mu4e-mu-binary (executable-find "mu")
+        mu4e-get-mail-command (concat (executable-find "mbsync") " -a")
+
+        ;; rename files when moving - needed for mbsync:
+        mu4e-change-filenames-when-moving t
+        mu4e-maildir-shortcuts '(("/gmail/INBOX" . ?g)
+                                 ("/gmail/[Gmail]/Sent Mail" . ?G)
+                                 ("/junk/INBOX" . ?j)
+                                 ("/junk/[Gmail]/Sent Mail" . ?J)))
+
+  (setq mail-user-agent 'mu4e-user-agent)
+
+  (setq +mu4e-gmail-accounts `((,user-mail-address   . "/gmail")
+                               (,user-mail-address-2 . "/junk")))
+
+  (set-email-account!
+   "gmail"
+   `((mu4e-sent-folder       . "/gmail/[Gmail]/Sent Mail")
+     (mu4e-drafts-folder     . "/gmail/[Gmail]/Drafts")
+     (mu4e-trash-folder      . "/gmail/[Gmail]/Trash")
+     (mu4e-compose-signature . "\n--\n\nT")
+     (user-full-name         . ,user-full-name)
+     (user-mail-address      . ,user-mail-address)
+     (message-sendmail-extra-arguments . ("--read-envelope-from" "--account=gmail"))
+     (org-msg-signature      . "\n\n#+begin_signature\n--\n\nT\n#+end_signature"))
+   t)
+
+  (set-email-account!
+   "junk"
+   `((mu4e-sent-folder       . "/junk/[Gmail]/Sent Mail")
+     (mu4e-drafts-folder     . "/junk/[Gmail]/Drafts")
+     (mu4e-trash-folder      . "/junk/[Gmail]/Trash")
+     (mu4e-compose-signature . "\n--\n\ntorg")
+     (user-full-name         . "torg")
+     (user-mail-address      . ,user-mail-address-2)
+     (message-sendmail-extra-arguments . ("--read-envelope-from" "--account=junk"))
+     (org-msg-signature      . "\n\n#+begin_signature\n--\n\ntorg\n#+end_signature"))
+   t)
+
+  (setq sendmail-program (executable-find "msmtp")
+        send-mail-function #'smtpmail-send-it
+        message-sendmail-f-is-evil t
+        message-send-mail-function #'message-send-mail-with-sendmail))
+#+end_src
+
+**** Setup
+
+***** Create the folders
+
+The subfolder ~gmail~ is what makes the mu4e setting above need ~/gmail/~ in their path
+
+#+begin_quote
+mkdir -p .maildir/{gmail,junk,certificates}
+#+end_quote
+
+***** Export certificates
+
+Export ~Keychain Access -> System Roots -> Certificates -> select all -> Shift+cmd+E~ to ~~/.maildir/certificates/certificates.pem~
+
+***** Delete to Trash
+
+Gmail setting to remove deleted emails from inbox and move them in ~[Gmail]/Trash~.
+
+#+begin_quote
+Go to Gmail IMAP/POP settings (in normal view; the options are not available in HTML view) and set "When a message is marked as deleted" to "Move to trash" or "Immediately delete." Also set "Auto-Expunge off."
+#+end_quote
+
+**** Smtp
+
+=brew install msmtp=
+
+Create ~.msmtprc~ config for sending email
+
+#+begin_src emacs-lisp
+(f-write-text
+ (concat "defaults
+auth on
+port 465
+protocol smtp
+tls on
+
+account gmail
+host smtp.gmail.com
+from " (getenv "USER_EMAIL") "
+user " (replace-regexp-in-string "@gmail.com" "" (getenv "USER_EMAIL")) "
+passwordeval op read 'op://Personal/mu4e gmail/password'
+tls_starttls off
+
+account junk
+host smtp.gmail.com
+from " (getenv "USER_EMAIL_2") "
+user " (replace-regexp-in-string "@gmail.com" "" (getenv "USER_EMAIL_2")) "
+passwordeval op read 'op://Personal/mu4e junk/password'
+tls_starttls off")
+ 'utf-8 (t/user-file ".msmtprc"))
+#+end_src
+
+**** Mbsync
+
+=brew install isync=
+
+#+begin_src emacs-lisp
+(f-write-text
+ (concat "
+ # gmail ========================
+ IMAPAccount gmail
+ Host imap.gmail.com
+ User " (getenv "USER_EMAIL") "
+ PassCmd \"op read 'op://Personal/mu4e gmail/password'\"
+ Port 993
+ SSLType IMAPS
+ SSLVersions TLSv1.2
+ AuthMechs PLAIN
+ SystemCertificates no
+ CertificateFile ~/.maildir/certificates/certificates.pem
+
+ IMAPStore gmail-remote
+ Account gmail
+
+ MaildirStore gmail-local
+ SubFolders Verbatim
+ Path ~/.maildir/gmail/
+ Inbox ~/.maildir/gmail/INBOX
+
+ Channel gmail
+ Far :gmail-remote:
+ Near :gmail-local:
+ Patterns * ![Gmail]* \"[Gmail]/Sent Mail\" \"[Gmail]/Trash\"
+ Create Near
+ Sync All
+ Expunge Both
+ SyncState *
+
+ # junk =========================
+ IMAPAccount junk
+ Host imap.gmail.com
+ User " (getenv "USER_EMAIL_2") "
+ PassCmd \"op read 'op://Personal/mu4e junk/password'\"
+ Port 993
+ SSLType IMAPS
+ SSLVersions TLSv1.2
+ AuthMechs PLAIN
+ SystemCertificates no
+ CertificateFile ~/.maildir/certificates/certificates.pem
+
+ IMAPStore junk-remote
+ Account junk
+
+ MaildirStore junk-local
+ SubFolders Verbatim
+ Path ~/.maildir/junk/
+ Inbox ~/.maildir/junk/INBOX
+
+ Channel junk
+ Far :junk-remote:
+ Near :junk-local:
+ Patterns * ![Gmail]* \"[Gmail]/Sent Mail\" \"[Gmail]/Trash\"
+ Create Near
+ Sync All
+ Expunge Both
+ SyncState *")
+ 'utf-8 (t/user-file ".mbsyncrc"))
+#+end_src
+
+Then sync it with =mbsync -aV=.
 ** Site lisp
 
 Useful elisp I committed, or decided to work on.
@@ -2022,49 +2206,3 @@ https://docs.doomemacs.org/latest/modules/editor/format/
 
 https://github.com/zzamboni/dot-doom/blob/master/doom.org
 
-** TODO auth-source
-
-#+begin_src emacs-lisp
-(after! auth-source (setq auth-sources (nreverse auth-sources)))
-#+end_src
-
-** TODO Email via mu4e
-
-Settings from [[file:~/.emacs.d/modules/email/mu4e/README.org][modules/email/mu4e/README.org]]
-
-Inspiration:
-- https://macowners.club/posts/email-emacs-mu4e-macos/
-- https://www.reddit.com/r/emacs/comments/8q84dl/tip_how_to_easily_manage_your_emails_with_mu4e/
-- https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/
-- https://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html
-- https://f-santos.gitlab.io/2020-04-24-mu4e.html
-- https://www.erichgrunewald.com/posts/setting-up-gmail-in-doom-emacs-using-mbsync-and-mu4e/
-
-#+begin_src emacs-lisp
-(after! mu4e
-  (setq mu4e-mu-binary (executable-find "mu")
-        mu4e-maildir "~/.maildir"
-        mu4e-get-mail-command (concat (executable-find "mbsync") " -a")
-        mu4e-update-interval (* 2 60 60) ;; (* 5 60)
-        mu4e-attachment-dir "~/Desktop"
-
-        ;; rename files when moving - needed for mbsync:
-        mu4e-change-filenames-when-moving t
-        mu4e-maildir-shortcuts '(("/gmail/INBOX" . ?g)
-                                 ("/gmail/[Gmail]/Sent Mail" . ?G)))
-
-  (set-email-account!
-   "gmail"
-   '((mu4e-sent-folder       . "/[Gmail]/Sent Mail")
-     (mu4e-drafts-folder     . "/[Gmail]/Drafts")
-     (mu4e-trash-folder      . "/[Gmail]/Trash")
-     (mu4e-compose-signature . "\n--\n\nT")
-     (org-msg-signature      . "\n\n#+begin_signature\n--\n\nT\n#+end_signature"))
-   t)
-
-  (setq sendmail-program (executable-find "msmtp")
-        send-mail-function #'smtpmail-send-it
-        message-sendmail-f-is-evil t
-        message-sendmail-extra-arguments '("--read-envelope-from" "--account=gmail")
-        message-send-mail-function #'message-send-mail-with-sendmail))
-#+end_src
