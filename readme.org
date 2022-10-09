@@ -877,30 +877,35 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Soft line wrapping" "t w" #'visual-line-mode
  :leader :desc "Show whitespace" "t W" #'whitespace-mode
 
+ :leader :desc "Open rss" "o S" #'=rss
+ :leader :desc "Twitter" "o w" #'=twitter
  :leader :desc "Show calendar" "o c" #'calendar
  :leader :desc "Show home" "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
  :leader :desc "Show saga" "o s" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
  :leader :desc "Browse at point" "o b" #'t/browse-url-at-point
- :leader :desc "Open rss" "o S" #'=rss
  :leader :desc "Open Intellij" "o i" #'t/open-in-intellij
- :leader :desc "Search the web" "s w" #'consult-web-search
+
  :leader :desc "Eval and replace" "m e R" #'t/eval-and-replace
+
+ :leader :desc "Search the web" "s w" #'consult-web-search
+
+ :leader :desc "Toggle writeroom" "t d" #'global-writeroom-mode
+ :leader :desc "Debug on error" "t D" #'toggle-debug-on-error
+ :leader :desc "Toggle dedication" "t e" #'t/toggle-dedicated-window
+ :leader :desc "Cycle fonts" "t f" #'t/cycle-fonts
+ :leader :desc "Toggle focus mode" "t F" #'focus-mode
  :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
  :leader :desc "Toggle transparency" "t T" #'t/transparency
- :leader :desc "Toggle writeroom" "t d" #'global-writeroom-mode
+
  :leader :desc "Flip frame" "w f" #'rotate-frame
+ :leader :desc "Close window unconditionally" "w d" #'delete-window
  :leader :desc "Rotate frame" "w r" #'rotate-frame-anticlockwise
  :leader :desc "Rotate frame clockwise" "w R" #'rotate-frame-clockwise
- :leader :desc "Debug on error" "t D" #'toggle-debug-on-error
- :leader :desc "Toggle focus mode" "t F" #'focus-mode
- :leader :desc "Cycle fonts" "t f" #'t/cycle-fonts
- :leader :desc "Close window unconditionally" "w d" #'delete-window
+
  :leader :desc "Projectile dired" "p d" #'t/projectile-dired
  :leader :desc "Projectile git" "p g" #'t/projectile-magit-status
  :leader :desc "Projectile pulls" "p P" #'t/projectile-visit-git-link-pulls
- :leader :desc "Twitter" "o w" #'=twitter
  :leader :desc "Open scratch buffer" "b s" #'doom/open-scratch-buffer
- :leader :desc "Toggle dedication" "t e" #'t/toggle-dedicated-window
 
  :leader :desc "Previous occurrence" "h p" #'highlight-symbol-prev
  :leader :desc "Previous occurrence" "h N" #'highlight-symbol-prev
