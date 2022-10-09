@@ -1878,7 +1878,7 @@ Inspiration:
 #+begin_src emacs-lisp
 (after! mu4e
   (setq mu4e-maildir "~/.maildir"
-        mu4e-update-interval (* 5 60)
+        mu4e-update-interval (* 3 5 60)
         mu4e-context-policy 'pick-first
         mu4e-attachment-dir "~/Desktop"
         mu4e-mu-binary (executable-find "mu")
