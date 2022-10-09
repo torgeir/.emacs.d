@@ -281,7 +281,16 @@ Some examples and explanations
           '(prot-orderless-literal-dispatcher
             prot-orderless-initialism-dispatcher
             prot-orderless-flex-dispatcher
+            or-regexp
             ))
+
+    (defun or-regexp (pattern index _total)
+      "foo|bar"
+      (cond
+       ((string-suffix-p "|" pattern)
+        `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" (substring pattern 0 -1)) "\\)"))))
+       ((string-match-p "|" pattern)
+        `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" pattern) "\\)"))))))
 
     (defun prot-orderless-literal-dispatcher (pattern _index _total)
       "Literal style dispatcher using the equals sign as a suffix.
