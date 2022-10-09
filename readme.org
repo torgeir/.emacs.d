@@ -553,15 +553,33 @@ Ignore some extra folders from projectile
 *** Workspaces
 
 #+begin_src emacs-lisp
-(map! :leader "1" '+workspace/switch-to-0)
-(map! :leader "2" '+workspace/switch-to-1)
-(map! :leader "3" '+workspace/switch-to-2)
-(map! :leader "4" '+workspace/switch-to-3)
-(map! :leader "5" '+workspace/switch-to-4)
-(map! :leader "6" '+workspace/switch-to-5)
-(map! :leader "7" '+workspace/switch-to-6)
-(map! :leader "8" '+workspace/switch-to-7)
-(map! :leader "0" '+workspace/switch-to-final)
+(map!
+ :leader "1" '+workspace/switch-to-0
+ :leader "2" '+workspace/switch-to-1
+ :leader "3" '+workspace/switch-to-2
+ :leader "4" '+workspace/switch-to-3
+ :leader "5" '+workspace/switch-to-4
+ :leader "6" '+workspace/switch-to-5
+ :leader "7" '+workspace/switch-to-6
+ :leader "8" '+workspace/switch-to-7
+ :leader "0" '+workspace/switch-to-final)
+#+end_src
+
+And fix ~super~ navigation across modes that steam ~SPC~.
+
+#+begin_src emacs-lisp
+(after! twittering-mode
+  (map!
+   :map twittering-mode-map
+   "s-1" '+workspace/switch-to-0
+   "s-2" '+workspace/switch-to-1
+   "s-3" '+workspace/switch-to-2
+   "s-4" '+workspace/switch-to-3
+   "s-5" '+workspace/switch-to-4
+   "s-6" '+workspace/switch-to-5
+   "s-7" '+workspace/switch-to-6
+   "s-8" '+workspace/switch-to-7
+   "s-0" '+workspace/switch-to-final))
 #+end_src
 
 *** Themes
