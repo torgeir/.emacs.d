@@ -885,6 +885,7 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Open Intellij" "o i" #'t/open-in-intellij
  :leader :desc "Search the web" "s w" #'consult-web-search
  :leader :desc "Eval and replace" "m e R" #'t/eval-and-replace
+ :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
  :leader :desc "Toggle transparency" "t T" #'t/transparency
  :leader :desc "Toggle writeroom" "t d" #'global-writeroom-mode
  :leader :desc "Flip frame" "w f" #'rotate-frame
