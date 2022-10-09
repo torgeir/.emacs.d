@@ -793,15 +793,15 @@ The [[https://docs.doomemacs.org/latest/modules/ui/zen/][doom default text scale
 And screens are big, so a bit more space for text is nice.
 
 #+begin_src emacs-lisp
-(setq writeroom-width 120)
+(setq writeroom-width 80)
 #+end_src
 
 #+begin_src emacs-lisp
 (after! writeroom-mode
   (map! :map writeroom-mode-map
-        "C-M-{" #'writeroom-decrease-width
-        "C-M-}" #'writeroom-increase-width
-        "C-M-=" #'writeroom-adjust-width))
+        "C-s-(" #'writeroom-decrease-width
+        "C-s-)" #'writeroom-increase-width
+        "C-s-=" #'writeroom-adjust-width))
 #+end_src
 
 *** Mode line
