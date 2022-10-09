@@ -678,6 +678,7 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
 #+begin_src emacs-lisp
 (after! smartparens
   (sp-local-pair 'emacs-lisp-mode "`" "'" :when '(sp-in-docstring-p))
+  (add-hook! (clojure-mode emacs-lisp-mode cider-repl-mode) :append #'smartparens-strict-mode)
   (sp-use-paredit-bindings))
 #+end_src
 
