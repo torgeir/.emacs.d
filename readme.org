@@ -1925,6 +1925,17 @@ Inspiration:
         message-send-mail-function #'message-send-mail-with-sendmail))
 #+end_src
 
+***** Cc Bcc
+
+#+begin_src emacs-lisp
+(after! mu4e
+  (add-hook 'mu4e-compose-mode-hook
+            (defun t/mu-add-cc-and-bcc ()
+              "My Function to automatically add Cc & Bcc: headers."
+              (save-excursion (message-add-header "Cc:\n"))
+              (save-excursion (message-add-header "Bcc:\n")))))
+#+end_src
+
 **** Setup
 
 ***** Create the folders
