@@ -1890,6 +1890,9 @@ Inspiration:
                                  ("/junk/INBOX" . ?j)
                                  ("/junk/[Gmail]/Sent Mail" . ?J)))
 
+  (add-to-list 'mu4e-bookmarks '(:name "Gmail" :query "maildir:/gmail/INBOX" :key ?g))
+  (add-to-list 'mu4e-bookmarks '(:name "Junk"  :query "maildir:/junk/INBOX" :key ?j))
+
   (setq mail-user-agent 'mu4e-user-agent)
 
   (setq +mu4e-gmail-accounts `((,user-mail-address   . "/gmail")
