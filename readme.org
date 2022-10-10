@@ -497,6 +497,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
     (message "Font: %s" f)
     (setq doom-font (t/font-spec f)
           doom-variable-pitch-font (t/font-spec f)
+          ;;doom-variable-pitch-font (t/font-spec "ETBembo" 20)
           doom-big-font (t/font-spec f 20)
           doom-font-increment 1)
     (doom/reload-font)
