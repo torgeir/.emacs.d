@@ -1073,25 +1073,25 @@ If FILEXT is provided, return files with extension FILEXT instead."
   "Decrease Emacs frame size horizontally."
   (interactive)
   (let ((frame (selected-frame)))
-    (set-frame-width frame (- (frame-width frame) 4))))
+    (set-frame-width frame (- (frame-width frame) 10))))
 
 (defun t/increase-frame-width ()
   "Increase Emacs frame size horizontally."
   (interactive)
   (let ((frame (selected-frame)))
-    (set-frame-width frame (+ (frame-width frame) 4))))
+    (set-frame-width frame (+ (frame-width frame) 10))))
 
 (defun t/decrease-frame-height ()
   "Decrease Emacs frame size vertically."
   (interactive)
   (let ((frame (selected-frame)))
-    (set-frame-height frame (- (frame-height frame) 4))))
+    (set-frame-height frame (- (frame-height frame) 10))))
 
 (defun t/increase-frame-height ()
   "Increase Emacs frame size vertically."
   (interactive)
   (let ((frame (selected-frame)))
-    (set-frame-height frame (+ (frame-height frame) 4))))
+    (set-frame-height frame (+ (frame-height frame) 10))))
 
 (defun t/move-frame-right ()
   "Move Emacs frame right."

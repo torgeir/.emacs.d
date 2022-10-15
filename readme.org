@@ -962,6 +962,9 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  "s-M-<down>" 'evil-window-down
  "s-M-<left>" 'evil-window-left
 
+ "C-s-<left>" 't/decrease-frame-width
+ "C-s-<right>" 't/increase-frame-width
+
  "M-n" 'forward-paragraph
  "M-p" 'backward-paragraph
 
