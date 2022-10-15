@@ -466,23 +466,22 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
 A diy directory sidebar using dired. Inspired the response in https://www.reddit.com/r/emacs/comments/nlefvx/weekly_tips_and_tricks/, adapted to doom.
 
 #+begin_src emacs-lisp
-(after! workspaces
-  (defun t-toggle-sidebar ()
-    (interactive)
-    ;; if buffer and window exists
-    (let ((b (concat "*" "sidebar" ":" (+workspace-current-name) "*")))
-      (if (and (get-buffer b)
-               (get-buffer-window (get-buffer b)))
-          (delete-window (get-buffer-window (get-buffer b)))
+(defun t-toggle-sidebar ()
+  (interactive)
+  ;; if buffer and window exists
+  (let ((b (concat "*" "sidebar" ":" (+workspace-current-name) "*")))
+    (if (and (get-buffer b)
+             (get-buffer-window (get-buffer b)))
+        (delete-window (get-buffer-window (get-buffer b)))
 
-        ;; when no buffer exists, init it
-        (when (not (get-buffer b))
-          (with-current-buffer (dired-noselect (t/project-root))
-            (rename-buffer b)))
+      ;; when no buffer exists, init it
+      (when (not (get-buffer b))
+        (with-current-buffer (dired-noselect (t/project-root))
+          (rename-buffer b)))
 
-        (pop-to-buffer b)
-        (set-window-dedicated-p (selected-window) t)
-        (set-window-parameter (selected-window) 'no-delete-other-windows t)))))
+      (pop-to-buffer b)
+      (set-window-dedicated-p (selected-window) t)
+      (set-window-parameter (selected-window) 'no-delete-other-windows t))))
 #+end_src
 
 ~(popup +all)~ steals this, so move it to the left
