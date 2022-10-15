@@ -59,6 +59,9 @@ This is tangled to ~packages.el~ on save.
 (package! blamer
   :recipe (:host github :repo "artawower/blamer.el")
   :pin "99b43779341af0d924bfe2a9103993a6b9e3d3b2")
+(package! org-appear
+  :recipe (:host github :repo "awth13/org-appear")
+  :pin "60ba267c5da336e75e603f8c7ab3f44e6f4e4dac")
 #+end_src
 
 ** Lexical scoping everywhere
@@ -1357,6 +1360,19 @@ Save from agenda
 #+begin_src emacs-lisp
 (after! org
   (set-face-attribute 'org-todo nil :foreground "#94fFe4" :weight 'bold))
+#+end_src
+*** Make links appear
+
+#+begin_src emacs-lisp
+(use-package! org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autosubmarkers t
+        org-appear-autolinks nil)
+  ;; for proper first-time setup, `org-appear--set-elements'
+  ;; needs to be run after other hooks have acted.
+  (run-at-time nil nil #'org-appear--set-elements))
 #+end_src
 
 *** Refile
