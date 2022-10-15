@@ -1018,6 +1018,9 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  "M-p" 'backward-paragraph
 
  ;; g = global
+ :g "M-y" 'consult-yank-from-kill-ring
+
+ ;; i = insert
  :i "C-d" 'delete-char
 
  "s-k" 'previous-buffer
@@ -1029,6 +1032,8 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
 
  "C-." 't/hippie-expand-no-case-fold
  "C-a" 't/smart-beginning-of-line
+
+ ;; m = motion
  :m "C-e" 'end-of-line
 
  "s-n" 'make-frame
