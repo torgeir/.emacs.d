@@ -1839,12 +1839,12 @@ Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindin
  :leader
  (:prefix-map
   ("g" . "git")
-  (:when (featurep! :ui vc-gutter)
+  (:when (modulep! :ui vc-gutter)
     :desc "Jump to next hunk"     "n" (cmd! (call-interactively 'git-gutter:next-hunk)
                                             (call-interactively 'evil-scroll-line-to-center))
     :desc "Jump to previous hunk" "N" (cmd! (call-interactively 'git-gutter:previous-hunk)
                                             (call-interactively 'evil-scroll-line-to-center)))
-  (:when (featurep! :tools magit)
+  (:when (modulep! :tools magit)
     :desc "Visit pulls"           "p" #'t/visit-git-link-pulls
     (:prefix ("c" . "create")
      :desc "Ammend"               "a"   #'magit-commit-amend))))
