@@ -1329,6 +1329,16 @@ Org agenda customizations
 
 Extensions of some of the [[file:~/.emacs.d/modules/lang/org/config.el::(map! :map org-mode-map][Doom org mode map bindings]].
 
+Heading and item bindings
+
+- ~C-ret~ :: new below, insert mode, same level
+- ~C-S-ret~ :: new above, insert mode, same level
+- ~M-ret~ :: new heading, normal mode, same level
+- ~M-S-ret~ :: todo below, normal mode, same level
+- ~C-M-ret~ :: heading below, normal mode, level down
+- ~SPC-m-h~ :: heading from text
+- ~SPC-m-i~ :: item from text
+
 ~SPC g a~ seems more reasonable than ~SPC g G~
 
 #+begin_src emacs-lisp
