@@ -2417,7 +2417,7 @@ https://docs.doomemacs.org/latest/modules/editor/format/
 #+RESULTS:
 | not | emacs-lisp-mode | sql-mode | tex-mode | latex-mode | org-msg-edit-mode |
 
-** TODO God doom config
+** Configuration inspiration
 
-https://github.com/zzamboni/dot-doom/blob/master/doom.org
-
+- https://github.com/zzamboni/dot-doom/blob/master/doom.org
+- https://abdelhakbougouffa.pro/posts/config/
