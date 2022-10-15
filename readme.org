@@ -967,12 +967,17 @@ And screens are big, so a bit more space for text is nice.
 
 *** Mode line
 
-Show workspace in modeline.
+Show workspace in modeline, adjust bar width, moar iconz, truncate path.
 
 #+begin_src emacs-lisp
 (after! doom-modeline
   (setq doom-modeline-persp-name t
-        doom-modeline-persp-icon nil))
+        doom-modeline-persp-icon nil
+        doom-modeline-bar-width 4
+        doom-modeline-mu4e t
+        doom-modeline-major-mode-icon t
+        doom-modeline-major-mode-color-icon t
+        doom-modeline-buffer-file-name-style 'truncate-upto-root))
 #+end_src
 
 ** Dotfiles
