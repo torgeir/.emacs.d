@@ -697,6 +697,12 @@ Show the buffer and the file
 (setq frame-title-format "%b (%f)")
 #+end_src
 
+*** Windows
+
+#+begin_src emacs-lisp
+(setq-default window-combination-resize t)
+#+end_src
+
 *** Jump around
 
 Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
