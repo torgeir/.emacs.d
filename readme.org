@@ -163,6 +163,32 @@ Move ~~/.authinfo.gpg~ to the front. It is originally behind the macos keychain 
 (after! auth-source (setq auth-sources (nreverse auth-sources)))
 #+end_src
 
+When starting Emacs in daemon mode, ask for a valid passphrase in the gpg-agent.
+
+#+begin_src emacs-lisp
+(when (daemonp)
+  (let ((try-again 3)
+        unlocked)
+    (while (not (or unlocked (zerop try-again)))
+      (setq unlocked (zerop (shell-command "gpg -q --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg > /dev/null" nil nil))
+            try-again (1- try-again))
+      (unless unlocked (message "GPG: failed to unlock, please try again (%d)" try-again)))
+    (unless unlocked (kill-emacs 1))))
+#+end_src
+
+Defaults
+
+#+begin_src emacs-lisp
+(let ((h (* 4 60 60)))
+  (setq auth-source-do-cache t
+        auth-source-cache-expiry h
+        password-cache t
+        password-cache-expiry h))
+
+(after! epa
+  (setq-default epa-file-encrypt-to '("torgeir@keybase.io")))
+#+end_src
+
 *** Which key
 
 Don't bother waiting
