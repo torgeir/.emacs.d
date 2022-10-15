@@ -1999,7 +1999,7 @@ Inspiration:
 #+begin_src emacs-lisp
 (after! mu4e
   (setq mu4e-maildir "~/.maildir"
-        mu4e-update-interval (* 3 5 60)
+        mu4e-update-interval (* 5 60)
         mu4e-context-policy 'pick-first
         mu4e-attachment-dir "~/Desktop"
         mu4e-mu-binary (executable-find "mu")
@@ -2130,23 +2130,27 @@ Create ~.msmtprc~ config for sending email
   (f-write-text
    (concat "defaults
 auth on
-port 465
+port 587
 protocol smtp
 tls on
+tls_starttls on
 
 account gmail
 host smtp.gmail.com
 from " (getenv "USER_EMAIL") "
 user " (replace-regexp-in-string "@gmail.com" "" (getenv "USER_EMAIL")) "
-passwordeval op read 'op://Personal/mu4e gmail/password'
-tls_starttls off
+passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine smtp\\.gmail\\.com login "
+(replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL"))
+" port 587/ {print $NF}'\"
 
 account junk
 host smtp.gmail.com
 from " (getenv "USER_EMAIL_2") "
 user " (replace-regexp-in-string "@gmail.com" "" (getenv "USER_EMAIL_2")) "
-passwordeval op read 'op://Personal/mu4e junk/password'
-tls_starttls off")
+passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine smtp\\.gmail\\.com login "
+(replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL_2"))
+" port 587/ {print $NF}'\"
+")
    'utf-8 (t/user-file ".msmtprc")))
 #+end_src
 
@@ -2162,7 +2166,9 @@ tls_starttls off")
  IMAPAccount gmail
  Host imap.gmail.com
  User " (getenv "USER_EMAIL") "
- PassCmd \"op read 'op://Personal/mu4e gmail/password'\"
+ PassCmd \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine imap\\.gmail\\.com login "
+ (replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL"))
+ " port 993/ {print $NF}'\"
  Port 993
  SSLType IMAPS
  SSLVersions TLSv1.2
@@ -2191,7 +2197,9 @@ tls_starttls off")
  IMAPAccount junk
  Host imap.gmail.com
  User " (getenv "USER_EMAIL_2") "
- PassCmd \"op read 'op://Personal/mu4e junk/password'\"
+ PassCmd \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine imap\\.gmail\\.com login "
+ (replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL_2"))
+ " port 993/ {print $NF}'\"
  Port 993
  SSLType IMAPS
  SSLVersions TLSv1.2
