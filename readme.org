@@ -56,6 +56,9 @@ This is tangled to ~packages.el~ on save.
 (package! focus)
 (package! spray)
 (package! dired-subtree)
+(package! blamer
+  :recipe (:host github :repo "artawower/blamer.el")
+  :pin "99b43779341af0d924bfe2a9103993a6b9e3d3b2")
 #+end_src
 
 ** Lexical scoping everywhere
@@ -1008,6 +1011,8 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
 
  :leader :desc "Search the web" "s w" #'consult-web-search
 
+ :leader :desc "Toggle blamer" "t b" #'blamer-mode
+ :leader :desc "Big mode" "t B" #'doom-big-font-mode
  :leader :desc "Toggle writeroom" "t d" #'global-writeroom-mode
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error
  :leader :desc "Toggle dedication" "t e" #'t/toggle-dedicated-window
@@ -1861,6 +1866,23 @@ I have been trying to get used to magit in evil mode for a while now. But the ma
  :desc "Show process buffer" :n "$" #'magit-process-buffer)
 #+end_src
 
+*** Blamer mode
+
+#+begin_src emacs-lisp
+(use-package! blamer
+  :commands (blamer-mode)
+  ;; :hook ((prog-mode . blamer-mode))
+  :custom
+  (blamer-idle-time 0.5)
+  (blamer-min-offset 50)
+  (blamer-prettify-time-p t)
+  (blamer-entire-formatter "%s")
+  (blamer-author-formatter " %s")
+  (blamer-datetime-formatter " [%s] ")
+  (blamer-commit-formatter "✎ %s")
+  :custom-face
+  (blamer-face ((t :foreground "#7a88cf" :background nil :height 100 :italic t))))
+#+end_src
 ** Applications
 *** Artist
 
