@@ -217,6 +217,13 @@ Don't use zz and zq for org src editing
   (add-to-list 'evil-collection-key-blacklist "ZQ"))
 #+end_src
 
+Fine undo
+
+#+begin_src emacs-lisp
+(after! evil
+  (setq evil-want-fine-undo t))
+#+end_src
+
 **** Unbind C-h in evil window bindings
 
 I use ~SPC w h~ instead of ~SPC w C-h~ to move to the left window. ~C-h~ is more useful as =embark-prefix-help-command=, which this falls back to, like in all other keymaps
