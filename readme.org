@@ -2129,6 +2129,7 @@ Evil like navigation.
 Settings from [[file:~/.emacs.d/modules/email/mu4e/README.org][modules/email/mu4e/README.org]]
 
 Inspiration:
+- https://pragmaticemacs.wordpress.com/2016/03/22/migrating-from-offlineimap-to-mbsync-for-mu4e/
 - https://macowners.club/posts/email-emacs-mu4e-macos/
 - https://www.reddit.com/r/emacs/comments/8q84dl/tip_how_to_easily_manage_your_emails_with_mu4e/
 - https://www.reddit.com/r/emacs/comments/bfsck6/mu4e_for_dummies/
