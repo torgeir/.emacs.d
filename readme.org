@@ -1264,7 +1264,8 @@ Zoom to the previewed subtree when jumping between with =consult-org-heading=.
   (when (eq major-mode 'org-mode)
     (when (org-at-heading-p)
       (outline-hide-sublevels (org-outline-level)))
-    (org-show-subtree)))
+    (org-show-subtree)
+    (recenter-top-bottom 'top)))
 (add-hook 'consult-after-jump-hook 't/after-consult-org-jump)
 #+end_src
 
