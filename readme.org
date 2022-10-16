@@ -810,7 +810,7 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
    :desc "Jump to char"        "C" #'avy-goto-char)))
 #+end_src
 
-**** STARTED Avy tweaks
+**** Avy tweaks
 
 #+begin_src emacs-lisp
 (after! avy
