@@ -2554,17 +2554,6 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 - three
 
 * Someday
-** :editor +onsave - Doom Emacs v21.08 documentation :emacs:
-[2022-10-02 Sun 23:27]
-https://docs.doomemacs.org/latest/modules/editor/format/
-
-#+begin_src emacs-lisp
-+format-on-save-enabled-modes
-#+end_src
-
-#+RESULTS:
-| not | emacs-lisp-mode | sql-mode | tex-mode | latex-mode | org-msg-edit-mode |
-
 ** Configuration inspiration
 
 - https://github.com/zzamboni/dot-doom/blob/master/doom.org
