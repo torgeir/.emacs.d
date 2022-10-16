@@ -44,6 +44,11 @@ The built in emacs help is fantastic. The doom one on ~SPC h d~ is even better! 
 
 This config uses the =:config literal= that tangles this file to ~config.el~ on save. The [[file:init.el::setq +literate-config-file (concat (getenv "HOME") "/.doom.d/readme.org")][+literate-config-file]] is set in ~init.el~ and points to this file.
 
+*** Configuration inspiration
+
+- https://github.com/zzamboni/dot-doom/blob/master/doom.org
+- https://abdelhakbougouffa.pro/posts/config/
+
 ** Packages
 
 This is tangled to ~packages.el~ on save.
