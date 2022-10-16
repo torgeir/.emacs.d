@@ -1609,6 +1609,13 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 (define-key evil-inner-text-objects-map "-" 'evil-org-inner-item)
 #+END_SRC
 
+*** Pomodoro                                       :emacs:
+
+#+begin_src emacs-lisp
+(after! org
+  (setq org-pomodoro-format "%s"))
+#+end_src
+
 ** Reading
 *** Fast
 
@@ -2528,10 +2535,6 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 - three
 
 * Someday
-** org +pomodoro                                    :emacs:
-[2022-10-02 Sun 23:34]
-https://docs.doomemacs.org/latest/#/manual/intro/why-use-doom
-
 ** :editor +onsave - Doom Emacs v21.08 documentation :emacs:
 [2022-10-02 Sun 23:27]
 https://docs.doomemacs.org/latest/modules/editor/format/
