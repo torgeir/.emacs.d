@@ -428,6 +428,13 @@ Iterate through CamelCase words
 (global-subword-mode 1)
 #+end_src
 
+*** +onsave
+
+#+begin_src emacs-lisp
+(add-to-list '+format-on-save-enabled-modes 'rjsx-mode)
+(add-to-list '+format-on-save-enabled-modes 'typescript-mode)
+#+end_src
+
 *** Dired
 
 #+begin_src emacs-lisp
