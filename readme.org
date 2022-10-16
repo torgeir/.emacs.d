@@ -744,6 +744,8 @@ Show the buffer and the file
 (setq-default window-combination-resize t)
 #+end_src
 
+**** STARTED Resize hydra
+
 *** Messages
 
 #+begin_src emacs-lisp
@@ -1167,6 +1169,7 @@ Motion keys for info mode.
 #+END_SRC
 
 ** Org
+
 *** Org settings
 
 #+begin_src emacs-lisp
@@ -2511,3 +2514,5 @@ https://docs.doomemacs.org/latest/modules/editor/format/
 
 - https://github.com/zzamboni/dot-doom/blob/master/doom.org
 - https://abdelhakbougouffa.pro/posts/config/
+
+
