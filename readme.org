@@ -1013,6 +1013,8 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
 
  "C-s-<left>" 't/decrease-frame-width
  "C-s-<right>" 't/increase-frame-width
+ "C-s-<down>" 't/increase-frame-height
+ "C-s-<up>" 't/decrease-frame-height
 
  "M-n" 'forward-paragraph
  "M-p" 'backward-paragraph
