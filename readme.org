@@ -1899,6 +1899,13 @@ Make super+enter create a vterm terminal window inside emacs
 
 Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
 
+*** Close comint buffers with c-d
+
+#+begin_src emacs-lisp
+(map! :map comint-mode-map
+      :n "C-d" #'t/volatile-kill-buffer-and-window)
+#+end_src
+
 ** VC
 *** Ediff
 
