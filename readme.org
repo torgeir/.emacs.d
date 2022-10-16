@@ -571,8 +571,6 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
              :width 'normal))
 
 (setq t-fonts '("JetBrains Mono"
-                "Input Mono"
-                "CaskaydiaCove Nerd Font"
                 "Fira Code"
                 "Iosevka Nerd Font Mono"
                 ))
