@@ -2238,13 +2238,15 @@ Why this is needed? I have no idea. But I cannot for the life of me make ~visual
 
 The subfolder ~gmail~ is what makes the mu4e setting above need ~/gmail/~ in their path
 
-#+begin_quote
-mkdir -p .maildir/{gmail,junk,certificates}
-#+end_quote
+#+begin_src shell :results silent
+mkdir -p ~/.maildir/{gmail,junk,certificates}
+#+end_src
 
 ***** Export certificates
 
-Export ~Keychain Access -> System Roots -> Certificates -> select all -> Shift+cmd+E~ to ~~/.maildir/certificates/certificates.pem~
+On os x: ~Keychain Access -> System Roots -> Certificates -> select all -> Shift+cmd+E~ to ~~/.maildir/certificates/certificates.pem~
+
+On arch: ~/etc/ssl/certs/ca-certificates.crt~
 
 ***** Delete to Trash
 
@@ -2309,7 +2311,9 @@ passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --ba
  SSLVersions TLSv1.2
  AuthMechs PLAIN
  SystemCertificates no
- CertificateFile ~/.maildir/certificates/certificates.pem
+ CertificateFile " (if IS-MAC
+                       "~/.maildir/certificates/certificates.pem"
+                     "/etc/ssl/certs/ca-certificates.crt") "
 
  IMAPStore gmail-remote
  Account gmail
@@ -2340,7 +2344,9 @@ passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --ba
  SSLVersions TLSv1.2
  AuthMechs PLAIN
  SystemCertificates no
- CertificateFile ~/.maildir/certificates/certificates.pem
+ CertificateFile " (if IS-MAC
+                       "~/.maildir/certificates/certificates.pem"
+                     "/etc/ssl/certs/ca-certificates.crt") "
 
  IMAPStore junk-remote
  Account junk
