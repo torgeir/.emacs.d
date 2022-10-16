@@ -461,7 +461,7 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
       "s-s" 'Custom-save)
 #+end_src
 
-*** STARTED Directory sidebar
+*** Directory sidebar
 
 A diy directory sidebar using dired. Inspired the response in https://www.reddit.com/r/emacs/comments/nlefvx/weekly_tips_and_tricks/, adapted to doom.
 
