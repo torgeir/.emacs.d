@@ -2273,7 +2273,7 @@ Why this is needed? I have no idea. But I cannot for the life of me make ~visual
 
 The subfolder ~gmail~ is what makes the mu4e setting above need ~/gmail/~ in their path
 
-#+begin_src shell :results silent
+#+begin_src sh :results silent :tangle no
 mkdir -p ~/.maildir/{gmail,junk,certificates}
 #+end_src
 
