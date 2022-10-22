@@ -828,26 +828,27 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
 
 #+begin_src emacs-lisp
 (after! avy
-        (defun t/setup-avy (&optional frame)
-          (setq avy-keys '(?j ?f ?d ?k ?s ?a)
-                avy-timeout-seconds 0.2
-                avy-all-windows 'all-frames
-                avy-case-fold-search nil
-                avy-highlight-first t
-                avy-style 'at-full
-                avy-background t)
+  (defun t/setup-avy (&optional frame)
+    (setq avy-keys '(?j ?f ?d ?k ?s ?a)
+          avy-timeout-seconds 0.2
+          ;;avy-all-windows 'all-frames
+          avy-all-windows nil
+          avy-case-fold-search nil
+          avy-highlight-first t
+          avy-style 'at-full
+          avy-background t)
 
-          (set-face-attribute 'avy-background-face nil :foreground "#3a485f")
+    (set-face-attribute 'avy-background-face nil :foreground "#3a485f")
 
-          (let* ((f 'font-lock-keyword-face)
-                 (b nil)
-                 (c "#77e0c6")
-                 (c "#ffc777"))
-            (set-face-attribute 'avy-lead-face   nil :background b :weight 'bold :foreground c)
-            (set-face-attribute 'avy-lead-face-0 nil :background b :weight 'bold :foreground c)
-            (set-face-attribute 'avy-lead-face-1 nil :background b :weight 'bold :foreground c)
-            (set-face-attribute 'avy-lead-face-2 nil :background b :weight 'bold :foreground c)))
-        (t/setup-avy))
+    (let* ((f 'font-lock-keyword-face)
+           (b nil)
+           (c "#77e0c6")
+           (c "#ffc777"))
+      (set-face-attribute 'avy-lead-face   nil :background b :weight 'bold :foreground c)
+      (set-face-attribute 'avy-lead-face-0 nil :background b :weight 'bold :foreground c)
+      (set-face-attribute 'avy-lead-face-1 nil :background b :weight 'bold :foreground c)
+      (set-face-attribute 'avy-lead-face-2 nil :background b :weight 'bold :foreground c)))
+  (t/setup-avy))
 #+end_src
 
 Also after creating a new frame when emacs is in daemon mode
