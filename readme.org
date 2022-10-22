@@ -2246,11 +2246,16 @@ Inspiration:
 
 ***** Wrap long lines in emails
 
-Why this is needed? I have no idea. But I cannot for the life of me make ~visual-line-mode~ work in mu4e without this.
+Why the timeout is needed? I cannot for the life of me make ~visual-line-mode~ work in mu4e without this. Also get rid of trailing whitespace after, usually cleans stuff up.
 
 #+begin_src emacs-lisp
 (after! mu4e
-  (add-hook 'mu4e-view-mode-hook (cmd! (run-at-time "1 sec" nil 'visual-line-mode))))
+  (add-hook 'mu4e-view-mode-hook
+            (cmd!
+             (run-at-time "1 sec" nil (cmd! (visual-line-mode)
+                                            (read-only-mode -1)
+                                            (delete-trailing-whitespace)
+                                            (read-only-mode 1)))))
 #+end_src
 
 [[https://github.com/doomemacs/doomemacs/issues/970][Related struggles]].
