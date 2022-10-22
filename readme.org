@@ -2250,7 +2250,7 @@ Why this is needed? I have no idea. But I cannot for the life of me make ~visual
 
 #+begin_src emacs-lisp
 (after! mu4e
-  (add-hook 'mu4e-view-mode-hook (cmd! (run-at-time "0.1 sec" nil 'visual-line-mode))))
+  (add-hook 'mu4e-view-mode-hook (cmd! (run-at-time "1 sec" nil 'visual-line-mode))))
 #+end_src
 
 [[https://github.com/doomemacs/doomemacs/issues/970][Related struggles]].
