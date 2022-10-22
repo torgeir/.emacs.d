@@ -2065,7 +2065,7 @@ Colorz
 #+begin_src emacs-lisp
 (after! elfeed
   (setq rmh-elfeed-org-files '("~/Dropbox/org/feeds.org")
-        elfeed-search-filter "@2-week-ago +unread -news -tech")
+        elfeed-search-filter "@2-week-ago -news -tech +unread"))
 
   (map!
    (:after elfeed
