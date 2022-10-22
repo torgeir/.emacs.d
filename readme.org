@@ -660,6 +660,7 @@ Ignore some extra folders from projectile
  :leader "6" '+workspace/switch-to-5
  :leader "7" '+workspace/switch-to-6
  :leader "8" '+workspace/switch-to-7
+ :leader "9" '+workspace/switch-to-8
  :leader "0" '+workspace/switch-to-final)
 #+end_src
 
@@ -677,6 +678,7 @@ And fix ~super~ navigation across modes that steam ~SPC~.
    "s-6" '+workspace/switch-to-5
    "s-7" '+workspace/switch-to-6
    "s-8" '+workspace/switch-to-7
+   "s-9" '+workspace/switch-to-8
    "s-0" '+workspace/switch-to-final))
 #+end_src
 
