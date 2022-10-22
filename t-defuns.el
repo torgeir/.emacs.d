@@ -9,6 +9,10 @@
                                             (cons :var var))
                                           vars))))
 
+(defun t/shell-command-to-string (cmd)
+  "Run `CMD' as shell command, trim trailing newlines."
+  (t/trim-final-newline (shell-command-to-string cmd)))
+
 (defun t/async-shell-command (name cmd &optional fn)
   "Execute `CMD' async, call `FN' with the result string."
   (lexical-let* ((fn fn)
