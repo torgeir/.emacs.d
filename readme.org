@@ -2062,39 +2062,76 @@ Colorz
 
 *** Elfeed RSS
 
+Setup
+
 #+begin_src emacs-lisp
 (after! elfeed
   (setq rmh-elfeed-org-files '("~/Dropbox/org/feeds.org")
         elfeed-search-filter "@2-week-ago -news -tech +unread"))
+#+end_src
 
+Switch around the refresh mappings for more useful defaults
+
+#+begin_src emacs-lisp
+(after! elfeed
   (map!
    (:after elfeed
     :map elfeed-search-mode-map
     ;; switcharoo
     :n "gR" #'elfeed-search-update--force
-    :n "gr" #'elfeed-search-fetch))
+    :n "gr" #'elfeed-search-fetch)))
+#+end_src
 
-  (add-hook 'elfeed-show-mode-hook #'t/elfeed-show-mode-hook)
-  (defun t/elfeed-show-mode-hook ()
-    (interactive)
-    (olivetti-mode)
-    (visual-line-mode 0)
-    (visual-line-mode nil)
-    (let ((map (make-sparse-keymap)))
-      (bind-key "n" (lambda ()
-                      (interactive)
-                      (condition-case nil
-                          (scroll-up-command)
-                        (error (elfeed-show-next)))) map)
-      (bind-key "p" (lambda ()
-                      (interactive)
-                      (condition-case nil
-                          (scroll-down-command)
-                        (error (elfeed-show-prev)))) map)
-      (bind-key "s" (cmd!
-                     (let ((shr-inhibit-images t)) (elfeed-show-refresh))
-                     (funcall (t/spray-micro-state))) map)
-      (set-temporary-overlay-map map t (lambda () (equal major-mode 'elfeed-show-mode))))))
+#+begin_src emacs-lisp
+(after! elfeed
+  ;;(setq elfeed-search-mode-hook nil)
+  (add-hook 'elfeed-search-mode-hook (cmd! (show-paren-mode -1)
+                                           (visual-line-mode -1))))
+#+end_src
+
+Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bind ~n~, ~p~ for nav, that skips to the next item on reaching the end.
+
+#+begin_src emacs-lisp
+(after! elfeed
+  ;;(setq elfeed-show-mode-hook nil)
+  (add-hook 'elfeed-show-mode-hook
+            (cmd!
+             (olivetti-mode)
+             (run-at-time "0 sec" nil (cmd! (visual-line-mode)))
+             (let ((map (make-sparse-keymap)))
+               (bind-key "n" (lambda ()
+                               (interactive)
+                               (condition-case nil
+                                   (scroll-up-command)
+                                 (error (elfeed-show-next)))) map)
+               (bind-key "p" (lambda ()
+                               (interactive)
+                               (condition-case nil
+                                   (scroll-down-command)
+                                 (error (elfeed-show-prev)))) map)
+               (bind-key "s" (cmd!
+                              (let ((shr-inhibit-images t)) (elfeed-show-refresh))
+                              (funcall (t/spray-micro-state))) map)
+               (set-temporary-overlay-map map t (lambda () (equal major-mode 'elfeed-show-mode)))))))
+#+end_src
+
+Show the mouseover text for xkcd comics by moving to the image and fetching the ~'shr-alt~ text property that holds the mouse over text. Insert it in the buffer on the next tick, to wait for the image to appear first.
+
+#+begin_src emacs-lisp
+(after! elfeed
+  (add-hook 'elfeed-show-mode-hook
+            (cmd!
+             (run-at-time "0 sec" nil
+                          (cmd!
+                           (when (s-equals-p "xkcd.com" (car (elfeed-entry-id elfeed-show-entry)))
+                             (save-excursion
+                               (forward-line)
+                               (read-only-mode -1)
+                               (when-let ((text (get-text-property (point) 'shr-alt)))
+                                 (goto-char (point-max))
+                                 (insert "\n\n")
+                                 (insert text))
+                               (read-only-mode 1))))))))
 #+end_src
 
 *** Calendar
