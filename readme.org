@@ -2270,7 +2270,8 @@ Inspiration:
 ***** Don't wrap lines in message overview
 
 #+begin_src emacs-lisp
-(add-hook 'mu4e-headers-mode-hook (cmd! (visual-line-mode -1)))
+(add-hook 'mu4e-headers-mode-hook (cmd! (visual-line-mode -1)
+                                        (show-paren-mode -1)))
 #+end_src
 
 ***** Cc Bcc
