@@ -59,6 +59,7 @@ This is tangled to ~packages.el~ on save.
 (package! highlight-symbol)
 (package! olivetti)
 (package! focus)
+(package! calendar-norway)
 (package! spray)
 (package! dired-subtree)
 (package! blamer
@@ -2150,19 +2151,68 @@ Show the mouseover text for xkcd comics by moving to the image and fetching the 
 
 *** Calendar
 
-Weeks on start on monday in Norway, and weeks have numbers.
+Ready some fonts that stand out
 
 #+begin_src emacs-lisp
 (after! calendar
-  (setq calendar-week-start-day 1
-        calendar-intermonth-text
-        '(propertize (format "%2d" (car
-                                    (calendar-iso-from-absolute
-                                     (calendar-absolute-from-gregorian
-                                      (list month day year)))))
-                     'font-lock-face 'calendar-iso-week-face))
-  (copy-face font-lock-constant-face 'calendar-iso-week-face)
-  (copy-face 'default 'calendar-iso-week-header-face))
+  (copy-face font-lock-comment-face 'calendar-week-face)
+  (copy-face font-lock-string-face 'calendar-today-face)
+  (set-face-attribute 'holiday nil :foreground "VioletRed1" :weight 'bold :background nil)
+  (set-face-attribute 'calendar-today-face nil :weight 'bold :background nil)
+  (set-face-attribute 'calendar-week-face nil :foreground "VioletRed4"))
+#+end_src
+
+Weeks on start on monday in Norway, and weeks have numbers. I also like holidays.
+
+#+begin_src emacs-lisp
+(after! calendar
+  (setq calendar-date-style 'iso
+        calendar-week-start-day 1
+        calendar-mark-holidays-flag t
+        calendar-today-marker 'calendar-today-face
+        calendar-intermonth-header '(propertize "w" 'font-lock-face 'calendar-week-face)
+        calendar-intermonth-text '(propertize
+                                   (format "%2d" (car
+                                                  (calendar-iso-from-absolute
+                                                   (calendar-absolute-from-gregorian
+                                                    (list month day year)))))
+                                   'font-lock-face
+                                   'calendar-week-face)))
+#+end_src
+
+Translate days and seasons to norwegian.
+
+#+begin_src emacs-lisp
+(after! calendar
+  (setq-hook! 'calendar-mode-hook
+    calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
+    calendar-day-header-array ["sø" "ma" "ti" "on" "to" "fr" "lø"]
+    solar-n-hemi-seasons '("Vårjevndøgn"  "Sommersolverv" "Høstjevndøgn" "Vintersolherv")))
+#+end_src
+
+Mark today when scrolling past it.
+
+#+begin_src emacs-lisp
+(after! calendar
+  (add-hook 'calendar-today-visible-hook 'calendar-mark-today))
+#+end_src
+
+Norwegian holidays
+
+#+begin_src emacs-lisp
+(after! calendar
+  (add-hook 'calendar-initial-window-hook
+            (cmd!
+             (require 'calendar-norway)
+             (setq calendar-holidays
+                   (append
+                    calendar-norway-raude-dagar
+                    calendar-norway-andre-merkedagar
+                    calendar-norway-dst
+                    '((holiday-fixed 3 17 "St. Patricksdag")
+                      (holiday-fixed 10 31 "Halloween")
+                      (holiday-float 11 4 4 "Thanksgiving"))))
+             (calendar-redraw))))
 #+end_src
 
 Evil like navigation.
