@@ -981,12 +981,17 @@ And screens are big, so a bit more space for text is nice.
 (setq writeroom-width 80)
 #+end_src
 
+Adjust margins equally across modes
+
 #+begin_src emacs-lisp
 (after! writeroom-mode
-  (map! :map writeroom-mode-map
-        "C-s-(" #'writeroom-decrease-width
-        "C-s-)" #'writeroom-increase-width
-        "C-s-=" #'writeroom-adjust-width))
+  (map! :map evil-window-map
+        "M" (t/micro-state
+             nil
+             "<left>" (cmd! (when writeroom-mode (writeroom-decrease-width))
+                            (when olivetti-mode (olivetti-shrink)))
+             "<right>" (cmd! (when writeroom-mode (writeroom-increase-width))
+                             (when olivetti-mode (olivetti-expand))))))
 #+end_src
 
 *** Mode line
@@ -1092,6 +1097,7 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  :leader :desc "Toggle blamer" "t b" #'blamer-mode
  :leader :desc "Big mode" "t B" #'doom-big-font-mode
  :leader :desc "Toggle writeroom" "t d" #'global-writeroom-mode
+ :leader :desc "Toggle olivetti" "t o" #'olivetti-mode
  :leader :desc "Debug on error" "t D" #'toggle-debug-on-error
  :leader :desc "Toggle dedication" "t e" #'t/toggle-dedicated-window
  :leader :desc "Cycle fonts" "t f" #'t/cycle-fonts
