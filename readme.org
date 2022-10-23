@@ -1497,7 +1497,15 @@ Replace it with ~ss~ (its faster than the default ~s ~) so we can add some more 
   (add-to-list 'org-structure-template-alist (cons "ss" "src"))
   (add-to-list 'org-structure-template-alist (cons "se" "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist (cons "sp" "src python"))
-  (add-to-list 'org-structure-template-alist (cons "sh" "src shell")))
+  (add-to-list 'org-structure-template-alist (cons "sj" "src javascript"))
+  (add-to-list 'org-structure-template-alist (cons "sh" "src sh")))
+#+end_src
+
+If you need to remove one, do this
+
+#+begin_src emacs-lisp
+(comment
+ (setq org-structure-template-alist (remove '("sh" . "src shell") org-structure-template-alist)))
 #+end_src
 
 Don't popupize the org code block editor with doom's popup framework, so it opens split wherever it fits like it is by default.
