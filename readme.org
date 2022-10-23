@@ -2611,9 +2611,3 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 - three
 
 * Someday
-** Configuration inspiration
-
-- https://github.com/zzamboni/dot-doom/blob/master/doom.org
-- https://abdelhakbougouffa.pro/posts/config/
-
-
