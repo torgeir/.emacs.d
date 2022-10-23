@@ -426,16 +426,6 @@ Repeated invocations toggle between the two most recently open buffers."
   ;;(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
   (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend))
 
-;; TODO testing tweaks, remove if satisfying
-;; (defun t/split-window-sensibly (&optional window)
-;;   (cond
-;;    ((and (> (window-width window)
-;;             (* 2 (window-height window)))
-;;          (window-splittable-p window 'horizontal))
-;;     (with-selected-window window (split-window-right)))
-;;    ((window-splittable-p window) (with-selected-window window
-;;                                    (split-window-below)))))
-
 (defun t/date-time ()
   "Insert current date-time string in full ISO 8601 format.
 Example: 2010-11-29T23:23:35-08:00"
