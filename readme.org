@@ -1124,10 +1124,11 @@ Be explicit about when deleting workspaces
 
 (map!
  :map doom-leader-workspace-map
- :leader :desc "Next workspace" "TAB j" '+workspace:switch-next
- :leader :desc "Previous workspace" "TAB k" '+workspace:switch-previous
- :leader :desc "Swap next" "TAB J" '+workspace/swap-right
- :leader :desc "Swap previous" "TAB K" '+workspace/swap-left)
+ :leader :desc "New workspace" "TAB w" '+workspace:new
+ :leader :desc "Next workspace" "TAB n" '+workspace:switch-next
+ :leader :desc "Previous workspace" "TAB p" '+workspace:switch-previous
+ :leader :desc "Swap next" "TAB j" '+workspace/swap-right
+ :leader :desc "Swap previous" "TAB k" '+workspace/swap-left)
 #+end_src
 
 Hide the last frame on os x instead of nuking it
@@ -1136,11 +1137,10 @@ Hide the last frame on os x instead of nuking it
 (map! :leader "q f" 't/delete-frame-or-hide-last-remaining-frame)
 #+end_src
 
-Prevent drag-stuff-mode from messing things up
+That's irritating. Prevent drag-stuff-mode from messing things up
 
 #+begin_src emacs-lisp
 (map!
- ;; that's irritating
  :after drag-stuff-mode
  :map drag-stuff-mode-map
  "<M-up>"    #'drag-stuff-up ;; messes up org mode
