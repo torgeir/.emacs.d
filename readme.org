@@ -1839,9 +1839,10 @@ Adapt cleverparens keys that clash with my M-[hjkl] bindings in [[file:~/.skhdrc
 
 #+begin_src emacs-lisp
 (after! clojure-mode
-  (add-hook 'clojure-mode-hook 'evil-cleverparens-mode)
-  (add-hook 'clojurescript-mode-hook 'evil-cleverparens-mode))
+  (add-hook! '(clojure-mode-hook clojurescript-mode-hook) 'evil-cleverparens-mode)
+  (map! :map clojure-mode-map "DEL" #'sp-backward-delete-char))
 #+end_src
+
 
 *** Emacs lisp
 
