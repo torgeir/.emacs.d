@@ -979,6 +979,14 @@ The [[https://docs.doomemacs.org/latest/modules/ui/zen/][doom default text scale
 (setq +zen-text-scale 1.1)
 #+end_src
 
+Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly bound to ~s-?~. Give it an even more awkward binding.
+
+#+begin_src emacs-lisp
+(map! :map writeroom-mode-map
+      "s-?" (cmd! (text-scale-increase 1))
+      "s-:" 'writeroom-toggle-mode-line)
+#+end_src
+
 And screens are big, so a bit more space for text is nice.
 
 #+begin_src emacs-lisp
@@ -1037,9 +1045,9 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  "s-+" #'doom/increase-font-size
  "s--" #'doom/decrease-font-size
 
- "s-?" (lambda () (interactive) (text-scale-increase 1))
- "s-_" (lambda () (interactive) (text-scale-decrease 1))
- "s-=" (lambda () (interactive) (text-scale-set 0))
+ "s-?" (cmd! (text-scale-increase 1))
+ "s-_" (cmd! (text-scale-decrease 1))
+ "s-=" (cmd! (text-scale-set 0))
 
  "s-d" #'t/split-window-right-and-move-there-dammit
  "s-D" #'t/split-window-below-and-move-there-dammit
