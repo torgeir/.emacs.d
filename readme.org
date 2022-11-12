@@ -1952,7 +1952,7 @@ Some keybindings are so engrained I can't live without them.
 Make super+enter create a vterm terminal window inside emacs
 
 #+begin_src emacs-lisp
-(map! :gn [s-return] #'+vterm/here)
+(map! :gn [s-return] (cmd! (+vterm/here t)))
 #+end_src
 
 Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
