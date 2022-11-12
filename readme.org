@@ -992,10 +992,14 @@ Adjust margins equally across modes
   (map! :map evil-window-map
         "M" (t/micro-state
              nil
-             "<left>" (cmd! (when writeroom-mode (writeroom-decrease-width))
-                            (when olivetti-mode (olivetti-shrink)))
-             "<right>" (cmd! (when writeroom-mode (writeroom-increase-width))
-                             (when olivetti-mode (olivetti-expand))))))
+             "<left>" (cmd! (when (and (boundp 'writeroom-mode) writeroom-mode)
+                              (writeroom-decrease-width))
+                            (when (and (boundp 'olivetti-mode) olivetti-mode)
+                              (olivetti-shrink)))
+             "<right>" (cmd! (when (and (boundp 'writeroom-mode) writeroom-mode)
+                               (writeroom-increase-width))
+                             (when (and (boundp 'olivetti-mode) olivetti-mode)
+                               (olivetti-expand))))))
 #+end_src
 
 *** Mode line
