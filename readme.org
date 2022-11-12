@@ -743,7 +743,9 @@ There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][do
 *** Transparency
 
 #+begin_src emacs-lisp
-(advice-add #'doom/reload-theme :after (cmd! (t/transparency 95)))
+(let ((t 95))
+  (t/transparency t)
+  (advice-add #'doom/reload-theme :after (cmd! (t/transparency t))))
 #+end_src
 
 *** Frame
