@@ -2659,7 +2659,9 @@ Useful e.g. to make dired act like a directory tree sidebar
 #+begin_src emacs-lisp :results silent
 (defun t/gha ()
   (interactive)
-  (+vterm/toggle nil)
+  (let ((current-prefix-arg 1))
+    ;; (call-interactively '+vterm/here)
+    (call-interactively '+vterm/toggle))
   (term-send-raw-string "gh run watch\C-m"))
 #+end_src
 
