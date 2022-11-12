@@ -1915,6 +1915,24 @@ This is paired with the bash function [[https://github.com/torgeir/dotfiles/blob
                         (call-interactively' magit-status))))))
 #+end_src
 
+Make pasting from ~consult-yank-from-kill-ring~ actually insert results in ~vterm~.
+
+#+begin_src emacs-lisp
+(advice-add #'insert-for-yank
+            :around
+            (defun my/insert-for-yank-vterm-shim (orig-fun &rest args)
+              (if (eq major-mode 'vterm-mode)
+                  (let ((inhibit-read-only t))
+                    (apply #'vterm-insert args))
+                (apply orig-fun args))))
+#+end_src
+
+Keep evil insert mode cursor after shell commands have run
+
+#+begin_src emacs-lisp :results silent
+(advice-add #'vterm--redraw :after (lambda (&rest args) (evil-refresh-cursor evil-state)))
+#+end_src
+
 **** Keybindings
 
 Some keybindings are so engrained I can't live without them.
