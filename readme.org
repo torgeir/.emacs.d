@@ -453,6 +453,8 @@ Iterate through CamelCase words
 
 #+begin_src emacs-lisp
 (after! dired
+  ;; prevent kill all dired buffers on q
+  (map! :map dired-mode-map :ng "q" nil)
   (map!
    :map dired-mode-map
    "C-k" 'dired-kill-subdir
