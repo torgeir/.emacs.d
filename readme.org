@@ -1997,7 +1997,17 @@ Some keybindings are so engrained I can't live without them.
 Make super+enter create a vterm terminal window inside emacs
 
 #+begin_src emacs-lisp
-(map! :gn [s-return] (cmd! (+vterm/here t)))
+(map! :gn [s-return]
+      (cmd!
+       (if (eq major-mode 'dired-mode)
+           (let* ((selected-dir (dired-get-marked-files t current-prefix-arg))
+                  (selected-path (concat default-directory (car selected-dir)))
+                  (default-directory
+                    (if (file-directory-p selected-path)
+                        selected-path
+                      (file-name-directory selected-path))))
+             (+vterm/here t))
+         (+vterm/here t))))
 #+end_src
 
 Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
