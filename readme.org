@@ -1853,11 +1853,27 @@ Adapt cleverparens keys that clash with my M-[hjkl] bindings in [[file:~/.skhdrc
 #+end_src
 
 #+begin_src emacs-lisp
-(after! clojure-mode
-  (add-hook! '(clojure-mode-hook clojurescript-mode-hook) 'evil-cleverparens-mode)
+(after! (clojure-mode)
+  (add-hook! '(clojure-mode-hook
+               clojurec-mode-hook
+               clojurescript-mode-hook) 'evil-cleverparens-mode)
   (map! :map clojure-mode-map "DEL" #'sp-backward-delete-char))
 #+end_src
 
+Holding alt for moving between sexps feel right
+
+#+begin_src emacs-lisp
+(after! (clojure-mode)
+  (map! :map clojure-mode-map
+        :i "M-<right>" #'evil-cp-forward-sexp
+        :i "M-<left>" #'evil-cp-backward-sexp)
+  (map! :map clojurec-mode-map
+        :i "M-<right>" #'evil-cp-forward-sexp
+        :i "M-<left>" #'evil-cp-backward-sexp)
+  (map! :map clojurescript-mode-map
+        :i "M-<right>" #'evil-cp-forward-sexp
+        :i "M-<left>" #'evil-cp-backward-sexp))
+#+end_src
 
 *** Emacs lisp
 
