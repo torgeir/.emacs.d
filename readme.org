@@ -2345,7 +2345,7 @@ Inspiration:
 (after! mu4e
   (setq mu4e-maildir "~/.maildir"
         mu4e-update-interval (* 5 60)
-        mu4e-context-policy 'pick-first
+        mu4e-context-policy 'ask
         mu4e-attachment-dir "~/Desktop"
         mu4e-mu-binary (executable-find "mu")
         mu4e-get-mail-command (concat (executable-find "mbsync") " -a")
