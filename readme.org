@@ -990,7 +990,7 @@ Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly 
 And screens are big, so a bit more space for text is nice.
 
 #+begin_src emacs-lisp
-(setq writeroom-width 80)
+(setq writeroom-width (/ (float 7) 9))
 #+end_src
 
 Adjust margins equally across modes
