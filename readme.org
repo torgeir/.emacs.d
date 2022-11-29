@@ -2727,3 +2727,14 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 - three
 
 * Someday
+
+** Treeamacs project drawer
+
+#+begin_src emacs-lisp
+(defun t/update-treemacs-width (input)
+  (interactive)
+  (setq treemacs-width (floor (/ (frame-width (window-frame)) 4.5))))
+(add-to-list 'window-size-change-functions #'t/update-treemacs-width)
+;; (setq window-size-change-functions (remove  #'t/update-treemacs-width window-size-change-functions))
+;; window-size-change-functions
+#+end_src
