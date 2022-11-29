@@ -502,11 +502,19 @@ A diy directory sidebar using dired. Inspired the response in https://www.reddit
 ~(popup +all)~ steals this, so move it to the left
 
 #+begin_src emacs-lisp
+(defun t/fit-sidebar (window)
+  (interactive)
+  (let* ((w (frame-width (window-frame)))
+         (new-w (floor (/ w 4))))
+    (evil-resize-window (- w new-w) t)))
+
 (set-popup-rule! "^*sidebar*"
   :side 'left
   :ttl nil ;; don't kill it on C-g
-  :parameters '((slot . -1)
-                (window-parameters . ((no-other-window . t)))))
+  :quit 'current
+  :slot  -1
+  :width 't/fit-sidebar
+  :parameters '((window-parameters . ((no-other-window . t)))))
 #+end_src
 
 *** Multiple cursors
