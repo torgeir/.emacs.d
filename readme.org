@@ -356,18 +356,20 @@ Some examples and explanations
 
   (progn
 
-    (setq orderless-matching-styles
-          '(orderless-initialism
-            orderless-literal
-            orderless-regexp
-            orderless-flex))
+    (setq orderless-matching-styles '(orderless-literal)
+          ;; '(orderless-initialism
+          ;;  orderless-literal
+          ;;  orderless-regexp
+          ;;  orderless-flex)
+          )
 
-    (setq orderless-style-dispatchers
-          '(prot-orderless-literal-dispatcher
-            prot-orderless-initialism-dispatcher
-            prot-orderless-flex-dispatcher
-            or-regexp
-            ))
+    (setq orderless-style-dispatchers nil
+          ;; '(prot-orderless-literal-dispatcher
+          ;;  prot-orderless-initialism-dispatcher
+          ;;  prot-orderless-flex-dispatcher
+          ;;  or-regexp
+          ;;  )
+          )
 
     (defun or-regexp (pattern index _total)
       "foo|bar"
@@ -590,15 +592,14 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 #+begin_src emacs-lisp
 (defun t/font-spec (f &optional s)
   (font-spec :family f
-             :size (or s 18)
+             :size (or s 16)
              :weight 'normal
              :slant 'normal
              :width 'normal))
 
 (setq t-fonts '("JetBrains Mono"
                 "Fira Code"
-                "Iosevka Nerd Font Mono"
-                ))
+                "Iosevka SS05"))
 
 (defun t/cycle-fonts ()
   (interactive)
@@ -754,7 +755,7 @@ There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][do
 *** Transparency
 
 #+begin_src emacs-lisp
-(let ((tr 95))
+(let ((tr 98))
   (t/transparency tr)
   (advice-add #'doom/reload-theme :after (cmd! (t/transparency tr))))
 #+end_src
@@ -1002,6 +1003,7 @@ And screens are big, so a bit more space for text is nice.
 
 #+begin_src emacs-lisp
 (setq writeroom-width (/ (float 7) 9))
+(setq writeroom-width (/ (float 3) 5))
 #+end_src
 
 Adjust margins equally across modes
