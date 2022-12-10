@@ -70,6 +70,7 @@ This is tangled to ~packages.el~ on save.
   :recipe (:host github :repo "awth13/org-appear")
   :pin "60ba267c5da336e75e603f8c7ab3f44e6f4e4dac")
 (package! remark-mode)
+(package! tempel)
 #+end_src
 
 ** Lexical scoping everywhere
@@ -2660,47 +2661,6 @@ TODO idle highlight in visible buffers
   )
 #+end_src
 
-*** Skeleton mode instead of yasnippet?
-
-https://www.emacswiki.org/emacs/SkeletonMode
-
-#+begin_src elisp
-(comment
- (define-skeleton skel-defun
-   "Insert a defun template."
-   "Name: "
-   "(defun " str " (" @ - ")" \n
-   "(" @ _ ")" \n)
-
- (defvar *skeleton-markers* nil
-   "Markers for locations saved in skeleton-positions")
-
- (add-hook 'skeleton-end-hook 'skeleton-make-markers)
-
- (defun skeleton-make-markers ()
-   (while *skeleton-markers*
-     (set-marker (pop *skeleton-markers*) nil))
-   (setq *skeleton-markers*
-         (mapcar 'copy-marker (reverse skeleton-positions))))
-
- (defun skeleton-next-position (&optional reverse)
-   "Jump to next position in skeleton.
-         REVERSE - Jump to previous position in skeleton"
-   (interactive "P")
-   (let* ((positions (mapcar 'marker-position *skeleton-markers*))
-          (positions (if reverse (reverse positions) positions))
-          (comp (if reverse '> '<))
-          pos)
-     (when positions
-       (if (catch 'break
-             (while (setq pos (pop positions))
-               (when (funcall comp (point) pos)
-                 (throw 'break t))))
-           (goto-char pos)
-         (goto-char (marker-position
-                     (car *skeleton-markers*))))))))
-#+end_src
-
 *** Sticky buffer mode
 
 Useful e.g. to make dired act like a directory tree sidebar
@@ -2756,6 +2716,9 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 - three
 
 * Someday
+:PROPERTIES:
+:header-args:emacs-lisp: :lexical t :results silent
+:END:
 
 ** Treeamacs project drawer
 
@@ -2766,4 +2729,27 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 (add-to-list 'window-size-change-functions #'t/update-treemacs-width)
 ;; (setq window-size-change-functions (remove  #'t/update-treemacs-width window-size-change-functions))
 ;; window-size-change-functions
+#+end_src
+
+** Tempel
+
+#+begin_src emacs-lisp
+(use-package tempel)
+
+(after! tempel
+  (setq tempel-path (t/user-emacs-file "templates"))
+  (add-hook 'doom-escape-hook #'tempel-done)
+
+  (map!
+   "M-@" #'tempel-insert
+   "M-+" #'tempel-complete)
+
+  (map! :map tempel-map
+        "<tab>" #'tempel-next
+        "<backtab>" #'tempel-previous)
+
+  (defun tempel-setup-capf ()
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand completion-at-point-functions)))
+  (add-hook 'prog-mode-hook 'tempel-setup-capf))
 #+end_src

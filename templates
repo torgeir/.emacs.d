@@ -1,0 +1,15 @@
+fundamental-mode
+
+(today (format-time-string "%Y-%m-%d"))
+(isodate (format-time-string "%Y-%m-%dT%H:%M:%SZ"))
+
+(todo (if (derived-mode-p 'emacs-lisp-mode) ";; " comment-start) "TODO ")
+(f "function (" p ") {" r> "}")
+(fun "function " p " (" p ") {" r> "}")
+
+lisp-mode emacs-lisp-mode
+
+(f "(lambda (" p ")" n> r> ")")
+(fun "(defun " p " (" p ")\n  \"" p "\"" n> r> ")")
+
+;; typescript-mode
