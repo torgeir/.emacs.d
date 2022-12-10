@@ -1165,6 +1165,7 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  ;; m = motion
  :m "C-e" 'end-of-line
 
+ "s-q" 'save-buffers-kill-emacs
  "s-n" 'make-frame
  "s-s" 'save-buffer
  "s-w" #'t/delete-frame-or-hide-last-remaining-frame
