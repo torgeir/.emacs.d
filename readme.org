@@ -972,6 +972,16 @@ Support wrapping sexps by holding super, both in normal mode and insert mode, fr
                      (forward-sexp)))
 #+end_src
 
+**** Expand braces
+
+#+begin_src emacs-lisp
+(after! smartparens
+  (sp-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " " ")))
+  (sp-pair "(" nil :post-handlers '(("||\n[i]" "RET") ("| " " ")))
+  (sp-pair "[" nil :post-handlers '(("||\n[i]" "RET"))))
+#+end_src
+
+
 *** Distraction free / Zen
 **** Writeroom
 
