@@ -711,13 +711,15 @@ And fix ~super~ navigation across modes that steam ~SPC~.
 There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]].
 
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-moonlight)
+;; doom-one is fine for now
+;; (setq doom-theme 'doom-moonlight)
 #+end_src
 
 #+begin_src emacs-lisp
 (defun t/cycle-theme ()
   (interactive)
   (cl-case doom-theme
+    (doom-one (load-theme 'doom-lazerwave))
     (doom-laserwave (load-theme 'doom-moonlight))
     (doom-moonlight (load-theme 'doom-vibrant))
     (doom-vibrant (load-theme 'doom-flatwhite))
