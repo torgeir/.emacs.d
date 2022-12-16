@@ -17,10 +17,10 @@ var torgeir: Person = {
 }
 
 console.log(123)
-console.log(123)
+console.log(1 + 2)
 
 function asdf() {
   return 1
 }
 
-asdf()
+const a: number = asdf()
