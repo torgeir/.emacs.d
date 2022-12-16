@@ -2704,7 +2704,7 @@ TODO idle highlight in visible buffers
 #+begin_src emacs-lisp
 ;; don't use this for large files, e.g. like 15MB, it really brings emacs to a stall
 (use-package! nxml-eldoc
-  :load-path "site-lisp/nxml-eldoc/"
+  :load-path "~/.doom.d/site-lisp/nxml-eldoc/"
   :commands turn-on-nxml-eldoc)
 #+end_src
 
@@ -2712,7 +2712,7 @@ TODO idle highlight in visible buffers
 (use-package! json-path-eldoc
   :commands turn-on-json-path-eldoc
   :init (add-hook! 'json-mode-hook 'turn-on-json-path-eldoc)
-  :load-path "site-lisp/json-path-eldoc/")
+  :load-path "~/.doom.d/site-lisp/json-path-eldoc/")
 #+end_src
 
 #+begin_src emacs-lisp
