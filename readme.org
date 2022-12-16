@@ -1021,6 +1021,7 @@ And screens are big, so a bit more space for text is nice.
 #+begin_src emacs-lisp
 (setq writeroom-width (/ (float 7) 9))
 (setq writeroom-width (/ (float 3) 5))
+(setq writeroom-width (/ (float 2) 5))
 #+end_src
 
 Adjust margins equally across modes
