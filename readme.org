@@ -845,7 +845,7 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
 **** Avy tweaks
 
 #+begin_src emacs-lisp
-(after! avy
+(after! (avy evil-integration)
   (defun t/setup-avy (&optional frame)
     (setq avy-keys '(?j ?f ?d ?k ?s ?a)
           avy-timeout-seconds 0.2
@@ -866,13 +866,10 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
       (set-face-attribute 'avy-lead-face-0 nil :background b :weight 'bold :foreground c)
       (set-face-attribute 'avy-lead-face-1 nil :background b :weight 'bold :foreground c)
       (set-face-attribute 'avy-lead-face-2 nil :background b :weight 'bold :foreground c)))
-  (t/setup-avy))
-#+end_src
-
-Also after creating a new frame when emacs is in daemon mode
-
-#+begin_src emacs-lisp
-(advice-add 'doom/reload-theme :after #'t/setup-avy)
+  (t/setup-avy)
+  
+  ;;Also after creating a new frame when emacs is in daemon mode
+  (advice-add 'doom/reload-theme :after #'t/setup-avy))
 #+end_src
 
 *** Smartparens
@@ -1924,20 +1921,76 @@ Highlight terraform plans in ~terraform-mode~ based on their file name.
 
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "Downloads/") "tf_plan_.*") 'terraform-mode))
-(add-hook! 'terraform-mode-hook
-  (cmd!
-   (when (s-contains-p "tf_plan_" buffer-file-name)
-     (beginning-of-buffer)
-     (evil-search "^───" t t)
-     (call-interactively 'evil-scroll-line-to-top))
-   (terraform-format-on-save-mode)
-   (aggressive-indent-mode -1)))
+(after! terraform-mode
+  (defun t-tf-plan-hook ()
+    (interactive)
+    (flycheck-mode -1)
+    (when (s-contains-p "tf_plan_" buffer-file-name)
+      (beginning-of-buffer)
+      (evil-search "^───" t t)
+      (call-interactively 'evil-scroll-line-to-top)))
+  (add-hook! 'terraform-mode-hook #'terraform-format-on-save-mode)
+  (add-hook! 'terraform-mode-hook #'t-tf-plan-hook))
+#+end_src
+
+**** Eglot ls
+
+#+begin_src sh :tangle no
+brew install hashicorp/tap/terraform-ls
+#+end_src
+
+#+begin_src emacs-lisp
+(after! eglot
+  (add-to-list 'eglot-server-programs '((hcl-mode terraform-mode) . ("terraform-lsp")))
+  (defun my-eglot-hook()
+    (if (eglot-managed-p)
+        (add-hook 'before-save-hook #'eglot-format-buffer)))
+  (add-hook 'eglot-managed-mode-hook #'my-eglot-hook))
+#+end_src
+
+*** Kotlin
+
+#+begin_src sh :tangle no :results silent
+wget https://github.com/fwcd/kotlin-language-server/releases/download/1.3.1/server.zip -O ~/bin/server.zip
+cd ~/bin/
+rm -rf server
+unzip server.zip
+ln -sf server/bin/kotlin-language-server .
+#+end_src
+
+*** Python
+
+**** Eglot ls
+
+#+begin_src sh :tangle no
+pip install python-language-server
 #+end_src
 
 *** remark-mode
 
 #+begin_src emacs-lisp
-(use-package! remark-mode)
+(use-package! remark-mode
+  :commands remark-mode)
+#+end_src
+
+*** Typescript
+
+#+begin_src sh :tangle no
+npm install -g typescript-language-server typescript
+#+end_src
+
+#+begin_src emacs-lisp
+(after! eglot
+  (add-to-list 'eglot-server-programs '((typescript-tsx-mode) . ("typescript-language-server" "--stdio"))))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! typescript-mode
+  (defun t-ts-mode-hook ()
+    (cmd!
+     (electric-indent-mode -1)))
+
+  (add-hook! '(typescript-mode-hook typescript-tsx-mode-hook) #'t-ts-mode-hook))
 #+end_src
 
 ** Server mode
@@ -2742,25 +2795,52 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 ;; window-size-change-functions
 #+end_src
 
-** Tempel
+** CANCELLED Tempel
+CLOSED: [2022-12-16 Fri 21:09]
+
+yas is good enough for now.
 
 #+begin_src emacs-lisp
-(use-package tempel)
+(comment
+ (use-package tempel)
+ (after! tempel
+   (setq tempel-path (t/user-emacs-file "templates"))
+   (add-hook 'doom-escape-hook #'tempel-done)
 
-(after! tempel
-  (setq tempel-path (t/user-emacs-file "templates"))
-  (add-hook 'doom-escape-hook #'tempel-done)
+   (map!
+    "M-@" #'tempel-insert
+    "M-+" #'tempel-complete)
 
-  (map!
-   "M-@" #'tempel-insert
-   "M-+" #'tempel-complete)
+   (map! :map tempel-map
+         "<tab>" #'tempel-next
+         "<backtab>" #'tempel-previous)
 
-  (map! :map tempel-map
-        "<tab>" #'tempel-next
-        "<backtab>" #'tempel-previous)
-
-  (defun tempel-setup-capf ()
-    (setq-local completion-at-point-functions
-                (cons #'tempel-expand completion-at-point-functions)))
-  (add-hook 'prog-mode-hook 'tempel-setup-capf))
+   (defun tempel-setup-capf ()
+     (setq-local completion-at-point-functions
+                 (cons #'tempel-expand completion-at-point-functions)))
+   (add-hook 'prog-mode-hook 'tempel-setup-capf)))
 #+end_src
+
+** Eglot
+
+https://github.com/doomemacs/doomemacs/issues/6466
+
+#+begin_src emacs-lisp
+(after! (eglot flycheck)
+  (push 'eglot flycheck-checkers)
+  (delq! 'eglot flycheck-checkers))
+#+end_src
+
+*** CANCELLED max-lisp-eval-depth errors from flycheck eglot?
+CLOSED: [2022-12-16 Fri 23:54]
+
+Double them
+
+#+begin_src emacs-lisp
+(comment
+ (setq max-lisp-eval-depth 10000)
+ (setq max-specpdl-size 10000))
+#+end_src
+
+** compile gradle
+
