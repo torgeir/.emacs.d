@@ -75,6 +75,7 @@ If HARDCODED-ARRAY-INDEX provided, array index in JSON path is replaced with it.
       (t/json-path))))
 
 (defun turn-on-json-path-eldoc ()
+  (interactive)
   (set (make-local-variable 'eldoc-documentation-function) 'json-path-eldoc-function)
   (eldoc-mode))
 
@@ -82,7 +83,7 @@ If HARDCODED-ARRAY-INDEX provided, array index in JSON path is replaced with it.
 (defun json-path-eldoc-enable ()
   "Turn on json-path-eldoc in buffers where `json-mode' is active."
   (interactive)
-  (t/add-hook 'json-mode-hook #'turn-on-json-path-eldoc))
+  (add-hook 'json-mode-hook #'turn-on-json-path-eldoc))
 
 ;;;###autoload
 (defun json-path-eldoc-disable ()
