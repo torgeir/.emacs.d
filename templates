@@ -12,4 +12,11 @@ lisp-mode emacs-lisp-mode
 (f "(lambda (" p ")" n> r> ")")
 (fun "(defun " p " (" p ")\n  \"" p "\"" n> r> ")")
 
-;; typescript-mode
+typescript-mode
+
+(log "console.log(" r> ");")
+
+clojure-mode clojurec-mode clojurescript-mode
+
+(f "(fn [" p "] " r> ")")
+(fun "(defn " p " [" p "] " r> ")")
