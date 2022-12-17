@@ -1920,6 +1920,12 @@ Bind it to ~SPC o n~
 #+end_src
 
 ** Languages
+*** Bash
+
+#+begin_src sh :tangle no :results silent
+npm install -g bash-language-server
+#+end_src
+
 *** Clojure
 
 Adapt cleverparens keys that clash with my M-[hjkl] bindings in [[file:~/.skhdrc][~/.skhdrc]]
@@ -2034,7 +2040,11 @@ pip install python-language-server
 
 *** Typescript
 
-#+begin_src sh :tangle no
+#+begin_src sh :tangle no :results silent
+npm install -g prettier ts-node
+#+end_src
+
+#+begin_src sh :tangle no :results silent
 npm install -g typescript-language-server typescript
 #+end_src
 
@@ -2046,8 +2056,7 @@ npm install -g typescript-language-server typescript
 #+begin_src emacs-lisp
 (after! typescript-mode
   (defun t-ts-mode-hook ()
-    (cmd!
-     (electric-indent-mode -1)))
+    (cmd! (electric-indent-mode -1)))
 
   (add-hook! '(typescript-mode-hook typescript-tsx-mode-hook) #'t-ts-mode-hook))
 #+end_src
