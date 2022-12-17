@@ -531,6 +531,32 @@ A diy directory sidebar using dired. Inspired the response in https://www.reddit
   :parameters '((window-parameters . ((no-other-window . t)))))
 #+end_src
 
+*** Treeamacs project drawer
+
+Make it more useful.
+
+#+begin_src emacs-lisp
+(after! treemacs
+  (add-hook! 'treemacs-mode-hook 'treemacs-git-commit-diff-mode)
+  (add-hook! 'treemacs-mode-hook 'treemacs-git-mode)
+  (add-hook! 'treemacs-mode-hook 'treemacs-toggle-fixed-width)
+  (add-hook! 'treemacs-mode-hook 'treemacs-follow-mode)
+  (add-hook! 'treemacs-mode-hook 'treemacs-filewatch-mode))
+#+end_src
+
+Auto adjust the size of the treemacs buffer.
+
+#+begin_src emacs-lisp
+(defun t/update-treemacs-width (input)
+  (interactive)
+  (setq treemacs-width (floor (/ (frame-width (window-frame)) 4.5))))
+(add-to-list 'window-size-change-functions #'t/update-treemacs-width)
+;; (setq window-size-change-functions (remove  #'t/update-treemacs-width window-size-change-functions))
+;; window-size-change-functions
+#+end_src
+
+Also tuned some settings to make [[file:~/.emacs.d/.local/straight/repos/themes/extensions/doom-themes-ext-treemacs.el::all-the-icons-octicon "chevron-down" :height 0.6 :v-adjust 0.1 :face face-spec][chevrons work without skewing lines]].
+
 *** Multiple cursors
 
 #+begin_src emacs-lisp
@@ -656,6 +682,27 @@ Navigate flycheck errors
                 :desc "Jump to previous error" "N" #'flycheck-previous-error)))
 #+end_src
 
+**** Eglot flycheck issue
+
+https://github.com/doomemacs/doomemacs/issues/6466
+
+#+begin_src emacs-lisp
+(after! (eglot flycheck)
+  (push 'eglot flycheck-checkers)
+  (delq! 'eglot flycheck-checkers))
+#+end_src
+
+***** CANCELLED max-lisp-eval-depth errors from flycheck eglot?
+CLOSED: [2022-12-16 Fri 23:54]
+
+Double them
+
+#+begin_src emacs-lisp
+(comment
+ (setq max-lisp-eval-depth 10000)
+ (setq max-specpdl-size 10000))
+#+end_src
+
 *** Visual line mode
 
 #+begin_src emacs-lisp
@@ -734,6 +781,7 @@ There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][do
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type nil)
+(setq-hook! 'prog-mode-hook display-line-numbers-type 'relative)
 #+end_src
 
 **** Rainbow mode
@@ -988,7 +1036,6 @@ Support wrapping sexps by holding super, both in normal mode and insert mode, fr
   (sp-pair "[" nil :post-handlers '(("||\n[i]" "RET"))))
 #+end_src
 
-
 *** Distraction free / Zen
 **** Writeroom
 
@@ -1022,7 +1069,9 @@ And screens are big, so a bit more space for text is nice.
 #+begin_src emacs-lisp
 (setq writeroom-width (/ (float 7) 9))
 (setq writeroom-width (/ (float 3) 5))
-(setq writeroom-width (/ (float 2) 5))
+;; (setq writeroom-width (/ (float 2) 5))
+(setq olivetti-minimum-body-width (floor (* (frame-width (selected-frame))
+                                            (/ (float 5) 7))))
 #+end_src
 
 Adjust margins equally across modes
@@ -2794,17 +2843,6 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 :header-args:emacs-lisp: :lexical t :results silent
 :END:
 
-** Treeamacs project drawer
-
-#+begin_src emacs-lisp
-(defun t/update-treemacs-width (input)
-  (interactive)
-  (setq treemacs-width (floor (/ (frame-width (window-frame)) 4.5))))
-(add-to-list 'window-size-change-functions #'t/update-treemacs-width)
-;; (setq window-size-change-functions (remove  #'t/update-treemacs-width window-size-change-functions))
-;; window-size-change-functions
-#+end_src
-
 ** CANCELLED Tempel
 CLOSED: [2022-12-16 Fri 21:09]
 
@@ -2830,27 +2868,4 @@ yas is good enough for now.
                  (cons #'tempel-expand completion-at-point-functions)))
    (add-hook 'prog-mode-hook 'tempel-setup-capf)))
 #+end_src
-
-** Eglot
-
-https://github.com/doomemacs/doomemacs/issues/6466
-
-#+begin_src emacs-lisp
-(after! (eglot flycheck)
-  (push 'eglot flycheck-checkers)
-  (delq! 'eglot flycheck-checkers))
-#+end_src
-
-*** CANCELLED max-lisp-eval-depth errors from flycheck eglot?
-CLOSED: [2022-12-16 Fri 23:54]
-
-Double them
-
-#+begin_src emacs-lisp
-(comment
- (setq max-lisp-eval-depth 10000)
- (setq max-specpdl-size 10000))
-#+end_src
-
-** compile gradle
 
