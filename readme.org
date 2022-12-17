@@ -708,23 +708,22 @@ And fix ~super~ navigation across modes that steam ~SPC~.
 
 *** Themes
 
-There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]].
+There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]]. I [[file:~/.emacs.d/.local/straight/repos/themes/themes/doom-one-theme.el::bg `(,(doom-darken "#282c34" 0.5) "black" "black"][tuned doom-one a little]], darkening some of the colors even more. Its in [[file:themes/t-doom-one.el::(def-doom-theme t-doom-one][themes/t-doom-one-theme.el]].
 
 #+begin_src emacs-lisp
-;; doom-one is fine for now
-;; (setq doom-theme 'doom-moonlight)
+;; (require 't-doom-one-theme (t/user-emacs-file "themes/t-doom-one-theme.el"))
+(setq doom-theme 't-doom-one)
 #+end_src
 
 #+begin_src emacs-lisp
 (defun t/cycle-theme ()
   (interactive)
   (cl-case doom-theme
-    (doom-one (load-theme 'doom-lazerwave))
-    (doom-laserwave (load-theme 'doom-moonlight))
-    (doom-moonlight (load-theme 'doom-vibrant))
+    (t-doom-one (load-theme 'doom-laserwave))
+    (doom-laserwave (load-theme 'doom-vibrant))
     (doom-vibrant (load-theme 'doom-flatwhite))
     (doom-flatwhite (load-theme 'doom-nord))
-    (t (load-theme 'doom-laserwave)))
+    (t (load-theme 't-doom-one)))
   (message "Theme: %s" doom-theme))
 (map! :leader "t t" #'t/cycle-theme)
 #+end_src
