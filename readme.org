@@ -2241,19 +2241,30 @@ Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindin
 
 #+begin_src emacs-lisp
 (map!
+ :after git-gutter
  :leader
  (:prefix-map
   ("g" . "git")
   (:when (modulep! :ui vc-gutter)
-   :desc "Jump to next hunk"     "n" (cmd! (call-interactively 'git-gutter:next-hunk)
-                                           (call-interactively 'evil-scroll-line-to-center))
-   :desc "Jump to previous hunk" "N" (cmd! (call-interactively 'git-gutter:previous-hunk)
-                                           (call-interactively 'evil-scroll-line-to-center)))
+    :desc "Stage hunk"            "s" (cmd! (let ((git-gutter:ask-p nil))
+                                              (git-gutter:stage-hunk)))
+    :desc "Jump to next hunk"     "n" (cmd! (call-interactively 'git-gutter:next-hunk)
+                                            (call-interactively 'evil-scroll-line-to-center))
+    :desc "Jump to previous hunk" "N" (cmd! (call-interactively 'git-gutter:previous-hunk)
+                                            (call-interactively 'evil-scroll-line-to-center)))))
+#+end_src
+
+#+begin_src emacs-lisp
+(map!
+ :after magit
+ :leader
+ (:prefix-map
+  ("g" . "git")
   (:when (modulep! :tools magit)
-   :desc "Visit pulls"           "p" #'t/visit-git-link-pulls
-   :desc "Push"                  "P" #'magit-push
-   (:prefix ("c" . "create")
-    :desc "Ammend"               "a"   #'magit-commit-amend))))
+    :desc "Visit pulls"           "p" #'t/visit-git-link-pulls
+    :desc "Push"                  "P" #'magit-push
+    (:prefix ("c" . "create")
+     :desc "Ammend"               "a"   #'magit-commit-amend))))
 #+end_src
 
 I have been trying to get used to magit in evil mode for a while now. But the magit-process-buffer keybinding is crazy on a norwegian keyboard, so this brings back the binding from the emacs mode magit.
