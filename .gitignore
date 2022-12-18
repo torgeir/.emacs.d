@@ -5,3 +5,5 @@ config.el
 /.clj-kondo/
 /packages.el
 /test-files/venv/
+/test-files/node_modules/
+/test-files/package-lock.json

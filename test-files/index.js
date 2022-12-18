@@ -1,5 +1,4 @@
-const EveatEmitter = require("events")
-import EventEmitter from "events"
+const EventEmitter = require("events")
 
 function withName() { }
 var { a, b } = {}
@@ -34,5 +33,4 @@ var { a, b } = {}
 module.exports = 1
 
 console.log("wow" + (1 + 2));
-
-4 + 3
+console.log(4 + 3)

@@ -15,9 +15,8 @@ var torgeir: Person = {
     },
   },
 }
+console.log(42);
 
 var asdf = () => 1
 var a: number = asdf()
 console.log(a);
-
-console.log(torgeir + ", " + a);
