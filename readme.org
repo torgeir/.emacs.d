@@ -2146,10 +2146,10 @@ Or when you ~eval~ something when the repl is open, e.g. =g r a p= (eval around 
     (:description . "Run ts-node script")))
 #+end_src
 
+=(eval +overlay)= works in elisp, but is not that good for js/ts, so limit it to use the popup instead.
+
 #+begin_src emacs-lisp
-;; TODO look at quickrun eval
-;; (set-eval-handler! 'typescript-tsx-mode #'+t/eval-tsx)
-;; (set-eval-handler! 'typescript-mode #'+t/eval-tsx)
+(setq +eval-popup-min-lines 0)
 #+end_src
 
 ** Server mode
