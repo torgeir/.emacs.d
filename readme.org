@@ -1498,7 +1498,7 @@ Heading and item bindings
 - ~SPC-m-h~ :: heading from text
 - ~SPC-m-i~ :: item from text
 
-~SPC g a~ seems more reasonable than ~SPC g G~. Localleader is ~SPC m~ in doom. 
+~SPC g a~ seems more reasonable than ~SPC g G~. [[https://discourse.doomemacs.org/t/what-are-leader-and-localleader-keys/153][Localleader in doom]] is bound to ~SPC m~.
 
 #+begin_src emacs-lisp
 (map! :map org-mode-map
@@ -1530,6 +1530,7 @@ Save from agenda
 (after! org
   (set-face-attribute 'org-todo nil :foreground "#94fFe4" :weight 'bold))
 #+end_src
+
 *** Make links appear
 
 #+begin_src emacs-lisp
@@ -1546,7 +1547,7 @@ Save from agenda
 
 *** Refile
 
-Save org mode buffers after refile
+Save org mode buffers after refile.
 
 #+begin_src emacs-lisp
 (defadvice org-refile (after t/after-org-refile activate)
@@ -1645,6 +1646,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 #+end_src
 
 *** Text Objects
+
 **** evil-org-outer-subtree
 
 #+BEGIN_SRC emacs-lisp :results silent
@@ -1925,6 +1927,7 @@ Bind it to ~SPC o n~
 #+end_src
 
 ** Languages
+
 *** Bash
 
 #+begin_src sh :tangle no :results silent
@@ -1974,9 +1977,10 @@ Holding alt for moving between sexps feel right
   (add-hook 'emacs-lisp-mode-hook #'evil-cleverparens-mode))
 #+end_src
 
-Show containing parens, when the cursor is inside theme
+Show containing parens, when the cursor is inside theme.
 
 #+begin_src emacs-lisp
+;; TODO is this working?
 (define-advice show-paren-function (:around (fn) fix)
   "Highlight enclosing parens."
   (cond ((looking-at-p "\\s(") (funcall fn))
@@ -2006,8 +2010,17 @@ Highlight terraform plans in ~terraform-mode~ based on their file name.
 **** Eglot ls
 
 #+begin_src sh :tangle no
-brew install hashicorp/tap/terraform-ls
+case $(uname) in
+    Darwin)
+        brew install hashicorp/tap/terraform-ls
+        ;;
+    Linux)
+        false
+        ;;
+esac
 #+end_src
+
+#+RESULTS:
 
 #+begin_src emacs-lisp
 (after! eglot
@@ -2019,6 +2032,8 @@ brew install hashicorp/tap/terraform-ls
 #+end_src
 
 *** Kotlin
+
+**** Eglot ls
 
 #+begin_src sh :tangle no :results silent
 wget https://github.com/fwcd/kotlin-language-server/releases/download/1.3.1/server.zip -O ~/bin/server.zip
@@ -2033,7 +2048,14 @@ ln -sf server/bin/kotlin-language-server .
 **** Eglot ls
 
 #+begin_src sh :tangle no
-pip install python-language-server
+case $(uname) in
+    Darwin)
+        pip install python-language-server
+        ;;
+    Linux)
+        false
+        ;;
+esac
 #+end_src
 
 *** remark-mode
@@ -2062,7 +2084,6 @@ npm install -g typescript-language-server typescript
 (after! typescript-mode
   (defun t-ts-mode-hook ()
     (cmd! (electric-indent-mode -1)))
-
   (add-hook! '(typescript-mode-hook typescript-tsx-mode-hook) #'t-ts-mode-hook))
 #+end_src
 
@@ -2076,10 +2097,10 @@ This name is used from skhdrc, ~/.emacs.d/emacsclient~, ~/.emacs.d/emacsclient~ 
 (setq server-name "torgemacs")
 #+end_src
 
-I also use this from Alfred, as a quick way of capturing from anywhere on os x.
+I also use this from Alfred, as a quick way of capturing from anywhere.
 
-#+begin_src sh :tangle no
-/usr/local/bin/emacsclient -s torgemacs -e '(progn (select-frame-set-input-focus (selected-frame)) (org-capture))'
+#+begin_src sh :tangle no :results silent
+/usr/bin/env emacsclient -s torgemacs -e '(progn (select-frame-set-input-focus (selected-frame)) (org-capture))'
 #+end_src
 
 ** Terminal
@@ -2114,7 +2135,7 @@ Make pasting from ~consult-yank-from-kill-ring~ actually insert results in ~vter
                 (apply orig-fun args))))
 #+end_src
 
-Keep evil insert mode cursor after shell commands have run
+Keep evil insert mode cursor after shell commands have run.
 
 #+begin_src emacs-lisp :results silent
 (advice-add #'vterm--redraw :after (lambda (&rest args) (evil-refresh-cursor evil-state)))
@@ -2136,7 +2157,7 @@ Some keybindings are so engrained I can't live without them.
 :ID:       607b5e84-af21-4da9-80a9-8a44c2d12f0b
 :END:
 
-Make super+enter create a vterm terminal window inside emacs
+Make super+enter create a vterm terminal window inside emacs.
 
 #+begin_src emacs-lisp
 (map! :gn [s-return]
@@ -2152,7 +2173,7 @@ Make super+enter create a vterm terminal window inside emacs
          (+vterm/here t))))
 #+end_src
 
-Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps
+Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps.
 
 *** Close comint buffers with c-d
 
@@ -2186,7 +2207,8 @@ Useful magit keybindings:
         magit-rebase-arguments '("--interactive")
         magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
         git-commit-summary-max-length 72 ;; like github
-        magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1 ;; 'magit-display-buffer-traditional
+        magit-display-buffer-function ;;'magit-display-buffer-fullcolumn-most-v1 
+                                      'magit-display-buffer-traditional
         )
 
   (set-popup-rule! "^magit:" :ignore t)
@@ -2229,7 +2251,7 @@ I have been trying to get used to magit in evil mode for a while now. But the ma
  :desc "Show process buffer" :n "$" #'magit-process-buffer)
 #+end_src
 
-Colorz
+Colorz.
 
 #+begin_src emacs-lisp
 (after! magit
@@ -2240,10 +2262,11 @@ Colorz
 
 *** Blamer mode
 
+Bound to ~SPC t b~.
+
 #+begin_src emacs-lisp
 (use-package! blamer
   :commands (blamer-mode)
-  ;; :hook ((prog-mode . blamer-mode))
   :custom
   (blamer-idle-time 0.5)
   (blamer-min-offset 50)
@@ -2257,6 +2280,7 @@ Colorz
 #+end_src
 
 ** Applications
+
 *** Artist
 
 #+begin_src emacs-lisp
@@ -2283,7 +2307,7 @@ Colorz
  (:prefix-map ("z" . "misc")
   (:prefix ("z" . "artist")
    (:when t
-    :desc "Enable"      "t" 't/artist-mode
+    :desc "Enable"          "t" 't/artist-mode
     :desc "Draw: pen"       "p" 'artist-select-op-pen-line
     :desc "Draw: line"      "l" 'artist-select-op-line
     :desc "Draw: rectangle" "r" 'artist-select-op-rectangle
@@ -2294,7 +2318,7 @@ Colorz
 
 *** Elfeed RSS
 
-Setup
+Setup.
 
 #+begin_src emacs-lisp
 (after! elfeed
@@ -2302,7 +2326,7 @@ Setup
         elfeed-search-filter "@2-week-ago -news -tech +unread"))
 #+end_src
 
-Switch around the refresh mappings for more useful defaults
+Switch around the refresh mappings for more useful defaults.
 
 #+begin_src emacs-lisp
 (after! elfeed
@@ -2368,7 +2392,7 @@ Show the mouseover text for xkcd comics by moving to the image and fetching the 
 
 *** Calendar
 
-Ready some fonts that stand out
+Ready some fonts that stand out.
 
 #+begin_src emacs-lisp
 (after! calendar
@@ -2414,7 +2438,7 @@ Mark today when scrolling past it.
   (add-hook 'calendar-today-visible-hook 'calendar-mark-today))
 #+end_src
 
-Norwegian holidays
+Norwegian holidays.
 
 #+begin_src emacs-lisp
 (after! calendar
