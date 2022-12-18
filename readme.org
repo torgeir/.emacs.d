@@ -10,22 +10,22 @@ Managing [[https://github.com/torgeir/.emacs.d/tree/d1c9dec646824ab7396b8a35fd7d
 
 First, install doom emacs.
 
-#+begin_src sh :tangle no
+#+begin_src sh :tangle no :results no
 git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.emacs.d
 ~/.emacs.d/bin/doom install
 #+end_src
 
 Then the config.
 
-#+begin_src sh :tangle no
+#+begin_src sh :tangle no :results no
 cd && git clone git@github.com:torgeir/.emacs.d.git ~/.doom.d
 #+end_src
 
 And some terminal shortcuts
 
-#+begin_src sh :tangle no
-ln -s ~/.emacs.d/emacsclient ~/bin/e
-ln -s ~/.emacs.d/emacsclient-terminal ~/bin/em
+#+begin_src sh :tangle no :results no
+ln -sf ~/.doom.d/emacsclient ~/bin/e
+ln -sf ~/.doom.d/emacsclient-terminal ~/bin/em
 #+end_src
 
 ** Doom help
@@ -48,6 +48,10 @@ This config uses the =:config literal= that tangles this file to ~config.el~ on 
 
 - https://github.com/zzamboni/dot-doom/blob/master/doom.org
 - https://abdelhakbougouffa.pro/posts/config/
+ 
+*** Navigation
+
+I usually navigate this with =c-n= or =c-p=, or =mgg=.
 
 ** Packages
 
@@ -1108,7 +1112,7 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
 
 ** Dotfiles
 
-Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on their file location.
+Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their file location.
 
 #+begin_src emacs-lisp
 (add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "dotfiles")) 'sh-mode))
@@ -1171,7 +1175,7 @@ Highlight dotfiles that are sourced from the shell in ~shell-mode~ based on thei
  "s-w" #'t/delete-frame-or-hide-last-remaining-frame
 
  ;; op -- :leader :desc "Toggle treemacs" "f L" #'+treemacs/toggle
- ;; oO -- :leader :desc "Open folder" "p o" #'t/open-in-desktop
+ :leader :desc "Open folder" "p o" #'t/open-in-desktop
 
  :leader :desc "Locate" "f L" #'consult-locate
  :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
@@ -1494,7 +1498,7 @@ Heading and item bindings
 - ~SPC-m-h~ :: heading from text
 - ~SPC-m-i~ :: item from text
 
-~SPC g a~ seems more reasonable than ~SPC g G~
+~SPC g a~ seems more reasonable than ~SPC g G~. Localleader is ~SPC m~ in doom. 
 
 #+begin_src emacs-lisp
 (map! :map org-mode-map
@@ -2773,17 +2777,6 @@ TODO idle highlight in visible buffers
   :load-path "~/.doom.d/site-lisp/json-path-eldoc/")
 #+end_src
 
-#+begin_src emacs-lisp
-(comment
- (message "result: %s"
-          (consult-t-async (lambda (action fn)
-                             (t/async-shell-command
-                              "file listing"
-                              (concat "ls -l " action)
-                              (lambda (p code res)
-                                (funcall fn res)))))))
-#+end_src
-
 ** Stuff to test
 *** Run in every file opened
 
@@ -2852,30 +2845,3 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 :PROPERTIES:
 :header-args:emacs-lisp: :lexical t :results silent
 :END:
-
-** CANCELLED Tempel
-CLOSED: [2022-12-16 Fri 21:09]
-
-yas is good enough for now.
-
-#+begin_src emacs-lisp
-(comment
- (use-package tempel)
- (after! tempel
-   (setq tempel-path (t/user-emacs-file "templates"))
-   (add-hook 'doom-escape-hook #'tempel-done)
-
-   (map!
-    "M-@" #'tempel-insert
-    "M-+" #'tempel-complete)
-
-   (map! :map tempel-map
-         "<tab>" #'tempel-next
-         "<backtab>" #'tempel-previous)
-
-   (defun tempel-setup-capf ()
-     (setq-local completion-at-point-functions
-                 (cons #'tempel-expand completion-at-point-functions)))
-   (add-hook 'prog-mode-hook 'tempel-setup-capf)))
-#+end_src
-
