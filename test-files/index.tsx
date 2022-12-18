@@ -1,26 +1,6 @@
-// example
-type Name = string
-type City = string
-type StreetNumber = string
-type Street = { no: StreetNumber }
-type Address = { city: City; street: Street }
-type Person = { name: Name; address: Address }
+import * as React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 
-var torgeir: Person = {
-  name: "Torgeir",
-  address: {
-    city: "Trondheim",
-    street: {
-      no: "4",
-    },
-  },
-}
+const App: React.FunctionComponent = () => <div>The app</div>;
 
-console.log(123)
-console.log(1 + 2)
-
-function asdf() {
-  return 1
-}
-
-const a: number = asdf()
+process.stdout.write(renderToStaticMarkup(<App />));

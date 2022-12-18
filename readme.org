@@ -1071,14 +1071,15 @@ Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly 
 And screens are big, so a bit more space for text is nice.
 
 #+begin_src emacs-lisp
-(setq writeroom-width (/ (float 7) 9))
-(setq writeroom-width (/ (float 3) 5))
-;; (setq writeroom-width (/ (float 2) 5))
-(setq olivetti-minimum-body-width (floor (* (frame-width (selected-frame))
-                                            (/ (float 5) 7))))
+(after! writeroom
+  (setq writeroom-width (/ (float 7) 9))
+  (setq writeroom-width (/ (float 3) 5)))
+(after! olivetti
+  (setq olivetti-minimum-body-width (floor (* (frame-width (selected-frame))
+                                              (/ (float 5) 7)))))
 #+end_src
 
-Adjust margins equally across modes
+Adjust margins equally across modes.
 
 #+begin_src emacs-lisp
 (after! writeroom-mode
@@ -2080,9 +2081,13 @@ esac
 
 *** Typescript
 
+I need prettier.
+
 #+begin_src sh :tangle no :results silent
-npm install -g prettier ts-node
+npm install -g prettier
 #+end_src
+
+**** Eglot ls
 
 #+begin_src sh :tangle no :results silent
 npm install -g typescript-language-server typescript
@@ -2098,6 +2103,53 @@ npm install -g typescript-language-server typescript
   (defun t-ts-mode-hook ()
     (cmd! (electric-indent-mode -1)))
   (add-hook! '(typescript-mode-hook typescript-tsx-mode-hook) #'t-ts-mode-hook))
+#+end_src
+
+**** Typescript repl with ts-node
+
+Adapt [[file:~/.emacs.d/.local/straight/repos/nodejs-repl.el/nodejs-repl.el::defun nodejs-repl (][what ~nodejs-repl~ does]] using ~ts-node~.
+
+#+begin_src sh :tangle no :results silent
+npm install -g ts-node
+#+end_src
+
+You need a =tsconfig.json= for the following to work.
+
+#+begin_src sh :tangle no :results silent
+cat <<EOF > ~/.doom.d/test-files/tsconfig.json
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "jsx": "react",
+    "esModuleInterop": true
+  }
+}
+EOF
+#+end_src
+
+Then make doom understand typescript, e.g. when you select something and go =SPC o r=. 
+
+#+begin_src emacs-lisp
+(defun t/ts-node-repl ()
+  (interactive)
+  (pop-to-buffer
+   (make-comint "ts-node repl" "ts-node")))
+(set-repl-handler! '(typescript-mode typescript-tsx-mode) #'t/ts-node-repl)
+#+end_src
+
+Or when you ~eval~ something when the repl is open, e.g. =g r a p= (eval around paragraph). For multiline stuff type =.editor= into the repl before running the command, finish it with =C-c C-d=
+
+#+begin_src emacs-lisp
+(set-eval-handler! '(typescript-mode typescript-tsx-mode)
+  '((:command     . "ts-node")
+    (:exec        . "%c %s")
+    (:description . "Run ts-node script")))
+#+end_src
+
+#+begin_src emacs-lisp
+;; TODO look at quickrun eval
+;; (set-eval-handler! 'typescript-tsx-mode #'+t/eval-tsx)
+;; (set-eval-handler! 'typescript-mode #'+t/eval-tsx)
 #+end_src
 
 ** Server mode
