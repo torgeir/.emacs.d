@@ -2047,10 +2047,23 @@ ln -sf server/bin/kotlin-language-server .
 
 **** Eglot ls
 
+Create a venv in venv.
+
+#+begin_src sh :tangle no :result no
+python3 -m venv ~/.doom.d/test-files/venv
+#+end_src
+
+#+begin_src emacs-lisp
+(pyvenv-activate (t/user-emacs-file "test-files/venv"))
+#+end_src
+
+Install [[https://github.com/python-lsp/python-lsp-server][a language server]] in the venv.
+
 #+begin_src sh :tangle no
 case $(uname) in
     Darwin)
-        pip install python-language-server
+        #pip install python-lsp-server
+        pip install 'python-lsp-server[all]'
         ;;
     Linux)
         false

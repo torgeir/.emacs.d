@@ -4,3 +4,4 @@ config.el
 /.lsp/
 /.clj-kondo/
 /packages.el
+/test-files/venv/
