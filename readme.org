@@ -118,7 +118,7 @@ Ignore some of the cached emacs files in recent files
 
 ** t-defuns
 
-My old collection of more or less usefull defuns.
+My old collection of more or less useful defuns.
 
 #+begin_src emacs-lisp
 (progn
