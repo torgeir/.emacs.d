@@ -1,4 +1,8 @@
+;;; t-defuns.el --- more or less useful functions
 ;;; t-defuns.el -*- lexical-binding: t; -*-
+;;; Commentary:
+;;; Code:
+
 (defun t/exec-org-block (name vars)
   "Excecute `NAME'd org block."
   (save-excursion
@@ -34,26 +38,6 @@
   (unless (local-variable-p 'evil-ex-commands)
     (setq-local evil-ex-commands (copy-alist evil-ex-commands)))
   (evil-ex-define-cmd cmd function))
-
-(defun t/send-buffer-to-scala-repl ()
-  "Send buffer to ensime repl, starts it if its not running."
-  (interactive)
-  (if (ensime-inf-process-live-p ensime-inf-buffer-name)
-      (ensime-inf-eval-buffer)
-    (progn
-      (ensime-inf-switch)
-      (other-window -1)
-      (ensime-inf-eval-buffer))))
-
-(defun t/send-region-to-scala-repl (start end)
-  "Send region to ensime repl, starts it if its not running."
-  (interactive "r")
-  (if (ensime-inf-process-live-p ensime-inf-buffer-name)
-      (ensime-inf-eval-region start end)
-    (progn
-      (ensime-inf-switch)
-      (other-window -1)
-      (ensime-inf-eval-region start end))))
 
 (defun t/css-kill-value ()
   "kills the attribute of a css property."
@@ -143,7 +127,7 @@ Version 2015-06-12"
    (is-win (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
    (is-cygwin (shell-command (concat "cygstart " (shell-quote-argument default-directory))))
    (is-mac (shell-command "open ."))
-   (is-linux (shell-command "thunar ."))))
+   (is-linux (shell-command "dolphin ."))))
 
 (defun t/hippie-expand-no-case-fold ()
   (interactive)
@@ -155,11 +139,6 @@ Version 2015-06-12"
   (let ((hippie-expand-try-functions-list '(try-expand-line-all-buffers)))
     (end-of-line)
     (hippie-expand nil)))
-
-(defun t/kill-other-buffers ()
-  "Kill all other buffers."
-  (interactive)
-  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
 (defun t/rename-current-buffer-file ()
   "Renames current buffer and file it is visiting."
@@ -211,7 +190,8 @@ Including indent-buffer, which should not be called automatically on save."
 
 (defun t/eval-region-or-last-sexp ()
   (interactive)
-  (if (region-active-p) (call-interactively 'eval-region)
+  (if (region-active-p)
+      (call-interactively 'eval-region)
     (call-interactively 'eval-last-sexp)))
 
 (defun t/eval-and-replace ()
@@ -271,18 +251,6 @@ Including indent-buffer, which should not be called automatically on save."
     (message "major mode: %s" mode)
     mode))
 
-(defvar t/cursors-direction 'down
-  "Direction of cursor movement operations.")
-(make-variable-buffer-local 't/cursors-direction)
-
-(defun t/cursors-direction-is-up ()
-  "Return t if the current cursor movement direction is 'up."
-  (eq t/cursors-direction 'up))
-
-(defun t/cursors-direction-is-down ()
-  "Return t if the current cursor movement direction is 'down."
-  (eq t/cursors-direction 'down))
-
 (defun t/split-window-right-and-move-there-dammit ()
   (interactive)
   (split-window-right)
@@ -293,11 +261,6 @@ Including indent-buffer, which should not be called automatically on save."
   (split-window-below)
   (windmove-down))
 
-(defun t/evil-yank-to-end-of-line ()
-  "Yank from point to end of line."
-  (interactive)
-  (evil-yank (point) (point-at-eol)))
-
 (defun t/face-color-b (&optional face)
   "Get `:background' color of `FACE'."
   (interactive)
@@ -307,23 +270,6 @@ Including indent-buffer, which should not be called automatically on save."
   "Get `:foreground' color of `FACE'."
   (interactive)
   (face-attribute (or face (face-at-point)) :foreground))
-
-(defun t/toggle-theme-dark-light ()
-  "Toggles between themes dark and light theme."
-  (interactive)
-  (let* ((enabled-theme (car custom-enabled-themes))
-         (next-theme (if (equal 'doom-moonlight enabled-theme)
-                         'doom-one-light
-                       'doom-moonlight)))
-    (t/switch-theme next-theme)))
-
-(defun make-orgcapture-frame ()
-  "@torgeir: credits https://github.com/jjasghar/alfred-org-capture/blob/master/el/alfred-org-capture.el
-Create a new frame and run org-capture."
-  (interactive)
-  (make-frame '((name . "remember") (width . 80) (height . 16) (top . 400) (left . 300)))
-  (select-frame-by-name "remember")
-  (org-capture))
 
 (defun t/sudo-edit (&optional arg)
   "Edit currently visited file as root.
@@ -345,6 +291,7 @@ Create a new frame and run org-capture."
   "Check if the function was called with the c-u universal prefix."
   (equal '(4) current-prefix-arg))
 
+;; TODO move to readme.org?
 (defun t/indent-after-paste (fn &rest args)
   (evil-start-undo-step)
   (let* ((u-prefix (t/prefix-arg-universal?))
@@ -382,17 +329,6 @@ Create a new frame and run org-capture."
         (end (if (region-active-p) (region-end) (point-max))))
     (sort-lines nil beg end)))
 
-(defun t/switch-to-previous-buffer ()
-  "Switch to previously open buffer.
-Repeated invocations toggle between the two most recently open buffers."
-  (interactive)
-  (switch-to-buffer (other-buffer (current-buffer) 1)))
-
-(defun t/switch-to-scratch-buffer ()
-  "Switch to the `*scratch*' buffer. Create it first if needed."
-  (interactive)
-  (switch-to-buffer (get-buffer-create "*scratch*")))
-
 (defun t/shorten-directory (dir max-length)
   "Show up to `MAX-LENGTH' characters of a directory name `DIR'."
   (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
@@ -423,11 +359,6 @@ Repeated invocations toggle between the two most recently open buffers."
         (if (called-interactively-p)
             (message "/%s" (mapconcat 'identity path "/"))
           (format "/%s" (mapconcat 'identity path "/")))))))
-
-(defun t/set-emoji-font (frame)
-  "Adjust the font settings of FRAME so Emacs can display emoji properly 🚀."
-  ;;(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
-  (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend))
 
 (defun t/date-time ()
   "Insert current date-time string in full ISO 8601 format.
@@ -492,13 +423,13 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (let ((buffer-modified-p nil))
     (kill-buffer-and-window)))
 
-(defun t/replace-newlines (str)
+(defun t/remove-newlines (str)
   (replace-regexp-in-string "[\r\n]+" "" str))
 
 (defun t/grab-chrome-url ()
   "Grab the frontmost url out of chrome using `org-mac-grab-link'."
   (interactive)
-  (t/replace-newlines
+  (t/remove-newlines
    (shell-command-to-string
     "osascript -l JavaScript -e 'Application(\"Google Chrome\").windows.at(0).activeTab.url()'")))
 
@@ -513,7 +444,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (buffer-string)))
 
 (defun t/fetch (url)
-  "Insert url contents in current buffer. Drops headers and 2x empty lines before content."
+  "Insert URL contents in current buffer.
+Drops headers and 2x empty lines before content."
   (interactive "sfetch url:")
   (insert (t/get-url url))
   (goto-char (point-min))
@@ -559,7 +491,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
               (eq month-day (1- (1- last-month-day))))))))
 
 (defun t/face-at-point (pos)
-  "Echo the face at point."
+  "Echo the face at POS point."
   (interactive "d")
   (let ((face (or (get-char-property (point) 'read-face-name)
                   (get-char-property (point) 'face))))
@@ -568,33 +500,28 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/font-lock-test-faces ()
   "Outputs test strings with all font lock faces to show colors."
   (interactive)
-  (dolist (face '(font-lock-warning-face
-                  font-lock-function-name-face
-                  font-lock-variable-name-face
-                  font-lock-keyword-face
-                  font-lock-comment-face
-                  font-lock-comment-delimiter-face
-                  font-lock-type-face
-                  font-lock-constant-face
-                  font-lock-builtin-face
-                  font-lock-preprocessor-face
-                  font-lock-string-face
-                  font-lock-doc-face
-                  font-lock-negation-char-face))
-    (end-of-buffer)
-    (let ((current-string (concat "\n" (symbol-name face)))
-          (is-font-lock font-lock-mode))
-      (when is-font-lock (font-lock-mode 0))
-      (put-text-property 1 (length current-string) 'face face current-string)
-      (insert current-string)
-      (when is-font-lock (font-lock-mode 1)))))
-
-(defun t/find-file-check-make-large-file-read-only-hook ()
-  "If a file is over a given size, make the buffer read only."
-  (when (> (buffer-size) (* 20 1024 1024))
-    (setq buffer-read-only t)
-    (buffer-disable-undo)
-    (fundamental-mode)))
+  (let ((b (get-buffer-create "*t/font-lock-test-faces*")))
+    (with-current-buffer b
+      (dolist (face '(font-lock-warning-face
+                      font-lock-function-name-face
+                      font-lock-variable-name-face
+                      font-lock-keyword-face
+                      font-lock-comment-face
+                      font-lock-comment-delimiter-face
+                      font-lock-type-face
+                      font-lock-constant-face
+                      font-lock-builtin-face
+                      font-lock-preprocessor-face
+                      font-lock-string-face
+                      font-lock-doc-face
+                      font-lock-negation-char-face))
+        (let ((current-string (concat "\n" (symbol-name face)))
+              (is-font-lock font-lock-mode))
+          (when is-font-lock (font-lock-mode 0))
+          (put-text-property 1 (length current-string) 'face face current-string)
+          (insert current-string)
+          (when is-font-lock (font-lock-mode 1))) t))
+    (popwin:display-buffer b t)))
 
 (defun t/run-osascript (s)
   "Run applescript."
@@ -643,7 +570,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (buffer-string)))
 
 (defun t/re-seq (regexp string)
-  "Get a list of all REGEXP matches (from the first group) in a string."
+  "Get a list of all REGEXP matches (from the first group) in a STRING."
   (save-match-data
     (let ((pos 0)
           matches)
@@ -655,29 +582,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/re-seq-in-file (regex file)
   (t/re-seq regex (t/get-file-string (t/user-emacs-file file))))
 
-(defun t/fn-prefix (prefix module)
-  (let ((module (if (stringp module) module (symbol-name module))))
-    (mapcar
-     (lambda (fn-name)
-       (intern fn-name))
-     (t/re-seq-in-file (concat "defun " "\\(" prefix "\\)" "[ \\)]")
-                       (concat "setup/" module ".el")))))
-
-(defun t/call-fns (fns)
-  (mapcar 'funcall fns))
-
-(defun t/call-prefix (prefix module)
-  (t/call-fns (t/fn-prefix prefix (symbol-name module))))
-
-(defun t/call-init (prefix-fmt pkg)
-  (let ((fn (intern (format prefix-fmt pkg))))
-    (when (fboundp fn)
-      (when *t-debug-init*
-        (message "t/call-init: %s" fn))
-      (funcall fn))))
-
 (defun t/buffer-finished-p (b)
-  "Return non-nil value if the buffer has an ended process."
+  "Return non-nil value if the buffer B has an ended process."
   (string-match-p
    "^Process .* \\(finished\\|exited\\).*$"
    (car (last
@@ -703,15 +609,9 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (when (functionp else)
       (call-interactively else))))
 
-(defun t/reveal-file ()
-  (interactive)
-  (let ((origin-buffer-file-name (buffer-file-name)))
-    (dired-sidebar-point-at-file
-     origin-buffer-file-name
-     (t/project-root))))
-
 (defun t/newline-expand-braces ()
-  "Newline like `evil-ret', but expand (), [] and {} with newline in between, and indent accordingly."
+  "Newline like `evil-ret', but expand (), [] and {} with newline in between,
+and indent accordingly."
   (interactive)
   (cond
    ((or (and (looking-back "(") (looking-at ")"))
@@ -959,31 +859,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
         (select-window (car windows))
       (message "no suitable window to switch to"))))
 
-(defun t/safe-restart-emacs ()
-  "Restart Emacs if config parse correctly."
-  (interactive)
-  (if (eq last-command this-command)
-      (save-buffers-kill-terminal)
-    (require 'async)
-    (async-start
-     (lambda () (shell-command-to-string
-                 "emacs --batch --eval \"
-(condition-case e
-    (progn
-      (load \\\"~/.emacs\\\")
-      (message \\\"-OK-\\\"))
-  (error
-   (message \\\"ERROR!\\\")
-   (signal (car e) (cdr e))))\""))
-     `(lambda (output)
-        (if (string-match "-OK-" output)
-            (when ,(called-interactively-p 'any)
-              (message "Ok."))
-          (switch-to-buffer-other-window "*startup error*")
-          (delete-region (point-min) (point-max))
-          (insert output)
-          (search-backward "Error!"))))))
-
 (defun t/word-at-point ()
   "Return word under cursor."
   (thing-at-point 'word t))
@@ -1003,7 +878,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
                               nil
                               "100"))))
   (set-frame-parameter (selected-frame) 'alpha value))
-
 
 (defun t/clone-github-repo-from-chrome ()
   "Clones the github repo of the currently visisble chrome tab."
@@ -1044,12 +918,10 @@ If FILEXT is provided, return files with extension FILEXT instead."
                   (push a l))))
     l))
 
-
 (defun t/interactive-fns ()
   "List interactive functions."
   (-filter 'commandp
            (t/fns)))
-
 
 (defun t/locally-disable-cursor ()
   "Locally disable cursor in buffer."
@@ -1196,23 +1068,6 @@ See also:  (setq org-agenda-include-diary t)
    (point-max)
    "xmllint --format -"
    (current-buffer) t))
-
-;;
-(defun t/kbi-link ()
-  "Fetch link to frontmost chrome tab if it hold a kanbanize card."
-  (let ((res (s-trim
-              (shell-command-to-string
-               "obb -e '
-(let [url (-> (js/Application \"Google Chrome\") (.-windows) (aget 0) (.activeTab) (.url))]
-  (when (clojure.string/includes? url \"kanbanize\")
-    (let [kbi (re-find #\"[0-9]{4}\" url)]
-      (str \"[[\" url \"][kbi-\" kbi \"]]\"))))'"))))
-    res))
-
-(defun t/insert-kbi-link ()
-  "Insert link to frontmost chrome tab that hold a kanbanize card url."
-  (interactive)
-  (insert (t/kbi-link)))
 
 (defun t/trim-final-newline (string)
   (let ((len (length string)))
