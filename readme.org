@@ -28,6 +28,8 @@ ln -sf ~/.doom.d/emacsclient ~/bin/e
 ln -sf ~/.doom.d/emacsclient-terminal ~/bin/em
 #+end_src
 
+There were native comp issues on emacs-plus@28 after upgrading to ventura on mac. Solved by [[https://github.com/d12frosted/homebrew-emacs-plus/issues/485#issuecomment-1308164501][linking libgccjit in the brew lib folder]].
+
 ** Doom help
 
 The built in emacs help is fantastic. The doom one on ~SPC h d~ is even better! Here's a few examples.
