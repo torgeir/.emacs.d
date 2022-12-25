@@ -5,14 +5,15 @@
   "An even darker doom-one theme."
 
   ;; name        default   256           16
-  ((bg         `(,(doom-darken "#282c34" 0.5) "black"       "black"  ))
+  (;(bg         `(,(doom-darken "#282c34" 0.6) "black"       "black"  ))
+   (bg         `(,(doom-darken "#21242b" 0.55) "black"       "black"  ))
    (fg         `(,(doom-darken "#bbc2cf" 0.1) "#bfbfbf"     "brightwhite"  ))
 
    ;; These are off-color variants of bg/fg, used primarily for `solaire-mode',
    ;; but can also be useful as a basis for subtle highlights (e.g. for hl-line
    ;; or region), especially when paired with the `doom-darken', `doom-lighten',
    ;; and `doom-blend' helper functions.
-   (bg-alt     `(,(doom-darken "#21242b" 0.5) "black"       "black"        ))
+   (bg-alt     `(,(doom-darken "#21242b" 0.6) "black"       "black"        ))
    (fg-alt     `(,(doom-darken "#5B6268" 0.1) "#2d2d2d"     "white"        ))
 
    ;; These should represent a spectrum from bg to fg, where base0 is a starker
