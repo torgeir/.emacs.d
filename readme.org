@@ -1235,7 +1235,7 @@ Be explicit about when deleting workspaces
 
 (map!
  :map doom-leader-workspace-map
- :leader :desc "New workspace" "TAB w" '+workspace:new
+ :leader :desc "New workspace" "TAB w" '+workspace/new-named
  :leader :desc "Next workspace" "TAB n" '+workspace:switch-next
  :leader :desc "Previous workspace" "TAB p" '+workspace:switch-previous
  :leader :desc "Swap next" "TAB j" '+workspace/swap-right
