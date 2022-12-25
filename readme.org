@@ -229,7 +229,8 @@ When starting Emacs in daemon mode, ask for a valid passphrase in the gpg-agent.
 (when (daemonp)
   (let ((try-again 3)
         unlocked)
-    (while (not (or unlocked (zerop try-again)))
+    (while (not (or unlocked
+                    (zerop try-again)))
       (setq unlocked (zerop (shell-command "gpg -q --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg > /dev/null" nil nil))
             try-again (1- try-again))
       (unless unlocked (message "GPG: failed to unlock, please try again (%d)" try-again)))
@@ -1043,7 +1044,7 @@ Support wrapping sexps by holding super, both in normal mode and insert mode, fr
 #+end_src
 
 *** Distraction free / Zen
-**** Writeroom
+**** Writeroom, margins
 
 A _really global_ global writeroom mode. The function is redefined such that if writeroom-major-modes is nil, writeroom-mode is activated in ALL buffers.
 
