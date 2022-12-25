@@ -2162,14 +2162,10 @@ Emacs server setup.
 
 This name is used from skhdrc, ~/.emacs.d/emacsclient~, ~/.emacs.d/emacsclient~ and other places. The latter two are linked as ~e~ and ~em~ on the command line, to target the running emacs server instance, to quickly open a file or folder.
 
-#+begin_src emacs-lisp
-(setq server-name "torgemacs")
-#+end_src
-
 I also use this from Alfred, as a quick way of capturing from anywhere.
 
 #+begin_src sh :tangle no :results silent
-/usr/bin/env emacsclient -s torgemacs -e '(progn (select-frame-set-input-focus (selected-frame)) (org-capture))'
+/usr/bin/env emacsclient -e '(progn (select-frame-set-input-focus (selected-frame)) (org-capture))'
 #+end_src
 
 ** Terminal

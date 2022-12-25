@@ -13,7 +13,7 @@ esac
 if [ "$INSIDE_EMACS" = "vterm" ]; then
   findfile "$@"
 elif [ -n "${INSIDE_EMACS+1}" ]; then
-  $emacsclient -s torgemacs -n -c "$@" # 2> /dev/null
+  $emacsclient -n -c "$@" # 2> /dev/null
 else
-  $emacsclient -s torgemacs -n -c -q "$@"
+  $emacsclient -n -c -q "$@"
 fi
