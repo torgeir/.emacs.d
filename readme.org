@@ -1077,25 +1077,26 @@ And screens are big, so a bit more space for text is nice.
   (setq writeroom-width (/ (float 7) 9))
   (setq writeroom-width (/ (float 3) 5)))
 (after! olivetti
-  (setq olivetti-minimum-body-width (floor (* (frame-width (selected-frame))
-                                              (/ (float 5) 7)))))
+  (setq ;; olivetti-minimum-body-width
+   olivetti-body-width
+   (floor (* (frame-width (selected-frame))
+             (/ (float 5) 7)))))
 #+end_src
 
 Adjust margins equally across modes.
 
 #+begin_src emacs-lisp
-(after! writeroom-mode
-  (map! :map evil-window-map
-        "M" (t/micro-state
-             nil
-             "<left>" (cmd! (when (and (boundp 'writeroom-mode) writeroom-mode)
-                              (writeroom-decrease-width))
-                            (when (and (boundp 'olivetti-mode) olivetti-mode)
-                              (olivetti-shrink)))
-             "<right>" (cmd! (when (and (boundp 'writeroom-mode) writeroom-mode)
-                               (writeroom-increase-width))
-                             (when (and (boundp 'olivetti-mode) olivetti-mode)
-                               (olivetti-expand))))))
+(map! :map evil-window-map
+      "M" (t/micro-state
+           nil
+           "<left>" (cmd! (when (and (boundp 'writeroom-mode) writeroom-mode)
+                            (writeroom-decrease-width))
+                          (when (and (boundp 'olivetti-mode) olivetti-mode)
+                            (olivetti-shrink)))
+           "<right>" (cmd! (when (and (boundp 'writeroom-mode) writeroom-mode)
+                             (writeroom-increase-width))
+                           (when (and (boundp 'olivetti-mode) olivetti-mode)
+                             (olivetti-expand)))))
 #+end_src
 
 *** Mode line
