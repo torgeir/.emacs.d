@@ -2944,7 +2944,7 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 - two
 - three
 
-* Someday
+** Someday
 :PROPERTIES:
 :header-args:emacs-lisp: :lexical t :results silent
 :END:
