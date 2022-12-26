@@ -2975,3 +2975,10 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 :END:
 
 ~(doom-mark-buffer-as-real-h)~ can make scratch buffer navigable with ~s-j/k~
+
+*** TODO deno-emacs                    :pocket:deno:emacs:
+
+June 18, 2021 at 12:12PM
+https://ift.tt/36jQLT2
+
+deno-fmt is function that formats the current buffer on save with deno fmt. The package also exports a minor mode that applies (deno-fmt) on save. Feel free to replace typescript-mode / js2-mode in the following with your TypeScript/JavaScript mode of choice.
