@@ -1115,6 +1115,13 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-buffer-file-name-style 'truncate-upto-root))
 #+end_src
 
+*** REPLs
+
+#+begin_src emacs-lisp
+(after! ielm
+  (add-hook 'inferior-emacs-lisp-mode-hook 'evil-cleverparens-mode))
+#+end_src
+
 ** Dotfiles
 
 Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their file location.
