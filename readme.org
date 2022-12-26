@@ -1388,13 +1388,15 @@ Motion keys for info mode.
 Zoom to the previewed subtree when jumping between with =consult-org-heading=.
 
 #+begin_src emacs-lisp
-(defun t/after-consult-org-jump ()
+(defun t/after-consult-jump ()
+  ;; org
   (when (eq major-mode 'org-mode)
     (when (org-at-heading-p)
       (outline-hide-sublevels (org-outline-level)))
-    (org-show-subtree)
-    (recenter-top-bottom 'top)))
-(add-hook 'consult-after-jump-hook 't/after-consult-org-jump)
+    (org-show-subtree))
+  ;; always
+  (recenter-top-bottom 'top))
+(add-hook 'consult-after-jump-hook 't/after-consult-jump)
 #+end_src
 
 *** Async source code blocks
