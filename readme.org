@@ -2204,6 +2204,7 @@ Keep evil insert mode cursor after shell commands have run.
 
 #+begin_src emacs-lisp :results silent
 (advice-add #'vterm--redraw :after (lambda (&rest args) (evil-refresh-cursor evil-state)))
+(advice-add #'vterm--delayed-redraw :after (lambda (&rest args) (evil-refresh-cursor evil-state)))
 #+end_src
 
 **** Keybindings
