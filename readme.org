@@ -2945,3 +2945,5 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 :PROPERTIES:
 :header-args:emacs-lisp: :lexical t :results silent
 :END:
+
+~(doom-mark-buffer-as-real-h)~ can make scratch buffer navigable with ~s-j/k~
