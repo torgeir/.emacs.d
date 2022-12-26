@@ -2212,10 +2212,19 @@ Keep evil insert mode cursor after shell commands have run.
 Some keybindings are so engrained I can't live without them.
 
 #+begin_src emacs-lisp
-(map! :map vterm-mode-map
-      :m "C-a" 'vterm-send-C-a
-      :m "M-<backspace>" 'vterm-send-C-w
-      :i "M-<backspace>" 'vterm-send-C-w)
+(after! vterm
+  (map! :map vterm-mode-map
+        :m "C-a" 'vterm-send-C-a
+        :m "M-<backspace>" 'vterm-send-C-w
+        :i "M-<backspace>" 'vterm-send-C-w))
+#+end_src
+
+Remove ~C-l~ in normal mode, so that ~recenter-top-bottom~ works. Bring it back in insert mode.
+
+#+begin_src emacs-lisp
+(after! vterm
+  (map! :map vterm-mode-map "C-l" nil)
+  (map! :map vterm-mode-map :i "C-l" 'vterm-clear))
 #+end_src
 
 *** Terminal from everywhere with s-return
