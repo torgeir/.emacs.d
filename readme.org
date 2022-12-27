@@ -2263,7 +2263,15 @@ Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.s
 
 #+begin_src emacs-lisp
 (map! :map comint-mode-map
+      :i "C-d" #'t/volatile-kill-buffer-and-window
       :n "C-d" #'t/volatile-kill-buffer-and-window)
+#+end_src
+
+#+begin_src emacs-lisp
+(after! cider
+  (map! :map cider-repl-mode-map
+        :i "C-d" #'t/volatile-kill-buffer-and-window
+        :n "C-d" #'t/volatile-kill-buffer-and-window))
 #+end_src
 
 *** No which-key in vterm
