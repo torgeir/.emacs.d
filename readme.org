@@ -1246,8 +1246,8 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 
  :leader :desc "Flip frame"                   "w f" #'rotate-frame
  :leader :desc "Close window unconditionally" "w d" #'delete-window
- :leader :desc "Rotate frame"                 "w r" #'rotate-frame-anticlockwise
- :leader :desc "Rotate frame clockwise"       "w R" #'rotate-frame-clockwise
+ :leader :desc "Rotate frame"                 "w r" #'rotate-frame-clockwise
+ :leader :desc "Rotate frame clockwise"       "w R" #'rotate-frame-anticlockwise
 
  :leader :desc "Projectile dired"    "p d" #'t/projectile-dired
  :leader :desc "Projectile git"      "p g" #'t/projectile-magit-status
