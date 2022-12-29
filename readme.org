@@ -829,6 +829,15 @@ There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][do
 (setq-hook! 'prog-mode-hook display-line-numbers-type 'relative)
 #+end_src
 
+Set across all real buffers
+
+#+begin_src emacs-lisp
+(comment
+ (progn
+   (t/in-all-buffers (lambda (b) (setq display-line-numbers 'relative)))
+   (t/in-all-buffers (lambda (b) (setq display-line-numbers nil)))))
+#+end_src
+
 **** Rainbow mode
 
 ***** Rainbow mode in prog modes
@@ -1230,9 +1239,6 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Locate" "f L" #'consult-locate
  :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
 
- :leader :desc "Soft line wrapping" "t w" #'visual-line-mode
- :leader :desc "Show whitespace"    "t W" #'whitespace-mode
-
  :leader :desc "Browse"          "o e" #'eww
  :leader :desc "Www"             "o w" #'eww
 
@@ -1250,16 +1256,20 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 
  :leader :desc "Toggle blamer"         "t b" #'blamer-mode
  :leader :desc "Toggle Big mode"       "t B" #'doom-big-font-mode
- :leader :desc "Toggle writeroom"      "t d" #'global-writeroom-mode
+ :leader :desc "Toggle dedication"     "t d" #'t/toggle-dedicated-window
  :leader :desc "Debug on error"        "t D" #'toggle-debug-on-error
- :leader :desc "Toggle dedication"     "t e" #'t/toggle-dedicated-window
  :leader :desc "Cycle fonts"           "t f" #'t/cycle-fonts
  :leader :desc "Toggle focus mode"     "t F" #'focus-mode
  :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
+ :leader :desc "Soft line wrapping"    "t v" #'visual-line-mode
+ :leader :desc "Toggle margins"        "t M" #'t/margins-global
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
  :leader :desc "Toggle transparency"   "t T" #'t/transparency
  :leader :desc "Reading"               "t r" #'t/start-spray-micro-state
  :leader :desc "Toggle read-only"      "t R" #'read-only-mode
+ :leader :desc "Toggle writeroom"      "t w" #'global-writeroom-mode
+ :leader :desc "Show whitespace"       "t W" #'whitespace-mode
+ :leader :desc "Toggle zen"            "t z" #'global-writeroom-mode
 
  :leader :desc "Flip frame"                   "w f" #'rotate-frame
  :leader :desc "Close window unconditionally" "w d" #'delete-window
