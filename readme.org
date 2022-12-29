@@ -279,6 +279,12 @@ Don't bother waiting
 (setq which-key-idle-delay 0.1)
 #+end_src
 
+*** Whitespace
+
+#+begin_src emacs-lisp
+(add-to-list 'whitespace-style 'trailing)
+#+end_src
+
 *** Evil
 
 I spent so much time with vim, I will probably never give it up.
