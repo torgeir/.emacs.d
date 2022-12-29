@@ -1082,21 +1082,59 @@ See also:  (setq org-agenda-include-diary t)
     (insert-file-contents file)
     (t/trim-final-newline (buffer-string))))
 
-
 (defun t/clear-kill-ring ()
   "Clear the kill ring."
   (setq kill-ring nil))
-
 
 (defun t/mark-real-buffer ()
   (interactive)
   (doom-set-buffer-real (current-buffer) t))
 
-
 (defun t/mark-unreal-buffer ()
   (interactive)
   (doom-set-buffer-real (current-buffer) nil))
 
+(defun t/dired-close-recursively ()
+  "Close all directories starting with this directory's path."
+  (interactive)
+  (let ((path (dired-get-filename)))
+    (save-excursion
+      (while
+          (and
+           (not (eq (point) (save-excursion (end-of-buffer) (point))))
+           (s-starts-with? path (dired-get-filename)))
+        (when (dired-subtree--is-expanded-p) (dired-subtree-toggle))
+        (forward-line)))))
+
+(defun t/dired-open-recursively ()
+  "Open all directories starting with this directory's path."
+  (interactive)
+  (let ((path (dired-get-filename)))
+    (save-excursion
+      (when (dired-subtree--is-expanded-p) (dired-subtree-toggle))
+      (dired-subtree-toggle)
+      (forward-line)
+      (t/dired-show-recursively-0 path))))
+
+(defun t/dired-ignored? ()
+  "File under cursor is ignored by projectile. Only checks file-name-base."
+  (interactive)
+  (-any?
+   (lambda (d) (s-matches? d (file-name-base (dired-get-filename))))
+   projectile-globally-ignored-directories))
+
+(defun t/dired-show-recursively-0 (path)
+  "Recursively opens all directories for this path."
+  (interactive)
+  (when (not (eq (point) (save-excursion (end-of-buffer) (point))))
+    (when (and
+           (s-starts-with? path (dired-get-filename))
+           (not (s-starts-with? "." (file-name-base (dired-get-filename))))
+           (not (t/dired-ignored?)))
+      (when (dired-subtree--is-expanded-p) (dired-subtree-toggle))
+      (dired-subtree-toggle))
+    (forward-line)
+    (t/dired-show-recursively-0 path)))
 
 (provide 't-defuns)
 ;;; t-defuns.el ends here

@@ -493,11 +493,20 @@ Iterate through CamelCase words
 
 #+begin_src emacs-lisp
 (after! dired
+  (defun t/dired-subtree-toggle ()
+    (interactive)
+    (cond
+     ((and (t/prefix-arg-universal?)
+           (dired-subtree--is-expanded-p)) (t/dired-close-recursively))
+     ((t/prefix-arg-universal?) (t/dired-open-recursively))
+     (t (dired-subtree-toggle))))
   ;; prevent kill all dired buffers on q
   (map! :map dired-mode-map :ng "q" nil)
+  (map! :map dired-mode-map :ng "Q" 't/volatile-kill-buffer)
   (map!
    :map dired-mode-map
    "C-k" 'dired-kill-subdir
+   "<tab>" 't/dired-subtree-toggle
    "<backspace>" 'dired-kill-subdir
    "M-<down>" (cmd! (dired-find-alternate-file))
    "M-<up>" (cmd! (find-alternate-file ".."))))
@@ -744,6 +753,8 @@ Ignore some extra folders from projectile
 
 #+begin_src emacs-lisp
 (after! projectile
+  (add-to-list 'projectile-globally-ignored-directories "^build$")
+  (add-to-list 'projectile-globally-ignored-directories "^target$")
   (add-to-list 'projectile-globally-ignored-directories "^\\.log$"))
 #+end_src
 
