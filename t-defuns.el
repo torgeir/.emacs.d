@@ -1082,5 +1082,21 @@ See also:  (setq org-agenda-include-diary t)
     (insert-file-contents file)
     (t/trim-final-newline (buffer-string))))
 
+
+(defun t/clear-kill-ring ()
+  "Clear the kill ring."
+  (setq kill-ring nil))
+
+
+(defun t/mark-real-buffer ()
+  (interactive)
+  (doom-set-buffer-real (current-buffer) t))
+
+
+(defun t/mark-unreal-buffer ()
+  (interactive)
+  (doom-set-buffer-real (current-buffer) nil))
+
+
 (provide 't-defuns)
 ;;; t-defuns.el ends here
