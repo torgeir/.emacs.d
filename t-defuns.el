@@ -828,19 +828,49 @@ and indent accordingly."
     (browse-url
      (format "https://www.github.com/%s/pulls" url))))
 
-(defun t/margins-global (l &optional r)
-  "Set global frame margins."
-  (interactive "nWidth: ")
-  (setq-default left-margin-width l
-                right-margin-width (or r l))
-  (set-window-buffer nil (current-buffer)))
+(defun t/in-all-windows (fn)
+  (interactive)
+  (dolist (w (window-list))
+    (funcall fn w)))
 
-(defun t/margins-local (l &optional r)
-  "Set buffer local frame margin."
-  (interactive "nWidth: ")
-  (setq-local left-margin-width l)
-  (setq-local right-margin-width (or r l))
-  (set-window-buffer nil (current-buffer)))
+(defun t/in-all-buffers (fn)
+  (interactive)
+  (dolist (b (doom-buffer-list))
+    (with-current-buffer b
+      (funcall fn b))))
+
+(defun t/set-all-window-margins (l &optional r)
+  (let ((r (or r l)))
+    (dolist (w (window-list))
+      (set-window-margins w l r))))
+
+(defun t/margins-global (&optional l)
+  "Set global window margins."
+  (interactive (list (string-to-number (read-string "Width: " nil nil "0"))))
+  (let ((l (or l 0)))
+    (setq-default left-margin-width l
+                  right-margin-width l)
+    (t/set-all-window-margins l)))
+
+(defun t/margins-global-decrease ()
+  "Decrease global window margins."
+  (let ((w (- left-margin-width 2)))
+    (when (> w 0)
+      (t/margins-global w))))
+
+(defun t/margins-global-increase ()
+  "Increase global frame margins."
+  (let ((w (+ left-margin-width 2)))
+    (when (> w 0)
+      (t/margins-global w))))
+
+(defun t/margins-local (l)
+  "Set buffer local window margin."
+  (interactive (list (string-to-number (read-string "Width: " nil nil "0"))))
+  (let ((l (or l 0)))
+    (setq-default left-margin-width l
+                  right-margin-width l)
+    (set-window-margins (get-buffer-window (current-buffer)) l l)))
 
 (defun t/eww-toggle-images ()
   "Toggle whether images are loaded and reload the current page fro cache."

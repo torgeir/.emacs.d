@@ -1122,14 +1122,14 @@ Adjust margins equally across modes.
 (map! :map evil-window-map
       "M" (t/micro-state
            nil
-           "<left>" (cmd! (when (and (boundp 'writeroom-mode) writeroom-mode)
-                            (writeroom-decrease-width))
-                          (when (and (boundp 'olivetti-mode) olivetti-mode)
-                            (olivetti-shrink)))
-           "<right>" (cmd! (when (and (boundp 'writeroom-mode) writeroom-mode)
-                             (writeroom-increase-width))
-                           (when (and (boundp 'olivetti-mode) olivetti-mode)
-                             (olivetti-expand)))))
+           "<left>" (cmd! (cond
+                           ((and (boundp 'writeroom-mode) writeroom-mode) (writeroom-decrease-width))
+                           ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-shrink))
+                           (t (t/margins-global-decrease))))
+           "<right>" (cmd! (cond
+                            ((and (boundp 'writeroom-mode) writeroom-mode) (writeroom-increase-width))
+                            ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-expand))
+                            (t (t/margins-global-increase))))))
 #+end_src
 
 *** Mode line
@@ -1257,8 +1257,11 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 
  :leader :desc "Flip frame"                   "w f" #'rotate-frame
  :leader :desc "Close window unconditionally" "w d" #'delete-window
- :leader :desc "Rotate frame"                 "w r" #'rotate-frame-clockwise
- :leader :desc "Rotate frame clockwise"       "w R" #'rotate-frame-anticlockwise
+ :leader :desc "Winner redo"                  "w R" #'winner-redo
+ :leader :desc "Rotate frame"                 "w r" (cmd!
+                                                     (if (t/prefix-arg-universal?)
+                                                         (rotate-frame-anticlockwise)
+                                                       (rotate-frame-clockwise)))
 
  :leader :desc "Projectile dired"    "p d" #'t/projectile-dired
  :leader :desc "Projectile git"      "p g" #'t/projectile-magit-status
