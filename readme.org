@@ -1201,8 +1201,10 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Show whitespace"    "t W" #'whitespace-mode
 
  :leader :desc "Browse"          "o e" #'eww
+ :leader :desc "Www"             "o w" #'eww
+
  :leader :desc "Rss"             "o S" #'=rss
- :leader :desc "Twitter"         "o w" #'=twitter
+ :leader :desc "Twitter"         "o W" #'=twitter
  :leader :desc "Calendar"        "o c" #'calendar
  :leader :desc "Show home"       "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
  :leader :desc "Show saga"       "o s" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
@@ -1223,6 +1225,8 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
  :leader :desc "Toggle transparency"   "t T" #'t/transparency
+ :leader :desc "Reading"               "t r" #'t/start-spray-micro-state
+ :leader :desc "Toggle read-only"      "t R" #'read-only-mode
 
  :leader :desc "Flip frame"                   "w f" #'rotate-frame
  :leader :desc "Close window unconditionally" "w d" #'delete-window
@@ -1785,6 +1789,28 @@ I never really got into to this.
    "w" 'spray-forward-word
    "<left>" 'spray-backward-word
    "<right>" 'spray-forward-word))
+
+(defun t/start-spray-micro-state (&optional on-exit)
+  (interactive)
+  (let ((map (make-sparse-keymap)))
+    (bind-key "n" (lambda ()
+                    (interactive)
+                    (condition-case nil
+                        (scroll-up-command)
+                      (error
+                       (when (eq major-mode 'elfeed) (elfeed-show-next))))) map)
+    (bind-key "p" (lambda ()
+                    (interactive)
+                    (condition-case nil
+                        (scroll-down-command)
+                      (error
+                       (when (eq major-mode 'elfeed) (elfeed-show-prev))))) map)
+    (bind-key "s" (cmd!
+                   (when (eq major-mode 'elfeed)
+                     (let ((shr-inhibit-images t)) (elfeed-show-refresh)))
+                   (funcall (t/spray-micro-state))) map)
+    (set-temporary-overlay-map map t on-exit))
+    (message "(n)ext page, (p)rev page, (s)pray mode"))
 
 (map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
 
@@ -2471,21 +2497,7 @@ Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bi
             (cmd!
              (olivetti-mode)
              (run-at-time "0 sec" nil (cmd! (visual-line-mode)))
-             (let ((map (make-sparse-keymap)))
-               (bind-key "n" (lambda ()
-                               (interactive)
-                               (condition-case nil
-                                   (scroll-up-command)
-                                 (error (elfeed-show-next)))) map)
-               (bind-key "p" (lambda ()
-                               (interactive)
-                               (condition-case nil
-                                   (scroll-down-command)
-                                 (error (elfeed-show-prev)))) map)
-               (bind-key "s" (cmd!
-                              (let ((shr-inhibit-images t)) (elfeed-show-refresh))
-                              (funcall (t/spray-micro-state))) map)
-               (set-temporary-overlay-map map t (lambda () (equal major-mode 'elfeed-show-mode)))))))
+             (t/start-spray-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
 #+end_src
 
 Show the mouseover text for xkcd comics by moving to the image and fetching the ~'shr-alt~ text property that holds the mouse over text. Insert it in the buffer on the next tick, to wait for the image to appear first.
