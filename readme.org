@@ -182,6 +182,22 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 
 ** Editor
 
+*** Recursive minibuffers
+
+When you change your mind and need to do something first, after you already started a command that opens the minibuffer.
+
+#+begin_src emacs-lisp
+(setq enable-recursive-minibuffers t)
+#+end_src
+
+And a slightly fancier indicator than ~(minibuffer-depth-indicate-mode)~
+
+#+begin_src emacs-lisp
+(use-package! recursion-indicator
+  :config
+  (recursion-indicator-mode))
+#+end_src
+
 *** Initialization
 
 #+begin_src emacs-lisp
