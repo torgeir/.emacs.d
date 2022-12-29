@@ -1347,7 +1347,8 @@ Motion keys for info mode.
         (outline-hide-sublevels (org-outline-level)))
       (org-previous-visible-heading 1)
       (outline-show-subtree)
-      (when was-narrowed (org-narrow-to-subtree))))
+      (when was-narrowed (org-narrow-to-subtree))
+      (recenter-top-bottom 'top)))
 
   (defun t/open-next-heading ()
     (interactive)
@@ -1357,7 +1358,8 @@ Motion keys for info mode.
         (outline-hide-sublevels (org-outline-level)))
       (org-next-visible-heading 1)
       (outline-show-subtree)
-      (when was-narrowed (org-narrow-to-subtree))))
+      (when was-narrowed (org-narrow-to-subtree))
+      (recenter-top-bottom 'top)))
 
   ;; like in normal org, not like in doom
   (map! :after evil-org
