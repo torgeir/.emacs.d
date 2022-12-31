@@ -2433,6 +2433,8 @@ Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindin
  (:prefix-map
   ("g" . "git")
   (:when (modulep! :tools magit)
+    :desc "Diff dwim"             "d" #'magit-diff-dwim
+    :desc "Ediff dwim"            "e" #'magit-ediff-dwim
     :desc "Visit pulls"           "p" #'t/visit-git-link-pulls
     :desc "Push"                  "P" #'magit-push
     (:prefix ("c" . "create")
