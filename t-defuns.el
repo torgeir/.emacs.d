@@ -903,7 +903,8 @@ and indent accordingly."
   "Sets the transparency of the frame window. 0=transparent/100=opaque."
   (interactive (list
                 (string-to-number
-                 (read-string (format "Transparency Value 0 - 100 opaque: " (thing-at-point 'symbol))
+                 (read-string (format "Opacity is %s. Enter a value from 0 - 100, or press enter for 100: "
+                                      (frame-parameter (selected-frame) 'alpha))
                               nil
                               nil
                               "100"))))
