@@ -1167,5 +1167,11 @@ See also:  (setq org-agenda-include-diary t)
     (forward-line)
     (t/dired-show-recursively-0 path)))
 
+(defun t/toggle-window-cursor ()
+  "Toggle cursor visibility in the window of the current buffer."
+  (interactive)
+  (internal-show-cursor (get-buffer-window (current-buffer))
+                        (not (internal-show-cursor-p))))
+
 (provide 't-defuns)
 ;;; t-defuns.el ends here

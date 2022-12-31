@@ -1244,19 +1244,22 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Browse"          "o e" #'eww
  :leader :desc "Www"             "o w" #'eww
 
- :leader :desc "Rss"             "o S" #'=rss
- :leader :desc "Twitter"         "o W" #'=twitter
- :leader :desc "Calendar"        "o c" #'calendar
- :leader :desc "Show home"       "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
- :leader :desc "Show saga"       "o s" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
- :leader :desc "Browse at point" "o b" #'t/browse-url-at-point
- :leader :desc "Open Intellij"   "o i" #'t/open-in-intellij
+ :leader :desc "Rss"               "o S" #'=rss
+ :leader :desc "Twitter"           "o W" #'=twitter
+ :leader :desc "Calendar"          "o c" #'calendar
+ :leader :desc "Show home"         "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
+ :leader :desc "Show saga"         "o s" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
+ :leader :desc "Open Intellij"     "o i" #'t/open-in-intellij
+ :leader :desc "Browse at point"   "o b" #'t/browse-url-at-point
+ :leader :desc "Browse chrome url" "o B" #'t/browse-chrome-url-in-eww
 
  :leader :desc "Eval and replace" "m e R" #'t/eval-and-replace
 
  :leader :desc "Search the web" "s w" #'consult-web-search
 
  :leader :desc "Toggle blamer"         "t b" #'blamer-mode
+ :leader :desc "Toggle cursor"         "t c" #'t/toggle-window-cursor
+ :leader :desc "Fill column indicator" "t C" #'display-fill-column-indicator-mode
  :leader :desc "Toggle Big mode"       "t B" #'doom-big-font-mode
  :leader :desc "Toggle dedication"     "t d" #'t/toggle-dedicated-window
  :leader :desc "Debug on error"        "t D" #'toggle-debug-on-error
