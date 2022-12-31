@@ -669,24 +669,26 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 #+end_quote
 
 #+begin_src emacs-lisp
-(defun t/font-spec (f &optional s)
+(defun t/font-spec (f &optional s weight)
   (font-spec :family f
-             :size (or s 16)
-             :weight 'normal
+             :size (or s 18)
+             :weight (or weight 'normal)
              :slant 'normal
              :width 'normal))
 
-(setq t-fonts '("JetBrains Mono"
-                "Fira Code"
-                "Iosevka SS05"))
+(setq t-fonts '((:face "Iosevka SS05")
+                (:face "Bookerly")))
 
-(defun t/cycle-fonts ()
+(defun t/cycle-fonts (&optional font-spec)
   (interactive)
   (setq t-fonts (nconc (last t-fonts) (butlast t-fonts)))
-  (let ((f (car t-fonts)))
-    (message "Font: %s" f)
-    (setq doom-font (t/font-spec f)
-          doom-variable-pitch-font (t/font-spec f)
+  (let* ((spec (or font-spec (car t-fonts)))
+         (f (plist-get spec :face))
+         (s (plist-get spec :size))
+         (w (plist-get spec :weight)))
+    (message "Font: %s, size: %s, weight: %s" f s w)
+    (setq doom-font (t/font-spec f s w)
+          doom-variable-pitch-font (t/font-spec f s w)
           ;;doom-variable-pitch-font (t/font-spec "ETBembo" 20)
           doom-big-font (t/font-spec f 20)
           doom-font-increment 1)
