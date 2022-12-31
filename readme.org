@@ -320,6 +320,13 @@ I use ~SPC w h~ instead of ~SPC w C-h~ to move to the left window. ~C-h~ is more
 (map! :after evil :map evil-window-map "C-h" nil)
 #+end_src
 
+**** Increment & Decrement number
+
+#+begin_src emacs-lisp
+(map! :n "g-" #'evil-numbers/dec-at-pt
+      :n "g+" #'evil-numbers/inc-at-pt)
+#+end_src
+
 **** Registers
 
 Some macros I once used.
