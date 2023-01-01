@@ -2399,9 +2399,9 @@ Useful magit keybindings:
         magit-rebase-arguments '("--interactive")
         magit-log-arguments '("--graph" "--color" "--decorate" "-n256")
         git-commit-summary-max-length 72 ;; like github
-        magit-display-buffer-function ;;'magit-display-buffer-fullcolumn-most-v1
-                                      'magit-display-buffer-traditional
-        )
+        ;; magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1
+        ;; magit-display-buffer-function 'magit-display-buffer-traditional
+        magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
 
   (defun t/commit-mode-hook ()
     (add-to-list 'whitespace-style 'trailing)
