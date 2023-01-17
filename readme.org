@@ -407,20 +407,29 @@ Some examples and explanations
 
   (progn
 
-    (setq orderless-matching-styles '(orderless-literal)
-          ;; '(orderless-initialism
-          ;;  orderless-literal
-          ;;  orderless-regexp
-          ;;  orderless-flex)
-          )
+    (setq orderless-matching-styles
+          '(orderless-literal
+            ;; orderless-initialism
+            ;; orderless-regexp
+            ;; orderless-flex
+            ))
 
-    (setq orderless-style-dispatchers nil
-          ;; '(prot-orderless-literal-dispatcher
-          ;;  prot-orderless-initialism-dispatcher
-          ;;  prot-orderless-flex-dispatcher
-          ;;  or-regexp
-          ;;  )
-          )
+    (setq orderless-style-dispatchers
+          '(initialism-dispatcher ;; suffix search with =
+            flex-dispatcher       ;; suffix search with .
+            regexp-dispatcher     ;; suffix search with ~
+            or-regexp             ;; regex search with foo|bar
+            ))
+
+    (defun regexp-dispatcher (pattern _index _total)
+      "Matches regexp."
+      (when (string-suffix-p "~" pattern)
+        `(orderless-regexp . ,(substring pattern 0 -1))))
+
+    (defun flex-dispatcher (pattern _index _total)
+      "Matches using any group in any order."
+      (when (string-suffix-p "." pattern)
+        `(orderless-flex . ,(substring pattern 0 -1))))
 
     (defun or-regexp (pattern index _total)
       "foo|bar"
@@ -430,41 +439,23 @@ Some examples and explanations
        ((string-match-p "|" pattern)
         `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" pattern) "\\)"))))))
 
-    (defun prot-orderless-literal-dispatcher (pattern _index _total)
-      "Literal style dispatcher using the equals sign as a suffix.
-E.g.
-Buffer= e nm=
-Buffer-menu-unmark
-^^^^^^       ^^
-Buffer-menu-unmark-all
-^^^^^^       ^^
-Buffer-menu-backup-unmark
-^^^^^^              ^^
-Buffer-menu-unmark-all-buffers
-^^^^^^       ^^
-"
+    (defun literal-dispatcher (pattern _index _total)
+      "Literal style dispatcher using the equals sign as a suffix."
       (when (string-suffix-p "=" pattern)
         `(orderless-literal . ,(substring pattern 0 -1))))
 
     ;;;###autoload
-    (defun prot-orderless-initialism-dispatcher (pattern _index _total)
+    (defun initialism-dispatcher (pattern _index _total)
       "Matches leading on words in order
 E.g.
-#defun#j gjp, ha,
+#fun#gjp, ha,
 (defun t/js2-get-json-path (&optional hardcoded-array-index))
  ^^^^^       ^   ^    ^               ^         ^
-
-#defun#j gjp, hi,
+#fun#gjp, hi,
 Would not match the above as no leading words start h then another word starting with i
 "
       (when (string-suffix-p "," pattern)
         `(orderless-strict-initialism . ,(substring pattern 0 -1))))
-
-    ;;;###autoload
-    (defun prot-orderless-flex-dispatcher (pattern _index _total)
-      "Matches using any group in any order."
-      (when (string-suffix-p "." pattern)
-        `(orderless-flex . ,(substring pattern 0 -1))))
 
     (defun orderless-strict-initialism (component)
       "Match a COMPONENT as a strict initialism, optionally ANCHORED.
