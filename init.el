@@ -176,7 +176,7 @@
        ;;purescript        ; javascript, but functional
        (python +lsp
                +pyenv
-               +conda
+               ;; +conda
                +tree-sitter)            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
