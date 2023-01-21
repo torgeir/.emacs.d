@@ -547,6 +547,7 @@ A diy directory sidebar using dired. Inspired the response in https://www.reddit
       ;; when no buffer exists, init it
       (when (not (get-buffer b))
         (with-current-buffer (dired-noselect (t/project-root))
+          (visual-line-mode -1)
           (rename-buffer b)))
 
       (pop-to-buffer b)
