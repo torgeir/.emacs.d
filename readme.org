@@ -505,8 +505,8 @@ Iterate through CamelCase words
      ((t/prefix-arg-universal?) (t/dired-open-recursively))
      (t (dired-subtree-toggle))))
   ;; prevent kill all dired buffers on q
-  (map! :map dired-mode-map :ng "q" nil)
-  (map! :map dired-mode-map :ng "Q" 't/volatile-kill-buffer)
+  (map! :map dired-mode-map :ng "q" 't/volatile-kill-buffer)
+  (map! :map dired-mode-map :ng "Q" 'evil-record-macro)
   (map!
    :map dired-mode-map
    "C-k" 'dired-kill-subdir
