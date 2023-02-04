@@ -1174,8 +1174,7 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
 Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their file location.
 
 #+begin_src emacs-lisp
-;; TODO torgeir messes up git commit mode in the dotfiles repo
-;; (add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "dotfiles")) 'sh-mode))
+(add-to-list 'auto-mode-alist (cons (concat "^" (t/user-file "dotfiles") "/" "[^.]") 'sh-mode))
 #+end_src
 
 ** Keybindings
