@@ -230,6 +230,23 @@ Including indent-buffer, which should not be called automatically on save."
                (when is-mac (ns-do-hide-emacs))
              "in terminal, use c-z instead"))))
 
+(defun t/delete-window-or-frame-or-hide ()
+  "Delete selected window or frame.
+If its the last window in the frame, delete the frame. If its the last frame,
+hide it (on mac)."
+  (interactive)
+  (condition-case err
+      (delete-window)
+    (error
+     (if (cdr (frame-list))
+         (if is-mac
+             (ns-do-hide-emacs)
+           (condition-case errr
+               (delete-frame)
+             ;; last frame on linux
+             (error (save-buffers-kill-emacs))))
+       (save-buffers-kill-emacs)))))
+
 (defun t/copy-buffer-file-name ()
   (interactive)
   (add-string-to-kill-ring (file-name-nondirectory (buffer-file-name))))
