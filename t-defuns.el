@@ -1190,5 +1190,32 @@ See also:  (setq org-agenda-include-diary t)
   (internal-show-cursor (get-buffer-window (current-buffer))
                         (not (internal-show-cursor-p))))
 
+(defun t/deploy-torgeir.dev ()
+  (interactive)
+  (let ((b "*t-deploy-torgeir_dev*"))
+    (shell-command "cd ~/Code/posts && git st" b b)
+    (pop-to-buffer b)
+    (if (yes-or-no-p "Deploy changes?")
+        (progn
+          (shell-command
+            "cd ~/Code/posts \
+              && git add . \
+              && git ci -m \"$(isodate)\" \
+              && git push" b b)
+          (message "Deploy done."))
+      (progn
+        (with-current-buffer b (kill-buffer))
+        (message "Cancelled.")))))
+
+(defun t/preview-torgeir.dev ()
+  (interactive)
+  (+vterm/toggle nil)
+  (term-send-raw-string
+   (concat "cd ~/Code/posts\C-m \
+      open http://localhost:1313/\C-m\
+      hugo server -p 1313 --navigateToChanged"
+      (if (t/prefix-arg-universal?) " -D" "")
+      "\C-m")))
+
 (provide 't-defuns)
 ;;; t-defuns.el ends here

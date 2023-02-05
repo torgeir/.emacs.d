@@ -1183,6 +1183,12 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 - [[file:~/.emacs.d/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]]
 
 #+begin_src emacs-lisp
+(map! :map markdown-mode-map
+      "M-p" 'backward-paragraph
+      "M-n" 'forward-paragraph)
+#+end_src
+
+#+begin_src emacs-lisp
 (map!
  :n "s-0" nil
  "s-0" #'doom/reset-font-size
