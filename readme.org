@@ -1107,7 +1107,7 @@ A _really global_ global writeroom mode. The function is redefined such that if 
 The [[https://docs.doomemacs.org/latest/modules/ui/zen/][doom default text scale of 2]] is a bit heavy
 
 #+begin_src emacs-lisp
-(setq +zen-text-scale 1.1)
+(setq +zen-text-scale 0)
 #+end_src
 
 Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly bound to ~s-?~. Give it an even more awkward binding.
@@ -1123,7 +1123,8 @@ And screens are big, so a bit more space for text is nice.
 #+begin_src emacs-lisp
 (after! writeroom
   (setq writeroom-width (/ (float 7) 9))
-  (setq writeroom-width (/ (float 3) 5)))
+  (setq writeroom-width (/ (float 3) 5))
+  (setq writeroom-width (/ (float 2) 3)))
 (after! olivetti
   (setq ;; olivetti-minimum-body-width
    olivetti-body-width
