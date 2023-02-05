@@ -53,7 +53,7 @@ This config uses the =:config literal= that tangles this file to ~config.el~ on 
  
 *** Navigation
 
-I usually navigate this with =c-n= or =c-p=, or =mgg=.
+I usually navigate this with =c-c c-n= or =c-c c-p=, or =mgg=.
 
 ** Packages
 
@@ -3076,3 +3076,21 @@ June 18, 2021 at 12:12PM
 https://ift.tt/36jQLT2
 
 deno-fmt is function that formats the current buffer on save with deno fmt. The package also exports a minor mode that applies (deno-fmt) on save. Feel free to replace typescript-mode / js2-mode in the following with your TypeScript/JavaScript mode of choice.
+
+*** TODO markdown-mode
+
+#+begin_src emacs-lisp
+(map! :map markdown-mode-map
+      "C-c C-p" (cmd!
+                 (outline-show-all)
+                 (outline-hide-body)
+                 (markdown-outline-previous)
+                 (outline-show-entry)
+                 )
+      "C-c C-n" (cmd!
+                 (outline-show-all)
+                 (outline-hide-body)
+                 (markdown-outline-next)
+                 (outline-show-entry)
+                 ))
+#+end_src
