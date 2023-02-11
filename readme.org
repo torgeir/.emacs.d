@@ -60,6 +60,7 @@ I usually navigate this with =c-c c-n= or =c-c c-p=, or =mgg=.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
+(package! insert-char-preview)
 (package! evil-cleverparens)
 (package! transpose-frame)
 (package! highlight-symbol)
@@ -2293,13 +2294,17 @@ This is paired with the bash function [[https://github.com/torgeir/dotfiles/blob
 Make pasting from ~consult-yank-from-kill-ring~ actually insert results in ~vterm~.
 
 #+begin_src emacs-lisp
-(advice-add #'insert-for-yank
-            :around
-            (defun my/insert-for-yank-vterm-shim (orig-fun &rest args)
-              (if (eq major-mode 'vterm-mode)
-                  (let ((inhibit-read-only t))
-                    (apply #'vterm-insert args))
-                (apply orig-fun args))))
+(defun my/insert-for-yank-vterm-shim (orig-fun &rest args)
+  (if (eq major-mode 'vterm-mode)
+      (let ((inhibit-read-only t))
+        (apply #'vterm-insert args))
+    (apply orig-fun args)))
+#+end_src
+
+#+begin_src emacs-lisp
+(advice-add #'+default/newline :around #'my/insert-for-yank-vterm-shim)
+(advice-add #'insert-char-preview :around #'my/insert-for-yank-vterm-shim)
+(advice-add #'insert-for-yank :around #'my/insert-for-yank-vterm-shim)
 #+end_src
 
 Keep evil insert mode cursor after shell commands have run.
@@ -2315,6 +2320,23 @@ Some keybindings are so engrained I can't live without them.
 
 #+begin_src emacs-lisp
 (after! vterm
+  ;; ^xe edit-command-line in zshrc
+  ;; ^x^e edit-command-line in zshrc
+  (map! :map vterm-mode-map
+        :i "C-x e" (cmd!
+                      (vterm-send-key "x" nil nil t)
+                      (vterm-send-key "e" nil nil nil))
+        :i "C-x C-e" (cmd!
+                      (vterm-send-key "x" nil nil t)
+                      (vterm-send-key "e" nil nil t)))
+  (map! :map vterm-mode-map
+        :i "M-<return>" (cmd! (vterm-send-key "<return>" nil t nil))
+        :i "C-<return>" (cmd! (vterm-send-key "<return>" nil nil t))
+        ;; send c-up c-down for dir stack zsh navigation
+        :i "C-<up>" (cmd! (vterm-send-key "<up>" nil nil t))
+        :i "C-<down>" (cmd! (vterm-send-key "<down>" nil nil t))
+        :i "s-<up>" (cmd! (vterm-send-key "<up>" nil nil t))
+        :i "s-<down>" (cmd! (vterm-send-key "<down>" nil nil t)))
   (map! :map vterm-mode-map
         :m "C-a" 'vterm-send-C-a
         :m "M-<backspace>" 'vterm-send-C-w
@@ -2372,8 +2394,11 @@ Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.s
 It messes with evil movement, e.g. when attemting to jump somewhere and perform an action on an evil text object, like ~yiw~.
 
 #+begin_src emacs-lisp
-(after! vterm
-  (add-hook! 'vterm-mode-hook (cmd! (which-key-mode -1))))
+(add-hook! 'vterm-mode-hook
+          (lambda ()
+            (eros-mode -1)
+            (which-key-mode -1)
+            (buffer-face-mode t)))
 #+end_src
 
 ** VC
@@ -3093,4 +3118,26 @@ deno-fmt is function that formats the current buffer on save with deno fmt. The 
                  (markdown-outline-next)
                  (outline-show-entry)
                  ))
+#+end_src
+
+*** STARTED Edit server custom keybinding
+
+Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a vterm terminal.
+
+#+begin_src emacs-lisp
+(advice-remove #'server-done :after)
+(advice-remove #'server-execute :after)
+(advice-add #'server-execute :after
+            (cmd!
+             (message "t: server edit")
+             (global-set-key "\C-c\C-c" (cmd! (save-buffer) (server-edit)))
+             (global-set-key "\C-c\C-k" (cmd!
+                                         (global-unset-key "\C-c\C-c")
+                                         (global-unset-key "\C-c\C-k")
+                                         (t/volatile-kill-buffer)))))
+(advice-add #'server-done :after
+            (cmd!
+             (message "t: server done")
+             (global-unset-key "\C-c\C-c")
+             (global-unset-key "\C-c\C-k")))
 #+end_src

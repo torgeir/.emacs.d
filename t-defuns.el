@@ -428,8 +428,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (setq-local kill-buffer-query-functions
               (remq 'process-kill-buffer-query-function
                     kill-buffer-query-functions))
-  (let ((buffer-modified-p nil))
-    (kill-this-buffer)))
+  (set-buffer-modified-p nil)
+  (kill-this-buffer))
 
 (defun t/volatile-kill-buffer-and-window ()
   "Kill current buffer and the window unconditionally."
@@ -437,8 +437,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
   (setq-local kill-buffer-query-functions
               (remq 'process-kill-buffer-query-function
                     kill-buffer-query-functions))
-  (let ((buffer-modified-p nil))
-    (kill-buffer-and-window)))
+  (set-buffer-modified-p nil)
+  (kill-buffer-and-window))
 
 (defun t/remove-newlines (str)
   (replace-regexp-in-string "[\r\n]+" "" str))
