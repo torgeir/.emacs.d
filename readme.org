@@ -3034,6 +3034,27 @@ TODO idle highlight in visible buffers
   :load-path "~/.doom.d/site-lisp/json-path-eldoc/")
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package! chatgpt
+  :commands (chatgpt-prompt
+             chatgpt-fix-region
+             chatgpt-explain-region
+             chatgpt-gen-tests-for-region
+             chatgpt-optimize-region
+             chatgpt-refactor-region
+             chatgpt-prompt-region
+             chatgpt-prompt-region-and-replace)
+  :init
+  (progn
+    (defun t/chatgpt-init ()
+      (interactive)
+      (let ((key "OPENAI_API_KEY"))
+        (when (not (getenv key))
+          (setenv key (t/shell-command-to-string "op item get q2tt4yocntwwx326qck5uqqft4 --fields label=password")))))
+    (set-popup-rule! "^*ChatGPT*" :side 'bottom :size 0.3))
+  :load-path "~/.doom.d/site-lisp/chatgpt/")
+#+end_src
+
 ** Stuff to test
 *** Run in every file opened
 
