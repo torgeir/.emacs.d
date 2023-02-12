@@ -484,8 +484,13 @@ Iterate through CamelCase words
 *** +onsave
 
 #+begin_src emacs-lisp
-(add-to-list '+format-on-save-enabled-modes 'rjsx-mode)
+(add-to-list '+format-on-save-enabled-modes 'css-mode)
+(add-to-list '+format-on-save-enabled-modes 'js-mode)
+(add-to-list '+format-on-save-enabled-modes 'j2-mode)
 (add-to-list '+format-on-save-enabled-modes 'typescript-mode)
+(add-to-list '+format-on-save-enabled-modes 'rjsx-mode)
+(add-to-list '+format-on-save-enabled-modes 'json-mode)
+(add-to-list '+format-on-save-enabled-modes 'html-mode)
 #+end_src
 
 *** Dired
@@ -2188,6 +2193,10 @@ I need prettier.
 
 #+begin_src sh :tangle no :results silent
 npm install -g prettier
+#+end_src
+
+#+begin_src emacs-lisp
+(setq +format-with-lsp nil)
 #+end_src
 
 **** Eglot ls
