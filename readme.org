@@ -483,14 +483,10 @@ Iterate through CamelCase words
 
 *** +onsave
 
+The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well. It messes up prettier.
+
 #+begin_src emacs-lisp
-(add-to-list '+format-on-save-enabled-modes 'css-mode)
-(add-to-list '+format-on-save-enabled-modes 'js-mode)
-(add-to-list '+format-on-save-enabled-modes 'j2-mode)
-(add-to-list '+format-on-save-enabled-modes 'typescript-mode)
-(add-to-list '+format-on-save-enabled-modes 'rjsx-mode)
-(add-to-list '+format-on-save-enabled-modes 'json-mode)
-(add-to-list '+format-on-save-enabled-modes 'html-mode)
+(setq +format-with-lsp nil)
 #+end_src
 
 *** Dired
@@ -2118,7 +2114,7 @@ Highlight terraform plans in ~terraform-mode~ based on their file name.
 
 **** Eglot ls
 
-#+begin_src sh :tangle no
+#+begin_src sh :tangle no :results silent
 case $(uname) in
     Darwin)
         brew install hashicorp/tap/terraform-ls
@@ -2129,15 +2125,14 @@ case $(uname) in
 esac
 #+end_src
 
-#+RESULTS:
-
 #+begin_src emacs-lisp
 (after! eglot
   (add-to-list 'eglot-server-programs '((hcl-mode terraform-mode) . ("terraform-lsp")))
-  (defun my-eglot-hook()
-    (if (eglot-managed-p)
-        (add-hook 'before-save-hook #'eglot-format-buffer)))
-  (add-hook 'eglot-managed-mode-hook #'my-eglot-hook))
+
+  ;; TODO is this needed once what is below is removed?
+  ;; prevent eglot from formatting after prettier
+  ;; (setq eglot-ignored-server-capabilities '(:documentFormattingProvider :documentRangeFormattingProvider))
+  )
 #+end_src
 
 *** Kotlin
@@ -2213,7 +2208,7 @@ npm install -g typescript-language-server typescript
 #+begin_src emacs-lisp
 (after! typescript-mode
   (defun t-ts-mode-hook ()
-    (cmd! (electric-indent-mode -1)))
+    (electric-indent-mode -1))
   (add-hook! '(typescript-mode-hook typescript-tsx-mode-hook) #'t-ts-mode-hook))
 #+end_src
 
