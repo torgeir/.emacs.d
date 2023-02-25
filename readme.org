@@ -2290,6 +2290,18 @@ This is paired with the bash function [[https://github.com/torgeir/dotfiles/blob
 
   (add-to-list
    'vterm-eval-cmds
+   '("magit-diff" (lambda (path)
+                   (let ((default-directory path))
+                     (call-interactively' magit-diff)))))
+
+  (add-to-list
+   'vterm-eval-cmds
+   '("magit-log" (lambda (path)
+                   (let ((default-directory path))
+                     (call-interactively' magit-log)))))
+
+  (add-to-list
+   'vterm-eval-cmds
    '("magit-status" (lambda (path)
                       (let ((default-directory path))
                         (call-interactively' magit-status))))))
