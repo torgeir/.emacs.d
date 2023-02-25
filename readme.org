@@ -3055,7 +3055,8 @@ TODO idle highlight in visible buffers
 
 #+begin_src emacs-lisp
 (use-package! chatgpt
-  :commands (chatgpt-prompt
+  :commands (t/chatgpt-init
+             chatgpt-prompt
              chatgpt-fix-region
              chatgpt-explain-region
              chatgpt-gen-tests-for-region
@@ -3071,6 +3072,7 @@ TODO idle highlight in visible buffers
            (:prefix-map
             ("g" . "chatgpt")
             (:when t
+              :desc "init" "i" #'t/chatgpt-init
               :desc "prompt" "p" #'chatgpt-prompt
               :desc "fix" "f" #'chatgpt-fix-region
               :desc "explain" "e" #'chatgpt-explain-region
