@@ -2334,6 +2334,8 @@ Some keybindings are so engrained I can't live without them.
                       (vterm-send-key "x" nil nil t)
                       (vterm-send-key "e" nil nil t)))
   (map! :map vterm-mode-map
+        ;; undo like in the terminal
+        :i "C-_" (cmd! (vterm-send-key "_" t nil t))
         :i "M-<return>" (cmd! (vterm-send-key "<return>" nil t nil))
         :i "C-<return>" (cmd! (vterm-send-key "<return>" nil nil t))
         ;; send c-up c-down for dir stack zsh navigation
