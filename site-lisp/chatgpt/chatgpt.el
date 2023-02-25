@@ -57,12 +57,9 @@
 
 (defmacro chatgpt-show-results-buffer-if-active ()
   "Show the results in other window if necessary."
-  `(if (and (not ;; visible
-             (get-buffer-window chatgpt-buffer))
-	    (called-interactively-p 'interactive))
-       (lambda (&optional buf) (ignore buf)
-         (pop-to-buffer buf (view-mode t))
-         (switch-to-buffer-other-window chatgpt-buffer))
+  `(if (and (called-interactively-p 'interactive))
+       (lambda (&optional buf)
+         (pop-to-buffer chatgpt-buffer (view-mode t)))
      #'identity))
 
 ;;;###autoload
@@ -70,9 +67,7 @@
   "Query OpenAI with PROMPT calling the CALLBACK function on the resulting buffer.
 Returns buffer containing the text from this query"
   (interactive (list (read-string "Prompt ChatGPT with: ")
-                     (lambda (buf)
-                       (pop-to-buffer buf)
-                       (view-mode t))))
+                     (lambda (buf))))
   (chatgpt--query-open-api prompt
                            (lambda (results)
                              (pop-to-buffer chatgpt-buffer)

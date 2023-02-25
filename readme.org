@@ -3043,12 +3043,28 @@ TODO idle highlight in visible buffers
              chatgpt-prompt-region-and-replace)
   :init
   (progn
+    (map! :leader
+          (:prefix
+           ("o" . "open")
+           (:prefix-map
+            ("g" . "chatgpt")
+            (:when t
+              :desc "prompt" "p" #'chatgpt-prompt
+              :desc "fix" "f" #'chatgpt-fix-region
+              :desc "explain" "e" #'chatgpt-explain-region
+              :desc "gen-tests" "t" #'chatgpt-gen-tests-for-region
+              :desc "optimize" "o" #'chatgpt-optimize-region
+              :desc "refactor" "r" #'chatgpt-refactor-region
+              :desc "prompt region" "P" #'chatgpt-prompt-region
+              :desc "replace" "R" #'chatgpt-prompt-region-and-replace))))
     (defun t/chatgpt-init ()
       (interactive)
       (let ((key "OPENAI_API_KEY"))
         (when (not (getenv key))
           (setenv key (t/shell-command-to-string "op item get q2tt4yocntwwx326qck5uqqft4 --fields label=password")))))
-    (set-popup-rule! "^*ChatGPT*" :side 'bottom :size 0.3))
+    (let ((p (+popup-make-rule "^\\*ChatGPT" '(:size 0.3 :side right))))
+      (setq display-buffer-alist (cdr display-buffer-alist))
+      (add-to-list 'display-buffer-alist p)))
   :load-path "~/.doom.d/site-lisp/chatgpt/")
 #+end_src
 
