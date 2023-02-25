@@ -493,6 +493,9 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
 *** Dired
 
 #+begin_src emacs-lisp
+(after! all-the-icons
+  ;; fixes wierd issue when emacs looses focus
+  (setq all-the-icons-dired-monochrome t))
 (after! dired
   (add-hook 'dired-mode-hook 'dired-subtree-toggle)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode))
