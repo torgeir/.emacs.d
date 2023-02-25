@@ -277,7 +277,8 @@ Defaults
 Don't bother waiting
 
 #+begin_src emacs-lisp
-(setq which-key-idle-delay 0.1)
+(setq which-key-idle-delay 0.1
+      which-key-idle-secondary-delay 0.05)
 #+end_src
 
 *** Whitespace
@@ -2409,16 +2410,24 @@ Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.s
         :n "C-d" #'t/volatile-kill-buffer-and-window))
 #+end_src
 
-*** No which-key in vterm
+*** Disable some modes in vterm
 
 It messes with evil movement, e.g. when attemting to jump somewhere and perform an action on an evil text object, like ~yiw~.
 
 #+begin_src emacs-lisp
-(add-hook! 'vterm-mode-hook
-          (lambda ()
-            (eros-mode -1)
-            (which-key-mode -1)
-            (buffer-face-mode t)))
+(after! which-key
+  (defun t/delayed-which-key (_ _)
+    "Suggested in https://github.com/justbur/emacs-which-key/issues/243"
+    (cond
+     ((eq major-mode 'vterm-mode) 2)
+     (t nil)))
+  (add-hook! 'which-key-delay-functions #'t/delayed-which-key))
+
+(defun t/vterm-mode-hook ()
+  (eros-mode -1)
+  (emojify-mode -1)
+  (buffer-face-mode t))
+(add-hook! 'vterm-mode-hook #'t/vterm-mode-hook)
 #+end_src
 
 ** VC
