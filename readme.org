@@ -1088,6 +1088,8 @@ Support wrapping sexps by holding super, both in normal mode and insert mode, fr
 
 **** Expand braces
 
+[[file:~/.emacs.d/modules/config/default/config.el::dolist (brace '("(" "{" "\[")][Override this to always expand braces]].
+
 #+begin_src emacs-lisp
 (after! smartparens
   (sp-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " " ")))
