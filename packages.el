@@ -1,4 +1,3 @@
-(package! insert-char-preview)
 (package! evil-cleverparens)
 (package! transpose-frame)
 (package! highlight-symbol)

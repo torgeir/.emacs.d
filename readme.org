@@ -60,7 +60,6 @@ I usually navigate this with =c-c c-n= or =c-c c-p=, or =mgg=.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! insert-char-preview)
 (package! evil-cleverparens)
 (package! transpose-frame)
 (package! highlight-symbol)
