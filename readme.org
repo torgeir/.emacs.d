@@ -2429,7 +2429,6 @@ It messes with evil movement, e.g. when attemting to jump somewhere and perform 
 
 (defun t/vterm-mode-hook ()
   (eros-mode -1)
-  (emojify-mode -1)
   (buffer-face-mode t))
 (add-hook! 'vterm-mode-hook #'t/vterm-mode-hook)
 #+end_src
@@ -3212,4 +3211,24 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
              (message "t: server done")
              (global-unset-key "\C-c\C-c")
              (global-unset-key "\C-c\C-k")))
+#+end_src
+
+*** No emoji
+
+Turn off annoying stuff
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-after-init-hook
+  (cmd! (global-mode-emojify -1)))
+#+end_src
+
+Reset [[file:~/.emacs.d/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
+
+#+begin_src emacs-lisp
+;; (add-to-list 'drag-stuff-except-modes 'org-src-mode)
+(defun t/unbind-drag-stuff ()
+  (interactive)
+  (map! "<M-left>"  nil
+        "<M-right>" nil))
+(add-hook! 'doom-after-init-modules-hook #'t/unbind-drag-stuff)
 #+end_src
