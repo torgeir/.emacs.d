@@ -1864,7 +1864,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 ** Reading
 *** Fast
 
-I never really got into to this.
+I never really got into this.
 
 #+begin_src emacs-lisp
 (defun t/spray-micro-state (&optional after)
@@ -1887,19 +1887,23 @@ I never really got into to this.
                     (condition-case nil
                         (scroll-up-command)
                       (error
-                       (when (eq major-mode 'elfeed) (elfeed-show-next))))) map)
+                       (cond
+                        ((eq major-mode 'elfeed-show-mode) (elfeed-show-next))
+                        ((eq major-mode 'mu4e-view-mode) (mu4e-view-headers-next-unread)))))) map)
     (bind-key "p" (lambda ()
                     (interactive)
                     (condition-case nil
                         (scroll-down-command)
                       (error
-                       (when (eq major-mode 'elfeed) (elfeed-show-prev))))) map)
+                       (cond
+                        ((eq major-mode 'elfeed-show-mode) (elfeed-show-prev))
+                        ((eq major-mode 'mu4e-view-mode) (mu4e-view-headers-prev-unread)))))) map)
     (bind-key "s" (cmd!
-                   (when (eq major-mode 'elfeed)
+                   (when (eq major-mode 'elfeed-show-mode)
                      (let ((shr-inhibit-images t)) (elfeed-show-refresh)))
                    (funcall (t/spray-micro-state))) map)
     (set-temporary-overlay-map map t on-exit))
-    (message "(n)ext page, (p)rev page, (s)pray mode"))
+  (message "(n)ext page, (p)rev page, (s)pray mode"))
 
 (map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
 
@@ -2645,11 +2649,12 @@ Switch around the refresh mappings for more useful defaults.
 #+begin_src emacs-lisp
 (after! elfeed
   (map!
-   (:after elfeed
-    :map elfeed-search-mode-map
-    ;; switcharoo
-    :n "gR" #'elfeed-search-update--force
-    :n "gr" #'elfeed-search-fetch)))
+   :map elfeed-search-mode-map
+   :n "!" #'elfeed-search-untag-all-unread
+   :n "?" #'elfeed-search-tag-all-unread
+   ;; switcharoo
+   :n "gR" #'elfeed-search-update--force
+   :n "gr" #'elfeed-search-fetch))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2903,10 +2908,12 @@ Why the timeout is needed? I cannot for the life of me make ~visual-line-mode~ w
 (after! mu4e
   (add-hook 'mu4e-view-mode-hook
             (defun t/mu4e-view-mode-hook ()
+              (t/start-spray-micro-state)
               (run-at-time "2 sec" nil (cmd! (visual-line-mode)
                                              (read-only-mode -1)
                                              (delete-trailing-whitespace)
-                                             (read-only-mode 1))))))
+                                             (read-only-mode 1)
+                                             (olivetti-mode))))))
 #+end_src
 
 [[https://github.com/doomemacs/doomemacs/issues/970][Related struggles]].
