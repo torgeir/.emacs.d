@@ -231,9 +231,10 @@ In daemon mode history is not saved and recent files is not updated, so help
 #+begin_src emacs-lisp
 (when (daemonp)
   (add-hook! '(delete-frame-functions delete-terminal-functions)
-    (let ((inhibit-message t))
-      (recentf-save-list)
-      (savehist-save))))
+    (defun t/help-save-history-in-daemon ()
+      (let ((inhibit-message t))
+        (recentf-save-list)
+        (savehist-save)))))
 #+end_src
 
 *** Auth sources
@@ -278,6 +279,27 @@ Don't bother waiting
 #+begin_src emacs-lisp
 (setq which-key-idle-delay 0.1
       which-key-idle-secondary-delay 0.05)
+#+end_src
+
+*** Disable annoying defaults
+
+Turn off annoying defaults, e.g. emojis everywhere.
+
+#+begin_src emacs-lisp
+(after! emojify
+  (add-hook! 'doom-after-init-modules-hook
+    (defun t/doom-after-init-modules-hook ()
+      (global-emojify-mode -1))))
+#+end_src
+
+Reset [[file:~/.emacs.d/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
+
+#+begin_src emacs-lisp
+;; (add-to-list 'drag-stuff-except-modes 'org-src-mode)
+(add-hook! 'doom-after-init-modules-hook
+  (defun t/unbind-drag-stuff ()
+    (map! "<M-left>"  nil
+          "<M-right>" nil)))
 #+end_src
 
 *** Whitespace
@@ -594,10 +616,10 @@ Make it more useful.
 Auto adjust the size of the treemacs buffer.
 
 #+begin_src emacs-lisp
-(defun t/update-treemacs-width (input)
-  (interactive)
-  (setq treemacs-width (floor (/ (frame-width (window-frame)) 4.5))))
-(add-to-list 'window-size-change-functions #'t/update-treemacs-width)
+(add-to-list 'window-size-change-functions
+             (defun t/update-treemacs-width (input)
+               (interactive)
+               (setq treemacs-width (floor (/ (frame-width (window-frame)) 4.5)))))
 ;; (setq window-size-change-functions (remove  #'t/update-treemacs-width window-size-change-functions))
 ;; window-size-change-functions
 #+end_src
@@ -754,8 +776,8 @@ Double them
 *** Visual line mode
 
 #+begin_src emacs-lisp
-(add-hook 'after-init-hook (cmd! (global-visual-line-mode 1)))
-(add-hook 'prog-mode-hook  (cmd! (toggle-truncate-lines 0)))
+(add-hook 'after-init-hook (defun t/after-init-hook () (global-visual-line-mode 1)))
+(add-hook 'prog-mode-hook  (defun t/prog-mode-hook () (toggle-truncate-lines 0)))
 #+end_src
 
 *** Projects
@@ -1009,16 +1031,17 @@ And some extra for org mode
     (sp-local-pair "«" "»")))
 #+end_src
 
-Smartparens-mode paredit bindings in org mode messes up M-up and M-down, bring them back.
+Smartparens-mode paredit bindings in org mode messes up ~M-up~ and ~M-down~, bring them back.
 
 #+begin_src emacs-lisp
 (add-hook! 'org-mode-hook
-  (map!
-   :map evil-motion-state-local-map
-   "M-<up>"    'org-metaup
-   "M-<down>"  'org-metadown
-   "M-S-<right>" 'org-shiftmetaright
-   "M-S-<left>" 'org-shiftmetaleft))
+  (defun t/org-mode-hook ()
+    (map!
+     :map evil-motion-state-local-map
+     "M-<up>"    'org-metaup
+     "M-<down>"  'org-metadown
+     "M-S-<right>" 'org-shiftmetaright
+     "M-S-<left>" 'org-shiftmetaleft)))
 #+end_src
 
 Bring back ~C-k~ in the minibuffer. Overrides [[file:~/.emacs.d/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]].
@@ -1365,7 +1388,7 @@ Make helpful buffers more navigable by removing doom popup's /dedication/. This 
 #+begin_src emacs-lisp
 (advice-add
  #'push-button
- :after (cmd!
+ :after (defun t/keep-help-buffers-around ()
          (set-window-dedicated-p (selected-window) nil)
          (set-window-parameter (selected-window) 'no-delete-other-windows nil)))
 #+end_src
@@ -1470,15 +1493,15 @@ Motion keys for info mode.
 Zoom to the previewed subtree when jumping between with =consult-org-heading=.
 
 #+begin_src emacs-lisp
-(defun t/after-consult-jump ()
-  ;; org
-  (when (eq major-mode 'org-mode)
-    (when (org-at-heading-p)
-      (outline-hide-sublevels (org-outline-level)))
-    (org-show-subtree))
-  ;; always
-  (recenter-top-bottom 'top))
-(add-hook 'consult-after-jump-hook 't/after-consult-jump)
+(add-hook 'consult-after-jump-hook
+          (defun t/after-consult-jump ()
+            ;; org
+            (when (eq major-mode 'org-mode)
+              (when (org-at-heading-p)
+                (outline-hide-sublevels (org-outline-level)))
+              (org-show-subtree))
+            ;; always
+            (recenter-top-bottom 'top)))
 #+end_src
 
 *** Async source code blocks
@@ -2039,6 +2062,24 @@ Bind it to ~SPC o n~
 
 ** Languages
 
+*** Markdown
+
+Move around like in org, collapsing what is moved away from, expanding what is moved to.
+
+#+begin_src emacs-lisp
+(map! :map markdown-mode-map
+      "C-c C-p" (cmd!
+                 (outline-show-all)
+                 (outline-hide-body)
+                 (markdown-outline-previous)
+                 (outline-show-entry))
+      "C-c C-n" (cmd!
+                 (outline-show-all)
+                 (outline-hide-body)
+                 (markdown-outline-next)
+                 (outline-show-entry)))
+#+end_src
+
 *** Bash
 
 #+begin_src sh :tangle no :results silent
@@ -2403,15 +2444,15 @@ Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.s
 
 #+begin_src emacs-lisp
 (map! :map comint-mode-map
-      :i "C-d" #'t/volatile-kill-buffer-and-window
-      :n "C-d" #'t/volatile-kill-buffer-and-window)
+      :n "C-d" (cmd! (call-interactively 'evil-scroll-down))
+      :i "C-d" #'t/volatile-kill-buffer-and-window)
 #+end_src
 
 #+begin_src emacs-lisp
 (after! cider
   (map! :map cider-repl-mode-map
-        :i "C-d" #'t/volatile-kill-buffer-and-window
-        :n "C-d" #'t/volatile-kill-buffer-and-window))
+        :n "C-d" (cmd! (call-interactively 'evil-scroll-down))
+        :i "C-d" #'t/volatile-kill-buffer-and-window))
 #+end_src
 
 *** Disable some modes in vterm
@@ -2440,8 +2481,9 @@ Sometimes you need both changes.
 
 #+begin_src emacs-lisp
 (after! ediff
-  (add-hook! 'ediff-keymap-setup-hook
-            (cmd! (define-key ediff-mode-map "d" 't/ediff-use-both))))
+  (defun t/bind-ediff-use-both ()
+    (define-key ediff-mode-map "d" 't/ediff-use-both))
+  (add-hook! 'ediff-keymap-setup-hook #'t/bind-ediff-use-both))
 #+end_src
 
 *** Magit and Forge
@@ -2567,22 +2609,25 @@ Bound to ~SPC t b~.
 
 (after! artist
   (add-hook! 'artist-mode-hook
-    (map!
-     :map evil-insert-state-local-map "q" 'artist-mode-off
-     :map evil-normal-state-local-map "q" 'artist-mode-off)))
+    (defun t/artist-mode-hook ()
+      (map!
+       :map evil-insert-state-local-map "q" 'artist-mode-off
+       :map evil-normal-state-local-map "q" 'artist-mode-off))))
 
 (map!
  :leader
- (:prefix-map ("z" . "misc")
-  (:prefix ("z" . "artist")
+ (:prefix-map
+  ("z" . "misc")
+  (:prefix
+   ("z" . "artist")
    (:when t
-    :desc "Enable"          "t" 't/artist-mode
-    :desc "Draw: pen"       "p" 'artist-select-op-pen-line
-    :desc "Draw: line"      "l" 'artist-select-op-line
-    :desc "Draw: rectangle" "r" 'artist-select-op-rectangle
-    :desc "Draw: circle"    "c" 'artist-select-op-circle
-    :desc "Draw: ellips"    "e" 'artist-select-op-ellipse
-    :desc "Draw: square"    "s" 'artist-select-op-square))))
+     :desc "Enable"          "t" 't/artist-mode
+     :desc "Draw: pen"       "p" 'artist-select-op-pen-line
+     :desc "Draw: line"      "l" 'artist-select-op-line
+     :desc "Draw: rectangle" "r" 'artist-select-op-rectangle
+     :desc "Draw: circle"    "c" 'artist-select-op-circle
+     :desc "Draw: ellips"    "e" 'artist-select-op-ellipse
+     :desc "Draw: square"    "s" 'artist-select-op-square))))
 #+end_src
 
 *** Elfeed RSS
@@ -2610,8 +2655,10 @@ Switch around the refresh mappings for more useful defaults.
 #+begin_src emacs-lisp
 (after! elfeed
   ;;(setq elfeed-search-mode-hook nil)
-  (add-hook 'elfeed-search-mode-hook (cmd! (show-paren-mode -1)
-                                           (visual-line-mode -1))))
+  (add-hook 'elfeed-search-mode-hook
+            (defun t/hook-elfeed-search-mode-hook ()
+              (show-paren-mode -1)
+              (visual-line-mode -1))))
 #+end_src
 
 Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bind ~n~, ~p~ for nav, that skips to the next item on reaching the end.
@@ -2620,7 +2667,7 @@ Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bi
 (after! elfeed
   ;;(setq elfeed-show-mode-hook nil)
   (add-hook 'elfeed-show-mode-hook
-            (cmd!
+            (defun t/hook-elfeed-show-mode-hook ()
              (olivetti-mode)
              (run-at-time "0 sec" nil (cmd! (visual-line-mode)))
              (t/start-spray-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
@@ -2631,7 +2678,7 @@ Show the mouseover text for xkcd comics by moving to the image and fetching the 
 #+begin_src emacs-lisp
 (after! elfeed
   (add-hook 'elfeed-show-mode-hook
-            (cmd!
+            (defun t/elfeed-show-xkcd-mouseover-hook ()
              (run-at-time "0 sec" nil
                           (cmd!
                            (when (s-equals-p "xkcd.com" (car (elfeed-entry-id elfeed-show-entry)))
@@ -2698,17 +2745,17 @@ Norwegian holidays.
 #+begin_src emacs-lisp
 (after! calendar
   (add-hook 'calendar-initial-window-hook
-            (cmd!
-             (require 'calendar-norway)
-             (setq calendar-holidays
-                   (append
-                    calendar-norway-raude-dagar
-                    calendar-norway-andre-merkedagar
-                    calendar-norway-dst
-                    '((holiday-fixed 3 17 "St. Patricksdag")
-                      (holiday-fixed 10 31 "Halloween")
-                      (holiday-float 11 4 4 "Thanksgiving"))))
-             (calendar-redraw))))
+            (defun t/calendar-initial-window-hook ()
+              (require 'calendar-norway)
+              (setq calendar-holidays
+                    (append
+                     calendar-norway-raude-dagar
+                     calendar-norway-andre-merkedagar
+                     calendar-norway-dst
+                     '((holiday-fixed 3 17 "St. Patricksdag")
+                       (holiday-fixed 10 31 "Halloween")
+                       (holiday-float 11 4 4 "Thanksgiving"))))
+              (calendar-redraw))))
 #+end_src
 
 Evil like navigation.
@@ -2716,10 +2763,11 @@ Evil like navigation.
 #+begin_src emacs-lisp
 (after! calendar
   (add-hook! 'calendar-mode-hook
-    (map!
-     :map calendar-mode-map
-     :m "H"   #'calendar-scroll-left
-     :m "L"   #'calendar-scroll-right)))
+             (defun t/calendar-mode-hook ()
+               (map!
+                :map calendar-mode-map
+                :m "H"   #'calendar-scroll-left
+                :m "L"   #'calendar-scroll-right))))
 #+end_src
 
 *** Re-builder
@@ -2830,8 +2878,10 @@ Inspiration:
 ***** Don't wrap lines in message overview
 
 #+begin_src emacs-lisp
-(add-hook 'mu4e-headers-mode-hook (cmd! (visual-line-mode -1)
-                                        (show-paren-mode -1)))
+(add-hook 'mu4e-headers-mode-hook
+          (defun t/mu4e-headers-mode-hook ()
+           (visual-line-mode -1)
+           (show-paren-mode -1)))
 #+end_src
 
 ***** Cc Bcc
@@ -2852,11 +2902,11 @@ Why the timeout is needed? I cannot for the life of me make ~visual-line-mode~ w
 #+begin_src emacs-lisp
 (after! mu4e
   (add-hook 'mu4e-view-mode-hook
-            (cmd!
-             (run-at-time "2 sec" nil (cmd! (visual-line-mode)
-                                            (read-only-mode -1)
-                                            (delete-trailing-whitespace)
-                                            (read-only-mode 1))))))
+            (defun t/mu4e-view-mode-hook ()
+              (run-at-time "2 sec" nil (cmd! (visual-line-mode)
+                                             (read-only-mode -1)
+                                             (delete-trailing-whitespace)
+                                             (read-only-mode 1))))))
 #+end_src
 
 [[https://github.com/doomemacs/doomemacs/issues/970][Related struggles]].
@@ -3096,13 +3146,14 @@ TODO idle highlight in visible buffers
 #+end_src
 
 ** Stuff to test
+
 *** Run in every file opened
 
 #+begin_src emacs-lisp
-(add-hook 'find-file-hook 't/in-every-file)
-(defun t/in-every-file ()
-  ;;(when (string= (file-name-extension buffer-file-name) "ts") (typescript-mode))
-  )
+(add-hook 'find-file-hook
+          (defun t/in-every-file ()
+            ;;(when (string= (file-name-extension buffer-file-name) "ts") (typescript-mode))
+            ))
 #+end_src
 
 *** Sticky buffer mode
@@ -3173,24 +3224,6 @@ https://ift.tt/36jQLT2
 
 deno-fmt is function that formats the current buffer on save with deno fmt. The package also exports a minor mode that applies (deno-fmt) on save. Feel free to replace typescript-mode / js2-mode in the following with your TypeScript/JavaScript mode of choice.
 
-*** TODO markdown-mode
-
-#+begin_src emacs-lisp
-(map! :map markdown-mode-map
-      "C-c C-p" (cmd!
-                 (outline-show-all)
-                 (outline-hide-body)
-                 (markdown-outline-previous)
-                 (outline-show-entry)
-                 )
-      "C-c C-n" (cmd!
-                 (outline-show-all)
-                 (outline-hide-body)
-                 (markdown-outline-next)
-                 (outline-show-entry)
-                 ))
-#+end_src
-
 *** STARTED Edit server custom keybinding
 
 Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a vterm terminal.
@@ -3199,7 +3232,7 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
 (advice-remove #'server-done :after)
 (advice-remove #'server-execute :after)
 (advice-add #'server-execute :after
-            (cmd!
+            (defun t/after-server-execute ()
              (message "t: server edit")
              (global-set-key "\C-c\C-c" (cmd! (save-buffer) (server-edit)))
              (global-set-key "\C-c\C-k" (cmd!
@@ -3207,28 +3240,9 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
                                          (global-unset-key "\C-c\C-k")
                                          (t/volatile-kill-buffer)))))
 (advice-add #'server-done :after
-            (cmd!
+            (defun t/after-server-done ()
              (message "t: server done")
              (global-unset-key "\C-c\C-c")
              (global-unset-key "\C-c\C-k")))
 #+end_src
 
-*** No emoji
-
-Turn off annoying stuff
-
-#+begin_src emacs-lisp
-(add-hook! 'doom-after-init-hook
-  (cmd! (global-mode-emojify -1)))
-#+end_src
-
-Reset [[file:~/.emacs.d/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
-
-#+begin_src emacs-lisp
-;; (add-to-list 'drag-stuff-except-modes 'org-src-mode)
-(defun t/unbind-drag-stuff ()
-  (interactive)
-  (map! "<M-left>"  nil
-        "<M-right>" nil))
-(add-hook! 'doom-after-init-modules-hook #'t/unbind-drag-stuff)
-#+end_src
