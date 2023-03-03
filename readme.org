@@ -285,10 +285,9 @@ Wait just long enough.
 Turn off annoying defaults, e.g. emojis everywhere.
 
 #+begin_src emacs-lisp
-(after! emojify
-  (add-hook! 'doom-after-init-modules-hook
-    (defun t/doom-after-init-modules-hook ()
-      (global-emojify-mode -1))))
+(add-hook! 'doom-after-init-modules-hook
+  (defun t/doom-after-init-modules-hook ()
+    (global-emojify-mode -1)))
 #+end_src
 
 Reset [[file:~/.emacs.d/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
