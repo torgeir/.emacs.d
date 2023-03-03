@@ -3276,3 +3276,9 @@ Use =nav-flash= to flash the cursor after long jumps.
   (setq nav-flash-delay 4
         nav-flash-use-pulse 'gui-only))
 #+end_src
+
+*** TODO compat-assoc undefined?
+
+#+begin_src emacs-lisp
+(defun compat-assoc (&optional a b c) nil)
+#+end_src
