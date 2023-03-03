@@ -3254,3 +3254,15 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
              (global-unset-key "\C-c\C-k")))
 #+end_src
 
+*** Flash on long jumps
+
+Use =nav-flash= to flash the cursor after long jumps.
+
+#+begin_src emacs-lisp
+(after! nav-flash
+  (custom-set-faces!
+    '(nav-flash-face :background "maroon4")
+    '(nav-flash-face :background "#003366"))
+  (setq nav-flash-delay 4
+        nav-flash-use-pulse 'gui-only))
+#+end_src
