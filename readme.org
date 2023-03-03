@@ -414,6 +414,17 @@ Sometimes its useful not to close it. Hit ~q~ after opening it to ~embark-toggle
 #+end_src
 
 Exclude stuff from ~+default/search-project~ by placing excludes in [[file:~/.rgignore][~/.rgignore]]
+
+*** Eldoc
+
+Disable eldoc on the modeline, makes it so eldoc only appears on ~SPC h .~, i.e. on  ~m-x eldoc-doc-buffer~
+
+#+begin_src emacs-lisp
+(add-hook! '(web-mode js-mode rjsx-mode typescript-mode typescript-tsx-mode)
+  (defun t/eldoc-only-in-buffer ()
+    (setq eldoc-message-function (defun t-void (&optional one two) nil))))
+#+end_src
+
 *** Orderless
 
 A tuned version of [[https://protesilaos.com/codelog/2021-01-06-emacs-default-completion/][Prot's]] and [[https://kristofferbalintona.me/posts/202202211546/][Kristoffer Balintona's]] vertico, maginalia and orderless setup
