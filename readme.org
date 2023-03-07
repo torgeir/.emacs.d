@@ -2241,7 +2241,9 @@ esac
 
 #+begin_src emacs-lisp
 (use-package! remark-mode
-  :commands remark-mode)
+  :commands remark-mode
+  :init
+  (set-popup-rule! "*remark browser*" :ttl nil))
 #+end_src
 
 *** Typescript
