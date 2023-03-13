@@ -3284,3 +3284,7 @@ Use =nav-flash= to flash the cursor after long jumps.
 #+begin_src emacs-lisp
 (defun compat-assoc (&optional a b c) nil)
 #+end_src
+
+#+begin_src emacs-lisp
+(defun compat-assoc-delete-all (&optional a b c) nil)
+#+end_src
