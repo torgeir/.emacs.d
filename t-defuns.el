@@ -1142,6 +1142,11 @@ See also:  (setq org-agenda-include-diary t)
   (interactive)
   (doom-set-buffer-real (current-buffer) nil))
 
+(defun t/dired-subtree-toggle ()
+  (if (eq major-mode 'dired-sidebar-mode)
+      (dired-sidebar-subtree-toggle)
+    (dired-subtree-toggle)))
+
 (defun t/dired-close-recursively ()
   "Close all directories starting with this directory's path."
   (interactive)
@@ -1151,7 +1156,8 @@ See also:  (setq org-agenda-include-diary t)
           (and
            (not (eq (point) (save-excursion (end-of-buffer) (point))))
            (s-starts-with? path (dired-get-filename)))
-        (when (dired-subtree--is-expanded-p) (dired-subtree-toggle))
+        (when (dired-subtree--is-expanded-p)
+          (t/dired-subtree-toggle))
         (forward-line)))))
 
 (defun t/dired-open-recursively ()
@@ -1159,8 +1165,8 @@ See also:  (setq org-agenda-include-diary t)
   (interactive)
   (let ((path (dired-get-filename)))
     (save-excursion
-      (when (dired-subtree--is-expanded-p) (dired-subtree-toggle))
-      (dired-subtree-toggle)
+      (when (dired-subtree--is-expanded-p) (t/dired-subtree-toggle))
+      (t/dired-subtree-toggle)
       (forward-line)
       (t/dired-show-recursively-0 path))))
 
@@ -1179,8 +1185,8 @@ See also:  (setq org-agenda-include-diary t)
            (s-starts-with? path (dired-get-filename))
            (not (s-starts-with? "." (file-name-base (dired-get-filename))))
            (not (t/dired-ignored?)))
-      (when (dired-subtree--is-expanded-p) (dired-subtree-toggle))
-      (dired-subtree-toggle))
+      (when (dired-subtree--is-expanded-p) (t/dired-subtree-toggle))
+      (t/dired-subtree-toggle))
     (forward-line)
     (t/dired-show-recursively-0 path)))
 

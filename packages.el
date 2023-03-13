@@ -5,6 +5,7 @@
 (package! focus)
 (package! calendar-norway)
 (package! spray)
+(package! dired-sidebar)
 (package! dired-subtree)
 (package! docker-tramp)
 (package! blamer
