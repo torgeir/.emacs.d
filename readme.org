@@ -3327,3 +3327,14 @@ Use =nav-flash= to flash the cursor after long jumps.
 #+begin_src emacs-lisp
 (defun compat-assoc-delete-all (&optional a b c) nil)
 #+end_src
+
+*** STARTED Search for terraform resources
+
+#+begin_src emacs-lisp
+(defun t/tf-grep ()
+  (interactive)
+  (+vertico/project-search
+   nil
+   "^\\(\\<resource\\>\\|\\<output\\>\\|\\<variable\\>\\|\\<module\\>\\|\\<variable\\>\\)#\\(\"[^\"]+\"\\)~ \\(\"[^\"]+\"\\)?~ {"
+   ))
+#+end_src
