@@ -5,15 +5,14 @@
   "An even darker doom-one theme."
 
   ;; name        default   256           16
-  (;(bg         `(,(doom-darken "#282c34" 0.6) "black"       "black"  ))
-   (bg         `(,(doom-darken "#21242b" 0.55) "black"       "black"  ))
+  ((bg         `(,(doom-darken "#21242b" 0.55) "black"       "black"  ))
    (fg         `(,(doom-darken "#bbc2cf" 0.1) "#bfbfbf"     "brightwhite"  ))
 
    ;; These are off-color variants of bg/fg, used primarily for `solaire-mode',
    ;; but can also be useful as a basis for subtle highlights (e.g. for hl-line
    ;; or region), especially when paired with the `doom-darken', `doom-lighten',
    ;; and `doom-blend' helper functions.
-   (bg-alt     `(,(doom-darken "#21242b" 0.6) "black"       "black"        ))
+   (bg-alt     `(,(doom-darken "#21242b" 0.65) "black"       "black"        ))
    (fg-alt     `(,(doom-darken "#5B6268" 0.1) "#2d2d2d"     "white"        ))
 
    ;; These should represent a spectrum from bg to fg, where base0 is a starker
@@ -60,7 +59,7 @@
    (strings        green)
    (variables      (doom-lighten magenta 0.4))
    (numbers        orange)
-   (region         `(,(doom-lighten (car bg-alt) 0.15) ,@(doom-lighten (cdr base1) 0.35)))
+   (region         `(,(doom-lighten (car bg-alt) 0.10) ,@(doom-lighten (cdr base1) 0.35)))
    (error          red)
    (warning        yellow)
    (success        green)
@@ -71,13 +70,9 @@
    ;; These are extra color variables used only in this theme; i.e. they aren't
    ;; mandatory for derived themes.
    (modeline-fg              fg)
-   (modeline-fg-alt          base5)
-   (modeline-bg              (if doom-one-brighter-modeline
-                                 (doom-darken blue 0.45)
-                               (doom-darken bg-alt 0.1)))
-   (modeline-bg-alt          (if doom-one-brighter-modeline
-                                 (doom-darken blue 0.475)
-                               `(,(doom-darken (car bg-alt) 0.15) ,@(cdr bg))))
+   (modeline-fg-alt          (doom-darken base4 0.2))
+   (modeline-bg              (doom-darken bg-alt 0.1))
+   (modeline-bg-alt          `(,(doom-darken (car bg-alt) 0.15) ,@(cdr bg)))
    (modeline-bg-inactive     `(,(car bg-alt) ,@(cdr base1)))
    (modeline-bg-inactive-alt `(,(doom-darken (car bg-alt) 0.1) ,@(cdr bg)))
 
