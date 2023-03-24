@@ -183,6 +183,19 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 
 ** Editor
 
+*** Flash on long jumps
+
+Use =nav-flash= to flash the cursor after long jumps.
+
+#+begin_src emacs-lisp
+(after! nav-flash
+  (custom-set-faces!
+    '(nav-flash-face :background "maroon4")
+    '(nav-flash-face :background "#003366"))
+  (setq nav-flash-delay 4
+        nav-flash-use-pulse 'gui-only))
+#+end_src
+
 *** Recursive minibuffers
 
 When you change your mind and need to do something first, after you already started a command that opens the minibuffer.
@@ -624,6 +637,18 @@ A diy directory sidebar using dired. Inspired the response in https://www.reddit
     (evil-resize-window (- w new-w) t)))
 
 (set-popup-rule! "^*sidebar*"
+  :side 'left
+  :ttl nil ;; don't kill it on C-g
+  :quit 'current
+  :slot  -1
+  :width 't/fit-sidebar
+  :parameters '((window-parameters . ((no-other-window . t)))))
+#+end_src
+
+**** STARTED Auto dired sidebar width
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^:"
   :side 'left
   :ttl nil ;; don't kill it on C-g
   :quit 'current
@@ -2191,6 +2216,16 @@ Highlight terraform plans in ~terraform-mode~ based on their file name.
   (add-hook! 'terraform-mode-hook #'t-tf-plan-hook))
 #+end_src
 
+**** Search for terraform resources
+
+#+begin_src emacs-lisp
+(defun t/tf-grep ()
+  (interactive)
+  (+vertico/project-search
+   nil
+   "^\\(\\<resource\\>\\|\\<output\\>\\|\\<variable\\>\\|\\<module\\>\\|\\<variable\\>\\)#\\(\"[^\"]+\"\\)~ \\(\"[^\"]+\"\\)?~ {"
+   ))
+#+end_src
 **** Eglot ls
 
 #+begin_src sh :tangle no :results silent
@@ -3204,6 +3239,20 @@ TODO idle highlight in visible buffers
   :load-path "~/.doom.d/site-lisp/chatgpt/")
 #+end_src
 
+** Bugfixes
+
+*** compat-assoc compat-assoc-delete-all not defined?
+
+#+begin_src emacs-lisp
+(when is-linux
+  (defun compat-assoc (&optional a b c) nil))
+#+end_src
+
+#+begin_src emacs-lisp
+(when is-linux
+  (defun compat-assoc-delete-all (&optional a b c) nil))
+#+end_src
+
 ** Stuff to test
 
 *** Run in every file opened
@@ -3276,7 +3325,7 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 
 ~(doom-mark-buffer-as-real-h)~ can make scratch buffer navigable with ~s-j/k~
 
-*** TODO deno-emacs                    :pocket:deno:emacs:
+*** deno-emacs                         :pocket:deno:emacs:
 
 June 18, 2021 at 12:12PM
 https://ift.tt/36jQLT2
@@ -3305,36 +3354,3 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
              (global-unset-key "\C-c\C-k")))
 #+end_src
 
-*** Flash on long jumps
-
-Use =nav-flash= to flash the cursor after long jumps.
-
-#+begin_src emacs-lisp
-(after! nav-flash
-  (custom-set-faces!
-    '(nav-flash-face :background "maroon4")
-    '(nav-flash-face :background "#003366"))
-  (setq nav-flash-delay 4
-        nav-flash-use-pulse 'gui-only))
-#+end_src
-
-*** TODO compat-assoc undefined?
-
-#+begin_src emacs-lisp
-(defun compat-assoc (&optional a b c) nil)
-#+end_src
-
-#+begin_src emacs-lisp
-(defun compat-assoc-delete-all (&optional a b c) nil)
-#+end_src
-
-*** STARTED Search for terraform resources
-
-#+begin_src emacs-lisp
-(defun t/tf-grep ()
-  (interactive)
-  (+vertico/project-search
-   nil
-   "^\\(\\<resource\\>\\|\\<output\\>\\|\\<variable\\>\\|\\<module\\>\\|\\<variable\\>\\)#\\(\"[^\"]+\"\\)~ \\(\"[^\"]+\"\\)?~ {"
-   ))
-#+end_src
