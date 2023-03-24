@@ -283,14 +283,6 @@ Wait just long enough.
 
 *** Disable annoying defaults
 
-Turn off annoying defaults, e.g. emojis everywhere.
-
-#+begin_src emacs-lisp
-(add-hook! 'doom-after-init-modules-hook
-  (defun t/doom-after-init-modules-hook ()
-    (global-emojify-mode -1)))
-#+end_src
-
 Reset [[file:~/.emacs.d/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
 
 #+begin_src emacs-lisp
@@ -299,6 +291,31 @@ Reset [[file:~/.emacs.d/modules/config/default/config.el::(map! "<M-up>" #'drag-
   (defun t/unbind-drag-stuff ()
     (map! "<M-left>"  nil
           "<M-right>" nil)))
+#+end_src
+
+Remove highlight indent guides by default
+
+#+begin_src emacs-lisp
+(remove-hook! '(prog-mode-hook text-mode-hook conf-mode-hook) 'highlight-indent-guides-mode)
+#+end_src
+
+Soft wrap everywhere
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-after-init-hook
+  (defun t/after-init-hook ()
+    (global-emojify-mode -1)
+    (global-visual-line-mode 1)))
+#+end_src
+
+Truncate lines everywhere
+
+#+begin_src emacs-lisp
+(add-hook! '(prog-mode-hook text-mode-hook conf-mode-hook)
+  (defun t/prog-mode-hook ()
+    (interactive)
+    (toggle-truncate-lines 0)
+    (toggle-truncate-lines 1)))
 #+end_src
 
 *** Whitespace
@@ -712,12 +729,12 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 #+begin_src emacs-lisp
 (defun t/font-spec (f &optional s weight)
   (font-spec :family f
-             :size (or s 20)
+             :size (or s 14)
              :weight (or weight 'normal)
              :slant 'normal
              :width 'normal))
 
-(setq t-fonts '((:face "Iosevka SS05")))
+(setq t-fonts '((:face "JetBrains Mono")))
 
 (defun t/cycle-fonts (&optional font-spec)
   (interactive)
@@ -730,7 +747,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
     (setq doom-font (t/font-spec f s w)
           doom-variable-pitch-font (t/font-spec f s w)
           ;;doom-variable-pitch-font (t/font-spec "ETBembo" 20)
-          doom-big-font (t/font-spec f 20)
+          doom-big-font (t/font-spec f 14)
           doom-font-increment 1)
     (doom/reload-font)
     f))
@@ -788,25 +805,6 @@ Double them
  (setq max-specpdl-size 10000))
 #+end_src
 
-
-#+begin_src emacs-lisp
-(add-hook 'after-init-hook (defun t/after-init-hook () (global-visual-line-mode 1)))
-(add-hook 'prog-mode-hook  (defun t/prog-mode-hook () (toggle-truncate-lines 0)))
-Soft wrap everywhere
-
-#+begin_src emacs-lisp
-(add-hook! 'doom-after-init-hook (defun t/after-init-hook () (global-visual-line-mode 1)))
-#+end_src
-
-Truncate lines everywhere
-
-#+begin_src emacs-lisp
-(add-hook! '(prog-mode-hook text-mode-hook conf-mode-hook)
-  (defun t/prog-mode-hook ()
-    (interactive)
-    (toggle-truncate-lines 0)
-    (toggle-truncate-lines 1)))
-#+end_src
 
 *** Projects
 
@@ -2695,7 +2693,9 @@ Switch around the refresh mappings for more useful defaults.
   (add-hook 'elfeed-search-mode-hook
             (defun t/hook-elfeed-search-mode-hook ()
               (show-paren-mode -1)
-              (visual-line-mode -1))))
+              ;; TODO torgeir
+              ;;(visual-line-mode -1)
+              )))
 #+end_src
 
 Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bind ~n~, ~p~ for nav, that skips to the next item on reaching the end.
