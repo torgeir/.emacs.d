@@ -422,6 +422,7 @@ Disable eldoc on the modeline, makes it so eldoc only appears on ~SPC h .~, i.e.
 #+begin_src emacs-lisp
 (add-hook! '(web-mode js-mode rjsx-mode typescript-mode typescript-tsx-mode)
   (defun t/eldoc-only-in-buffer ()
+    (interactive)
     (setq eldoc-message-function (defun t-void (&optional one two) nil))))
 #+end_src
 
@@ -587,7 +588,8 @@ A diy directory sidebar using dired. Inspired the response in https://www.reddit
       ;; when no buffer exists, init it
       (when (not (get-buffer b))
         (with-current-buffer (dired-noselect (t/project-root))
-          (visual-line-mode -1)
+          ;; TODO torgeir
+          ;; (visual-line-mode -1)
           (rename-buffer b)))
 
       (pop-to-buffer b)
@@ -786,11 +788,24 @@ Double them
  (setq max-specpdl-size 10000))
 #+end_src
 
-*** Visual line mode
 
 #+begin_src emacs-lisp
 (add-hook 'after-init-hook (defun t/after-init-hook () (global-visual-line-mode 1)))
 (add-hook 'prog-mode-hook  (defun t/prog-mode-hook () (toggle-truncate-lines 0)))
+Soft wrap everywhere
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-after-init-hook (defun t/after-init-hook () (global-visual-line-mode 1)))
+#+end_src
+
+Truncate lines everywhere
+
+#+begin_src emacs-lisp
+(add-hook! '(prog-mode-hook text-mode-hook conf-mode-hook)
+  (defun t/prog-mode-hook ()
+    (interactive)
+    (toggle-truncate-lines 0)
+    (toggle-truncate-lines 1)))
 #+end_src
 
 *** Projects
@@ -1316,7 +1331,8 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Cycle fonts"           "t f" #'t/cycle-fonts
  :leader :desc "Toggle focus mode"     "t F" #'focus-mode
  :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
- :leader :desc "Soft line wrapping"    "t v" #'visual-line-mode
+ :leader :desc "Toggle line wrapping"  "t v" #'visual-line-mode
+ :leader :desc "Toggle truncate"       "t u" #'toggle-truncate-lines
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
  :leader :desc "Toggle transparency"   "t T" #'t/transparency
@@ -2690,7 +2706,8 @@ Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bi
   (add-hook 'elfeed-show-mode-hook
             (defun t/hook-elfeed-show-mode-hook ()
              (olivetti-mode)
-             (run-at-time "0 sec" nil (cmd! (visual-line-mode)))
+             ;; TODO torgeir
+             ;; (run-at-time "0 sec" nil (cmd! (visual-line-mode)))
              (t/start-spray-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
 #+end_src
 
@@ -2893,7 +2910,8 @@ Inspiration:
 
 #+begin_src emacs-lisp
 (add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill)
-(add-hook 'mu4e-compose-mode-hook 'visual-line-mode)
+;; TODO torgeir
+;; (add-hook 'mu4e-compose-mode-hook 'visual-line-mode)
 #+end_src
 
 ***** Don't wrap lines in message overview
@@ -2901,7 +2919,8 @@ Inspiration:
 #+begin_src emacs-lisp
 (add-hook 'mu4e-headers-mode-hook
           (defun t/mu4e-headers-mode-hook ()
-           (visual-line-mode -1)
+           ;; TODO torgeir
+           ;; (visual-line-mode -1)
            (show-paren-mode -1)))
 #+end_src
 
@@ -2929,7 +2948,8 @@ Why the timeout is needed? I cannot for the life of me make ~visual-line-mode~ w
                                              (read-only-mode -1)
                                              (delete-trailing-whitespace)
                                              (read-only-mode 1)
-                                             (olivetti-mode))))))
+                                             ;; (olivetti-mode)
+                                             )))))
 #+end_src
 
 [[https://github.com/doomemacs/doomemacs/issues/970][Related struggles]].

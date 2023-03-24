@@ -39,8 +39,8 @@
        (emoji +unicode +ascii +github)  ; 🙂
        hl-todo           ; highlight todo/fixme/note/deprecated/hack/review
        ;;hydra
-       ;;indent-guides     ; highlighted indent columns
-       (ligatures +iosevka)         ; ligatures and symbols to make your code pretty again
+       indent-guides     ; highlighted indent columns
+       ;;(ligatures +iosevka)         ; ligatures and symbols to make your code pretty again
        ;; minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
        nav-flash         ; blink cursor line after big motions
