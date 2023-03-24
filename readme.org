@@ -1976,8 +1976,13 @@ I never really got into this.
                    (when (eq major-mode 'elfeed-show-mode)
                      (let ((shr-inhibit-images t)) (elfeed-show-refresh)))
                    (funcall (t/spray-micro-state))) map)
+    (bind-key "S" (cmd!
+                   (mark-whole-buffer)
+                   (call-interactively 'chatgpt-summarize-region-and-replace)
+                   (deactivate-mark)
+                   (beginning-of-buffer)) map)
     (set-temporary-overlay-map map t on-exit))
-  (message "(n)ext page, (p)rev page, (s)pray mode"))
+  (message "(n)ext page, (p)rev page, (s)pray mode, (S)ummarize with chatgpt"))
 
 (map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
 
@@ -2765,9 +2770,7 @@ Switch around the refresh mappings for more useful defaults.
   (add-hook 'elfeed-search-mode-hook
             (defun t/hook-elfeed-search-mode-hook ()
               (show-paren-mode -1)
-              ;; TODO torgeir
-              ;;(visual-line-mode -1)
-              )))
+              (visual-line-mode -1))))
 #+end_src
 
 Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bind ~n~, ~p~ for nav, that skips to the next item on reaching the end.
@@ -3227,6 +3230,8 @@ TODO idle highlight in visible buffers
              chatgpt-prompt
              chatgpt-fix-region
              chatgpt-explain-region
+             chatgpt-summarize-region
+             chatgpt-summarize-region-and-replace
              chatgpt-gen-tests-for-region
              chatgpt-optimize-region
              chatgpt-refactor-region
@@ -3248,7 +3253,10 @@ TODO idle highlight in visible buffers
               :desc "optimize" "o" #'chatgpt-optimize-region
               :desc "refactor" "r" #'chatgpt-refactor-region
               :desc "prompt region" "P" #'chatgpt-prompt-region
-              :desc "replace" "R" #'chatgpt-prompt-region-and-replace))))
+              :desc "replace" "R" #'chatgpt-prompt-region-and-replace
+              :desc "summarize" "s" #'chatgpt-summarize-region
+              :desc "summarize replace" "S" #'chatgpt-summarize-region-and-replace
+              ))))
     (defun t/chatgpt-init ()
       (interactive)
       (if (not (getenv "OPENAI_API_KEY"))
@@ -3256,7 +3264,7 @@ TODO idle highlight in visible buffers
             (setenv "OPENAI_API_KEY" (t/1p "q2tt4yocntwwx326qck5uqqft4"))
             (message "Openai: Key set."))
         (message "Openai: Key already set.")))
-    (let ((p (+popup-make-rule "^\\*ChatGPT" '(:size 0.3 :side right))))
+    (let ((p (+popup-make-rule "^\\*ChatGPT" '(:size 0.45 :side right))))
       (setq display-buffer-alist (cdr display-buffer-alist))
       (add-to-list 'display-buffer-alist p)))
   :load-path "~/.doom.d/site-lisp/chatgpt/")

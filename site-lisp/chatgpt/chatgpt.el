@@ -97,6 +97,31 @@ The answer in the displays in `chatgpt-buffer'."
                     (chatgpt-show-results-buffer-if-active))))
 
 ;;;###autoload
+(defun chatgpt-summarize-region (BEG END)
+  "Takes a region BEG to END asks ChatGPT to summarize it.
+The answer in the displays in `chatgpt-buffer'."
+  (interactive "r")
+  (let ((current-code (buffer-substring BEG END)))
+    (chatgpt-prompt (chatgpt--append-to-prompt current-code "---\nPlease summarize")
+                    (chatgpt-show-results-buffer-if-active))))
+
+;;;###autoload
+(defun chatgpt-summarize-region-and-replace (BEG END)
+  "Takes a region BEG to END asks ChatGPT to summarize it.
+The answer in the displays in `chatgpt-buffer'."
+  (interactive "r")
+  (let ((og-buf (current-buffer))
+        (current-code (buffer-substring BEG END)))
+    (chatgpt--query-open-api (chatgpt--append-to-prompt current-code "---\nPlease summarize")
+                             (lambda (results)
+                               (with-current-buffer og-buf
+                                 (read-only-mode -1)
+                                 (delete-region BEG END)
+                                 (goto-char BEG)
+                                 (insert results)
+                                 (goto-char BEG))))))
+
+;;;###autoload
 (defun chatgpt-gen-tests-for-region (BEG END)
   "Takes a region BEG to END asks ChatGPT to write a test for it.
 It then displays the answer in the `chatgpt-buffer'."
@@ -138,7 +163,6 @@ It then displays the results in a separate buffer `chatgpt-buffer'."
   "Replace region from BEG to END with the response from the ChatGPT API.
 The region is BEG and until END"
   (interactive "r")
-
   (let ((og-buf (current-buffer)))
     (chatgpt-prompt (buffer-substring BEG END)
                     (lambda (buf)
@@ -159,12 +183,16 @@ The region is BEG and until END"
 (defun chatgpt--extract-text-from-query (query-result)
   "Extract the resulting text from a given OpenAI response QUERY-RESULT."
   (condition-case err
-      (thread-last query-result
-                   (assoc-default 'choices)
-                   seq-first
-                   (assoc-default 'message)
-                   (assoc-default 'content)
-                   string-trim)
+      (if (null (thread-last query-result (assoc-default 'error)))
+          (thread-last query-result
+                       (assoc-default 'choices)
+                       seq-first
+                       (assoc-default 'message)
+                       (assoc-default 'content)
+                       string-trim)
+        (thread-last query-result
+                     (assoc-default 'error)
+                     (assoc-default 'message)))
     (error
      (signal 'chatgpt-parsing-error err))))
 
