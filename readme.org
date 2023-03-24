@@ -645,18 +645,6 @@ A diy directory sidebar using dired. Inspired the response in https://www.reddit
   :parameters '((window-parameters . ((no-other-window . t)))))
 #+end_src
 
-**** STARTED Auto dired sidebar width
-
-#+begin_src emacs-lisp
-(set-popup-rule! "^:"
-  :side 'left
-  :ttl nil ;; don't kill it on C-g
-  :quit 'current
-  :slot  -1
-  :width 't/fit-sidebar
-  :parameters '((window-parameters . ((no-other-window . t)))))
-#+end_src
-
 *** Treeamacs project drawer
 
 Make it more useful.
@@ -1325,9 +1313,9 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  ;; op -- :leader :desc "Toggle treemacs" "f L" #'+treemacs/toggle
  :leader :desc "Open folder" "p o" #'t/open-in-desktop
 
- :leader :desc "Locate" "f L" #'consult-locate
  ;; :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
  :leader :desc "Toggle directory sidebar" "f l" #'dired-sidebar-toggle-sidebar
+ :leader :desc "Toggle directory sidebar, follow" "f L" (cmd! (dired-sidebar-point-at-file buffer-file-name (doom-project-root)))
 
  :leader :desc "Browse"          "o e" #'eww
  :leader :desc "Www"             "o w" #'eww
