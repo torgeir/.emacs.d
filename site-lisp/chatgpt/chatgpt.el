@@ -43,7 +43,7 @@
   :group 'convenience
   :prefix "chatgpt-")
 
-(defcustom chatgpt-max-tokens 300
+(defcustom chatgpt-max-tokens 999
   "Upper limit on the number of tokens the API will return."
   :type 'integer)
 
@@ -71,12 +71,9 @@ Returns buffer containing the text from this query"
   (chatgpt--query-open-api prompt
                            (lambda (results)
                              (pop-to-buffer chatgpt-buffer)
-                             ;; Erase contents of buffer after receiving response
                              (read-only-mode -1)
                              (erase-buffer)
                              (insert results)
-                             ;; Return the chatgpt output buffer for non interactive usage
-                             (toggle-truncate-lines -1)
                              (funcall callback (current-buffer)))))
 
 (defalias 'chatgpt 'chatgpt-prompt)
@@ -87,9 +84,7 @@ Returns buffer containing the text from this query"
 It then displays the answer in the `chatgpt-buffer'."
   (interactive "r")
   (let ((current-code (buffer-substring BEG END)))
-    (chatgpt-prompt (chatgpt--append-to-prompt
-                     current-code
-                     "Why doesn't this code work?")
+    (chatgpt-prompt (chatgpt--append-to-prompt current-code "Why doesn't this code work?")
                     (chatgpt-show-results-buffer-if-active))))
 
 ;;;###autoload
@@ -98,9 +93,7 @@ It then displays the answer in the `chatgpt-buffer'."
 The answer in the displays in `chatgpt-buffer'."
   (interactive "r")
   (let ((current-code (buffer-substring BEG END)))
-    (chatgpt-prompt (chatgpt--append-to-prompt
-                     current-code
-                     "What does this code do?")
+    (chatgpt-prompt (chatgpt--append-to-prompt current-code "What does this code do?")
                     (chatgpt-show-results-buffer-if-active))))
 
 ;;;###autoload
@@ -109,9 +102,7 @@ The answer in the displays in `chatgpt-buffer'."
 It then displays the answer in the `chatgpt-buffer'."
   (interactive "r")
   (let ((current-code (buffer-substring BEG END)))
-    (chatgpt-prompt (chatgpt--append-to-prompt
-                     current-code
-                     "Write me a tests for this code")
+    (chatgpt-prompt (chatgpt--append-to-prompt current-code "Write me a test for this code")
                     (chatgpt-show-results-buffer-if-active))))
 
 ;; TODO currently just says what changed but doesn't wanna show the code it's self
@@ -131,9 +122,7 @@ It then displays the answer in the `chatgpt-buffer'."
 It then displays the answer in the `chatgpt-buffer'."
   (interactive "r")
   (let ((current-code         (buffer-substring BEG END)))
-    (chatgpt-prompt (chatgpt--append-to-prompt
-                     current-code
-                     "Refactor this code and tell me what you changed")
+    (chatgpt-prompt (chatgpt--append-to-prompt current-code "Refactor this code and tell me what you changed")
                     (chatgpt-show-results-buffer-if-active))))
 
 ;;;###autoload
@@ -142,7 +131,6 @@ It then displays the answer in the `chatgpt-buffer'."
 It then displays the results in a separate buffer `chatgpt-buffer'."
   (interactive "r")
   (chatgpt-prompt (buffer-substring BEG END)
-                  ;; Show the results if not already being viewed
                   (chatgpt-show-results-buffer-if-active)))
 
 ;;;###autoload
@@ -164,9 +152,9 @@ The region is BEG and until END"
   "Append the string COMMENT-STR extra information to a PROMPT as a comment."
   (concat prompt
           "\n"
-	  comment-start
+          comment-start
           " "
-	  comment-str))
+          comment-str))
 
 (defun chatgpt--extract-text-from-query (query-result)
   "Extract the resulting text from a given OpenAI response QUERY-RESULT."
@@ -174,7 +162,8 @@ The region is BEG and until END"
       (thread-last query-result
                    (assoc-default 'choices)
                    seq-first
-                   (assoc-default 'text)
+                   (assoc-default 'message)
+                   (assoc-default 'content)
                    string-trim)
     (error
      (signal 'chatgpt-parsing-error err))))
@@ -193,14 +182,15 @@ The environment variable OPENAI_API_KEY is used as your API key
 You can register an account here
 https://beta.openai.com/docs/introduction/key-concepts"
   (let* ((api-key (getenv "OPENAI_API_KEY"))
-         (url-request-method (encode-coding-string "POST" 'us-ascii))
-	 (url-request-extra-headers `(("Content-Type" . "application/json")
-				      ("Authorization" . ,(format "Bearer %s" api-key))))
+         (url-request-method (encode-coding-string "POST" 'utf-8))
+         (url-request-extra-headers `(("Content-Type" . "application/json")
+                                      ("Authorization" . ,(format "Bearer %s" api-key))))
          (url-request-data (json-encode
-			    `(("model" . "text-davinci-003")
-			      ("prompt" . ,prompt)
-			      ("max_tokens" . ,chatgpt-max-tokens)
-			      ("temperature" . 0)))))
+                            `(("model" . "gpt-3.5-turbo")
+                              ("messages" . (((role . "user")
+                                              (content . ,(encode-coding-string prompt 'utf-8)))))
+                              ("max_tokens" . ,chatgpt-max-tokens)
+                              ("temperature" . 0)))))
     (cl-assert (not (string= "" api-key))
                t
                "Current contents of the environmental variable OPENAI_API_KEY
@@ -208,9 +198,12 @@ are '%s' which is not an appropriate OpenAI token please ensure
 you have the correctly set the OPENAI_API_KEY variable"
                api-key)
     (url-retrieve
-     "https://api.openai.com/v1/completions"
+     "https://api.openai.com/v1/chat/completions"
      'chatgpt--parse-response
      (list callback))))
+
+;;; TODO what about this
+;;; https://github.com/emacs-openai/codegpt
 
 (provide 'chatgpt)
 ;;; chatgpt.el ends here
