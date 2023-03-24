@@ -2226,6 +2226,22 @@ unzip server.zip
 ln -sf server/bin/kotlin-language-server .
 #+end_src
 
+#+begin_src emacs-lisp
+(after! eglot
+  (setq eglot-connect-timeout (* 60 20)))
+#+end_src
+
+Redefine kotlin formatter to add ~-l warn~ to make it not insert an INFO log line in every kotlin file you save...
+
+#+begin_src emacs-lisp
+(after! format-all
+  (define-format-all-formatter ktlint
+    (:executable "ktlint")
+    (:install (macos "brew install ktlint"))
+    (:modes kotlin-mode)
+    (:format (format-all--buffer-easy executable "--format" "--stdin" "-l" "warn"))))
+#+end_src
+
 *** Python
 
 **** Eglot ls
