@@ -624,7 +624,6 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
    "M-<up>" (cmd! (find-alternate-file ".."))))
 #+end_src
 
-
 *** Customize
 
 Doom doesnt use the customize interface. It is useful nonetheless for experimenting with face colors etc
@@ -855,7 +854,6 @@ Double them
  (setq max-lisp-eval-depth 10000)
  (setq max-specpdl-size 10000))
 #+end_src
-
 
 *** Projects
 
@@ -1987,8 +1985,10 @@ I never really got into this.
                    (call-interactively 'chatgpt-summarize-region-and-replace)
                    (deactivate-mark)
                    (beginning-of-buffer)) map)
+    (bind-key "o" (cmd!
+                   (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
-  (message "(n)ext page, (p)rev page, (s)pray mode, (S)ummarize with chatgpt"))
+  (message "(n)ext page, (p)rev page, (s)pray mode, (S)ummarize with chatgpt, (o)livetti"))
 
 (map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
 
@@ -2777,7 +2777,9 @@ Switch around the refresh mappings for more useful defaults.
   (add-hook 'elfeed-search-mode-hook
             (defun t/hook-elfeed-search-mode-hook ()
               (show-paren-mode -1)
-              (visual-line-mode -1))))
+              ;; don't wrap long lines
+              (visual-line-mode -1)
+              (toggle-truncate-lines 1))))
 #+end_src
 
 Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bind ~n~, ~p~ for nav, that skips to the next item on reaching the end.
@@ -2787,10 +2789,9 @@ Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bi
   ;;(setq elfeed-show-mode-hook nil)
   (add-hook 'elfeed-show-mode-hook
             (defun t/hook-elfeed-show-mode-hook ()
-             (olivetti-mode)
-             ;; TODO torgeir
-             ;; (run-at-time "0 sec" nil (cmd! (visual-line-mode)))
-             (t/start-spray-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
+              (olivetti-mode)
+              (run-at-time "0 sec" nil (cmd! (visual-line-mode)))
+              (t/start-spray-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
 #+end_src
 
 Show the mouseover text for xkcd comics by moving to the image and fetching the ~'shr-alt~ text property that holds the mouse over text. Insert it in the buffer on the next tick, to wait for the image to appear first.
