@@ -2748,6 +2748,7 @@ Setup.
 #+begin_src emacs-lisp
 (after! elfeed
   (setq rmh-elfeed-org-files '("~/Dropbox/org/feeds.org")
+        elfeed-goodies/entry-pane-position 'bottom
         elfeed-search-filter "@2-week-ago -news -tech +unread"))
 #+end_src
 
