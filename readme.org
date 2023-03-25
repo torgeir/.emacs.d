@@ -655,8 +655,6 @@ A diy directory sidebar using dired. Inspired the response in https://www.reddit
       ;; when no buffer exists, init it
       (when (not (get-buffer b))
         (with-current-buffer (dired-noselect (t/project-root))
-          ;; TODO torgeir
-          ;; (visual-line-mode -1)
           (rename-buffer b)))
 
       (pop-to-buffer b)
@@ -913,11 +911,9 @@ There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][do
 (defun t/cycle-theme ()
   (interactive)
   (cl-case doom-theme
-    (t-doom-one (load-theme 'doom-laserwave))
-    (doom-laserwave (load-theme 'doom-vibrant))
     (doom-vibrant (load-theme 'doom-flatwhite))
-    (doom-flatwhite (load-theme 'doom-nord))
-    (t (load-theme 't-doom-one)))
+    (doom-flatwhite (load-theme 'doom-vibrant))
+    (t (load-theme 'doom-vibrant)))
   (message "Theme: %s" doom-theme))
 (map! :leader "t t" #'t/cycle-theme)
 #+end_src
@@ -2993,8 +2989,6 @@ Inspiration:
 
 #+begin_src emacs-lisp
 (add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill)
-;; TODO torgeir
-;; (add-hook 'mu4e-compose-mode-hook 'visual-line-mode)
 #+end_src
 
 ***** Don't wrap lines in message overview
@@ -3002,8 +2996,7 @@ Inspiration:
 #+begin_src emacs-lisp
 (add-hook 'mu4e-headers-mode-hook
           (defun t/mu4e-headers-mode-hook ()
-           ;; TODO torgeir
-           ;; (visual-line-mode -1)
+           (visual-line-mode -1)
            (show-paren-mode -1)))
 #+end_src
 
@@ -3030,9 +3023,7 @@ Why the timeout is needed? I cannot for the life of me make ~visual-line-mode~ w
               (run-at-time "2 sec" nil (cmd! (visual-line-mode)
                                              (read-only-mode -1)
                                              (delete-trailing-whitespace)
-                                             (read-only-mode 1)
-                                             ;; (olivetti-mode)
-                                             )))))
+                                             (read-only-mode 1))))))
 #+end_src
 
 [[https://github.com/doomemacs/doomemacs/issues/970][Related struggles]].
