@@ -119,18 +119,24 @@ Ignore some of the cached emacs files in recent files
 
 #+begin_src emacs-lisp
 (defun t/1p (item &optional args)
-  (let* ((pass (read-passwd "1p master password: "))
-         (session-token nil)
-         (ret nil)
-         (args (or args "--fields label=password")))
-    (setq session-token (with-temp-buffer
-                          (if (zerop (call-process-shell-command (format "echo -n %s | op signin --raw" pass) nil t))
-                              (replace-regexp-in-string (rx "\n" eos) "" (buffer-string))
-                            (error "1p: auth failed."))))
-    (with-temp-buffer
-      (call-process-shell-command (format "op --session %s item get %s %s"
-                                          session-token item args) nil t)
-      (replace-regexp-in-string (rx "\n" eos) "" (buffer-string)))))
+  "Lookup 1p item. On linux, sign in manually first."
+  (let ((args (or args "--fields label=password")))
+    (if is-mac
+        (with-temp-buffer
+          (if (zerop (call-process-shell-command (format "op item get %s %s" item args) nil t))
+              (replace-regexp-in-string (rx "\n" eos) "" (buffer-string))
+            (error "1p: looking up item failed.")))
+      (let* ((pass (read-passwd "1p master password: "))
+             (session-token nil)
+             (ret nil))
+        (setq session-token (with-temp-buffer
+                              (if (zerop (call-process-shell-command (format "echo -n %s | op signin --raw" pass) nil t))
+                                  (replace-regexp-in-string (rx "\n" eos) "" (buffer-string))
+                                (error "1p: auth failed."))))
+        (with-temp-buffer
+          (if is-linux
+              (call-process-shell-command (format "op --session %s item get %s %s" session-token item args) nil t))
+          (replace-regexp-in-string (rx "\n" eos) "" (buffer-string)))))))
 #+end_src
 
 ** gpg
