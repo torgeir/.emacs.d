@@ -115,6 +115,38 @@ Ignore some of the cached emacs files in recent files
         user-mail-address-2 email-2))
 #+end_src
 
+** 1password
+
+#+begin_src emacs-lisp
+(defun t/1p (item &optional args)
+  (let* ((pass (read-passwd "1p master password: "))
+         (session-token nil)
+         (ret nil)
+         (args (or args "--fields label=password")))
+    (setq session-token (with-temp-buffer
+                          (if (zerop (call-process-shell-command (format "echo -n %s | op signin --raw" pass) nil t))
+                              (replace-regexp-in-string (rx "\n" eos) "" (buffer-string))
+                            (error "1p: auth failed."))))
+    (with-temp-buffer
+      (call-process-shell-command (format "op --session %s item get %s %s"
+                                          session-token item args) nil t)
+      (replace-regexp-in-string (rx "\n" eos) "" (buffer-string)))))
+#+end_src
+
+** gpg
+
+#+begin_src emacs-lisp
+(defun t/gpg ()
+  (interactive)
+  (shell-command
+   (format
+    "gpg-connect-agent updatestartuptty /bye > /dev/null && \
+       $(gpgconf --list-dirs libexecdir)/gpg-preset-passphrase -c -P '%s' \
+       $(gpg --fingerprint --with-keygrip torgeir@keybase.io | awk '/Keygrip/ {print $3}' | tail -n 1) && \
+       gpg -q --batch -d ~/.authinfo.gpg > /dev/null"
+    (t/1p "keybase.io" "--format json | jq -j '.fields[] | select(.id == \"password\") | .value'"))))
+#+end_src
+
 ** Org file location setup
 
 #+begin_quote
@@ -1323,6 +1355,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Rss"               "o S" #'=rss
  :leader :desc "Twitter"           "o W" #'=twitter
  :leader :desc "Calendar"          "o c" #'calendar
+ :leader :desc "Mail"              "o m" (cmd! (t/gpg) (=mu4e))
  :leader :desc "Show home"         "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
  :leader :desc "Show saga"         "o s" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
  :leader :desc "Open Intellij"     "o i" #'t/open-in-intellij
@@ -3218,9 +3251,11 @@ TODO idle highlight in visible buffers
               :desc "replace" "R" #'chatgpt-prompt-region-and-replace))))
     (defun t/chatgpt-init ()
       (interactive)
-      (let ((key "OPENAI_API_KEY"))
-        (when (not (getenv key))
-          (setenv key (t/shell-command-to-string "op item get q2tt4yocntwwx326qck5uqqft4 --fields label=password")))))
+      (if (not (getenv "OPENAI_API_KEY"))
+          (progn
+            (setenv "OPENAI_API_KEY" (t/1p "q2tt4yocntwwx326qck5uqqft4"))
+            (message "Openai: Key set."))
+        (message "Openai: Key already set.")))
     (let ((p (+popup-make-rule "^\\*ChatGPT" '(:size 0.3 :side right))))
       (setq display-buffer-alist (cdr display-buffer-alist))
       (add-to-list 'display-buffer-alist p)))
