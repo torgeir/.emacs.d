@@ -19,19 +19,19 @@
 
 (defun t/async-shell-command (name cmd &optional fn)
   "Execute `CMD' async, call `FN' with the result string."
-  (lexical-let* ((fn fn)
-                 (buf-name (format "*%s*" name))
-                 (_ (when (get-buffer buf-name)
-                      (with-current-buffer buf-name (erase-buffer))))
-                 (p (start-process-shell-command name buf-name cmd)))
-                (prog1 p
-                  (when fn
-                    (set-process-sentinel p (lambda (process event)
-                                              (with-current-buffer buf-name
-                                                (let ((res (buffer-substring-no-properties (point-min) (point-max))))
-                                                  (apply fn (list process
-                                                                  event
-                                                                  (split-string res "\r?\n")))))))))))
+  (let* ((fn fn)
+         (buf-name (format "*%s*" name))
+         (_ (when (get-buffer buf-name)
+              (with-current-buffer buf-name (erase-buffer))))
+         (p (start-process-shell-command name buf-name cmd)))
+    (prog1 p
+      (when fn
+        (set-process-sentinel p (lambda (process event)
+                                  (with-current-buffer buf-name
+                                    (let ((res (buffer-substring-no-properties (point-min) (point-max))))
+                                      (apply fn (list process
+                                                      event
+                                                      (split-string res "\r?\n")))))))))))
 
 (defun t/evil-ex-define-cmd-local (cmd function)
   "Locally binds the function FUNCTION to the command CMD."
