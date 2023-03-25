@@ -1560,9 +1560,16 @@ Motion keys for info mode.
     "Capture current frontmost tab url from chrome."
     (concat "* TODO %? :url:\n\n" (t/grab-chrome-url)))
 
-  (defun t/org-capture-elfeed-link-template (&optional &rest args)
-    "Capture open elfeed post with url."
-    (concat "* TODO %? :url:%^G\n%i\n" (elfeed-entry-link elfeed-show-entry)))
+  (defun t/org-capture-link-template (&optional &rest args)
+    "Capture url."
+    (concat "* TODO %? %^G\n\nLink:\n - "
+            (cond
+             ((equal major-mode 'mu4e-view-mode) (concat "mu4e:msgid:" (plist-get (mu4e-message-at-point) :message-id)))
+             ((equal major-mode 'mu4e-headers-mode) (concat "mu4e:msgid:" (plist-get (mu4e-message-at-point) :message-id)))
+             ((equal major-mode 'elfeed-show-mode) (elfeed-entry-link elfeed-show-entry))
+             ((equal major-mode 'elfeed-search-mode) (s-join "\n - " (cl-loop for feed in (elfeed-search-selected)
+                                                                              collect (elfeed-entry-link feed))))
+             (t (get-text-property (point) 'shr-url)))))
 
   (setq org-tags-column -60
         org-support-shift-select t   ; shift can be used to mark multiple lines
@@ -1824,15 +1831,14 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 
 #+begin_src emacs-lisp
 (after! org
+
   (setq org-capture-templates
         `(("t" "Task" entry (file+olp org-default-notes-file "tasks") "* TODO %? \n\n%i\n\n" :prepend t :empty-lines-after 1)
           ("s" "Saga" entry (file+olp ,(t/user-dropbox-folder "org/saga.org.gpg") "Tasks") "* TODO %? \n\n%i" :prepend t :empty-lines-after 1)
           ("b" "bekk" entry (file+olp ,(t/user-dropbox-folder "org/bekk.org.gpg") "Tasks") "* TODO %? \n\n%i" :prepend t :empty-lines-after 1)
-          ;;("d" "Shared calendar event" entry (file ,(t/user-dropbox-folder "org/gcal/delt.org.gpg")) "* %?\n" :prepent t)
-          ("l" "Link (eww, mu4e, etc)" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\nLink: %a" :prepend t :empty-lines-after 1)
           ("f" "File" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t :empty-lines-after 1)
+          ("l" "Link (eww, mu4e, etc)" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-link-template) :prepend t :empty-lines-after 1)
           ("c" "Chrome location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template) :prepend t :empty-lines-after 1)
-          ("e" "Elfeed location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-elfeed-link-template) :prepend t :empty-lines-after 1)
           ("p" "Post" entry (file+olp "~/Code/posts/content-org/blog.org" "Drafts") (function org-hugo-new-subtree-post-capture-template))
           ;; ("T" "Personal todo" entry (file+headline +org-capture-todo-file "Inbox") "* %?\n %i\n %a" :prepend t)
           ;; ("j" "Journal" entry (file+olp+datetree +org-capture-journal-file) "* %U %?\n %i\n %a" :prepend t)
