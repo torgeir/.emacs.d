@@ -7,6 +7,7 @@
 (package! spray)
 (package! dired-sidebar)
 (package! dired-subtree)
+(package! org-ai)
 (package! mastodon)
 (package! docker-tramp)
 (package! blamer

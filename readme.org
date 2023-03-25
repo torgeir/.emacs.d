@@ -69,6 +69,7 @@ This is tangled to ~packages.el~ on save.
 (package! spray)
 (package! dired-sidebar)
 (package! dired-subtree)
+(package! org-ai)
 (package! mastodon)
 (package! docker-tramp)
 (package! blamer
@@ -1941,6 +1942,13 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 #+begin_src emacs-lisp
 (after! org
   (setq org-pomodoro-format "%s"))
+#+end_src
+
+*** ChatGPT and DALL-E in org mode
+
+#+begin_src emacs-lisp
+(use-package! org-ai
+  :hook (org-mode . org-ai-mode))
 #+end_src
 
 ** Reading
