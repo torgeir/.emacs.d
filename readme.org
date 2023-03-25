@@ -778,7 +778,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 #+begin_src emacs-lisp
 (defun t/font-spec (f &optional s weight)
   (font-spec :family f
-             :size (or s 14)
+             :size (or s (if is-mac 17 13))
              :weight (or weight 'normal)
              :slant 'normal
              :width 'normal))
