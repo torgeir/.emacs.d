@@ -1324,7 +1324,10 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :g "M-y" 'consult-yank-from-kill-ring
 
  ;; i = insert
- :i "C-d" 'delete-char
+ :i "C-d" #'delete-char
+ :i "C-k" #'evil-delete-line
+ :i "C-p" #'previous-line
+ :i "C-n" #'next-line
 
  "s-k" 'previous-buffer
  "s-j" 'next-buffer
