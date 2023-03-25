@@ -1423,6 +1423,10 @@ Be explicit about when deleting workspaces
  :leader :desc "Previous workspace" "TAB p" '+workspace:switch-previous
  :leader :desc "Swap next" "TAB j" '+workspace/swap-right
  :leader :desc "Swap previous" "TAB k" '+workspace/swap-left)
+
+(map!
+ :desc "New workspace" "s-t" '+workspace/new-named
+ :desc "Rename workspace" "s-r" '+workspace/rename)
 #+end_src
 
 Hide the last frame on os x instead of nuking it
