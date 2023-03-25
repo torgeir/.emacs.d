@@ -69,6 +69,7 @@ This is tangled to ~packages.el~ on save.
 (package! spray)
 (package! dired-sidebar)
 (package! dired-subtree)
+(package! mastodon)
 (package! docker-tramp)
 (package! blamer
   :recipe (:host github :repo "artawower/blamer.el")
@@ -1356,6 +1357,9 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Twitter"           "o W" #'=twitter
  :leader :desc "Calendar"          "o c" #'calendar
  :leader :desc "Mail"              "o m" (cmd! (t/gpg) (=mu4e))
+ :leader :desc "Mastodon"          "o M" (cmd! (condition-case nil (+workspace-new "*mastodon*") (error nil))
+                                               (+workspace-switch "*mastodon*")
+                                               (mastodon))
  :leader :desc "Show home"         "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
  :leader :desc "Show saga"         "o s" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
  :leader :desc "Open Intellij"     "o i" #'t/open-in-intellij
@@ -3384,3 +3388,17 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
              (global-unset-key "\C-c\C-k")))
 #+end_src
 
+*** Mastodon
+
+#+begin_src emacs-lisp
+(after! mastodon
+  (setq mastodon-instance-url "https://fosstodon.org"
+        mastodon-active-user "@torgeir@fosstodon.org")
+  (map! :map mastodon-mode-map
+        :n "j" (cmd!
+                (mastodon-tl--goto-next-toot)
+                (recenter-top-bottom 0))
+        :n "k" (cmd!
+                (mastodon-tl--goto-prev-toot)
+                (recenter-top-bottom 0))))
+#+end_src

@@ -7,6 +7,7 @@
 (package! spray)
 (package! dired-sidebar)
 (package! dired-subtree)
+(package! mastodon)
 (package! docker-tramp)
 (package! blamer
   :recipe (:host github :repo "artawower/blamer.el")
