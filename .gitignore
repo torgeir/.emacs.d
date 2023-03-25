@@ -7,3 +7,6 @@ config.el
 /test-files/venv/
 /test-files/node_modules/
 /test-files/package-lock.json
+/.idea/
+/.log/
+/.nrepl-port
