@@ -3420,6 +3420,7 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
   (setq mastodon-instance-url "https://fosstodon.org"
         mastodon-active-user "@torgeir@fosstodon.org")
   (map! :map mastodon-mode-map
+        :n "q" #'+workspace/delete
         :n "j" (cmd!
                 (mastodon-tl--goto-next-toot)
                 (recenter-top-bottom 0))
