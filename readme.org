@@ -904,8 +904,7 @@ And fix ~super~ navigation across modes that steam ~SPC~.
 There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]]. I [[file:~/.emacs.d/.local/straight/repos/themes/themes/doom-one-theme.el::bg `(,(doom-darken "#282c34" 0.5) "black" "black"][tuned doom-one a little]], darkening some of the colors even more. Its in [[file:themes/t-doom-one.el::(def-doom-theme t-doom-one][themes/t-doom-one-theme.el]].
 
 #+begin_src emacs-lisp
-;; (require 't-doom-one-theme (t/user-emacs-file "themes/t-doom-one-theme.el"))
-(setq doom-theme 't-doom-one)
+(setq doom-theme 'doom-vibrant)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -913,7 +912,7 @@ There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][do
   (interactive)
   (cl-case doom-theme
     (doom-vibrant (load-theme 'doom-flatwhite))
-    (doom-flatwhite (load-theme 'doom-vibrant))
+    (doom-flatwhite (load-theme 't-doom-one))
     (t (load-theme 'doom-vibrant)))
   (message "Theme: %s" doom-theme))
 (map! :leader "t t" #'t/cycle-theme)
@@ -1285,6 +1284,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 
 - [[file:~/.emacs.d/modules/editor/evil/config.el::(map! :v "@" #'+evil:apply-macro][Doom editor keybindings]]
 - [[file:~/.emacs.d/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]]
+- [[file:~/.emacs.d/modules/editor/evil/config.el:::n "g=" #'evil-numbers/inc-at-pt][evil commands]]
 
 #+begin_src emacs-lisp
 (map! :map markdown-mode-map
@@ -3388,7 +3388,7 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
              (global-unset-key "\C-c\C-k")))
 #+end_src
 
-*** Mastodon
+*** STARTED Mastodon
 
 #+begin_src emacs-lisp
 (after! mastodon
