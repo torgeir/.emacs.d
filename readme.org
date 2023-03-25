@@ -1429,7 +1429,11 @@ Be explicit about when deleting workspaces
  :leader :desc "Swap previous" "TAB k" '+workspace/swap-left)
 
 (map!
- :desc "New workspace" "s-t" '+workspace/new-named
+ :desc "New workspace" "s-t" (cmd!
+                              (let ((name (read-string "Workspace name: ")))
+                                (condition-case nil (+workspace-new name) (error nil))
+                                (+workspace-switch name)
+                                (consult-recent-file)))
  :desc "Rename workspace" "s-r" '+workspace/rename)
 #+end_src
 
