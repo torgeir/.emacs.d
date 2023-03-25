@@ -3414,3 +3414,7 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
                 (mastodon-tl--goto-prev-toot)
                 (recenter-top-bottom 0))))
 #+end_src
+
+*** STARTED [[file:~/.emacs.d/lisp/doom-packages.el::;;(nongnu-elpa :type git][Turned off non-gnu elpa]]?
+
+git savannah is down? https://outagedown.com/git.savannah.gnu.org [2023-03-25 Sat]
