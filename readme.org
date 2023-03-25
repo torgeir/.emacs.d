@@ -1457,6 +1457,17 @@ That's irritating. Prevent drag-stuff-mode from messing things up
  )
 #+end_src
 
+Popup bindings on a norwegian keyboard
+
+#+begin_src emacs-lisp
+(map! :g "C-*"   #'+popup/raise
+      :g "C-x p" #'+popup/other
+      :g "C-'"   #'+popup/toggle
+      :map org-mode-map
+      :g "C-*"   #'+popup/raise
+      :g "C-'"   #'+popup/toggle)
+#+end_src
+
 ** Help
 
 One help shortcut, everywhere.
