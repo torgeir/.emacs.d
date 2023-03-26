@@ -104,7 +104,6 @@
         +docsets
         +dictionary)
        (lsp
-        +peek
         +eglot ; https://rgoswami.me/posts/emacs-lang-servers/
         )               ; M-x vscode
        magit              ; a git porcelain for Emacs
