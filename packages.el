@@ -7,8 +7,10 @@
 (package! spray)
 (package! dired-sidebar)
 (package! dired-subtree)
-(package! org-ai)
+(package! org-ai :recipe (:host github :repo "rksm/org-ai"))
 (package! mastodon)
+(package! hnreader)
+(package! reddigg)
 (package! docker-tramp)
 (package! blamer
   :recipe (:host github :repo "artawower/blamer.el")

@@ -69,8 +69,10 @@ This is tangled to ~packages.el~ on save.
 (package! spray)
 (package! dired-sidebar)
 (package! dired-subtree)
-(package! org-ai)
+(package! org-ai :recipe (:host github :repo "rksm/org-ai"))
 (package! mastodon)
+(package! hnreader)
+(package! reddigg)
 (package! docker-tramp)
 (package! blamer
   :recipe (:host github :repo "artawower/blamer.el")
@@ -1231,7 +1233,9 @@ And screens are big, so a bit more space for text is nice.
   (setq ;; olivetti-minimum-body-width
    olivetti-body-width
    (floor (* (frame-width (selected-frame))
-             (/ (float 5) 7)))))
+             ;; (/ (float 5) 7)
+             (/ (float 2) 3)
+             ))))
 #+end_src
 
 Adjust margins equally across modes.
@@ -1525,7 +1529,6 @@ Motion keys for info mode.
 #+begin_src emacs-lisp
 (after! org
 
-  (add-hook! 'org-mode-hook 'hl-todo-mode)
   (add-hook! 'org-mode-hook 'evil-cleverparens-mode)
 
   (defun t/open-prev-heading ()
@@ -1766,6 +1769,31 @@ Save from agenda
   (run-at-time nil nil #'org-appear--set-elements))
 #+end_src
 
+*** Org links
+
+Make org handle links load links that start with
+
+- ~eww:~
+- ~eshell~
+- ~man:~
+- ~vterm:~
+
+#+begin_src emacs-lisp
+(add-hook! 'org-mode-hook
+  (defun t/load-org-links ()
+    (interactive)
+    (require 'ol)
+    (require 'ol-eshell)
+    (require 'ol-man)
+    (require 'ol-eww)
+    (defun t/org-vterm-open (url _)
+      "Open URL with vterm in the current buffer."
+      (let ((current-prefix-arg 1))
+        (call-interactively '+vterm/toggle)
+        (term-send-raw-string (concat url "\C-m"))))
+    (org-link-set-parameters "vterm" :follow 't/org-vterm-open)))
+#+end_src
+
 *** Refile
 
 Save org mode buffers after refile.
@@ -1973,6 +2001,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 
 *** ChatGPT and DALL-E in org mode
 
+
 #+begin_src emacs-lisp
 (use-package! org-ai
   :hook (org-mode . org-ai-mode))
@@ -2130,6 +2159,26 @@ Some useful eww keybindings
      "s" (t/spray-micro-state))))
 (add-hook 'eww-mode-hook #'t/eww-hook)
 #+END_SRC
+
+*** Hackernews
+
+#+begin_src emacs-lisp
+(use-package! hnreader
+  :commands (hnreader-news)
+  :config
+  (set-popup-rule! "^*HN" :ignore t))
+#+end_src
+
+*** Reddit
+
+#+begin_src emacs-lisp
+(use-package! reddigg
+  :commands (reddigg-view-main)
+  :config
+  (progn
+    (set-popup-rule! "^*reddigg" :ignore t)
+    (setq reddigg-subs '(emacs minilab homelab homeserver orgmode sffpc archlinux))))
+#+end_src
 
 *** Nrk.no
 
@@ -2313,10 +2362,6 @@ esac
 #+begin_src emacs-lisp
 (after! eglot
   (add-to-list 'eglot-server-programs '((hcl-mode terraform-mode) . ("terraform-lsp")))
-
-  ;; TODO is this needed once what is below is removed?
-  ;; prevent eglot from formatting after prettier
-  ;; (setq eglot-ignored-server-capabilities '(:documentFormattingProvider :documentRangeFormattingProvider))
   )
 #+end_src
 
@@ -2359,7 +2404,10 @@ python3 -m venv ~/.doom.d/test-files/venv
 #+end_src
 
 #+begin_src emacs-lisp
-(pyvenv-activate (t/user-emacs-file "test-files/venv"))
+(add-to-list 'auto-mode-alist
+             (cons (concat "^" (t/user-emacs-file "test-files/*"))
+                   (defun t/activate-pyenv-test-files ()
+                     (pyvenv-activate (t/user-emacs-file "test-files/venv")))))
 #+end_src
 
 Install [[https://github.com/python-lsp/python-lsp-server][a language server]] in the venv.
