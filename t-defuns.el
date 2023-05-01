@@ -856,18 +856,30 @@ and indent accordingly."
     (with-current-buffer b
       (funcall fn b))))
 
-(defun t/set-all-window-margins (l &optional r)
-  (let ((r (or r l)))
-    (dolist (w (window-list))
-      (set-window-margins w l r))))
+(defun t/set-all-window-margins (l r)
+  (dolist (w (window-list))
+    (set-window-margins w l r)))
 
-(defun t/margins-global (&optional l)
-  "Set global window margins."
+(defvar *t-window-margins* 0)
+
+(defun t/reset-window-margins (&optional m)
+  "Reset window margins"
+  (interactive)
+  (when m
+    (setq *t-window-margins* m))
+  (t/set-all-window-margins *t-window-margins*
+                            *t-window-margins*))
+
+(defun t/margins-global (&optional m)
+  "Set global window margins M."
   (interactive (list (string-to-number (read-string "Width: " nil nil "0"))))
-  (let ((l (or l 0)))
-    (setq-default left-margin-width l
-                  right-margin-width l)
-    (t/set-all-window-margins l)))
+  (let ((m (or m 0)))
+    (setq-default left-margin-width m
+                  right-margin-width m)
+    (t/reset-window-margins m)
+    (add-hook 'window-setup-hook 't/reset-window-margins)
+    (add-hook 'window-configuration-change-hook 't/reset-window-margins)
+    (add-hook '+popup-buffer-mode-hook 't/reset-window-margins)))
 
 (defun t/margins-global-decrease ()
   "Decrease global window margins."
