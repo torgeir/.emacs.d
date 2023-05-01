@@ -1,5 +1,5 @@
 #!/bin/bash
-source ~/dotfiles/source/functions
+source $HOME/dotfiles/source/functions
 
 case $(uname) in
   Linux)
