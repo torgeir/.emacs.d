@@ -902,6 +902,35 @@ And fix ~super~ navigation across modes that steam ~SPC~.
    "s-0" '+workspace/switch-to-final))
 #+end_src
 
+Be explicit about when deleting workspaces
+
+#+begin_src emacs-lisp
+(after! (:and evil persp-mode)
+  (define-key! persp-mode-map
+    [remap delete-window] #'delete-window
+    [remap evil-window-delete] #'delete-window))
+
+(map!
+ :map doom-leader-workspace-map
+ :leader :desc "Other workspace" "TAB '" '+workspace/other
+ :leader :desc "New workspace" "TAB w" '+workspace/new-named
+ :leader :desc "Next workspace" "TAB n" '+workspace:switch-next
+ :leader :desc "Previous workspace" "TAB p" '+workspace:switch-previous
+ :leader :desc "Swap next" "TAB j" '+workspace/swap-right
+ :leader :desc "Swap previous" "TAB k" '+workspace/swap-left)
+
+(map!
+ :desc "New workspace" "s-t" (cmd!
+                              (let ((name (read-string "Workspace name: ")))
+                                (condition-case nil (+workspace-new name) (error nil))
+                                (+workspace-switch name)
+                                (if (t/prefix-arg-universal?)
+                                    (consult-recent-file)
+                                  (call-interactively 'execute-extended-command))))
+ :desc "Rename workspace" "s-r" '+workspace/rename)
+#+end_src
+
+
 *** Themes
 
 There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]]. I [[file:~/.emacs.d/.local/straight/repos/themes/themes/doom-one-theme.el::bg `(,(doom-darken "#282c34" 0.5) "black" "black"][tuned doom-one a little]], darkening some of the colors even more. Its in [[file:themes/t-doom-one.el::(def-doom-theme t-doom-one][themes/t-doom-one-theme.el]].
@@ -1250,8 +1279,8 @@ Adjust margins equally across modes.
                            (t (t/margins-global-decrease))))
            "<right>" (cmd! (cond
                             ((and (boundp 'writeroom-mode) writeroom-mode) (writeroom-increase-width))
-                            ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-expand))
-                            (t (t/margins-global-increase))))))
+                            ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-expand)
+                            (t (t/margins-global-increase)))))))
 #+end_src
 
 *** Mode line
@@ -1415,32 +1444,6 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Previous occurrence" "h N" #'highlight-symbol-prev
  :leader :desc "Next occurrence"     "h n" #'highlight-symbol-next)
  #+end_src
-
-Be explicit about when deleting workspaces
-
-#+begin_src emacs-lisp
-(after! (:and evil persp-mode)
-  (define-key! persp-mode-map
-    [remap delete-window] #'delete-window
-    [remap evil-window-delete] #'delete-window))
-
-(map!
- :map doom-leader-workspace-map
- :leader :desc "Other workspace" "TAB '" '+workspace/other
- :leader :desc "New workspace" "TAB w" '+workspace/new-named
- :leader :desc "Next workspace" "TAB n" '+workspace:switch-next
- :leader :desc "Previous workspace" "TAB p" '+workspace:switch-previous
- :leader :desc "Swap next" "TAB j" '+workspace/swap-right
- :leader :desc "Swap previous" "TAB k" '+workspace/swap-left)
-
-(map!
- :desc "New workspace" "s-t" (cmd!
-                              (let ((name (read-string "Workspace name: ")))
-                                (condition-case nil (+workspace-new name) (error nil))
-                                (+workspace-switch name)
-                                (consult-recent-file)))
- :desc "Rename workspace" "s-r" '+workspace/rename)
-#+end_src
 
 Hide the last frame on os x instead of nuking it
 
