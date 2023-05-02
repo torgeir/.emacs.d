@@ -3277,7 +3277,7 @@ First time =mu= initialization
 
 #+begin_src emacs-lisp :tangle no
 (shell-command-to-string
- (concat "mu init -m ~./maildir"
+ (concat "mu init -m ~/.maildir"
          " --my-address " (getenv "USER_EMAIL")
          " --my-address " (getenv "USER_EMAIL_2")
          " && mu index"))
