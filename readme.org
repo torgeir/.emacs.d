@@ -684,31 +684,21 @@ A diy directory sidebar using dired. Inspired the response in https://www.reddit
   :parameters '((window-parameters . ((no-other-window . t)))))
 #+end_src
 
-*** Treeamacs project drawer
-
-Make it more useful.
+*** Dired sidebar
 
 #+begin_src emacs-lisp
-(after! treemacs
-  (add-hook! 'treemacs-mode-hook 'treemacs-git-commit-diff-mode)
-  (add-hook! 'treemacs-mode-hook 'treemacs-git-mode)
-  (add-hook! 'treemacs-mode-hook 'treemacs-toggle-fixed-width)
-  (add-hook! 'treemacs-mode-hook 'treemacs-follow-mode)
-  (add-hook! 'treemacs-mode-hook 'treemacs-filewatch-mode))
+(use-package! dired-sidebar
+  :commands (dired-sidebar-toggle-sidebar
+             dired-sidebar-point-at-file)
+  :init
+  (progn
+    (setq dired-sidebar-window-fixed nil)
+    (add-hook! 'dired-sidebar-mode-hook (defun t/dired-sidebar-hook ()
+                                          (interactive)
+                                          (toggle-truncate-lines)
+                                          (setq dired-sidebar-width (floor (* (frame-width (selected-frame))
+                                                                              (/ (float 0.8) 3))))))))
 #+end_src
-
-Auto adjust the size of the treemacs buffer.
-
-#+begin_src emacs-lisp
-(add-to-list 'window-size-change-functions
-             (defun t/update-treemacs-width (input)
-               (interactive)
-               (setq treemacs-width (floor (/ (frame-width (window-frame)) 4.5)))))
-;; (setq window-size-change-functions (remove  #'t/update-treemacs-width window-size-change-functions))
-;; window-size-change-functions
-#+end_src
-
-Also tuned some settings to make [[file:~/.emacs.d/.local/straight/repos/themes/extensions/doom-themes-ext-treemacs.el::all-the-icons-octicon "chevron-down" :height 0.6 :v-adjust 0.1 :face face-spec][chevrons work without skewing lines]].
 
 *** Multiple cursors
 
@@ -887,19 +877,17 @@ Ignore some extra folders from projectile
 And fix ~super~ navigation across modes that steam ~SPC~.
 
 #+begin_src emacs-lisp
-(after! twittering-mode
-  (map!
-   :map twittering-mode-map
-   "s-1" '+workspace/switch-to-0
-   "s-2" '+workspace/switch-to-1
-   "s-3" '+workspace/switch-to-2
-   "s-4" '+workspace/switch-to-3
-   "s-5" '+workspace/switch-to-4
-   "s-6" '+workspace/switch-to-5
-   "s-7" '+workspace/switch-to-6
-   "s-8" '+workspace/switch-to-7
-   "s-9" '+workspace/switch-to-8
-   "s-0" '+workspace/switch-to-final))
+(map!
+ "s-1" '+workspace/switch-to-0
+ "s-2" '+workspace/switch-to-1
+ "s-3" '+workspace/switch-to-2
+ "s-4" '+workspace/switch-to-3
+ "s-5" '+workspace/switch-to-4
+ "s-6" '+workspace/switch-to-5
+ "s-7" '+workspace/switch-to-6
+ "s-8" '+workspace/switch-to-7
+ "s-9" '+workspace/switch-to-8
+ "s-0" 'doom/reset-font-size)
 #+end_src
 
 Be explicit about when deleting workspaces
@@ -1088,6 +1076,7 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
 #+begin_src emacs-lisp
 (after! (avy evil-integration)
   (defun t/setup-avy (&optional frame)
+    (interactive)
     (setq avy-keys '(?j ?f ?d ?k ?s ?a)
           avy-timeout-seconds 0.2
           ;;avy-all-windows 'all-frames
@@ -1108,7 +1097,7 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
       (set-face-attribute 'avy-lead-face-1 nil :background b :weight 'bold :foreground c)
       (set-face-attribute 'avy-lead-face-2 nil :background b :weight 'bold :foreground c)))
   (t/setup-avy)
-  
+
   ;;Also after creating a new frame when emacs is in daemon mode
   (advice-add 'doom/reload-theme :after #'t/setup-avy))
 #+end_src
@@ -1416,13 +1405,21 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Cycle fonts"           "t f" #'t/cycle-fonts
  :leader :desc "Toggle focus mode"     "t F" #'focus-mode
  :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
+ :leader :desc "Toggle hackernews"     "t H" (cmd! (condition-case nil (+workspace-new "*hn*") (error nil))
+                                                   (+workspace-switch "*hn*")
+                                                   (hnreader-news))
+ :leader :desc "Toggle gnus"           "t g" (cmd! (condition-case nil (+workspace-new "*gnus*") (error nil))
+                                                   (+workspace-switch "*gnus*")
+                                                   (gnus))
  :leader :desc "Toggle line wrapping"  "t v" #'visual-line-mode
  :leader :desc "Toggle truncate"       "t u" #'toggle-truncate-lines
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
  :leader :desc "Toggle transparency"   "t T" #'t/transparency
  :leader :desc "Reading"               "t r" #'t/start-spray-micro-state
- :leader :desc "Toggle read-only"      "t R" #'read-only-mode
+ :leader :desc "Toggle reddit"         "t R" (cmd! (condition-case nil (+workspace-new "*reddit*") (error nil))
+                                                   (+workspace-switch "*reddit*")
+                                                   (reddigg-view-frontpage))
  :leader :desc "Toggle writeroom"      "t w" #'global-writeroom-mode
  :leader :desc "Show whitespace"       "t W" #'whitespace-mode
  :leader :desc "Toggle zen"            "t z" #'global-writeroom-mode
@@ -1473,6 +1470,14 @@ Popup bindings on a norwegian keyboard
       :map org-mode-map
       :g "C-*"   #'+popup/raise
       :g "C-'"   #'+popup/toggle)
+#+end_src
+
+** Gnus
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^*Summary" :side 'bottom :size 0.5)
+(set-popup-rule! "^*Article" :side 'bottom :size 0.5)
+(setq gnus-select-method '(nntp "news.gmane.io")) ; A A
 #+end_src
 
 ** Help
@@ -3021,7 +3026,18 @@ Inspiration:
 
 #+begin_src emacs-lisp
 (after! mu4e
+
+  (set-popup-rule! "^*mu4e-main" :ignore t)
+  (set-popup-rule! "^*mu4e-headers" :ignore t) ;; :side 'right :size 0.8
+
+  (add-hook! 'mu4e-main-mode-hook (defun t/mu4e-main-mode-hook ()
+                                    (interactive)
+                                    ;; TODO torgeir
+                                    (toggle-truncate-lines 1)
+                                    (visual-line-mode 0)))
+
   (setq mu4e-maildir "~/.maildir"
+
         mu4e-update-interval (* 5 60)
         mu4e-context-policy 'ask
         mu4e-attachment-dir "~/Desktop"
@@ -3079,6 +3095,14 @@ Inspiration:
         message-send-mail-function #'message-send-mail-with-sendmail))
 #+end_src
 
+***** Evilify
+
+#+begin_src emacs-lisp
+;; TODO until evil-collection is updated
+(evil-define-key* '(emacs) mu4e-main-mode-map (kbd "SPC") 'doom/leader)
+(evil-define-key* '(emacs) mu4e-headers-mode-map (kbd "SPC") 'doom/leader)
+#+end_src
+
 ***** Don't insert line breaks, softwrap
 
 #+begin_src emacs-lisp
@@ -3113,6 +3137,8 @@ Why the timeout is needed? I cannot for the life of me make ~visual-line-mode~ w
 (after! mu4e
   (add-hook 'mu4e-view-mode-hook
             (defun t/mu4e-view-mode-hook ()
+              ;; TODO until evil-collection is updated
+              (evil-normal-state)
               (t/start-spray-micro-state)
               (run-at-time "2 sec" nil (cmd! (visual-line-mode)
                                              (read-only-mode -1)
@@ -3494,6 +3520,3 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
                 (recenter-top-bottom 0))))
 #+end_src
 
-*** STARTED [[file:~/.emacs.d/lisp/doom-packages.el::;;(nongnu-elpa :type git][Turned off non-gnu elpa]]?
-
-git savannah is down? https://outagedown.com/git.savannah.gnu.org [2023-03-25 Sat]
