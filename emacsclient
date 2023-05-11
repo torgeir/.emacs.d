@@ -1,6 +1,4 @@
 #!/bin/bash
-source $HOME/dotfiles/source/functions
-
 case $(uname) in
   Linux)
     emacsclient=/usr/bin/emacsclient
