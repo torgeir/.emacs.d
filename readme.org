@@ -3098,24 +3098,27 @@ Inspiration:
 ***** Evilify
 
 #+begin_src emacs-lisp
-;; TODO until evil-collection is updated
-(evil-define-key* '(emacs) mu4e-main-mode-map (kbd "SPC") 'doom/leader)
-(evil-define-key* '(emacs) mu4e-headers-mode-map (kbd "SPC") 'doom/leader)
+(after! mu4e
+  ;; TODO until evil-collection is updated
+  (evil-define-key* '(emacs) mu4e-main-mode-map (kbd "SPC") 'doom/leader)
+  (evil-define-key* '(emacs) mu4e-headers-mode-map (kbd "SPC") 'doom/leader))
 #+end_src
 
 ***** Don't insert line breaks, softwrap
 
 #+begin_src emacs-lisp
-(add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill)
+(after! mu4e
+  (add-hook 'mu4e-compose-mode-hook 'turn-off-auto-fill))
 #+end_src
 
 ***** Don't wrap lines in message overview
 
 #+begin_src emacs-lisp
-(add-hook 'mu4e-headers-mode-hook
-          (defun t/mu4e-headers-mode-hook ()
-           (visual-line-mode -1)
-           (show-paren-mode -1)))
+(after! mu4e
+  (add-hook 'mu4e-headers-mode-hook
+            (defun t/mu4e-headers-mode-hook ()
+              (visual-line-mode -1)
+              (show-paren-mode -1))))
 #+end_src
 
 ***** Cc Bcc
