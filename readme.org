@@ -1246,12 +1246,14 @@ And screens are big, so a bit more space for text is nice.
   (setq writeroom-width (/ (float 3) 5))
   (setq writeroom-width (/ (float 2) 3)))
 (after! olivetti
-  (setq ;; olivetti-minimum-body-width
-   olivetti-body-width
-   (floor (* (frame-width (selected-frame))
-             ;; (/ (float 5) 7)
-             (/ (float 2) 3)
-             ))))
+  (add-hook! 'olivetti-mode-hook (defun t/olivetti-mode-hook ()
+                                   (interactive)
+                                   (setq ;; olivetti-minimum-body-width
+                                    olivetti-body-width
+                                    (floor (* (frame-width (selected-frame))
+                                              ;; (/ (float 5) 7)
+                                              (/ (float 2) 3)
+                                              ))))))
 #+end_src
 
 Adjust margins equally across modes.
