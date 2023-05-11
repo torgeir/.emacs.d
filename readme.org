@@ -836,17 +836,6 @@ https://github.com/doomemacs/doomemacs/issues/6466
   (delq! 'eglot flycheck-checkers))
 #+end_src
 
-***** CANCELLED max-lisp-eval-depth errors from flycheck eglot?
-CLOSED: [2022-12-16 Fri 23:54]
-
-Double them
-
-#+begin_src emacs-lisp
-(comment
- (setq max-lisp-eval-depth 10000)
- (setq max-specpdl-size 10000))
-#+end_src
-
 *** Projects
 
 Ignore some extra folders from projectile
