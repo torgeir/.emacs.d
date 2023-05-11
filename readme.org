@@ -703,7 +703,8 @@ A diy directory sidebar using dired. Inspired the response in https://www.reddit
     (setq dired-sidebar-window-fixed nil)
     (add-hook! 'dired-sidebar-mode-hook (defun t/dired-sidebar-hook ()
                                           (interactive)
-                                          (toggle-truncate-lines)
+                                          (visual-line-mode 0)
+                                          (toggle-truncate-lines 1)
                                           (setq dired-sidebar-width (floor (* (frame-width (selected-frame))
                                                                               (/ (float 0.8) 3))))))))
 #+end_src
