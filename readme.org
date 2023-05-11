@@ -370,7 +370,8 @@ Truncate lines everywhere
   (defun t/prog-mode-hook ()
     (interactive)
     (toggle-truncate-lines 0)
-    (toggle-truncate-lines 1)))
+    (toggle-truncate-lines 1)
+    (visual-line-mode 0)))
 #+end_src
 
 *** Whitespace
@@ -2121,7 +2122,8 @@ Eww functions that directly enter the eww readability mode after loading a given
     (erase-buffer)
     (insert content)
     (beginning-of-buffer)
-    (toggle-truncate-lines -1)
+    (toggle-truncate-lines 0)
+    (visual-line-mode 1)
     (when fn (funcall fn))))
 
 (defun t/eww-readable (url &optional fn)
@@ -2856,12 +2858,10 @@ Switch around the refresh mappings for more useful defaults.
 
 #+begin_src emacs-lisp
 (after! elfeed
-  ;;(setq elfeed-search-mode-hook nil)
   (add-hook 'elfeed-search-mode-hook
             (defun t/hook-elfeed-search-mode-hook ()
               (show-paren-mode -1)
-              ;; don't wrap long lines
-              (visual-line-mode -1)
+              (visual-line-mode 0)
               (toggle-truncate-lines 1))))
 #+end_src
 
@@ -2869,7 +2869,6 @@ Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bi
 
 #+begin_src emacs-lisp
 (after! elfeed
-  ;;(setq elfeed-show-mode-hook nil)
   (add-hook 'elfeed-show-mode-hook
             (defun t/hook-elfeed-show-mode-hook ()
               (olivetti-mode)
@@ -3020,7 +3019,6 @@ Inspiration:
 
   (add-hook! 'mu4e-main-mode-hook (defun t/mu4e-main-mode-hook ()
                                     (interactive)
-                                    ;; TODO torgeir
                                     (toggle-truncate-lines 1)
                                     (visual-line-mode 0)))
 
