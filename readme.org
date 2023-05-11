@@ -376,7 +376,15 @@ Truncate lines everywhere
 *** Whitespace
 
 #+begin_src emacs-lisp
-(add-to-list 'whitespace-style 'trailing)
+;;(add-to-list 'whitespace-style 'trailing)
+(add-hook!
+ 'prog-mode-hook
+ (defun t/set-whitespace-style ()
+   (interactive)
+   (setq whitespace-style '(face tabs trailing lines ;; space-mark spaces
+                             space-before-tab newline indentation
+                             empty space-after-tab tab-mark
+                             newline-mark missing-newline-at-eof))))
 #+end_src
 
 *** Evil
