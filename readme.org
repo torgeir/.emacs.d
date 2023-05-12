@@ -652,47 +652,6 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
       "s-s" 'Custom-save)
 #+end_src
 
-*** Directory sidebar
-
-A diy directory sidebar using dired. Inspired the response in https://www.reddit.com/r/emacs/comments/nlefvx/weekly_tips_and_tricks/, adapted to doom.
-
-#+begin_src emacs-lisp
-(defun t-toggle-sidebar ()
-  (interactive)
-  ;; if buffer and window exists
-  (let ((b (concat "*" "sidebar" ":" (+workspace-current-name) "*")))
-    (if (and (get-buffer b)
-             (get-buffer-window (get-buffer b)))
-        (delete-window (get-buffer-window (get-buffer b)))
-
-      ;; when no buffer exists, init it
-      (when (not (get-buffer b))
-        (with-current-buffer (dired-noselect (t/project-root))
-          (rename-buffer b)))
-
-      (pop-to-buffer b)
-      (set-window-dedicated-p (selected-window) t)
-      (set-window-parameter (selected-window) 'no-delete-other-windows t))))
-#+end_src
-
-~(popup +all)~ steals this, so move it to the left
-
-#+begin_src emacs-lisp
-(defun t/fit-sidebar (window)
-  (interactive)
-  (let* ((w (frame-width (window-frame)))
-         (new-w (floor (/ w 4))))
-    (evil-resize-window (- w new-w) t)))
-
-(set-popup-rule! "^*sidebar*"
-  :side 'left
-  :ttl nil ;; don't kill it on C-g
-  :quit 'current
-  :slot  -1
-  :width 't/fit-sidebar
-  :parameters '((window-parameters . ((no-other-window . t)))))
-#+end_src
-
 *** Dired sidebar
 
 #+begin_src emacs-lisp
@@ -702,12 +661,14 @@ A diy directory sidebar using dired. Inspired the response in https://www.reddit
   :init
   (progn
     (setq dired-sidebar-window-fixed nil)
-    (add-hook! 'dired-sidebar-mode-hook (defun t/dired-sidebar-hook ()
-                                          (interactive)
-                                          (visual-line-mode 0)
-                                          (toggle-truncate-lines 1)
-                                          (setq dired-sidebar-width (floor (* (frame-width (selected-frame))
-                                                                              (/ (float 0.8) 3))))))))
+    (add-hook!
+     'dired-sidebar-mode-hook
+     (defun t/dired-sidebar-hook ()
+       (interactive)
+       (visual-line-mode 0)
+       (toggle-truncate-lines 1)
+       (setq dired-sidebar-width (floor (* (frame-width (selected-frame))
+                                           (/ (float 0.8) 3))))))))
 #+end_src
 
 *** Multiple cursors
