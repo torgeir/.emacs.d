@@ -228,8 +228,7 @@ Use =nav-flash= to flash the cursor after long jumps.
 #+begin_src emacs-lisp
 (after! nav-flash
   (custom-set-faces!
-    '(nav-flash-face :background "maroon4")
-    '(nav-flash-face :background "#003366"))
+    '(nav-flash-face :background "DeepPink2"))
   (setq nav-flash-delay 4
         nav-flash-use-pulse 'gui-only))
 #+end_src
