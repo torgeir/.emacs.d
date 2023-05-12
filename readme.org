@@ -985,7 +985,7 @@ Set across all real buffers
 *** Transparency
 
 #+begin_src emacs-lisp
-(let ((tr 98))
+(let ((tr 99))
   (t/transparency tr)
   (advice-add #'doom/reload-theme :after (cmd! (t/transparency tr))))
 #+end_src
