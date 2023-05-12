@@ -1211,7 +1211,7 @@ See also:  (setq org-agenda-include-diary t)
 (defun t/deploy-torgeir.dev ()
   (interactive)
   (let ((b "*t-deploy-torgeir_dev*"))
-    (shell-command "cd ~/Code/posts && git st" b b)
+    (shell-command "cd ~/Code/posts && git st && git df" b b)
     (pop-to-buffer b)
     (if (yes-or-no-p "Deploy changes?")
         (progn
