@@ -1333,17 +1333,30 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  ;; :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
  :leader :desc "Toggle directory sidebar" "f l" #'dired-sidebar-toggle-sidebar
  :leader :desc "Toggle directory sidebar, follow" "f L" (cmd! (dired-sidebar-point-at-file buffer-file-name (doom-project-root)))
-
+ :leader (:prefix ("o" . "open")
+                  (:prefix-map
+                   ("c" . "Consume")
+                   (:when (modulep! :ui vc-gutter)
+                     :desc "Show nrk.no" "n" (cmd! (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))
+                     :desc "reddit"      "r" (cmd! (condition-case nil (+workspace-new "*reddit*") (error nil))
+                                                   (+workspace-switch "*reddit*")
+                                                   (reddigg-view-frontpage))
+                     :desc "hackernews"  "h" (cmd! (condition-case nil (+workspace-new "*hn*") (error nil))
+                                                   (+workspace-switch "*hn*")
+                                                   (hnreader-news))
+                     :desc "rss"         "s" #'=rss
+                     :desc "twitter"     "t" #'=twitter
+                     :desc "mail"        "m" (cmd! (t/gpg) (=mu4e))
+                     :desc "mastodon"    "d" (cmd! (condition-case nil (+workspace-new "*mastodon*") (error nil))
+                                                   (+workspace-switch "*mastodon*")
+                                                   (mastodon))
+                     :desc "Toggle gnus" "g" (cmd! (condition-case nil (+workspace-new "*gnus*") (error nil))
+                                                   (+workspace-switch "*gnus*")
+                                                   (gnus)))))
+ :leader :desc "Calendar"          "o C" #'calendar
  :leader :desc "Browse"          "o e" #'eww
  :leader :desc "Www"             "o w" #'eww
 
- :leader :desc "Rss"               "o S" #'=rss
- :leader :desc "Twitter"           "o W" #'=twitter
- :leader :desc "Calendar"          "o c" #'calendar
- :leader :desc "Mail"              "o m" (cmd! (t/gpg) (=mu4e))
- :leader :desc "Mastodon"          "o M" (cmd! (condition-case nil (+workspace-new "*mastodon*") (error nil))
-                                               (+workspace-switch "*mastodon*")
-                                               (mastodon))
  :leader :desc "Show home"         "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
  :leader :desc "Show saga"         "o s" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
  :leader :desc "Open Intellij"     "o i" #'t/open-in-intellij
@@ -1363,21 +1376,13 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Cycle fonts"           "t f" #'t/cycle-fonts
  :leader :desc "Toggle focus mode"     "t F" #'focus-mode
  :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
- :leader :desc "Toggle hackernews"     "t H" (cmd! (condition-case nil (+workspace-new "*hn*") (error nil))
-                                                   (+workspace-switch "*hn*")
-                                                   (hnreader-news))
- :leader :desc "Toggle gnus"           "t g" (cmd! (condition-case nil (+workspace-new "*gnus*") (error nil))
-                                                   (+workspace-switch "*gnus*")
-                                                   (gnus))
+
  :leader :desc "Toggle line wrapping"  "t v" #'visual-line-mode
  :leader :desc "Toggle truncate"       "t u" #'toggle-truncate-lines
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
  :leader :desc "Toggle transparency"   "t T" #'t/transparency
  :leader :desc "Reading"               "t r" #'t/start-spray-micro-state
- :leader :desc "Toggle reddit"         "t R" (cmd! (condition-case nil (+workspace-new "*reddit*") (error nil))
-                                                   (+workspace-switch "*reddit*")
-                                                   (reddigg-view-frontpage))
  :leader :desc "Toggle writeroom"      "t w" #'global-writeroom-mode
  :leader :desc "Show whitespace"       "t W" #'whitespace-mode
  :leader :desc "Toggle zen"            "t z" #'global-writeroom-mode
@@ -2194,15 +2199,6 @@ A custom function to fetch a clean view of the current news from nrk.no
                                         (recenter nil))
                           "s" (t/spray-micro-state))))
 #+END_SRC
-
-Bind it to ~SPC o n~
-
-#+begin_src emacs-lisp
-(map!
- :leader
- (:prefix ("o" . "open")
-  :desc "Show nrk.no" "n" (cmd! (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))))
-#+end_src
 
 ** Languages
 
