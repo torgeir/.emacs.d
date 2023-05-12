@@ -214,7 +214,7 @@ https://beta.openai.com/docs/introduction/key-concepts"
          (url-request-extra-headers `(("Content-Type" . "application/json")
                                       ("Authorization" . ,(format "Bearer %s" api-key))))
          (url-request-data (json-encode
-                            `(("model" . "gpt-3.5-turbo")
+                            `(("model" . "gpt-4")
                               ("messages" . (((role . "user")
                                               (content . ,(encode-coding-string prompt 'utf-8)))))
                               ("max_tokens" . ,chatgpt-max-tokens)
