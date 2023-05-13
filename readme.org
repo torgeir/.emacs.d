@@ -867,9 +867,8 @@ Be explicit about when deleting workspaces
                               (let ((name (read-string "Workspace name: ")))
                                 (condition-case nil (+workspace-new name) (error nil))
                                 (+workspace-switch name)
-                                (if (t/prefix-arg-universal?)
-                                    (consult-recent-file)
-                                  (call-interactively 'execute-extended-command))))
+                                (when (t/prefix-arg-universal?)
+                                    (consult-recent-file))))
  :desc "Rename workspace" "s-r" '+workspace/rename)
 #+end_src
 
@@ -2795,7 +2794,7 @@ Setup.
         rmh-elfeed-org-ignore-tag "ARCHIVE"
         elfeed-db-directory (t/user-dropbox-folder "Apps/elfeed/")
         elfeed-goodies/entry-pane-position 'bottom
-        elfeed-search-filter "@2-week-ago +unread -youtube -news -tech")
+        elfeed-search-filter "@2-week-ago -youtube -news -tech +unread")
   (add-hook! 'elfeed-db-update-hook 'elfeed-db-save))
 #+end_src
 
