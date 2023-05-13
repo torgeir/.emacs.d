@@ -73,8 +73,13 @@ Returns buffer containing the text from this query"
                              (pop-to-buffer chatgpt-buffer)
                              (read-only-mode -1)
                              (erase-buffer)
-                             (insert results)
-                             (funcall callback (current-buffer)))))
+                             (insert (concat "#+begin_ai\n[ME]: " prompt "\n\n[AI]: " results "\n\n[ME]: \n\n#+end_ai"))
+                             (call-interactively 'org-mode)
+                             (end-of-buffer)
+                             (funcall callback (current-buffer))
+                             (read-only-mode -1)
+                             (backward-char 10) ; <here>\n\n#+end_ai
+                             )))
 
 (defalias 'chatgpt 'chatgpt-prompt)
 
@@ -155,7 +160,10 @@ It then displays the answer in the `chatgpt-buffer'."
   "Prompt ChatGPT with the region BEG END.
 It then displays the results in a separate buffer `chatgpt-buffer'."
   (interactive "r")
-  (chatgpt-prompt (buffer-substring BEG END)
+  (chatgpt-prompt (concat (if (t/prefix-arg-universal?)
+                              (concat (read-string "Prompt ChatGPT with, prefixing region, prefix: ") "\n---\n")
+                            "")
+                          (buffer-substring BEG END))
                   (chatgpt-show-results-buffer-if-active)))
 
 ;;;###autoload
