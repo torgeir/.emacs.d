@@ -2148,7 +2148,7 @@ Some useful eww keybindings
   :config
   (progn
     (set-popup-rule! "^*reddigg" :ignore t)
-    (setq reddigg-subs '(emacs minilab homelab homeserver orgmode sffpc archlinux))))
+    (setq reddigg-subs '(doomemacs emacs minilab homelab homeserver orgmode sffpc archlinux))))
 #+end_src
 
 *** Nrk.no
@@ -2791,8 +2791,12 @@ Setup.
 #+begin_src emacs-lisp
 (after! elfeed
   (setq rmh-elfeed-org-files '("~/Dropbox/org/feeds.org")
+        rmh-elfeed-org-auto-ignore-invalid-feeds t
+        rmh-elfeed-org-ignore-tag "ARCHIVE"
+        elfeed-db-directory (t/user-dropbox-folder "Apps/elfeed/")
         elfeed-goodies/entry-pane-position 'bottom
-        elfeed-search-filter "@2-week-ago -news -tech +unread"))
+        elfeed-search-filter "@2-week-ago +unread -youtube -news -tech")
+  (add-hook! 'elfeed-db-update-hook 'elfeed-db-save))
 #+end_src
 
 Switch around the refresh mappings for more useful defaults.
@@ -2846,6 +2850,26 @@ Show the mouseover text for xkcd comics by moving to the image and fetching the 
                                  (insert text))
                                (read-only-mode 1))))))))
 #+end_src
+
+Auto tagging of some types of subs
+
+#+begin_src emacs-lisp
+(after! elfeed
+(add-hook 'elfeed-new-entry-hook
+          (elfeed-make-tagger :feed-url "youtube\\.com"
+                              :add '(video youtube))))
+
+(after! elfeed
+(add-hook 'elfeed-new-entry-hook
+          (elfeed-make-tagger :before "2 weeks ago"
+                              :remove 'unread)))
+#+end_src
+
+Extract youtube feeds
+
+#+begin_quote
+curl https://www.youtube.com/@$1 | grep -ioE "<link [^>]+>" | rg rss | sed -E 's#.*href="([^"]+)".*#\1#')
+#+end_quote
 
 *** Calendar
 
