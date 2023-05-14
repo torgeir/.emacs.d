@@ -1555,12 +1555,16 @@ Motion keys for info mode.
              ((equal major-mode 'elfeed-show-mode) (elfeed-entry-link elfeed-show-entry))
              ((equal major-mode 'elfeed-search-mode) (s-join "\n - " (cl-loop for feed in (elfeed-search-selected)
                                                                               collect (elfeed-entry-link feed))))
+             ((equal major-mode 'eww-mode) (concat "%a"))
+             ((equal major-mode 'org-mode) (concat "%a"))
              (t (get-text-property (point) 'shr-url)))))
 
   (setq org-tags-column -60
         org-support-shift-select t   ; shift can be used to mark multiple lines
         org-special-ctrl-k t         ; don't clear tags, etc
         org-special-ctrl-a/e t       ; don't move past ellipsis on c-e
+        org-id-link-to-org-use-id t  ; create link if it doesnt exist, or when org-capture -ing (needs %a in template)
+        org-id-method 'ts
         org-agenda-skip-scheduled-if-done t
         org-default-notes-file (expand-file-name "~/Dropbox/org/home.org.gpg")
         org-log-done 'time           ; log when todos are completed
