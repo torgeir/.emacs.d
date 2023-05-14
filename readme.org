@@ -1380,6 +1380,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
  :leader :desc "Toggle transparency"   "t T" #'t/transparency
+ :leader :desc "Reading"               "r" #'t/start-spray-micro-state
  :leader :desc "Reading"               "t r" #'t/start-spray-micro-state
  :leader :desc "Toggle writeroom"      "t w" #'global-writeroom-mode
  :leader :desc "Show whitespace"       "t W" #'whitespace-mode
