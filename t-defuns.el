@@ -1242,5 +1242,13 @@ See also:  (setq org-agenda-include-diary t)
   (shell-command-to-string
    "osascript -l JavaScript -e '[].slice.call(((app) => (app && app.windows) || [])(Application(\"Google Chrome\"))).map((w) => [w, [].slice.call(w.tabs)]).map(([_, tabs]) => tabs).flat().map((t, idx) => [\"[[\", t.url(), \"][Tab \", (idx + 1), \"]]\"].join(\"\")).join(\"\\n\")'"))
 
+
+(defun t/speak (beg end)
+  "Speak selected text using macos 'say' command."
+  (interactive "r")
+  (if is-mac
+      (shell-command-on-region beg end "say -v 'Karen' -r 250")
+    (error "'say' command not found")))
+
 (provide 't-defuns)
 ;;; t-defuns.el ends here
