@@ -2988,7 +2988,8 @@ Inspiration:
 (after! mu4e
 
   (set-popup-rule! "^*mu4e-main" :ignore t)
-  (set-popup-rule! "^*mu4e-headers" :ignore t) ;; :side 'right :size 0.8
+  (set-popup-rule! "^*mu4e-headers" :ignore nil :side 'right :size 0.8)
+  (set-popup-rule! "^*mu4e-draft" :ignore nil :side 'right :size 0.8)
 
   (add-hook! 'mu4e-main-mode-hook (defun t/mu4e-main-mode-hook ()
                                     (interactive)
