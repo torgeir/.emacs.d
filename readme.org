@@ -1569,7 +1569,7 @@ Motion keys for info mode.
                                               org-attach-id-uuid-folder-format)
         org-id-method 'ts
         org-agenda-skip-scheduled-if-done t
-        org-default-notes-file (expand-file-name "~/Dropbox/org/home.org.gpg")
+        org-default-notes-file (t/user-dropbox-folder "/org/home.org.gpg")
         org-log-done 'time           ; log when todos are completed
         org-log-redeadline 'time     ; log when deadline changes
         org-log-reschedule 'time     ; log when schedule changes
