@@ -3319,6 +3319,7 @@ TODO idle highlight in visible buffers
              chatgpt-refactor-region
              chatgpt-prompt-region
              chatgpt-prompt-region-and-replace)
+  :load-path "~/.doom.d/site-lisp/chatgpt/"
   :init
   (progn
     (map! :leader
@@ -3345,11 +3346,11 @@ TODO idle highlight in visible buffers
           (progn
             (setenv "OPENAI_API_KEY" (t/1p "q2tt4yocntwwx326qck5uqqft4"))
             (message "Openai: Key set."))
-        (message "Openai: Key already set.")))
-    (let ((p (+popup-make-rule "^\\*ChatGPT" '(:size 0.45 :side right))))
-      (setq display-buffer-alist (cdr display-buffer-alist))
-      (add-to-list 'display-buffer-alist p)))
-  :load-path "~/.doom.d/site-lisp/chatgpt/")
+        (message "Openai: Key already set.")))))
+
+(let ((p (+popup-make-rule "^\\*ChatGPT" '(:size 0.45 :side right))))
+  (setq display-buffer-alist (cdr display-buffer-alist))
+  (add-to-list 'display-buffer-alist p))
 #+end_src
 
 ** Bugfixes
