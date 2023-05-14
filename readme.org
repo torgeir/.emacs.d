@@ -1386,8 +1386,9 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Show whitespace"       "t W" #'whitespace-mode
  :leader :desc "Toggle zen"            "t z" #'global-writeroom-mode
 
- :leader :desc "Flip frame"                   "w f" #'rotate-frame
- :leader :desc "Close window unconditionally" "w d" #'t/delete-window-or-frame-or-hide
+ :leader :desc "Flip frame"                     "w f" #'rotate-frame
+ :leader :desc "Delete window or frame or hide" "w d" #'t/delete-window-or-frame-or-hide
+ :leader :desc "Delete buffer and window"       "w D" #'t/volatile-kill-buffer-and-window
  :leader :desc "Winner redo"                  "w R" #'winner-redo
  :leader :desc "Rotate frame"                 "w r" (cmd!
                                                      (if (t/prefix-arg-universal?)
