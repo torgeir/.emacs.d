@@ -1700,11 +1700,12 @@ Heading and item bindings
 - ~SPC-m-h~ :: heading from text
 - ~SPC-m-i~ :: item from text
 
-~SPC g a~ seems more reasonable than ~SPC g G~. [[https://discourse.doomemacs.org/t/what-are-leader-and-localleader-keys/153][Localleader in doom]] is bound to ~SPC m~.
+~SPC g a~ seems more reasonable than ~SPC g G~. [[https://discourse.doomemacs.org/t/what-are-leader-and-localleader-keys/153][Localleader in doom]] is bound to ~SPC m~. This also enables searching across /all/ agenda files using ~SPC g A~.
 
 #+begin_src emacs-lisp
 (map! :map org-mode-map
-      :localleader "g a" #'consult-org-agenda)
+      :localleader "g a" #'consult-org-agenda
+      :localleader "g A" (cmd! (consult-org-heading t 'agenda-with-archives)))
 #+end_src
 
 Widen
