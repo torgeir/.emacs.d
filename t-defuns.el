@@ -1235,5 +1235,12 @@ See also:  (setq org-agenda-include-diary t)
       (if (t/prefix-arg-universal?) " --buildDrafts" "")
       "\C-m")))
 
+
+(defun t/chrome-urls ()
+  "Combine all open chrome tabs into newline delimited string."
+  (interactive)
+  (shell-command-to-string
+   "osascript -l JavaScript -e '[].slice.call(((app) => (app && app.windows) || [])(Application(\"Google Chrome\"))).map((w) => [w, [].slice.call(w.tabs)]).map(([_, tabs]) => tabs).flat().map((t, idx) => [\"[[\", t.url(), \"][Tab \", (idx + 1), \"]]\"].join(\"\")).join(\"\\n\")'"))
+
 (provide 't-defuns)
 ;;; t-defuns.el ends here
