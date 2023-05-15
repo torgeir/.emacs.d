@@ -2863,7 +2863,30 @@ Auto tagging of some types of subs
                               :remove 'unread)))
 #+end_src
 
-Extract youtube feeds
+#+begin_src emacs-lisp
+(defface important-elfeed-entry
+  '((t :foreground "#f77"))
+  "Marks an important Elfeed entry."
+  :group 'elfeed)
+
+(defface nonimportant-elfeed-entry
+  '((t :foreground "#C0C0C0"))
+  "Marks an nonimportant Elfeed entry."
+  :group 'elfeed)
+
+(setq elfeed-search-face-alist '((unread elfeed-search-unread-title-face)))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! elfeed
+  (set-face-attribute 'elfeed-search-tag-face nil :foreground (face-attribute 'font-lock-type-face :foreground))
+  (set-face-attribute 'elfeed-search-title-face nil :bold nil :foreground (face-attribute 'font-lock-comment-face :foreground))
+  (set-face-attribute 'elfeed-search-unread-title-face nil :bold t :foreground (face-attribute 'font-lock-keyword-face :foreground))
+  ;;(face-attribute 'font-lock-string-face :foreground)
+)
+#+end_src
+
+Extracted youtube feeds like this
 
 #+begin_quote
 curl https://www.youtube.com/@$1 | grep -ioE "<link [^>]+>" | rg rss | sed -E 's#.*href="([^"]+)".*#\1#')
