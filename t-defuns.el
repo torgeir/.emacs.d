@@ -1208,6 +1208,10 @@ See also:  (setq org-agenda-include-diary t)
   (internal-show-cursor (get-buffer-window (current-buffer))
                         (not (internal-show-cursor-p))))
 
+(defun t/isodate ()
+  (interactive)
+  (format-time-string "%Y-%m-%dT%H:%M:%S.%3NZ" nil "UTC"))
+
 (defun t/deploy-torgeir.dev ()
   (interactive)
   (let ((b "*t-deploy-torgeir_dev*"))
@@ -1216,10 +1220,11 @@ See also:  (setq org-agenda-include-diary t)
     (if (yes-or-no-p "Deploy changes?")
         (progn
           (shell-command
+           (concat
             "cd ~/Code/posts \
               && git add . \
-              && git ci -m \"$(isodate)\" \
-              && git push" b b)
+              && git ci -m \"" (t/isodate) "\" \
+              && git push") b b)
           (message "Deploy done."))
       (progn
         (with-current-buffer b (kill-buffer))
