@@ -3058,7 +3058,7 @@ Inspiration:
                                     (visual-line-mode 0)))
 
   (setq mu4e-maildir "~/.maildir"
-
+        +mu4e-workspace-name "*email*"
         mu4e-update-interval (* 5 60)
         mu4e-context-policy 'ask
         mu4e-attachment-dir "~/Desktop"
