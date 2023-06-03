@@ -60,6 +60,7 @@ I usually navigate this with =c-c c-n= or =c-c c-p=, or =mgg=.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
+(package! elfeed-tube)
 (package! evil-cleverparens)
 (package! transpose-frame)
 (package! highlight-symbol)
@@ -1993,6 +1994,10 @@ I never really got into this.
 (defun t/start-spray-micro-state (&optional on-exit)
   (interactive)
   (let ((map (make-sparse-keymap)))
+    (bind-key (kbd "<wheel-right>") 'mwheel-scroll map)
+    (bind-key (kbd "<wheel-left>") 'mwheel-scroll map)
+    (bind-key (kbd "<wheel-up>") 'mwheel-scroll map)
+    (bind-key (kbd "<wheel-down>") 'mwheel-scroll map)
     (bind-key "n" (lambda ()
                     (interactive)
                     (condition-case nil
@@ -2809,6 +2814,55 @@ Switch around the refresh mappings for more useful defaults.
 
 #+begin_src emacs-lisp
 (after! elfeed
+  (defun t/toggle-elfeed-tag (tag)
+    (interactive "sTag: ")
+    (when tag
+      (setq elfeed-search-filter
+            (cond
+             ((s-contains? (concat "+" tag) elfeed-search-filter)
+              (replace-regexp-in-string (concat "\\+" tag) (concat "-" tag) elfeed-search-filter))
+             ((s-contains? (concat "-" tag) elfeed-search-filter)
+              (replace-regexp-in-string (concat "-" tag) (concat "+" tag) elfeed-search-filter))
+             (t (concat elfeed-search-filter " +" tag))))
+      (elfeed-search-update :force)))
+  (map!
+   :map elfeed-search-mode-map
+   :localleader "t" (cmd!
+           (let* ((items '(("a" "adressa")
+                           ("d" "dev")
+                           ("f" "fun")
+                           ("i" "diy")
+                           ("n" "news")
+                           ("p" "photo")
+                           ("r" "read")
+                           ("s" "stories")
+                           ("t" "tech")
+                           ("u" "unread")
+                           ("y" "youtube"))))
+             (funcall (t/micro-state nil
+                                     "a" (cmd! (t/toggle-elfeed-tag "adressa"))
+                                     "d" (cmd! (t/toggle-elfeed-tag "dev"))
+                                     "f" (cmd! (t/toggle-elfeed-tag "fun"))
+                                     "i" (cmd! (t/toggle-elfeed-tag "diy"))
+                                     "n" (cmd! (t/toggle-elfeed-tag "news"))
+                                     "p" (cmd! (t/toggle-elfeed-tag "photo"))
+                                     "r" (cmd! (t/toggle-elfeed-tag "read"))
+                                     "s" (cmd! (t/toggle-elfeed-tag "stories"))
+                                     "t" (cmd! (t/toggle-elfeed-tag "tech"))
+                                     "u" (cmd! (t/toggle-elfeed-tag "unread"))
+                                     "y" (cmd! (t/toggle-elfeed-tag "youtube"))))
+             (message (s-join ", "
+                              (seq-map (lambda (item)
+                                         (let ((index (string-match (car item) (cadr item))))
+                                           (concat (substring (cadr item) 0 index)
+                                                   (concat "(" (car item) ")")
+                                                   (substring (cadr item) (1+ index)))))
+                                       items)))))
+   ))
+#+end_src
+
+#+begin_src emacs-lisp
+(after! elfeed
   (add-hook 'elfeed-search-mode-hook
             (defun t/hook-elfeed-search-mode-hook ()
               (show-paren-mode -1)
@@ -2858,20 +2912,6 @@ Auto tagging of some types of subs
 (add-hook 'elfeed-new-entry-hook
           (elfeed-make-tagger :before "2 weeks ago"
                               :remove 'unread)))
-#+end_src
-
-#+begin_src emacs-lisp
-(defface important-elfeed-entry
-  '((t :foreground "#f77"))
-  "Marks an important Elfeed entry."
-  :group 'elfeed)
-
-(defface nonimportant-elfeed-entry
-  '((t :foreground "#C0C0C0"))
-  "Marks an nonimportant Elfeed entry."
-  :group 'elfeed)
-
-(setq elfeed-search-face-alist '((unread elfeed-search-unread-title-face)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3505,3 +3545,18 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
                 (recenter-top-bottom 0))))
 #+end_src
 
+
+*** STARTED Elfeed tube
+
+[2023-05-15 Mon]
+
+#+begin_src emacs-lisp
+(use-package! elfeed-tube
+  :commands (elfeed-tube-setup)
+  :init
+  (setq elfeed-tube-auto-save-p nil)
+  (setq elfeed-tube-auto-fetch-p t))
+
+(after! elfeed
+  (add-hook! 'elfeed-show-mode-hook 'elfeed-tube-setup))
+#+end_src

@@ -1,3 +1,4 @@
+(package! elfeed-tube)
 (package! evil-cleverparens)
 (package! transpose-frame)
 (package! highlight-symbol)
