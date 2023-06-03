@@ -480,6 +480,12 @@ Sometimes its useful not to close it. Hit ~q~ after opening it to ~embark-toggle
       (embark-act))))
 #+end_src
 
+Add a mapping to kill buffers like vterm without all the nagging.
+
+#+begin_src emacs-lisp
+(map! :map embark-buffer-map "D" #'t/volatile-kill-buffer-and-window)
+#+end_src
+
 *** Vertico
 
 ~C-a c-k~ is so engrained in my fingers, I need it everywhere. ~C-a~ seems to work out of the box.
