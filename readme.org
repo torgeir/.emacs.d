@@ -673,6 +673,24 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
                                            (/ (float 0.8) 3))))))))
 #+end_src
 
+*** After consult jump - focus subtree after jumping
+
+Zoom to the previewed org subtree when jumping between headings with =consult-org-heading=.
+
+#+begin_src emacs-lisp
+(add-hook 'consult-after-jump-hook
+          (defun t/after-consult-jump ()
+            ""
+            ;; org
+            (when (eq major-mode 'org-mode)
+              (when (org-at-heading-p)
+                (outline-hide-sublevels (org-outline-level)))
+              (org-show-subtree))
+
+            ;; always
+            (recenter)))
+#+end_src
+
 *** Multiple cursors
 
 #+begin_src emacs-lisp
@@ -1602,22 +1620,6 @@ Motion keys for info mode.
         org-reverse-note-order t     ; newest notes first
         org-return-follows-link t    ; go to http links in browser
         org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)"))))
-#+end_src
-
-*** Focus subtree after jumping
-
-Zoom to the previewed subtree when jumping between with =consult-org-heading=.
-
-#+begin_src emacs-lisp
-(add-hook 'consult-after-jump-hook
-          (defun t/after-consult-jump ()
-            ;; org
-            (when (eq major-mode 'org-mode)
-              (when (org-at-heading-p)
-                (outline-hide-sublevels (org-outline-level)))
-              (org-show-subtree))
-            ;; always
-            (recenter-top-bottom 0)))
 #+end_src
 
 *** Async source code blocks
