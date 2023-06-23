@@ -1239,7 +1239,7 @@ And screens are big, so a bit more space for text is nice.
        (w (frame-width (selected-frame)))
        (frac (if (> w-px h-px)
                  (if (> w 160)
-                     (/ (float 5) 12)
+                     (/ (float 1) 2)
                    (/ (float 3) 5))
                (/ (float 2) 3))))
   (after! writeroom (setq writeroom-width frac))
