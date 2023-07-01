@@ -879,6 +879,15 @@ Be explicit about when deleting workspaces
  :desc "Rename workspace" "s-r" '+workspace/rename)
 #+end_src
 
+*** Company
+
+Make tab accept the current suggestion.
+
+#+begin_src emacs-lisp
+(after! company
+  (map! :map company-active-map
+        "<tab>" 'company-complete-selection))
+#+end_src
 
 *** Themes
 
