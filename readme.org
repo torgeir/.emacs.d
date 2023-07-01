@@ -1991,7 +1991,6 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 
 *** ChatGPT and DALL-E in org mode
 
-
 #+begin_src emacs-lisp
 (use-package! org-ai
   :hook (org-mode . org-ai-mode))
@@ -3415,6 +3414,7 @@ TODO idle highlight in visible buffers
             ("g" . "chatgpt")
             (:when t
               :desc "init" "i" #'t/chatgpt-init
+              :desc "open ai" "a" #'t/chatgpt-buffer
               :desc "prompt" "p" #'chatgpt-prompt
               :desc "fix" "f" #'chatgpt-fix-region
               :desc "explain" "e" #'chatgpt-explain-region
@@ -3432,7 +3432,15 @@ TODO idle highlight in visible buffers
           (progn
             (setenv "OPENAI_API_KEY" (t/1p "q2tt4yocntwwx326qck5uqqft4"))
             (message "Openai: Key set."))
-        (message "Openai: Key already set.")))))
+        (message "Openai: Key already set.")))
+    (defun t/chatgpt-buffer ()
+      (interactive)
+      (with-current-buffer (pop-to-buffer "*ai*")
+        (erase-buffer)
+        (org-mode)
+        (insert "#+begin_ai\n[ME]: \n#+end_ai")
+        (move-end-of-line 0)
+        (evil-insert 0)))))
 
 (let ((p (+popup-make-rule "^\\*ChatGPT" '(:size 0.45 :side right))))
   (setq display-buffer-alist (cdr display-buffer-alist))
