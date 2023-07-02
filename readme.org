@@ -886,7 +886,10 @@ Make tab accept the current suggestion.
 #+begin_src emacs-lisp
 (after! company
   (map! :map company-active-map
-        "<tab>" 'company-complete-selection))
+        "<tab>" 'company-complete-selection
+        ;; and c-e and right arrow like in zsh-autosuggest
+        "C-e" 'company-complete-selection
+        "<right>" 'company-complete-selection))
 #+end_src
 
 *** Themes
