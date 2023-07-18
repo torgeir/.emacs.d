@@ -3609,12 +3609,15 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
                                             (shell-command-switch . "-c")))
 
   ;; https://discourse.doomemacs.org/t/recentf-cleanup-logs-a-lot-of-error-messages/3273/4
-  (after! tramp (advice-add 'doom--recentf-file-truename-fn :override
-                            (defun my-recent-truename (file &rest _args)
-                              (if (or (not (file-remote-p file)) (equal "sudo" (file-remote-p file 'method)))
-                                  (abbreviate-file-name (file-truename (tramp-file-local-name file)))
-                                file))))
-  )
+  (advice-add 'doom--recentf-file-truename-fn :override
+              (defun my-recent-truename (file &rest _args)
+                (if (or (not (file-remote-p file)) (equal "sudo" (file-remote-p file 'method)))
+                    (abbreviate-file-name (file-truename (tramp-file-local-name file)))
+                  file)))
+
+  ;; Editorconfig is extremely slow, e.g. when using doom/sudo-find-file
+  ;; to open, say, /etc/systemd/system/. This fixes that.
+  (setq tramp-ignored-file-name-regexp ".editorconfig"))
 #+end_src
 
 **** Github Codespaces
