@@ -3624,7 +3624,7 @@ Add for Github codespaces over ssh, for tramp editing, e.g. with ~C-x C-f /ghcs:
 Thanks to https://blog.sumtypeofway.com/posts/emacs-config.html for this one
 
 #+begin_src emacs-lisp
-(after! tramp!
+(after! tramp
   (let ((ghcs (assoc "ghcs" tramp-methods))
         (ghcs-methods '((tramp-login-program "gh")
                         (tramp-login-args (("codespace") ("ssh") ("-c") ("%h")))
