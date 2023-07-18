@@ -3642,7 +3642,7 @@ Thanks to https://blog.sumtypeofway.com/posts/emacs-config.html for this one
 
 The above needs the following feature in the codespace
 
-#+begin_src json :tangle noweb
+#+begin_src json :tangle no :results no
 {
     "features": {
         "ghcr.io/devcontainers/features/sshd:1": {
