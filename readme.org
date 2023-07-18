@@ -3665,3 +3665,14 @@ The above needs the following feature in the codespace
 (after! elfeed
   (add-hook! 'elfeed-show-mode-hook 'elfeed-tube-setup))
 #+end_src
+
+*** STARTED Reload sway after saved .config/sway/config
+
+#+begin_src emacs-lisp
+(add-hook! 'after-save-hook
+  (defun t/reload-sway-after-save ()
+    (when
+        (or (s-ends-with? "i3status-rust/config.toml" (buffer-file-name))
+            (s-ends-with? "config/sway/config" (buffer-file-name)))
+      (call-process-shell-command "swaymsg reload"))))
+#+end_src
