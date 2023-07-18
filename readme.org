@@ -337,11 +337,11 @@ Wait just long enough.
 Reset [[file:~/.emacs.d/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
 
 #+begin_src emacs-lisp
-;; (add-to-list 'drag-stuff-except-modes 'org-src-mode)
-(add-hook! 'doom-after-init-modules-hook
+(add-hook! 'doom-after-init-hook
   (defun t/unbind-drag-stuff ()
-    (map! "<M-left>"  nil
-          "<M-right>" nil)))
+    (interactive)
+    (map! :g "M-<left>"  nil
+          :g "M-<right>" nil)))
 #+end_src
 
 Remove highlight indent guides by default
@@ -2245,10 +2245,18 @@ Move around like in org, collapsing what is moved away from, expanding what is m
                  (outline-show-entry)))
 #+end_src
 
-*** Bash
+*** Bash/Sh
 
 #+begin_src sh :tangle no :results silent
 npm install -g bash-language-server
+#+end_src
+
+#+begin_src emacs-lisp
+;; TODO torgeir seems its not needed, did this globally somewhere else instead
+(comment after! sh-mode
+  (map! :map drag-stuff-mode-map
+        "M-<left>" nil
+        "M-<right>" nil))
 #+end_src
 
 *** Clojure
