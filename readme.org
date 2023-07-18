@@ -1490,7 +1490,7 @@ Make helpful buffers more navigable by removing doom popup's /dedication/. This 
 #+begin_src emacs-lisp
 (advice-add
  #'push-button
- :after (defun t/keep-help-buffers-around ()
+ :after (defun t/keep-help-buffers-around (&optional arg)
          (set-window-dedicated-p (selected-window) nil)
          (set-window-parameter (selected-window) 'no-delete-other-windows nil)))
 #+end_src
