@@ -63,22 +63,25 @@
      #'identity))
 
 ;;;###autoload
-(defun chatgpt-prompt (prompt callback)
+(defun chatgpt-prompt (prompt callback &optional raw-response)
   "Query OpenAI with PROMPT calling the CALLBACK function on the resulting buffer.
 Returns buffer containing the text from this query"
   (interactive (list (read-string "Prompt ChatGPT with: ")
                      (lambda (buf))))
   (chatgpt--query-open-api prompt
                            (lambda (results)
-                             (pop-to-buffer chatgpt-buffer)
-                             (read-only-mode -1)
-                             (erase-buffer)
-                             (insert (concat "#+begin_ai\n[ME]: " prompt "\n\n[AI]: " results "\n\n[ME]: \n\n#+end_ai"))
-                             (call-interactively 'org-mode)
-                             (end-of-buffer)
-                             (funcall callback (current-buffer))
-                             (read-only-mode -1)
-                             (backward-char 10) ; <here>\n\n#+end_ai
+                             (if raw-response
+                                 (funcall callback results)
+                                 (progn
+                                   (pop-to-buffer chatgpt-buffer)
+                                   (read-only-mode -1)
+                                   (erase-buffer)
+                                   (insert (concat "#+begin_ai\n[ME]: " prompt "\n\n[AI]: " results "\n\n[ME]: \n\n#+end_ai"))
+                                   (call-interactively 'org-mode)
+                                   (end-of-buffer)
+                                   (funcall callback (current-buffer))
+                                   (read-only-mode -1)
+                                   (backward-char 10))) ; <here>\n\n#+end_ai
                              )))
 
 (defalias 'chatgpt 'chatgpt-prompt)
@@ -172,13 +175,16 @@ It then displays the results in a separate buffer `chatgpt-buffer'."
 The region is BEG and until END"
   (interactive "r")
   (let ((og-buf (current-buffer)))
-    (chatgpt-prompt (buffer-substring BEG END)
-                    (lambda (buf)
+    (chatgpt-prompt (concat (read-string "Prompt ChatGPT with, prefixing region, prefix: ")
+                            "\n---\n"
+                            (buffer-substring BEG END))
+                    (lambda (results)
                       (save-excursion
                         (with-current-buffer og-buf
                           (delete-region BEG END)
                           (goto-char BEG)
-                          (insert (with-current-buffer buf (buffer-string)))))))))
+                          (insert results))))
+                    t)))
 
 (defun chatgpt--append-to-prompt (prompt comment-str)
   "Append the string COMMENT-STR extra information to a PROMPT as a comment."
