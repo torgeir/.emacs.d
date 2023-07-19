@@ -2509,6 +2509,15 @@ Or when you ~eval~ something when the repl is open, e.g. =g r a p= (eval around 
 (setq +eval-popup-min-lines 0)
 #+end_src
 
+**** M-ret, like intellij
+
+#+begin_src emacs-lisp
+(after! typescript-mode
+  (map!
+   :map (typescript-mode-map typescript-tsx-mode-map)
+   :g "M-<return>" #'eglot-code-actions))
+#+end_src
+
 ** Server mode
 
 Emacs server setup.
