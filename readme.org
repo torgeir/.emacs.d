@@ -2063,7 +2063,7 @@ I never really got into this.
     (bind-key "i" (cmd! (call-interactively 't/eww-toggle-images)) map)
     (bind-key "o" (cmd! (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
-  (message "(n)ext page, (p)rev page, (s)pray mode, (i)mages, (S)ummarize with chatgpt, (o)livetti"))
+  (message "(n)ext page, (p)rev page, (i)mages, (s)pray mode, (S)ummarize with chatgpt, (o)livetti"))
 
 (map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
 
