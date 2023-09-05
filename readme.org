@@ -599,12 +599,23 @@ Iterate through CamelCase words
 (global-subword-mode 1)
 #+end_src
 
-*** +onsave
+*** +onsave format-all
 
 The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well. It messes up prettier.
 
 #+begin_src emacs-lisp
 (setq +format-with-lsp nil)
+#+end_src
+
+~ktlint~ messes up formatting of ~build.gradle.kts~ by including WARN level logging in the output, adding ~-l error~ prevents this
+
+#+begin_src emacs-lisp
+(after! format-all
+  (define-format-all-formatter ktlint
+    (:executable "ktlint")
+    (:install (macos "brew install ktlint"))
+    (:modes kotlin-mode)
+    (:format (format-all--buffer-easy executable "--format" "-l" "error" "--stdin"))))
 #+end_src
 
 *** Dired
