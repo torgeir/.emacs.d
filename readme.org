@@ -2082,6 +2082,14 @@ I never really got into this.
 
 An elisp web browser.
 
+**** Make it emacs default
+
+This makes ~RET~ on a url open ~eww~. You can still open an external browser with ~SPC u RET~.
+
+#+begin_src emacs-lisp
+(setq browse-url-browser-function 'eww-browse-url)
+#+end_src
+
 **** Lookup
 
 Make ~SPC s o~ open in eww first, then use ~&~ to go to the default browser if needed.
