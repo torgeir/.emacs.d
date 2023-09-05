@@ -2086,7 +2086,7 @@ Make ~SPC s o~ open in eww first, then use ~&~ to go to the default browser if n
   ;; the original way
   ;;(setf (alist-get 'size (display-buffer-assq-regexp "*eww*" display-buffer-alist nil)) 0.8)
   ;; the doom way
-  (set-popup-rule! "^\\*eww*" :side 'bottom :size 0.8))
+  (set-popup-rule! "^\\*eww*" :side 'bottom :size 0.9))
 #+end_src
 
 **** Readability
@@ -2838,7 +2838,7 @@ Setup.
         rmh-elfeed-org-auto-ignore-invalid-feeds t
         rmh-elfeed-org-ignore-tag "ARCHIVE"
         elfeed-db-directory (t/user-dropbox-folder "Apps/elfeed/")
-        elfeed-goodies/entry-pane-position 'bottom
+        elfeed-goodies/entry-pane-position 'right
         elfeed-search-filter "@2-week-ago -youtube -news -tech +unread")
   (add-hook! 'elfeed-db-update-hook 'elfeed-db-save))
 #+end_src
