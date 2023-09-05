@@ -2912,8 +2912,7 @@ Switch around the refresh mappings for more useful defaults.
                                            (concat (substring (cadr item) 0 index)
                                                    (concat "(" (car item) ")")
                                                    (substring (cadr item) (1+ index)))))
-                                       items)))))
-   ))
+                                       items)))))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2959,14 +2958,14 @@ Auto tagging of some types of subs
 
 #+begin_src emacs-lisp
 (after! elfeed
-(add-hook 'elfeed-new-entry-hook
-          (elfeed-make-tagger :feed-url "youtube\\.com"
-                              :add '(video youtube))))
+  (add-hook 'elfeed-new-entry-hook
+            (elfeed-make-tagger :feed-url "youtube\\.com"
+                                :add '(video youtube))))
 
 (after! elfeed
-(add-hook 'elfeed-new-entry-hook
-          (elfeed-make-tagger :before "2 weeks ago"
-                              :remove 'unread)))
+  (add-hook 'elfeed-new-entry-hook
+            (elfeed-make-tagger :before "2 weeks ago"
+                                :remove 'unread)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2974,8 +2973,8 @@ Auto tagging of some types of subs
   (set-face-attribute 'elfeed-search-tag-face nil :foreground (face-attribute 'font-lock-type-face :foreground))
   (set-face-attribute 'elfeed-search-title-face nil :bold nil :foreground (face-attribute 'font-lock-comment-face :foreground))
   (set-face-attribute 'elfeed-search-unread-title-face nil :bold t :foreground (face-attribute 'font-lock-keyword-face :foreground))
-  ;;(face-attribute 'font-lock-string-face :foreground)
-)
+  (copy-face 'elfeed-search-tag-face 'elfeed-hl-face)
+  (set-face-attribute 'elfeed-hl-face nil :bold t))
 #+end_src
 
 Extracted youtube feeds like this
@@ -2983,6 +2982,40 @@ Extracted youtube feeds like this
 #+begin_quote
 curl https://www.youtube.com/@$1 | grep -ioE "<link [^>]+>" | rg rss | sed -E 's#.*href="([^"]+)".*#\1#')
 #+end_quote
+
+**** Elfeed entry heading order
+
+Inspiration https://gist.github.com/alphapapa/80d2dba33fafcb50f558464a3a73af9a
+
+#+begin_src emacs-lisp
+(after! elfeed
+  (defun t-elfeed-print-entry (entry)
+    "Customize what heading goes where, elfeed-search-print-entry--default."
+
+    (let* ((tags (or (elfeed-entry-tags entry) ""))
+           (date (elfeed-search-format-date (elfeed-entry-date entry)))
+           (feed (elfeed-entry-feed entry))
+           (feed-title
+            (when feed
+              (or (elfeed-meta feed :title) (elfeed-feed-title feed))))
+           (title (or (elfeed-meta entry :title) (elfeed-entry-title entry) ""))
+           (title-faces (elfeed-search--faces (elfeed-entry-tags entry))))
+      (insert (propertize (elfeed-format-column date 10 :left) 'face 'elfeed-search-date-face) " ")
+      (when feed-title
+        (insert (propertize (elfeed-format-column feed-title 10 :left)
+                            'face
+                            'elfeed-search-feed-face) " "))
+      (insert (propertize (elfeed-format-column title 80 :left)
+                          'face
+                          (if (and (member 'unread (append tags))
+                                   (member 'read (append tags)))
+                              'elfeed-hl-face
+                            title-faces)
+                          'kbd-help title) " ")
+      (insert (propertize (elfeed-format-column tags 30 :right)
+                          'face 'elfeed-search-date-face) " ")))
+  (setq elfeed-search-print-entry-function 't-elfeed-print-entry))
+#+end_src
 
 *** Calendar
 
