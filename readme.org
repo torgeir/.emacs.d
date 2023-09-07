@@ -2084,10 +2084,18 @@ An elisp web browser.
 
 **** Make it emacs default
 
-This makes ~RET~ on a url open ~eww~. You can still open an external browser with ~SPC u RET~.
+This makes ~RET~ on a url open ~eww~. You can still open an external browser with ~SPC u RET~. Some urls, like github, open in the external browser.
 
 #+begin_src emacs-lisp
-(setq browse-url-browser-function 'eww-browse-url)
+(setq blacklisted-eww-urls '("github.com" "twitter.com")
+      browse-url-browser-function
+      (lambda (url &optional _new-window)
+        (let ((parsed-url (url-generic-parse-url url)))
+          (cond
+           ((member (url-host parsed-url) blacklisted-eww-urls)
+            (browse-url-default-browser url))
+           (t
+            (eww-browse-url url))))))
 #+end_src
 
 **** Lookup
@@ -2114,6 +2122,8 @@ Enter readable mode automatically, normally available from pressing ~R~ in eww m
 
 #+begin_src emacs-lisp
 (add-hook 'eww-after-render-hook 'eww-readable)
+(add-hook 'eww-after-render-hook 'olivetti-mode)
+(add-hook 'eww-after-render-hook 't/start-spray-micro-state)
 #+end_src
 
 Eww functions that directly enter the eww readability mode after loading a given url
