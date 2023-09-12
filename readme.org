@@ -2087,15 +2087,18 @@ An elisp web browser.
 This makes ~RET~ on a url open ~eww~. You can still open an external browser with ~SPC u RET~. Some urls, like github, open in the external browser.
 
 #+begin_src emacs-lisp
-(setq blacklisted-eww-urls '("github.com" "twitter.com")
+(setq blacklisted-eww-url-parts '("github.com"
+                                  "twitter.com"
+                                  "googleusercontent.com")
       browse-url-browser-function
       (lambda (url &optional _new-window)
-        (let ((parsed-url (url-generic-parse-url url)))
+        (let* ((parsed-url (url-generic-parse-url url))
+               (host (url-host parsed-url)))
+          (message "browse url: %s" parsed-url)
           (cond
-           ((member (url-host parsed-url) blacklisted-eww-urls)
+           ((-any-p (lambda (url-part) (s-contains? url-part host)) blacklisted-eww-url-parts)
             (browse-url-default-browser url))
-           (t
-            (eww-browse-url url))))))
+           (t (eww-browse-url url))))))
 #+end_src
 
 **** Lookup
