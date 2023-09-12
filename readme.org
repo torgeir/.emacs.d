@@ -3514,16 +3514,14 @@ TODO idle highlight in visible buffers
         (with-current-buffer (pop-to-buffer "*ai*")
           (erase-buffer)
           (org-mode)
+          (olivetti-mode)
           (insert "#+begin_ai\n[ME]: \n#+end_ai")
           (move-end-of-line 0)
           (evil-insert 0)
           (save-excursion
             (when active-region
-              (insert "\n\n" active-region))))))))
-
-(let ((p (+popup-make-rule "^\\*ChatGPT" '(:size 0.45 :side right))))
-  (setq display-buffer-alist (cdr display-buffer-alist))
-  (add-to-list 'display-buffer-alist p))
+              (insert "\n\n" active-region))))))
+    (set-popup-rule! "^\\*ChatGPT" :size 0.45 :side 'right)))
 #+end_src
 
 ** Bugfixes
