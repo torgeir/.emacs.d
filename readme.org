@@ -1248,7 +1248,7 @@ And screens are big, so a bit more space for text is nice.
        (h-px (frame-pixel-height (selected-frame)))
        (w (frame-width (selected-frame)))
        (frac (if (> w-px h-px)
-                 (if (> w 160)
+                 (if (and (> w 160) (> w-px 1440))
                      (/ (float 3) 7)
                    (/ (float 3) 5))
                (/ (float 2) 3))))
