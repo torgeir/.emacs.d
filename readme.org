@@ -789,8 +789,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
          (w (plist-get spec :weight)))
     (message "Font: %s, size: %s, weight: %s" f s w)
     (setq doom-font (t/font-spec f s w)
-          doom-variable-pitch-font (t/font-spec f s w)
-          ;;doom-variable-pitch-font (t/font-spec "ETBembo" 20)
+          doom-variable-pitch-font (t/font-spec "iosevka" 20 w)
           doom-big-font (t/font-spec f 14)
           doom-font-increment 1)
     (doom/reload-font)
@@ -1250,7 +1249,7 @@ And screens are big, so a bit more space for text is nice.
        (w (frame-width (selected-frame)))
        (frac (if (> w-px h-px)
                  (if (> w 160)
-                     (/ (float 1) 2)
+                     (/ (float 3) 7)
                    (/ (float 3) 5))
                (/ (float 2) 3))))
   (after! writeroom (setq writeroom-width frac))
@@ -1401,8 +1400,8 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
                                                    (+workspace-switch "*mastodon*")
                                                    (mastodon))
                      :desc "gnus" "g" (cmd! (condition-case nil (+workspace-new "*gnus*") (error nil))
-                                                   (+workspace-switch "*gnus*")
-                                                   (gnus)))))
+                                            (+workspace-switch "*gnus*")
+                                            (gnus)))))
  :leader :desc "Calendar"          "o C" #'calendar
  :leader :desc "Browse"            "o e" #'eww
  :leader :desc "Www"               "o w" #'eww
@@ -1428,6 +1427,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
 
  :leader :desc "Toggle line wrapping"  "t v" #'visual-line-mode
+ :leader :desc "Toggle variable pitch" "t V" #'variable-pitch-mode
  :leader :desc "Toggle truncate"       "t u" #'toggle-truncate-lines
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
@@ -1612,6 +1612,7 @@ Motion keys for info mode.
              (t (get-text-property (point) 'shr-url)))))
 
   (setq org-tags-column -60
+        org-hide-emphasis-markers t  ; hide symbols like ~ and / when wrapped around text
         org-support-shift-select t   ; shift can be used to mark multiple lines
         org-special-ctrl-k t         ; don't clear tags, etc
         org-special-ctrl-a/e t       ; don't move past ellipsis on c-e
@@ -1628,6 +1629,25 @@ Motion keys for info mode.
         org-reverse-note-order t     ; newest notes first
         org-return-follows-link t    ; go to http links in browser
         org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)"))))
+#+end_src
+
+*** Show images
+
+Like webp, if the os supports it.
+
+#+begin_src emacs-lisp
+(setq image-use-external-converter t
+      org-image-actual-width (list (float 0.5) (float 0.5)))
+#+end_src
+
+*** Variable pitch mode
+
+#+begin_src emacs-lisp
+(add-hook! 'org-mode-hook (defun t/variable-pitch-mode-some-buffers ()
+                            (interactive)
+                            (when (s-ends-with? "posts.org" (buffer-name))
+                              (olivetti-mode 1)
+                              (variable-pitch-mode 1))))
 #+end_src
 
 *** Async source code blocks
