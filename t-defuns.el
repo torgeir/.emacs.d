@@ -238,14 +238,14 @@ hide it (on mac)."
   (condition-case err
       (delete-window)
     (error
-     (if (cdr (frame-list))
+     (if (length= (visible-frame-list) 1)
          (if is-mac
              (ns-do-hide-emacs)
-           (condition-case errr
-               (delete-frame)
-             ;; last frame on linux
-             (error (save-buffers-kill-emacs))))
-       (save-buffers-kill-emacs)))))
+           ;; last frame on linux
+           (error (save-buffers-kill-emacs)))
+       (condition-case errr
+           (delete-frame)
+         (error (save-buffers-kill-emacs)))))))
 
 (defun t/copy-buffer-file-name ()
   (interactive)

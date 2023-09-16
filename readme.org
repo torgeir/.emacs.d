@@ -681,7 +681,7 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
        (visual-line-mode 0)
        (toggle-truncate-lines 1)
        (setq dired-sidebar-width (floor (* (frame-width (selected-frame))
-                                           (/ (float 0.8) 3))))))))
+                                           (/ (float 1) 5))))))))
 #+end_src
 
 *** After consult jump - focus subtree after jumping
@@ -1250,7 +1250,7 @@ And screens are big, so a bit more space for text is nice.
        (frac (if (> w-px h-px)
                  (if (and (> w 160) (> w-px 1440))
                      (/ (float 3) 7)
-                   (/ (float 3) 5))
+                   (/ (float 2) 5))
                (/ (float 2) 3))))
   (after! writeroom (setq writeroom-width frac))
   (after! olivetti
