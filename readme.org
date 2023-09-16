@@ -1300,6 +1300,12 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-buffer-file-name-style 'truncate-upto-root))
 #+end_src
 
+*** Dictionary
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*osx-dictionary*" :side 'bottom :size 0.4)
+#+end_src
+
 *** REPLs
 
 #+begin_src emacs-lisp
