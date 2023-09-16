@@ -3030,7 +3030,8 @@ Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bi
 (after! elfeed
   (add-hook 'elfeed-show-mode-hook
             (defun t/hook-elfeed-show-mode-hook ()
-              (olivetti-mode)
+              (variable-pitch-mode 1)
+              (olivetti-mode 1)
               (run-at-time "0 sec" nil (cmd! (visual-line-mode)))
               (t/start-spray-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
 #+end_src
@@ -3102,7 +3103,7 @@ Inspiration https://gist.github.com/alphapapa/80d2dba33fafcb50f558464a3a73af9a
            (title-faces (elfeed-search--faces (elfeed-entry-tags entry))))
       (insert (propertize (elfeed-format-column date 10 :left) 'face 'elfeed-search-date-face) " ")
       (when feed-title
-        (insert (propertize (elfeed-format-column feed-title 10 :left)
+        (insert (propertize (elfeed-format-column feed-title 18 :left)
                             'face
                             'elfeed-search-feed-face) " "))
       (insert (propertize (elfeed-format-column title 80 :left)
