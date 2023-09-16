@@ -355,6 +355,7 @@ Soft wrap everywhere
 #+begin_src emacs-lisp
 (add-hook! 'doom-after-init-hook
   (defun t/after-init-hook ()
+    (pyenv-mode -1)
     (global-emojify-mode -1)
     (global-visual-line-mode 1)))
 #+end_src
