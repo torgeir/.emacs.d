@@ -87,6 +87,10 @@ This is tangled to ~packages.el~ on save.
 (package! recursion-indicator)
 #+end_src
 
+*** Try melpa packages without loading them permanently
+
+~m-x~ ~straight-use-package~ or [[elisp:(call-interactively 'straight-use-package)][(call-interactively 'straight-use-package)]]
+
 ** Lexical scoping everywhere
 
 The madness that is dynamic is too much for anyone, really.
