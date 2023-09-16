@@ -1895,7 +1895,8 @@ Replace it with ~ss~ (its faster than the default ~s ~) so we can add some more 
   (add-to-list 'org-structure-template-alist (cons "sj" "src javascript"))
   (add-to-list 'org-structure-template-alist (cons "sh" "src sh"))
   (add-to-list 'org-structure-template-alist (cons "aI" "ai :image :size 512x512"))
-  (add-to-list 'org-structure-template-alist (cons "ai" "ai")))
+  (add-to-list 'org-structure-template-alist (cons "ai" "ai"))
+  (add-to-list 'org-structure-template-alist (cons "d" "description")))
 #+end_src
 
 If you need to remove one, do this
