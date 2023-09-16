@@ -1436,17 +1436,15 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Toggle focus mode"     "t F" #'focus-mode
  :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
 
- :leader :desc "Toggle line wrapping"  "t v" #'visual-line-mode
- :leader :desc "Toggle variable pitch" "t V" #'variable-pitch-mode
+ :leader :desc "Toggle variable pitch" "t v" #'variable-pitch-mode
+ :leader :desc "Toggle visual linemode""t V" #'visual-line-mode
  :leader :desc "Toggle truncate"       "t u" #'toggle-truncate-lines
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
  :leader :desc "Toggle transparency"   "t T" #'t/transparency
  :leader :desc "Reading"               "r" #'t/start-spray-micro-state
- :leader :desc "Reading"               "t r" #'t/start-spray-micro-state
- :leader :desc "Toggle writeroom"      "t w" #'global-writeroom-mode
- :leader :desc "Show whitespace"       "t W" #'whitespace-mode
- :leader :desc "Toggle zen"            "t z" #'global-writeroom-mode
+ :leader :desc "Show whitespace"       "t w" #'whitespace-mode
+ :leader :desc "Toggle writeroom"      "t z" #'global-writeroom-mode
 
  :leader :desc "Flip frame"                     "w f" #'rotate-frame
  :leader :desc "Delete window or frame or hide" "w d" #'t/delete-window-or-frame-or-hide
@@ -1458,7 +1456,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
                                                        (rotate-frame-clockwise)))
 
  :leader :desc "Projectile dired"    "p d" #'t/projectile-dired
- :leader :desc "Projectile git"      "p g" #'t/projectile-magit-status
+ :leader :desc "Projectile magit"      "p g" #'t/projectile-magit-status
  :leader :desc "Projectile pulls"    "p P" #'t/projectile-visit-git-link-pulls
  :leader :desc "Scratch buffer" "b s" #'doom/open-scratch-buffer
 
