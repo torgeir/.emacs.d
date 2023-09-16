@@ -3669,10 +3669,12 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
         :n "q" #'+workspace/delete
         :n "j" (cmd!
                 (mastodon-tl--goto-next-toot)
-                (recenter-top-bottom 0))
+                (let ((current-prefix-arg '(4)))
+                  (call-interactively 'recenter-top-bottom)))
         :n "k" (cmd!
                 (mastodon-tl--goto-prev-toot)
-                (recenter-top-bottom 0))))
+                (let ((current-prefix-arg '(4)))
+                  (call-interactively 'recenter-top-bottom)))))
 #+end_src
 
 *** STARTED Tramp
