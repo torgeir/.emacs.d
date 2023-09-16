@@ -1255,5 +1255,23 @@ See also:  (setq org-agenda-include-diary t)
       (shell-command-on-region beg end "say -v 'Karen' -r 250")
     (error "'say' command not found")))
 
+(defun t/org-heading ()
+  "Fetch the org heading where the point is at."
+  (interactive)
+  (car (last (butlast (org-heading-components) 1))))
+
+(defun t/insert-ox-hugo-slug ()
+  "Insert a ox-hugo slug for the current org heading. Replace every
+non-letter-and-number with -, and remove double --."
+  (interactive)
+  (org-set-property
+   "EXPORT_FILE_NAME"
+   (s-replace-regexp
+    "-+" "-"
+    (s-replace-regexp
+     "[^a-z0-9]" "-"
+     (s-replace-all '((" a " . "-"))
+                    (downcase (t/org-heading)))))))
+
 (provide 't-defuns)
 ;;; t-defuns.el ends here
