@@ -1,3 +1,4 @@
+(package! define-word)
 (package! elfeed-tube)
 (package! evil-cleverparens)
 (package! transpose-frame)

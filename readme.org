@@ -60,6 +60,7 @@ I usually navigate this with =c-c c-n= or =c-c c-p=, or =mgg=.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
+(package! define-word)
 (package! elfeed-tube)
 (package! evil-cleverparens)
 (package! transpose-frame)
@@ -1640,9 +1641,9 @@ Motion keys for info mode.
         org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "|" "DONE(d)" "CANCELLED(c)"))))
 #+end_src
 
-*** Show images
+*** Show images, like webp
 
-Like webp, if the os supports it.
+Use os support if it exists.
 
 #+begin_src emacs-lisp
 (setq image-use-external-converter t
