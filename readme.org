@@ -431,13 +431,27 @@ Remove highlight indent guides by default
 (remove-hook! '(prog-mode-hook text-mode-hook conf-mode-hook) 'highlight-indent-guides-mode)
 #+end_src
 
+Opt-in to emojis instead
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-first-buffer-hook
+  (defun t/after-first-buffer-hook ()
+    (global-emojify-mode -1)))
+#+end_src
+
+Stop ~pyenv-mode~ from stealing ~c-c c-s~
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-after-modules-config-hook
+  (defun t/after-modules-config-hook ()
+    (pyenv-mode -1)))
+#+end_src
+
 Soft wrap everywhere
 
 #+begin_src emacs-lisp
 (add-hook! 'doom-after-init-hook
   (defun t/after-init-hook ()
-    (pyenv-mode -1)
-    (global-emojify-mode -1)
     (global-visual-line-mode 1)))
 #+end_src
 
@@ -1501,6 +1515,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Fill column indicator" "t C" #'display-fill-column-indicator-mode
  :leader :desc "Toggle Big mode"       "t B" #'doom-big-font-mode
  :leader :desc "Toggle dedication"     "t d" #'t/toggle-dedicated-window
+ :leader :desc "Toggle emoji"          "t e" #'global-emojify-mode ; :rocket:
  :leader :desc "Debug on error"        "t D" #'toggle-debug-on-error
  :leader :desc "Cycle fonts"           "t f" #'t/cycle-fonts
  :leader :desc "Toggle focus mode"     "t F" #'focus-mode
