@@ -88,9 +88,17 @@ This is tangled to ~packages.el~ on save.
 (package! recursion-indicator)
 #+end_src
 
-*** Try melpa packages without loading them permanently
+*** Try
 
-~m-x~ ~straight-use-package~ or [[elisp:(call-interactively 'straight-use-package)][(call-interactively 'straight-use-package)]]
+You can try packages without loading them permanently by calling ~m-x~ ~straight-use-package~ or [[elisp:(call-interactively 'straight-use-package)][(call-interactively 'straight-use-package)]].
+
+I can't remember this, so here's a function
+
+#+begin_src emacs-lisp
+(defun t/try ()
+  (interactive)
+  (call-interactively 'straight-use-package))
+#+end_src
 
 ** Lexical scoping everywhere
 
