@@ -1237,7 +1237,7 @@ See also:  (setq org-agenda-include-diary t)
    (concat "cd ~/Code/posts\C-m \
       open http://localhost:1313/\C-m\
       hugo server -p 1313 --navigateToChanged"
-      (if (t/prefix-arg-universal?) " --buildDrafts" "")
+      (if (t/prefix-arg-universal?) "" " --buildDrafts")
       "\C-m")))
 
 
