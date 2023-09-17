@@ -2801,15 +2801,6 @@ Some keybindings are so engrained I can't live without them.
 
 #+begin_src emacs-lisp
 (after! vterm
-  ;; ^xe edit-command-line in zshrc
-  ;; ^x^e edit-command-line in zshrc
-  (map! :map vterm-mode-map
-        :i "C-x e" (cmd!
-                    (vterm-send-key "x" nil nil t)
-                    (vterm-send-key "e" nil nil nil))
-        :i "C-x C-e" (cmd!
-                      (vterm-send-key "x" nil nil t)
-                      (vterm-send-key "e" nil nil t)))
   (map! :map vterm-mode-map
         ;; undo like in the terminal
         :i "C-_" (cmd! (vterm-send-key "_" t nil t))
@@ -2835,12 +2826,50 @@ Remove ~C-l~ in normal mode, so that ~recenter-top-bottom~ works. Bring it back 
   (map! :map vterm-mode-map :i "C-l" 'vterm-clear))
 #+end_src
 
+**** Allow ~edit-command~ from insert mode
+
+Use it with ~^x^e~
+
+#+begin_src emacs-lisp
+(after! vterm
+  ;; ^xe edit-command-line in zshrc
+  ;; ^x^e edit-command-line in zshrc
+  (map! :map vterm-mode-map
+        :i "C-x e" (cmd!
+                    (vterm-send-key "x" nil nil t)
+                    (vterm-send-key "e" nil nil nil))
+        :i "C-x C-e" (cmd!
+                      (vterm-send-key "x" nil nil t)
+                      (vterm-send-key "e" nil nil t))))
+#+end_src
+
+***** Edit server custom keybinding to fix c-x c-e
+
+Hack to make ~C-c C-c~ accept, and ~C-c C-k~ exit, when running ~^x^e~ in a vterm terminal. Forces save upon accepting the content and cleans up the hanging "Waiting for Emacs..." when we return to vterm by sending ~C-l~.
+
+#+begin_src emacs-lisp
+(after! sh-script
+  (map! :map sh-mode-map :g "C-c C-c" nil)
+  (add-hook! 'sh-mode-hook
+    (defun t/sh-mode-server-hook ()
+      (interactive)
+      ;; when is visiting a window that belongs to an emacsclient
+      (when server-clients
+        (map! :map (evil-insert-state-local-map evil-normal-state-local-map)
+              :g "C-c C-k" 'server-edit-abort
+              :g "C-c C-c" (defun t/server-edit ()
+                             (interactive)
+                             (call-interactively 'save-buffer)
+                             (server-edit)
+                             (run-at-time "0 sec" nil (cmd! (term-send-raw-string "\C-l")))))))))
+#+end_src
+
 *** Terminal from everywhere with s-return
 :PROPERTIES:
 :ID:       607b5e84-af21-4da9-80a9-8a44c2d12f0b
 :END:
 
-Make super+enter create a vterm terminal window inside emacs.
+Make ~s-ret~ (super+enter) create a vterm terminal window inside emacs.
 
 #+begin_src emacs-lisp
 (map! :gn [s-return]
@@ -3778,28 +3807,4 @@ June 18, 2021 at 12:12PM
 https://ift.tt/36jQLT2
 
 deno-fmt is function that formats the current buffer on save with deno fmt. The package also exports a minor mode that applies (deno-fmt) on save. Feel free to replace typescript-mode / js2-mode in the following with your TypeScript/JavaScript mode of choice.
-
-*** STARTED Edit server custom keybinding
-
-Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a vterm terminal.
-
-#+begin_src emacs-lisp
-(advice-remove #'server-done :after)
-(advice-remove #'server-execute :after)
-(advice-add #'server-execute :after
-            (defun t/after-server-execute ()
-             (message "t: server edit")
-             (global-set-key "\C-c\C-c" (cmd! (save-buffer) (server-edit)))
-             (global-set-key "\C-c\C-k" (cmd!
-                                         (global-unset-key "\C-c\C-c")
-                                         (global-unset-key "\C-c\C-k")
-                                         (t/volatile-kill-buffer)))))
-(advice-add #'server-done :after
-            (defun t/after-server-done ()
-             (message "t: server done")
-             (global-unset-key "\C-c\C-c")
-             (global-unset-key "\C-c\C-k")))
-#+end_src
-
-
 
