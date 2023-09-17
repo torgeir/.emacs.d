@@ -2104,19 +2104,14 @@ Don't popupize the org code block editor with doom's popup framework, so it open
           :desc "summarize" "s" (cmd! (t/chatgpt-prompt "Summarize this text:"))))))
 #+end_src
 
-**** STARTED Chatgpt-shell
-
-https://github.com/xenodium/chatgpt-shell
-
-: (call-interactively 'straight-use-package) ;; chatgpt-shell
+**** STARTED [[https://github.com/xenodium/chatgpt-shell][chatgpt-shell]]
 
 #+begin_src emacs-lisp
-(setq
- chatgpt-shell-model-version "gpt-4"
- ;; chatgpt-shell-model-version "gpt-3.5-turbo"
- chatgpt-shell-openai-key
- (lambda ()
-   (auth-source-pick-first-password :host "api.openai.com")))
+(setq chatgpt-shell-model-version "gpt-4"
+      ;; chatgpt-shell-model-version "gpt-3.5-turbo"
+      chatgpt-shell-openai-key
+      (lambda ()
+        (auth-source-pick-first-password :host "api.openai.com")))
 #+end_src
 
 ** Reading
