@@ -55,6 +55,14 @@ This config uses the =:config literal= that tangles this file to ~config.el~ on 
 
 I usually navigate this with =c-c c-n= or =c-c c-p=, or =mgg=.
 
+** Lexical scoping everywhere
+
+The madness that is dynamic is too much for anyone, really.
+
+#+begin_src emacs-lisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+#+end_src
+
 ** Packages
 
 This is tangled to ~packages.el~ on save.
@@ -98,14 +106,6 @@ I can't remember this, so here's a function
 (defun t/try ()
   (interactive)
   (call-interactively 'straight-use-package))
-#+end_src
-
-** Lexical scoping everywhere
-
-The madness that is dynamic is too much for anyone, really.
-
-#+begin_src emacs-lisp
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
 
 ** Recentf
