@@ -1373,7 +1373,7 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
 *** Dictionary
 
 #+begin_src emacs-lisp
-(set-popup-rule! "^\\*osx-dictionary*" :side 'bottom :size 0.4)
+(set-popup-rule! "^\\*osx-dictionary*" :side 'bottom :size 0.5)
 #+end_src
 
 *** REPLs
