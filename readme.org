@@ -34,7 +34,7 @@ There were native comp issues on emacs-plus@28 after upgrading to ventura on mac
 
 The built in emacs help is fantastic. The doom one on ~SPC h d~ is even better! Here's a few examples.
 
-- [[file:~/.emacs.d/docs/examples.org][Browse examples of useful apis]]
+- [[file:~/.emacs.d/docs/examples.org][Browse examples of useful doom apis]]
 - [[elisp:(call-interactively 'doom/help-modules)][Lookup help for doom modules]]
 - [[elisp:(call-interactively 'doom/help-search)][Search for in the doom .emacs.d folder]]
 - ~SPC h d h~ to access documentation
@@ -1972,7 +1972,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
               (org-element-property :begin element))))))
 #+END_SRC
 
-**** evil-org-inner-subtre
+**** evil-org-inner-subtree
 
 #+BEGIN_SRC emacs-lisp :results silent
 (after! evil
