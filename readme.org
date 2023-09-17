@@ -1099,11 +1099,24 @@ Show the buffer and the file
 #+begin_src emacs-lisp
 (map! :after evil
       :map evil-window-map
-      "s" (t/micro-state nil
-           "<left>" (cmd! (evil-resize-window (- (window-width) 8) t))
-           "<right>" (cmd! (evil-resize-window (+ (window-width) 8) t))
-           "<up>" (cmd! (evil-resize-window (+ (window-height) 4)))
-           "<down>" (cmd! (evil-resize-window (- (window-height) 4)))))
+      "s" (t/micro-state
+           nil
+           "<left>" (cmd! (if (or (window-in-direction 'left)
+                                  (window-in-direction 'right))
+                              (evil-resize-window (- (window-width) 8) t)
+                            (execute-kbd-macro "h")))
+           "<right>" (cmd! (if (or (window-in-direction 'left)
+                                   (window-in-direction 'right))
+                               (evil-resize-window (+ (window-width) 8) t)
+                             (execute-kbd-macro "l")))
+           "<up>" (cmd! (if (or (window-in-direction 'up)
+                                (window-in-direction 'down))
+                            (evil-resize-window (+ (window-height) 4))
+                          (execute-kbd-macro "k")))
+           "<down>" (cmd! (if (or (window-in-direction 'up)
+                                  (window-in-direction 'down))
+                              (evil-resize-window (- (window-height) 4))
+                            (execute-kbd-macro "j")))))
 #+end_src
 
 *** Messages
