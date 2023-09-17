@@ -2861,7 +2861,7 @@ Hack to make ~C-c C-c~ accept, and ~C-c C-k~ exit, when running ~^x^e~ in a vter
                              (interactive)
                              (call-interactively 'save-buffer)
                              (server-edit)
-                             (run-at-time "0 sec" nil (cmd! (term-send-raw-string "\C-l")))))))))
+                             (run-at-time "1 sec" nil (cmd! (term-send-raw-string "\C-l")))))))))
 #+end_src
 
 *** Terminal from everywhere with s-return
