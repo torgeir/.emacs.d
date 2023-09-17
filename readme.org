@@ -1867,7 +1867,16 @@ Save org mode buffers after refile.
      "M-S-<right>" 'org-table-insert-column)))
 #+end_src
 
-*** Hugo capture template
+*** Hugo
+
+Allow ~ox-hugo~ to copy ~webp~
+
+#+begin_src emacs-lisp
+(after! ox-hugo
+  (add-to-list 'org-hugo-external-file-extensions-allowed-for-copying "webp"))
+#+end_src
+
+**** Capture template: Post
 
 #+begin_src emacs-lisp
 (after! org
