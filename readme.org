@@ -2455,6 +2455,16 @@ Move around like in org, collapsing what is moved away from, expanding what is m
                  (outline-show-entry)))
 #+end_src
 
+**** Pretty markdown
+
+#+begin_src emacs-lisp
+(after! markdown-mode
+  (add-hook! 'markdown-mode-hook (defun t/markdown-toggle-pretty ()
+                                   (interactive)
+                                   (markdown-toggle-url-hiding)
+                                   (markdown-toggle-markup-hiding)
+                                   (markdown-toggle-inline-images))))
+#+end_src
 *** Bash/Sh
 
 #+begin_src sh :tangle no :results silent
