@@ -1,7 +1,7 @@
-package nope
+package index
 
 fun main() {
-    println(5)
+    println(java.util.Date().toInstant())
 }
 
 main()
