@@ -3172,6 +3172,21 @@ Extracted youtube feeds like this
 curl https://www.youtube.com/@$1 | grep -ioE "<link [^>]+>" | rg rss | sed -E 's#.*href="([^"]+)".*#\1#')
 #+end_quote
 
+**** Elfeed tube
+
+Elfeed textual youtube support
+
+#+begin_src emacs-lisp
+(use-package! elfeed-tube
+  :commands (elfeed-tube-setup)
+  :init
+  (setq elfeed-tube-auto-save-p nil)
+  (setq elfeed-tube-auto-fetch-p t))
+
+(after! elfeed
+  (add-hook! 'elfeed-show-mode-hook 'elfeed-tube-setup))
+#+end_src
+
 **** Elfeed entry heading order
 
 Inspiration https://gist.github.com/alphapapa/80d2dba33fafcb50f558464a3a73af9a
@@ -3761,20 +3776,6 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
 #+end_src
 
 
-*** STARTED Elfeed tube
-
-[2023-05-15 Mon]
-
-#+begin_src emacs-lisp
-(use-package! elfeed-tube
-  :commands (elfeed-tube-setup)
-  :init
-  (setq elfeed-tube-auto-save-p nil)
-  (setq elfeed-tube-auto-fetch-p t))
-
-(after! elfeed
-  (add-hook! 'elfeed-show-mode-hook 'elfeed-tube-setup))
-#+end_src
 
 *** STARTED Reload sway after saved .config/sway/config
 
