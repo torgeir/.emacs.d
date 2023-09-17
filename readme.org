@@ -3162,6 +3162,7 @@ Switch around the refresh mappings for more useful defaults.
 (after! elfeed
   (add-hook 'elfeed-search-mode-hook
             (defun t/hook-elfeed-search-mode-hook ()
+              (variable-pitch-mode 1)
               (show-paren-mode -1)
               (visual-line-mode 0)
               (toggle-truncate-lines 1))))
