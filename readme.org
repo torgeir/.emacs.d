@@ -1071,6 +1071,7 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
  (:prefix-map ("j" . "jump")
   (:when t
    :desc "Jump to window"      "w" #'ace-window
+   :desc "Jump to word"        "W" #'avy-goto-word-1
    :desc "Jump to line"        "l" #'avy-goto-line
    :desc "org: Jump to header" "h" #'avy-org-goto-heading-timer
    :desc "Jump to char"        "c" #'avy-goto-char-2
