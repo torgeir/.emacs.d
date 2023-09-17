@@ -234,7 +234,6 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 #+end_src
 
 ** Editor
-
 *** Tramp
 
 #+begin_src emacs-lisp
@@ -317,7 +316,7 @@ Use =nav-flash= to flash the cursor after long jumps.
 
 *** Recursive minibuffers
 
-When you change your mind and need to do something first, after you already started a command that opens the minibuffer.
+When you change your mind and need to do something first, after you already started a command that opens the minibuffer. Cancel them with ~C-]~.
 
 #+begin_src emacs-lisp
 (setq enable-recursive-minibuffers t)
@@ -405,7 +404,6 @@ Defaults
   (setq-default epa-file-encrypt-to '("torgeir@keybase.io")))
 #+end_src
 
-
 Wait just long enough.
 
 #+begin_src emacs-lisp
@@ -431,7 +429,7 @@ Remove highlight indent guides by default
 (remove-hook! '(prog-mode-hook text-mode-hook conf-mode-hook) 'highlight-indent-guides-mode)
 #+end_src
 
-Opt-in to emojis instead
+Opt-in to emojis instead :rocket:
 
 #+begin_src emacs-lisp
 (add-hook! 'doom-first-buffer-hook
@@ -439,7 +437,7 @@ Opt-in to emojis instead
     (global-emojify-mode -1)))
 #+end_src
 
-Stop ~pyenv-mode~ from stealing ~c-c c-s~
+Stop ~pyenv-mode~ from stealing ~C-c C-s~
 
 #+begin_src emacs-lisp
 (add-hook! 'doom-after-modules-config-hook
@@ -1316,7 +1314,6 @@ Support wrapping sexps by holding super, both in normal mode and insert mode, fr
 #+end_src
 
 *** Distraction free / Zen
-**** Writeroom, margins
 
 A _really global_ global writeroom mode. The function is redefined such that if writeroom-major-modes is nil, writeroom-mode is activated in ALL buffers.
 
