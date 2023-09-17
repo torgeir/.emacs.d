@@ -2175,6 +2175,24 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 #+end_src
 
 ** Reading
+*** Mastodon
+
+#+begin_src emacs-lisp
+(after! mastodon
+  (setq mastodon-instance-url "https://fosstodon.org"
+        mastodon-active-user "@torgeir@fosstodon.org")
+  (map! :map mastodon-mode-map
+        :n "q" #'+workspace/delete
+        :n "j" (cmd!
+                (mastodon-tl--goto-next-toot)
+                (let ((current-prefix-arg '(4)))
+                  (call-interactively 'recenter-top-bottom)))
+        :n "k" (cmd!
+                (mastodon-tl--goto-prev-toot)
+                (let ((current-prefix-arg '(4)))
+                  (call-interactively 'recenter-top-bottom)))))
+#+end_src
+
 *** Fast
 
 I never really got into this.
@@ -3742,23 +3760,6 @@ Insane hack to make ~C-c C-c~ accept and ~C-c C-k~ exit when running ~^x^e~ in a
              (global-unset-key "\C-c\C-k")))
 #+end_src
 
-*** STARTED Mastodon
-
-#+begin_src emacs-lisp
-(after! mastodon
-  (setq mastodon-instance-url "https://fosstodon.org"
-        mastodon-active-user "@torgeir@fosstodon.org")
-  (map! :map mastodon-mode-map
-        :n "q" #'+workspace/delete
-        :n "j" (cmd!
-                (mastodon-tl--goto-next-toot)
-                (let ((current-prefix-arg '(4)))
-                  (call-interactively 'recenter-top-bottom)))
-        :n "k" (cmd!
-                (mastodon-tl--goto-prev-toot)
-                (let ((current-prefix-arg '(4)))
-                  (call-interactively 'recenter-top-bottom)))))
-#+end_src
 
 *** STARTED Elfeed tube
 
