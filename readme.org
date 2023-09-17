@@ -803,8 +803,8 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
          (w (plist-get spec :weight)))
     (message "Font: %s, size: %s, weight: %s" f s w)
     (setq doom-font (t/font-spec f s w)
-          doom-variable-pitch-font (t/font-spec (if is-mac "Iosevka SS05" "iosevka") 20 w)
-          doom-big-font (t/font-spec f 14)
+          doom-variable-pitch-font (t/font-spec (if is-mac "Iosevka SS05" "iosevka") 18 w)
+          doom-big-font (t/font-spec f 28)
           doom-font-increment 1)
     (doom/reload-font)
     f))
@@ -812,19 +812,11 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 (t/cycle-fonts)
 #+end_src
 
-To list available fontsets, do
+**** List available fontsets
 
-#+begin_src emacs-lisp
-(comment
- (call-interactively 'describe-font))
+#+begin_src emacs-lisp :tangle no :result no
+(call-interactively 'describe-font)
 #+end_src
-
-#+begin_quote
-;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
-;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
-;; refresh your font settings. If Emacs still can't find your font, it likely
-;; wasn't installed correctly. Font issues are rarely Doom issues!
-#+end_quote
 
 *** Errors
 
@@ -2159,15 +2151,11 @@ I never really got into this.
                    (when (eq major-mode 'elfeed-show-mode)
                      (let ((shr-inhibit-images t)) (elfeed-show-refresh)))
                    (funcall (t/spray-micro-state))) map)
-    (bind-key "S" (cmd!
-                   (mark-whole-buffer)
-                   (call-interactively 'chatgpt-summarize-region-and-replace)
-                   (deactivate-mark)
-                   (beginning-of-buffer)) map)
     (bind-key "i" (cmd! (call-interactively 't/eww-toggle-images)) map)
+    (bind-key "v" (cmd! (call-interactively 'variable-pitch-mode)) map)
     (bind-key "o" (cmd! (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
-  (message "(n)ext page, (p)rev page, (i)mages, (s)pray mode, (S)ummarize with chatgpt, (o)livetti"))
+  (message "(n)ext page, (p)rev page, (i)mages, (s)pray mode, (o)livetti, (v)ariable pitch"))
 
 (map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
 
