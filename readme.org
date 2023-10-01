@@ -2471,6 +2471,15 @@ A custom function to fetch a clean view of the current news from nrk.no
 
 ** Languages
 
+*** Eglot language server
+
+#+begin_src emacs-lisp
+(after! eglot
+  (setq eglot-connect-timeout (* 60 20)
+        ;; don't block while waiting, defaults to 3
+        eglot-sync-connect nil))
+#+end_src
+
 *** Markdown
 
 Move around like in org, collapsing what is moved away from, expanding what is moved to.
@@ -2625,11 +2634,6 @@ cd ~/bin/
 rm -rf server
 unzip server.zip
 ln -sf server/bin/kotlin-language-server .
-#+end_src
-
-#+begin_src emacs-lisp
-(after! eglot
-  (setq eglot-connect-timeout (* 60 20)))
 #+end_src
 
 *** Python
