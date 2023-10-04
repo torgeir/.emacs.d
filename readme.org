@@ -775,7 +775,7 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
        (visual-line-mode 0)
        (toggle-truncate-lines 1)
        (setq dired-sidebar-width (floor (* (frame-width (selected-frame))
-                                           (/ (float 1) 5))))))))
+                                           (/ (float 1) 4))))))))
 #+end_src
 
 *** After consult jump - focus subtree after jumping
