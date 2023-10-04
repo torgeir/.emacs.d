@@ -3822,7 +3822,6 @@ Check if configuration affecting sway is changed, if so reload it
       (call-process-shell-command "swaymsg reload"))))
 #+end_src
 
-
 ** Someday
 :PROPERTIES:
 :header-args:emacs-lisp: :lexical t :results silent
