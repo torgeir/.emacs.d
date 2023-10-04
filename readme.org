@@ -2268,7 +2268,8 @@ I never really got into this.
     (bind-key "v" (cmd! (call-interactively 'variable-pitch-mode)) map)
     (bind-key "o" (cmd! (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
-  (message "(n)ext page, (p)rev page, (i)mages, (s)pray mode, (o)livetti, (v)ariable pitch"))
+  (when (not (minibuffer-window-active-p (selected-window)))
+      (message "(n)ext page, (p)rev page, (i)mages, (s)pray mode, (o)livetti, (v)ariable pitch")))
 
 (map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
 
@@ -2329,7 +2330,7 @@ Make ~SPC s o~ open in eww first, then use ~&~ to go to the default browser if n
 Enter readable mode automatically, normally available from pressing ~R~ in eww mode.
 
 #+begin_src emacs-lisp
-(add-hook 'eww-after-render-hook 'eww-readable)
+(add-hook 'eww-after-render-hook (cmd! (call-interactively 'eww-readable)))
 (add-hook 'eww-after-render-hook 'olivetti-mode)
 (add-hook 'eww-after-render-hook 'variable-pitch-mode)
 (add-hook 'eww-after-render-hook 't/start-spray-micro-state)
