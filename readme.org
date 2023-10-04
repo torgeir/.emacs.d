@@ -2330,6 +2330,7 @@ Enter readable mode automatically, normally available from pressing ~R~ in eww m
 #+begin_src emacs-lisp
 (add-hook 'eww-after-render-hook 'eww-readable)
 (add-hook 'eww-after-render-hook 'olivetti-mode)
+(add-hook 'eww-after-render-hook 'variable-pitch-mode)
 (add-hook 'eww-after-render-hook 't/start-spray-micro-state)
 #+end_src
 
