@@ -1210,7 +1210,10 @@ See also:  (setq org-agenda-include-diary t)
 
 (defun t/isodate ()
   (interactive)
-  (format-time-string "%Y-%m-%dT%H:%M:%S.%3NZ" nil "UTC"))
+  (let ((time (format-time-string "%Y-%m-%dT%H:%M:%S.%3NZ" nil "UTC")))
+    (if (interactive-p)
+        (insert time)
+      time)))
 
 (defun t/deploy-torgeir.dev ()
   (interactive)
