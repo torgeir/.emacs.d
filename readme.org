@@ -1343,24 +1343,26 @@ Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly 
 And screens are big, so a bit more space for text is nice.
 
 #+begin_src emacs-lisp
-(let* ((w-px (frame-pixel-width (selected-frame)))
-       (h-px (frame-pixel-height (selected-frame)))
-       (w (frame-width (selected-frame)))
-       (frac (cond
-              ((< w-px h-px) (/ (float 2) 3))
-              ((and (> w 160) (> w-px 1440)) (/ (float 3) 7))
-              (t (/ (float 3) 5)))))
-  (after! writeroom (setq writeroom-width frac))
+(let ((frac (lambda ()
+              (let* ((w-px (frame-pixel-width (selected-frame)))
+                     (h-px (frame-pixel-height (selected-frame)))
+                     (w (frame-width (selected-frame))))
+                (cond
+                 ((< w-px h-px) (/ (float 2) 3))
+                 ((> w 200) (/ (float 2) 5))
+                 ((and (> w 160) (> w-px 1440)) (/ (float 3) 7))
+                 (t (/ (float 3) 5)))))))
+  (after! writeroom (setq writeroom-width (funcall frac)))
   (after! olivetti
     (add-hook!
      'olivetti-mode-hook
      (defun t/olivetti-mode-hook ()
        (interactive)
+       ;; (message "w: %s, w-px: %s, h-px: %s" w w-px h-px)
        (setq
         olivetti-body-width
         (floor (* (frame-width (selected-frame))
-                  frac))))))
-  (message "w: %s, w-px: %s, h-px: %s" w w-px h-px))
+                  (funcall frac))))))))
 #+end_src
 
 Adjust margins equally across modes.
