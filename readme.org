@@ -735,9 +735,10 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
   (map! :map dired-mode-map :ng "q" 't/volatile-kill-buffer)
   (map! :map dired-mode-map :ng "Q" 'evil-record-macro)
   (map!
-   :map dired-mode-map
+   :map (dired-mode-map dired-sidebar-mode-map)
    "C-k" 'dired-kill-subdir
    "<tab>" 't/dired-subtree-tab
+   :n "<tab>" 't/dired-subtree-tab
    "<backspace>" 'dired-kill-subdir
    "M-<down>" (cmd! (dired-find-alternate-file))
    "M-<up>" (cmd! (find-alternate-file ".."))))
