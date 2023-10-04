@@ -66,7 +66,7 @@
                               ;; (message "action: %s, q: %s, url: %s" action q url)
                               (when url
                                 (when (s-starts-with? "http" url)
-                                  (eww q))))))
+                                  (eww url))))))
                  :category 'spotify-search-item
                  :history '(:input consult-t-history)
                  :initial (consult--async-split-initial "")
