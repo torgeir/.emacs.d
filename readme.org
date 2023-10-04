@@ -68,7 +68,6 @@ The madness that is dynamic is too much for anyone, really.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! define-word)
 (package! elfeed-tube)
 (package! evil-cleverparens)
 (package! transpose-frame)
