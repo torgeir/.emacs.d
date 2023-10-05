@@ -2293,6 +2293,8 @@ An elisp web browser.
 This makes ~RET~ on a url open ~eww~. You can still open an external browser with ~SPC u RET~. Some urls, like github, open in the external browser.
 
 #+begin_src emacs-lisp
+;; this is the start of *elfeed-entry-<title>* names of youtube buffers without an elfeed entry
+(set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t)
 (setq blacklisted-eww-url-parts '("github.com"
                                   "twitter.com"
                                   "googleusercontent.com")
@@ -2304,6 +2306,9 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
           (cond
            ((-any-p (lambda (url-part) (s-contains? url-part host)) blacklisted-eww-url-parts)
             (browse-url-default-browser url))
+           ((or (s-contains-p "youtube.com" host) (s-contains-p "youtu.be" host))
+            (elfeed-tube-fetch url)
+            (run-at-time "0 sec" nil 't/start-spray-micro-state))
            (t (eww-browse-url url))))))
 #+end_src
 
