@@ -1029,6 +1029,7 @@ Set across all real buffers
 
 #+begin_src emacs-lisp
 (add-hook! '(prog-mode-hook css-mode-hook html-mode-hook) 'rainbow-mode)
+(add-hook! '(prog-mode-hook css-mode-hook html-mode-hook) 'show-paren-mode)
 #+end_src
 
 ***** Color parens uniformly
@@ -1343,6 +1344,7 @@ And screens are big, so a bit more space for text is nice.
         olivetti-body-width
         (floor (* (frame-width (selected-frame))
                   (funcall frac))))))))
+;; TODO resize
 #+end_src
 
 Adjust margins equally across modes.
