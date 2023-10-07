@@ -1647,7 +1647,12 @@ Motion keys for info mode.
       (org-previous-visible-heading 1)
       (outline-show-subtree)
       (when was-narrowed (org-narrow-to-subtree))
-      (recenter-top-bottom 0)))
+      (recenter-top-bottom 0)
+      (progn ;; hack to make eldoc pop up
+        (evil-previous-line)
+        (evil-next-line)
+        (evil-forward-word-begin))))
+
 
   (defun t/open-next-heading ()
     (interactive)
@@ -1657,8 +1662,13 @@ Motion keys for info mode.
         (outline-hide-sublevels (org-outline-level)))
       (org-next-visible-heading 1)
       (outline-show-subtree)
+      (eldoc-print-current-symbol-info)
       (when was-narrowed (org-narrow-to-subtree))
-      (recenter-top-bottom 0)))
+      (recenter-top-bottom 0)
+      (progn ;; hack to make eldoc pop up
+        (evil-previous-line)
+        (evil-next-line)
+        (evil-forward-word-begin))))
 
   ;; like in normal org, not like in doom
   (map! :after evil-org
@@ -2293,6 +2303,7 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
             (run-at-time "0 sec" nil 't/start-spray-micro-state))
            (t (eww-browse-url url))))))
 #+end_src
+
 
 **** Lookup
 
