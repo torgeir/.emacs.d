@@ -3800,7 +3800,7 @@ Useful e.g. to make dired act like a directory tree sidebar
 
 *** Embark org ToC
 
-Type ~mgg~ to run =consult-org-heading=, then ~C-c C-;~ to =embark-export=.
+Type ~SPC mgg~ to run =consult-org-heading=, then ~C-c C-;~ to =embark-export=.
 
 *** Macro numbered list
 
