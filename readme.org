@@ -2602,11 +2602,18 @@ esac
 
 #+begin_src emacs-lisp
 (after! eglot
-  (add-to-list 'eglot-server-programs '((hcl-mode terraform-mode) . ("terraform-lsp")))
-  )
+  (add-to-list 'eglot-server-programs '((hcl-mode terraform-mode) . ("terraform-lsp"))))
 #+end_src
 
 *** Kotlin
+
+This does not work well with eglot
+
+#+begin_src emacs-lisp
+(-find (lambda (c) (eq (car c) 'kotlin-mode)) eglot-server-programs)
+(setq eglot-server-programs
+      (remove-if (lambda (c) (eq (car c) 'kotlin-mode)) eglot-server-programs))
+#+end_src
 
 **** Eglot ls
 
