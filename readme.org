@@ -560,7 +560,7 @@ Prevent =embark-export=, ~C-e~, from being "popupized" by doom's ~:ui popup~ and
 (set-popup-rule! "^*Embark" :ignore t)
 #+end_src
 
-You can use C-SPC to preview candidates.
+You can use ~C-SPC~ to preview candidates.
 
 Embark improves prefix help commands, e.g. ~C-c C-h~, by showing auto complete that is fuzzy searchable.
 
