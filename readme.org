@@ -2163,8 +2163,10 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 (defun t/chatgpt-buffer (beg end &optional prompt)
   "Pop open an org mode buffer with the selection region and an optional prompt
   prepended."
-  (interactive "r")
-  (let ((active-region (and (region-active-p) (buffer-substring beg end))))
+  (interactive (list (and (mark t) (region-beginning))
+                     (and (mark t) (region-end))))
+  (let ((active-region (when (region-active-p)
+                         (buffer-substring beg end))))
     (with-current-buffer (pop-to-buffer "*ChatGPT*")
       (erase-buffer)
       (org-mode)
