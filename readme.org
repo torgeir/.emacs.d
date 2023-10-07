@@ -172,7 +172,7 @@ Ignore some of the cached emacs files in recent files
 
 #+begin_src emacs-lisp
 (setq org-directory (expand-file-name "~/Dropbox/org/")
-      org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/IFTTT/twitter.txt" "~/Dropbox/org/IFTTT/pocket.txt" )
+      org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/IFTTT/pocket.txt" )
       org-archive-location "%s_archive.gpg::") ; so files are encrypted automatically
 #+end_src
 
@@ -230,6 +230,7 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 #+end_src
 
 ** Editor
+
 *** Tramp
 
 #+begin_src emacs-lisp
@@ -1479,7 +1480,6 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
                                                    (+workspace-switch "*hn*")
                                                    (hnreader-news))
                      :desc "rss"         "r" #'=rss
-                     :desc "twitter"     "t" #'=twitter
                      :desc "mail"        "m" (cmd! (t/gpg) (=mu4e))
                      :desc "mastodon"    "d" (cmd! (condition-case nil (+workspace-new "*mastodon*") (error nil))
                                                    (+workspace-switch "*mastodon*")
@@ -1798,7 +1798,7 @@ Org agenda customizations
     (tags-todo ,@(t/org-agenda-todos-scheduled "Scheduled todo" (string-join tags "|")))))
 
 (defun t/org-agenda-read ()
-  `(tags-todo "book|read|twitter|pocket" ((org-agenda-overriding-header "Read"))))
+  `(tags-todo "book|read|pocket" ((org-agenda-overriding-header "Read"))))
 
 (defun t/org-done-today (tag)
   `(tags ,(format "%s+CLOSED>=\"<today>\"" tag) ((org-agenda-overriding-header "\nCompleted today\n"))))
@@ -2303,7 +2303,6 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
             (run-at-time "0 sec" nil 't/start-spray-micro-state))
            (t (eww-browse-url url))))))
 #+end_src
-
 
 **** Lookup
 
@@ -3390,15 +3389,6 @@ Evil like navigation.
   (interactive)
   (if t-regex-mode (reb-quit) (re-builder))
   (setq t-regex-mode (not t-regex-mode)))
-#+end_src
-
-*** Twitter
-
-#+begin_src emacs-lisp
-(after! twittering-mode
-  (setq twittering-initial-timeline-spec-string '(":mentions" ":home")
-        twittering-request-confirmation-on-posting t
-        twittering-use-master-password t))
 #+end_src
 
 *** Email
