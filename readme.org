@@ -2279,7 +2279,8 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
 #+begin_src emacs-lisp
 ;; this is the start of *elfeed-entry-<title>* names of youtube buffers without an elfeed entry
 (set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t)
-(setq blacklisted-eww-url-parts '("github.com"
+(setq blacklisted-eww-url-parts '("localhost"
+                                  "github.com"
                                   "twitter.com"
                                   "googleusercontent.com")
       browse-url-browser-function
