@@ -92,6 +92,8 @@ This is tangled to ~packages.el~ on save.
 (package! wordnut :pin "feac531404041855312c1a046bde7ea18c674915")
 ;; fix broken doom install for thesaurus on a mac?
 (package! synosaurus :pin "14d34fc92a77c3a916b4d58400424c44ae99cd81")
+;; grab latest for the ktlint fix
+(package! format-all :pin "59924e6bcfeef50d95324a336cb8f4c94366c99f")
 (package! recursion-indicator)
 #+end_src
 
@@ -698,17 +700,6 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
 
 #+begin_src emacs-lisp
 (setq +format-with-lsp nil)
-#+end_src
-
-~ktlint~ messes up formatting of ~build.gradle.kts~ by including WARN level logging in the output, adding ~-l error~ prevents this
-
-#+begin_src emacs-lisp
-(after! format-all
-  (define-format-all-formatter ktlint
-    (:executable "ktlint")
-    (:install (macos "brew install ktlint"))
-    (:modes kotlin-mode)
-    (:format (format-all--buffer-easy executable "--format" "-l" "error" "--stdin"))))
 #+end_src
 
 *** Dired
