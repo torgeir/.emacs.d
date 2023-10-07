@@ -1410,9 +1410,11 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 #+begin_src emacs-lisp
 (map!
  :n "s-0" nil
- "s-0" #'doom/reset-font-size
- "s-+" #'doom/increase-font-size
- "s--" #'doom/decrease-font-size
+ :n "s-0" #'doom/reset-font-size
+ :n "s-+" #'doom/increase-font-size
+ :n "s--" #'doom/decrease-font-size
+ :n "C-+" #'doom/increase-font-size
+ :n "C--" #'doom/decrease-font-size
 
  "s-?" (cmd! (text-scale-increase 1))
  "s-_" (cmd! (text-scale-decrease 1))
