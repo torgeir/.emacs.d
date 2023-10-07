@@ -802,7 +802,7 @@ Zoom to the previewed org subtree when jumping between headings with =consult-or
     (evil-multiedit-match-and-next)))
 #+end_src
 
-Make cursor follow matches so ~m-n~ or ~m-p~ can be used to skip matches easily, depending on what direction you are moving in.
+Make cursor follow matches so ~m-n~ or ~m-p~ can be used to skip matches easily, depending on what direction you are moving in. ~R~ marks all occurrences from visual.
 
 #+begin_src emacs-lisp
 (after! evil
@@ -817,6 +817,10 @@ Make cursor follow matches so ~m-n~ or ~m-p~ can be used to skip matches easily,
    ;; don't clash with ~evil-cp-delete-sexp~, require visual mode for multi edit
    :mode emacs-lisp-mode
    :v "M-d" 'evil-multiedit-match-symbol-and-next))
+
+;; test
+;; test test
+;; test
 #+end_src
 
 Restores a lost multiedit selection.
