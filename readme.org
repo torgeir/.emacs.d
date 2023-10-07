@@ -170,11 +170,6 @@ Ignore some of the cached emacs files in recent files
 
 ** Org file location setup
 
-#+begin_quote
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-#+end_quote
-
 #+begin_src emacs-lisp
 (setq org-directory (expand-file-name "~/Dropbox/org/")
       org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/IFTTT/twitter.txt" "~/Dropbox/org/IFTTT/pocket.txt" )
