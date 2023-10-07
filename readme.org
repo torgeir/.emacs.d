@@ -2764,6 +2764,7 @@ I also use this from Alfred, as a quick way of capturing from anywhere.
 #+end_src
 
 ** Terminal
+
 *** Vterm
 
 This is paired with the bash function [[https://github.com/torgeir/dotfiles/blob/5a4909422f0822016a4e3745e919d7ca246872ec/source/functions#L280-L282][vterm_set_directory]] that updates the current working directory for emacs as the vterm path changes.
