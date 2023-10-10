@@ -80,19 +80,19 @@ understands."
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-   (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
-    (root (projectile-project-root))
-    (tags (shell-quote-argument (concat root "TAGS")))
-    (process (start-process-shell-command "build ctags asynchronously"
-                                          "*ctags async*"
-                                          (concat
-                                           "ctags -e -R"          ; recurse
-                                           " --options=" ctags ; use global config
-                                           " -f " tags " "     ; put it in project/TAGS
-                                           " ."                   ; in the current directory
-                                           ))))
-   (set-process-sentinel process (lambda (process event)
-                                   (t/load-tags tags)))))
+      (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
+       (root (projectile-project-root))
+       (tags (shell-quote-argument (concat root "TAGS")))
+       (process (start-process-shell-command "build ctags asynchronously"
+                                             "*ctags async*"
+                                             (concat
+                                              "ctags -e -R"          ; recurse
+                                              " --options=" ctags ; use global config
+                                              " -f " tags " "     ; put it in project/TAGS
+                                              " ."                   ; in the current directory
+                                              ))))
+    (set-process-sentinel process (lambda (process event)
+                                    (t/load-tags tags)))))
 
 (defun t/load-tags (tags)
   "Loads project tags into tag table."
@@ -199,13 +199,13 @@ Including indent-buffer, which should not be called automatically on save."
   (interactive)
   (if (eq major-mode 'clojure-mode)
       (cider-eval-last-sexp-and-replace)
-      (progn
-        (backward-kill-sexp)
-        (condition-case nil
-            (prin1 (eval (read (current-kill 0)))
-                   (current-buffer))
-          (error (message "Invalid expression")
-                 (insert (current-kill 0)))))))
+    (progn
+      (backward-kill-sexp)
+      (condition-case nil
+          (prin1 (eval (read (current-kill 0)))
+                 (current-buffer))
+        (error (message "Invalid expression")
+               (insert (current-kill 0)))))))
 
 ;; run it with M-x lorem
 (define-skeleton lorem
@@ -307,21 +307,6 @@ hide it (on mac)."
 (defun t/prefix-arg-universal? ()
   "Check if the function was called with the c-u universal prefix."
   (equal '(4) current-prefix-arg))
-
-;; TODO move to readme.org?
-(defun t/indent-after-paste (fn &rest args)
-  (evil-start-undo-step)
-  (let* ((u-prefix (t/prefix-arg-universal?))
-         (current-prefix-arg (unless u-prefix current-prefix-arg))
-         (args (if u-prefix (list nil) args)))
-    (apply fn args)
-    (unless u-prefix
-      (indent-region (region-beginning) (region-end))))
-  (evil-end-undo-step))
-
-(advice-add 'yank :around #'t/indent-after-paste)
-(advice-add 'evil-paste-before :around #'t/indent-after-paste)
-(advice-add 'evil-paste-after :around #'t/indent-after-paste)
 
 (defun t/comint-clear-buffer ()
   (interactive)
@@ -1240,8 +1225,8 @@ See also:  (setq org-agenda-include-diary t)
    (concat "cd ~/Code/posts\C-m \
       open http://localhost:1313/\C-m\
       hugo server -p 1313 --navigateToChanged"
-      (if (t/prefix-arg-universal?) "" " --buildDrafts")
-      "\C-m")))
+           (if (t/prefix-arg-universal?) "" " --buildDrafts")
+           "\C-m")))
 
 
 (defun t/chrome-urls ()

@@ -504,6 +504,24 @@ Fine undo
   (setq evil-want-fine-undo t))
 #+end_src
 
+**** Indent after paste
+
+#+begin_src emacs-lisp
+(defun t/indent-after-paste (fn &rest args)
+  (evil-start-undo-step)
+  (let* ((u-prefix (t/prefix-arg-universal?))
+         (current-prefix-arg (unless u-prefix current-prefix-arg))
+         (args (if u-prefix (list nil) args)))
+    (apply fn args)
+    (unless u-prefix
+      (indent-region (region-beginning) (region-end))))
+  (evil-end-undo-step))
+
+(advice-add 'yank :around #'t/indent-after-paste)
+(advice-add 'evil-paste-before :around #'t/indent-after-paste)
+(advice-add 'evil-paste-after :around #'t/indent-after-paste)
+#+end_src
+
 **** Unbind C-h in evil window bindings
 
 I use ~SPC w h~ instead of ~SPC w C-h~ to move to the left window. ~C-h~ is more useful as =embark-prefix-help-command=, which this falls back to, like in all other keymaps
