@@ -12,7 +12,6 @@
 (package! mastodon :recipe (:host codeberg :repo "martianh/mastodon.el"))
 (package! hnreader)
 (package! reddigg)
-(package! docker-tramp)
 (package! blamer :recipe (:host github :repo "artawower/blamer.el"))
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 (package! remark-mode)
