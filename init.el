@@ -72,7 +72,7 @@
 
        :emacs
        (dired +icons ;; +ranger
-               )             ; making dired pretty [functional]
+              )             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
        (ibuffer +icons)         ; interactive buffer management
        undo              ; persistent, smarter undo for your inevitable mistakes
@@ -85,7 +85,6 @@
        vterm             ; the best terminal emulation in Emacs
 
        :checkers
-       ;; TODO torgeir
        ;;(syntax +childframe) ; tasing you for every semicolon you forget
        ;;(spell +flyspell) ; tasing you for misspelling mispelling
        ;;grammar           ; tasing grammar mistake every you make

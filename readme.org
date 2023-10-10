@@ -493,9 +493,9 @@ Truncate lines everywhere
  (defun t/set-whitespace-style ()
    (interactive)
    (setq whitespace-style '(face tabs trailing lines ;; space-mark spaces
-                             space-before-tab newline indentation
-                             empty space-after-tab tab-mark
-                             newline-mark missing-newline-at-eof))))
+                            space-before-tab newline indentation
+                            empty space-after-tab tab-mark
+                            newline-mark missing-newline-at-eof))))
 #+end_src
 
 *** Evil
@@ -1006,7 +1006,7 @@ Be explicit about when deleting workspaces
                                 (condition-case nil (+workspace-new name) (error nil))
                                 (+workspace-switch name)
                                 (when (t/prefix-arg-universal?)
-                                    (consult-recent-file))))
+                                  (consult-recent-file))))
  :desc "Rename workspace" "s-r" '+workspace/rename)
 #+end_src
 
@@ -1181,13 +1181,13 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
 (map!
  :leader
  (:prefix-map ("j" . "jump")
-  (:when t
-   :desc "Jump to window"      "w" #'ace-window
-   :desc "Jump to word"        "W" #'avy-goto-word-1
-   :desc "Jump to line"        "l" #'avy-goto-line
-   :desc "org: Jump to header" "h" #'avy-org-goto-heading-timer
-   :desc "Jump to char"        "c" #'avy-goto-char-2
-   :desc "Jump to char"        "C" #'avy-goto-char)))
+              (:when t
+                :desc "Jump to window"      "w" #'ace-window
+                :desc "Jump to word"        "W" #'avy-goto-word-1
+                :desc "Jump to line"        "l" #'avy-goto-line
+                :desc "org: Jump to header" "h" #'avy-org-goto-heading-timer
+                :desc "Jump to char"        "c" #'avy-goto-char-2
+                :desc "Jump to char"        "C" #'avy-goto-char)))
 #+end_src
 
 **** Avy tweaks
@@ -1352,6 +1352,7 @@ The [[https://docs.doomemacs.org/latest/modules/ui/zen/][doom default text scale
 
 Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly bound to ~s-?~. Give it an even more awkward binding.
 
+
 #+begin_src emacs-lisp
 (map! :map writeroom-mode-map
       "s-?" (cmd! (text-scale-increase 1))
@@ -1399,7 +1400,7 @@ Adjust margins equally across modes.
            "<right>" (cmd! (cond
                             ((and (boundp 'writeroom-mode) writeroom-mode) (writeroom-increase-width))
                             ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-expand)
-                            (t (t/margins-global-increase)))))))
+                             (t (t/margins-global-increase)))))))
 #+end_src
 
 *** Mode line
@@ -1540,8 +1541,6 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Browse at point"   "o b" #'t/browse-url-at-point
  :leader :desc "Browse chrome url" "o B" #'t/browse-chrome-url-in-eww
 
- :leader :desc "Eval and replace" "m e R" #'t/eval-and-replace
-
  :leader :desc "Search the web" "s w" #'consult-web-search
 
  :leader :desc "Toggle blamer"         "t b" #'blamer-mode
@@ -1575,14 +1574,15 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
                                                        (rotate-frame-clockwise)))
 
  :leader :desc "Projectile dired"    "p d" #'t/projectile-dired
- :leader :desc "Projectile magit"      "p g" #'t/projectile-magit-status
+ :leader :desc "Projectile magit"    "p g" #'t/projectile-magit-status
  :leader :desc "Projectile pulls"    "p P" #'t/projectile-visit-git-link-pulls
- :leader :desc "Scratch buffer" "b s" #'doom/open-scratch-buffer
+
+ :leader :desc "Scratch buffer"      "b s" #'doom/open-scratch-buffer
 
  :leader :desc "Previous occurrence" "h p" #'highlight-symbol-prev
  :leader :desc "Previous occurrence" "h N" #'highlight-symbol-prev
  :leader :desc "Next occurrence"     "h n" #'highlight-symbol-next)
- #+end_src
+#+end_src
 
 Hide the last frame on os x instead of nuking it
 
@@ -1645,8 +1645,8 @@ Make helpful buffers more navigable by removing doom popup's /dedication/. This 
 (advice-add
  #'push-button
  :after (defun t/keep-help-buffers-around (&optional arg)
-         (set-window-dedicated-p (selected-window) nil)
-         (set-window-parameter (selected-window) 'no-delete-other-windows nil)))
+          (set-window-dedicated-p (selected-window) nil)
+          (set-window-parameter (selected-window) 'no-delete-other-windows nil)))
 #+end_src
 
 *** Info mode
@@ -1666,10 +1666,10 @@ Motion keys for info mode.
 #+BEGIN_SRC emacs-lisp :results silent
 (after! evil
   (after! info
-         (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
-         (evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward)
-         (unbind-key (kbd "h") 'Info-mode-map)
-         (unbind-key (kbd "l") 'Info-mode-map)))
+    (evil-define-key 'normal Info-mode-map (kbd "H") 'Info-history-back)
+    (evil-define-key 'normal Info-mode-map (kbd "L") 'Info-history-forward)
+    (unbind-key (kbd "h") 'Info-mode-map)
+    (unbind-key (kbd "l") 'Info-mode-map)))
 #+END_SRC
 
 ** Org
@@ -2303,7 +2303,7 @@ I never really got into this.
     (bind-key "o" (cmd! (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
   (when (not (minibuffer-window-active-p (selected-window)))
-      (message "(n)ext page, (p)rev page, (i)mages, (s)pray mode, (o)livetti, (v)ariable pitch")))
+    (message "(n)ext page, (p)rev page, (i)mages, (s)pray mode, (o)livetti, (v)ariable pitch")))
 
 (map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
 
@@ -2494,13 +2494,13 @@ A custom function to fetch a clean view of the current news from nrk.no
   (read-only-mode)
   (funcall (t/micro-state (t/prefix-arg-universal?)
                           "n" (cmd! nil
-                                        (evil-search "^-" t t)
-                                        (evil-ex-nohighlight)
-                                        (recenter nil))
+                                    (evil-search "^-" t t)
+                                    (evil-ex-nohighlight)
+                                    (recenter nil))
                           "p" (cmd! nil
-                                        (evil-search "^-" nil t)
-                                        (evil-ex-nohighlight)
-                                        (recenter nil))
+                                    (evil-search "^-" nil t)
+                                    (evil-ex-nohighlight)
+                                    (recenter nil))
                           "s" (t/spray-micro-state))))
 #+END_SRC
 
@@ -2549,14 +2549,6 @@ Move around like in org, collapsing what is moved away from, expanding what is m
 npm install -g bash-language-server
 #+end_src
 
-#+begin_src emacs-lisp
-;; TODO torgeir seems its not needed, did this globally somewhere else instead
-(comment after! sh-mode
-  (map! :map drag-stuff-mode-map
-        "M-<left>" nil
-        "M-<right>" nil))
-#+end_src
-
 *** Clojure
 
 Adapt cleverparens keys that clash with my M-[hjkl] bindings in [[file:~/.skhdrc][~/.skhdrc]]
@@ -2595,6 +2587,13 @@ Holding alt for moving between sexps feel right
 
 *** Emacs lisp
 
+
+#+begin_src emacs-lisp
+(map! :map emacs-lisp-mode-map
+      :localleader :desc "Eval and replace" "e R" #'t/eval-and-replace)
+#+end_src
+
+
 #+begin_src emacs-lisp
 (after! evil
   (add-hook 'emacs-lisp-mode-hook #'evil-cleverparens-mode))
@@ -2604,12 +2603,13 @@ Show containing parens, when the cursor is inside theme.
 
 #+begin_src emacs-lisp
 ;; TODO is this working?
-(define-advice show-paren-function (:around (fn) fix)
-  "Highlight enclosing parens."
-  (cond ((looking-at-p "\\s(") (funcall fn))
-        (t (save-excursion
-             (ignore-errors (backward-up-list))
-             (funcall fn)))))
+(comment
+ (define-advice show-paren-function (:around (fn) fix)
+   "Highlight enclosing parens."
+   (cond ((looking-at-p "\\s(") (funcall fn))
+         (t (save-excursion
+              (ignore-errors (backward-up-list))
+              (funcall fn))))))
 #+end_src
 
 *** Terraform
@@ -2838,8 +2838,8 @@ This is paired with the bash function [[https://github.com/torgeir/dotfiles/blob
   (add-to-list
    'vterm-eval-cmds
    '("magit-diff" (lambda (path)
-                   (let ((default-directory path))
-                     (call-interactively' magit-diff)))))
+                    (let ((default-directory path))
+                      (call-interactively' magit-diff)))))
 
   (add-to-list
    'vterm-eval-cmds
@@ -2959,9 +2959,9 @@ Make ~s-ret~ (super+enter) create a vterm terminal window inside emacs.
             (let* ((selected-dir (dired-get-marked-files t current-prefix-arg))
                    (selected-path (concat default-directory (car selected-dir)))
                    (default-directory
-                     (if (file-directory-p selected-path)
-                         selected-path
-                       (file-name-directory selected-path))))
+                    (if (file-directory-p selected-path)
+                        selected-path
+                      (file-name-directory selected-path))))
               (+vterm/here t))
           (+vterm/here t))))
 #+end_src
@@ -3190,36 +3190,36 @@ Switch around the refresh mappings for more useful defaults.
   (map!
    :map elfeed-search-mode-map
    :localleader "t" (cmd!
-           (let* ((items '(("a" "adressa")
-                           ("d" "dev")
-                           ("f" "fun")
-                           ("i" "diy")
-                           ("n" "news")
-                           ("p" "photo")
-                           ("r" "read")
-                           ("s" "stories")
-                           ("t" "tech")
-                           ("u" "unread")
-                           ("y" "youtube"))))
-             (funcall (t/micro-state nil
-                                     "a" (cmd! (t/toggle-elfeed-tag "adressa"))
-                                     "d" (cmd! (t/toggle-elfeed-tag "dev"))
-                                     "f" (cmd! (t/toggle-elfeed-tag "fun"))
-                                     "i" (cmd! (t/toggle-elfeed-tag "diy"))
-                                     "n" (cmd! (t/toggle-elfeed-tag "news"))
-                                     "p" (cmd! (t/toggle-elfeed-tag "photo"))
-                                     "r" (cmd! (t/toggle-elfeed-tag "read"))
-                                     "s" (cmd! (t/toggle-elfeed-tag "stories"))
-                                     "t" (cmd! (t/toggle-elfeed-tag "tech"))
-                                     "u" (cmd! (t/toggle-elfeed-tag "unread"))
-                                     "y" (cmd! (t/toggle-elfeed-tag "youtube"))))
-             (message (s-join ", "
-                              (seq-map (lambda (item)
-                                         (let ((index (string-match (car item) (cadr item))))
-                                           (concat (substring (cadr item) 0 index)
-                                                   (concat "(" (car item) ")")
-                                                   (substring (cadr item) (1+ index)))))
-                                       items)))))))
+                     (let* ((items '(("a" "adressa")
+                                     ("d" "dev")
+                                     ("f" "fun")
+                                     ("i" "diy")
+                                     ("n" "news")
+                                     ("p" "photo")
+                                     ("r" "read")
+                                     ("s" "stories")
+                                     ("t" "tech")
+                                     ("u" "unread")
+                                     ("y" "youtube"))))
+                       (funcall (t/micro-state nil
+                                               "a" (cmd! (t/toggle-elfeed-tag "adressa"))
+                                               "d" (cmd! (t/toggle-elfeed-tag "dev"))
+                                               "f" (cmd! (t/toggle-elfeed-tag "fun"))
+                                               "i" (cmd! (t/toggle-elfeed-tag "diy"))
+                                               "n" (cmd! (t/toggle-elfeed-tag "news"))
+                                               "p" (cmd! (t/toggle-elfeed-tag "photo"))
+                                               "r" (cmd! (t/toggle-elfeed-tag "read"))
+                                               "s" (cmd! (t/toggle-elfeed-tag "stories"))
+                                               "t" (cmd! (t/toggle-elfeed-tag "tech"))
+                                               "u" (cmd! (t/toggle-elfeed-tag "unread"))
+                                               "y" (cmd! (t/toggle-elfeed-tag "youtube"))))
+                       (message (s-join ", "
+                                        (seq-map (lambda (item)
+                                                   (let ((index (string-match (car item) (cadr item))))
+                                                     (concat (substring (cadr item) 0 index)
+                                                             (concat "(" (car item) ")")
+                                                             (substring (cadr item) (1+ index)))))
+                                                 items)))))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3250,17 +3250,17 @@ Show the mouseover text for xkcd comics by moving to the image and fetching the 
 (after! elfeed
   (add-hook 'elfeed-show-mode-hook
             (defun t/elfeed-show-xkcd-mouseover-hook ()
-             (run-at-time "5 sec" nil
-                          (cmd!
-                           (when (s-equals-p "xkcd.com" (car (elfeed-entry-id elfeed-show-entry)))
-                             (save-excursion
-                               (forward-line)
-                               (read-only-mode -1)
-                               (when-let ((text (get-text-property (point) 'shr-alt)))
-                                 (goto-char (point-max))
-                                 (insert "\n\n")
-                                 (insert text))
-                               (read-only-mode 1))))))))
+              (run-at-time "5 sec" nil
+                           (cmd!
+                            (when (s-equals-p "xkcd.com" (car (elfeed-entry-id elfeed-show-entry)))
+                              (save-excursion
+                                (forward-line)
+                                (read-only-mode -1)
+                                (when-let ((text (get-text-property (point) 'shr-alt)))
+                                  (goto-char (point-max))
+                                  (insert "\n\n")
+                                  (insert text))
+                                (read-only-mode 1))))))))
 #+end_src
 
 Auto tagging of some types of subs
@@ -3412,11 +3412,11 @@ Evil like navigation.
 #+begin_src emacs-lisp
 (after! calendar
   (add-hook! 'calendar-mode-hook
-             (defun t/calendar-mode-hook ()
-               (map!
-                :map calendar-mode-map
-                :m "H"   #'calendar-scroll-left
-                :m "L"   #'calendar-scroll-right))))
+    (defun t/calendar-mode-hook ()
+      (map!
+       :map calendar-mode-map
+       :m "H"   #'calendar-scroll-left
+       :m "L"   #'calendar-scroll-right))))
 #+end_src
 
 *** Re-builder
@@ -3465,7 +3465,8 @@ Inspiration:
         +mu4e-workspace-name "*email*"
         +mu4e-alert-bell-cmd nil ;; no sounds
         mu4e-update-interval (* 5 60)
-        mu4e-context-policy 'ask
+        ;; TODO torgeir
+        mu4e-context-policy nil
         mu4e-attachment-dir "~/Desktop"
         mu4e-mu-binary (executable-find "mu")
         mu4e-get-mail-command (concat (executable-find "mbsync") " -a")
@@ -3483,8 +3484,8 @@ Inspiration:
                                  ("/junk/INBOX" . ?j)
                                  ("/junk/[Gmail]/Sent Mail" . ?J)))
 
-  (add-to-list 'mu4e-bookmarks '(:name "Gmail" :query "maildir:/gmail/INBOX" :key ?g))
   (add-to-list 'mu4e-bookmarks '(:name "Junk"  :query "maildir:/junk/INBOX" :key ?j))
+  (add-to-list 'mu4e-bookmarks '(:name "Gmail" :query "maildir:/gmail/INBOX" :key ?g))
 
   (setq mail-user-agent 'mu4e-user-agent)
 
@@ -3521,14 +3522,6 @@ Inspiration:
         message-send-mail-function #'message-send-mail-with-sendmail))
 #+end_src
 
-***** Evilify
-
-#+begin_src emacs-lisp
-(after! mu4e
-  ;; TODO until evil-collection is updated
-  (evil-define-key* '(emacs) mu4e-main-mode-map (kbd "SPC") 'doom/leader)
-  (evil-define-key* '(emacs) mu4e-headers-mode-map (kbd "SPC") 'doom/leader))
-#+end_src
 
 ***** Don't insert line breaks, softwrap
 
@@ -3764,7 +3757,6 @@ Useful elisp I committed, or decided to work on.
 #+end_src
 
 #+begin_src emacs-lisp
-;; TODO why is ~/.doom.d, tho
 (use-package! consult-async
   :commands consult-web-search
   :load-path "~/.doom.d/site-lisp/consult-async/")
