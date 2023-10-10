@@ -3566,13 +3566,27 @@ Why the timeout is needed? I cannot for the life of me make ~visual-line-mode~ w
 (after! mu4e
   (add-hook 'mu4e-view-mode-hook
             (defun t/mu4e-view-mode-hook ()
-              ;; TODO until evil-collection is updated
               (evil-normal-state)
               (t/start-spray-micro-state)
-              (run-at-time "2 sec" nil (cmd! (visual-line-mode)
-                                             (read-only-mode -1)
-                                             (delete-trailing-whitespace)
-                                             (read-only-mode 1))))))
+              (with-current-buffer "*mu4e-article*"
+                (run-at-time "0 sec" nil (cmd! (visual-line-mode)
+                                               (read-only-mode -1)
+                                               ;; remove leading whitespace
+                                               (save-excursion
+                                                 (goto-char (point-min))
+                                                 (while (not (eobp))
+                                                   (delete-horizontal-space)
+                                                   (forward-line)))
+                                               ;; join successive empty lines
+                                               (save-excursion
+                                                 (goto-char (point-min))
+                                                 (while (re-search-forward "\n\n\n" nil t)
+                                                   (backward-char 3)
+                                                   (delete-char 1)
+                                                   (beginning-of-line)))
+                                               (delete-trailing-whitespace)
+                                               (read-only-mode 1)
+                                               (olivetti-mode)))))))
 #+end_src
 
 [[https://github.com/doomemacs/doomemacs/issues/970][Related struggles]].
