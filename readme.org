@@ -233,6 +233,18 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 
 ** Editor
 
+*** Modeline
+
+#+begin_src emacs-lisp
+(after! doom-modeline
+  ;(after! mu4e (setq doom-modeline-mu4e nil))
+  (setq doom-modeline-mu4e nil
+        doom-modeline-github t
+        doom-modeline-repl t
+        doom-modeline-battery t)
+  (doom-modeline-github-timer))
+#+end_src
+
 *** Tramp
 
 #+begin_src emacs-lisp
