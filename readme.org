@@ -1365,6 +1365,8 @@ And screens are big, so a bit more space for text is nice.
               (let* ((w-px (frame-pixel-width (selected-frame)))
                      (h-px (frame-pixel-height (selected-frame)))
                      (w (frame-width (selected-frame))))
+                ;; noisy
+                ;; (message "w: %s, w-px: %s, h-px: %s" w w-px h-px)
                 (cond
                  ((< w-px h-px) (/ (float 2) 3))
                  ((> w 200) (/ (float 2) 5))
@@ -1374,14 +1376,14 @@ And screens are big, so a bit more space for text is nice.
   (after! olivetti
     (add-hook!
      'olivetti-mode-hook
-     (defun t/olivetti-mode-hook ()
+     (defun t/olivetti-mode-hook (&optional window)
        (interactive)
-       ;; (message "w: %s, w-px: %s, h-px: %s" w w-px h-px)
        (setq
         olivetti-body-width
         (floor (* (frame-width (selected-frame))
-                  (funcall frac))))))))
-;; TODO resize
+                  (funcall frac))))))
+    (add-to-list 'window-size-change-functions 'olivetti-set-window t)
+    (add-to-list 'window-size-change-functions 't/olivetti-mode-hook t)))
 #+end_src
 
 Adjust margins equally across modes.
