@@ -154,6 +154,14 @@ Ignore some of the cached emacs files in recent files
           (replace-regexp-in-string (rx "\n" eos) "" (buffer-string)))))))
 #+end_src
 
+*** SSH_AUTH_SOCK
+
+Needed to do this to make emacs discover 1p ~SSH_AGENT_SOCK~ set in [[file:~/.zprofile][.zprofile]]
+
+#+begin_src sh :noeval :tangle no
+doom env -a ^SSH_
+#+end_src
+
 ** gpg
 
 [2023-10-07 Sat] On mac this [[https://torgeir.dev/2023/05/downgrade-a-homebrew-package-to-a-version-no-longer-installable/][still needs gnupg@2.4.0]]
