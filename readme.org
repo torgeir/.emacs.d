@@ -242,20 +242,6 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 
 ** Editor
 
-*** Modeline
-
-#+begin_src emacs-lisp
-(after! doom-modeline
-  ;(after! mu4e (setq doom-modeline-mu4e nil))
-  (setq doom-modeline-mu4e nil
-        doom-modeline-github t
-        doom-modeline-repl t
-        doom-modeline-battery t)
-  (doom-modeline-github-timer))
-#+end_src
-
-*** Tramp
-
 #+begin_src emacs-lisp
 (after! tramp
 
@@ -1403,7 +1389,7 @@ Adjust margins equally across modes.
                              (t (t/margins-global-increase)))))))
 #+end_src
 
-*** Mode line
+*** Modeline
 
 Show workspace in modeline, adjust bar width, moar iconz, truncate path.
 
@@ -1412,10 +1398,14 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
   (setq doom-modeline-persp-name t
         doom-modeline-persp-icon nil
         doom-modeline-bar-width 4
-        doom-modeline-mu4e t
+        doom-modeline-mu4e nil
+        doom-modeline-github t
+        doom-modeline-repl t
+        doom-modeline-battery t
         doom-modeline-major-mode-icon t
         doom-modeline-major-mode-color-icon t
-        doom-modeline-buffer-file-name-style 'truncate-upto-root))
+        doom-modeline-buffer-file-name-style 'truncate-upto-root)
+  (doom-modeline-github-timer))
 #+end_src
 
 *** Dictionary
@@ -3569,7 +3559,7 @@ Why the timeout is needed? I cannot for the life of me make ~visual-line-mode~ w
               (evil-normal-state)
               (t/start-spray-micro-state)
               (with-current-buffer "*mu4e-article*"
-                (run-at-time "0 sec" nil (cmd! (visual-line-mode)
+                (run-at-time "1 sec" nil (cmd! (visual-line-mode)
                                                (read-only-mode -1)
                                                ;; remove leading whitespace
                                                (save-excursion
