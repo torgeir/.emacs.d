@@ -2298,7 +2298,14 @@ I never really got into this.
                    (when (eq major-mode 'elfeed-show-mode)
                      (let ((shr-inhibit-images t)) (elfeed-show-refresh)))
                    (funcall (t/spray-micro-state))) map)
-    (bind-key "i" (cmd! (call-interactively 't/eww-toggle-images)) map)
+    (bind-key "i" (cmd!
+                   (cond
+                    ((eq major-mode 'elfeed-show-mode)
+                     (progn
+                       (setq shr-blocked-images (if (equal shr-blocked-images ".*") nil ".*"))
+                       (message (if (equal shr-blocked-images ".*") "off" "on"))
+                       (elfeed-show-refresh)))
+                    (t (call-interactively 't/eww-toggle-images)))) map)
     (bind-key "v" (cmd! (call-interactively 'variable-pitch-mode)) map)
     (bind-key "o" (cmd! (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
