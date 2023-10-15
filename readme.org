@@ -901,6 +901,12 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 (call-interactively 'describe-font)
 #+end_src
 
+or
+
+#+begin_src sh :noeval
+fc-list
+#+end_src
+
 *** Errors
 
 Navigate flycheck errors
