@@ -872,7 +872,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 (defun t/font-spec (f &optional s weight)
   (font-spec :family f
              :size (or s 17)
-             :weight (or weight 'normal)
+             :weight (or weight 'regular)
              :slant 'normal
              :width 'normal))
 
@@ -1407,7 +1407,7 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-file-name-style 'truncate-upto-root)
   (doom-modeline-github-timer))
-#+end_src
+        #+end_src
 
 *** Dictionary
 
@@ -1438,7 +1438,11 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 - [[file:~/.emacs.d/modules/editor/evil/config.el:::n "g=" #'evil-numbers/inc-at-pt][evil commands]]
 
 #+begin_src emacs-lisp
-(map! :map markdown-mode-map
+(map! :map evil-markdown-mode-map
+      :i "M-b" nil
+      :map markdown-mode-map
+      :i "M-b" 'backward-word
+      :i "M-f" 'forward-word
       "M-p" 'backward-paragraph
       "M-n" 'forward-paragraph)
 #+end_src
@@ -1544,8 +1548,16 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Cycle fonts"           "t f" #'t/cycle-fonts
  :leader :desc "Toggle focus mode"     "t F" #'focus-mode
  :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
-
- :leader :desc "Toggle variable pitch" "t v" #'variable-pitch-mode
+ :leader :desc "Toggle variable pitch" "t v" (defun t/variable-pitch-mode (&optional turn-on)
+                                               "https://www.reddit.com/r/DoomEmacs/comments/l9jy0h/how_does_variablepitchmode_work_and_why_does_it/."
+                                               (interactive)
+                                               (if (or turn-on (derived-mode-p 'solaire-mode))
+                                                   (progn
+                                                     (solaire-mode -1)
+                                                     (variable-pitch-mode 1))
+                                                 (progn
+                                                   (variable-pitch-mode nil)
+                                                   (call-interactively 'solaire-mode))))
  :leader :desc "Toggle visual linemode""t V" #'visual-line-mode
  :leader :desc "Toggle truncate"       "t u" #'toggle-truncate-lines
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
@@ -2291,7 +2303,7 @@ I never really got into this.
                    (funcall (t/spray-micro-state))) map)
     (bind-key "r" (cmd! (call-interactively 'eww-readable)) map)
     (bind-key "i" (cmd! (call-interactively 't/eww-toggle-images)) map)
-    (bind-key "v" (cmd! (call-interactively 'variable-pitch-mode)) map)
+    (bind-key "v" (cmd! (call-interactively 't/variable-pitch-mode)) map)
     (bind-key "o" (cmd! (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
   (when (not (minibuffer-window-active-p (selected-window)))
@@ -2323,6 +2335,7 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
 (set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t)
 (setq blacklisted-eww-url-parts '("localhost"
                                   "github.com"
+                                  "openai.com"
                                   "twitter.com"
                                   "googleusercontent.com")
       browse-url-browser-function
@@ -2364,7 +2377,7 @@ Enter readable mode automatically, normally available from pressing ~R~ in eww m
 #+begin_src emacs-lisp
 (add-hook 'eww-after-render-hook (cmd! (call-interactively 'eww-readable)))
 (add-hook 'eww-after-render-hook 'olivetti-mode)
-(add-hook 'eww-after-render-hook 'variable-pitch-mode)
+(add-hook 'eww-after-render-hook 't/variable-pitch-mode)
 (add-hook 'eww-after-render-hook 't/start-spray-micro-state)
 #+end_src
 
@@ -3218,7 +3231,7 @@ Switch around the refresh mappings for more useful defaults.
 (after! elfeed
   (add-hook 'elfeed-search-mode-hook
             (defun t/hook-elfeed-search-mode-hook ()
-              (variable-pitch-mode 1)
+              (t/variable-pitch-mode 1)
               (show-paren-mode -1)
               (visual-line-mode 0)
               (toggle-truncate-lines 1))))
@@ -3230,7 +3243,7 @@ Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bi
 (after! elfeed
   (add-hook 'elfeed-show-mode-hook
             (defun t/hook-elfeed-show-mode-hook ()
-              (variable-pitch-mode 1)
+              (t/variable-pitch-mode 1)
               (olivetti-mode 1)
               (run-at-time "0 sec" nil (cmd! (visual-line-mode)))
               (t/start-spray-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
@@ -3450,6 +3463,7 @@ Inspiration:
 
   (add-hook! 'mu4e-main-mode-hook (defun t/mu4e-main-mode-hook ()
                                     (interactive)
+                                    (setq doom-modeline-mu4e nil)
                                     (toggle-truncate-lines 1)
                                     (visual-line-mode 0)))
 
