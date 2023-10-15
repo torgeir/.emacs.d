@@ -2,10 +2,10 @@
 
 (setenv "INSIDE_EMACS" "1")
 
-(setq +literate-config-file (concat (getenv "HOME")
-                                    "/"
-                                    (or (getenv "DOOMDIR") ".doom.d")
-                                    "/readme.org"))
+(let ((dir (or (getenv "DOOMDIR")
+               (concat (getenv "HOME")
+                       "/.doom.d"))))
+  (setq +literate-config-file (concat dir "/readme.org")))
 
 ;; This file controls what Doom modules are enabled and what order they load
 ;; in. Remember to run 'doom sync' after modifying it!

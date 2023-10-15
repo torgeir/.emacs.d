@@ -62,7 +62,7 @@ I usually navigate this with =c-c c-n= or =c-c c-p=, or =mgg=.
 The madness that is dynamic is too much for anyone, really.
 
 #+begin_src emacs-lisp
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;;; $DOOMLOCALDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
 
 ** Packages
