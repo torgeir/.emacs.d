@@ -875,7 +875,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
              :slant 'normal
              :width 'normal))
 
-(setq t-fonts '((:face "JetBrains Mono")))
+(setq t-fonts `((:face ,(if is-mac "JetBrains Mono" "JetBrainsMono Nerd Font"))))
 
 (defun t/cycle-fonts (&optional font-spec)
   (interactive)
@@ -886,7 +886,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
          (w (plist-get spec :weight)))
     (message "Font: %s, size: %s, weight: %s" f s w)
     (setq doom-font (t/font-spec f s w)
-          doom-variable-pitch-font (t/font-spec (if is-mac "Iosevka SS05" "iosevka") 18 w)
+          doom-variable-pitch-font (t/font-spec (if is-mac "Iosevka SS05" "Iosevka Nerd Font Mono") 18 w)
           doom-big-font (t/font-spec f 28)
           doom-font-increment 1)
     (doom/reload-font)
