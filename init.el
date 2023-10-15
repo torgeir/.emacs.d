@@ -2,10 +2,49 @@
 
 (setenv "INSIDE_EMACS" "1")
 
-(let ((dir (or (getenv "DOOMDIR")
-               (concat (getenv "HOME")
-                       "/.doom.d"))))
-  (setq +literate-config-file (concat dir "/readme.org")))
+;; Custom literate config setup to prevent doom from writing inside .doom.d
+;; so the setup can work on nix as well.
+(setq t-literate-target (concat (getenv "DOOMLOCALDIR") "/cache/config.el"))
+
+(defun t/literate-add-installed-org-to-load-path-h ()
+  "A copy of modules/config/literate/cli.el, without the hooks it defines.
+Use the straight-installed, not bundled Org."
+  (let ((straight-org-build-dir
+         (doom-path straight-base-dir "straight" straight-build-dir "org"))
+        (straight-org-repo-dir
+         (doom-path straight-base-dir "straight" "repos" "org")))
+    (cond
+     ((file-exists-p straight-org-build-dir)
+      (add-to-list 'load-path straight-org-build-dir))
+     ((file-exists-p straight-org-repo-dir)
+      (add-to-list 'load-path straight-org-repo-dir)))))
+
+;; force loading the literate, this makes it available even though the
+;; :config literate module is not enabled in init.el
+(load-file (concat doom-emacs-dir "modules/config/literate/autoload.el"))
+
+(defun t/literate-tangle ()
+  "A custom compile literate config defun to be able to specify the target
+  folder, i.e. doom cache folder.
+
+This helps using the config in nix, where the store's folder is not writable."
+  (interactive)
+    (+literate-tangle (concat doom-user-dir "readme.org")
+		      t-literate-target))
+
+(add-hook 'doom-before-sync-hook #'t/literate-tangle)
+(add-hook 'doom-before-sync-hook #'t/literate-add-installed-org-to-load-path-h)
+
+(defun t/load-compiled-config ()
+  "Load compiled literate config from doom cache folder."
+  (interactive)
+  (if (file-exists-p t-literate-target)
+      (load-file t-literate-target)
+    (message "torgeir: Config compiled from literate not found: %s, did 'doom sync' run?" t-literate-target)))
+
+
+
+
 
 ;; This file controls what Doom modules are enabled and what order they load
 ;; in. Remember to run 'doom sync' after modifying it!
@@ -214,5 +253,5 @@
        twitter           ; twitter client https://twitter.com/vnought
 
        :config
-       literate
+       ;;literate ;; torgeir: rolled my own to handle DOOMLOCALDIR
        (default +bindings +smartparens))

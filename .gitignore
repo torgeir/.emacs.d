@@ -1,6 +1,5 @@
 old/*
 .DS_Store
-config.el
 /.lsp/
 /.clj-kondo/
 /packages.el

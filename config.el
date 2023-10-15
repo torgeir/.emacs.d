@@ -1,0 +1,1 @@
+(t/load-compiled-config)
