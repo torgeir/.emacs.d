@@ -198,7 +198,8 @@ My old collection of more or less useful defuns.
   (defconst is-mac IS-MAC)
   (defconst is-linux IS-LINUX)
   (defun t/user-file (path) (concat (expand-file-name "~/") path))
-  (defun t/user-emacs-file (path) (concat (expand-file-name "~/.doom.d/") path))
+  (defun t/user-emacs-file (path) (concat (or (getenv "DOOMDIR")
+                                              (expand-file-name "~/.doom.d/")) path))
   (defun t/user-dropbox-folder (path) (expand-file-name (concat "~/Dropbox" (if is-mac " (Personal)" "") "/" path)))
   (load! "./t-defuns.el"))
 #+end_src
@@ -2751,7 +2752,7 @@ npm install -g ts-node
 You need a =tsconfig.json= for the following to work.
 
 #+begin_src sh :tangle no :results silent
-cat <<EOF > ~/.doom.d/test-files/tsconfig.json
+cat <<EOF > $DOOMDIR/test-files/tsconfig.json
 {
   "compilerOptions": {
     "module": "commonjs",
@@ -3750,7 +3751,7 @@ Useful elisp I committed, or decided to work on.
 #+begin_src emacs-lisp
 (use-package! consult-async
   :commands consult-web-search
-  :load-path "~/.doom.d/site-lisp/consult-async/")
+  :load-path "site-lisp/consult-async/")
 #+end_src
 
 TODO idle highlight in visible buffers
@@ -3758,7 +3759,7 @@ TODO idle highlight in visible buffers
 #+begin_src emacs-lisp
 ;; don't use this for large files, e.g. like 15MB, it really brings emacs to a stall
 (use-package! nxml-eldoc
-  :load-path "~/.doom.d/site-lisp/nxml-eldoc/"
+  :load-path "site-lisp/nxml-eldoc/"
   :commands turn-on-nxml-eldoc)
 #+end_src
 
@@ -3766,7 +3767,7 @@ TODO idle highlight in visible buffers
 (use-package! json-path-eldoc
   :commands turn-on-json-path-eldoc
   :init (add-hook! 'json-mode-hook 'turn-on-json-path-eldoc)
-  :load-path "~/.doom.d/site-lisp/json-path-eldoc/")
+  :load-path "site-lisp/json-path-eldoc/")
 #+end_src
 
 ** Bugfixes
