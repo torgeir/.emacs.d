@@ -167,6 +167,15 @@ doom env -a ^SSH_
 
 [2023-10-07 Sat] On mac this [[https://torgeir.dev/2023/05/downgrade-a-homebrew-package-to-a-version-no-longer-installable/][still needs gnupg@2.4.0]]
 
+Prerequisits, trust key ultimately
+
+#+begin_src sh :noeval :tangle no
+gpg --list-keys
+gpg --edit-key 922E681804CA8D82F1FAFCB177836712DAEA8B95
+# gpg> trust
+# gpg> 5
+#+end_src
+
 #+begin_src emacs-lisp
 (defun t/gpg ()
   (interactive)
