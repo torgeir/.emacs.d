@@ -903,7 +903,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
 
 or
 
-#+begin_src sh :noeval
+#+begin_src sh :noeval :tangle no
 fc-list
 #+end_src
 
