@@ -29,8 +29,8 @@ Use the straight-installed, not bundled Org."
 
 This helps using the config in nix, where the store's folder is not writable."
   (interactive)
-    (+literate-tangle (concat doom-user-dir "readme.org")
-		      t-literate-target))
+  (+literate-tangle (concat doom-user-dir "readme.org")
+		    t-literate-target))
 
 (add-hook 'doom-before-sync-hook #'t/literate-tangle)
 (add-hook 'doom-before-sync-hook #'t/literate-add-installed-org-to-load-path-h)
