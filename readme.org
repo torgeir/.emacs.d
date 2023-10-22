@@ -1493,6 +1493,10 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
                                                    (hnreader-news))
                      :desc "rss"         "r" #'=rss
                      :desc "mail"        "m" (cmd! (t/gpg) (=mu4e))
+                     :desc "music"       "M" (cmd! (condition-case nil (+workspace-new "*emms*") (error nil))
+                                                   (+workspace-switch "*emms*")
+                                                   (emms-cache-set-from-mpd-all)
+                                                   (emms-smart-browse))
                      :desc "mastodon"    "d" (cmd! (condition-case nil (+workspace-new "*mastodon*") (error nil))
                                                    (+workspace-switch "*mastodon*")
                                                    (mastodon))
@@ -1502,7 +1506,17 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Calendar"          "o C" #'calendar
  :leader :desc "Browse"            "o e" #'eww
  :leader :desc "Www"               "o w" #'eww
-
+ :leader :desc "Music"             "o m" (t/micro-state
+                                          nil
+                                          "+" 't/music-volume-up
+                                          "-" 't/music-volume-down
+                                          "H" 't/music-prev
+                                          "h" 't/music-seek-backward
+                                          "l" 't/music-seek-forward
+                                          "L" 't/music-next
+                                          "p" 't/music-play-pause
+                                          "b" 't/music-browse
+                                          "s" 't/music-stop)
  :leader :desc "Show home"         "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
  :leader :desc "Show saga"         "o s" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/saga.org.gpg")))
  :leader :desc "Open Intellij"     "o i" #'t/open-in-intellij
@@ -2763,7 +2777,7 @@ cat <<EOF > $DOOMDIR/test-files/tsconfig.json
 EOF
 #+end_src
 
-Then make doom understand typescript, e.g. when you select something and go =SPC o r=. 
+Then make doom understand typescript, e.g. when you select something and go =SPC o r=.
 
 #+begin_src emacs-lisp
 (defun t/ts-node-repl ()
@@ -3878,3 +3892,33 @@ June 18, 2021 at 12:12PM
 https://ift.tt/36jQLT2
 
 deno-fmt is function that formats the current buffer on save with deno fmt. The package also exports a minor mode that applies (deno-fmt) on save. Feel free to replace typescript-mode / js2-mode in the following with your TypeScript/JavaScript mode of choice.
+
+*** emms mpd
+
+#+begin_src emacs-lisp
+(after! emms
+  (setq emms-player-list (list 'emms-player-mpd))
+  (add-to-list 'emms-info-functions (list 'emms-info-mpd))
+(emms-cache-set-from-mpd-all))
+  #+end_src
+
+Then type ~C-ret~ to add something to the playlist.
+
+#+begin_src emacs-lisp :tangle no
+(after! emms
+  (setq emms-volume-change-amount 10
+        emms-volume-change-function 'emms-volume-mpd-change)
+  (defun t/music-volume-up     () (interactive) (emms-volume-raise))
+  (defun t/music-volume-down   () (interactive) (emms-volume-lower))
+  (defun t/music-browse        () (interactive) (emms-smart-browse))
+  (defun t/music-stop          () (interactive) (emms-stop))
+  (defun t/music-seek-backward () (interactive) (emms-seek-backward))
+  (defun t/music-seek-forward  () (interactive) (emms-seek-forward))
+  (defun t/music-play-pause    () (interactive) (if emms-player-playing-p
+                                                    (emms-pause)
+                                                  (emms-start)))
+  (defun t/music-prev          () (interactive) (emms-previous))
+  (defun t/music-next          () (interactive) (emms-next))
+  (defun t/music-browse        () (interactive) (emms-smart-browse)))
+#+end_src
+
