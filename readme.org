@@ -1412,6 +1412,7 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
 (after! doom-modeline
   (setq doom-modeline-persp-name t
         doom-modeline-persp-icon nil
+        doom-modeline-height 35
         doom-modeline-bar-width 4
         doom-modeline-mu4e nil
         doom-modeline-github t
