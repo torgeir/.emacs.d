@@ -727,8 +727,8 @@ and indent accordingly."
   "Clone a github REPO to `~/Code/<repo-name>'."
   (interactive "sClone repository: ")
   (require 'magit)
-  (when-let* ((repo-name (or (and (s-starts-with? "https://github.com" repo)
-                                  (replace-regexp-in-string "https://github\\.com/\\([^/]+\\)/\\([^/]+\\)/?.*?$" "\\1/\\2" repo))
+  (when-let* ((repo-name (or (and (s-starts-with? "https://github." repo)
+                                  (replace-regexp-in-string "https://github\\.\\(?:com\\|dev\\)/\\([^/]+\\)/\\([^/]+\\)/?.*?$" "\\1/\\2" repo))
                              (and (s-ends-with? ".git" repo)
                                   (replace-regexp-in-string "git@github.com:\\(.+\\).git" "\\1" repo))))
               (dir (expand-file-name (format "~/Code/%s/" repo-name))))
