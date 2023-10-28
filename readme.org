@@ -2381,9 +2381,9 @@ Make ~SPC s o~ open in eww first, then use ~&~ to go to the default browser if n
 #+begin_src emacs-lisp
 (after! evil
   ;; the original way
-  ;;(setf (alist-get 'size (display-buffer-assq-regexp "*eww*" display-buffer-alist nil)) 0.8)
+  ;;(setf (alist-get 'size (display-buffer-assq-regexp "*eww*" display-buffer-alist nil)) 0.6)
   ;; the doom way
-  (set-popup-rule! "^\\*eww*" :side 'right :size 0.5))
+  (set-popup-rule! "^\\*eww*" :side 'right :size 0.7 :vslot 10))
 #+end_src
 
 **** Readability
