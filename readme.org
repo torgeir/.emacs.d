@@ -1410,10 +1410,11 @@ Adjust margins equally across modes.
 Show workspace in modeline, adjust bar width, moar iconz, truncate path.
 
 #+begin_src emacs-lisp
-(after! doom-modeline
+(defun t/doom-modeline-mode-hook ()
+  (interactive)
   (setq doom-modeline-persp-name t
         doom-modeline-persp-icon nil
-        doom-modeline-height 35
+        doom-modeline-height 40
         doom-modeline-bar-width 4
         doom-modeline-mu4e nil
         doom-modeline-github t
@@ -1422,8 +1423,10 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-major-mode-icon t
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-file-name-style 'truncate-upto-root)
-  (doom-modeline-github-timer))
-        #+end_src
+  (after! doom-modeline (doom-modeline-github-timer)))
+(add-hook! 'after-setting-font-hook :append 't/doom-modeline-mode-hook)
+(t/doom-modeline-mode-hook)
+#+end_src
 
 *** Dictionary
 
