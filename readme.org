@@ -179,13 +179,16 @@ gpg --edit-key 922E681804CA8D82F1FAFCB177836712DAEA8B95
 #+begin_src emacs-lisp
 (defun t/gpg ()
   (interactive)
-  (shell-command
+  (start-process-shell-command
+   "gpg:agent"
+   nil
    (format
     "gpg-connect-agent updatestartuptty /bye > /dev/null && \
        $(gpgconf --list-dirs libexecdir)/gpg-preset-passphrase -c -P '%s' \
-       $(gpg --fingerprint --with-keygrip torgeir@keybase.io | awk '/Keygrip/ {print $3}' | tail -n 1) && \
-       gpg -q --batch -d ~/.authinfo.gpg > /dev/null"
-    (t/1p "keybase.io" "--format json | jq -j '.fields[] | select(.id == \"password\") | .value'"))))
+       $(gpg --fingerprint --with-keygrip torgeir@keybase.io | awk '/Keygrip/ {print $3}' | tail -n 1)"
+    (t/1p "keybase.io" "--format json | jq -j '.fields[] | select(.id == \"password\") | .value'")))
+  (let ((p (start-process-shell-command "gpg:test" nil "gpg -q --batch -d ~/.authinfo.gpg 2>&1 1>/dev/null")))
+    (set-process-sentinel p (lambda (p event) (message "%s %s" p event)))))
 #+end_src
 
 ** Org file location setup
