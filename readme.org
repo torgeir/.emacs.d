@@ -1372,6 +1372,7 @@ And screens are big, so a bit more space for text is nice.
                  (t (/ (float 3) 5)))))))
   (after! writeroom (setq writeroom-width (funcall frac)))
   (after! olivetti
+    (setq olivetti-minimum-body-width 80)
     (add-hook!
      'olivetti-mode-hook
      (defun t/olivetti-mode-hook (&optional window)
