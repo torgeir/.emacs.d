@@ -2826,6 +2826,14 @@ Or when you ~eval~ something when the repl is open, e.g. =g r a p= (eval around 
    :g "M-<return>" #'eglot-code-actions))
 #+end_src
 
+*** Rust
+
+Larger compilation window
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*rustic-compilation" :size 0.5 :side 'bottom)
+#+end_src
+
 ** Server mode
 
 Emacs server setup.
