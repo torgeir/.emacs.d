@@ -80,19 +80,19 @@ understands."
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-      (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
-       (root (projectile-project-root))
-       (tags (shell-quote-argument (concat root "TAGS")))
-       (process (start-process-shell-command "build ctags asynchronously"
-                                             "*ctags async*"
-                                             (concat
-                                              "ctags -e -R"          ; recurse
-                                              " --options=" ctags ; use global config
-                                              " -f " tags " "     ; put it in project/TAGS
-                                              " ."                   ; in the current directory
-                                              ))))
-    (set-process-sentinel process (lambda (process event)
-                                    (t/load-tags tags)))))
+   (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
+    (root (projectile-project-root))
+    (tags (shell-quote-argument (concat root "TAGS")))
+    (process (start-process-shell-command "build ctags asynchronously"
+                                          "*ctags async*"
+                                          (concat
+                                           "ctags -e -R"          ; recurse
+                                           " --options=" ctags ; use global config
+                                           " -f " tags " "     ; put it in project/TAGS
+                                           " ."                   ; in the current directory
+                                           ))))
+   (set-process-sentinel process (lambda (process event)
+                                   (t/load-tags tags)))))
 
 (defun t/load-tags (tags)
   "Loads project tags into tag table."
@@ -1260,6 +1260,32 @@ non-letter-and-number with -, and remove double --."
      "[^a-z0-9]" "-"
      (s-replace-all '((" a " . "-"))
                     (downcase (t/org-heading)))))))
+
+
+(defun t/remove-consecutive-newlines ()
+  (interactive)
+  (read-only-mode -1)
+  (save-excursion
+    (beginning-of-buffer)
+    (forward-line)
+    (while (not (eobp))
+      (beginning-of-line)
+      (save-excursion
+        (delete-horizontal-space)
+        (delete-trailing-whitespace (bol) (eol)))
+      (if (or
+           ;; remove empty lines with leading * that
+           ;; appear in a lot of mu4e emails
+           (and (equal (+ 1 (bol)) (eol))
+                (string-equal "*" (thing-at-point 'symbol)))
+           ;; consecutive empty line
+           (and (save-excursion (previous-line)
+                                (and (bolp) (eolp)))
+                (bolp)
+                (eolp)))
+          (kill-line 1)
+        (forward-line))))
+  (read-only-mode 1))
 
 (provide 't-defuns)
 ;;; t-defuns.el ends here

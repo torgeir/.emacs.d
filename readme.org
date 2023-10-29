@@ -465,18 +465,15 @@ Soft wrap everywhere
 #+begin_src emacs-lisp
 (add-hook! 'doom-after-init-hook
   (defun t/after-init-hook ()
+    (setq truncate-lines nil)
     (global-visual-line-mode 1)))
-#+end_src
-
-Truncate lines everywhere
+    #+end_src
 
 #+begin_src emacs-lisp
 (add-hook! '(prog-mode-hook text-mode-hook conf-mode-hook)
   (defun t/prog-mode-hook ()
     (interactive)
-    (toggle-truncate-lines 0)
-    (toggle-truncate-lines 1)
-    (visual-line-mode 0)))
+    ))
 #+end_src
 
 *** Whitespace
@@ -795,8 +792,7 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
      'dired-sidebar-mode-hook
      (defun t/dired-sidebar-hook ()
        (interactive)
-       (visual-line-mode 0)
-       (toggle-truncate-lines 1)
+       (visual-line-mode -1)
        (setq dired-sidebar-width (floor (* (frame-width (selected-frame))
                                            (/ (float 1) 4))))))))
 #+end_src
@@ -1353,7 +1349,6 @@ The [[https://docs.doomemacs.org/latest/modules/ui/zen/][doom default text scale
 #+end_src
 
 Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly bound to ~s-?~. Give it an even more awkward binding.
-
 
 #+begin_src emacs-lisp
 (map! :map writeroom-mode-map
@@ -2309,7 +2304,7 @@ I never really got into this.
                       (error
                        (cond
                         ((eq major-mode 'elfeed-show-mode) (elfeed-show-next))
-                        ((eq major-mode 'mu4e-view-mode) (mu4e-view-headers-next-unread)))))) map)
+                        ((eq major-mode 'mu4e-view-mode) (mu4e-view-headers-next)))))) map)
     (bind-key "p" (lambda ()
                     (interactive)
                     (condition-case nil
@@ -2317,7 +2312,7 @@ I never really got into this.
                       (error
                        (cond
                         ((eq major-mode 'elfeed-show-mode) (elfeed-show-prev))
-                        ((eq major-mode 'mu4e-view-mode) (mu4e-view-headers-prev-unread)))))) map)
+                        ((eq major-mode 'mu4e-view-mode) (mu4e-view-headers-prev)))))) map)
     (bind-key "s" (cmd!
                    (when (eq major-mode 'elfeed-show-mode)
                      (let ((shr-inhibit-images t)) (elfeed-show-refresh)))
@@ -2414,8 +2409,6 @@ Eww functions that directly enter the eww readability mode after loading a given
     (erase-buffer)
     (insert content)
     (beginning-of-buffer)
-    (toggle-truncate-lines 0)
-    (visual-line-mode 1)
     (when fn (funcall fn))))
 
 (defun t/eww-readable (url &optional fn)
@@ -3254,8 +3247,8 @@ Switch around the refresh mappings for more useful defaults.
             (defun t/hook-elfeed-search-mode-hook ()
               (t/variable-pitch-mode 1)
               (show-paren-mode -1)
-              (visual-line-mode 0)
-              (toggle-truncate-lines 1))))
+              (visual-line-mode -1)
+              )))
 #+end_src
 
 Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bind ~n~, ~p~ for nav, that skips to the next item on reaching the end.
@@ -3266,7 +3259,6 @@ Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bi
             (defun t/hook-elfeed-show-mode-hook ()
               (t/variable-pitch-mode 1)
               (olivetti-mode 1)
-              (run-at-time "0 sec" nil (cmd! (visual-line-mode)))
               (t/start-spray-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
 #+end_src
 
@@ -3482,11 +3474,11 @@ Inspiration:
   (set-popup-rule! "^*mu4e-headers" :ignore t)
   (set-popup-rule! "^*mu4e-article" :side 'right :size 0.8)
 
-  (add-hook! 'mu4e-main-mode-hook (defun t/mu4e-main-mode-hook ()
-                                    (interactive)
-                                    (setq doom-modeline-mu4e nil)
-                                    (toggle-truncate-lines 1)
-                                    (visual-line-mode 0)))
+  (add-hook! 'mu4e-main-mode-hook
+    (defun t/mu4e-main-mode-hook ()
+      (interactive)
+      (setq doom-modeline-mu4e nil)
+      (visual-line-mode -1)))
 
   (setq mu4e-maildir "~/.maildir"
         +mu4e-workspace-name "*email*"
@@ -3499,10 +3491,10 @@ Inspiration:
         mu4e-get-mail-command (concat (executable-find "mbsync") " -a")
         mu4e-headers-fields '((:account-stripe . 1)
                               (:human-date . 12)
-                              (:flags . 6)
                               (:from . 25)
-                              (:to . 25)
-                              (:subject))
+                              (:flags . 6)
+                              (:subject)
+                              (:to . 25))
 
         ;; rename files when moving - needed for mbsync:
         mu4e-change-filenames-when-moving t
@@ -3561,10 +3553,10 @@ Inspiration:
 
 #+begin_src emacs-lisp
 (after! mu4e
-  (add-hook 'mu4e-headers-mode-hook
-            (defun t/mu4e-headers-mode-hook ()
-              (visual-line-mode -1)
-              (show-paren-mode -1))))
+  (add-hook! 'mu4e-headers-mode-hook :append
+    (defun t/mu4e-headers-mode-hook ()
+      (visual-line-mode -1)
+      (show-paren-mode -1))))
 #+end_src
 
 ***** Cc Bcc
@@ -3580,36 +3572,19 @@ Inspiration:
 
 ***** Wrap long lines in emails
 
-Why the timeout is needed? I cannot for the life of me make ~visual-line-mode~ work in mu4e without this. Also get rid of trailing whitespace after, usually cleans stuff up.
+Get rid of consecutive newlines and clean the buffer up. [[https://github.com/doomemacs/doomemacs/issues/970][Related struggles]].
 
 #+begin_src emacs-lisp
 (after! mu4e
-  (add-hook 'mu4e-view-mode-hook
-            (defun t/mu4e-view-mode-hook ()
-              (evil-normal-state)
-              (t/start-spray-micro-state)
-              (with-current-buffer "*mu4e-article*"
-                (run-at-time "1 sec" nil (cmd! (visual-line-mode)
-                                               (read-only-mode -1)
-                                               ;; remove leading whitespace
-                                               (save-excursion
-                                                 (goto-char (point-min))
-                                                 (while (not (eobp))
-                                                   (delete-horizontal-space)
-                                                   (forward-line)))
-                                               ;; join successive empty lines
-                                               (save-excursion
-                                                 (goto-char (point-min))
-                                                 (while (re-search-forward "\n\n\n" nil t)
-                                                   (backward-char 3)
-                                                   (delete-char 1)
-                                                   (beginning-of-line)))
-                                               (delete-trailing-whitespace)
-                                               (read-only-mode 1)
-                                               (olivetti-mode)))))))
+  (add-hook! 'mu4e-view-rendered-hook :append
+    (defun t/mu4e-rendered-mode-hook ()
+      (evil-normal-state)
+      (t/start-spray-micro-state)
+      (with-current-buffer "*mu4e-article*"
+        (t/remove-consecutive-newlines)
+        (olivetti-mode)))))
 #+end_src
 
-[[https://github.com/doomemacs/doomemacs/issues/970][Related struggles]].
 
 ***** Remove background color in emails
 
