@@ -2352,8 +2352,6 @@ An elisp web browser.
 This makes ~RET~ on a url open ~eww~. You can still open an external browser with ~SPC u RET~. Some urls, like github, open in the external browser.
 
 #+begin_src emacs-lisp
-;; this is the start of *elfeed-entry-<title>* names of youtube buffers without an elfeed entry
-(set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t :vslot 10)
 (setq blacklisted-eww-url-parts '("localhost"
                                   "github.com"
                                   "openai.com"
@@ -3319,6 +3317,13 @@ Auto tagging of some types of subs
   (set-face-attribute 'elfeed-hl-face nil :bold t))
 #+end_src
 
+#+begin_src emacs-lisp
+(after! elfeed
+  ;; this is the start of *elfeed-entry-<title>* names of youtube buffers without an elfeed entry
+  (set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t :vslot 10)
+  (set-popup-rule! "^\\*elfeed-entry*" :side 'right :size 0.6 :select t :vslot 5))
+#+end_src
+
 Extracted youtube feeds like this
 
 #+begin_quote
@@ -3505,8 +3510,8 @@ Inspiration:
         mu4e-mu-binary (executable-find "mu")
         mu4e-get-mail-command (concat (executable-find "mbsync") " -a")
         mu4e-headers-fields '((:account-stripe . 1)
-                              (:human-date . 12)
-                              (:from . 25)
+                              (:human-date . 8)
+                              (:from . 22)
                               (:flags . 6)
                               (:subject)
                               (:to . 25))
