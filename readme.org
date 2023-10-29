@@ -3767,13 +3767,13 @@ Useful elisp I committed, or decided to work on.
 (after! org
   (use-package! ox-gfm
     :commands org-export-dispatch
-    :load-path "site-lisp/ox-gfm/"))
+    :load-path (lambda () (t/user-emacs-file "site-lisp/ox-gfm/"))))
 #+end_src
 
 #+begin_src emacs-lisp
 (use-package! consult-async
   :commands consult-web-search
-  :load-path "site-lisp/consult-async/")
+  :load-path (lambda () (t/user-emacs-file "site-lisp/consult-async/")))
 #+end_src
 
 TODO idle highlight in visible buffers
@@ -3781,15 +3781,15 @@ TODO idle highlight in visible buffers
 #+begin_src emacs-lisp
 ;; don't use this for large files, e.g. like 15MB, it really brings emacs to a stall
 (use-package! nxml-eldoc
-  :load-path "site-lisp/nxml-eldoc/"
-  :commands turn-on-nxml-eldoc)
+  :commands turn-on-nxml-eldoc
+  :load-path (lambda () (t/user-emacs-file "site-lisp/nxml-eldoc/")))
 #+end_src
 
 #+begin_src emacs-lisp
 (use-package! json-path-eldoc
   :commands turn-on-json-path-eldoc
   :init (add-hook! 'json-mode-hook 'turn-on-json-path-eldoc)
-  :load-path "site-lisp/json-path-eldoc/")
+  :load-path (lambda () (t/user-emacs-file "site-lisp/json-path-eldoc/")))
 #+end_src
 
 ** Bugfixes
