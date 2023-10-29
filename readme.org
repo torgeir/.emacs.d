@@ -1430,8 +1430,13 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
 
 *** Dictionary
 
+Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~.
+
 #+begin_src emacs-lisp
-(set-popup-rule! "^\\*osx-dictionary*" :side 'bottom :size 0.5)
+(set-popup-rule! "^\\*osx-dictionary" :side 'right :size 0.5 :vslot 2)
+(setq osx-dictionary-generate-buffer-name-function (lambda (&rest args)
+                                                     (pop-to-buffer osx-dictionary-buffer-name)
+                                                     osx-dictionary-buffer-name))
 #+end_src
 
 *** REPLs
