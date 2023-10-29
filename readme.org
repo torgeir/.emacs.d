@@ -3271,7 +3271,9 @@ Show the mouseover text for xkcd comics by moving to the image and fetching the 
             (defun t/elfeed-show-xkcd-mouseover-hook ()
               (run-at-time "5 sec" nil
                            (cmd!
-                            (when (s-equals-p "xkcd.com" (car (elfeed-entry-id elfeed-show-entry)))
+                            (when (and
+                                   elfeed-show-entry
+                                   (s-equals-p "xkcd.com" (car (elfeed-entry-id elfeed-show-entry))))
                               (save-excursion
                                 (forward-line)
                                 (read-only-mode -1)
