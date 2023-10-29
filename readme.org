@@ -251,72 +251,6 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 
 ** Editor
 
-#+begin_src emacs-lisp
-(after! tramp
-
-  (setq tramp-default-method "ssh"
-        tramp-verbose 1
-        tramp-default-remote-shell "/bin/bash"
-        tramp-connection-local-default-shell-variables
-        '((shell-file-name . "/bin/bash")
-          (shell-command-switch . "-c")))
-
-  (connection-local-set-profile-variables 'tramp-connection-local-default-shell-profile
-                                          '((shell-file-name . "/bin/bash")
-                                            (shell-command-switch . "-c"))))
-#+end_src
-
-Recentf cleanup logs a lot of error messages, like [[https://discourse.doomemacs.org/t/recentf-cleanup-logs-a-lot-of-error-messages/3273/4][described here]]
-
-#+begin_src emacs-lisp
-(after! tramp
-  ;; https://discourse.doomemacs.org/t/recentf-cleanup-logs-a-lot-of-error-messages/3273/4
-  (advice-add 'doom--recentf-file-truename-fn :override
-              (defun my-recent-truename (file &rest _args)
-                (if (or (not (file-remote-p file)) (equal "sudo" (file-remote-p file 'method)))
-                    (abbreviate-file-name (file-truename (tramp-file-local-name file)))
-                  file))))
-#+end_src
-
-
-Editorconfig is extremely slow, e.g. when using ~doom/sudo-find-file~ to open, say, ~/etc/systemd/system/~. This fixes that.
-
-#+begin_src emacs-lisp
-(after! tramp
-  (setq tramp-ignored-file-name-regexp ".editorconfig"))
-#+end_src
-
-**** Github Codespaces
-
-Add for Github codespaces over ssh, for tramp editing, e.g. with ~C-x C-f /ghcs:codespace-name:/path/to/file~
-
-Thanks to https://blog.sumtypeofway.com/posts/emacs-config.html for this one
-
-#+begin_src emacs-lisp
-(after! tramp
-  (let ((ghcs (assoc "ghcs" tramp-methods))
-        (ghcs-methods '((tramp-login-program "gh")
-                        (tramp-login-args (("codespace") ("ssh") ("-c") ("%h")))
-                        (tramp-remote-shell "/bin/sh")
-                        (tramp-remote-shell-login ("-l"))
-                        (tramp-remote-shell-args ("-c")))))
-    ;; just for debugging the methods
-    (if ghcs (setcdr ghcs ghcs-methods)
-      (push (cons "ghcs" ghcs-methods) tramp-methods))))
-#+end_src
-
-The above needs the following feature in the codespace
-
-#+begin_src json :tangle no :results no
-{
-    "features": {
-        "ghcr.io/devcontainers/features/sshd:1": {
-            "version": "latest"
-        }
-    }
-}
-#+end_src
-
 *** Flash on long jumps
 
 Use =nav-flash= to flash the cursor after long jumps.
@@ -1019,6 +953,73 @@ Make tab accept the current suggestion.
         ;; and c-e and right arrow like in zsh-autosuggest
         "C-e" 'company-complete-selection
         "<right>" 'company-complete-selection))
+#+end_src
+
+*** Tramp
+#+begin_src emacs-lisp
+(after! tramp
+
+  (setq tramp-default-method "ssh"
+        tramp-verbose 1
+        tramp-default-remote-shell "/bin/bash"
+        tramp-connection-local-default-shell-variables
+        '((shell-file-name . "/bin/bash")
+          (shell-command-switch . "-c")))
+
+  (connection-local-set-profile-variables 'tramp-connection-local-default-shell-profile
+                                          '((shell-file-name . "/bin/bash")
+                                            (shell-command-switch . "-c"))))
+#+end_src
+
+Recentf cleanup logs a lot of error messages, like [[https://discourse.doomemacs.org/t/recentf-cleanup-logs-a-lot-of-error-messages/3273/4][described here]]
+
+#+begin_src emacs-lisp
+(after! tramp
+  ;; https://discourse.doomemacs.org/t/recentf-cleanup-logs-a-lot-of-error-messages/3273/4
+  (advice-add 'doom--recentf-file-truename-fn :override
+              (defun my-recent-truename (file &rest _args)
+                (if (or (not (file-remote-p file)) (equal "sudo" (file-remote-p file 'method)))
+                    (abbreviate-file-name (file-truename (tramp-file-local-name file)))
+                  file))))
+#+end_src
+
+
+Editorconfig is extremely slow, e.g. when using ~doom/sudo-find-file~ to open, say, ~/etc/systemd/system/~. This fixes that.
+
+#+begin_src emacs-lisp
+(after! tramp
+  (setq tramp-ignored-file-name-regexp ".editorconfig"))
+#+end_src
+
+**** Github Codespaces
+
+Add for Github codespaces over ssh, for tramp editing, e.g. with ~C-x C-f /ghcs:codespace-name:/path/to/file~
+
+Thanks to https://blog.sumtypeofway.com/posts/emacs-config.html for this one
+
+#+begin_src emacs-lisp
+(after! tramp
+  (let ((ghcs (assoc "ghcs" tramp-methods))
+        (ghcs-methods '((tramp-login-program "gh")
+                        (tramp-login-args (("codespace") ("ssh") ("-c") ("%h")))
+                        (tramp-remote-shell "/bin/sh")
+                        (tramp-remote-shell-login ("-l"))
+                        (tramp-remote-shell-args ("-c")))))
+    ;; just for debugging the methods
+    (if ghcs (setcdr ghcs ghcs-methods)
+      (push (cons "ghcs" ghcs-methods) tramp-methods))))
+#+end_src
+
+The above needs the following feature in the codespace
+
+#+begin_src json :tangle no :results no
+{
+    "features": {
+        "ghcr.io/devcontainers/features/sshd:1": {
+            "version": "latest"
+        }
+    }
+}
 #+end_src
 
 *** Themes
