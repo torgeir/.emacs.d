@@ -2227,16 +2227,22 @@ Don't popupize the org code block editor with doom's popup framework, so it open
   (interactive (list (and (mark t) (region-beginning))
                      (and (mark t) (region-end))))
   (let ((active-region (when (region-active-p)
-                         (buffer-substring beg end))))
+                         (buffer-substring beg end)))
+        (major-mode-name (symbol-name major-mode)))
     (with-current-buffer (pop-to-buffer "*ChatGPT*")
       (erase-buffer)
       (org-mode)
       (olivetti-mode)
-      (insert "#+begin_ai\n[ME]: \n#+end_ai")
+      (insert
+       "#+begin_ai"
+       "\n"
+       "[SYS]: a helpful, programming assistant inside of emacs. major mode is " major-mode-name
+       "\n\n"
+       "[ME]: \n#+end_ai")
       (move-end-of-line 0)
       (evil-insert 0)
       (save-excursion
-        (when prompt (insert (concat "#" prompt " " (symbol-name major-mode))))
+        (when prompt (insert "#" prompt))
         (when active-region (insert "\n\n" active-region))))))
 
 (map! :leader
