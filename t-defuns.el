@@ -19,11 +19,12 @@
 
 (defun t/async-shell-command (name cmd &optional fn)
   "Execute `CMD' async, call `FN' with the result string."
-  (let* ((fn fn)
-         (buf-name (format "*%s*" name))
-         (_ (when (get-buffer buf-name)
-              (with-current-buffer buf-name (erase-buffer))))
-         (p (start-process-shell-command name buf-name cmd)))
+  (lexical-let*
+      ((fn fn)
+       (buf-name (format "*%s*" name))
+       (_ (when (get-buffer-create buf-name)
+            (with-current-buffer buf-name (erase-buffer))))
+       (p (start-process-shell-command name buf-name cmd)))
     (prog1 p
       (when fn
         (set-process-sentinel p (lambda (process event)
@@ -80,19 +81,19 @@ understands."
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-   (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
-    (root (projectile-project-root))
-    (tags (shell-quote-argument (concat root "TAGS")))
-    (process (start-process-shell-command "build ctags asynchronously"
-                                          "*ctags async*"
-                                          (concat
-                                           "ctags -e -R"          ; recurse
-                                           " --options=" ctags ; use global config
-                                           " -f " tags " "     ; put it in project/TAGS
-                                           " ."                   ; in the current directory
-                                           ))))
-   (set-process-sentinel process (lambda (process event)
-                                   (t/load-tags tags)))))
+      (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
+       (root (projectile-project-root))
+       (tags (shell-quote-argument (concat root "TAGS")))
+       (process (start-process-shell-command "build ctags asynchronously"
+                                             "*ctags async*"
+                                             (concat
+                                              "ctags -e -R"          ; recurse
+                                              " --options=" ctags ; use global config
+                                              " -f " tags " "     ; put it in project/TAGS
+                                              " ."                   ; in the current directory
+                                              ))))
+    (set-process-sentinel process (lambda (process event)
+                                    (t/load-tags tags)))))
 
 (defun t/load-tags (tags)
   "Loads project tags into tag table."
