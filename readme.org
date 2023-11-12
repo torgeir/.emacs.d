@@ -2203,7 +2203,9 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 
 #+begin_src emacs-lisp
 (use-package! org-ai
-  :hook (org-mode . org-ai-mode))
+  :hook (org-mode . org-ai-mode)
+  :init
+  (add-to-list 'org-ai-chat-models "gpt-4-1106-preview"))
 #+end_src
 
 **** Popups on the side
@@ -2263,7 +2265,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 **** STARTED [[https://github.com/xenodium/chatgpt-shell][chatgpt-shell]]
 
 #+begin_src emacs-lisp
-(setq chatgpt-shell-model-version "gpt-4"
+(setq chatgpt-shell-model-version "gpt-4-1106-preview"
       ;; chatgpt-shell-model-version "gpt-3.5-turbo"
       chatgpt-shell-openai-key
       (lambda ()
