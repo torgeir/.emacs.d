@@ -1423,8 +1423,11 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-major-mode-icon t
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-file-name-style 'truncate-upto-root)
+  ;; TODO
+  ;;(doom-modeline-refresh-bars)
   (after! doom-modeline (doom-modeline-github-timer)))
-(add-hook! 'after-setting-font-hook :append 't/doom-modeline-mode-hook)
+;; TODO messes up parts of the modeline
+;; (add-hook! 'after-setting-font-hook :append 't/doom-modeline-mode-hook)
 (t/doom-modeline-mode-hook)
 #+end_src
 
