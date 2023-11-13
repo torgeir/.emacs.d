@@ -3066,7 +3066,8 @@ Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindin
     :desc "Visit pulls"           "p" #'t/visit-git-link-pulls
     :desc "Push"                  "P" #'magit-push
     (:prefix ("c" . "create")
-     :desc "Ammend"               "a"   #'magit-commit-amend))))
+     :desc "Ammend"               "a" #'magit-commit-amend
+     :desc "Instant fixup"        "F" #'magit-commit-instant-fixup))))
 #+end_src
 
 I have been trying to get used to magit in evil mode for a while now. But the magit-process-buffer keybinding is crazy on a norwegian keyboard, so this brings back the binding from the emacs mode magit.
