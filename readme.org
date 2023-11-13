@@ -70,6 +70,7 @@ The madness that is dynamic is too much for anyone, really.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
+(package! catppuccin-theme)
 (package! elfeed-tube)
 (package! evil-cleverparens)
 (package! transpose-frame)
@@ -981,6 +982,7 @@ There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][do
   (cl-case doom-theme
     (doom-vibrant (load-theme 'doom-flatwhite))
     (doom-flatwhite (load-theme 't-doom-one))
+    (t-doom-one (load-theme 'catppuccin))
     (t (load-theme 'doom-vibrant)))
   (message "Theme: %s" doom-theme))
 (map! :leader "t t" #'t/cycle-theme)

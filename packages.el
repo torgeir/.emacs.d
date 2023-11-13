@@ -1,3 +1,4 @@
+(package! catppuccin-theme)
 (package! elfeed-tube)
 (package! evil-cleverparens)
 (package! transpose-frame)
