@@ -2522,9 +2522,11 @@ Move around like in org, collapsing what is moved away from, expanding what is m
 (after! markdown-mode
   (add-hook! 'markdown-mode-hook (defun t/markdown-toggle-pretty ()
                                    (interactive)
-                                   (markdown-toggle-url-hiding)
-                                   (markdown-toggle-markup-hiding)
-                                   (markdown-toggle-inline-images))))
+                                   ;; TODO
+                                   ;;(markdown-toggle-url-hiding)
+                                   ;;(markdown-toggle-markup-hiding)
+                                   ;;(markdown-toggle-inline-images)
+                                   )))
 #+end_src
 
 *** Bash/Sh
