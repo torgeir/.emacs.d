@@ -2748,6 +2748,13 @@ case $(uname) in
 esac
 #+end_src
 
+Need C-c C-s in org mode.
+
+#+begin_src emacs-lisp
+(after! pyenv-mode
+  (map! :map 'pyenv-mode-map "C-c C-s" nil))
+#+end_src
+
 *** remark-mode
 
 #+begin_src emacs-lisp
