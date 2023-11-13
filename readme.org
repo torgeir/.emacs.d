@@ -2691,7 +2691,7 @@ case $(uname) in
 esac
 #+end_src
 
-Need C-c C-s in org mode.
+Need ~C-c C-s~ in org mode.
 
 #+begin_src emacs-lisp
 (after! pyenv-mode
