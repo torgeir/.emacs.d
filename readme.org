@@ -3084,7 +3084,9 @@ Useful magit keybindings:
 
   (defun t/commit-mode-hook ()
     (add-to-list 'whitespace-style 'trailing)
-    (whitespace-mode 1))
+    (whitespace-mode 1)
+    (visual-line-mode -1)
+    (toggle-truncate-lines 1))
   (add-hook! 'git-commit-mode-hook 't/commit-mode-hook)
 
   (set-popup-rule! "^magit:" :ignore t)
