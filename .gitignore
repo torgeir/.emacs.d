@@ -9,3 +9,4 @@ old/*
 /.idea/
 /.log/
 /.nrepl-port
+/workspace
