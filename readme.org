@@ -1401,8 +1401,8 @@ Adjust margins equally across modes.
                            (t (t/margins-global-decrease))))
            "<right>" (cmd! (cond
                             ((and (boundp 'writeroom-mode) writeroom-mode) (writeroom-increase-width))
-                            ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-expand)
-                             (t (t/margins-global-increase)))))))
+                            ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-expand))
+                            (t (t/margins-global-increase))))))
 #+end_src
 
 *** Modeline
