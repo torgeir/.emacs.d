@@ -2584,14 +2584,12 @@ Holding alt for moving between sexps feel right
 Show containing parens, when the cursor is inside theme.
 
 #+begin_src emacs-lisp
-;; TODO is this working?
-(comment
- (define-advice show-paren-function (:around (fn) fix)
-   "Highlight enclosing parens."
-   (cond ((looking-at-p "\\s(") (funcall fn))
-         (t (save-excursion
-              (ignore-errors (backward-up-list))
-              (funcall fn))))))
+(define-advice show-paren-function (:around (fn) fix)
+  "Highlight enclosing parens."
+  (cond ((looking-at-p "\\s(") (funcall fn))
+        (t (save-excursion
+             (ignore-errors (backward-up-list))
+             (funcall fn)))))
 #+end_src
 
 *** Terraform
