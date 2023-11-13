@@ -1366,10 +1366,10 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-major-mode-icon t
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-file-name-style 'truncate-upto-root)
-  (doom-modeline-refresh-bars)
-  (set-face-attribute 'doom-modeline-persp-name nil :foreground "DeepPink2" :weight 'bold)
   (after! doom-modeline
+    (set-face-attribute 'doom-modeline-persp-name nil :foreground "DeepPink2" :weight 'bold)
     (display-battery-mode)
+    (display-time-mode)
     (doom-modeline-github-timer)))
 (t/doom-modeline-mode-hook)
 (advice-add 'doom-adjust-font-size :after 't/doom-modeline-mode-hook)
