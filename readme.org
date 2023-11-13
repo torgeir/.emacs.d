@@ -325,7 +325,7 @@ Reset [[file:~/.emacs.d/modules/config/default/config.el::(map! "<M-up>" #'drag-
 Remove highlight indent guides by default
 
 #+begin_src emacs-lisp
-(remove-hook! '(prog-mode-hook text-mode-hook conf-mode-hook) 'highlight-indent-guides-mode)
+(remove-hook! '(text-mode-hook conf-mode-hook) 'highlight-indent-guides-mode)
 #+end_src
 
 Opt-in to emojis instead :rocket:
@@ -356,9 +356,10 @@ Programming modes
 *** Whitespace
 
 #+begin_src emacs-lisp
-;;(add-to-list 'whitespace-style 'trailing)
+(after! whitespace
+  (add-to-list 'whitespace-style 'trailing))
 (add-hook!
- 'prog-mode-hook
+ '(prog-mode-hook org-mode-hook)
  (defun t/set-whitespace-style ()
    (interactive)
    (setq whitespace-style '(face tabs trailing lines ;; space-mark spaces
