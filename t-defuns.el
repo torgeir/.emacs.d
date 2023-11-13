@@ -873,13 +873,15 @@ and indent accordingly."
 
 (defun t/margins-global-decrease ()
   "Decrease global window margins."
-  (let ((w (- left-margin-width 2)))
+  (interactive)
+  (let ((w (- left-margin-width 1)))
     (when (> w 0)
       (t/margins-global w))))
 
 (defun t/margins-global-increase ()
   "Increase global frame margins."
-  (let ((w (+ left-margin-width 2)))
+  (interactive)
+  (let ((w (+ left-margin-width 1)))
     (when (> w 0)
       (t/margins-global w))))
 
