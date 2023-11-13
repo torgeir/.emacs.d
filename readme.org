@@ -336,14 +336,6 @@ Opt-in to emojis instead :rocket:
     (global-emojify-mode -1)))
 #+end_src
 
-Stop ~pyenv-mode~ from stealing ~C-c C-s~
-
-#+begin_src emacs-lisp
-(add-hook! 'doom-after-modules-config-hook
-  (defun t/after-modules-config-hook ()
-    (pyenv-mode -1)))
-#+end_src
-
 Soft wrap everywhere
 
 #+begin_src emacs-lisp
@@ -351,13 +343,14 @@ Soft wrap everywhere
   (defun t/after-init-hook ()
     (setq truncate-lines nil)
     (global-visual-line-mode 1)))
-    #+end_src
+#+end_src
+
+Programming modes
 
 #+begin_src emacs-lisp
 (add-hook! '(prog-mode-hook text-mode-hook conf-mode-hook)
   (defun t/prog-mode-hook ()
-    (interactive)
-    ))
+    (interactive)))
 #+end_src
 
 *** Whitespace
