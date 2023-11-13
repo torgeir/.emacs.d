@@ -1177,7 +1177,10 @@ And some extra for org mode
 #+begin_src emacs-lisp
 (after! smartparens
   (sp-with-modes 'org-mode
+    (sp-local-pair "`" "'" :when '(sp-in-docstring-p))
     (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
+    (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
     (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
     (sp-local-pair "<" ">" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
     (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
