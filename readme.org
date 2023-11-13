@@ -282,65 +282,12 @@ And a slightly fancier indicator than ~(minibuffer-depth-indicate-mode)~
   (recursion-indicator-mode))
 #+end_src
 
-*** Initialization
-
-#+begin_src emacs-lisp
-(defun +daemon-startup ()
-  ;; mu4e
-  (when (require 'mu4e nil t)
-    ;; Automatically start `mu4e' in background.
-    (when (load! "mu-lock.el" (expand-file-name "email/mu4e/autoload" doom-modules-dir) t)
-      (setq +mu4e-lock-greedy t
-            +mu4e-lock-relaxed t)
-      (when (+mu4e-lock-available t)
-        ;; Each 5m, if `mu4e' if closed, start it in background.
-        (run-at-time nil ;; Launch now
-                     (* 5 60)
-                     (lambda ()
-                       (when (and (not (mu4e-running-p)) (+mu4e-lock-available))
-                         (mu4e--start)
-                         (message "Started `mu4e' in background.")))))))
-
-  ;; rss
-  (when (require 'elfeed nil t)
-    (run-at-time nil (* 2 60 60) #'elfeed-update)))
-
-(when (daemonp)
-  (add-hook 'emacs-startup-hook #'+daemon-startup)
-  (add-hook 'server-after-make-frame-hook #'doom/reload-theme))
-#+end_src
-
-In daemon mode history is not saved and recent files is not updated, so help
-
-#+begin_src emacs-lisp
-(when (daemonp)
-  (add-hook! '(delete-frame-functions delete-terminal-functions)
-    (defun t/help-save-history-in-daemon ()
-      (let ((inhibit-message t))
-        (recentf-save-list)
-        (savehist-save)))))
-#+end_src
-
 *** Auth sources
 
 Move ~~/.authinfo.gpg~ to the front. It is originally behind the macos keychain that doom puts in there.
 
 #+begin_src emacs-lisp
 (after! auth-source (setq auth-sources (nreverse auth-sources)))
-#+end_src
-
-When starting Emacs in daemon mode, ask for a valid passphrase in the gpg-agent.
-
-#+begin_src emacs-lisp
-(when (daemonp)
-  (let ((try-again 3)
-        unlocked)
-    (while (not (or unlocked
-                    (zerop try-again)))
-      (setq unlocked (zerop (shell-command "gpg -q --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg > /dev/null" nil nil))
-            try-again (1- try-again))
-      (unless unlocked (message "GPG: failed to unlock, please try again (%d)" try-again)))
-    (unless unlocked (kill-emacs 1))))
 #+end_src
 
 Defaults
