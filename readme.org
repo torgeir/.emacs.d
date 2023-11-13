@@ -1891,8 +1891,8 @@ Save from agenda
 #+begin_src emacs-lisp
 (map! :after org-agenda
       :map evil-org-agenda-mode-map
-      :m "H" #'org-agenda-earlier
-      :m "L" #'org-agenda-later
+      :g "H" #'org-agenda-earlier
+      :g "L" #'org-agenda-later
       "s-s" #'org-save-all-org-buffers)
 #+end_src
 
