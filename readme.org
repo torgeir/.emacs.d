@@ -2151,7 +2151,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 #+begin_src emacs-lisp
 (use-package! org-ai
   :hook (org-mode . org-ai-mode)
-  :init
+  :config
   (add-to-list 'org-ai-chat-models "gpt-4-1106-preview"))
 #+end_src
 
