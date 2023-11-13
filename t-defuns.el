@@ -475,6 +475,10 @@ Drops headers and 2x empty lines before content."
             ((equal major-mode 'hackernews-mode) (hackernews-browse-url-action (button-at (point))))
             (t (call-interactively 'browse-url-at-point))))))
 
+(defun t/open-elfeed-in-eww ()
+  (interactive)
+  (eww (elfeed-entry-link elfeed-show-entry)))
+
 (defun t/last-weekday-of-month-p ()
   (let* ((day-of-week (calendar-day-of-week date))
          (month (calendar-extract-month date))
