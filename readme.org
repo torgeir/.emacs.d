@@ -2220,6 +2220,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 #+end_src
 
 ** Reading
+
 *** Mastodon
 
 #+begin_src emacs-lisp
@@ -2525,6 +2526,7 @@ Move around like in org, collapsing what is moved away from, expanding what is m
                                    (markdown-toggle-markup-hiding)
                                    (markdown-toggle-inline-images))))
 #+end_src
+
 *** Bash/Sh
 
 #+begin_src sh :tangle no :results silent
@@ -2569,12 +2571,10 @@ Holding alt for moving between sexps feel right
 
 *** Emacs lisp
 
-
 #+begin_src emacs-lisp
 (map! :map emacs-lisp-mode-map
       :localleader :desc "Eval and replace" "e R" #'t/eval-and-replace)
 #+end_src
-
 
 #+begin_src emacs-lisp
 (after! evil
@@ -2622,6 +2622,7 @@ Highlight terraform plans in ~terraform-mode~ based on their file name.
    "^\\(\\<resource\\>\\|\\<output\\>\\|\\<variable\\>\\|\\<module\\>\\|\\<variable\\>\\)#\\(\"[^\"]+\"\\)~ \\(\"[^\"]+\"\\)?~ {"
    ))
 #+end_src
+
 **** Eglot ls
 
 #+begin_src sh :tangle no :results silent
@@ -3000,6 +3001,7 @@ which-key messes with evil movement in vterm, e.g. when attemting to jump somewh
 #+end_src
 
 ** VC
+
 *** Ediff
 
 Sometimes you need both changes.
@@ -3531,7 +3533,6 @@ Inspiration:
         message-send-mail-function #'message-send-mail-with-sendmail))
 #+end_src
 
-
 ***** Don't insert line breaks, softwrap
 
 #+begin_src emacs-lisp
@@ -3574,7 +3575,6 @@ Get rid of consecutive newlines and clean the buffer up. [[https://github.com/do
         (t/remove-consecutive-newlines)
         (olivetti-mode)))))
 #+end_src
-
 
 ***** Remove background color in emails
 
@@ -3877,4 +3877,3 @@ June 18, 2021 at 12:12PM
 https://ift.tt/36jQLT2
 
 deno-fmt is function that formats the current buffer on save with deno fmt. The package also exports a minor mode that applies (deno-fmt) on save. Feel free to replace typescript-mode / js2-mode in the following with your TypeScript/JavaScript mode of choice.
-
