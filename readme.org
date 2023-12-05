@@ -801,9 +801,15 @@ Navigate flycheck errors
  (:prefix-map ("e" . "errors")
               (:when t
                 :desc "Toggle flycheck"        "t" #'flycheck-mode
-                :desc "List errors"            "l" #'flycheck-list-errors
-                :desc "Jump to next error"     "n" #'flycheck-next-error
-                :desc "Jump to previous error" "N" #'flycheck-previous-error)))
+                :desc "List errors"            "l" (cmd! (cond
+                                                          ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-list-errors))
+                                                          (t (flymake-show-buffer-diagnostics))))
+                :desc "Jump to next error"     "n" (cmd! (cond
+                                                          ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-next-error))
+                                                          (t (flymake-goto-next-error))))
+                :desc "Jump to previous error" "N" (cmd! (cond
+                                                          ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-previous-error))
+                                                          (t (flymake-goto-prev-error)))))))
 #+end_src
 
 **** Eglot flycheck issue
@@ -3479,8 +3485,10 @@ Inspiration:
 
   (set-popup-rule! "^*mu4e-main" :ignore t)
   (set-popup-rule! "^*mu4e-draft" :ignore nil :side 'right :size 0.8)
-  (set-popup-rule! "^*mu4e-headers" :ignore t)
-  (set-popup-rule! "^*mu4e-article" :side 'right :size 0.8)
+  ;; TODO try horizontal layout
+;; (set-popup-rule! "^*mu4e-headers" :ignore t)
+  (set-popup-rule! "^*mu4e-headers" :side 'right :size 0.8 :vslot 5)
+  (set-popup-rule! "^*mu4e-article" :side 'right :size 0.8 :vslot 10)
 
   (add-hook! 'mu4e-main-mode-hook
     (defun t/mu4e-main-mode-hook ()
