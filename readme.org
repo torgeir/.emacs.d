@@ -1166,7 +1166,7 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
     (set-face-attribute 'avy-background-face nil :foreground "#3a485f")
 
     (let* ((f 'font-lock-keyword-face)
-           (b nil) (b "#77e0c6") (b "#ffc777") (b "#3a485f") (c "DeepPink2"))
+           (b nil) (b "#77e0c6") (b "#ffc777") (b "#002840") (c "DeepPink1"))
       (set-face-attribute 'avy-lead-face   nil :background b :weight 'bold :foreground c)
       (set-face-attribute 'avy-lead-face-0 nil :background b :weight 'bold :foreground c)
       (set-face-attribute 'avy-lead-face-1 nil :background b :weight 'bold :foreground c)
