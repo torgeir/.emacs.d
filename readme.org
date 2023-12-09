@@ -161,7 +161,7 @@ Ignore some of the cached emacs files in recent files
 Needed to do this to make emacs discover 1p ~SSH_AGENT_SOCK~ set in [[file:~/.zprofile][.zprofile]]
 
 #+begin_src sh :noeval :tangle no
-doom env -a ^SSH_
+doom env -a ^SSH_ -a ^GPG
 #+end_src
 
 ** gpg
