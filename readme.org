@@ -1783,12 +1783,12 @@ Use os support if it exists.
 
 #+begin_src emacs-lisp
 (add-hook! 'org-mode-hook (defun t/variable-pitch-mode-some-buffers ()
-                           (interactive)
-                           (let ((bn (buffer-name)))
-                             (when (or (s-ends-with? "posts.org" bn)
-                                       (s-equals? "*ChatGPT*" bn))
-                               (olivetti-mode 1)
-                               (t/variable-pitch-mode 1)))))
+                            (interactive)
+                            (let ((bn (buffer-name)))
+                              (when (or (s-ends-with? "posts.org" bn)
+                                        (s-equals? "*ChatGPT*" bn))
+                                (olivetti-mode 1)
+                                (t/variable-pitch-mode 1)))))
 #+end_src
 
 *** Async source code blocks
