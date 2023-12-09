@@ -3489,10 +3489,8 @@ Inspiration:
 
   (set-popup-rule! "^*mu4e-main" :ignore t)
   (set-popup-rule! "^*mu4e-draft" :ignore nil :side 'right :size 0.8)
-  ;; TODO try horizontal layout
-;; (set-popup-rule! "^*mu4e-headers" :ignore t)
-  (set-popup-rule! "^*mu4e-headers" :side 'right :size 0.8 :vslot 5)
-  (set-popup-rule! "^*mu4e-article" :side 'right :size 0.8 :vslot 10)
+  (set-popup-rule! "^*mu4e-headers" :ignore t :side 'right :size 0.8 :vslot 5 :select t)
+  (set-popup-rule! "^*mu4e-article" :ignore t :side 'right :size 0.8 :vslot 10 :select t)
 
   (add-hook! 'mu4e-main-mode-hook
     (defun t/mu4e-main-mode-hook ()
@@ -3503,6 +3501,7 @@ Inspiration:
   (setq mu4e-maildir "~/.maildir"
         +mu4e-workspace-name "*email*"
         +mu4e-alert-bell-cmd nil ;; no sounds
+        mu4e-split-view 'vertical
         mu4e-update-interval (* 5 60)
         mu4e-context-policy nil
         mu4e-attachment-dir "~/Desktop"
