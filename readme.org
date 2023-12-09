@@ -666,6 +666,10 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
              dired-sidebar-point-at-file)
   :init
   (progn
+    (after! nerd-icons-dired
+      ;; TODO while waiting for https://github.com/rainstormstudio/nerd-icons-dired/pull/16
+      (advice-add 'dired-subtree-toggle :around #'nerd-icons-dired--refresh-advice))
+
     (setq dired-sidebar-window-fixed nil)
     (add-hook!
      'dired-sidebar-mode-hook
