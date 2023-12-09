@@ -2213,7 +2213,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
       (insert
        "#+begin_ai"
        "\n"
-       "[SYS]: a helpful, programming assistant inside of emacs. major mode is " major-mode-name
+       "[SYS]: You are a helpful, expert programming assistant, that lives inside of emacs. Respond in a way that is useful for a developer. The major mode inside emacs is " major-mode-name ", use this as a hint to what the question might be related to. Keep responses brief, don't extensively explain why something works, focus on how."
        "\n\n"
        "[ME]: \n#+end_ai")
       (move-end-of-line 0)
@@ -2221,6 +2221,11 @@ Don't popupize the org code block editor with doom's popup framework, so it open
       (save-excursion
         (when prompt (insert "#" prompt))
         (when active-region (insert "\n\n" active-region))))))
+
+(defun t/chatgpt-send ()
+  (interactive)
+  (with-current-buffer (pop-to-buffer "*ChatGPT*")
+    (call-interactively 'org-ctrl-c-ctrl-c)))
 
 (map! :leader
       (:prefix
@@ -2230,11 +2235,11 @@ Don't popupize the org code block editor with doom's popup framework, so it open
         (:when t
           :desc "ask" "a" #'t/chatgpt-buffer
           :desc "fix" "f" (cmd! (t/chatgpt-prompt "Why doesn't this code work?"))
-          :desc "explain" "e" (cmd! (t/chatgpt-prompt "What does this code do?"))
-          :desc "gen tests" "t" (cmd! (t/chatgpt-prompt "Write a test for this code"))
-          :desc "optimize" "o" (cmd! (t/chatgpt-prompt "Refactor this code for speed and tell me what you changed and why it's faster"))
-          :desc "refactor" "r" (cmd! (t/chatgpt-prompt "Refactor this code and tell me what you changed and why it's better"))
-          :desc "summarize" "s" (cmd! (t/chatgpt-prompt "Summarize this text:"))))))
+          :desc "explain" "e" (cmd! (t/chatgpt-prompt "What does this code do?") (t/chatgpt-send))
+          :desc "gen tests" "t" (cmd! (t/chatgpt-prompt "Write a test for this code") (t/chatgpt-send))
+          :desc "optimize" "o" (cmd! (t/chatgpt-prompt "Refactor this code for speed and tell me what you changed and why it's faster") (t/chatgpt-send))
+          :desc "refactor" "r" (cmd! (t/chatgpt-prompt "Refactor this code and tell me what you changed and why it's better") (t/chatgpt-send))
+          :desc "summarize" "s" (cmd! (t/chatgpt-prompt "Summarize this text:") (t/chatgpt-send))))))
 #+end_src
 
 **** STARTED [[https://github.com/xenodium/chatgpt-shell][chatgpt-shell]]
