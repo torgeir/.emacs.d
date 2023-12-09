@@ -301,7 +301,9 @@ Defaults
         password-cache-expiry h))
 
 (after! epa
-  (setq-default epa-file-encrypt-to '("torgeir@keybase.io")))
+  (setq-default epa-file-encrypt-to '("torgeir@keybase.io"))
+  ;; https://irreal.org/blog/?p=11827
+  (fset 'epg-wait-for-status 'ignore))
 #+end_src
 
 Wait just long enough.
