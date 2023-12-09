@@ -735,15 +735,19 @@ and indent accordingly."
   (when-let* ((repo-name (or (and (s-starts-with? "https://github." repo)
                                   (replace-regexp-in-string "https://github\\.\\(?:com\\|dev\\)/\\([^/]+\\)/\\([^/]+\\)/?.*?$" "\\1/\\2" repo))
                              (and (s-ends-with? ".git" repo)
-                                  (replace-regexp-in-string "git@github.com:\\(.+\\).git" "\\1" repo))))
-              (dir (expand-file-name (format "~/Code/%s/" repo-name))))
-    (when (not (file-exists-p dir))
-      (message "Cloning %s.." repo repo-name)
-      (magit-run-git-async "clone"
-                           (format "git@github.com:%s.git" repo-name)
-                           (magit-convert-filename-for-git dir))
-      (message "Cloning %s.. ok." repo repo-name))
-    (dired dir)))
+                                  (replace-regexp-in-string "git@github.com:\\(.+\\).git" "\\1" repo)))))
+    (lexical-let* ((dir (expand-file-name (format "~/Code/%s/" repo-name)))
+                   (cmd (concat "git " "clone " (format "git@github.com:%s.git" repo-name)))
+                   (msg (concat "Cloning " repo-name ".. ok.")))
+      (if (file-exists-p dir)
+          (dired dir)
+        (progn
+          (message "Cloning %s.." repo repo-name)
+          (t/async-shell-command (format "*git-clone %s*" repo-name)
+                                 (concat cmd " " (magit-convert-filename-for-git dir))
+                                 (lambda (&optional &rest args)
+                                   (dired dir)
+                                   (message msg))))))))
 
 (defun t/set-company-backends (&rest backends)
   "Set company BACKENDS."
