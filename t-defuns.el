@@ -128,7 +128,7 @@ Version 2015-06-12"
    (is-win (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
    (is-cygwin (shell-command (concat "cygstart " (shell-quote-argument default-directory))))
    (is-mac (shell-command "open ."))
-   (is-linux (shell-command "dolphin ."))))
+   (is-linux (shell-command "thunar ."))))
 
 (defun t/hippie-expand-no-case-fold ()
   (interactive)
