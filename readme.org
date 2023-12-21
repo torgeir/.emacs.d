@@ -631,7 +631,7 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
          (dired-subtree--is-expanded-p)) (t/dired-close-recursively))
    ((t/prefix-arg-universal?) (t/dired-open-recursively))
    (t (t/dired-subtree-toggle))))
-(after! dired
+(after! (:or dired dired-sidebar)
   ;; prevent kill all dired buffers on q
   (map! :map dired-mode-map :ng "q" 't/volatile-kill-buffer)
   (map! :map dired-mode-map :ng "Q" 'evil-record-macro)
