@@ -765,7 +765,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
              :slant 'normal
              :width 'normal))
 
-(setq t-fonts `((:face ,"Iosevka Term Curly Slab")))
+(setq t-fonts `((:face ,"IosevkaTermCurlySlab Nerd Font")))
 
 (defun t/cycle-fonts (&optional font-spec)
   (interactive)
