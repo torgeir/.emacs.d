@@ -650,6 +650,30 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
    "M-<up>" (cmd! (find-alternate-file ".."))))
 #+end_src
 
+*** Dired sidebar
+
+#+begin_src emacs-lisp
+(use-package! dired-sidebar
+  :commands (dired-sidebar-toggle-sidebar
+             dired-sidebar-point-at-file)
+  :init
+  (progn
+    (after! (:or dired dired-sidebar)
+      ;; TODO while waiting for https://github.com/rainstormstudio/nerd-icons-dired/pull/16
+      (require 'nerd-icons-dired)
+      (advice-add 'dired-mouse-drag :around #'nerd-icons-dired--refresh-advice)
+      (advice-add 'dired-subtree-toggle :around #'nerd-icons-dired--refresh-advice))
+
+    (setq dired-sidebar-window-fixed nil)
+    (add-hook!
+     'dired-sidebar-mode-hook
+     (defun t/dired-sidebar-hook ()
+       (interactive)
+       (visual-line-mode -1)
+       (setq dired-sidebar-width (floor (* (frame-width (selected-frame))
+                                           (/ (float 1) 4))))))))
+#+end_src
+
 *** Customize
 
 Doom doesnt use the customize interface. It is useful nonetheless for experimenting with face colors etc
@@ -665,44 +689,24 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
       "s-s" 'Custom-save)
 #+end_src
 
-*** Dired sidebar
-
-#+begin_src emacs-lisp
-(use-package! dired-sidebar
-  :commands (dired-sidebar-toggle-sidebar
-             dired-sidebar-point-at-file)
-  :init
-  (progn
-    (after! nerd-icons-dired
-      ;; TODO while waiting for https://github.com/rainstormstudio/nerd-icons-dired/pull/16
-      (advice-add 'dired-subtree-toggle :around #'nerd-icons-dired--refresh-advice))
-
-    (setq dired-sidebar-window-fixed nil)
-    (add-hook!
-     'dired-sidebar-mode-hook
-     (defun t/dired-sidebar-hook ()
-       (interactive)
-       (visual-line-mode -1)
-       (setq dired-sidebar-width (floor (* (frame-width (selected-frame))
-                                           (/ (float 1) 4))))))))
-#+end_src
-
 *** After consult jump - focus subtree after jumping
 
 Zoom to the previewed org subtree when jumping between headings with =consult-org-heading=.
 
 #+begin_src emacs-lisp
-(add-hook 'consult-after-jump-hook
-          (defun t/after-consult-jump ()
-            ""
-            ;; org
-            (when (eq major-mode 'org-mode)
-              (when (org-at-heading-p)
-                (outline-hide-sublevels (org-outline-level)))
-              (org-show-subtree))
+;; TODO
+;; (add-hook! 'consult-after-jump-hook :append 'doom-modeline-refresh-bars)
+(add-hook! 'consult-after-jump-hook :append
+  (defun t/after-consult-jump ()
+    ""
+    ;; org
+    (when (eq major-mode 'org-mode)
+      (when (org-at-heading-p)
+        (outline-hide-sublevels (org-outline-level)))
+      (org-show-subtree))
 
-            ;; always
-            (recenter)))
+    ;; always
+    (recenter)))
 #+end_src
 
 *** Multiple cursors
@@ -1389,6 +1393,7 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
     (doom-modeline-github-timer)))
 (t/doom-modeline-mode-hook)
 (advice-add 'doom-adjust-font-size :after 't/doom-modeline-mode-hook)
+(advice-add #'doom/reload-theme :after 'highlight-indent-guides-auto-set-faces)
 #+end_src
 
 *** Dictionary
