@@ -1,5 +1,5 @@
-;;; t-defuns.el --- more or less useful functions
 ;;; t-defuns.el -*- lexical-binding: t; -*-
+;;; t-defuns.el --- more or less useful functions
 ;;; Commentary:
 ;;; Code:
 
@@ -690,9 +690,10 @@ and indent accordingly."
                                   (replace-regexp-in-string "https://github\\.\\(?:com\\|dev\\)/\\([^/]+\\)/\\([^/]+\\)/?.*?$" "\\1/\\2" repo))
                              (and (s-ends-with? ".git" repo)
                                   (replace-regexp-in-string "git@github.com:\\(.+\\).git" "\\1" repo)))))
-    (lexical-let* ((dir (expand-file-name (format "~/Projects/%s/" repo-name)))
-                   (cmd (concat "git " "clone " (format "git@github.com:%s.git" repo-name)))
-                   (msg (concat "Cloning " repo-name ".. ok.")))
+    (lexical-let*
+        ((dir (expand-file-name (format "~/Projects/%s/" repo-name)))
+         (cmd (concat "git " "clone " (format "git@github.com:%s.git" repo-name)))
+         (msg (concat "Cloning " repo-name ".. ok.")))
       (if (file-exists-p dir)
           (dired dir)
         (progn
