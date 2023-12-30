@@ -834,7 +834,6 @@ Multiedit calls iedit which is missing all-caps in emacs 29.
          (w (plist-get spec :weight)))
     (message "Font: %s, size: %s, weight: %s" f s w)
     (setq doom-font (t/font-spec f s w)
-          doom-variable-pitch-font (t/font-spec f 18 w)
           doom-variable-pitch-font (t/font-spec "IosevkaEtoile Nerd Font" 19 w)
           doom-big-font (t/font-spec f 28)
           doom-font-increment 2)
@@ -842,6 +841,14 @@ Multiedit calls iedit which is missing all-caps in emacs 29.
     f))
 
 (t/cycle-fonts)
+          #+end_src
+
+**** Nerd fonts
+
+Remember to run
+
+#+begin_src emacs-lisp :noeval :tangle no :results no
+(nerd-icons-install-fonts)
 #+end_src
 
 **** List available fontsets
