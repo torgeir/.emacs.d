@@ -1132,6 +1132,7 @@ Set across all real buffers.
 #+begin_src emacs-lisp
 (let ((tr 99))
   (t/transparency tr)
+  (advice-add #'doom/reload-theme :after 'highlight-indent-guides-auto-set-faces)
   (advice-add #'doom/reload-theme :after (cmd! (t/transparency tr))))
 #+end_src
 
@@ -1478,8 +1479,13 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
     (display-time-mode)
     (doom-modeline-github-timer)))
 (t/doom-modeline-mode-hook)
-(advice-add 'doom-adjust-font-size :after 't/doom-modeline-mode-hook)
-(advice-add #'doom/reload-theme :after 'highlight-indent-guides-auto-set-faces)
+;;(advice-add 'doom-adjust-font-size :after 't/doom-modeline-mode-hook)
+;;(advice-add #'doom/reload-theme :after 'highlight-indent-guides-auto-set-faces)
+
+;; TODO torgeir
+(add-hook! 'doom-load-theme-hook :append #'t/doom-modeline-mode-hook)
+;; (advice-add 'doom-adjust-font-size :after 't/doom-modeline-mode-hook)
+
 #+end_src
 
 *** Dictionary
