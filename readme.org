@@ -2538,6 +2538,17 @@ A custom function to fetch a clean view of the current news from nrk.no
         eglot-sync-connect nil))
 #+end_src
 
+*** Nix
+
+#+begin_src emacs-lisp
+(after! eglot
+  ;; (setq eglot-server-programs
+  ;;       (cl-remove-if (lambda (c) (eq (car c) 'nix-mode)) eglot-server-programs))
+  (add-to-list 'eglot-server-programs '(nix-mode . ("nil"))))
+(after! nix-mode
+  (add-hook! 'nix-mode-hook 'eglot-ensure))
+#+end_src
+
 *** Markdown
 
 Move around like in org, collapsing what is moved away from, expanding what is moved to.
