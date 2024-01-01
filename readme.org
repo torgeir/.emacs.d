@@ -1799,6 +1799,14 @@ Use os support if it exists.
                                         (s-equals? "*ChatGPT*" bn))
                                 (olivetti-mode 1)
                                 (t/variable-pitch-mode 1)))))
+(add-hook 'org-ai-mode-hook (defun t/org-ai-mode-hook ()
+                              (interactive)
+                              (advice-add
+                               'org-ctrl-c-ctrl-c
+                               :after
+                               (defun t/org-ai-ctrl-c (&optional &rest any)
+                                 (when (s-equals? "*ChatGPT*" (buffer-name))
+                                   (end-of-buffer))))))
 #+end_src
 
 *** Async source code blocks
