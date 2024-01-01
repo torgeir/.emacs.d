@@ -513,13 +513,18 @@ Exclude stuff from ~+default/search-project~ by placing excludes in [[file:~/.rg
 Disable eldoc on the modeline, makes it so eldoc only appears on ~SPC h .~, i.e. on  ~m-x eldoc-doc-buffer~
 
 #+begin_src emacs-lisp
-;; TODO fikser alt-shift-tab fra inni org babel blokk?
-;; (require 'org-eldoc)
-
 (add-hook! '(web-mode js-mode rjsx-mode typescript-mode typescript-tsx-mode)
   (defun t/eldoc-only-in-buffer ()
     (interactive)
     (setq eldoc-message-function (defun t-void (&optional one two) nil))))
+#+end_src
+
+Fix issue where =org-eldoc-get-src-lang= is not defined?
+
+#+begin_src emacs-lisp
+(add-hook! 'org-mode-hook (defun t/fix-missing-definition-org-eldoc-get-src-lang ()
+                            (interactive)
+                            (require 'org-eldoc)))
 #+end_src
 
 *** Orderless
