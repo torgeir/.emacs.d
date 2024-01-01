@@ -1340,7 +1340,7 @@ And screens are big, so a bit more space for text is nice.
                  ((> w 200) (/ (float 2) 5))
                  ((and (> w 160) (> w-px 1440)) (/ (float 3) 7))
                  (t (/ (float 3) 5)))))))
-  (after! writeroom (setq writeroom-width (funcall frac)))
+  (after! writeroom-mode (setq writeroom-width (funcall frac)))
   (after! olivetti
     (setq olivetti-minimum-body-width 80)
     (add-hook!
