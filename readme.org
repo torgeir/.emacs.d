@@ -627,6 +627,10 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
   ;; fixes wierd issue when emacs looses focus
   (setq all-the-icons-dired-monochrome t))
 (after! dired
+  (add-hook 'dired-mode-hook (defun t/dired-truncate-lines ()
+                               (interactive)
+                               (visual-line-mode -1)
+                               (toggle-truncate-lines 1)))
   (add-hook 'dired-mode-hook 'dired-subtree-toggle)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode))
 #+end_src
