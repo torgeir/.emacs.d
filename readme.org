@@ -2941,6 +2941,15 @@ Keep evil insert mode cursor after shell commands have run.
 (advice-add #'vterm--delayed-redraw :after (lambda (&rest args) (evil-refresh-cursor evil-state)))
 #+end_src
 
+**** Color black
+
+The black in the terminal, e.g. when prefixing commands with a =#=, is a little to similar to my theme background. Brighten it slightly
+
+#+begin_src emacs-lisp
+(after! vterm
+  (set-face-attribute 'vterm-color-black nil :background "#47494b" :foreground "#303030"))
+#+end_src
+
 **** Keybindings
 
 Some keybindings are so engrained I can't live without them.
