@@ -729,14 +729,14 @@ and indent accordingly."
       (with-no-warnings (font-lock-fontify-buffer)))))
 
 (defun t/clone (repo)
-  "Clone a github REPO to `~/Code/<repo-name>'."
+  "Clone a github REPO to `~/Projects/<repo-name>'."
   (interactive "sClone repository: ")
   (require 'magit)
   (when-let* ((repo-name (or (and (s-starts-with? "https://github." repo)
                                   (replace-regexp-in-string "https://github\\.\\(?:com\\|dev\\)/\\([^/]+\\)/\\([^/]+\\)/?.*?$" "\\1/\\2" repo))
                              (and (s-ends-with? ".git" repo)
                                   (replace-regexp-in-string "git@github.com:\\(.+\\).git" "\\1" repo)))))
-    (lexical-let* ((dir (expand-file-name (format "~/Code/%s/" repo-name)))
+    (lexical-let* ((dir (expand-file-name (format "~/Projects/%s/" repo-name)))
                    (cmd (concat "git " "clone " (format "git@github.com:%s.git" repo-name)))
                    (msg (concat "Cloning " repo-name ".. ok.")))
       (if (file-exists-p dir)
@@ -1214,13 +1214,13 @@ See also:  (setq org-agenda-include-diary t)
 (defun t/deploy-torgeir.dev ()
   (interactive)
   (let ((b "*t-deploy-torgeir_dev*"))
-    (shell-command "cd ~/Code/posts && git st && git df" b b)
+    (shell-command "cd ~/Projects/posts && git st && git df" b b)
     (pop-to-buffer b)
     (if (yes-or-no-p "Deploy changes?")
         (progn
           (shell-command
            (concat
-            "cd ~/Code/posts \
+            "cd ~/Projects/posts \
               && git add . \
               && git ci -m \"" (t/isodate) "\" \
               && git push") b b)
@@ -1233,7 +1233,7 @@ See also:  (setq org-agenda-include-diary t)
   (interactive)
   (+vterm/toggle nil)
   (term-send-raw-string
-   (concat "cd ~/Code/posts\C-m \
+   (concat "cd ~/Projects/posts\C-m \
       open http://localhost:1313/\C-m\
       hugo server -p 1313 --navigateToChanged"
            (if (t/prefix-arg-universal?) "" " --buildDrafts")
