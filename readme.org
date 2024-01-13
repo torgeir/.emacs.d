@@ -79,7 +79,6 @@ This is tangled to ~packages.el~ on save.
 (package! focus)
 (package! calendar-norway)
 (package! spray)
-(package! dired-sidebar)
 (package! dired-subtree)
 (package! org-ai :recipe (:host github :repo "rksm/org-ai"))
 (package! mastodon :recipe (:host codeberg :repo "martianh/mastodon.el"))
@@ -656,12 +655,20 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
   (advice-add 'dired-subtree-toggle :around #'nerd-icons-dired--refresh-advice))
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
+(defvar t-sidebar-buffer-prefix ":")
+
+(set-popup-rule! (concat "^" t-sidebar-buffer-prefix)
+  :size 0.25 ;;'+popup-shrink-to-fit
+  :side 'left
+  :quit nil)
+
 (defun t-toggle-sidebar ()
   (interactive)
-  (let* ((sidebar-project (replace-regexp-in-string (expand-file-name "~") "~" (t/project-root)))
-         ;; buffer name must not contain * or else dired-jump jumps
-         ;; to the same window to it when you run dired-jump again
+  (let* ((sidebar-project (replace-regexp-in-string
+                           (expand-file-name "~")
+                           "~"
+                           (or (t/project-root) (file-name-directory (buffer-file-name)))))
          (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
          (sidebar-buffer (get-buffer sidebar-name))
          (sidebar-displayed (and sidebar-buffer (get-buffer-window sidebar-buffer))))
@@ -669,30 +676,20 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
         (delete-window (get-buffer-window sidebar-buffer))
       (when (not sidebar-buffer)
         (with-current-buffer (dired-noselect sidebar-project)
+          ;; unadvertise buffer so dired does not consider it on subsequent dired-jum
           (dired-unadvertise (dired-current-directory))
           (rename-buffer sidebar-name)))
-      (if (not t-sidebar-mode) (t-sidebar-mode 1))
-      (pop-to-buffer sidebar-name))))
+      (pop-to-buffer sidebar-name)
+      (t/toggle-dedicated-window t))))
+#+end_src
 
-(defvar t-sidebar-buffer-prefix "::")
-(define-minor-mode t-sidebar-mode
-  "A dired sidebar."
-  :global t
-  :init-value nil
-  :lighter ""
-  (if t-sidebar-mode
-      (add-to-list 'display-buffer-alist
-                   '("::"
-                     (display-buffer-in-side-window)
-                     (side . left)
-                     (window-height . fit-window-to-buffer)
-                     (body-function . (lambda (window)
-                                        (set-window-dedicated-p window t)
-                                        (setq split-window-preferred-function nil)))
-                     (window-parameters . ((no-other-window . t)))))
-    (setq display-buffer-alist
-          (delq (assoc "::" display-buffer-alist)
-                display-buffer-alist))))
+#+RESULTS:
+: t-toggle-sidebar
+
+#+begin_src emacs-lisp
+(comment
+ (while (not (equal (dired-current-directory) (t/project-root)))
+   (progn (dired-up-directory) (dired-subtree-cycle) (revert-buffer))))
 #+end_src
 
 *** Customize
@@ -1094,12 +1091,6 @@ Show the buffer and the file
 
 *** Windows
 
-Split vertically on the 14" mbp
-
-#+begin_src emacs-lisp
-(setq split-width-threshold 140)
-#+end_src
-
 #+begin_src emacs-lisp
 (setq-default window-combination-resize t)
 #+end_src
@@ -1352,27 +1343,28 @@ Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly 
 
 And screens are big, so a bit more space for text is nice.
 
-#+begin_src emacs-lisp
-(let ((frac (lambda ()
-              (let* ((w-px (frame-pixel-width (selected-frame)))
-                     (h-px (frame-pixel-height (selected-frame)))
-                     (w (frame-width (selected-frame))))
-                ;; noisy
-                ;; (message "w: %s, w-px: %s, h-px: %s" w w-px h-px)
-                (cond
-                 ((< w-px h-px) (/ (float 2) 3))
-                 ((> w 200) (/ (float 2) 5))
-                 ((and (> w 160) (> w-px 1440)) (/ (float 3) 7))
-                 (t (/ (float 3) 5)))))))
-  (after! writeroom-mode (setq writeroom-width (funcall frac)))
-  (after! olivetti
-    (setq olivetti-minimum-body-width 80)
-    (defun t/olivetti-mode-hook (&optional window)
-      (interactive)
-      (setq olivetti-body-width (max olivetti-minimum-body-width
-                                     (floor (* (frame-width (selected-frame)) (funcall frac))))))
-    (add-to-list 'window-size-change-functions 'olivetti-set-window t)
-    (t/olivetti-mode-hook (selected-window))))
+#+begin_src emacs-lisp :results silent
+(defun t/sidebar-frac (&optional ignore)
+  (let* ((w-px (frame-pixel-width (selected-frame)))
+         (h-px (frame-pixel-height (selected-frame)))
+         (w (frame-width (selected-frame))))
+    ;; noisy
+    ;; (message "w: %s, w-px: %s, h-px: %s" w w-px h-px)
+    (cond
+     ((< w-px h-px) (/ (float 1) 3))
+     ((> w 200) (/ (float 2) 5))
+     ((and (> w 160) (> w-px 1440)) (/ (float 3) 7))
+     (t (/ (float 1) 5)))))
+(after! writeroom-mode
+  (setq writeroom-width (t/sidebar-frac)))
+(after! olivetti
+  (setq olivetti-minimum-body-width 80)
+  (defun t/olivetti-mode-hook (&optional window)
+    (interactive)
+    (setq olivetti-body-width (max olivetti-minimum-body-width
+                                   (t/sidebar-frac))))
+  (add-to-list 'window-size-change-functions 'olivetti-set-window t)
+  (t/olivetti-mode-hook (selected-window)))
 #+end_src
 
 Adjust margins equally across modes.

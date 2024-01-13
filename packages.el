@@ -7,7 +7,6 @@
 (package! focus)
 (package! calendar-norway)
 (package! spray)
-(package! dired-sidebar)
 (package! dired-subtree)
 (package! org-ai :recipe (:host github :repo "rksm/org-ai"))
 (package! mastodon :recipe (:host codeberg :repo "martianh/mastodon.el"))
