@@ -1353,16 +1353,12 @@ And screens are big, so a bit more space for text is nice.
   (after! writeroom-mode (setq writeroom-width (funcall frac)))
   (after! olivetti
     (setq olivetti-minimum-body-width 80)
-    (add-hook!
-     'olivetti-mode-hook
-     (defun t/olivetti-mode-hook (&optional window)
-       (interactive)
-       (setq
-        olivetti-body-width
-        (floor (* (frame-width (selected-frame))
-                  (funcall frac))))))
+    (defun t/olivetti-mode-hook (&optional window)
+      (interactive)
+      (setq olivetti-body-width (max olivetti-minimum-body-width
+                                     (floor (* (frame-width (selected-frame)) (funcall frac))))))
     (add-to-list 'window-size-change-functions 'olivetti-set-window t)
-    (add-to-list 'window-size-change-functions 't/olivetti-mode-hook t)))
+    (t/olivetti-mode-hook (selected-window))))
 #+end_src
 
 Adjust margins equally across modes.
