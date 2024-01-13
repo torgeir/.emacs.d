@@ -260,18 +260,6 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 
 ** Editor
 
-*** Flash on long jumps
-
-Use =nav-flash= to flash the cursor after long jumps.
-
-#+begin_src emacs-lisp
-(after! nav-flash
-  (custom-set-faces!
-    '(nav-flash-face :background "DeepPink2"))
-  (setq nav-flash-delay 4
-        nav-flash-use-pulse 'gui-only))
-#+end_src
-
 *** Recursive minibuffers
 
 When you change your mind and need to do something first, after you already started a command that opens the minibuffer. Cancel them with ~C-]~.
