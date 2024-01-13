@@ -1009,15 +1009,15 @@ The above needs the following feature in the codespace
 There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]]. I [[file:~/.emacs.d/.local/straight/repos/themes/themes/doom-one-theme.el::bg `(,(doom-darken "#282c34" 0.5) "black" "black"][tuned doom-one a little]], darkening some of the colors even more. Its in [[file:themes/t-doom-one-theme.el::(def-doom-theme t-doom-one][themes/t-doom-one-theme.el]].
 
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-vibrant)
+(setq doom-theme 'doom-feather-dark)
 #+end_src
 
 #+begin_src emacs-lisp
 (defun t/cycle-theme ()
   (interactive)
   (cl-case doom-theme
-    (doom-vibrant (load-theme 'doom-flatwhite))
-    (doom-flatwhite (load-theme 't-doom-one))
+    (doom-feather-dark (load-theme 'doom-flatwhite))
+    (doom-flatwhite (load-theme 'doom-feather-dark))
     (t-doom-one (load-theme 'catppuccin))
     (t (load-theme 'doom-vibrant)))
   (message "Theme: %s" doom-theme))
