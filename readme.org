@@ -616,9 +616,6 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
 *** Dired
 
 #+begin_src emacs-lisp
-(after! all-the-icons
-  ;; fixes wierd issue when emacs looses focus
-  (setq all-the-icons-dired-monochrome t))
 (after! dired
   (setq dired-listing-switches "-aBhl  --group-directories-first")
   (add-hook 'dired-mode-hook (defun t/dired-truncate-lines ()
@@ -637,12 +634,12 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
          (dired-subtree--is-expanded-p)) (t/dired-close-recursively))
    ((t/prefix-arg-universal?) (t/dired-open-recursively))
    (t (t/dired-subtree-toggle))))
-(after! (:or dired dired-sidebar)
+(after! (:or dired)
   ;; prevent kill all dired buffers on q
   (map! :map dired-mode-map :ng "q" 't/volatile-kill-buffer)
   (map! :map dired-mode-map :ng "Q" 'evil-record-macro)
   (map!
-   :map (dired-mode-map dired-sidebar-mode-map)
+   :map (dired-mode-map)
    "C-k" 'dired-kill-subdir
    "<tab>" 't/dired-subtree-tab
    :n "<tab>" 't/dired-subtree-tab
@@ -654,25 +651,48 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
 *** Dired sidebar
 
 #+begin_src emacs-lisp
-(use-package! dired-sidebar
-  :commands (dired-sidebar-toggle-sidebar
-             dired-sidebar-point-at-file)
-  :init
-  (progn
-    (after! (:or dired dired-sidebar)
-      ;; TODO while waiting for https://github.com/rainstormstudio/nerd-icons-dired/pull/16
-      (require 'nerd-icons-dired)
-      (advice-add 'dired-mouse-drag :around #'nerd-icons-dired--refresh-advice)
-      (advice-add 'dired-subtree-toggle :around #'nerd-icons-dired--refresh-advice))
+(after! dired
+  (require 'nerd-icons-dired)
+  (advice-add 'dired-subtree-toggle :around #'nerd-icons-dired--refresh-advice))
+#+end_src
 
-    (setq dired-sidebar-window-fixed nil)
-    (add-hook!
-     'dired-sidebar-mode-hook
-     (defun t/dired-sidebar-hook ()
-       (interactive)
-       (visual-line-mode -1)
-       (setq dired-sidebar-width (floor (* (frame-width (selected-frame))
-                                           (/ (float 1) 4))))))))
+#+begin_src emacs-lisp
+(defun t-toggle-sidebar ()
+  (interactive)
+  (let* ((sidebar-project (replace-regexp-in-string (expand-file-name "~") "~" (t/project-root)))
+         ;; buffer name must not contain * or else dired-jump jumps
+         ;; to the same window to it when you run dired-jump again
+         (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
+         (sidebar-buffer (get-buffer sidebar-name))
+         (sidebar-displayed (and sidebar-buffer (get-buffer-window sidebar-buffer))))
+    (if sidebar-displayed
+        (delete-window (get-buffer-window sidebar-buffer))
+      (when (not sidebar-buffer)
+        (with-current-buffer (dired-noselect sidebar-project)
+          (dired-unadvertise (dired-current-directory))
+          (rename-buffer sidebar-name)))
+      (if (not t-sidebar-mode) (t-sidebar-mode 1))
+      (pop-to-buffer sidebar-name))))
+
+(defvar t-sidebar-buffer-prefix "::")
+(define-minor-mode t-sidebar-mode
+  "A dired sidebar."
+  :global t
+  :init-value nil
+  :lighter ""
+  (if t-sidebar-mode
+      (add-to-list 'display-buffer-alist
+                   '("::"
+                     (display-buffer-in-side-window)
+                     (side . left)
+                     (window-height . fit-window-to-buffer)
+                     (body-function . (lambda (window)
+                                        (set-window-dedicated-p window t)
+                                        (setq split-window-preferred-function nil)))
+                     (window-parameters . ((no-other-window . t)))))
+    (setq display-buffer-alist
+          (delq (assoc "::" display-buffer-alist)
+                display-buffer-alist))))
 #+end_src
 
 *** Customize
@@ -1073,6 +1093,12 @@ Show the buffer and the file
 #+end_src
 
 *** Windows
+
+Split vertically on the 14" mbp
+
+#+begin_src emacs-lisp
+(setq split-width-threshold 140)
+#+end_src
 
 #+begin_src emacs-lisp
 (setq-default window-combination-resize t)
@@ -1496,8 +1522,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  ;; op -- :leader :desc "Toggle treemacs" "f L" #'+treemacs/toggle
  :leader :desc "Open folder" "p o" #'t/open-in-desktop
 
- ;; :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
- :leader :desc "Toggle directory sidebar" "f l" #'dired-sidebar-toggle-sidebar
+ :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
  :leader :desc "Toggle directory sidebar, follow" "f L" (cmd! (dired-sidebar-point-at-file buffer-file-name (doom-project-root)))
  :leader (:prefix ("o" . "open")
                   (:prefix-map
