@@ -3101,7 +3101,7 @@ Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.s
 
 *** Disable some modes in vterm
 
-which-key messes with evil movement in vterm, e.g. when attemting to jump somewhere and perform an action on an evil text object, like ~yiw~.
+~which-key~ messes with evil movement in ~vterm~, e.g. when attemting to jump somewhere and perform an action on an evil text object, like ~yiw~. This delays it long enough so you can finish your movement command before it kicks in, preventing it from interfering:
 
 #+begin_src emacs-lisp
 (after! which-key
