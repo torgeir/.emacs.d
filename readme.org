@@ -1205,7 +1205,7 @@ If there is no window in the direction you move, send the keypress for the direc
 
 *** Jump around
 
-Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~.
+Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~ or ~SPC u~.
 
 #+begin_src emacs-lisp
 (map!
