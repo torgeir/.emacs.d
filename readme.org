@@ -2959,7 +2959,7 @@ Emacs server setup.
 I also use this from Alfred, as a quick way of capturing from anywhere.
 
 #+begin_src sh :tangle no :results silent
-/usr/bin/env emacsclient -e '(progn (select-frame-set-input-focus (selected-frame)) (org-capture))'
+/etc/profiles/per-user/torgeir/bin/emacsclient -e '(progn (select-frame-set-input-focus (selected-frame)) (org-capture))'
 #+end_src
 
 ** Terminal
