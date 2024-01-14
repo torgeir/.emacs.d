@@ -2229,16 +2229,26 @@ Don't popupize the org code block editor with doom's popup framework, so it open
   (setq org-pomodoro-format "%s"))
 #+end_src
 
-*** org-ai: ChatGPT in org mode
+*** OpenAI: GPT
+
+Default openai language model.
+
+#+begin_src emacs-lisp
+(setq-default *t-gpt-models* "gpt-4-1106-preview")
+#+end_src
+
+**** org-ai: ChatGPT in org mode
 
 #+begin_src emacs-lisp
 (use-package! org-ai
   :hook (org-mode . org-ai-mode)
   :config
-  (add-to-list 'org-ai-chat-models "gpt-4-1106-preview"))
+  (let ((m "gpt-4-1106-preview"))
+    (add-to-list 'org-ai-chat-models m)
+    (setq-default org-ai-default-chat-model m)))
 #+end_src
 
-**** Popups on the side
+**** Popup on the side
 
 #+begin_src emacs-lisp
 (set-popup-rule! "^\\*ChatGPT" :size 0.45 :side 'right :quit 'other)
@@ -2300,8 +2310,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 **** STARTED [[https://github.com/xenodium/chatgpt-shell][chatgpt-shell]]
 
 #+begin_src emacs-lisp
-(setq chatgpt-shell-model-version "gpt-4-1106-preview"
-      ;; chatgpt-shell-model-version "gpt-3.5-turbo"
+(setq chatgpt-shell-model-version *t-gpt-models*
       chatgpt-shell-openai-key
       (lambda ()
         (auth-source-pick-first-password :host "api.openai.com")))
