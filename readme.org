@@ -1060,14 +1060,14 @@ Bind it to =SPC t t=. To cycle the other way around do =SPC u= =SPC t t=
 
 **** Line numbers
 
+Determines the style of line numbers in effect. If set to =nil=, line numbers are disabled. For relative line numbers, set this to =relative=. Off by default, =relative= in programming modes. Toggle them with =SPC t l=.
+
 #+begin_src emacs-lisp
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type nil)
 (setq-hook! 'prog-mode-hook display-line-numbers-type 'relative)
 #+end_src
 
-Set across all real buffers
+Set across all real buffers.
 
 #+begin_src emacs-lisp
 (comment
