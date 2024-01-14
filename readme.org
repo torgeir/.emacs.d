@@ -683,9 +683,6 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
       (t/toggle-dedicated-window t))))
 #+end_src
 
-#+RESULTS:
-: t-toggle-sidebar
-
 #+begin_src emacs-lisp
 (comment
  (while (not (equal (dired-current-directory) (t/project-root)))
