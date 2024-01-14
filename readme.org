@@ -302,7 +302,7 @@ Wait just long enough.
 
 *** Disable annoying defaults
 
-Reset [[file:~/.emacs.d/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
+Reset [[file:~/.config/emacs/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
 
 #+begin_src emacs-lisp
 (add-hook! 'doom-after-init-hook
@@ -1009,7 +1009,7 @@ The above needs the following feature in the codespace
 
 *** Themes
 
-There's a lot of good [[file:~/.emacs.d/.local/straight/repos/themes/themes/][doom themes]]. I [[file:~/.emacs.d/.local/straight/repos/themes/themes/doom-one-theme.el::bg `(,(doom-darken "#282c34" 0.5) "black" "black"][tuned doom-one a little]], darkening some of the colors even more. Its in [[file:themes/t-doom-one-theme.el::(def-doom-theme t-doom-one][themes/t-doom-one-theme.el]].
+There's a lot of good [[file:~/.config/emacs/.local/straight/repos/themes/themes/][doom themes]]. I [[file:~/.config/emacs/.local/straight/repos/themes/themes/doom-one-theme.el::bg `(,(doom-darken "#282c34" 0.5) "black" "black"][tuned doom-one a little]], darkening some of the colors even more. Its in [[file:themes/t-doom-one-theme.el::(def-doom-theme t-doom-one][themes/t-doom-one-theme.el]].
 
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-feather-dark)
@@ -1238,7 +1238,7 @@ Smartparens-mode paredit bindings in org mode messes up ~M-up~ and ~M-down~, bri
      "M-S-<left>" 'org-shiftmetaleft)))
 #+end_src
 
-Bring back ~C-k~ in the minibuffer. Overrides [[file:~/.emacs.d/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]].
+Bring back ~C-k~ in the minibuffer. Overrides [[file:~/.config/emacs/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]].
 
 #+begin_src emacs-lisp
 (map! :map (evil-ex-completion-map evil-ex-search-keymap)
@@ -1305,7 +1305,7 @@ Support wrapping sexps by holding super, both in normal mode and insert mode, fr
 
 **** Expand braces
 
-[[file:~/.emacs.d/modules/config/default/config.el::dolist (brace '("(" "{" "\[")][Override this to always expand braces]].
+[[file:~/.config/emacs/modules/config/default/config.el::dolist (brace '("(" "{" "\[")][Override this to always expand braces]].
 
 #+begin_src emacs-lisp
 (after! smartparens
@@ -1440,9 +1440,9 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 
 ** Keybindings
 
-- [[file:~/.emacs.d/modules/editor/evil/config.el::(map! :v "@" #'+evil:apply-macro][Doom editor keybindings]]
-- [[file:~/.emacs.d/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]]
-- [[file:~/.emacs.d/modules/editor/evil/config.el:::n "g=" #'evil-numbers/inc-at-pt][evil commands]]
+- [[file:~/.config/emacs/modules/editor/evil/config.el::(map! :v "@" #'+evil:apply-macro][Doom editor keybindings]]
+- [[file:~/.config/emacs/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]]
+- [[file:~/.config/emacs/modules/editor/evil/config.el:::n "g=" #'evil-numbers/inc-at-pt][evil commands]]
 
 #+begin_src emacs-lisp
 (map! :map evil-markdown-mode-map
@@ -1914,7 +1914,7 @@ Org agenda customizations
 
 *** Keybindings
 
-Extensions of some of the [[file:~/.emacs.d/modules/lang/org/config.el::(map! :map org-mode-map][Doom org mode map bindings]].
+Extensions of some of the [[file:~/.config/emacs/modules/lang/org/config.el::(map! :map org-mode-map][Doom org mode map bindings]].
 
 Heading and item bindings
 
@@ -2815,7 +2815,7 @@ npm install -g typescript-language-server typescript
 
 **** Typescript repl with ts-node
 
-Adapt [[file:~/.emacs.d/.local/straight/repos/nodejs-repl.el/nodejs-repl.el::defun nodejs-repl (][what ~nodejs-repl~ does]] using ~ts-node~.
+Adapt [[file:~/.config/emacs/.local/straight/repos/nodejs-repl.el/nodejs-repl.el::defun nodejs-repl (][what ~nodejs-repl~ does]] using ~ts-node~.
 
 #+begin_src sh :tangle no :results silent
 npm install -g ts-node
@@ -2881,7 +2881,7 @@ Larger compilation window
 
 Emacs server setup.
 
-This name is used from skhdrc, ~/.emacs.d/emacsclient~, ~/.emacs.d/emacsclient~ and other places. The latter two are linked as ~e~ and ~em~ on the command line, to target the running emacs server instance, to quickly open a file or folder.
+~e~ and ~et~ on the command line target the running emacs server instance, to quickly open a file or folder.
 
 I also use this from Alfred, as a quick way of capturing from anywhere.
 
@@ -3527,7 +3527,7 @@ Evil like navigation.
 
 *** Email
 
-Settings from [[file:~/.emacs.d/modules/email/mu4e/README.org][modules/email/mu4e/README.org]]
+Settings from [[file:~/.config/emacs/modules/email/mu4e/README.org][modules/email/mu4e/README.org]]
 
 Inspiration:
 - https://pragmaticemacs.wordpress.com/2016/03/22/migrating-from-offlineimap-to-mbsync-for-mu4e/
