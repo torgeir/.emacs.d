@@ -3024,7 +3024,7 @@ Keep evil insert mode cursor after shell commands have run.
 
 **** Color black
 
-The black in the terminal, e.g. when prefixing commands with a =#=, is a little to similar to my theme background. Brighten it slightly
+The black in the terminal, e.g. when prefixing commands with a =#=, is a little to similar to my theme background. Brighten it slightly.
 
 #+begin_src emacs-lisp
 (after! vterm
