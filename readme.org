@@ -3124,7 +3124,7 @@ Make ~s-ret~ (super+enter) create a vterm terminal window inside emacs.
           (+vterm/here t))))
 #+end_src
 
-Goes great with [[file:~/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps.
+Goes great with [[file:~/.config/dotfiles/skhdrc::cmd - return \[][these lines from ~/.skhdrc]], that make super+enter create a terminal from other apps.
 
 *** Close comint buffers with c-d
 
