@@ -1168,6 +1168,8 @@ If there is no window in the direction you move, send the keypress for the direc
 *** Messages
 
 #+begin_src emacs-lisp
+;; TODO
+
 (defvar +messages--auto-tail-enabled nil)
 
 (defun +messages--auto-tail-a (&rest arg)
@@ -1501,6 +1503,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 
 #+begin_src emacs-lisp
 (map!
+ ;; resize fonts
  :n "s-0" nil
  :g "s-0" #'doom/reset-font-size
  :g "s-+" #'doom/increase-font-size
@@ -1508,23 +1511,28 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :n "C-+" #'doom/increase-font-size
  :n "C--" #'doom/decrease-font-size
 
+ ;; and on linux?
  "s-?" (cmd! (text-scale-increase 1))
  "s-_" (cmd! (text-scale-decrease 1))
  "s-=" (cmd! (text-scale-set 0))
 
+ ;; split windows
  "s-d" #'t/split-window-right-and-move-there-dammit
  "s-D" #'t/split-window-below-and-move-there-dammit
 
+ ;; move around with opt+cmd, like in ye olde iterm
  "s-M-<up>" 'evil-window-up
  "s-M-<right>" 'evil-window-right
  "s-M-<down>" 'evil-window-down
  "s-M-<left>" 'evil-window-left
 
+ ;; resize frame
  "C-s-<left>" 't/decrease-frame-width
  "C-s-<right>" 't/increase-frame-width
  "C-s-<down>" 't/increase-frame-height
  "C-s-<up>" 't/decrease-frame-height
 
+ ;; move like history in the terminal
  "M-n" 'forward-paragraph
  "M-p" 'backward-paragraph
 
@@ -1537,20 +1545,31 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :i "C-p" #'previous-line
  :i "C-n" #'next-line
 
+ ;; mark all like on macos
  "s-a" 'mark-whole-buffer
+
+ ;; skip between buffers
  "s-k" 'previous-buffer
  "s-j" 'next-buffer
+
+ ;; skip between windows like on macos
  "s->" 'next-multiframe-window
  "s-<" 'previous-multiframe-window
+
+ ;; beginning and end of line like macos
  "s-<left>" 't/smart-beginning-of-line
  "s-<right>" 'end-of-line
 
+ ;; complete with similar words in buffer
  "C-." 't/hippie-expand-no-case-fold
+
+ ;; beginning
  "C-a" 't/smart-beginning-of-line
 
  ;; m = motion
  :m "C-e" 'end-of-line
 
+ ;; more file commands like on macos
  "s-q" 'save-buffers-kill-emacs
  "s-n" 'make-frame
  "s-s" 'save-buffer
