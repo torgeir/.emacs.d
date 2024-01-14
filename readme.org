@@ -2243,9 +2243,8 @@ Default openai language model.
 (use-package! org-ai
   :hook (org-mode . org-ai-mode)
   :config
-  (let ((m "gpt-4-1106-preview"))
-    (add-to-list 'org-ai-chat-models m)
-    (setq-default org-ai-default-chat-model m)))
+  (add-to-list 'org-ai-chat-models *t-gpt-models* t)
+  (setq-default org-ai-default-chat-model *t-gpt-models*))
 #+end_src
 
 **** Popup on the side
@@ -3146,11 +3145,15 @@ Useful magit keybindings:
   (setq git-commit-summary-max-length 72 ;; like github
         magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
 
+  (defun t/commit-truncate ()
+    (visual-line-mode -1)
+    (toggle-truncate-lines 1))
+  (add-hook! '(magit-log-mode-hook magit-status-mode-hook) 't/commit-truncate)
+
   (defun t/commit-mode-hook ()
     (add-to-list 'whitespace-style 'trailing)
     (whitespace-mode 1)
-    (visual-line-mode -1)
-    (toggle-truncate-lines 1))
+    (t/commit-truncate))
   (add-hook! 'git-commit-mode-hook 't/commit-mode-hook)
 
   (set-popup-rule! "^magit:" :ignore t)

@@ -81,19 +81,19 @@ understands."
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-   (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
-    (root (projectile-project-root))
-    (tags (shell-quote-argument (concat root "TAGS")))
-    (process (start-process-shell-command "build ctags asynchronously"
-                                          "*ctags async*"
-                                          (concat
-                                           "ctags -e -R"          ; recurse
-                                           " --options=" ctags ; use global config
-                                           " -f " tags " "     ; put it in project/TAGS
-                                           " ."                   ; in the current directory
-                                           ))))
-   (set-process-sentinel process (lambda (process event)
-                                   (t/load-tags tags)))))
+      (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
+       (root (projectile-project-root))
+       (tags (shell-quote-argument (concat root "TAGS")))
+       (process (start-process-shell-command "build ctags asynchronously"
+                                             "*ctags async*"
+                                             (concat
+                                              "ctags -e -R"          ; recurse
+                                              " --options=" ctags ; use global config
+                                              " -f " tags " "     ; put it in project/TAGS
+                                              " ."                   ; in the current directory
+                                              ))))
+    (set-process-sentinel process (lambda (process event)
+                                    (t/load-tags tags)))))
 
 (defun t/load-tags (tags)
   "Loads project tags into tag table."
@@ -693,15 +693,15 @@ and indent accordingly."
     (lexical-let* ((dir (expand-file-name (format "~/Projects/%s/" repo-name)))
                    (cmd (concat "git " "clone " (format "git@github.com:%s.git" repo-name)))
                    (msg (concat "Cloning " repo-name ".. ok.")))
-                  (if (file-exists-p dir)
-                      (dired dir)
-                    (progn
-                      (message "Cloning %s.." repo repo-name)
-                      (t/async-shell-command (format "*git-clone %s*" repo-name)
-                                             (concat cmd " " (magit-convert-filename-for-git dir))
-                                             (lambda (&optional &rest args)
-                                               (dired dir)
-                                               (message msg))))))))
+      (if (file-exists-p dir)
+          (dired dir)
+        (progn
+          (message "Cloning %s.." repo repo-name)
+          (t/async-shell-command (format "*git-clone %s*" repo-name)
+                                 (concat cmd " " (magit-convert-filename-for-git dir))
+                                 (lambda (&optional &rest args)
+                                   (dired dir)
+                                   (message msg))))))))
 
 (defun t/visit-git-link-pulls ()
   "Navigate to /pulls for the current git repo."
