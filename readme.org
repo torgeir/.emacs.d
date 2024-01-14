@@ -365,7 +365,7 @@ I spent so much time with vim, I will probably never give it up.
 
 **** Config
 
-Useful for ~c-e~ followed by ~c-x c-e~ to eval a s-exp. Makes ~cleverparens~ nav commands like ~L~ and ~H~ move across sexps
+Useful for ~C-e~ followed by ~C-x C-e~ to eval an s-expression. Makes ~cleverparens~ nav commands like ~L~ and ~H~ move across sexps
 
 #+begin_src emacs-lisp
 (setq evil-move-beyond-eol t)
