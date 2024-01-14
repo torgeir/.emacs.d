@@ -1136,27 +1136,33 @@ Resize window combinations proportionally.
 
 **** Resize using arrow keys
 
+If there is no window in the direction you move, send the keypress for the direction instead =hjkl=.
+
 #+begin_src emacs-lisp
 (map! :after evil
       :map evil-window-map
       "s" (t/micro-state
            nil
-           "<left>" (cmd! (if (or (window-in-direction 'left)
-                                  (window-in-direction 'right))
-                              (evil-resize-window (- (window-width) 8) t)
-                            (execute-kbd-macro "h")))
-           "<right>" (cmd! (if (or (window-in-direction 'left)
-                                   (window-in-direction 'right))
-                               (evil-resize-window (+ (window-width) 8) t)
-                             (execute-kbd-macro "l")))
-           "<up>" (cmd! (if (or (window-in-direction 'up)
-                                (window-in-direction 'down))
-                            (evil-resize-window (+ (window-height) 4))
-                          (execute-kbd-macro "k")))
-           "<down>" (cmd! (if (or (window-in-direction 'up)
-                                  (window-in-direction 'down))
-                              (evil-resize-window (- (window-height) 4))
-                            (execute-kbd-macro "j")))))
+           "<left>" (cmd! (cond
+                           ((and (window-in-direction 'right) (window-in-direction 'left)) (evil-resize-window (- (window-width) 8) t))
+                           ((window-in-direction 'left) (evil-resize-window (+ (window-width) 8) t))
+                           ((window-in-direction 'right) (evil-resize-window (- (window-width) 8) t))
+                           (t (execute-kbd-macro "h"))))
+           "<right>" (cmd! (cond
+                            ((and (window-in-direction 'right) (window-in-direction 'left)) (evil-resize-window (+ (window-width) 8) t))
+                            ((window-in-direction 'right) (evil-resize-window (+ (window-width) 8) t))
+                            ((window-in-direction 'left) (evil-resize-window (- (window-width) 8) t))
+                            (t (execute-kbd-macro "l"))))
+           "<up>" (cmd! (cond
+                         ((and (window-in-direction 'up) (window-in-direction 'down)) (evil-resize-window (+ (window-height) 4)))
+                         ((window-in-direction 'down) (evil-resize-window (- (window-height) 4)))
+                         ((window-in-direction 'up) (evil-resize-window (+ (window-height) 4)))
+                         (t (execute-kbd-macro "k"))))
+           "<down>" (cmd! (cond
+                           ((and (window-in-direction 'up) (window-in-direction 'down)) (evil-resize-window (- (window-height) 4)))
+                           ((window-in-direction 'up) (evil-resize-window (- (window-height) 4)))
+                           ((window-in-direction 'down) (evil-resize-window (+ (window-height) 4)))
+                           (t (execute-kbd-macro "j"))))))
 #+end_src
 
 *** Messages
