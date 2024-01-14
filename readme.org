@@ -39,6 +39,12 @@ The built in emacs help is fantastic. The doom one on ~SPC h d~ is even better! 
 
 Type ~SPC m g g~ to run =consult-org-heading=, then ~C-c C-;~ to =embark-export=.
 
+*** Emacs variables explained
+
+- =setq= sets a variable in the current buffer
+- =setq-default= sets a default value for a variable for all buffers
+- =setq-local= sets a buffer local variable, it needs to be buffer local first =(make-variable-buffer-local '...)=
+
 ** Literate config
 
 This config uses the =:config literal= that tangles this file to ~config.el~ on save. The [[file:init.el::setq +literate-config-file (concat (getenv "HOME") "/.doom.d/readme.org")][+literate-config-file]] is set in ~init.el~ and points to this file.
@@ -661,11 +667,27 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
 
 #+begin_src emacs-lisp :results silent
 (defvar t-sidebar-buffer-prefix ":")
+;; TODO hackery to be able to tweak display-buffer-alist even with doom's set-popup-rule!
+(advice-add #'set-popup-rule! :after
+            (defun t/add-display-buffer-alist (fn &rest args)
+              (add-to-list 'display-buffer-alist
+                           `(,(concat "^" t-sidebar-buffer-prefix)
+                             (display-buffer-in-side-window)
+                             (side . left)
+                             (window-height . fit-window-to-buffer)
+                             (body-function . (lambda (window)
+                                                (set-window-dedicated-p window t)
+                                                (message "body function")
+                                                (with-selected-window window
+                                                  ;; force no split on RET
+                                                  (make-local-variable 'split-window-preferred-function)
+                                                  (setq split-window-preferred-function nil))))
+                             (window-parameters . ((no-other-window . t)))))))
 
-(set-popup-rule! (concat "^" t-sidebar-buffer-prefix)
-  :size 0.25 ;;'+popup-shrink-to-fit
-  :side 'left
-  :quit nil)
+
+(comment setq display-buffer-alist
+         (delq (assoc "::" display-buffer-alist)
+               display-buffer-alist))
 
 (defun t-toggle-sidebar ()
   (interactive)
@@ -683,9 +705,10 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
           ;; unadvertise buffer so dired does not consider it on subsequent dired-jum
           (dired-unadvertise (dired-current-directory))
           (rename-buffer sidebar-name)))
-      (pop-to-buffer sidebar-name)
-      (t/toggle-dedicated-window t))))
+      (pop-to-buffer sidebar-name))))
 #+end_src
+
+**** WIP to locate file in dired
 
 #+begin_src emacs-lisp
 (comment
@@ -1092,6 +1115,14 @@ Show the buffer and the file
 
 *** Windows
 
+Split windows based on =split-width-threshold= and =split-height-threshold=. This is set globally so that the ~t-sidebar-toggle~ can make it a buffer local variable and override it to never split windows.
+
+#+begin_src emacs-lisp
+(setq split-window-preferred-function 'split-window-sensibly)
+#+end_src
+
+Resize window combinations proportionally.
+
 #+begin_src emacs-lisp
 (setq-default window-combination-resize t)
 #+end_src
@@ -1360,12 +1391,8 @@ And screens are big, so a bit more space for text is nice.
   (setq writeroom-width (t/sidebar-frac)))
 (after! olivetti
   (setq olivetti-minimum-body-width 80)
-  (defun t/olivetti-mode-hook (&optional window)
-    (interactive)
-    (setq olivetti-body-width (max olivetti-minimum-body-width
-                                   (t/sidebar-frac))))
-  (add-to-list 'window-size-change-functions 'olivetti-set-window t)
-  (t/olivetti-mode-hook (selected-window)))
+  (setq-default olivetti-body-width (floor (* (frame-width (selected-frame)) (t/sidebar-frac))))
+  (add-to-list 'window-size-change-functions 'olivetti-set-window t))
 #+end_src
 
 Adjust margins equally across modes.
