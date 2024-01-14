@@ -1249,6 +1249,8 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~ or ~
 
 *** Smartparens
 
+Use paredit bindings. Make =`'= a pair in emacs lisp mode.
+
 #+begin_src emacs-lisp
 (after! smartparens
   (sp-local-pair 'emacs-lisp-mode "`" "'" :when '(sp-in-docstring-p))
@@ -1256,7 +1258,7 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~ or ~
   (sp-use-paredit-bindings))
 #+end_src
 
-And some extra for org mode
+And add some extra pairs for org mode.
 
 #+begin_src emacs-lisp
 (after! smartparens
