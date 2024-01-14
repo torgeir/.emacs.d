@@ -4003,7 +4003,7 @@ A little minor mode to highlight the symbol at point or the selected region acro
 (defun t/highlight-with-all-buffers (fn)
   (if-let ((symbol
             (if (use-region-p)
-                (buffer-substring-no-properties (region-beginning) (+ 1 (region-end)))
+                (buffer-substring-no-properties (region-beginning) (region-end))
               (thing-at-point 'symbol t))))
       (save-excursion
         (let ((tail (buffer-list)))
