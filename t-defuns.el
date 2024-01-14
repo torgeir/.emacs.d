@@ -1116,6 +1116,7 @@ curl http://cheat.sh/:list lists all commands
 
 (defun t/where-am-i ()
   (interactive)
+  (require 'xref)
   (let ((l (xref-location-marker
             (xref-make-file-location
              (buffer-file-name)
