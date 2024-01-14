@@ -3106,6 +3106,7 @@ Hack to make ~C-c C-c~ accept, and ~C-c C-k~ exit, when running ~^x^e~ in a vter
 #+end_src
 
 *** Terminal from everywhere with s-return
+*** Terminal from everywhere with s-return
 
 Make ~s-ret~ (super+enter) create a vterm terminal window inside emacs.
 
@@ -3314,7 +3315,7 @@ Bound to ~SPC t b~.
 
 *** Elfeed RSS
 
-Setup.
+**** Setup.
 
 #+begin_src emacs-lisp
 (after! elfeed
@@ -3327,7 +3328,9 @@ Setup.
   (add-hook! 'elfeed-db-update-hook 'elfeed-db-save))
 #+end_src
 
-Switch around the refresh mappings for more useful defaults.
+**** Switch around mappings
+
+Switch around the refresh mappings, for more useful defaults.
 
 #+begin_src emacs-lisp
 (after! elfeed
@@ -3339,6 +3342,8 @@ Switch around the refresh mappings for more useful defaults.
    :n "gR" #'elfeed-search-update--force
    :n "gr" #'elfeed-search-fetch))
 #+end_src
+
+**** Tag hydra
 
 #+begin_src emacs-lisp
 (after! elfeed
@@ -3388,6 +3393,8 @@ Switch around the refresh mappings for more useful defaults.
                                                  items)))))))
 #+end_src
 
+**** Readability
+
 #+begin_src emacs-lisp
 (after! elfeed
   (add-hook 'elfeed-search-mode-hook
@@ -3406,6 +3413,8 @@ Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bi
               (olivetti-mode 1)
               (t/start-spray-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
 #+end_src
+
+**** xkcd
 
 Show the mouseover text for xkcd comics by moving to the image and fetching the ~'shr-alt~ text property that holds the mouse over text. Insert it in the buffer on the next tick, to wait for the image to appear first.
 
@@ -3428,7 +3437,9 @@ Show the mouseover text for xkcd comics by moving to the image and fetching the 
                                 (read-only-mode 1))))))))
 #+end_src
 
-Auto tagging of some types of subs
+**** Auto tagging
+
+Auto tagging of some types of subs.
 
 #+begin_src emacs-lisp
 (after! elfeed
@@ -3442,6 +3453,8 @@ Auto tagging of some types of subs
                                 :remove 'unread)))
 #+end_src
 
+**** Customize headings
+
 #+begin_src emacs-lisp
 (after! elfeed
   (set-face-attribute 'elfeed-search-tag-face nil :foreground (face-attribute 'font-lock-type-face :foreground))
@@ -3451,12 +3464,16 @@ Auto tagging of some types of subs
   (set-face-attribute 'elfeed-hl-face nil :bold t))
 #+end_src
 
+**** Window placement
+
 #+begin_src emacs-lisp
 (after! elfeed-search
   ;; this is the start of *elfeed-entry-<title>* names of youtube buffers without an elfeed entry
   (set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t :vslot 10)
   (set-popup-rule! "^\\*elfeed-entry*" :side 'right :size 0.6 :select t :vslot 5))
 #+end_src
+
+**** Youtube feed extraction
 
 Extracted youtube feeds like this
 
@@ -3515,6 +3532,8 @@ Inspiration https://gist.github.com/alphapapa/80d2dba33fafcb50f558464a3a73af9a
 
 *** Calendar
 
+**** Colors
+
 Ready some fonts that stand out.
 
 #+begin_src emacs-lisp
@@ -3525,6 +3544,8 @@ Ready some fonts that stand out.
   (set-face-attribute 'calendar-today-face nil :weight 'bold :background nil)
   (set-face-attribute 'calendar-week-face nil :foreground "VioletRed4"))
 #+end_src
+
+**** Norwegian time
 
 Weeks on start on monday in Norway, and weeks have numbers. I also like holidays.
 
@@ -3544,15 +3565,7 @@ Weeks on start on monday in Norway, and weeks have numbers. I also like holidays
                                    'calendar-week-face)))
 #+end_src
 
-Translate days and seasons to norwegian.
-
-#+begin_src emacs-lisp
-(after! calendar
-  (setq-hook! 'calendar-mode-hook
-    calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
-    calendar-day-header-array ["sø" "ma" "ti" "on" "to" "fr" "lø"]
-    solar-n-hemi-seasons '("Vårjevndøgn"  "Sommersolverv" "Høstjevndøgn" "Vintersolherv")))
-#+end_src
+**** Mark today
 
 Mark today when scrolling past it.
 
@@ -3561,25 +3574,29 @@ Mark today when scrolling past it.
   (add-hook 'calendar-today-visible-hook 'calendar-mark-today))
 #+end_src
 
-Norwegian holidays.
+**** Make it norwegian
+
+Translate days and seasons to norwegian.
 
 #+begin_src emacs-lisp
 (after! calendar
   (add-hook 'calendar-initial-window-hook
             (defun t/calendar-initial-window-hook ()
               (require 'calendar-norway)
-              (setq
-               calendar-day-header-array ["sø" "ma" "ti" "on" "to" "fr" "lø"]
-               calendar-day-name-array ["søndag" "mandag" "tirsdag" "onsdag" "torsdag" "fredag" "lørdag"]
-               calendar-holidays (append
-                                  calendar-norway-raude-dagar
-                                  calendar-norway-andre-merkedagar
-                                  calendar-norway-dst
-                                  '((holiday-fixed 3 17 "St. Patricksdag")
-                                    (holiday-fixed 10 31 "Halloween")
-                                    (holiday-float 11 4 4 "Thanksgiving"))))
+              (setq calendar-day-header-array ["sø" "ma" "ti" "on" "to" "fr" "lø"]
+                    calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
+                    solar-n-hemi-seasons '("Vårjevndøgn"  "Sommersolverv" "Høstjevndøgn" "Vintersolherv")
+                    calendar-holidays (append
+                                       calendar-norway-raude-dagar
+                                       calendar-norway-andre-merkedagar
+                                       calendar-norway-dst
+                                       '((holiday-fixed 3 17 "St. Patricksdag")
+                                         (holiday-fixed 10 31 "Halloween")
+                                         (holiday-float 11 4 4 "Thanksgiving"))))
               (calendar-redraw))))
 #+end_src
+
+**** Navigation
 
 Evil like navigation.
 
