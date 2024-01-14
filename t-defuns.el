@@ -983,9 +983,14 @@ and indent accordingly."
   "Locally disable cursor in buffer."
   (interactive)
   (make-local-variable 'cursor-type)
-  (make-local-variable 'evil-normal-state-cursor)
   (setq-local cursor-type 'nil)
   (setq-local evil-normal-state-cursor 'nil))
+
+(defun t/locally-enable-cursor ()
+  "Enable locally disabled cursor in buffer."
+  (interactive)
+  (kill-local-variable cursor-type)
+  (setq-local evil-normal-state-cursor 'box))
 
 (defun t/random-line ()
   "Goto a random line in the buffer. Useful trying out a random package."
