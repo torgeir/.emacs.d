@@ -1234,12 +1234,13 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~ or ~
           avy-highlight-first t
           avy-style 'at-full
           avy-background t)
-    (let* ((b "#222") (f "DeepPink1") (ff "DeepPink3"))
+    (let* ((b "#222") (f "DeepPink1"))
       (set-face-attribute 'avy-background-face nil :foreground b)
-      (set-face-attribute 'avy-lead-face   nil :background b :foreground f  :weight 'bold)
-      (set-face-attribute 'avy-lead-face-0 nil :background b :foreground ff :weight 'bold)
-      (set-face-attribute 'avy-lead-face-1 nil :background b :foreground ff :weight 'bold)
-      (set-face-attribute 'avy-lead-face-2 nil :background b :foreground ff :weight 'bold)))
+      (set-face-attribute 'avy-lead-face   nil :background b :foreground f :weight 'bold)
+      (set-face-attribute 'avy-lead-face-0 nil :background b :foreground f :weight 'bold)
+      (set-face-attribute 'avy-lead-face-1 nil :background b :foreground f :weight 'bold)
+      (set-face-attribute 'avy-lead-face-2 nil :background b :foreground f :weight 'bold)))
+
   (t/setup-avy)
 
   ;;Also after creating a new frame when emacs is in daemon mode
