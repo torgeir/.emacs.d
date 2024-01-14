@@ -10,3 +10,4 @@ old/*
 /.log/
 /.nrepl-port
 /workspace
+config.el

@@ -1,1 +1,1 @@
-(t/load-compiled-config)
+;;; $DOOMLOCALDIR/config.el -*- lexical-binding: t; -*-
