@@ -733,8 +733,6 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
 Zoom to the previewed org subtree when jumping between headings with =consult-org-heading=.
 
 #+begin_src emacs-lisp
-;; TODO
-;; (add-hook! 'consult-after-jump-hook :append 'doom-modeline-refresh-bars)
 (add-hook! 'consult-after-jump-hook :append
   (defun t/after-consult-jump ()
     ""
@@ -801,10 +799,6 @@ Multiedit calls iedit which is missing all-caps in emacs 29.
 
 *** Font
 
-#+begin_quote
-JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:spacing=100:scalable=true
-#+end_quote
-
 #+begin_src emacs-lisp
 (defun t/font-spec (f &optional s weight)
   (font-spec :family f
@@ -830,6 +824,7 @@ JetBrains Mono:pixelsize=16:foundry=JB:weight=medium:slant=normal:width=normal:s
           doom-font-increment 2)
     (doom/reload-font)
     f))
+
 (t/cycle-fonts)
 #+end_src
 
@@ -1033,18 +1028,33 @@ The above needs the following feature in the codespace
 There's a lot of good [[file:~/.config/emacs/.local/straight/repos/themes/themes/][doom themes]]. I [[file:~/.config/emacs/.local/straight/repos/themes/themes/doom-one-theme.el::bg `(,(doom-darken "#282c34" 0.5) "black" "black"][tuned doom-one a little]], darkening some of the colors even more. Its in [[file:themes/t-doom-one-theme.el::(def-doom-theme t-doom-one][themes/t-doom-one-theme.el]].
 
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-feather-dark)
+(setq *t-themes* '(doom-feather-dark
+                   doom-flatwhite
+                   t-doom-one
+                   catppuccin
+                   doom-vibrant)
+      doom-theme (car *t-themes*))
 #+end_src
+
+Cycle through nice ones.
 
 #+begin_src emacs-lisp
 (defun t/cycle-theme ()
+  "Cycle through the themes of `*t-themes*`."
   (interactive)
-  (cl-case doom-theme
-    (doom-feather-dark (load-theme 'doom-flatwhite))
-    (doom-flatwhite (load-theme 'doom-feather-dark))
-    (t-doom-one (load-theme 'catppuccin))
-    (t (load-theme 'doom-vibrant)))
-  (message "Theme: %s" doom-theme))
+  (setq *t-themes*
+        (if (t/prefix-arg-universal?)
+            (append (list (car (reverse *t-themes*))) (butlast *t-themes*))
+          (append (cdr *t-themes*) (list (car *t-themes*)))))
+  (let ((theme (car *t-themes*)))
+    (load-theme theme t)
+    (setq doom-theme theme)
+    (message "Theme: %s" theme)))
+#+end_src
+
+Bind it to =SPC t t=. To cycle the other way around do =SPC u= =SPC t t=
+
+#+begin_src emacs-lisp
 (map! :leader "t t" #'t/cycle-theme)
 #+end_src
 
@@ -1383,11 +1393,11 @@ And screens are big, so a bit more space for text is nice.
      ((< w-px h-px) (/ (float 1) 3))
      ((> w 200) (/ (float 2) 5))
      ((and (> w 160) (> w-px 1440)) (/ (float 3) 7))
-     (t (/ (float 1) 5)))))
+     (t (/ (float 2) 5)))))
 (after! writeroom-mode
   (setq writeroom-width (t/sidebar-frac)))
 (after! olivetti
-  (setq olivetti-minimum-body-width 80)
+  (setq olivetti-minimum-body-width 90)
   (setq-default olivetti-body-width (floor (* (frame-width (selected-frame)) (t/sidebar-frac))))
   (add-to-list 'window-size-change-functions 'olivetti-set-window t))
 #+end_src
