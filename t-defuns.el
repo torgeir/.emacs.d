@@ -366,11 +366,19 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/volatile-kill-buffer-and-window ()
   "Kill current buffer and the window unconditionally."
   (interactive)
-  (setq-local kill-buffer-query-functions
-              (remq 'process-kill-buffer-query-function
-                    kill-buffer-query-functions))
-  (set-buffer-modified-p nil)
-  (kill-buffer-and-window))
+  (if (and
+       (= (bol) (eol))
+       (= (save-excursion (goto-char (point-max)))
+          (point)))
+      (progn
+        (setq-local kill-buffer-query-functions
+                    (remq 'process-kill-buffer-query-function
+                          kill-buffer-query-functions))
+        (set-buffer-modified-p nil)
+        (kill-buffer-and-window))
+    (when (and
+           (not (called-interactively-p))
+           (eq evil-state 'insert)) (delete-char 1))))
 
 (defun t/remove-newlines (str)
   (replace-regexp-in-string "[\r\n]+" "" str))
