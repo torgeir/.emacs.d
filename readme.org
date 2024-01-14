@@ -1461,9 +1461,10 @@ Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~
 
 #+begin_src emacs-lisp
 (set-popup-rule! "^\\*osx-dictionary" :side 'right :size 0.5 :vslot 2)
-(setq osx-dictionary-generate-buffer-name-function (lambda (&rest args)
-                                                     (pop-to-buffer osx-dictionary-buffer-name)
-                                                     osx-dictionary-buffer-name))
+(setq osx-dictionary-generate-buffer-name-function
+      (lambda (&rest args)
+        (pop-to-buffer osx-dictionary-buffer-name)
+        osx-dictionary-buffer-name))
 #+end_src
 
 *** REPLs
