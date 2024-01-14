@@ -8,41 +8,36 @@ Managing [[https://github.com/torgeir/.emacs.d/tree/d1c9dec646824ab7396b8a35fd7d
 
 ** Install
 
-First, install doom emacs.
+First, install doom emacs. I have since moved on to doing this with [[https://github.com/torgeir/nix/blob/main/home/editors/emacs.nix][nix]] and [[https://github.com/torgeir/nix-darwin/blob/main/home/emacs.nix][nix-darwin]].
 
 #+begin_src sh :tangle no :results no
 git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.emacs.d
 ~/.emacs.d/bin/doom install
 #+end_src
 
-Then the config.
+Then clone the config.
 
 #+begin_src sh :tangle no :results no
 cd && git clone git@github.com:torgeir/.emacs.d.git ~/.doom.d
 #+end_src
 
-And some terminal shortcuts
-
-#+begin_src sh :tangle no :results no
-ln -sf ~/.doom.d/emacsclient ~/bin/e
-ln -sf ~/.doom.d/emacsclient-terminal ~/bin/em
-#+end_src
-
-Installed with
-
-~brew install emacs-plus@29 --with-no-frame-refocus --with-native-comp --with-imagemagick --with-modern-doom-icon~
+Put =~/.doom.d/bin= on path for the terminal shortcuts =e= and =et= to open emacsclient and emacsclient in the terminal.
 
 ** Doom help
 
 The built in emacs help is fantastic. The doom one on ~SPC h d~ is even better! Here's a few examples.
 
-- [[file:~/.emacs.d/docs/examples.org][Browse examples of useful doom apis]]
+- [[file:~/.config/emacs/docs/examples.org][Browse examples of useful doom apis]]
 - [[elisp:(call-interactively 'doom/help-modules)][Lookup help for doom modules]]
 - [[elisp:(call-interactively 'doom/help-search)][Search for in the doom .emacs.d folder]]
 - ~SPC h d h~ to access documentation
 - ~SPC h d~ followed by ~C-h~ invokes a fuzzy search of keys available in the formerly pressed binding. This also works with ~SPC~ followed by ~C-h~.
 - ~K~ on a module to view its documentation
 - ~gd~ on a module to browse its directory
+
+*** Embark org ToC
+
+Type ~SPC m g g~ to run =consult-org-heading=, then ~C-c C-;~ to =embark-export=.
 
 ** Literate config
 
@@ -446,6 +441,14 @@ A useful macro one for testing stuff out
 (comment
  (funcall (t/micro-state nil "m" (cmd! (message "1")))))
 #+end_src
+
+**** Macro numbered list
+
+Type ~qq~ to record a macro to ~q~. Move to where you want the number and press ~C-x C-k C-i~. Move to the next line start to make the macro repeatble. Type ~q~. Undo. Select the list and hit ~@q~.
+
+- one
+- two
+- three
 
 *** Embark
 
@@ -3484,14 +3487,16 @@ Norwegian holidays.
   (add-hook 'calendar-initial-window-hook
             (defun t/calendar-initial-window-hook ()
               (require 'calendar-norway)
-              (setq calendar-holidays
-                    (append
-                     calendar-norway-raude-dagar
-                     calendar-norway-andre-merkedagar
-                     calendar-norway-dst
-                     '((holiday-fixed 3 17 "St. Patricksdag")
-                       (holiday-fixed 10 31 "Halloween")
-                       (holiday-float 11 4 4 "Thanksgiving"))))
+              (setq
+               calendar-day-header-array ["sø" "ma" "ti" "on" "to" "fr" "lø"]
+               calendar-day-name-array ["søndag" "mandag" "tirsdag" "onsdag" "torsdag" "fredag" "lørdag"]
+               calendar-holidays (append
+                                  calendar-norway-raude-dagar
+                                  calendar-norway-andre-merkedagar
+                                  calendar-norway-dst
+                                  '((holiday-fixed 3 17 "St. Patricksdag")
+                                    (holiday-fixed 10 31 "Halloween")
+                                    (holiday-float 11 4 4 "Thanksgiving"))))
               (calendar-redraw))))
 #+end_src
 
@@ -3912,20 +3917,6 @@ Useful e.g. to make dired act like a directory tree sidebar
      (xref--show-pos-in-buf l (marker-buffer l))))
  )
 #+end_src
-
-** Fun stuff
-
-*** Embark org ToC
-
-Type ~SPC mgg~ to run =consult-org-heading=, then ~C-c C-;~ to =embark-export=.
-
-*** Macro numbered list
-
-Type ~qq~ to record a macro to ~q~. Move to where you want the number and press ~C-x C-k C-i~. Move to the next line start to make the macro repeatble. Type ~q~. Undo. Select the list and hit ~@q~.
-
-- one
-- two
-- three
 
 ** Linux
 
