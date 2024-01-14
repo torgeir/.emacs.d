@@ -81,19 +81,19 @@ understands."
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-      (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
-       (root (projectile-project-root))
-       (tags (shell-quote-argument (concat root "TAGS")))
-       (process (start-process-shell-command "build ctags asynchronously"
-                                             "*ctags async*"
-                                             (concat
-                                              "ctags -e -R"          ; recurse
-                                              " --options=" ctags ; use global config
-                                              " -f " tags " "     ; put it in project/TAGS
-                                              " ."                   ; in the current directory
-                                              ))))
-    (set-process-sentinel process (lambda (process event)
-                                    (t/load-tags tags)))))
+   (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
+    (root (projectile-project-root))
+    (tags (shell-quote-argument (concat root "TAGS")))
+    (process (start-process-shell-command "build ctags asynchronously"
+                                          "*ctags async*"
+                                          (concat
+                                           "ctags -e -R"          ; recurse
+                                           " --options=" ctags ; use global config
+                                           " -f " tags " "     ; put it in project/TAGS
+                                           " ."                   ; in the current directory
+                                           ))))
+   (set-process-sentinel process (lambda (process event)
+                                   (t/load-tags tags)))))
 
 (defun t/load-tags (tags)
   "Loads project tags into tag table."
@@ -140,36 +140,6 @@ Version 2015-06-12"
   (let ((hippie-expand-try-functions-list '(try-expand-line-all-buffers)))
     (end-of-line)
     (hippie-expand nil)))
-
-(defun t/rename-current-buffer-file ()
-  "Renames current buffer and file it is visiting."
-  (interactive)
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" name)
-      (let ((new-name (read-file-name "New name: " filename)))
-        (if (get-buffer new-name)
-            (error "A buffer named '%s' already exists!" new-name)
-          (rename-file filename new-name 1)
-          (rename-buffer new-name)
-          (set-visited-file-name new-name)
-          (set-buffer-modified-p nil)
-          (message "File '%s' successfully renamed to '%s'"
-                   name (file-name-nondirectory new-name)))))))
-
-(defun t/delete-current-buffer-file ()
-  "Remove file connected to current buffer and kill buffer."
-  (interactive)
-  (let ((filename (buffer-file-name))
-        (buffer (current-buffer))
-        (name (buffer-name)))
-    (if (not (and filename (file-exists-p filename)))
-        (ido-kill-buffer)
-      (when (yes-or-no-p "Are you sure you want to remove this file? ")
-        (delete-file filename)
-        (kill-buffer buffer)
-        (message "File '%s' successfully removed" filename)))))
 
 (defun t/untabify-buffer ()
   "Remove tabs in buffer."
@@ -289,18 +259,6 @@ hide it (on mac)."
   (interactive)
   (face-attribute (or face (face-at-point)) :foreground))
 
-(defun t/sudo-edit (&optional arg)
-  "Edit currently visited file as root.
-
-   With a prefix ARG prompt for a file to visit.
-   Will also prompt for a file to visit if current
-   buffer is not visiting a file."
-  (interactive "P")
-  (if (or arg (not buffer-file-name))
-      (find-file (concat "/sudo:root@localhost:"
-                         (ido-read-file-name "Find file(as root): ")))
-    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
-
 (defun server-remove-kill-buffer-hook ()
   ;; remove other clients-has-the-file-open-prompt
   (remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function))
@@ -331,19 +289,6 @@ hide it (on mac)."
   (let ((beg (if (region-active-p) (region-beginning) (point-min)))
         (end (if (region-active-p) (region-end) (point-max))))
     (sort-lines nil beg end)))
-
-(defun t/shorten-directory (dir max-length)
-  "Show up to `MAX-LENGTH' characters of a directory name `DIR'."
-  (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
-        (output ""))
-    (when (and path (equal "" (car path)))
-      (setq path (cdr path)))
-    (while (and path (< (length output) (- max-length 4)))
-      (setq output (concat (car path) "/" output))
-      (setq path (cdr path)))
-    (when path
-      (setq output (concat ".../" output)))
-    output))
 
 (defun t/find-xml-path ()
   "Display the hierarchy of XML elements the point is on as a path."
@@ -406,7 +351,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/project-root ()
   "Get project root without throwing."
   (let (projectile-require-project-root strict-p)
-    (projectile-project-root)))
+    (or (projectile-project-root)
+        default-directory)))
 
 (defun t/volatile-kill-buffer ()
   "Kill current buffer unconditionally."
@@ -739,31 +685,15 @@ and indent accordingly."
     (lexical-let* ((dir (expand-file-name (format "~/Projects/%s/" repo-name)))
                    (cmd (concat "git " "clone " (format "git@github.com:%s.git" repo-name)))
                    (msg (concat "Cloning " repo-name ".. ok.")))
-      (if (file-exists-p dir)
-          (dired dir)
-        (progn
-          (message "Cloning %s.." repo repo-name)
-          (t/async-shell-command (format "*git-clone %s*" repo-name)
-                                 (concat cmd " " (magit-convert-filename-for-git dir))
-                                 (lambda (&optional &rest args)
-                                   (dired dir)
-                                   (message msg))))))))
-
-(defun t/set-company-backends (&rest backends)
-  "Set company BACKENDS."
-  (make-local-variable 'company-backends)
-  (setq-local company-backends backends))
-
-(defun t/add-company-backends (&rest backends)
-  "Add list of grouped company BACKENDS."
-  (make-local-variable 'company-backends)
-  (setq-local company-backends (t/company-backends backends)))
-
-(defun t/add-company-backends-hook (mode-hook &rest backends)
-  "Add list of grouped company BACKENDS for `MODE-HOOK'."
-  (add-hook mode-hook
-            (lambda nil
-              (apply 't/add-company-backends backends))))
+                  (if (file-exists-p dir)
+                      (dired dir)
+                    (progn
+                      (message "Cloning %s.." repo repo-name)
+                      (t/async-shell-command (format "*git-clone %s*" repo-name)
+                                             (concat cmd " " (magit-convert-filename-for-git dir))
+                                             (lambda (&optional &rest args)
+                                               (dired dir)
+                                               (message msg))))))))
 
 (defun t/visit-git-link-pulls ()
   "Navigate to /pulls for the current git repo."
@@ -792,6 +722,8 @@ and indent accordingly."
 (defun t/projectile-magit-status ()
   (interactive)
   (let ((projects (projectile-load-known-projects)))
+    ;; TODO
+    ;; (autoload-do-load 'my-function 'my-file nil t)
     (if projects
         (projectile-completing-read
          "magit status in project: "
@@ -810,7 +742,9 @@ and indent accordingly."
          projects
          :action (lambda (project)
                    (let ((default-directory project))
-                     (counsel-projectile-rg))))
+                     (cond
+                      ((fboundp '+default/search-project) (+default/search-project))
+                      ((fboundp 'counsel-projectile-rg) (counsel-projectile-rg))))))
       (user-error "No projects found"))))
 
 (defun t/projectile-visit-git-link-pulls ()
@@ -1247,13 +1181,11 @@ curl http://cheat.sh/:list lists all commands
            (if (t/prefix-arg-universal?) "" " --buildDrafts")
            "\C-m")))
 
-
 (defun t/chrome-urls ()
   "Combine all open chrome tabs into newline delimited string."
   (interactive)
   (shell-command-to-string
    "osascript -l JavaScript -e '[].slice.call(((app) => (app && app.windows) || [])(Application(\"Google Chrome\"))).map((w) => [w, [].slice.call(w.tabs)]).map(([_, tabs]) => tabs).flat().map((t, idx) => [\"[[\", t.url(), \"][Tab \", (idx + 1), \"]]\"].join(\"\")).join(\"\\n\")'"))
-
 
 (defun t/speak (beg end)
   "Speak selected text using macos 'say' command."
@@ -1279,7 +1211,6 @@ non-letter-and-number with -, and remove double --."
      "[^a-z0-9]" "-"
      (s-replace-all '((" a " . "-"))
                     (downcase (t/org-heading)))))))
-
 
 (defun t/remove-consecutive-newlines ()
   (interactive)
