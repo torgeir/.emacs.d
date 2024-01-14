@@ -339,7 +339,8 @@ Soft wrap everywhere
 (add-hook! 'doom-after-init-hook
   (defun t/after-init-hook ()
     (setq truncate-lines nil)
-    (global-visual-line-mode 1)))
+    (global-visual-line-mode 1)
+    (global-hl-line-mode -1)))
 #+end_src
 
 Programming modes
@@ -1631,7 +1632,8 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Debug on error"        "t D" #'toggle-debug-on-error
  :leader :desc "Cycle fonts"           "t f" #'t/cycle-fonts
  :leader :desc "Toggle focus mode"     "t F" #'focus-mode
- :leader :desc "Toggle highlight line" "t h" #'hl-line-mode
+ :leader :desc "Toggle idle highlight" "t h" #'t-idle-highlight-mode
+ :leader :desc "Toggle highlight line" "t H" #'hl-line-mode
  :leader :desc "Toggle variable pitch" "t v" (defun t/variable-pitch-mode (&optional turn-on)
                                                "https://www.reddit.com/r/DoomEmacs/comments/l9jy0h/how_does_variablepitchmode_work_and_why_does_it/."
                                                (interactive)
@@ -3949,49 +3951,90 @@ Useful elisp I committed, or decided to work on.
   :load-path (lambda () (t/user-emacs-file "site-lisp/json-path-eldoc/")))
 #+end_src
 
-*** Flash symbol in visible buffers
+*** Idle highlight across in all buffers
+
+A little minor mode to highlight the symbol at point or the selected region across all emacs buffers.
 
 #+begin_src emacs-lisp
-(comment
- ;; TODO find a way to toggle this
- ;; maybe a transient map, that disables on key movement
- ;; and flash only visual selection
- (run-with-idle-timer 1 t 't/flash-in-all-buffers)
- (list-timers))
-#+end_src
+(defvar t-idle-highlight-idle-time 0.3
+  "Time before idle highlight kicks in.")
 
-#+begin_src emacs-lisp
+(defvar t-idle-highlight-flash-duration 1.5
+  "Time of idle highlight flash duration.")
+
+(defvar t-idle-highlight--timer nil
+  "Idle timer that triggers the highlight when user is idle.")
+
+(define-minor-mode t-idle-highlight-mode
+  "Minor mode that will highlight symbol at point when emacs is idle."
+  :init-value nil
+  :global t
+  :lighter " t-idle-highlight"
+  (if t-idle-highlight-mode
+      (progn
+        (require 'highlight-symbol)
+        (add-hook 'pre-command-hook 't/unhighlight-in-all-buffers)
+        (setq t-idle-highlight--timer
+              (run-with-idle-timer
+               t-idle-highlight-idle-time
+               t
+               't/highlight-in-all-buffers)))
+    (progn
+      (remove-hook 'pre-command-hook 't/unhighlight-in-all-buffers)
+      (when t-idle-highlight--timer
+        (cancel-timer t-idle-highlight--timer)
+        (setq t-idle-highlight--timer nil)
+        (t/unhighlight-in-all-buffers)))))
+
+(defface t-idle-highlight-face
+  '((t (:weight bold)))
+  "Idle highlighting face.")
+
+(defface t-idle-highlight-face-loud
+  '((t (:weight bold :background "#f0a" :foreground "#dadada")))
+  "Idle highlighting face, loud.")
+
 (defun t/flash-in-all-buffers ()
   "Highlight symbol at point across all buffers temporarily."
   (interactive)
-  (t/highlight-in-all-buffers)
-  (run-at-time "2 sec" nil 't/unhighlight-in-all-buffers))
+  (t/highlight-in-all-buffers 't-idle-highlight-face-loud)
+  (run-at-time (format "%d sec" t-idle-highlight-flash-duration) nil 't/unhighlight-in-all-buffers))
 
-(defun t/highlight-in-all-buffers ()
+(defun t/highlight-with-all-buffers (fn)
+  (if-let ((symbol
+            (if (use-region-p)
+                (buffer-substring-no-properties (region-beginning) (+ 1 (region-end)))
+              (thing-at-point 'symbol t))))
+      (save-excursion
+        (let ((tail (buffer-list)))
+          (while tail
+            (let ((buffer (car tail)))
+              (set-buffer buffer)
+              (funcall fn symbol)
+              (setq tail (cdr tail))))))))
+
+(defun t/highlight-in-all-buffers (&optional face)
   "Highlight symbol at point in all buffers."
   (interactive)
-  (let ((word (thing-at-point 'symbol t)))
-    (if word
-        (save-excursion
-          (let ((tail (buffer-list)))
-            (while tail
-              (let ((buffer (car tail)))
-                (set-buffer buffer)
-                (highlight-symbol word)
-                (setq tail (cdr tail)))))))))
+  (t/highlight-with-all-buffers
+   (lambda (symbol)
+     (highlight-symbol-add-symbol-with-face symbol (or face 't-idle-highlight-face)))))
 
 (defun t/unhighlight-in-all-buffers ()
-  "Remove all symbold highlights in all buffers."
+  "Remove all symbol highlights in all buffers."
   (interactive)
-  (let ((word (thing-at-point 'symbol t)))
-    (if word
-        (save-excursion
-          (let ((tail (buffer-list)))
-            (while tail
-              (let ((buffer (car tail)))
-                (set-buffer buffer)
-                (highlight-symbol-remove-all)
-                (setq tail (cdr tail)))))))))
+  (t/highlight-with-all-buffers
+   (lambda (symbol)
+     (highlight-symbol-remove-all))))
+#+end_src
+
+Extend evil to flash highlights on =SPC u *=
+
+#+begin_src emacs-lisp
+(after! evil
+  (map! :map evil-motion-state-map
+        "*" (cmd! (if (t/prefix-arg-universal?) (t/flash-in-all-buffers)
+                    (call-interactively 'evil-search-word-forward)))))
 #+end_src
 
 ** Bugfixes
