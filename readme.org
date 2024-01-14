@@ -3935,8 +3935,6 @@ Useful elisp I committed, or decided to work on.
   :load-path (lambda () (t/user-emacs-file "site-lisp/consult-async/")))
 #+end_src
 
-TODO idle highlight in visible buffers
-
 #+begin_src emacs-lisp
 ;; don't use this for large files, e.g. like 15MB, it really brings emacs to a stall
 (use-package! nxml-eldoc
@@ -3949,6 +3947,42 @@ TODO idle highlight in visible buffers
   :commands turn-on-json-path-eldoc
   :init (add-hook! 'json-mode-hook 'turn-on-json-path-eldoc)
   :load-path (lambda () (t/user-emacs-file "site-lisp/json-path-eldoc/")))
+#+end_src
+
+*** Flash symbol in visible buffers
+
+#+begin_src emacs-lisp
+(defun t/flash-in-all-buffers ()
+  "Highlight symbol at point across all buffers temporarily."
+  (interactive)
+  (t/highlight-in-all-buffers)
+  (run-at-time "2 sec" nil 't/unhighlight-in-all-buffers))
+
+(defun t/highlight-in-all-buffers ()
+  "Highlight symbol at point in all buffers."
+  (interactive)
+  (let ((word (thing-at-point 'symbol t)))
+    (if word
+        (save-excursion
+          (let ((tail (buffer-list)))
+            (while tail
+              (let ((buffer (car tail)))
+                (set-buffer buffer)
+                (highlight-symbol word)
+                (setq tail (cdr tail)))))))))
+
+(defun t/unhighlight-in-all-buffers ()
+  "Remove all symbold highlights in all buffers."
+  (interactive)
+  (let ((word (thing-at-point 'symbol t)))
+    (if word
+        (save-excursion
+          (let ((tail (buffer-list)))
+            (while tail
+              (let ((buffer (car tail)))
+                (set-buffer buffer)
+                (highlight-symbol-remove-all)
+                (setq tail (cdr tail)))))))))
 #+end_src
 
 ** Bugfixes
