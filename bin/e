@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 case $(uname) in
   Linux)
     emacsclient=/usr/bin/emacsclient
     ;;
   Darwin)
-    emacsclient=/usr/local/bin/emacsclient
+    emacsclient=/etc/profiles/per-user/torgeir/bin/emacsclient
     ;;
 esac
 
