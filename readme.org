@@ -3952,6 +3952,15 @@ Useful elisp I committed, or decided to work on.
 *** Flash symbol in visible buffers
 
 #+begin_src emacs-lisp
+(comment
+ ;; TODO find a way to toggle this
+ ;; maybe a transient map, that disables on key movement
+ ;; and flash only visual selection
+ (run-with-idle-timer 1 t 't/flash-in-all-buffers)
+ (list-timers))
+#+end_src
+
+#+begin_src emacs-lisp
 (defun t/flash-in-all-buffers ()
   "Highlight symbol at point across all buffers temporarily."
   (interactive)
