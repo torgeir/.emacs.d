@@ -691,10 +691,7 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
 
 (defun t-toggle-sidebar ()
   (interactive)
-  (let* ((sidebar-project (replace-regexp-in-string
-                           (expand-file-name "~")
-                           "~"
-                           (or (t/project-root) (file-name-directory (buffer-file-name)))))
+  (let* ((sidebar-project (replace-regexp-in-string (expand-file-name "~") "~" (t/project-root)))
          (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
          (sidebar-buffer (get-buffer sidebar-name))
          (sidebar-displayed (and sidebar-buffer (get-buffer-window sidebar-buffer))))
@@ -2676,7 +2673,8 @@ Holding alt for moving between sexps feel right
 *** Emacs lisp
 
 #+begin_src emacs-lisp
-(map! :map emacs-lisp-mode-map
+;; TODO bind M-SPC in minibuffer-mode-map
+(map! :map (minibuffer-mode-map emacs-lisp-mode-map)
       :localleader :desc "Eval and replace" "e R" #'t/eval-and-replace)
 #+end_src
 

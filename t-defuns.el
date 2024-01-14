@@ -1100,9 +1100,11 @@ curl http://cheat.sh/:list lists all commands
 ?T&q params give text only, no twitter buttons
 "))
 
-(defun t/toggle-dedicated-window (&optional dedicated)
+(defun t/toggle-dedicated-window (&optional &rest params)
   (interactive)
-  (let ((dedicated (or dedicated (not (window-dedicated-p (selected-window))))))
+  (let ((dedicated (if (> (length params) 0)
+                       (car params)
+                     (not (window-dedicated-p (selected-window))))))
     (set-window-dedicated-p (selected-window) dedicated)
     (set-window-parameter (selected-window) 'no-delete-other-windows dedicated)
     (message (if dedicated "Window dedicated." "Window not dedicated."))))
