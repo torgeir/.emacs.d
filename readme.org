@@ -261,6 +261,20 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 
 ** Editor
 
+
+*** Minibuffers
+
+Some commands are useful from within the minibuffer. This needs =enable-recursive-minibuffers=, see below.
+
+#+begin_src emacs-lisp
+(after! vertico
+  (map! :map (vertico-map
+              minibuffer-local-map
+              read--expression-map)
+        :g "C-k" 'kill-line
+        :g "M-SPC" 'doom/leader))
+#+end_src
+
 *** Recursive minibuffers
 
 When you change your mind and need to do something first, after you already started a command that opens the minibuffer. Cancel them with ~C-]~.
