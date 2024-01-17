@@ -2381,11 +2381,11 @@ Default openai language model.
   (map! :map mastodon-mode-map
         :n "q" #'+workspace/delete
         :n "j" (cmd!
-                (mastodon-tl--goto-next-toot)
+                (mastodon-tl--goto-next-item)
                 (let ((current-prefix-arg '(4)))
                   (call-interactively 'recenter-top-bottom)))
         :n "k" (cmd!
-                (mastodon-tl--goto-prev-toot)
+                (mastodon-tl--goto-prev-item)
                 (let ((current-prefix-arg '(4)))
                   (call-interactively 'recenter-top-bottom)))))
 #+end_src
