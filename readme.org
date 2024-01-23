@@ -2467,6 +2467,7 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
 
 #+begin_src emacs-lisp
 (setq blacklisted-eww-url-parts '("localhost"
+                                  "slack.com"
                                   "github.com"
                                   "openai.com"
                                   "twitter.com"
