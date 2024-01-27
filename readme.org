@@ -261,7 +261,6 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 
 ** Editor
 
-
 *** Minibuffers
 
 Some commands are useful from within the minibuffer. This needs =enable-recursive-minibuffers=, see below.
@@ -692,17 +691,19 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
                              (window-height . fit-window-to-buffer)
                              (body-function . (lambda (window)
                                                 (set-window-dedicated-p window t)
-                                                (message "body function")
                                                 (with-selected-window window
                                                   ;; force no split on RET
                                                   (make-local-variable 'split-window-preferred-function)
-                                                  (setq split-window-preferred-function nil))))
+                                                  (setq-local split-window-preferred-function 'ignore)
+                                                  (message "body function: %s" split-window-preferred-function))))
                              (window-parameters . ((no-other-window . t)))))))
 
 
-(comment setq display-buffer-alist
-         (delq (assoc "::" display-buffer-alist)
-               display-buffer-alist))
+(comment
+ (setq display-buffer-alist
+               (delq (assoc "^:" display-buffer-alist)
+                     display-buffer-alist))
+)
 
 (defun t-toggle-sidebar ()
   (interactive)

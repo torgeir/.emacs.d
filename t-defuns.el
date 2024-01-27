@@ -941,6 +941,18 @@ and indent accordingly."
   (goto-char (point-min))
   (forward-line (random (count-lines (point-min) (point-max)))))
 
+(defun t/frame-width ()
+  (interactive)
+  (let ((w (frame-width (selected-frame))))
+    (message "width: %s" w)
+    w))
+
+(defun t/frame-height ()
+  (interactive)
+  (let ((h (frame-height (selected-frame))))
+    (message "height: %s" h)
+    h))
+
 (defun t/decrease-frame-width ()
   "Decrease Emacs frame size horizontally."
   (interactive)
