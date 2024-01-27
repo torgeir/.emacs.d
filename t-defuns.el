@@ -350,6 +350,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 
 (defun t/project-root ()
   "Get project root without throwing."
+  (interactive)
   (let (projectile-require-project-root strict-p)
     (or (projectile-project-root)
         default-directory)))
