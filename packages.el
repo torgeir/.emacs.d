@@ -1,3 +1,4 @@
+(package! tide :disable t)
 (package! catppuccin-theme)
 (package! elfeed-tube)
 (package! evil-cleverparens)

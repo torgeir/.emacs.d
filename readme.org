@@ -71,6 +71,7 @@ The madness that is dynamic is too much for anyone, really.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
+(package! tide :disable t)
 (package! catppuccin-theme)
 (package! elfeed-tube)
 (package! evil-cleverparens)
@@ -379,6 +380,14 @@ Programming modes
                             newline-mark missing-newline-at-eof))))
 #+end_src
 
+*** Emmet
+
+#+begin_src emacs-lisp
+(after! emmet-mode
+  (add-to-list 'emmet-jsx-major-modes 'typescript-ts-mode)
+  (add-to-list 'emmet-jsx-major-modes 'tsx-ts-mode))
+#+end_src
+
 *** Evil
 
 I spent so much time with vim, I will probably never give it up.
@@ -630,6 +639,10 @@ Iterate through CamelCase words
 
 *** +onsave format-all
 
+#+begin_src sh :tangle no :results silent
+npm install -g prettier
+#+end_src
+
 The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well. It messes up prettier.
 
 #+begin_src emacs-lisp
@@ -701,9 +714,9 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
 
 (comment
  (setq display-buffer-alist
-               (delq (assoc "^:" display-buffer-alist)
-                     display-buffer-alist))
-)
+       (delq (assoc "^:" display-buffer-alist)
+             display-buffer-alist))
+ )
 
 (defun t-toggle-sidebar ()
   (interactive)
@@ -841,7 +854,7 @@ Multiedit calls iedit which is missing all-caps in emacs 29.
     f))
 
 (t/cycle-fonts)
-          #+end_src
+#+end_src
 
 **** Nerd fonts
 
@@ -865,7 +878,7 @@ fc-list
 
 *** Errors
 
-Navigate flycheck errors
+Navigate flymake and flycheck errors
 
 #+begin_src emacs-lisp
 (map!
@@ -883,6 +896,21 @@ Navigate flycheck errors
                                                           ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-previous-error))
                                                           (t (flymake-goto-prev-error)))))))
 #+end_src
+
+**** Skip to flymake issues when skipping through them
+
+#+begin_src emacs-lisp
+(after! flymake
+  (map!
+   :map flymake-diagnostics-buffer-mode-map
+   :n "C-p" (cmd! (previous-line)
+                  (flymake-goto-diagnostic (point))
+                  (flymake-show-buffer-diagnostics))
+   :n "C-n" (cmd! (next-line)
+                  (flymake-goto-diagnostic (point))
+                  (flymake-show-buffer-diagnostics))))
+#+end_src
+
 
 **** Eglot flycheck issue
 
@@ -2171,7 +2199,7 @@ If you need to remove one, do this
 
 #+begin_src emacs-lisp
 (comment
- (setq org-structure-template-alist (remove '("sh" . "src shell") org-structure-template-alist)))
+ (setq org-structure-template-alist (assoc-delete-all "sh" org-structure-template-alist)))
 #+end_src
 
 Don't popupize the org code block editor with doom's popup framework, so it opens split wherever it fits like it is by default.
@@ -2889,39 +2917,109 @@ Need ~C-c C-s~ in org mode.
   (set-popup-rule! "*remark browser*" :ttl nil))
 #+end_src
 
-*** Typescript
+*** Javascript/Typescript
 
-I need prettier.
+**** Eglot typescript-language-server setup
 
-#+begin_src sh :tangle no :results silent
-npm install -g prettier
-#+end_src
-
-#+begin_src emacs-lisp
-(setq +format-with-lsp nil)
-#+end_src
-
-**** Eglot ls
+Prerequisites
 
 #+begin_src sh :tangle no :results silent
 npm install -g typescript-language-server typescript
 #+end_src
 
+Remove what the doom =(javascript :lsp)= module sets up for [[file:~/.config/emacs/modules/lang/javascript/config.el::(cons "\\.tsx\\'"][web mode typescript]]
+
+#+begin_src emacs-lisp
+(setq auto-mode-alist (assoc-delete-all "\\.tsx?\\'" auto-mode-alist))
+(setq auto-mode-alist (assoc-delete-all "\\.tsx\\'" auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode) t)
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode) t)
+#+end_src
+
+Get rid of =tide=, it keeps starting =tsserver=. I don't want it.
+
+#+begin_src emacs-lisp
+(after! tide
+  (when (featurep 'evil-collection-tide) (unload-feature 'evil-collection-tide))
+  (when (featurep 'company-tide) (unload-feature 'company-tide))
+  (when (featurep 'tide) (unload-feature 'tide)))
+#+end_src
+
+Remove what =eglot-server-programs= contains, that is the =typescript-language-server= setup without inlay hints
+
 #+begin_src emacs-lisp
 (after! eglot
-  (add-to-list 'eglot-server-programs '((typescript-mode typescript-tsx-mode) . ("typescript-language-server" "--stdio"))))
+  ;; get rid of the old configuration
+  ;; remove configuration where the first item is js-mode in the nested list
+  ;; could not find a simpler to remove the default configuration than this
+  (setq eglot-server-programs
+        (cl-remove-if (lambda (el) (and
+                                    (listp (car el))
+                                    (listp (caar el))
+                                    (equal (caaar el) 'js-mode)))
+                      eglot-server-programs))
+
+  ;; insert the new configuration that sets options to include inlay hints
+  ;; https://github.com/joaotavora/eglot/discussions/1266
+  ;; https://www.reddit.com/r/emacs/comments/11bqzvk/comment/jg0hlm4
+  (let ((inlay-opts '("typescript-language-server" "--stdio"
+                      :initializationOptions
+                      (:preferences
+                       (:includeInlayParameterNameHints "all"
+                        :includeInlayParameterNameHintsWhenArgumentMatchesName t
+                        :includeInlayVariableTypeHintsWhenTypeMatchesName t
+                        :includeInlayPropertyDeclarationTypeHints t
+                        :includeInlayFunctionLikeReturnTypeHints t
+                        :includeInlayFunctionParameterTypeHints t
+                        :includeInlayEnumMemberValueHints t
+                        :includeInlayVariableTypeHints t)))))
+    (add-to-list
+     'eglot-server-programs
+     ;; stole this from the original eglot-server-programs
+     `((;; this messes up json-mode which inherits javascript-mode
+        ;;(js-mode :language-id "javascript")
+
+        (js-ts-mode :language-id "javascript")
+        (tsx-ts-mode :language-id "typescriptreact")
+        (typescript-ts-mode :language-id "typescript")
+        (typescript-mode :language-id "typescript"))
+       .
+       ,inlay-opts))))
 #+end_src
 
 #+begin_src emacs-lisp
-(after! typescript-mode
-  (defun t-ts-mode-hook ()
-    (electric-indent-mode -1))
-  (add-hook! '(typescript-mode-hook typescript-tsx-mode-hook) #'t-ts-mode-hook))
+(defun t/eglot-organize-imports ()
+  (interactive)
+  (if (derived-mode-p 'rjsx-mode
+                      'typescript-ts-base-mode)
+      (seq-do
+       (lambda (kind)
+         (interactive)
+         (ignore-errors
+           (eglot-code-actions (buffer-end 0)
+                               (buffer-end 1) kind t)))
+       ;; https://github.com/typescript-language-server/typescript-language-server#code-actions-on-save
+       (list
+        "source.addMissingImports.ts"
+        "source.fixAll.ts"
+        "source.removeUnused.ts"
+        "source.addMissingImports.ts"
+        "source.removeUnusedImports.ts"
+        "source.sortImports.ts"
+        "source.organizeImports.ts"
+        ))
+    (funcall-interactively #'eglot-code-action-organize-imports)))
+(defun t-ts-mode-hook ()
+  (add-hook 'before-save-hook #'t/eglot-organize-imports -100 t)
+  (electric-indent-mode -1)
+  (lsp!))
+
+(add-hook! '(rjsx-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook) #'t-ts-mode-hook)
 #+end_src
 
 **** Typescript repl with ts-node
 
-Adapt [[file:~/.config/emacs/.local/straight/repos/nodejs-repl.el/nodejs-repl.el::defun nodejs-repl (][what ~nodejs-repl~ does]] using ~ts-node~.
+Adapt [[file:~/.config/doom-local/straight/repos/nodejs-repl.el/nodejs-repl.el::defun nodejs-repl (][what ~nodejs-repl~ does]] using ~ts-node~.
 
 #+begin_src sh :tangle no :results silent
 npm install -g ts-node
@@ -2948,13 +3046,13 @@ Then make doom understand typescript, e.g. when you select something and go =SPC
   (interactive)
   (pop-to-buffer
    (make-comint "ts-node repl" "ts-node")))
-(set-repl-handler! '(typescript-mode typescript-tsx-mode) #'t/ts-node-repl)
+(set-repl-handler! '(typescript-ts-mode tsx-ts-mode) #'t/ts-node-repl)
 #+end_src
 
 Or when you ~eval~ something when the repl is open, e.g. =g r a p= (eval around paragraph). For multiline stuff type =.editor= into the repl before running the command, finish it with =C-c C-d=
 
 #+begin_src emacs-lisp
-(set-eval-handler! '(typescript-mode typescript-tsx-mode)
+(set-eval-handler! '(typescript-ts-mode tsx-ts-mode)
   '((:command     . "ts-node")
     (:exec        . "%c %s")
     (:description . "Run ts-node script")))
@@ -2969,10 +3067,13 @@ Or when you ~eval~ something when the repl is open, e.g. =g r a p= (eval around 
 **** M-ret, like intellij
 
 #+begin_src emacs-lisp
-(after! typescript-mode
-  (map!
-   :map (typescript-mode-map typescript-tsx-mode-map)
-   :g "M-<return>" #'eglot-code-actions))
+(map!
+ :after rjsx-mode
+ :map rjsx-mode-map :g "M-<return>" #'eglot-code-actions)
+(map!
+ :after typescript-ts-mode
+ :map (typescript-ts-mode-map tsx-ts-mode-map)
+ :g "M-<return>" #'eglot-code-actions)
 #+end_src
 
 *** Rust

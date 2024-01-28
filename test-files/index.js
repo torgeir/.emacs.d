@@ -19,6 +19,8 @@ var { a, b } = {}
   var a = 1
 })()
 
+var b = 1
+
 module.exports = 1
 
 console.log("wow" + (1 + 2))
