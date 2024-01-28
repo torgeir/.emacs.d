@@ -73,6 +73,7 @@ This is tangled to ~packages.el~ on save.
 #+begin_src emacs-lisp :tangle packages.el
 (package! tide :disable t)
 (package! catppuccin-theme)
+(package! magit-delta)
 (package! elfeed-tube)
 (package! evil-cleverparens)
 (package! transpose-frame)
@@ -702,21 +703,9 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
                              (display-buffer-in-side-window)
                              (side . left)
                              (window-height . fit-window-to-buffer)
-                             (body-function . (lambda (window)
-                                                (set-window-dedicated-p window t)
-                                                (with-selected-window window
-                                                  ;; force no split on RET
-                                                  (make-local-variable 'split-window-preferred-function)
-                                                  (setq-local split-window-preferred-function 'ignore)
-                                                  (message "body function: %s" split-window-preferred-function))))
+                             (body-function . (lambda (window) (set-window-dedicated-p window t)))
                              (window-parameters . ((no-other-window . t)))))))
 
-
-(comment
- (setq display-buffer-alist
-       (delq (assoc "^:" display-buffer-alist)
-             display-buffer-alist))
- )
 
 (defun t-toggle-sidebar ()
   (interactive)
@@ -733,6 +722,16 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
           (rename-buffer sidebar-name)))
       (pop-to-buffer sidebar-name))))
 #+end_src
+
+***** How to clean up display buffer alist entries
+
+#+begin_src emacs-lisp
+(comment
+ (setq display-buffer-alist
+       (assoc-delete-all "^:" display-buffer-alist))
+ )
+#+end_src
+
 
 **** WIP to locate file in dired
 
@@ -3386,6 +3385,14 @@ Colorz.
   (set-face-attribute 'magit-diff-hunk-heading nil :background "#513d5b" :foreground "#07010E")
   (set-face-attribute 'magit-diff-hunk-heading-highlight nil :background "#ED60BA" :foreground "#01010E" :weight 'bold)
   (set-face-attribute 'magit-diff-revision-summary nil :inherit 'magit-diff-hunk-heading :foreground "#ED60BA"))
+#+end_src
+
+**** More colors in diff
+
+Improved diffs with =magit-delta-mode=. Show the themes with =delta --show-syntax-themes --dark | grep -i theme=.
+
+#+begin_src emacs-lisp
+(setq magit-delta-default-dark-theme "DarkNeon")
 #+end_src
 
 *** Blamer mode
