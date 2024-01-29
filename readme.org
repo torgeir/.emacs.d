@@ -71,6 +71,8 @@ The madness that is dynamic is too much for anyone, really.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
+(package! copilot
+  :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el" "dist")))
 (package! tide :disable t)
 (package! catppuccin-theme)
 (package! magit-delta)
@@ -1681,7 +1683,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Search the web" "s w" #'consult-web-search
 
  :leader :desc "Toggle blamer"         "t b" #'blamer-mode
- :leader :desc "Toggle cursor"         "t c" #'t/toggle-window-cursor
+ :leader :desc "Toggle copilot"        "t c" #'copilot-mode
  :leader :desc "Fill column indicator" "t C" #'display-fill-column-indicator-mode
  :leader :desc "Toggle Big mode"       "t B" #'doom-big-font-mode
  :leader :desc "Toggle dedication"     "t d" #'t/toggle-dedicated-window
@@ -4299,3 +4301,13 @@ Then type ~C-ret~ to add something to the playlist.
   (defun t/music-browse        () (interactive) (emms-smart-browse)))
 #+end_src
 
+*** copilot.el
+
+#+begin_src emacs-lisp
+(use-package! copilot
+  :bind (:map copilot-completion-map
+              ("<tab>"   . 'copilot-accept-completion)
+              ("TAB"     . 'copilot-accept-completion)
+              ("C-TAB"   . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)))
+#+end_src

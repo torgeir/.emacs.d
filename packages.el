@@ -1,3 +1,5 @@
+(package! copilot
+  :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el" "dist")))
 (package! tide :disable t)
 (package! catppuccin-theme)
 (package! magit-delta)
