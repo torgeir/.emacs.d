@@ -219,12 +219,20 @@ hide it (on mac)."
          (error (save-buffers-kill-emacs)))))))
 
 (defun t/copy-buffer-file-name ()
+  "Copy the current buffer file name into the kill ring."
   (interactive)
-  (add-string-to-kill-ring (file-name-nondirectory (buffer-file-name))))
+  (let ((filename (file-name-nondirectory (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s'" filename))))
 
 (defun t/copy-buffer-file-path ()
+  "Copy the full path to the current file into the kill ring."
   (interactive)
-  (add-string-to-kill-ring (file-relative-name (buffer-file-name) (projectile-project-root))))
+  (let ((filename (file-name-directory (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file path '%s'" filename))))
 
 (defun t/previous-window ()
   "Skip back to previous window."
