@@ -11,3 +11,4 @@ old/*
 /.nrepl-port
 /workspace
 /config.el
+.direnv/
