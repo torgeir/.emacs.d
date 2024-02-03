@@ -991,7 +991,7 @@ Be explicit about when deleting workspaces
  :gm :desc "Next workspace" "C-b C-n" '+workspace:switch-next
  :g :desc "Previous workspace" "C-b C-p" '+workspace:switch-previous
  :map (magit-mode-map vterm-mode-map)
- :gnm "C-b" nil
+       :gnm "C-b" nil
  :n :desc "Next workspace" "C-b C-n" '+workspace:switch-next
  :n :desc "Previous workspace" "C-b C-p" '+workspace:switch-previous)
 
