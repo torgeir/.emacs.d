@@ -2393,10 +2393,19 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 (after! org
   (setq org-pomodoro-format "%s"
         org-pomodoro-play-sounds nil
-        org-pomodoro-length 5
-        org-pomodoro-short-break-length 1
-        org-pomodoro-long-break-length 5
+        org-pomodoro-length 25
+        org-pomodoro-short-break-length 5
+        org-pomodoro-long-break-length 10
         org-pomodoro-long-break-frequency 4))
+#+end_src
+
+Clock in like =SPC m c i=.
+
+#+begin_src emacs-lisp
+(map! :map org-mode-map
+      :localleader
+      (:prefix ("c" . "clock")
+               "p" #'org-pomodoro))
 #+end_src
 
 Clock in like =SPC m c i=.
@@ -4466,3 +4475,8 @@ Unload module
   (pulsar-global-mode 1))
 #+end_src
 
+*** alert.el
+
+#+begin_src emacs-lisp
+(setq alert-default-style (if IS-MAC 'osx-notifier 'libnotify))
+#+end_src
