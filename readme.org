@@ -1511,6 +1511,8 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-github t
         doom-modeline-repl t
         doom-modeline-battery t
+        display-time-24hr-format t
+        display-time-string-forms '(24-hours ":" minutes " " dayname day "/" month)
         doom-modeline-major-mode-icon t
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-file-name-style 'truncate-upto-root)
