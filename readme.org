@@ -3690,7 +3690,7 @@ Auto tagging of some types of subs.
 **** Window placement
 
 #+begin_src emacs-lisp
-(after! elfeed-search
+(after! elfeed
   ;; this is the start of *elfeed-entry-<title>* names of youtube buffers without an elfeed entry
   (set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t :vslot 10)
   (set-popup-rule! "^\\*elfeed-entry*" :side 'right :size 0.6 :select t :vslot 5))
