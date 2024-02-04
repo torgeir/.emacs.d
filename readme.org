@@ -3933,14 +3933,13 @@ Get rid of consecutive newlines and clean the buffer up. [[https://github.com/do
 The subfolder ~gmail~ is what makes the mu4e setting above need ~/gmail/~ in their path
 
 #+begin_src sh :results silent :tangle no
-mkdir -p ~/.maildir/{gmail,junk,certificates}
+mkdir -p ~/.maildir/{gmail,junk}
 #+end_src
 
 ***** Export certificates
 
-On os x: ~Keychain Access -> System Roots -> Certificates -> select all -> Shift+cmd+E~ to ~~/.maildir/certificates/certificates.pem~
-
-On arch: ~/etc/ssl/certs/ca-certificates.crt~
+- On arch or nix on mac: ~/etc/ssl/certs/ca-certificates.crt~
+- On plainmacos: ~Keychain Access -> System Roots -> Certificates -> select all -> Shift+cmd+E~ to ~~/.maildir/certificates/certificates.pem~
 
 ***** Delete to Trash
 
@@ -4005,9 +4004,7 @@ passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --ba
  SSLVersions TLSv1.2
  AuthMechs PLAIN
  SystemCertificates no
- CertificateFile " (if IS-MAC
-                       "~/.maildir/certificates/certificates.pem"
-                     "/etc/ssl/certs/ca-certificates.crt") "
+ CertificateFile /etc/ssl/certs/ca-certificates.crt
 
  IMAPStore gmail-remote
  Account gmail
@@ -4038,9 +4035,7 @@ passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --ba
  SSLVersions TLSv1.2
  AuthMechs PLAIN
  SystemCertificates no
- CertificateFile " (if IS-MAC
-                       "~/.maildir/certificates/certificates.pem"
-                     "/etc/ssl/certs/ca-certificates.crt") "
+ CertificateFile /etc/ssl/certs/ca-certificates.crt
 
  IMAPStore junk-remote
  Account junk
