@@ -331,7 +331,8 @@ Wait just long enough.
 Reset [[file:~/.config/emacs/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
 
 #+begin_src emacs-lisp
-(add-hook! 'doom-after-init-hook
+;; TODO kjører ikke på linux?
+(add-hook! 'doom-after-init-hook :append
   (defun t/unbind-drag-stuff ()
     (interactive)
     (map! :g "M-<left>"  nil
