@@ -2130,8 +2130,12 @@ Save from agenda
 #+begin_src emacs-lisp
 (map! :after org-agenda
       :map evil-org-agenda-mode-map
-      :g "H" #'org-agenda-earlier
-      :g "L" #'org-agenda-later
+      :m "H" #'org-agenda-earlier
+      :m "L" #'org-agenda-later
+      :m "d" #'org-agenda-day-view
+      :m "w" #'org-agenda-week-view
+      :m "y" #'org-agenda-year-view
+      :m "m" #'org-agenda-month-view
       "s-s" #'org-save-all-org-buffers)
 #+end_src
 
