@@ -102,6 +102,7 @@ This is tangled to ~packages.el~ on save.
 ;; grab latest for the ktlint fix
 (package! format-all :pin "59924e6bcfeef50d95324a336cb8f4c94366c99f")
 (package! recursion-indicator)
+(package! org-alert)
 #+end_src
 
 *** Try
@@ -2056,6 +2057,27 @@ Org agenda customizations
 (advice-remove 'org-clock-out 't/org-clock-stop)
 (advice-add 'org-clock-in :after 't/org-clock-start)
 (advice-add 'org-clock-out :after 't/org-clock-stop)
+#+end_src
+
+**** Alerts
+
+Setup =alert.el= to notify also on macos.
+
+#+begin_src emacs-lisp
+(setq alert-default-style (if IS-MAC 'osx-notifier 'libnotify))
+#+end_src
+
+Alert a 5 minutes before schedules or deadlines, keep it going for 10. [[https://github.com/emacsmirror/org-alert/blob/b4bfd4cead89215cc9a46162234f7a4836da4dad/README.md?plain=1#L155-L158][Capture the first time string as the date like suggested in the readme]].
+
+#+begin_src emacs-lisp
+(use-package! org-alert
+  :init
+  (setq org-alert-interval (* 2 60)
+        org-alert-notify-cutoff 5
+        org-alert-notify-after-event-cutoff 10
+        org-alert-time-match-string "\\(?:SCHEDULED\\|DEADLINE\\):.*?<.*?\\([0-9]\\{2\\}:[0-9]\\{2\\}\\).*>")
+  :config
+  (org-alert-enable))
 #+end_src
 
 *** Keybindings
@@ -4404,8 +4426,3 @@ Unload module
   (pulsar-global-mode 1))
 #+end_src
 
-*** alert.el
-
-#+begin_src emacs-lisp
-(setq alert-default-style (if IS-MAC 'osx-notifier 'libnotify))
-#+end_src
