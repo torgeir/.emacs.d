@@ -2044,8 +2044,14 @@ Org agenda customizations
 **** Clock
 
 #+begin_src emacs-lisp
-(defun t/org-clock-start () (interactive) (org-todo "STARTED"))
-(defun t/org-clock-stop () (interactive) (org-todo))
+(defun t/org-clock-start ()
+  (interactive)
+  (org-todo "STARTED"))
+(defun t/org-clock-stop (&optional &rest args)
+  (interactive)
+  (when (not (org-pomodoro-active-p))
+    (org-clock-jump-to-current-clock)
+    (org-todo)))
 (advice-remove 'org-clock-in 't/org-clock-start)
 (advice-remove 'org-clock-out 't/org-clock-stop)
 (advice-add 'org-clock-in :after 't/org-clock-start)
@@ -2341,8 +2347,23 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 
 #+begin_src emacs-lisp
 (after! org
-  (setq org-pomodoro-format "%s"))
+  (setq org-pomodoro-format "%s"
+        org-pomodoro-play-sounds nil
+        org-pomodoro-length 5
+        org-pomodoro-short-break-length 1
+        org-pomodoro-long-break-length 5
+        org-pomodoro-long-break-frequency 4))
 #+end_src
+
+Clock in like =SPC m c i=.
+
+#+begin_src emacs-lisp
+(map! :map org-mode-map
+      :localleader
+      (:prefix ("c" . "clock")
+               "p" #'org-pomodoro))
+#+end_src
+
 
 *** OpenAI: GPT
 
@@ -4381,4 +4402,10 @@ Unload module
   (advice-add #'what-cursor-position :after #'pulsar-pulse-line)
   :config
   (pulsar-global-mode 1))
+#+end_src
+
+*** alert.el
+
+#+begin_src emacs-lisp
+(setq alert-default-style (if IS-MAC 'osx-notifier 'libnotify))
 #+end_src
