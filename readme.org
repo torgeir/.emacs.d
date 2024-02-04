@@ -4122,7 +4122,8 @@ A little minor mode to highlight the symbol at point or the selected region acro
   :lighter " t-idle-highlight"
   (if t-idle-highlight-mode
       (progn
-        (require 'highlight-symbol)
+        (when (not (featurep 'highlight-symbol))
+          (require 'highlight-symbol))
         (add-hook 'pre-command-hook 't/unhighlight-in-all-buffers)
         (setq t-idle-highlight--timer
               (run-with-idle-timer
@@ -4183,7 +4184,9 @@ Extend evil to flash highlights on =SPC u *=
 #+begin_src emacs-lisp
 (after! evil
   (map! :map evil-motion-state-map
-        "*" (cmd! (if (t/prefix-arg-universal?) (t/flash-in-all-buffers)
+        "*" (cmd! (when (not (featurep 'highlight-symbol))
+                    (require 'highlight-symbol))
+                  (if (t/prefix-arg-universal?) (t/flash-in-all-buffers)
                     (call-interactively 'evil-search-word-forward)))))
 #+end_src
 
