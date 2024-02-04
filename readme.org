@@ -465,6 +465,20 @@ This one makes camelCaseWords into to snake_case_words. Run it with ~@c~
 (evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
 #+end_src
 
+**** Goggles
+
+#+begin_src emacs-lisp
+(after! evil-goggles
+  (setq evil-goggles-duration 0.2
+        evil-goggles-enable-delete t
+        evil-goggles-enable-change t)
+  (evil-goggles-use-diff-refine-faces)
+  (pushnew! evil-goggles--commands
+            '(evil-cp-delete-line
+              :face evil-goggles-delete-face
+              :advice evil-goggles--generic-blocking-advice)))
+#+end_src
+
 *** Macros
 
 A useful macro one for testing stuff out
