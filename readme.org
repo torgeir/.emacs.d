@@ -71,6 +71,7 @@ The madness that is dynamic is too much for anyone, really.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
+(package! pulsar)
 (package! copilot
   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el" "dist")))
 (package! tide :disable t)
@@ -4334,4 +4335,50 @@ Then type ~C-ret~ to add something to the playlist.
               ("TAB"     . 'copilot-accept-completion)
               ("C-TAB"   . 'copilot-accept-completion-by-word)
               ("C-<tab>" . 'copilot-accept-completion-by-word)))
+#+end_src
+
+*** Temporarily replace nav-flash with pulsar.el
+
+Unload module
+
+#+begin_src emacs-lisp
+(when (featurep 'nav-flash)
+  (unload-feature 'nav-flash))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! pulsar
+  :commands pulsar-global-mode
+  :init
+  (setq pulsar-pulse t)
+  (setq pulsar-delay 0.055)
+  (setq pulsar-iterations 10)
+  (setq pulsar-face 'pulsar-magenta)
+  (setq pulsar-highlight-face 'pulsar-yellow)
+  (add-hook! '(imenu-after-jump-hook
+               better-jumper-post-jump-hook
+               counsel-grep-post-action-hook
+               consult-after-jump-hook
+               dumb-jump-after-jump-hook)
+             #'pulsar-pulse-line)
+
+  (add-hook 'doom-switch-window-hook #'pulsar-pulse-line)
+
+  ;; `org'
+  (add-hook 'org-follow-link-hook
+            (cmd!
+             (run-at-time 0.1 nil #'pulsar-pulse-line)))
+
+  ;; `saveplace'
+  (advice-add #'save-place-find-file-hook :after #'pulsar-pulse-line)
+
+  ;; `evil'
+  (advice-add #'evil-window-top    :after #'pulsar-pulse-line)
+  (advice-add #'evil-window-middle :after #'pulsar-pulse-line)
+  (advice-add #'evil-window-bottom :after #'pulsar-pulse-line)
+
+  ;; Bound to `ga' for evil users
+  (advice-add #'what-cursor-position :after #'pulsar-pulse-line)
+  :config
+  (pulsar-global-mode 1))
 #+end_src
