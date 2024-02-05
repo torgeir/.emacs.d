@@ -2560,7 +2560,12 @@ I never really got into this.
                      (let ((shr-inhibit-images t)) (elfeed-show-refresh)))
                    (funcall (t/spray-micro-state))) map)
     (bind-key "r" (cmd! (call-interactively 'eww-readable)) map)
-    (bind-key "i" (cmd! (call-interactively 't/eww-toggle-images)) map)
+    (bind-key "i" (cmd!
+                   (setq shr-inhibit-images (not shr-inhibit-images))
+                   (when (eq major-mode 'elfeed-show-mode)
+                     (elfeed-show-refresh))
+                   (when (eq major-mode 'eww-mode)
+                     (call-interactively 't/eww-toggle-images))) map)
     (bind-key "v" (cmd! (call-interactively 't/variable-pitch-mode)) map)
     (bind-key "o" (cmd! (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
@@ -3563,7 +3568,20 @@ Switch around the refresh mappings, for more useful defaults.
    :n "?" #'elfeed-search-tag-all-unread
    ;; switcharoo
    :n "gR" #'elfeed-search-update--force
-   :n "gr" #'elfeed-search-fetch))
+   :n "gr" #'elfeed-search-fetch
+   :map elfeed-show-mode-map
+   :n "gr" #'elfeed-show-refresh
+   ))
+#+end_src
+
+Also allow refresh when viewing a post. E.g. to show with images again after toggling them off.
+
+#+begin_src emacs-lisp
+(after! elfeed
+  (map!
+   :map elfeed-show-mode-map
+   :n "gr" #'elfeed-show-refresh
+   ))
 #+end_src
 
 **** Tag hydra
