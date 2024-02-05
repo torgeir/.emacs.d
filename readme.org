@@ -2129,7 +2129,11 @@ Save from agenda
 
 #+begin_src emacs-lisp
 (map! :after org-agenda
-      :map evil-org-agenda-mode-map
+      :map (evil-org-agenda-mode-map org-super-agenda-header-map)
+      :g "h" nil
+      :g "j" nil
+      :g "k" nil
+      :g "l" nil
       :m "H" #'org-agenda-earlier
       :m "L" #'org-agenda-later
       :m "d" #'org-agenda-day-view
