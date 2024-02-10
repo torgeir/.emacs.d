@@ -2086,9 +2086,9 @@ Alert a 5 minutes before schedules or deadlines, keep it going for 10. [[https:/
 #+begin_src emacs-lisp
 (use-package! org-alert
   :init
-  (setq org-alert-interval (* 2 60)
+  (setq org-alert-interval (* 5 60)
         org-alert-notify-cutoff 5
-        org-alert-notify-after-event-cutoff 10
+        org-alert-notify-after-event-cutoff 5
         org-alert-time-match-string "\\(?:SCHEDULED\\|DEADLINE\\):.*?<.*?\\([0-9]\\{2\\}:[0-9]\\{2\\}\\).*>")
   :config
   (org-alert-enable))
