@@ -678,7 +678,9 @@ The built in ~format-all-mode~ is enough, don't need ~eglot~ formatting as well.
                                (visual-line-mode -1)
                                (toggle-truncate-lines 1)))
   (add-hook 'dired-mode-hook 'dired-subtree-toggle)
-  (add-hook 'dired-mode-hook 'dired-hide-details-mode))
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+  (add-hook 'dired-mode-hook 'dired-async-mode)
+  )
 #+end_src
 
 #+begin_src emacs-lisp
