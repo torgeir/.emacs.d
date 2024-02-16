@@ -2062,11 +2062,15 @@ Org agenda customizations
 **** Clock
 
 #+begin_src emacs-lisp
-(defun t/org-clock-start ()
+(defun t/org-clock-start (&optional &rest args)
   (interactive)
+  (when (not (featurep 'org-pomodoro))
+    (require 'org-pomodoro))
   (org-todo "STARTED"))
 (defun t/org-clock-stop (&optional &rest args)
   (interactive)
+  (when (not (featurep 'org-pomodoro))
+    (require 'org-pomodoro))
   (when (not (org-pomodoro-active-p))
     (org-clock-jump-to-current-clock)
     (org-todo)))
