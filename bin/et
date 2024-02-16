@@ -8,8 +8,8 @@ case $(uname) in
     ;;
 esac
 
-if [ -z $INSIDE_EMACS ]; then
-  $emacsclient -s torgemacs -a "" -t "$@" # 2> /dev/null
-else
+if [ -n $INSIDE_EMACS ]; then
   $emacsclient -s torgemacs -a -c -q "$@"
+else
+  $emacsclient -s torgemacs -a "" -t "$@" # 2> /dev/null
 fi
