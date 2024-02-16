@@ -218,10 +218,10 @@ My old collection of more or less useful defuns.
 
 #+begin_src emacs-lisp
 (progn
-  (defconst is-win IS-WINDOWS)
-  (defconst is-cygwin IS-WINDOWS)
-  (defconst is-mac IS-MAC)
-  (defconst is-linux IS-LINUX)
+  (defconst is-win (featurep :system 'windows))
+  (defconst is-cygwin (featurep :system 'windows))
+  (defconst is-mac (featurep :system 'macos))
+  (defconst is-linux (featurep :system 'linux))
   (defun t/user-file (path) (concat (expand-file-name "~/") path))
   (defun t/user-emacs-file (path) (concat doom-user-dir path))
   (defun t/user-dropbox-folder (path) (expand-file-name (concat "~/Dropbox" (if is-mac " (Personal)" "") "/" path)))
@@ -339,7 +339,7 @@ Reset [[file:~/.config/emacs/modules/config/default/config.el::(map! "<M-up>" #'
           :g "M-<right>" nil)))
 #+end_src
 
-Remove highlight indent guides by default
+Remove highlight indent guides by default.
 
 #+begin_src emacs-lisp
 (remove-hook! '(text-mode-hook conf-mode-hook) 'highlight-indent-guides-mode)
@@ -2086,7 +2086,7 @@ Org agenda customizations
 Setup =alert.el= to notify also on macos.
 
 #+begin_src emacs-lisp
-(setq alert-default-style (if IS-MAC 'osx-notifier 'libnotify))
+(setq alert-default-style (if is-mac 'osx-notifier 'libnotify))
 #+end_src
 
 Alert a 5 minutes before schedules or deadlines, keep it going for 10. [[https://github.com/emacsmirror/org-alert/blob/b4bfd4cead89215cc9a46162234f7a4836da4dad/README.md?plain=1#L155-L158][Capture the first time string as the date like suggested in the readme]].
@@ -4511,5 +4511,5 @@ Unload module
 *** alert.el
 
 #+begin_src emacs-lisp
-(setq alert-default-style (if IS-MAC 'osx-notifier 'libnotify))
+(setq alert-default-style (if is-mac 'osx-notifier 'libnotify))
 #+end_src
