@@ -4075,7 +4075,8 @@ Gmail setting to remove deleted emails from inbox and move them in ~[Gmail]/Tras
 Go to Gmail IMAP/POP settings (in normal view; the options are not available in HTML view) and set "When a message is marked as deleted" to "Move to trash" or "Immediately delete." Also set "Auto-Expunge off."
 #+end_quote
 
-**** Smtp
+**** Configuration files
+***** Smtp
 
 =brew install msmtp=
 
@@ -4110,7 +4111,7 @@ passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --ba
    'utf-8 (t/user-file ".msmtprc")))
 #+end_src
 
-**** Mbsync
+***** Mbsync
 
 =brew install isync=
 
@@ -4184,7 +4185,7 @@ passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --ba
 
 Then sync it with =mbsync -aV=.
 
-**** Mu
+***** Mu
 
 First time =mu= initialization
 
@@ -4195,6 +4196,32 @@ First time =mu= initialization
          " --my-address " (getenv "USER_EMAIL_2")
          " && mu index"))
 #+end_src
+
+**** Keybindings
+
+#+begin_src emacs-lisp
+(after! mu4e
+  (map! :map mu4e-headers-mode-map
+        :n "*" #'mu4e-headers-mark-for-something
+        :n "u" #'mu4e-headers-mark-for-read
+        :n "U" #'mu4e-headers-mark-for-unread
+        :n "!" #'mu4e-headers-mark-for-unmark
+        :n "?" #'mu4e-mark-unmark-all))
+#+end_src
+
+**** [[https://github.com/doomemacs/doomemacs/tree/master/modules/email/mu4e#no-such-file-or-directory-mu4e][mu4e: no such file or directory]]
+
+Had to locate the mu4e installed nix package
+
+#+begin_quote
+fd / mu4e
+#+end_quote
+
+and add it to the load path of emacs manually, something like this
+
+#+begin_quote
+(add-to-list 'load-path "/nix/store/g119kihhviy5c4krzr8h30wakzldab3d-mu-1.10.8-mu4e/share/emacs/site-lisp/mu4e/")
+#+end_quote
 
 ** Site lisp
 
