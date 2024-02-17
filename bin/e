@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 emacsclient=/etc/profiles/per-user/torgeir/bin/emacsclient
-if [ -n "${INSIDE_EMACS+1}" ]; then
+if [ -n "$INSIDE_EMACS" ]; then
   $emacsclient -n -c "$@" # 2> /dev/null
 else
   $emacsclient -a "" -n -q "$@"
