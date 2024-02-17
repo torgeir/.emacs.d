@@ -1,15 +1,7 @@
 #!/usr/bin/env bash
-case $(uname) in
-  Linux)
-    emacsclient=/usr/bin/emacsclient
-    ;;
-  Darwin)
-    emacsclient=/etc/profiles/per-user/torgeir/bin/emacsclient
-    ;;
-esac
-
+emacsclient=/etc/profiles/per-user/torgeir/bin/emacsclient
 if [ -n $INSIDE_EMACS ]; then
-  $emacsclient -s torgemacs -a -c -q "$@"
+  $emacsclient -a "" -n -q "$@"
 else
-  $emacsclient -s torgemacs -a "" -t "$@" # 2> /dev/null
+  $emacsclient -nw "$@"
 fi

@@ -1,26 +1,7 @@
 #!/usr/bin/env bash
-case $(uname) in
-  Linux)
-    emacsclient=/usr/bin/emacsclient
-    ;;
-  Darwin)
-    emacsclient=/etc/profiles/per-user/torgeir/bin/emacsclient
-    ;;
-esac
-
+emacsclient=/etc/profiles/per-user/torgeir/bin/emacsclient
 if [ -n "${INSIDE_EMACS+1}" ]; then
   $emacsclient -n -c "$@" # 2> /dev/null
 else
-  if [ "$1" != "" ]; then
-    # called with args
-    $emacsclient -n -c -q "$@"
-  else
-    # called without args
-    fzf --bind "start:reload:fd ''" \
-        --bind "change:reload:fd -t f \$(echo {q} | sed -E 's/ /\.\*/') || true" \
-        --bind "enter:become($emacsclient -n -c -q {1})" \
-        --ansi \
-        --layout=reverse \
-        --preview 'bat --color=always {1}'
-  fi
+  $emacsclient -a "" -n -q "$@"
 fi
