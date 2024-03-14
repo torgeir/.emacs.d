@@ -3491,6 +3491,16 @@ Colorz.
   (set-face-attribute 'magit-diff-revision-summary nil :inherit 'magit-diff-hunk-heading :foreground "#ED60BA"))
 #+end_src
 
+**** Browse-at-remote opens github
+
+Make the hostnames =personal= and =work= from =~/.ssh/config= resolve to github.com, so that commands like =SPC g o o= opens github.
+
+#+begin_src emacs-lisp
+(after! browse-at-remote
+  (add-to-list 'browse-at-remote-remote-type-regexps '(:host "^personal$" :type "github" :actual-host "github.com"))
+  (add-to-list 'browse-at-remote-remote-type-regexps '(:host "^work$" :type "github" :actual-host "github.com")))
+#+end_src
+
 **** More colors in diff
 
 Improved diffs with =magit-delta-mode=. Show the themes with =delta --show-syntax-themes --dark | grep -i theme=.
