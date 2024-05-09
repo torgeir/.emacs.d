@@ -3345,7 +3345,6 @@ Hack to make ~C-c C-c~ accept, and ~C-c C-k~ exit, when running ~^x^e~ in a vter
 #+end_src
 
 *** Terminal from everywhere with s-return
-*** Terminal from everywhere with s-return
 
 Make ~s-ret~ (super+enter) create a vterm terminal window inside emacs.
 
