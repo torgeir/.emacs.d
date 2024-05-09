@@ -9,7 +9,19 @@
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(org-outline-path-complete-in-steps nil)
  '(org-refile-use-outline-path 'file)
- '(safe-local-variable-values '((org-log-done-with-time)))
+ '(safe-local-variable-values
+   '((eval progn
+      (after! forge
+        (add-to-list 'forge-alist
+                     '("personal" "api.github.com" "github.com" forge-github-repository))
+        (add-to-list 'forge-alist
+                     '("work" "api.github.com" "github.com" forge-github-repository)))
+      (after! browse-at-remote
+        (add-to-list 'browse-at-remote-remote-type-regexps
+                     '(:host "^personal$" :type "github" :actual-host "github.com"))
+        (add-to-list 'browse-at-remote-remote-type-regexps
+                     '(:host "^work$" :type "github" :actual-host "github.com"))))
+     (org-log-done-with-time)))
  '(warning-suppress-types '((org-element--cache) (org-element-cache) (defvaralias))))
 (put 'narrow-to-region 'disabled nil)
 (custom-set-faces
@@ -17,6 +29,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(evil-goggles-change-face ((t (:inherit diff-refine-removed))))
+ '(evil-goggles-delete-face ((t (:inherit diff-refine-removed))))
+ '(evil-goggles-paste-face ((t (:inherit diff-refine-added))))
+ '(evil-goggles-undo-redo-add-face ((t (:inherit diff-refine-added))))
+ '(evil-goggles-undo-redo-change-face ((t (:inherit diff-refine-changed))))
+ '(evil-goggles-undo-redo-remove-face ((t (:inherit diff-refine-removed))))
+ '(evil-goggles-yank-face ((t (:inherit diff-refine-changed))))
  '(nav-flash-face ((t (:background "DeepPink2"))))
  '(outline-1 ((t (:foreground "#51afef" :weight bold :height 1.2))))
  '(outline-2 ((t (:foreground "#7A619A" :weight bold :height 1.1))))
