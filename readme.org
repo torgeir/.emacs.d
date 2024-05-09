@@ -1586,7 +1586,8 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 - [[file:~/.config/emacs/modules/editor/evil/config.el:::n "g=" #'evil-numbers/inc-at-pt][evil commands]]
 
 #+begin_src emacs-lisp
-(map! :map evil-markdown-mode-map
+(map! :after markdown-mode
+      :map evil-markdown-mode-map
       :i "M-b" nil
       :map markdown-mode-map
       :i "M-b" 'backward-word
