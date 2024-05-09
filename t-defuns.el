@@ -442,7 +442,7 @@ with browser in full screen."
 
 (defun t/fetch (url)
   "Insert URL contents in current buffer.
-Drops headers and 2x empty lines before content."
+  Drops headers and 2x empty lines before content."
   (interactive "sfetch url:")
   (insert (t/get-url url))
   (goto-char (point-min))
@@ -626,7 +626,7 @@ Drops headers and 2x empty lines before content."
 
 (defun t/newline-expand-braces ()
   "Newline like `evil-ret', but expand (), [] and {} with newline in between,
-and indent accordingly."
+  and indent accordingly."
   (interactive)
   (cond
    ((or (and (looking-back "(") (looking-at ")"))
@@ -1063,12 +1063,12 @@ and indent accordingly."
 (defun t/diary-last-day-of-month (date)
   "Return `t` if DATE is the last day of the month.
 
-ORG-MODE:  * My Task
-             SCHEDULED: <%%(diary-last-day-of-month date)>
-DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
+  ORG-MODE:  * My Task
+  SCHEDULED: <%%(diary-last-day-of-month date)>
+  DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
 
-See also:  (setq org-agenda-include-diary t)
-\(diary-last-day-of-month '(2 28 2017))"
+  See also:  (setq org-agenda-include-diary t)
+  \(diary-last-day-of-month '(2 28 2017))"
 
   (require 'org-clock)
   (= (calendar-extract-day date)
@@ -1103,11 +1103,11 @@ See also:  (setq org-agenda-include-diary t)
   ;; (interactive "sCommand or Topic: ")
   (message "this does not work any longer
 
-curl http://cheat.sh/:list lists all commands
+  curl http://cheat.sh/:list lists all commands
 
   (eww (concat  http://cheat.sh/  input)) can show them
-?T&q params give text only, no twitter buttons
-"))
+  ?T&q params give text only, no twitter buttons
+  "))
 
 (defun t/toggle-dedicated-window (&optional &rest params)
   (interactive)
@@ -1238,9 +1238,9 @@ curl http://cheat.sh/:list lists all commands
           (shell-command
            (concat
             "cd ~/Projects/posts \
-              && git add . \
-              && git ci -m \"" (t/isodate) "\" \
-              && git push") b b)
+  && git add . \
+  && git ci -m \"" (t/isodate) "\" \
+  && git push") b b)
           (message "Deploy done."))
       (progn
         (with-current-buffer b (kill-buffer))
@@ -1251,8 +1251,8 @@ curl http://cheat.sh/:list lists all commands
   (+vterm/toggle nil)
   (term-send-raw-string
    (concat "cd ~/Projects/posts\C-m \
-      open http://localhost:1313/\C-m\
-      hugo server -p 1313 --navigateToChanged"
+  open http://localhost:1313/\C-m\
+  hugo server -p 1313 --navigateToChanged"
            (if (t/prefix-arg-universal?) "" " --buildDrafts")
            "\C-m")))
 
@@ -1276,7 +1276,7 @@ curl http://cheat.sh/:list lists all commands
 
 (defun t/insert-ox-hugo-slug ()
   "Insert a ox-hugo slug for the current org heading. Replace every
-non-letter-and-number with -, and remove double --."
+  non-letter-and-number with -, and remove double --."
   (interactive)
   (org-set-property
    "EXPORT_FILE_NAME"
