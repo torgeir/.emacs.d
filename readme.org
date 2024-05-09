@@ -430,8 +430,8 @@ Fine undo
          (current-prefix-arg (unless u-prefix current-prefix-arg))
          (args (if u-prefix (list nil) args)))
     (apply fn args)
-    (unless u-prefix
-      (indent-region (region-beginning) (region-end))))
+    (if u-prefix
+        (indent-region (region-beginning) (region-end))))
   (evil-end-undo-step))
 
 (advice-add 'yank :around #'t/indent-after-paste)
