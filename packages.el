@@ -30,3 +30,4 @@
 (package! format-all :pin "59924e6bcfeef50d95324a336cb8f4c94366c99f")
 (package! recursion-indicator)
 (package! org-alert)
+(package! ellama)

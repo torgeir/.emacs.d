@@ -103,6 +103,7 @@ This is tangled to ~packages.el~ on save.
 (package! format-all :pin "59924e6bcfeef50d95324a336cb8f4c94366c99f")
 (package! recursion-indicator)
 (package! org-alert)
+(package! ellama)
 #+end_src
 
 *** Try
@@ -2492,7 +2493,7 @@ Default openai language model.
       (:prefix
        ("o" . "open")
        (:prefix-map
-        ("g" . "chatgpt")
+        ("G" . "chatgpt")
         (:when t
           :desc "ask" "a" #'t/chatgpt-buffer
           :desc "fix" "f" (cmd! (t/chatgpt-prompt "Why doesn't this code work?"))
@@ -4549,4 +4550,100 @@ Unload module
 
 #+begin_src emacs-lisp
 (setq alert-default-style (if is-mac 'osx-notifier 'libnotify))
+#+end_src
+
+*** ollama
+
+#+begin_src emacs-lisp
+(defun t/ellama-code-ask (prompt)
+  (interactive "sPrompt: ")
+  (let* ((snippet (when (region-active-p)
+                    (buffer-substring-no-properties (region-beginning) (region-end))))
+         (json (json-serialize (list
+                                'model "codellama"
+                                'prompt
+                                (if snippet
+                                    (concat "# " prompt "\n\n" snippet)
+                                  prompt)))))
+    (t/async-shell-command
+     "ChatGPT"
+     (format
+      "curl --no-buffer -s http://torgnix:11434/api/generate --data-binary @- <<EOF | jq --unbuffered -jrc '.response'
+%s
+EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
+     )
+    (pop-to-buffer "*ChatGPT*")))
+
+(defun t/ellama-review-code ()
+  (interactive)
+  (t/ellama-code-ask
+   (concat
+    "Review the following code and make concise suggestions. "
+    (if (t/prefix-arg-universal?) (read-string "Be specific: ") ""))))
+
+(use-package! ellama
+  :config
+  (setq torgnix (make-llm-ollama
+                 :scheme "http"
+                 :host "torgnix"
+                 :port 11434
+                 :chat-model "llama3"
+                 :embedding-model "llama3"))
+  (add-to-list 'ellama-providers `("torgnix" . ,torgnix))
+  (setq ellama-provider torgnix)
+  (setq ellama-keymap-prefix "C-c")
+  (ellama-setup-keymap)
+  (set-popup-rule! "^ellama"
+    :side 'right
+    :size 0.7
+    :vslot 2
+    :select t)
+  (map! :leader
+        (:prefix
+         ("o" . "open")
+         (:prefix-map
+          ("g" . "ollama")
+          (:when t
+            :desc "code-complete" "c c" 'ellama-code-complete
+            :desc "code-add" "c a" 'ellama-code-add
+            :desc "code-edit" "c e" 'ellama-code-edit
+            :desc "code-improve" "c i" 'ellama-code-improve
+            :desc "code-review" "c r" 'ellama-code-review
+            ;; summarize
+            :desc "summarize" "s s" 'ellama-summarize
+            :desc "summarize-webpage" "s w" 'ellama-summarize-webpage
+            ;; session
+            :desc "load-session" "s l" 'ellama-load-session
+            :desc "session-rename" "s r" 'ellama-session-rename
+            :desc "session-remove" "s d" 'ellama-session-remove
+            :desc "session-switch" "s a" 'ellama-session-switch
+            ;; improve
+            :desc "improve-wording" "i w" 'ellama-improve-wording
+            :desc "improve-grammar" "i g" 'ellama-improve-grammar
+            :desc "improve-conciseness" "i c" 'ellama-improve-conciseness
+            ;; make
+            :desc "make-list" "m l" 'ellama-make-list
+            :desc "make-table" "m t" 'ellama-make-table
+            :desc "make-format" "m f" 'ellama-make-format
+            ;; ask
+            :desc "ask-about" "a a" 'ellama-ask-about
+            :desc "chat" "a i" 'ellama-chat
+            :desc "ask-line" "a l" 'ellama-ask-line
+            :desc "ask-selection" "a s" 'ellama-ask-selection
+            ;; text
+            :desc "translate" "t t" 'ellama-translate
+            :desc "translate-buffer" "t b" 'ellama-translate-buffer
+            :desc "complete" "t c" 'ellama-complete
+            :desc "chat-translation-enable" "t e" 'ellama-chat-translation-enable
+            :desc "chat-translation-disable" "t d" 'ellama-chat-translation-disable
+            ;; define
+            :desc "define-word" "d w" 'ellama-define-word
+            ;; context
+            :desc "context-add-buffer" "x b" 'ellama-context-add-buffer
+            :desc "context-add-file" "x f" 'ellama-context-add-file
+            :desc "context-add-selection" "x s" 'ellama-context-add-selection
+            :desc "context-add-info-node" "x i" 'ellama-context-add-info-node
+            ;; provider
+            :desc "provider-select" "p s" 'ellama-provider-select
+            )))))
 #+end_src
