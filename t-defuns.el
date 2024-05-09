@@ -392,12 +392,43 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/remove-newlines (str)
   (replace-regexp-in-string "[\r\n]+" "" str))
 
+(defun t/grab-url ()
+  (interactive)
+  (let* ((browser 'ff)
+         (fn (if (called-interactively-p) 'message 'identity))
+         (url (cond
+               ((eq browser 'ff) (t/grab-firefox-url))
+               ((eq browser 'chrome) (t/grab-chrome-url)))))
+    (funcall fn url)))
+
+(defun t/insert-url ()
+  (interactive)
+  (insert (t/grab-url)))
+
 (defun t/grab-chrome-url ()
   "Grab the frontmost url out of chrome using `org-mac-grab-link'."
   (interactive)
   (t/remove-newlines
    (shell-command-to-string
     "osascript -l JavaScript -e 'Application(\"Google Chrome\").windows.at(0).activeTab.url()'")))
+
+(defun t/grab-firefox-url (&optional browser)
+  "Grab the frontmost url of firefox using `t/osascript-activate'. Does not work
+with browser in full screen."
+  (interactive)
+  (let ((browser (or browser "Firefox Developer Edition")))
+    (t/osascript-activate browser)
+    (t/async-shell-command "wait-bring-back-emacs" "sleep 0.2 && osascript -e 'tell application \"Emacs\" to activate'")
+    (sit-for 0.2)
+    (t/remove-newlines
+     (t/run-osascript
+      (concat
+       "tell application \"System Events\" to get value of UI element 1 of combo box 1 of toolbar \"Navigation\" of first group of front window of application process \"" browser "\"")))))
+
+(defun t/browse-firefox-url-in-eww ()
+  "Open the frontmost firefox url in `eww'."
+  (interactive)
+  (eww (t/grab-firefox-url)))
 
 (defun t/browse-chrome-url-in-eww ()
   "Open the frontmost chrome url in `eww'."
@@ -418,6 +449,11 @@ Drops headers and 2x empty lines before content."
   (kill-sentence)
   (kill-line)
   (kill-line))
+
+(defun t/fetch-firefox-url ()
+  "Insert contents of frontmost url of firefox in buffer."
+  (interactive)
+  (t/fetch (t/grab-firefox-url)))
 
 (defun t/fetch-chrome-url ()
   "Insert contents of frontmost url of chrome in buffer."
@@ -493,13 +529,22 @@ Drops headers and 2x empty lines before content."
           (when is-font-lock (font-lock-mode 1))) t))
     (popwin:display-buffer b t)))
 
-(defun t/run-osascript (s)
+(defun t/run-osascript (s &optional discard-output)
   "Run applescript."
-  (shell-command (format "osascript -e '%s'" s)))
+  (let ((b-stderr "*osascript-err*")
+        (b-stdout "*osascript*"))
+    (t/kill-buffer b-stderr)
+    (t/kill-buffer b-stdout)
+    (with-current-buffer (get-buffer-create b-stdout)
+      (shell-command (format "/usr/bin/osascript -e '%s'" s) b-stdout (get-buffer-create b-stderr))
+      (buffer-string))))
+
+(defun t/kill-buffer (b)
+  (when (get-buffer b) (kill-buffer b)))
 
 (defun t/osascript-activate (app)
   "Run applescript to activate application."
-  (t/run-osascript (format "tell application \"%s\" to activate" app)))
+  (t/run-osascript (format "tell application \"%s\" to activate" app) t))
 
 (defun t/osascript-show-url (url)
   (t/run-osascript
