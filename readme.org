@@ -4350,8 +4350,9 @@ Extend evil to flash highlights on =SPC u *=
   (map! :map evil-motion-state-map
         "*" (cmd! (when (not (featurep 'highlight-symbol))
                     (require 'highlight-symbol))
-                  (if (t/prefix-arg-universal?) (t/flash-in-all-buffers)
-                    (call-interactively 'evil-search-word-forward)))))
+                  (if (t/prefix-arg-universal?)
+                      (t/flash-in-all-buffers)
+                    (call-interactively 'evil-ex-search-word-forward)))))
 #+end_src
 
 ** Bugfixes
