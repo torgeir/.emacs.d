@@ -4582,14 +4582,24 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
 
 (use-package! ellama
   :config
-  (setq torgnix (make-llm-ollama
-                 :scheme "http"
-                 :host "torgnix"
-                 :port 11434
-                 :chat-model "llama3"
-                 :embedding-model "llama3"))
-  (add-to-list 'ellama-providers `("torgnix" . ,torgnix))
-  (setq ellama-provider torgnix)
+  (setq torgnix-providers
+        (list
+         (make-llm-ollama
+          :scheme "http"
+          :host "torgnix"
+          :port 11434
+          :chat-model "llama3"
+          :embedding-model "llama3")
+         (make-llm-ollama
+          :scheme "http"
+          :host "torgnix"
+          :port 11434
+          :chat-model "wizard-vicuna-uncensored:13b"
+          :embedding-model "wizard-vicuna-uncensored:13b")))
+  (setq ellama-providers nil)
+  (add-to-list 'ellama-providers `("torgnix llama" . ,(car torgnix-providers)))
+  (add-to-list 'ellama-providers `("torgnix wizard" . ,(cadr torgnix-providers)))
+  (setq ellama-provider (car torgnix-providers))
   (setq ellama-keymap-prefix "C-c")
   (ellama-setup-keymap)
   (set-popup-rule! "^ellama"
