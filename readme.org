@@ -1199,10 +1199,15 @@ Show the buffer and the file
 
 *** Windows
 
-Split windows based on =split-width-threshold= and =split-height-threshold=. This is set globally so that the ~t-sidebar-toggle~ can make it a buffer local variable and override it to never split windows.
+Split windows manually. If say a single dired window is visible and it is dedicated, allow splitting, else never allow splitting.
 
 #+begin_src emacs-lisp
-(setq split-window-preferred-function 'split-window-sensibly)
+;; (setq split-window-preferred-function 'split-window-sensibly)
+(setq split-window-preferred-function
+      (lambda (ignored-window)
+        (if (= 1 (length (window-list)))
+            (split-window-right)
+          nil)))
 #+end_src
 
 Resize window combinations proportionally.
