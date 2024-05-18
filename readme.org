@@ -2593,6 +2593,7 @@ I never really got into this.
                    (when (eq major-mode 'elfeed-show-mode)
                      (let ((shr-inhibit-images t)) (elfeed-show-refresh)))
                    (funcall (t/spray-micro-state))) map)
+    (bind-key "S" (cmd! (call-interactively 'ellama-summarize)) map)
     (bind-key "r" (cmd! (call-interactively 'eww-readable)) map)
     (bind-key "i" (cmd!
                    (setq shr-inhibit-images (not shr-inhibit-images))
@@ -2604,7 +2605,7 @@ I never really got into this.
     (bind-key "o" (cmd! (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
   (when (not (minibuffer-window-active-p (selected-window)))
-    (message "(n)ext page, (p)rev page, (i)mages, (r)eadability, (s)pray mode, (o)livetti, (v)ariable pitch")))
+    (message "(n)ext page, (p)rev page, (i)mages, (r)eadability, (s)pray mode, (S)ummarize, (o)livetti, (v)ariable pitch")))
 
 (map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
 
@@ -3632,6 +3633,9 @@ Switch around the refresh mappings, for more useful defaults.
 (after! elfeed
   (map!
    :map elfeed-search-mode-map
+   :n "S" (cmd! (call-interactively 'ellama-summarize-webpage)
+                (with-current-buffer "*elfeed-search*"
+                  (elfeed-search-untag-all-unread)))
    :n "!" #'elfeed-search-untag-all-unread
    :n "?" #'elfeed-search-tag-all-unread
    ;; switcharoo
@@ -3837,6 +3841,19 @@ Inspiration https://gist.github.com/alphapapa/80d2dba33fafcb50f558464a3a73af9a
       (insert (propertize (elfeed-format-column tags 30 :right)
                           'face 'elfeed-search-date-face) " ")))
   (setq elfeed-search-print-entry-function 't-elfeed-print-entry))
+#+end_src
+
+#+begin_src emacs-lisp
+(advice-remove 'evil-previous-line :after)
+(advice-remove 'evil-next-line :after)
+(defun t/show-elfeed-heading-in-minibuffer ()
+  (interactive)
+  (when (eq major-mode 'elfeed-search-mode)
+    (message "%s: %s"
+             (propertize (elfeed-feed-title (elfeed-entry-feed (car (elfeed-search-selected)))) 'face 'elfeed-search-feed-face)
+             (propertize (elfeed-entry-title (car (elfeed-search-selected))) 'face 'elfeed-hl-face))))
+(advice-add 'evil-previous-line :after 't/show-elfeed-heading-in-minibuffer)
+(advice-add 'evil-next-line :after 't/show-elfeed-heading-in-minibuffer)
 #+end_src
 
 *** Calendar
