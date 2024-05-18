@@ -9,7 +9,6 @@
 (package! transpose-frame)
 (package! highlight-symbol)
 (package! olivetti)
-(package! focus)
 (package! calendar-norway)
 (package! spray)
 (package! dired-subtree)
