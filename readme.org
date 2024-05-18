@@ -1470,11 +1470,11 @@ A _really global_ global writeroom mode. The function is redefined such that if 
 
 #+begin_src emacs-lisp
 (setq writeroom-major-modes nil)
-(after! writeroom-mode
-  (defun turn-on-writeroom-mode ()
-    (when (or (not writeroom-major-modes)
-              (apply 'derived-mode-p writeroom-major-modes))
-      (writeroom-mode 1))))
+(defun turn-on-writeroom-mode ()
+  (interactive)
+  (when (or (not writeroom-major-modes)
+            (apply 'derived-mode-p writeroom-major-modes))
+    (writeroom-mode 1)))
 #+end_src
 
 The [[https://docs.doomemacs.org/latest/modules/ui/zen/][doom default text scale of 2]] is a bit heavy
