@@ -1689,7 +1689,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Open folder" "p o" #'t/open-in-desktop
 
  :leader :desc "Toggle directory sidebar" "f l" #'t-toggle-sidebar
- :leader :desc "Toggle directory sidebar, follow" "f L" (cmd! (message "t: not implemented for t-toggle-sidebar"))
+ :leader :desc "Toggle directory sidebar, follow" "f L" 't/dired-locate
  :leader (:prefix ("o" . "open")
                   (:prefix-map
                    ("c" . "Consume")

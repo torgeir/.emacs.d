@@ -1215,6 +1215,37 @@ with browser in full screen."
     (forward-line)
     (t/dired-show-recursively-0 path)))
 
+(defun t/dired-locate-path (path)
+  "Locate PATH in a dired listing."
+  (beginning-of-buffer)
+  (forward-line)
+  (dolist (el path)
+    (search-forward el nil t)
+    (when (not (dired-subtree--is-expanded-p))
+      (dired-subtree-toggle)))
+  (dired-move-to-filename))
+
+(defun t/dired-collapse ()
+  "Collapse all expanded directories in dired listing."
+  (beginning-of-buffer)
+  (while (not (eobp))
+    (forward-line)
+    (when (dired-subtree--is-expanded-p)
+      (dired-subtree-toggle)))
+  (beginning-of-buffer))
+
+(defun t/dired-locate ()
+  "Locate the visited file in dired or t-sidebar."
+  (interactive)
+  (let* ((path (s-replace (t/project-root) "" (buffer-file-name)))
+         (path (s-split "/" path))
+         (path (remove "" path)))
+    (let* ((sidebar (concat ":" (replace-regexp-in-string (expand-file-name "~") "~" (t/project-root)))))
+      (if (get-buffer sidebar)
+          (pop-to-buffer sidebar)
+        (dired (t/project-root))))
+    (t/dired-collapse)
+    (t/dired-locate-path path)))
 (defun t/toggle-window-cursor ()
   "Toggle cursor visibility in the window of the current buffer."
   (interactive)
