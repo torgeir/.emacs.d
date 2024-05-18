@@ -1246,6 +1246,7 @@ with browser in full screen."
         (dired (t/project-root))))
     (t/dired-collapse)
     (t/dired-locate-path path)))
+
 (defun t/toggle-window-cursor ()
   "Toggle cursor visibility in the window of the current buffer."
   (interactive)
@@ -1293,7 +1294,13 @@ with browser in full screen."
   (shell-command-to-string
    "osascript -l JavaScript -e '[].slice.call(((app) => (app && app.windows) || [])(Application(\"Google Chrome\"))).map((w) => [w, [].slice.call(w.tabs)]).map(([_, tabs]) => tabs).flat().map((t, idx) => [\"[[\", t.url(), \"][Tab \", (idx + 1), \"]]\"].join(\"\")).join(\"\\n\")'"))
 
-(defun t/speak (beg end)
+(defun t/say (text)
+  "Speak TEXT using macos 'say' command."
+  (if is-mac
+      (shell-command (concat "say -v 'Karen' -r 250" ()))
+    (error "'say' command not found")))
+
+(defun t/speak-region (beg end)
   "Speak selected text using macos 'say' command."
   (interactive "r")
   (if is-mac
