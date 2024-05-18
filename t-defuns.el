@@ -1367,8 +1367,10 @@ Prefix arg will force eww."
   (interactive)
   (if (not is-mac)
       t
-    (t/run-osascript
-     "tell application \"System Events\" to tell appearance preferences to set dark mode to not dark mode")))
+    (progn
+      (t/run-osascript
+       "tell application \"System Events\" to tell appearance preferences to set dark mode to not dark mode")
+      (async-shell-command "sh ~/.config/alacritty/alacritty-toggle-appearance"))))
 
 (defun t/load-system-theme ()
   (interactive)
