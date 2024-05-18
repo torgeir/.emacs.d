@@ -4698,7 +4698,12 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
     (interactive
      (list
       (if-let ((url (or (and (fboundp 'thing-at-point) (thing-at-point 'url))
-                        (shr-url-at-point nil))))
+                        (shr-url-at-point nil)
+                        (org-element-property :raw-link (org-element-context))
+                        (and (equal major-mode 'elfeed-show-mode)
+                             (elfeed-entry-link elfeed-show-entry))
+                        (and (equal major-mode 'elfeed-search-mode)
+                             (elfeed-entry-link (car (elfeed-search-selected)))))))
           url
         (read-string "Enter URL you want to summarize: "))))
     (let ((buffer-name (url-retrieve-synchronously url t)))
