@@ -461,18 +461,21 @@ with browser in full screen."
   (t/fetch (t/grab-chrome-url)))
 
 (defun t/browse-url-at-point ()
+  "Open url at `point' from everywhere.
+Prefix arg will force eww."
   (interactive)
-  (if (t/prefix-arg-universal?)
-      (let ((browse-url-browser-function 'eww-browse-url)) ;; force eww
-        (browse-url-at-point))
-    (let ((browse-url-browser-function 'browse-url-default-browser))
-      (cond ((equal major-mode 'eww-mode) (eww-browse-with-external-browser))
-            ((equal major-mode 'elfeed-search-mode) (elfeed-search-browse-url))
-            ((equal major-mode 'elfeed-show-mode) (browse-url (elfeed-entry-link elfeed-show-entry)))
-            ((equal major-mode 'gnus-summary-mode) (gnus-summary-browse-url))
-            ((equal major-mode 'magit-status-mode) (call-interactively 'forge-browse-dwim))
-            ((equal major-mode 'hackernews-mode) (hackernews-browse-url-action (button-at (point))))
-            (t (call-interactively 'browse-url-at-point))))))
+  (let ((browse-url-browser-function
+         (if (t/prefix-arg-universal?)
+             'eww-browse-url
+           'browse-url-default-browser)))
+    (cond ((equal major-mode 'eww-mode) (eww-browse-with-external-browser))
+          ((equal major-mode 'elfeed-search-mode) (elfeed-search-browse-url))
+          ((equal major-mode 'elfeed-show-mode) (browse-url (elfeed-entry-link elfeed-show-entry)))
+          ((equal major-mode 'gnus-summary-mode) (gnus-summary-browse-url))
+          ((equal major-mode 'magit-status-mode) (call-interactively 'forge-browse-dwim))
+          ((equal major-mode 'hackernews-mode) (hackernews-browse-url-action (button-at (point))))
+          ((equal major-mode 'org-mode) (org-open-at-point))
+          (t (call-interactively 'browse-url-at-point)))))
 
 (defun t/open-elfeed-in-eww ()
   (interactive)
