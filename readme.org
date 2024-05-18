@@ -1108,7 +1108,10 @@ There's a lot of good [[file:~/.config/doom-local/straight/repos/themes/themes/]
                    t-doom-one
                    catppuccin
                    doom-vibrant)
-      doom-theme (car *t-themes*))
+      doom-theme (car *t-themes*)
+      t-system-theme-dark 't-doom-one
+      t-system-theme-dark 'catppuccin
+      t-system-theme-light 'doom-flatwhite)
 #+end_src
 
 Cycle through nice ones.
@@ -1131,6 +1134,13 @@ Bind it to =SPC t t=. To cycle the other way around do =SPC u= =SPC t t=
 
 #+begin_src emacs-lisp
 (map! :leader "t t" #'t/cycle-theme)
+#+end_src
+
+And cycle between the selected =t-system-theme-dark= and =t-system-theme-light= when the system appearance is changed on macos.
+
+#+begin_src emacs-lisp
+(advice-remove 't/toggle-system-appearence :after)
+(advice-add 't/toggle-system-appearence :after 't/load-system-theme)
 #+end_src
 
 **** Line numbers
@@ -1184,7 +1194,10 @@ Set across all real buffers.
 #+begin_src emacs-lisp
 (let ((tr 99))
   (t/transparency tr)
-  (advice-add #'doom/reload-theme :after 'highlight-indent-guides-auto-set-faces)
+  (comment
+   (advice-remove #'load-theme :after)
+   (advice-remove #'load-theme :before)
+   )
   (advice-add #'doom/reload-theme :after (cmd! (t/transparency tr))))
 #+end_src
 

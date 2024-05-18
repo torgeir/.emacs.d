@@ -1312,5 +1312,27 @@ with browser in full screen."
         (forward-line))))
   (read-only-mode 1))
 
+(defun t/is-darkmode ()
+  (interactive)
+  (if (not is-mac)
+      t
+    (equal
+     "true"
+     (t/trim-final-newline
+      (t/run-osascript
+       "tell application \"System Events\" to get dark mode of appearance preferences")))))
+
+(defun t/toggle-system-appearence ()
+  (interactive)
+  (if (not is-mac)
+      t
+    (t/run-osascript
+     "tell application \"System Events\" to tell appearance preferences to set dark mode to not dark mode")))
+
+(defun t/load-system-theme ()
+  (interactive)
+  (load-theme
+   (if (t/is-darkmode) t-system-theme-dark t-system-theme-light)))
+
 (provide 't-defuns)
 ;;; t-defuns.el ends here
