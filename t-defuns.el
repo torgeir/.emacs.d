@@ -472,6 +472,7 @@ Prefix arg will force eww."
           ((equal major-mode 'elfeed-search-mode) (elfeed-search-browse-url))
           ((equal major-mode 'elfeed-show-mode) (browse-url (elfeed-entry-link elfeed-show-entry)))
           ((equal major-mode 'gnus-summary-mode) (gnus-summary-browse-url))
+          ((equal major-mode 'mu4e-headers-mode) (browse-url (shr-url-at-point)))
           ((equal major-mode 'magit-status-mode) (call-interactively 'forge-browse-dwim))
           ((equal major-mode 'hackernews-mode) (hackernews-browse-url-action (button-at (point))))
           ((equal major-mode 'org-mode) (org-open-at-point))
