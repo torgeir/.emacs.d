@@ -2641,9 +2641,9 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
                (host (url-host parsed-url)))
           (message "browse url: %s" parsed-url)
           (cond
-           ((-any-p (lambda (url-part) (s-contains? url-part host)) blacklisted-eww-url-parts)
+           ((-any-p (lambda (url-part) (and host (s-contains? url-part host))) blacklisted-eww-url-parts)
             (browse-url-default-browser url))
-           ((or (s-contains-p "youtube.com" host) (s-contains-p "youtu.be" host))
+           ((and host (or (s-contains-p "youtube.com" host) (s-contains-p "youtu.be" host)))
             (elfeed-tube-fetch url)
             (run-at-time "0 sec" nil 't/start-spray-micro-state))
            (t (eww-browse-url url))))))
