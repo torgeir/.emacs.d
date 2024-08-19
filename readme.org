@@ -2448,7 +2448,7 @@ Clock in like =SPC m c i=.
 Default openai language model.
 
 #+begin_src emacs-lisp
-(setq-default *t-gpt-models* "gpt-4-1106-preview")
+(setq-default *t-gpt-models* "gpt-4o-mini")
 #+end_src
 
 **** org-ai: ChatGPT in org mode
