@@ -679,6 +679,7 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
                                (interactive)
                                (visual-line-mode -1)
                                (toggle-truncate-lines 1)))
+  (add-hook 'dired-mode-hook 'nerd-icons-dired-mode)
   (add-hook 'dired-mode-hook 'dired-subtree-toggle)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (add-hook 'dired-mode-hook 'dired-async-mode)
