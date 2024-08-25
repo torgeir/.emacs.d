@@ -208,7 +208,7 @@ gpg --edit-key 922E681804CA8D82F1FAFCB177836712DAEA8B95
 
 #+begin_src emacs-lisp
 (setq org-directory (expand-file-name "~/Dropbox/org/")
-      org-agenda-files '("~/Dropbox/org" "~/Dropbox/org/IFTTT/pocket.txt" )
+      org-agenda-files '("~/Dropbox/org")
       org-archive-location "%s_archive.gpg::") ; so files are encrypted automatically
 #+end_src
 
