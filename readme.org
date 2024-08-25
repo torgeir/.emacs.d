@@ -103,6 +103,7 @@ This is tangled to ~packages.el~ on save.
 (package! recursion-indicator)
 (package! org-alert)
 (package! ellama)
+(package! spacious-padding)
 #+end_src
 
 *** Try
@@ -698,6 +699,10 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
   (map! :map dired-mode-map :ng "Q" 'evil-record-macro)
   (map!
    :map (dired-mode-map)
+   "<return>" (cmd! (if (t/prefix-arg-universal?)
+                        (call-interactively 'dired-find-file)
+                      (let ((split-window-preferred-function 'ignore))
+                        (call-interactively 'dired-find-file))))
    "C-k" 'dired-kill-subdir
    "<tab>" 't/dired-subtree-tab
    :n "<tab>" 't/dired-subtree-tab
@@ -752,7 +757,6 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
        (assoc-delete-all "^:" display-buffer-alist))
  )
 #+end_src
-
 
 **** WIP to locate file in dired
 
@@ -1213,18 +1217,35 @@ Show the buffer and the file
 
 *** Windows
 
-Split windows manually. If say a single dired window is visible and it is dedicated, allow splitting, else never allow splitting.
+**** Spacious-padding for more space
 
 #+begin_src emacs-lisp
-;; (setq split-window-preferred-function 'split-window-sensibly)
-(setq split-window-preferred-function
-      (lambda (ignored-window)
-        (if (= 1 (length (window-list)))
-            (split-window-right)
-          nil)))
+(use-package! spacious-padding
+  :defer t)
 #+end_src
 
-Resize window combinations proportionally.
+**** Scroll mru window
+
+Scroll most recently used window when using ~c-m-v~ and ~c-m-S-v~.
+
+#+begin_src emacs-lisp
+(setq other-window-scroll-default #'get-lru-window)
+#+end_src
+
+**** Split windows manually
+
+If say a single dired window is visible and it is dedicated, allow splitting, else never allow splitting.
+
+#+begin_src emacs-lisp
+(setq split-window-preferred-function 'split-window-sensibly)
+;;(setq split-window-preferred-function
+;;      (lambda (ignored-window)
+;;        (if (= 1 (length (window-list)))
+;;            (split-window-right)
+;;          nil)))
+#+end_src
+
+**** Resize window combinations proportionally
 
 #+begin_src emacs-lisp
 (setq-default window-combination-resize t)

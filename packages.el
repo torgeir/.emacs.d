@@ -30,3 +30,4 @@
 (package! recursion-indicator)
 (package! org-alert)
 (package! ellama)
+(package! spacious-padding)
