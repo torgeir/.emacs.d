@@ -71,6 +71,8 @@ The madness that is dynamic is too much for anyone, really.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
+(package! nerd-icons-dired)
+(package! d2-mode)
 (package! pulsar)
 (package! copilot
   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el" "dist")))

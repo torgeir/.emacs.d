@@ -1,3 +1,5 @@
+(package! nerd-icons-dired)
+(package! d2-mode)
 (package! pulsar)
 (package! copilot
   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el" "dist")))
