@@ -1894,7 +1894,6 @@ Motion keys for info mode.
 #+END_SRC
 
 ** Org
-
 *** Org settings
 
 #+begin_src emacs-lisp
@@ -2464,7 +2463,6 @@ Clock in like =SPC m c i=.
       (:prefix ("c" . "clock")
                "p" #'org-pomodoro))
 #+end_src
-
 
 *** OpenAI: GPT
 
@@ -4745,3 +4743,4 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
         (kill-region (point) (point-max))
         (ellama-summarize)))))
 #+end_src
+
