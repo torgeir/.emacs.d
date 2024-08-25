@@ -1830,10 +1830,10 @@ Popup bindings on a norwegian keyboard
 #+begin_src emacs-lisp
 (map! :g "C-*"   #'+popup/raise
       :g "C-x p" #'+popup/other
-      :g "C-'"   #'+popup/toggle
+      :leader "ø" #'+popup/toggle
       :map org-mode-map
       :g "C-*"   #'+popup/raise
-      :g "C-'"   #'+popup/toggle)
+      :g "C-ø"   #'+popup/toggle)
 #+end_src
 
 ** Gnus
