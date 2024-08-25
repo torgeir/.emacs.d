@@ -359,8 +359,8 @@ Soft wrap everywhere
 #+begin_src emacs-lisp
 (add-hook! 'doom-after-init-hook
   (defun t/after-init-hook ()
-    (setq truncate-lines nil)
-    (global-visual-line-mode 1)
+    (setq truncate-lines t)
+    (global-visual-line-mode 0)
     (global-hl-line-mode -1)))
 #+end_src
 
