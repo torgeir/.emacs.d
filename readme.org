@@ -3748,25 +3748,6 @@ Improved diffs with =magit-delta-mode=. Show the themes with =delta --show-synta
 (advice-add #'magit-log-propertize-keywords :override #'magit-log-propertize-keywords-conventional-commits)
 #+end_src
 
-*** Blamer mode
-
-Bound to ~SPC t b~.
-
-#+begin_src emacs-lisp
-(use-package! blamer
-  :commands (blamer-mode)
-  :custom
-  (blamer-idle-time 0.5)
-  (blamer-min-offset 50)
-  (blamer-prettify-time-p t)
-  (blamer-entire-formatter "%s")
-  (blamer-author-formatter " %s")
-  (blamer-datetime-formatter " [%s] ")
-  (blamer-commit-formatter "✎ %s")
-  :custom-face
-  (blamer-face ((t :foreground "#7a88cf" :background nil :height 100 :italic t))))
-#+end_src
-
 ** Applications
 
 *** Artist
