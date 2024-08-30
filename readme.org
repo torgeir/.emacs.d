@@ -3446,6 +3446,13 @@ Some keybindings are so engrained I can't live without them.
         :i "M-<return>" (cmd! (vterm-send-key "<return>" nil t nil))
         :i "C-<return>" (cmd! (vterm-send-key "<return>" nil nil t))
 
+        :i "M-<up>" (cmd! (vterm-send-key "<up>" nil t nil))
+        :i "M-<right>" (cmd! (vterm-send-key "<right>" nil t nil))
+        :i "M-<down>" (cmd! (vterm-send-key "<down>" nil t nil))
+        :i "M-<left>" (cmd! (vterm-send-key "<left>" nil t nil))
+        :i "M-d" (cmd! (vterm-send-key "d" nil t nil))
+        :i "M-D" (cmd! (vterm-send-key "D" nil t nil))
+
         ;; send c-up c-down for dir stack zsh navigation
         :i "C-<up>" (cmd! (vterm-send-key "<up>" nil nil t))
         :i "C-<down>" (cmd! (vterm-send-key "<down>" nil nil t))
