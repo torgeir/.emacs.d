@@ -3993,7 +3993,7 @@ Inspiration https://gist.github.com/alphapapa/80d2dba33fafcb50f558464a3a73af9a
 
 #+begin_src emacs-lisp
 (after! elfeed
-  (defun t-elfeed-print-entry (entry)
+  (defun t-elfeed-print-entry (&optional entry)
     "Customize what heading goes where, elfeed-search-print-entry--default."
 
     (let* ((tags (or (elfeed-entry-tags entry) ""))
@@ -4022,16 +4022,18 @@ Inspiration https://gist.github.com/alphapapa/80d2dba33fafcb50f558464a3a73af9a
 #+end_src
 
 #+begin_src emacs-lisp
-(advice-remove 'evil-previous-line :after)
-(advice-remove 'evil-next-line :after)
-(defun t/show-elfeed-heading-in-minibuffer ()
-  (interactive)
-  (when (eq major-mode 'elfeed-search-mode)
-    (message "%s: %s"
-             (propertize (elfeed-feed-title (elfeed-entry-feed (car (elfeed-search-selected)))) 'face 'elfeed-search-feed-face)
-             (propertize (elfeed-entry-title (car (elfeed-search-selected))) 'face 'elfeed-hl-face))))
-(advice-add 'evil-previous-line :after 't/show-elfeed-heading-in-minibuffer)
-(advice-add 'evil-next-line :after 't/show-elfeed-heading-in-minibuffer)
+(after! elfeed
+  (defun t/show-elfeed-heading-in-minibuffer ()
+    (interactive)
+    (let ((selected (car (elfeed-search-selected))))
+      (when-let ((feed (and selected (elfeed-entry-feed selected))))
+        (message "%s: %s"
+                 (propertize (elfeed-feed-title feed) 'face 'elfeed-search-feed-face)
+                 (propertize (elfeed-entry-title selected) 'face 'elfeed-hl-face)))))
+  (defun t/setup-elfeed-heading-in-minibuffer ()
+    (interactive)
+    (add-hook! 'post-command-hook :local 't/show-elfeed-heading-in-minibuffer))
+  (add-hook! 'elfeed-search-mode-hook 't/setup-elfeed-heading-in-minibuffer))
 #+end_src
 
 *** Calendar
