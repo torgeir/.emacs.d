@@ -934,12 +934,22 @@ Navigate flymake and flycheck errors
 (after! flymake
   (map!
    :map flymake-diagnostics-buffer-mode-map
-   :n "C-p" (cmd! (previous-line)
-                  (flymake-goto-diagnostic (point))
-                  (flymake-show-buffer-diagnostics))
-   :n "C-n" (cmd! (next-line)
-                  (flymake-goto-diagnostic (point))
-                  (flymake-show-buffer-diagnostics))))
+   :n "C-p" (cmd! (let ((p (point))
+                        (b (current-buffer)))
+                    (previous-line)
+                    (flymake-goto-diagnostic (point))
+                    (pop-to-buffer b)
+                    (goto-char p)
+                    (previous-line) ;; again??
+                    ))
+   :n "C-n" (cmd! (let ((p (point))
+                        (b (current-buffer)))
+                    (next-line)
+                    (flymake-goto-diagnostic (point))
+                    (pop-to-buffer b)
+                    (goto-char p)
+                    (next-line) ;; again??
+                    ))))
 #+end_src
 
 
