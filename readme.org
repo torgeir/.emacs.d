@@ -349,6 +349,13 @@ Remove highlight indent guides by default.
 
 #+begin_src emacs-lisp
 (remove-hook! '(text-mode-hook conf-mode-hook) 'highlight-indent-guides-mode)
+(defun t/doom-load-theme-hook (&optional &rest _)
+  "The auto set faces stuff is not working, DIY."
+  (interactive)
+  (highlight-indent-guides-mode 0)
+  (highlight-indent-guides-mode 1))
+(advice-remove 'load-theme 't/doom-load-theme-hook)
+(advice-add 'load-theme :after 't/doom-load-theme-hook)
 #+end_src
 
 Opt-in to emojis instead :rocket:
