@@ -4902,3 +4902,25 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
         (ellama-summarize)))))
 #+end_src
 
+** default workspaces
+
+#+begin_src emacs-lisp
+(after! workspaces
+  (advice-add '+workspace/kill-session :before 'eglot-shutdown-all))
+(defun t/+workspace-new (name &rest buffers)
+  (interactive)
+  (+workspace-switch name t)
+  (dolist (buffer (reverse buffers))
+    (find-file buffer)))
+(defun t/default-workspaces-init ()
+  (interactive)
+  (t/+workspace-new "doom" doom-user-dir)
+  (t/+workspace-new "dot" "~/Projects/dotfiles")
+  (t/+workspace-new "nix-darwin" "~/.config/nix-darwin/" "~/.config/nix-darwin/flake.nix" "~/.config/nix-darwin/home/default.nix")
+  (t/+workspace-new "org" (format "%s/home.org.gpg" (car org-agenda-files))))
+(defun t/default-workspaces ()
+  (interactive)
+  (if (equal '("main") (+workspace-list-names))
+      (t/default-workspaces-init)
+    (message "Workspaces exist, bailing: %s" (+workspace-list-names))))
+#+end_src
