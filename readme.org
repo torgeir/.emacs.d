@@ -2747,6 +2747,7 @@ I never really got into this.
                      (elfeed-show-refresh))
                    (when (eq major-mode 'eww-mode)
                      (call-interactively 't/eww-toggle-images))) map)
+    (bind-key "l" (cmd! (call-interactively 'link-hint-open-link)) map)
     (bind-key "v" (cmd! (call-interactively 't/variable-pitch-mode)) map)
     (bind-key "o" (cmd! (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
