@@ -45,6 +45,12 @@ Type ~SPC m g g~ to run =consult-org-heading=, then ~C-c C-;~ to =embark-export=
 - =setq-default= sets a default value for a variable for all buffers
 - =setq-local= sets a buffer local variable, it needs to be buffer local first =(make-variable-buffer-local '...)=
 
+** Troubleshooting doom
+
+When ~doom sync -u~ fails for some packages, try deleting the cloned repos before running it again.
+
+E.g. ~rm -rf ~~/.config/doom-local/straight/repos/{magit,transient,with-editor}~
+
 ** Literate config
 
 This config uses the =:config literal= that tangles this file to ~config.el~ on save. The [[file:init.el::setq +literate-config-file (concat (getenv "HOME") "/.doom.d/readme.org")][+literate-config-file]] is set in ~init.el~ and points to this file.
@@ -91,19 +97,18 @@ This is tangled to ~packages.el~ on save.
 (package! mastodon :recipe (:host codeberg :repo "martianh/mastodon.el"))
 (package! hnreader)
 (package! reddigg)
-(package! blamer :recipe (:host github :repo "artawower/blamer.el"))
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 (package! remark-mode)
-;; (package! tempel)
-(package! command-log-mode)
-;; fix broken doom install for thesaurus on a mac?
+(package! command-log-mode) ;; C-c o
+;; needed for wn program on a mac?
 (package! wordnut :pin "feac531404041855312c1a046bde7ea18c674915")
-;; fix broken doom install for thesaurus on a mac?
+;; needed for wn program on a mac?
 (package! synosaurus :pin "14d34fc92a77c3a916b4d58400424c44ae99cd81")
 (package! recursion-indicator)
 (package! org-alert)
 (package! ellama)
 (package! spacious-padding)
+(package! mu4e-alert)
 #+end_src
 
 *** Try
@@ -360,6 +365,7 @@ Soft wrap everywhere
 (add-hook! 'doom-after-init-hook
   (defun t/after-init-hook ()
     (setq truncate-lines t)
+    (spacious-padding-mode)
     (global-visual-line-mode 0)
     (global-hl-line-mode -1)))
 #+end_src
@@ -1754,9 +1760,10 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Browse at point"   "o b" #'t/browse-url-at-point
  :leader :desc "Browse chrome url" "o B" #'t/browse-chrome-url-in-eww
 
- :leader :desc "Search the web" "s w" #'consult-web-search
+ :leader :desc "Search the web"   "s w" #'consult-web-search
+ :leader :desc "Search marks"     "s M" #'evil-show-marks
+ :leader :desc "Search registers" "s R" #'evil-show-registers
 
- :leader :desc "Toggle blamer"         "t b" #'blamer-mode
  :leader :desc "Toggle copilot"        "t c" #'copilot-mode
  :leader :desc "Fill column indicator" "t C" #'display-fill-column-indicator-mode
  :leader :desc "Toggle Big mode"       "t B" #'doom-big-font-mode
@@ -1788,7 +1795,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
 
  :leader :desc "Flip frame"                     "w f" #'rotate-frame
  :leader :desc "Delete window or frame or hide" "w d" #'t/delete-window-or-frame-or-hide
- :leader :desc "Delete buffer and window"       "w D" #'t/volatile-kill-buffer-and-window
+ :leader :desc "Delete buffer and window"       "w K" #'t/volatile-kill-buffer-and-window
  :leader :desc "Winner redo"                  "w R" #'winner-redo
  :leader :desc "Rotate frame"                 "w r" (cmd!
                                                      (if (t/prefix-arg-universal?)

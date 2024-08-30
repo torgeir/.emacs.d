@@ -18,14 +18,12 @@
 (package! mastodon :recipe (:host codeberg :repo "martianh/mastodon.el"))
 (package! hnreader)
 (package! reddigg)
-(package! blamer :recipe (:host github :repo "artawower/blamer.el"))
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 (package! remark-mode)
-;; (package! tempel)
-(package! command-log-mode)
-;; fix broken doom install for thesaurus on a mac?
+(package! command-log-mode) ;; C-c o
+;; needed for wn program on a mac?
 (package! wordnut :pin "feac531404041855312c1a046bde7ea18c674915")
-;; fix broken doom install for thesaurus on a mac?
+;; needed for wn program on a mac?
 (package! synosaurus :pin "14d34fc92a77c3a916b4d58400424c44ae99cd81")
 (package! recursion-indicator)
 (package! org-alert)
