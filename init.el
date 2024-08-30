@@ -37,7 +37,7 @@
        ;; doom-dashboard    ; a nifty splash screen for Emacs
        ;;doom-quit         ; DOOM quit-message prompts when you quit Emacs
        (emoji +unicode +ascii +github)  ; 🙂
-       hl-todo           ; highlight todo/fixme/note/deprecated/hack/review
+       hl-todo           ; highlight todo/fixme/note/deprecated/hack/review TODO
        ;;hydra
        indent-guides     ; highlighted indent columns
        ;;(ligatures +iosevka)         ; ligatures and symbols to make your code pretty again
