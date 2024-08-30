@@ -4156,7 +4156,6 @@ Inspiration:
   (add-hook! 'mu4e-main-mode-hook
     (defun t/mu4e-main-mode-hook ()
       (interactive)
-      (setq doom-modeline-mu4e nil)
       (visual-line-mode -1)))
 
   (setq mu4e-maildir "~/.maildir"
