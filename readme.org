@@ -3427,8 +3427,10 @@ The black in the terminal, e.g. when prefixing commands with a =#=, is a little 
 
 #+begin_src emacs-lisp
 (after! vterm
-  (set-face-attribute 'vterm-color-black nil :background "#47494b" :foreground "#303030"))
+  (set-face-attribute 'vterm-color-black nil :background "#595B6E" :foreground "#454758"))
 #+end_src
+
+This also fixes the color to be the one tmux uses with the catppuccin theme.
 
 **** Keybindings
 
