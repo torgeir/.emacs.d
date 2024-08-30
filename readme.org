@@ -2918,9 +2918,6 @@ A custom function to fetch a clean view of the current news from nrk.no
   (beginning-of-buffer)
   (t/cleanup-buffer-whitespace-and-indent)
   (while (re-search-forward "*" nil t)
-    ;; kill lines with dates, all these news are new
-    (when (string-match-p "^* [0-9][0-9]\." (thing-at-point 'line))
-      (kill-line) (forward-line) (join-line))
     ;; change * to -
     (replace-match "\n-")
     ;; highlight the line
