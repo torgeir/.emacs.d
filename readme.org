@@ -3475,6 +3475,33 @@ Remove ~C-l~ in normal mode, so that ~recenter-top-bottom~ works. Bring it back 
   (map! :map vterm-mode-map :i "C-l" 'vterm-clear))
 #+end_src
 
+First esc sends escape, second exits to emacs normal mode
+
+#+begin_src emacs-lisp
+(after! vterm
+  (comment
+   ;; TODO remove
+   (defun t/vterm-escape-second-time-around ()
+     (interactive)
+     (if (eq last-command 't/vterm-escape-second-time-around)
+         (call-interactively 'evil-force-normal-state)
+       (call-interactively 'vterm-send-escape)))
+   (map! :map vterm-mode-map
+         :i "<escape>" 't/vterm-escape-second-time-around))
+  ;; this is good enough?
+  (map! :map vterm-mode-map
+        :i "M-<escape>" 'vterm-send-escape)
+  (map! :map vterm-mode-map
+        :i "M-:" 'eval-expression))
+#+end_src
+
+Allow vim-like copy from tmux to emacs kill ring
+
+#+begin_src emacs-lisp
+(after! vterm
+  (setq vterm-enable-manipulate-selection-data-by-osc52 t))
+#+end_src
+
 **** Allow ~edit-command~ from insert mode
 
 Use it with ~^x^e~
