@@ -1584,33 +1584,136 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
 (defun t/doom-modeline-mode-hook (&optional &rest ignore)
   (interactive)
   (setq doom-modeline-persp-name t
-        doom-modeline-persp-icon nil
+        doom-modeline-persp-icon t
         ;; doom-modeline-height (* 2 (font-get (or (and doom-big-font-mode doom-big-font) doom-font) :size))
         ;; doom-feather-dark-padded-modeline t
         doom-themes-padded-modeline t
         doom-modeline-bar-width 4
-        doom-modeline-mu4e nil
         doom-modeline-github t
         doom-modeline-repl t
         doom-modeline-battery t
         display-time-24hr-format t
-        display-time-string-forms '(24-hours ":" minutes " " dayname " " day "/" month)
+        ;; it needs padding to the right
+        display-time-string-forms '(dayname " " day "/" month "    ")
         doom-modeline-major-mode-icon t
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-file-name-style 'truncate-upto-root)
+  (use-package! mu4e-alert
+    :after mu4e
+    :init (setq doom-modeline-mu4e t)
+    :config (mu4e-alert-enable-mode-line-display))
   (after! doom-modeline
-    (set-face-attribute 'doom-modeline-persp-name nil :foreground "DeepPink2" :weight 'bold)
+    (set-face-attribute 'doom-modeline-persp-name nil :foreground "DeepPink2" :weight 'bold :italic nil)
     (display-battery-mode)
     (display-time-mode)
     (doom-modeline-github-timer)))
 (t/doom-modeline-mode-hook)
-;;(advice-add 'doom-adjust-font-size :after 't/doom-modeline-mode-hook)
-;;(advice-add #'doom/reload-theme :after 'highlight-indent-guides-auto-set-faces)
-
-;; TODO torgeir
 (add-hook! 'doom-load-theme-hook :append #'t/doom-modeline-mode-hook)
-;; (advice-add 'doom-adjust-font-size :after 't/doom-modeline-mode-hook)
+#+end_src
 
+**** Doom modeline customization
+:PROPERTIES:
+:header-args: :noeval t :tangle no
+:END:
+
+Read more on [[https://github.com/seagle0128/doom-modeline][seagle0128/doom-modeline]]
+
+***** Get a modeline
+
+#+begin_src emacs-lisp
+(doom-modeline 'main)
+#+end_src
+
+#+RESULTS:
+| :eval | (doom-modeline-format--main) |
+
+***** Create a modeline
+
+You could add your own segments to something like this.
+
+#+begin_src emacs-lisp
+(doom-modeline-def-modeline 't-modeline
+  '(bar window-number modals matches buffer-info-simple)
+  '(media-info major-mode time))
+#+end_src
+
+#+RESULTS:
+: doom-modeline-format--t-modeline
+
+Running it creates the function
+
+#+begin_src emacs-lisp
+(doom-modeline-format--t-modeline)
+#+end_src
+
+#+RESULTS:
+| ((:eval (doom-modeline-segment--bar)) (:eval (doom-modeline-segment--window-number)) (:eval (doom-modeline-segment--modals)) (:eval (doom-modeline-segment--matches)) (:eval (doom-modeline-segment--buffer-info-simple)))  |   | ((:eval (doom-modeline-segment--media-info)) (:eval (doom-modeline-segment--major-mode)) (:eval (doom-modeline-segment--time))) |
+
+***** Set the modeline
+
+#+begin_src emacs-lisp
+(doom-modeline-set-modeline 't-modeline)
+#+end_src
+
+#+RESULTS:
+| %e | (:eval (doom-modeline-format--t-modeline)) |
+
+***** This sets buffer-local ~mode-line-format~ to show it
+
+#+begin_src emacs-lisp
+mode-line-format
+#+end_src
+
+#+RESULTS:
+| %e | (:eval (doom-modeline-format--t-modeline)) |
+
+To set it by default ~(setf (default-value 'mode-line-format) ...)~ is used
+
+**** Create your own segment
+
+#+begin_src emacs-lisp
+(after! doom-modeline
+  (doom-modeline-def-segment tasks
+    "Display # of tasks not refiled. Use (nerd-icons-insert-faicon) to look up icons."
+    (concat
+     (doom-modeline-spc)
+     (when-let ((icon (doom-modeline-icon 'faicon "nf-fae-checklist_o" "🗉" "")))
+       (concat
+        (doom-modeline-display-icon icon)
+        (doom-modeline-vspc)
+        (with-current-buffer "tasks.org"
+          (let ((count 0))
+            ;; for each heading
+            (org-map-entries
+             (lambda (&optional heading)
+               (when (not (org-entry-is-done-p))
+                 (setq count (1+ count))))
+             ;; all headline
+             t
+             ;; in file
+             'file)
+            ;; needs to be string
+            (format "%s" count)))
+        (doom-modeline-vspc)
+        )))))
+#+end_src
+
+**** Extend the doom 'main default one, by advicing it
+
+It has 3 parts, the left, the separator and the right.
+
+#+begin_src emacs-lisp
+(defun t/around-doom-modeline-format--main (fn)
+  (interactive)
+  (let ((res (funcall fn)))
+    (list
+     (nth 0 res)
+     (nth 1 res)
+     (cons '(:eval (doom-modeline-segment--tasks))
+           (nth 2 res)))))
+
+(advice-remove 'doom-modeline-format--main 't/around-doom-modeline-format--main)
+(advice-add 'doom-modeline-format--main :around 't/around-doom-modeline-format--main)
 #+end_src
 
 *** Dictionary
@@ -1740,22 +1843,18 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader (:prefix ("o" . "open")
                   (:prefix-map
                    ("c" . "Consume")
-                   (:when (modulep! :ui vc-gutter)
+                   (:when t
                      :desc "nrk.no" "n" (cmd! (t/eww-readable "https://www.nrk.no/nyheter/" 't/clean-nrk-buffer))
-                     :desc "hackernews"  "h" (cmd! (condition-case nil (+workspace-new "*hn*") (error nil))
-                                                   (+workspace-switch "*hn*")
+                     :desc "hackernews"  "h" (cmd! (+workspace-switch "*hn*" t)
                                                    (hnreader-news))
                      :desc "rss"         "r" #'=rss
                      :desc "mail"        "m" (cmd! (t/gpg) (=mu4e))
-                     :desc "music"       "M" (cmd! (condition-case nil (+workspace-new "*emms*") (error nil))
-                                                   (+workspace-switch "*emms*")
+                     :desc "music"       "M" (cmd! (+workspace-switch "*emms*")
                                                    (emms-cache-set-from-mpd-all)
                                                    (emms-smart-browse))
-                     :desc "mastodon"    "d" (cmd! (condition-case nil (+workspace-new "*mastodon*") (error nil))
-                                                   (+workspace-switch "*mastodon*")
+                     :desc "mastodon"    "d" (cmd! (+workspace-switch "*mastodon*" t)
                                                    (mastodon))
-                     :desc "gnus" "g" (cmd! (condition-case nil (+workspace-new "*gnus*") (error nil))
-                                            (+workspace-switch "*gnus*")
+                     :desc "gnus" "g" (cmd! (+workspace-switch "*gnus*" t)
                                             (gnus)))))
  :leader :desc "Calendar"          "o C" #'calendar
  :leader :desc "Browse"            "o e" #'eww
@@ -2583,8 +2682,9 @@ Default openai language model.
 (after! mastodon
   (setq mastodon-instance-url "https://fosstodon.org"
         mastodon-active-user "@torgeir@fosstodon.org")
+  (set-popup-rule! "^*mastodon" :ignore t)
   (map! :map mastodon-mode-map
-        :n "q" #'+workspace/delete
+        :n "q" #'+workspace/kill
         :n "j" (cmd!
                 (mastodon-tl--goto-next-item)
                 (let ((current-prefix-arg '(4)))

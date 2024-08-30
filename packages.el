@@ -29,3 +29,4 @@
 (package! org-alert)
 (package! ellama)
 (package! spacious-padding)
+(package! mu4e-alert)
