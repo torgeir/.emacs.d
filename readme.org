@@ -3595,6 +3595,23 @@ Goes great with [[file:~/.config/dotfiles/skhdrc::cmd - return \[][these lines f
                               (eros-mode -1)))
 #+end_src
 
+*** Fix +default/search-buffer (consult-line) resetting cursor
+
+By entering ~vterm-copy-mode~ before running the search vterm will be prevented from resetting the cursor, so the jump with ~consult-line~ can be allowed.
+
+#+begin_src emacs-lisp
+(defun t/around-vterm (fn)
+  "Enter `vterm-copy-mode' before jumping with `consult-line' so that the cursor is not reset when the match is chosen in consult. Restore normal vterm mode by hitting `<return>' after."
+  (interactive)
+  (if (not (eq major-mode 'vterm-mode))
+      (funcall fn)
+    (progn
+      (vterm-copy-mode)
+      (funcall fn))))
+(advice-remove '+default/search-buffer 't/around-vterm)
+(advice-add '+default/search-buffer :around 't/around-vterm)
+#+end_src
+
 ** VC
 
 *** Ediff
