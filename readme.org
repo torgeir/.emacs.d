@@ -1977,6 +1977,7 @@ Keep them on the side for some more room.
 #+begin_src emacs-lisp
 (set-popup-rule! "^*info" :side 'right :width 82)
 (set-popup-rule! "^*help" :side 'right :width 82)
+(set-popup-rule! "^*eglot-help" :side 'right :width 82)
 #+end_src
 
 *** Motions
