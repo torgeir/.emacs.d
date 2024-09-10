@@ -348,12 +348,9 @@ Reset [[file:~/.config/emacs/modules/config/default/config.el::(map! "<M-up>" #'
 Remove highlight indent guides by default.
 
 #+begin_src emacs-lisp
-(remove-hook! '(text-mode-hook conf-mode-hook) 'highlight-indent-guides-mode)
 (defun t/doom-load-theme-hook (&optional &rest _)
-  "The auto set faces stuff is not working, DIY."
-  (interactive)
-  (highlight-indent-guides-mode 0)
-  (highlight-indent-guides-mode 1))
+  "This is unused atm, no longer needed the highlight indent guides mode stuff."
+  (interactive))
 (advice-remove 'load-theme 't/doom-load-theme-hook)
 (advice-add 'load-theme :after 't/doom-load-theme-hook)
 #+end_src
@@ -1600,7 +1597,7 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-buffer-file-name-style 'truncate-upto-root)
   (use-package! mu4e-alert
     :after mu4e
-    :init (setq doom-modeline-mu4e t)
+    :init (setq doom-modeline-mu4e nil)
     :config (mu4e-alert-enable-mode-line-display))
   (after! doom-modeline
     (set-face-attribute 'doom-modeline-persp-name nil :foreground "DeepPink2" :weight 'bold :italic nil)
@@ -4472,8 +4469,17 @@ Useful elisp I committed, or decided to work on.
 #+begin_src emacs-lisp
 (use-package! json-path-eldoc
   :commands turn-on-json-path-eldoc
-  :init (add-hook! 'json-mode-hook 'turn-on-json-path-eldoc)
+  ;; TODO too slow on large files, use treesitter?
+  ;;:init (add-hook! 'json-mode-hook 'turn-on-json-path-eldoc)
   :load-path (lambda () (t/user-emacs-file "site-lisp/json-path-eldoc/")))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun t/json-mode-hook ()
+  (interactive)
+  (eldoc-mode -1))
+(add-hook! 'json-mode-hook #'t/json-mode-hook)
+(remove-hook! 'json-mode-hook #'+electric--init-json-mode-h)
 #+end_src
 
 *** Idle highlight across in all buffers
