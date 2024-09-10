@@ -1,0 +1,3 @@
+{:deps {org.babashka/json {:mvn/version "0.1.6"}
+        ;; incanter/incanter {:mvn/version "1.9.3"}
+        }}
