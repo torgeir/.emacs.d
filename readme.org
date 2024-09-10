@@ -168,9 +168,9 @@ Ignore some of the cached emacs files in recent files
           (replace-regexp-in-string (rx "\n" eos) "" (buffer-string)))))))
 #+end_src
 
-*** SSH_AUTH_SOCK
+*** Doom env from terminal, including SSH_* and GPG_* env vars
 
-Needed to do this to make emacs discover 1p ~SSH_AGENT_SOCK~ set in [[file:~/.zprofile][.zprofile]]
+Needed to do this to make emacs discover 1p ~SSH_AGENT_SOCK~ set in [[file:~/.zprofile][.zprofile]]. Or run this command from the terminal
 
 #+begin_src sh :noeval :tangle no
 doom env -a ^SSH_ -a ^GPG
@@ -4270,6 +4270,10 @@ Get rid of consecutive newlines and clean the buffer up. [[https://github.com/do
   (setq shr-use-colors nil)
   (advice-add #'shr-colorize-region :around (defun shr-no-colourise-region (&rest ignore))))
 #+end_src
+
+***** Troubleshooting
+
+Sometimes ~mu4e~ cannot be found, so ~SPC o C m~ does not launch it. Try [[*Doom env from terminal, including SSH_* and GPG_* env vars]] and try launching ~=mu4e~ again.
 
 **** Setup
 
