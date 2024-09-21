@@ -1978,6 +1978,7 @@ Keep them on the side for some more room.
 (set-popup-rule! "^*info" :side 'right :width 82)
 (set-popup-rule! "^*help" :side 'right :width 82)
 (set-popup-rule! "^*eglot-help" :side 'right :width 82)
+(set-popup-rule! "^*cider-doc" :side 'right :width 82)
 #+end_src
 
 *** Motions
@@ -3019,7 +3020,7 @@ Adapt cleverparens keys that clash with my M-[hjkl] bindings in [[file:~/.skhdrc
 #+end_src
 
 #+begin_src emacs-lisp
-(after! (clojure-mode)
+(after! clojure-mode
   (add-hook! '(clojure-mode-hook
                clojurec-mode-hook
                clojurescript-mode-hook) 'evil-cleverparens-mode)
@@ -3029,7 +3030,7 @@ Adapt cleverparens keys that clash with my M-[hjkl] bindings in [[file:~/.skhdrc
 Holding alt for moving between sexps feel right
 
 #+begin_src emacs-lisp
-(after! (clojure-mode)
+(after! clojure-mode
   (map! :map clojure-mode-map
         :i "M-<right>" #'evil-cp-forward-sexp
         :i "M-<left>" #'evil-cp-backward-sexp)
@@ -3039,6 +3040,17 @@ Holding alt for moving between sexps feel right
   (map! :map clojurescript-mode-map
         :i "M-<right>" #'evil-cp-forward-sexp
         :i "M-<left>" #'evil-cp-backward-sexp))
+#+end_src
+
+Doom removes cider auto completion, bring it back, by adding it to the front of ~completion-at-point-functions~.
+
+#+begin_src emacs-lisp
+(after! clojure-mode
+  (remove-hook! 'cider-mode-hook '+clojure--cider-disable-completion)
+  (add-hook! 'clojure-mode-hook :append
+    (defun t/enable-cider-autocomplete-again ()
+      (interactive)
+      (add-hook 'completion-at-point-functions #'cider-complete-at-point -99 t))))
 #+end_src
 
 *** Emacs lisp
