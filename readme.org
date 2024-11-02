@@ -347,7 +347,7 @@ Reset [[file:~/.config/emacs/modules/config/default/config.el::(map! "<M-up>" #'
           :g "M-<right>" nil)))
 #+end_src
 
-Remove highlight indent guides by default.
+On load theme
 
 #+begin_src emacs-lisp
 (defun t/doom-load-theme-hook (&optional &rest _)
