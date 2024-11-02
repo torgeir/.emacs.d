@@ -371,7 +371,6 @@ Soft wrap everywhere
 (add-hook! 'doom-after-init-hook
   (defun t/after-init-hook ()
     (setq truncate-lines t)
-    (spacious-padding-mode)
     (global-visual-line-mode 0)
     (global-hl-line-mode -1)))
 #+end_src
@@ -1244,7 +1243,8 @@ Show the buffer and the file
 
 #+begin_src emacs-lisp
 (use-package! spacious-padding
-  :defer t)
+  :defer t
+  :config (spacious-padding-mode))
 #+end_src
 
 **** Scroll mru window
