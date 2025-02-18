@@ -1680,19 +1680,21 @@ To set it by default ~(setf (default-value 'mode-line-format) ...)~ is used
        (concat
         (doom-modeline-display-icon icon)
         (doom-modeline-vspc)
-        (with-current-buffer "tasks.org"
-          (let ((count 0))
-            ;; for each heading
-            (org-map-entries
-             (lambda (&optional heading)
-               (when (not (org-entry-is-done-p))
-                 (setq count (1+ count))))
-             ;; all headline
-             t
-             ;; in file
-             'file)
-            ;; needs to be string
-            (format "%s" count)))
+        (if (not (get-buffer "tasks.org"))
+            "n/a"
+          (with-current-buffer "tasks.org"
+            (let ((count 0))
+              ;; for each heading
+              (org-map-entries
+               (lambda (&optional heading)
+                 (when (not (org-entry-is-done-p))
+                   (setq count (1+ count))))
+               ;; all headline
+               t
+               ;; in file
+               'file)
+              ;; needs to be string
+              (format "%s" count))))
         (doom-modeline-vspc)
         )))))
 #+end_src
