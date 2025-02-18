@@ -1202,7 +1202,7 @@ Set across all real buffers.
 
 #+begin_src emacs-lisp
 (custom-set-faces!
-  '(show-paren-match :background nil :foreground "yellow" :weight bold)
+  '(show-paren-match :background "unspecified" :foreground "yellow" :weight bold)
   '(rainbow-delimiters-depth-1-face :foreground "DeepPink4" :overline nil :underline nil)
   '(rainbow-delimiters-depth-2-face :foreground "DeepPink3" :overline nil :underline nil)
   '(rainbow-delimiters-depth-3-face :foreground "DeepPink2" :overline nil :underline nil)
@@ -4061,8 +4061,8 @@ Ready some fonts that stand out.
 (after! calendar
   (copy-face font-lock-comment-face 'calendar-week-face)
   (copy-face font-lock-string-face 'calendar-today-face)
-  (set-face-attribute 'holiday nil :foreground "VioletRed1" :weight 'bold :background nil)
-  (set-face-attribute 'calendar-today-face nil :weight 'bold :background nil)
+  (set-face-attribute 'holiday nil :foreground "VioletRed1" :weight 'bold :background "unspecified")
+  (set-face-attribute 'calendar-today-face nil :weight 'bold :background "unspecified")
   (set-face-attribute 'calendar-week-face nil :foreground "VioletRed4"))
 #+end_src
 
