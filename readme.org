@@ -872,7 +872,7 @@ Multiedit calls iedit which is missing all-caps in emacs 29.
              :slant 'normal
              :width 'normal))
 
-(setq t-fonts `((:face ,"IosevkaTermCurlySlab Nerd Font")))
+(setq t-fonts `((:face ,"IosevkaTerm Nerd Font")))
 
 (defun t/cycle-fonts (&optional font-spec)
   (interactive)
