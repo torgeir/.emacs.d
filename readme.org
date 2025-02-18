@@ -3297,6 +3297,13 @@ Remove what =eglot-server-programs= contains, that is the =typescript-language-s
 (add-hook! '(rjsx-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook) #'t-ts-mode-hook)
 #+end_src
 
+**** Force apheleia ts indent level 2
+
+#+begin_src emacs-lisp
+(setq typescript-indent-level 2
+      typescript-ts-mode-indent-offset 2)
+#+end_src
+
 **** Typescript repl with ts-node
 
 Adapt [[file:~/.config/doom-local/straight/repos/nodejs-repl.el/nodejs-repl.el::defun nodejs-repl (][what ~nodejs-repl~ does]] using ~ts-node~.
