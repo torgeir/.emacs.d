@@ -427,6 +427,12 @@ Fine undo
   (setq evil-want-fine-undo t))
 #+end_src
 
+Max number of hits shown
+
+#+begin_src emacs-lisp
+(setq anzu-search-threshold 2000)
+#+end_src
+
 **** Indent after paste
 
 #+begin_src emacs-lisp
