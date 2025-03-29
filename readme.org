@@ -4821,6 +4821,7 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
 
 (use-package! ellama
   :config
+  (require 'llm-ollama)
   (setq torgnix-providers
         (list
          (make-llm-ollama
@@ -4912,7 +4913,7 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
           url
         (read-string "Enter URL you want to summarize: "))))
     (let ((buffer-name (url-retrieve-synchronously url t)))
-      ;; (display-buffer buffer-name)
+      (display-buffer buffer-name)
       (with-current-buffer buffer-name
         (goto-char (point-min))
         (or (search-forward "<!DOCTYPE" nil t)
