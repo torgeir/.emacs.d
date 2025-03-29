@@ -2120,7 +2120,10 @@ Use os support if it exists.
 
 #+begin_src emacs-lisp
 (setq image-use-external-converter t
-      org-image-actual-width (list (float 0.5) (float 0.5)))
+      ;; org-image-max-width 'window
+      org-image-max-width 0.9
+      ;;org-image-actual-width (list (float 0.5) (float 0.5))
+      )
 #+end_src
 
 *** Variable pitch mode
