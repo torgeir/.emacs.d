@@ -1160,6 +1160,7 @@ Cycle through nice ones.
             (append (list (car (reverse *t-themes*))) (butlast *t-themes*))
           (append (cdr *t-themes*) (list (car *t-themes*)))))
   (let ((theme (car *t-themes*)))
+    (disable-theme doom-theme)
     (load-theme theme t)
     (setq doom-theme theme)
     (message "Theme: %s" theme)))
