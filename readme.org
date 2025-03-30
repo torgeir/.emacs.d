@@ -2757,8 +2757,8 @@ I never really got into this.
     (bind-key "S" (cmd! (call-interactively 'ellama-summarize)) map)
     (bind-key "r" (cmd! (call-interactively 'eww-readable)) map)
     (bind-key "i" (cmd!
-                   (setq shr-inhibit-images (not shr-inhibit-images))
                    (when (eq major-mode 'elfeed-show-mode)
+                     (setq shr-inhibit-images (not shr-inhibit-images))
                      (elfeed-show-refresh))
                    (when (eq major-mode 'eww-mode)
                      (call-interactively 't/eww-toggle-images))) map)
