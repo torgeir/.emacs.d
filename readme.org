@@ -2676,7 +2676,7 @@ Default openai language model.
           :desc "explain" "e" (cmd! (t/chatgpt-prompt "What does this code do?") (t/chatgpt-send))
           :desc "gen tests" "t" (cmd! (t/chatgpt-prompt "Write a test for this code") (t/chatgpt-send))
           :desc "optimize" "o" (cmd! (t/chatgpt-prompt "Refactor this code for speed and tell me what you changed and why it's faster") (t/chatgpt-send))
-          :desc "refactor" "r" (cmd! (t/chatgpt-prompt "Refactor this code and tell me what you changed and why it's better") (t/chatgpt-send))
+          :desc "refactor" "r" 'org-ai-refactor-code
           :desc "summarize" "s" (cmd! (t/chatgpt-prompt "Summarize this text:") (t/chatgpt-send))))))
 #+end_src
 
