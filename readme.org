@@ -72,6 +72,13 @@ The madness that is dynamic is too much for anyone, really.
 ;;; $DOOMLOCALDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
 
+** Early fix broken stuff
+
+#+begin_src emacs-lisp
+;; TODO savehist needs this?
+(setq update_os nil)
+#+end_src
+
 ** Packages
 
 This is tangled to ~packages.el~ on save.
