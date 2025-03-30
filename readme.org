@@ -5035,3 +5035,16 @@ Subject: %s
     (when review
       (switch-to-buffer buffer))))
 #+end_src
+
+** d2
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.d2\\'" . d2-mode))
+(setq d2-output-format ".svg")
+(setq d2-output-format ".png")
+
+(add-hook! 'after-save-hook
+  (defun t/recompile-d2-on-save ()
+    (when (s-ends-with? ".d2" (buffer-file-name))
+      (call-interactively 'd2-compile))))
+#+end_src
