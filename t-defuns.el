@@ -378,7 +378,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
   "Kill current buffer and the window unconditionally."
   (interactive)
   (if (and
-       (= (bol) (eol))
+       (= (bolp) (eolp))
        (= (save-excursion (goto-char (point-max)))
           (point)))
       (progn
@@ -1342,11 +1342,11 @@ Prefix arg will force eww."
       (beginning-of-line)
       (save-excursion
         (delete-horizontal-space)
-        (delete-trailing-whitespace (bol) (eol)))
+        (delete-trailing-whitespace (bolp) (eolp)))
       (if (or
            ;; remove empty lines with leading * that
            ;; appear in a lot of mu4e emails
-           (and (equal (+ 1 (bol)) (eol))
+           (and (equal (+ 1 (bolp)) (eolp))
                 (string-equal "*" (thing-at-point 'symbol)))
            ;; consecutive empty line
            (and (save-excursion (previous-line)
