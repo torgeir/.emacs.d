@@ -3698,6 +3698,14 @@ Useful magit keybindings:
     (t/commit-truncate))
   (add-hook! 'git-commit-mode-hook 't/commit-mode-hook)
 
+  (defun t/magit-move-item-to-top ()
+    (interactive)
+    (recenter-top-bottom 0))
+  (advice-add #'magit-section-forward-sibling :after #'t/magit-move-item-to-top)
+  (advice-add #'magit-section-backward-sibling :after #'t/magit-move-item-to-top)
+
+  (add-hook 'magit-revision-mode-hook 'truncate-lines)
+
   (set-popup-rule! "^magit:" :ignore t)
   (set-popup-rule! "^magit-revision" :side 'right :size 0.5))
 #+end_src
