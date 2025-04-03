@@ -19,7 +19,7 @@
 
 (defun t/async-shell-command (name cmd &optional fn)
   "Execute `CMD' async, call `FN' with the result string."
-  (lexical-let*
+  (let*
       ((fn fn)
        (buf-name (format "*%s*" name))
        (_ (when (get-buffer-create buf-name)
