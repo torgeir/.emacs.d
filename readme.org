@@ -3024,6 +3024,12 @@ Move around like in org, collapsing what is moved away from, expanding what is m
                                    )))
 #+end_src
 
+**** Markdown in mdx mode
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.mdx\\'" . markdown-mode) t)
+#+end_src
+
 *** Bash/Sh
 
 #+begin_src sh :tangle no :results silent
