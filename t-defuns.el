@@ -83,19 +83,19 @@ understands."
   (interactive)
   (message "building project tags..")
   (lexical-let* ; so lambdas create closures
-      (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
-       (root (projectile-project-root))
-       (tags (shell-quote-argument (concat root "TAGS")))
-       (process (start-process-shell-command "build ctags asynchronously"
-                                             "*ctags async*"
-                                             (concat
-                                              "ctags -e -R"          ; recurse
-                                              " --options=" ctags ; use global config
-                                              " -f " tags " "     ; put it in project/TAGS
-                                              " ."                   ; in the current directory
-                                              ))))
-    (set-process-sentinel process (lambda (process event)
-                                    (t/load-tags tags)))))
+   (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
+    (root (projectile-project-root))
+    (tags (shell-quote-argument (concat root "TAGS")))
+    (process (start-process-shell-command "build ctags asynchronously"
+                                          "*ctags async*"
+                                          (concat
+                                           "ctags -e -R"          ; recurse
+                                           " --options=" ctags ; use global config
+                                           " -f " tags " "     ; put it in project/TAGS
+                                           " ."                   ; in the current directory
+                                           ))))
+   (set-process-sentinel process (lambda (process event)
+                                   (t/load-tags tags)))))
 
 (defun t/load-tags (tags)
   "Loads project tags into tag table."
