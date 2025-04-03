@@ -904,10 +904,8 @@ Prefix arg will force eww."
 (defun t/eww-toggle-images ()
   "Toggle whether images are loaded and reload the current page fro cache."
   (interactive)
-  (setq-local shr-inhibit-images (not shr-inhibit-images))
-  (eww-reload t)
-  (message "Images are now %s"
-           (if shr-inhibit-images "off" "on")))
+  (eww-toggle-images)
+  (message "Images are now %s" (if shr-inhibit-images "off" "on")))
 
 (defun t/last-used-window-buffer ()
   "Switch to the window that displays the most recently selected buffer."
