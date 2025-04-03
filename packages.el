@@ -29,6 +29,5 @@
 (package! synosaurus :pin "14d34fc92a77c3a916b4d58400424c44ae99cd81")
 (package! recursion-indicator)
 (package! org-alert)
-(package! ellama)
 (package! spacious-padding)
 (package! mu4e-alert)
