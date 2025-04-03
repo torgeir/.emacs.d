@@ -2906,6 +2906,15 @@ Some useful eww keybindings
   (set-popup-rule! "^*HN" :ignore t))
 #+end_src
 
+**** Don't wrap
+
+#+begin_src emacs-lisp
+(add-hook! 'org-mode-hook
+  (defun t/hn-buffer-no-wrap ()
+    (when (s-equals? "*HN*" (buffer-name))
+      (call-interactively 'toggle-truncate-lines))))
+#+end_src
+
 *** Reddit
 
 #+begin_src emacs-lisp
