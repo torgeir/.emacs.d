@@ -751,7 +751,7 @@ Prefix arg will force eww."
                                   (replace-regexp-in-string "https://github\\.\\(?:com\\|dev\\)/\\([^/]+\\)/\\([^/]+\\)/?.*?$" "\\1/\\2" repo))
                              (and (s-ends-with? ".git" repo)
                                   (replace-regexp-in-string "git@github.com:\\(.+\\).git" "\\1" repo)))))
-    (lexical-let*
+    (let*
         ((dir (expand-file-name (format "~/Projects/%s/" repo-name)))
          (cmd (concat "git " "clone " (format "git@github.com:%s.git" repo-name)))
          (msg (concat "Cloning " repo-name ".. ok.")))
@@ -759,6 +759,7 @@ Prefix arg will force eww."
           (dired dir)
         (progn
           (message "Cloning %s.." repo repo-name)
+          (t/shell-command-to-string (concat "mkdir -p" " " dir))
           (t/async-shell-command (format "*git-clone %s*" repo-name)
                                  (concat cmd " " (magit-convert-filename-for-git dir))
                                  (lambda (&optional &rest args)
