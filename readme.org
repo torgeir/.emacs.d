@@ -4867,6 +4867,20 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
 (use-package! ellama
   :config
   (require 'llm-ollama)
+  (setq mac-providers
+        (list
+         (make-llm-ollama
+          :scheme "http"
+          :host "localhost"
+          :port 11434
+          :chat-model "gemma3:12b"
+          :embedding-model "gemma3:12b")
+         (make-llm-ollama
+          :scheme "http"
+          :host "localhost"
+          :port 11434
+          :chat-model "deepseek-coder:6.7b-base"
+          :embedding-model "deepseek-coder:6.7b-base")))
   (setq torgnix-providers
         (list
          (make-llm-ollama
@@ -4882,9 +4896,11 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
           :chat-model "wizard-vicuna-uncensored:13b"
           :embedding-model "wizard-vicuna-uncensored:13b")))
   (setq ellama-providers nil)
+  (add-to-list 'ellama-providers `("gemma3" . ,(car mac-providers)))
+  (add-to-list 'ellama-providers `("deepseek coder" . ,(cadr mac-providers)))
   (add-to-list 'ellama-providers `("torgnix llama" . ,(car torgnix-providers)))
   (add-to-list 'ellama-providers `("torgnix wizard" . ,(cadr torgnix-providers)))
-  (setq ellama-provider (car torgnix-providers))
+  (setq ellama-provider (car mac-providers))
   (setq ellama-keymap-prefix "C-c")
   (ellama-setup-keymap)
   (set-popup-rule! "^ellama"
@@ -4898,6 +4914,7 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
          (:prefix-map
           ("g" . "ollama")
           (:when t
+            :desc "config" "g" 'ellama
             :desc "code-complete" "c c" 'ellama-code-complete
             :desc "code-add" "c a" 'ellama-code-add
             :desc "code-edit" "c e" 'ellama-code-edit
