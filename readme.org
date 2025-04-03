@@ -3307,7 +3307,7 @@ Remove what =eglot-server-programs= contains, that is the =typescript-language-s
        (list
         "source.addMissingImports.ts"
         "source.fixAll.ts"
-        "source.removeUnused.ts"
+        ;"source.removeUnused.ts"
         "source.addMissingImports.ts"
         "source.removeUnusedImports.ts"
         "source.sortImports.ts"
