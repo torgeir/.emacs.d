@@ -1251,7 +1251,8 @@ Prefix arg will force eww."
       (if (get-buffer sidebar)
           (pop-to-buffer sidebar)
         (dired (t/project-root))))
-    (t/dired-collapse)
+    (when (t/prefix-arg-universal?)
+      (t/dired-collapse))
     (t/dired-locate-path path)))
 
 (defun t/toggle-window-cursor ()
