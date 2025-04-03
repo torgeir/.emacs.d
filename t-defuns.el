@@ -62,7 +62,9 @@
   "pretty prints json in selected region."
   (interactive)
   (save-excursion
-    (shell-command-on-region (mark) (point) "python -m json.tool" (buffer-name) t)))
+    (if (featurep 'apheleia)
+        (apheleia-format-buffer 'prettier-json)
+      (shell-command-on-region (mark) (point) "python -m json.tool" (buffer-name) t))))
 
 (defun t/build-tags ()
   "Build ctags file for projectile project, call load-tags when done.
