@@ -157,16 +157,10 @@ Ignore some of the cached emacs files in recent files
           (if (zerop (call-process-shell-command (format "op item get %s %s" item args) nil t))
               (replace-regexp-in-string (rx "\n" eos) "" (buffer-string))
             (error "1p: looking up item failed.")))
-      (let* ((pass (read-passwd "1p master password: "))
-             (session-token nil)
-             (ret nil))
-        (setq session-token (with-temp-buffer
-                              (if (zerop (call-process-shell-command (format "echo -n %s | op signin --raw" pass) nil t))
-                                  (replace-regexp-in-string (rx "\n" eos) "" (buffer-string))
-                                (error "1p: auth failed."))))
+      (let* ((ret nil))
         (with-temp-buffer
           (if is-linux
-              (call-process-shell-command (format "op --session %s item get %s %s" session-token item args) nil t))
+              (call-process-shell-command (format "op item get %s %s" item args) nil t))
           (replace-regexp-in-string (rx "\n" eos) "" (buffer-string)))))))
 #+end_src
 
