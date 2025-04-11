@@ -4343,6 +4343,8 @@ user " (replace-regexp-in-string "@gmail.com" "" (getenv "USER_EMAIL_2")) "
 passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine smtp\\.gmail\\.com login "
 (replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL_2"))
 " port 587/ {print $NF}'\"
+
+account default: gmail
 ")
    'utf-8 (t/user-file ".msmtprc")))
 #+end_src
@@ -4947,4 +4949,65 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
   (if (equal '("main") (+workspace-list-names))
       (t/default-workspaces-init)
     (message "Workspaces exist, bailing: %s" (+workspace-list-names))))
+#+end_src
+
+** Send to kindle
+
+#+begin_src emacs-lisp
+(defcustom send-to-kindle-from-email
+  (getenv "USER_EMAIL")
+  "Your own email address to send from via mu4e."
+  :type 'string
+  :group 'send-to-kindle)
+
+(defcustom send-to-kindle-to-email
+  nil
+  "Your Kindle email address to send pdf to, or look it up from 1p."
+  :type 'string
+  :group 'send-to-kindle)
+
+(defun send-to-kindle-as-txt (review)
+  (interactive "P")
+  (unless send-to-kindle-from-email
+    (setq send-to-kindle-from-email
+          (read-string "From email address: ")))
+  (unless send-to-kindle-to-email
+    (setq send-to-kindle-to-email
+          ;(read-string "To email address: ")
+          (t/1p "send-to-kindle" "--format json | jq -j '.fields[] | select(.id == \"username\") | .value'")))
+  (let* ((content (string-trim (if (region-active-p)
+                                   (buffer-substring (region-beginning) (region-end))
+                                 (buffer-string))))
+         (note-name (let ((name (string-trim (read-string "Note name: "))))
+                      (if (string-empty-p name)
+                          (nth
+                           0 (string-split
+                              (substring content 0 (min 40 (length content))) "\n"))
+                        name)))
+         (path (concat (temporary-file-directory) note-name))
+         (txt (concat path ".txt"))
+         (buffer (get-buffer-create (generate-new-buffer-name "*Email txt*"))))
+    (with-temp-buffer
+      (insert content)
+      (write-file txt))
+    (with-current-buffer buffer
+      (erase-buffer)
+      (message-mode)
+      (insert
+       (format
+        "From: %s
+To: %s
+Subject: %s
+--text follows this line--
+<#multipart type=mixed>
+<#part type=\"text/plain\" filename=\"%s\" disposition=attachment>
+<#/part>
+<#/multipart>"
+        send-to-kindle-from-email
+        send-to-kindle-to-email
+        note-name txt))
+      (unless review
+        (message-send-and-exit)))
+    (when review
+      (switch-to-buffer buffer))))
 #+end_src
