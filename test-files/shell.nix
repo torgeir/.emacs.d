@@ -11,6 +11,7 @@ pkgs.mkShell {
     #pkgs.nodePackages.vega-lite
 
     pkgs.deno
+    pkgs.babashka
 
     (pkgs.writeScriptBin "what-the-node" ''
       ${pkgs.nodejs_20}/bin/node --version
