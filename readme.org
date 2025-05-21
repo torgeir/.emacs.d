@@ -1561,7 +1561,7 @@ And screens are big, so a bit more space for text is nice.
 (after! writeroom-mode
   (setq writeroom-width (t/sidebar-frac)))
 (after! olivetti
-  (setq olivetti-minimum-body-width 90)
+  (setq olivetti-minimum-body-width 120)
   (setq-default olivetti-body-width (floor (* (frame-width (selected-frame)) (t/sidebar-frac))))
   (add-to-list 'window-size-change-functions 'olivetti-set-window t))
 #+end_src
