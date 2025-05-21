@@ -1267,6 +1267,15 @@ Prefix arg will force eww."
         (insert time)
       time)))
 
+(defun t/date (&optional separator)
+  (interactive)
+  (let* ((sep (or separator "-"))
+         (date (replace-regexp-in-string
+                "-" sep (format-time-string "%Y-%m-%d" nil "UTC"))))
+    (if (interactive-p)
+        (insert date)
+      date)))
+
 (defun t/deploy-torgeir.dev ()
   (interactive)
   (let ((b "*t-deploy-torgeir_dev*"))
