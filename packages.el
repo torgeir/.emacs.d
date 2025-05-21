@@ -3,6 +3,7 @@
 (package! llm)
 (package! ellama)
 (package! pulsar)
+(package! chatgpt-shell)
 (package! copilot
   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el" "dist")))
 (package! tide :disable t)
