@@ -3704,7 +3704,7 @@ Useful magit keybindings:
   (advice-add #'magit-section-forward-sibling :after #'t/magit-move-item-to-top)
   (advice-add #'magit-section-backward-sibling :after #'t/magit-move-item-to-top)
 
-  (add-hook 'magit-revision-mode-hook 'truncate-lines)
+  (add-hook 'magit-revision-mode-hook 'toggle-truncate-lines)
 
   (set-popup-rule! "^magit:" :ignore t)
   (set-popup-rule! "^magit-revision" :side 'right :size 0.5))
