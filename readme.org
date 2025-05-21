@@ -4542,9 +4542,16 @@ Useful elisp I committed, or decided to work on.
 #+begin_src emacs-lisp
 (defun t/json-mode-hook ()
   (interactive)
-  (eldoc-mode -1))
+  (when (> (line-number-at-pos (point-max)) 1000)
+    (message "Lots of lines in this file, enabling fundamental-mode.")
+    (fundamental-mode))
+  (eldoc-mode -1)
+  (electric-indent-mode -1)
+  )
 (add-hook! 'json-mode-hook #'t/json-mode-hook)
-(remove-hook! 'json-mode-hook #'+electric--init-json-mode-h)
+;; TODO does this not work?
+(after! json-mode
+  (remove-hook! 'json-mode-hook #'+electric--init-json-mode-h))
 #+end_src
 
 *** Idle highlight across in all buffers
