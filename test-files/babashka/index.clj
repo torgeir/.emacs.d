@@ -4,11 +4,12 @@
 ;; cider-jack-in-clj
 
 (ns user
-  (:require[babashka.deps :as deps]))
+  (:require [babashka.deps :as deps]))
 
 
 (deps/add-deps '{:deps {lambdaisland/deep-diff2 {:mvn/version "2.7.169"}}})
-(use 'lambdaisland.deep-diff2)
+(require '[lambdaisland.deep-diff2 :refer [pretty-print diff]])
+
 (pretty-print (diff {:a 1 :b 2} {:a 1 :b (range 10)}))
 
 
