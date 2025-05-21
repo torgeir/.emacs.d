@@ -5097,3 +5097,47 @@ Subject: %s
     (when (s-ends-with? ".d2" (buffer-file-name))
       (call-interactively 'd2-compile))))
 #+end_src
+
+** Supernote
+
+Try it [2025-05-20 tir]. Run [[elisp:(call-interactively 't/supernote)][(t/supernote)]] on any paragraph under the current heading, after the org mode date, to search for notes made on the day of it.
+
+E.g. if you run it from here ><, this ends up searching for ~txt 20250520~, which shows all supernote exports for the day.
+
+I use ~C-SPC~ to preview it, pick the right note, and usually ~C-,~ (embark-act) followed by ~<~ to insert the note where the cursor is.
+
+You could also link to note files from specific days, like this to show notes from May: [[elisp:(t/supernote "202505")][(t/supernote "202505")]].
+
+#+begin_src emacs-lisp
+(defun t/supernote (&optional search-date)
+  "Search for supernote exports, using `consult-fd', from the date of the closest org timestamp."
+  (interactive)
+  ;; make it so that C-SPC previews the file by using find-file
+  (add-to-list 'embark-default-action-overrides '(file . find-file))
+  (consult-fd
+   (t/user-dropbox-folder "Supernote")
+   (concat
+    "txt "
+    (or
+     search-date
+     ;; org date at point
+     (when-let* ((type (org-element-type (org-element-context)))
+                 (closest-heading-pos (org-element-begin (org-element-lineage
+                                                          (org-element-at-point)
+                                                          '(headline)
+                                                          'with-self)))
+                 (timestamp-cons (let ((pos (point)))
+                                   ;; move to timestamp start
+                                   (if (re-search-backward "\\[[0-9]" closest-heading-pos t 1)
+                                       (save-excursion (org-element-timestamp-parser))
+                                     nil)))
+                 (timestamp (cadr timestamp-cons)))
+       (let* ((y (plist-get timestamp :year-start))
+              (m (plist-get timestamp :month-start))
+              (d (plist-get timestamp :day-start))
+              (date (format "%s%s%s" y (format "%02d" m) (format "%02d" d))))
+         date))
+     ;; or current date
+     (format-time-string "%Y%m%d" nil "Europe/Oslo"))
+    )))
+#+end_src
