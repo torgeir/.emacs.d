@@ -5046,17 +5046,20 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
           (read-string "From email address: ")))
   (unless send-to-kindle-to-email
     (setq send-to-kindle-to-email
-          ;(read-string "To email address: ")
+          ;;(read-string "To email address: ")
           (t/1p "send-to-kindle" "--format json | jq -j '.fields[] | select(.id == \"username\") | .value'")))
   (let* ((content (string-trim (if (region-active-p)
                                    (buffer-substring (region-beginning) (region-end))
                                  (buffer-string))))
-         (note-name (let ((name (string-trim (read-string "Note name: "))))
-                      (if (string-empty-p name)
-                          (nth
-                           0 (string-split
-                              (substring content 0 (min 40 (length content))) "\n"))
-                        name)))
+         (note-name
+          (cond ((equal major-mode 'eww-mode) (nth 1 eww-data))
+                ((equal major-mode 'elfeed-show-mode) (elfeed-entry-title elfeed-show-entry))
+                (t (let ((name (string-trim (read-string "Note name: "))))
+                     (if (string-empty-p name)
+                         (nth
+                          0 (string-split
+                             (substring content 0 (min 40 (length content))) "\n"))
+                       name)))))
          (path (concat (temporary-file-directory) note-name))
          (txt (concat path ".txt"))
          (buffer (get-buffer-create (generate-new-buffer-name "*Email txt*"))))
