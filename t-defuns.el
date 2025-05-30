@@ -1390,5 +1390,17 @@ Prefix arg will force eww."
   (load-theme
    (if (t/is-darkmode) t-system-theme-dark t-system-theme-light)))
 
+
+(defun find-up (file)
+  (interactive)
+  (let ((current-dir default-directory)
+        (project-root (projectile-project-root)))
+    (while (and (not (file-exists-p (expand-file-name file current-dir)))
+                (not (equal current-dir project-root)))
+      (setq current-dir (file-name-directory (directory-file-name current-dir))))
+    (if (file-exists-p (expand-file-name file current-dir))
+        (expand-file-name file current-dir)
+      nil)))
+
 (provide 't-defuns)
 ;;; t-defuns.el ends here

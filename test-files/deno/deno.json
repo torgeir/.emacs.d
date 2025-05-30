@@ -1,0 +1,9 @@
+{
+  "nodeModulesDir": "auto",
+  "imports": {
+    "@types/react": "npm:@types/react@^19.1.6",
+    "@types/react-dom": "npm:@types/react-dom@^19.1.5",
+    "react": "npm:react@^19.1.0",
+    "react-dom": "npm:react-dom@^19.1.0"
+  }
+}

@@ -3235,14 +3235,21 @@ Prerequisites
 npm install -g typescript-language-server typescript
 #+end_src
 
-Remove what the doom =(javascript :lsp)= module sets up for [[file:~/.config/emacs/modules/lang/javascript/config.el::(cons "\\.tsx\\'"][web mode typescript]]
+**** Remove doom ts setup
+
+Remove what the doom =(javascript :lsp)= module sets up for [[file:~/.config/emacs/modules/lang/javascript/config.el::(cons "\\.tsx\\'"][web mode typescript]], and get rid of all variants of the ts/tsx auto loads. These come back after =typescript-ts-mode= loads for the first time, so ensure it also happens after.
 
 #+begin_src emacs-lisp
-(setq auto-mode-alist (assoc-delete-all "\\.tsx?\\'" auto-mode-alist))
-(setq auto-mode-alist (assoc-delete-all "\\.tsx\\'" auto-mode-alist))
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode) t)
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode) t)
+(defun t/clean-ts-auto-mode-alist ()
+  (setq auto-mode-alist (assoc-delete-all "\\.ts\\'" auto-mode-alist))
+  (setq auto-mode-alist (assoc-delete-all "\\.tsx\\'" auto-mode-alist))
+  (setq auto-mode-alist (assoc-delete-all "\\.tsx?\\'" auto-mode-alist))
+  (add-to-list 'auto-mode-alist '("\\.ts\\'" . t/deno-or-ts))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . t/deno-or-ts)))
+(t/clean-ts-auto-mode-alist)
+(after! typescript-ts-mode (t/clean-ts-auto-mode-alist))
 #+end_src
+
 
 Get rid of =tide=, it keeps starting =tsserver=. I don't want it.
 
@@ -3295,11 +3302,40 @@ Remove what =eglot-server-programs= contains, that is the =typescript-language-s
        ,inlay-opts))))
 #+end_src
 
+**** Deno take prescedence over ts
+
+This expects a =deno.json= somewhere in a parent directory.
+
+#+begin_src emacs-lisp
+(define-derived-mode deno-ts-mode typescript-ts-mode "Deno" "Major mode for Deno." :group 'deno-ts-mode)
+(define-derived-mode deno-tsx-ts-mode tsx-ts-mode "Deno[TSX]" "Major mode for TSX and JSX with Deno." :group 'deno-ts-mode)
+;; required for Deno's color output.
+(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+
+(after! eglot
+  (defclass eglot-deno (eglot-lsp-server) () :documentation "A custom class for deno lsp.")
+  (cl-defmethod eglot-initialization-options ((server eglot-deno)) "Passes through required deno initialization options" (list :enable t :lint t :unstable t))
+  (add-to-list 'eglot-server-programs '((deno-ts-mode :language-id "typescript") . (eglot-deno "deno" "lsp")))
+  (add-to-list 'eglot-server-programs '((deno-tsx-ts-mode :language-id "typescriptreact") . (eglot-deno "deno" "lsp"))))
+
+(defun t/deno-or-ts ()
+  "Load deno tsx, deno ts, tsx or ts mode."
+  (interactive)
+  (let ((looks-like-deno (or (find-up "deno.json") (find-up "deno.jsonc")))
+        (is-tsx (string-equal (file-name-extension (buffer-file-name)) "tsx")))
+    (if looks-like-deno
+        (progn
+          (if is-tsx (deno-tsx-ts-mode) (deno-ts-mode))
+          (message "Looked like deno, switched to it 🦕"))
+      (if is-tsx (tsx-ts-mode) (typescript-ts-mode)))))
+#+end_src
+
+**** Organize imports on save
+
 #+begin_src emacs-lisp
 (defun t/eglot-organize-imports ()
   (interactive)
-  (if (derived-mode-p 'rjsx-mode
-                      'typescript-ts-base-mode)
+  (when (derived-mode-p major-mode 'typescript-ts-base-mode)
       (seq-do
        (lambda (kind)
          (interactive)
@@ -3310,19 +3346,18 @@ Remove what =eglot-server-programs= contains, that is the =typescript-language-s
        (list
         "source.addMissingImports.ts"
         "source.fixAll.ts"
-        ;"source.removeUnused.ts"
+        ;; "source.removeUnused.ts"
         "source.addMissingImports.ts"
         "source.removeUnusedImports.ts"
         "source.sortImports.ts"
         "source.organizeImports.ts"
         ))
     (funcall-interactively #'eglot-code-action-organize-imports)))
-(defun t-ts-mode-hook ()
-  (add-hook 'before-save-hook #'t/eglot-organize-imports -100 t)
-  (electric-indent-mode -1)
-  (lsp!))
-
-(add-hook! '(rjsx-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook) #'t-ts-mode-hook)
+(add-hook! '(rjsx-mode-hook typescript-ts-mode-hook tsx-ts-mode-hook deno-ts-mode-hook deno-tsx-ts-mode-hook)
+  (defun t-ts-mode-hook ()
+    (add-hook 'before-save-hook #'t/eglot-organize-imports -100 t)
+    (electric-indent-mode -1)
+    (lsp!)))
 #+end_src
 
 **** Force apheleia ts indent level 2
@@ -4733,25 +4768,6 @@ Check if configuration affecting sway is changed, if so reload it
 :END:
 
 ~(doom-mark-buffer-as-real-h)~ can make scratch buffer navigable with ~s-j/k~
-
-*** TODO deno-emacs                    :pocket:deno:emacs:
-
-June 18, 2021 at 12:12PM
-https://ift.tt/36jQLT2
-
-deno-fmt is function that formats the current buffer on save with deno fmt. The package also exports a minor mode that applies (deno-fmt) on save. Feel free to replace typescript-mode / js2-mode in the following with your TypeScript/JavaScript mode of choice.
-
-#+begin_src emacs-lisp
-(after! eglot
-
-  (defclass eglot-deno (eglot-lsp-server) ()
-    :documentation "A custom class for deno lsp.")
-
-  (cl-defmethod eglot-initialization-options ((server eglot-deno))
-    "Passes through required deno initialization options"
-    (list :enable t
-          :lint t)))
-#+end_src
 
 *** emms mpd
 
