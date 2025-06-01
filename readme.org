@@ -4532,7 +4532,7 @@ account gmail
 host smtp.gmail.com
 from " (getenv "USER_EMAIL") "
 user " (replace-regexp-in-string "@gmail.com" "" (getenv "USER_EMAIL")) "
-passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine smtp\\.gmail\\.com login "
+passwordeval \"timeout 0.5s gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine smtp\\.gmail\\.com login "
 (replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL"))
 " port 587/ {print $NF}'\"
 
@@ -4540,7 +4540,7 @@ account junk
 host smtp.gmail.com
 from " (getenv "USER_EMAIL_2") "
 user " (replace-regexp-in-string "@gmail.com" "" (getenv "USER_EMAIL_2")) "
-passwordeval \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine smtp\\.gmail\\.com login "
+passwordeval \"timeout 0.5s gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine smtp\\.gmail\\.com login "
 (replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL_2"))
 " port 587/ {print $NF}'\"
 
