@@ -4437,21 +4437,26 @@ account default: gmail
 
 =brew install isync=
 
+=mbsync -ls= to show all folders
+
 #+begin_src emacs-lisp
 (after! f
   (f-write-text
    (concat "
+ Create Near
+ Expunge Both
+ SyncState *
+
  # gmail ========================
  IMAPAccount gmail
  Host imap.gmail.com
  User " (getenv "USER_EMAIL") "
- PassCmd \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine imap\\.gmail\\.com login "
+ PassCmd \"timeout 0.5s gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine imap\\.gmail\\.com login "
  (replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL"))
  " port 993/ {print $NF}'\"
  Port 993
- SSLType IMAPS
- SSLVersions TLSv1.2
- AuthMechs PLAIN
+ TLSType IMAPS
+ TLSVersions +1.2
  SystemCertificates no
  CertificateFile /etc/ssl/certs/ca-certificates.crt
 
@@ -4466,23 +4471,20 @@ account default: gmail
  Channel gmail
  Far :gmail-remote:
  Near :gmail-local:
- Patterns * ![Gmail]* \"[Gmail]/Sent Mail\" \"[Gmail]/Trash\"
- Create Near
- Sync All
- Expunge Both
- SyncState *
+ Patterns INBOX
+ MaxMessages 10
+ Sync PullNew Flags
 
  # junk =========================
  IMAPAccount junk
  Host imap.gmail.com
  User " (getenv "USER_EMAIL_2") "
- PassCmd \"gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine imap\\.gmail\\.com login "
+ PassCmd \"timeout 0.5s gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine imap\\.gmail\\.com login "
  (replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL_2"))
  " port 993/ {print $NF}'\"
  Port 993
- SSLType IMAPS
- SSLVersions TLSv1.2
- AuthMechs PLAIN
+ TLSType IMAPS
+ TLSVersions +1.2
  SystemCertificates no
  CertificateFile /etc/ssl/certs/ca-certificates.crt
 
@@ -4497,11 +4499,10 @@ account default: gmail
  Channel junk
  Far :junk-remote:
  Near :junk-local:
- Patterns * ![Gmail]* \"[Gmail]/Sent Mail\" \"[Gmail]/Trash\"
- Create Near
- Sync All
- Expunge Both
- SyncState *")
+ Patterns INBOX
+ MaxMessages 10
+ Sync PullNew Flags
+ ")
    'utf-8 (t/user-file ".mbsyncrc")))
 #+end_src
 
