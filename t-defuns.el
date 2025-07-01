@@ -1261,7 +1261,7 @@ Prefix arg will force eww."
     (let* ((sidebar (concat ":" (replace-regexp-in-string (expand-file-name "~") "~" (t/project-root)))))
       (if (get-buffer sidebar)
           (pop-to-buffer sidebar)
-        (dired (t/project-root))))
+        (t-toggle-sidebar)))
     (when (t/prefix-arg-universal?)
       (t/dired-collapse))
     (t/dired-locate-path path)))
