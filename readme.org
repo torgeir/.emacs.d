@@ -2655,25 +2655,14 @@ Default openai language model.
   (let ((active-region (when (region-active-p)
                          (buffer-substring beg end)))
         (major-mode-name (symbol-name major-mode)))
-    (if (t/prefix-arg-universal?)
-      (chatgpt-shell-prompt-compose)
-     (chatgpt-shell))
+    (if (or prompt (t/prefix-arg-universal?))
+        (chatgpt-shell-prompt-compose nil)
+      (chatgpt-shell))
     (comint-next-prompt 1)
-    (save-excursion
-      (when active-region (insert "\n\n" active-region)))
-    (comment with-current-buffer (pop-to-buffer "*ChatGPT*")
-      (erase-buffer)
-      (org-mode)
-      (olivetti-mode)
-      (insert
-       "#+begin_ai\n"
-       "[ME]: \n"
-       "#+end_ai")
-      (move-end-of-line 0)
-      (evil-insert 0)
-      (save-excursion
-        (when prompt (insert "#" prompt))
-        (when active-region (insert "\n\n" active-region))))))
+    (run-with-timer "0sec" nil (lambda ()
+                                 (save-excursion
+                                   (when prompt (insert "- " prompt))
+                                   (when active-region (insert "\n\n" active-region)))))))
 
 (defun t/chatgpt-send ()
   (interactive)
@@ -2687,12 +2676,15 @@ Default openai language model.
         ("G" . "chatgpt")
         (:when t
           :desc "ask" "a" #'t/chatgpt-buffer
+          :desc "compose" "c" #'chatgpt-shell-prompt-compose
+          :desc "describe" "d" #'chatgpt-shell-describe-code
+          :desc "quick" "q" #'chatgpt-shell-quick-insert
           :desc "fix" "f" (cmd! (t/chatgpt-prompt "Why doesn't this code work?"))
-          :desc "explain" "e" (cmd! (t/chatgpt-prompt "What does this code do?") (t/chatgpt-send))
-          :desc "gen tests" "t" (cmd! (t/chatgpt-prompt "Write a test for this code") (t/chatgpt-send))
-          :desc "optimize" "o" (cmd! (t/chatgpt-prompt "Refactor this code for speed and tell me what you changed and why it's faster") (t/chatgpt-send))
+          :desc "explain" "e" (cmd! (t/chatgpt-prompt "What does this code do?"))
+          :desc "gen tests" "t" (cmd! (t/chatgpt-prompt "Write a test for this code"))
+          :desc "optimize" "o" (cmd! (t/chatgpt-prompt "Refactor this code for speed and tell me what you changed and why it's faster"))
           :desc "refactor" "r" 'org-ai-refactor-code
-          :desc "summarize" "s" (cmd! (t/chatgpt-prompt "Summarize this text:") (t/chatgpt-send))))))
+          :desc "summarize" "s" (cmd! (t/chatgpt-prompt "Summarize this text:"))))))
 #+end_src
 
 **** Try [[https://github.com/xenodium/chatgpt-shell][chatgpt-shell]]
@@ -2700,7 +2692,7 @@ Default openai language model.
 #+begin_src emacs-lisp
 (use-package! chatgpt-shell
   :init
-  (setq chatgpt-shell-model-version "claude-3-7-sonnet-latest"
+  (setq chatgpt-shell-model-version "claude-4-sonnet-20250514"
         chatgpt-shell-anthropic-key
         (lambda ()
           (auth-source-pick-first-password :host "anthropic.com"))
