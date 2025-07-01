@@ -3314,9 +3314,30 @@ This expects a =deno.json= somewhere in a parent directory.
 
 (after! eglot
   (defclass eglot-deno (eglot-lsp-server) () :documentation "A custom class for deno lsp.")
-  (cl-defmethod eglot-initialization-options ((server eglot-deno)) "Passes through required deno initialization options" (list :enable t :lint t :unstable t))
-  (add-to-list 'eglot-server-programs '((deno-ts-mode :language-id "typescript") . (eglot-deno "deno" "lsp")))
-  (add-to-list 'eglot-server-programs '((deno-tsx-ts-mode :language-id "typescriptreact") . (eglot-deno "deno" "lsp"))))
+  (cl-defmethod eglot-initialization-options ((server eglot-deno))
+    "Passes through required deno initialization options"
+    '(:enable t :lint t :unstable t))
+  ;; insane hack as i cannot make the default workspace configuration to work with the deno server
+  (cl-defmethod eglot-handle-request
+    ((server eglot-deno) (_method (eql workspace/configuration)) &key items)
+    "Handle workspace/configuration requests from Deno LSP."
+    (apply #'vector
+           (mapcar
+            (lambda (item)
+              (let ((section (plist-get item :section)))
+                (pcase section
+                  ("typescript"
+                   `(:inlayHints (:parameterNames (:enabled "all" :suppressWhenArgumentMatchesName t)
+                                  :parameterTypes (:enabled t)
+                                  :variableTypes (:enabled t :suppressWhenTypeMatchesName t)
+                                  :propertyDeclarationTypes (:enabled t)
+                                  :functionLikeReturnTypes (:enabled t)
+                                  :enumMemberValues (:enabled t))))
+                  (_ nil))))
+            items)))
+  (add-to-list 'eglot-server-programs
+               '(((deno-ts-mode :language-id "typescript")
+                  (deno-tsx-ts-mode :language-id "typescriptreact")) . (eglot-deno "deno" "lsp"))))
 
 (defun t/deno-or-ts ()
   "Load deno tsx, deno ts, tsx or ts mode."
@@ -3327,7 +3348,13 @@ This expects a =deno.json= somewhere in a parent directory.
         (progn
           (if is-tsx (deno-tsx-ts-mode) (deno-ts-mode))
           (message "Looked like deno, switched to it 🦕"))
-      (if is-tsx (tsx-ts-mode) (typescript-ts-mode)))))
+      (if is-tsx (tsx-ts-mode) (typescript-ts-mode)))
+    (t/clean-ts-auto-mode-alist)))
+
+(after! apheleia
+  (add-to-list 'apheleia-mode-alist '(deno-ts-mode . denofmt-ts))
+  (add-to-list 'apheleia-mode-alist '(deno-tsx-ts-mode . denofmt-tsx))
+  )
 #+end_src
 
 **** Organize imports on save
