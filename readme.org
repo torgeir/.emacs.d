@@ -4703,11 +4703,22 @@ Extend evil to flash highlights on =SPC u *=
 #+begin_src emacs-lisp
 (after! evil
   (map! :map evil-motion-state-map
-        "*" (cmd! (when (not (featurep 'highlight-symbol))
-                    (require 'highlight-symbol))
-                  (if (t/prefix-arg-universal?)
-                      (t/flash-in-all-buffers)
-                    (call-interactively 'evil-ex-search-word-forward)))))
+        "*" (defun t/fix-flash-highlights (&optional some-list)
+              (interactive)
+              (when (not (featurep 'highlight-symbol))
+                (require 'highlight-symbol))
+              (if (t/prefix-arg-universal?)
+                  (t/flash-in-all-buffers)
+                (call-interactively 'evil-ex-search-word-forward))))
+  (advice-add 'evil-ex-search-word-backward :after
+              (lambda (&rest _)
+                (let ((current-prefix-arg '(4)))
+                  (call-interactively 'recenter-top-bottom))))
+  (advice-add 'evil-ex-search-word-forward :after
+              (lambda (&rest _)
+                (let ((current-prefix-arg '(4)))
+                  (call-interactively 'recenter-top-bottom))))
+)
 #+end_src
 
 ** Bugfixes
