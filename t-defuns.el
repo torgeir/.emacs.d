@@ -1129,6 +1129,18 @@ Prefix arg will force eww."
   (let ((default-directory (expand-file-name dir)))
     (compile "make")))
 
+(defun t/gradle-build ()
+  (interactive)
+  (let ((default-directory (t/project-root)))
+    (compile (if (t/prefix-arg-universal?)
+                 "gw clean build"
+               "gw build"))))
+
+(defun t/gradle-detekt-auto-correct ()
+  (interactive)
+  (let ((default-directory (t/project-root)))
+    (compile "gw detekt --auto-correct")))
+
 (defun t/where-am-i ()
   (interactive)
   (require 'xref)
