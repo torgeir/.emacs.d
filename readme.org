@@ -2655,16 +2655,20 @@ Default openai language model.
   (let ((active-region (when (region-active-p)
                          (buffer-substring beg end)))
         (major-mode-name (symbol-name major-mode)))
-    (with-current-buffer (pop-to-buffer "*ChatGPT*")
+    (if (t/prefix-arg-universal?)
+      (chatgpt-shell-prompt-compose)
+     (chatgpt-shell))
+    (comint-next-prompt 1)
+    (save-excursion
+      (when active-region (insert "\n\n" active-region)))
+    (comment with-current-buffer (pop-to-buffer "*ChatGPT*")
       (erase-buffer)
       (org-mode)
       (olivetti-mode)
       (insert
-       "#+begin_ai"
-       "\n"
-       "[SYS]: You are a helpful, expert programming assistant, that lives inside of emacs. Respond in a way that is useful for a developer. Keep responses brief, don't extensively explain why something works, focus on how."
-       "\n\n"
-       "[ME]: \n#+end_ai")
+       "#+begin_ai\n"
+       "[ME]: \n"
+       "#+end_ai")
       (move-end-of-line 0)
       (evil-insert 0)
       (save-excursion
@@ -2696,10 +2700,14 @@ Default openai language model.
 #+begin_src emacs-lisp
 (use-package! chatgpt-shell
   :init
-  (setq chatgpt-shell-model-version *t-gpt-models*
+  (setq chatgpt-shell-model-version "claude-3-7-sonnet-latest"
+        chatgpt-shell-anthropic-key
+        (lambda ()
+          (auth-source-pick-first-password :host "anthropic.com"))
         chatgpt-shell-openai-key
         (lambda ()
           (auth-source-pick-first-password :host "api.openai.com"))))
+
 #+end_src
 
 ** Reading
