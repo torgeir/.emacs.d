@@ -2616,6 +2616,10 @@ Default openai language model.
 #+begin_src emacs-lisp
 (use-package! org-ai
   :hook (org-mode . org-ai-mode)
+  :init
+  (setq org-ai-jump-to-end-of-block nil
+        org-ai-auto-fill t
+        org-ai-default-chat-system-prompt "You are a helpful, expert programming assistant, that lives inside of emacs. Respond in a way that is useful for a developer. Keep responses brief, don't extensively explain why something works, focus on how.")
   :config
   (add-to-list 'org-ai-chat-models *t-gpt-models* t)
   (setq-default org-ai-default-chat-model *t-gpt-models*))
