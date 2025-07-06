@@ -708,6 +708,13 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
   ;; prevent kill all dired buffers on q
   (map! :map dired-mode-map :ng "q" 't/volatile-kill-buffer)
   (map! :map dired-mode-map :ng "Q" 'evil-record-macro)
+  ;; TODO does not work
+  ;;(map!
+  ;; :map dired-mode-map
+  ;; :n "<mouse-1>" (cmd! (let ((split-window-preferred-function 'ignore))
+  ;;                      (dired--find-file 'find-file (dired-get-file-for-visit))))
+  ;; :n "<mouse-2>" (cmd! (let ((split-window-preferred-function 'ignore))
+  ;;                      (dired--find-file 'find-file (dired-get-file-for-visit)))))
   (map!
    :map (dired-mode-map)
    "<return>" (cmd! (if (t/prefix-arg-universal?)
