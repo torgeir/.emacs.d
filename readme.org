@@ -853,14 +853,6 @@ Restores a lost multiedit selection.
  :g "C-M-r" 'evil-multiedit-restore)
 #+end_src
 
-Multiedit calls iedit which is missing all-caps in emacs 29.
-
-#+begin_src elisp
-(when (version< "29.0" emacs-version)
-  (defun all-caps (smtn)
-    (upper smtn)))
-#+end_src
-
 *** Font
 
 #+begin_src emacs-lisp
