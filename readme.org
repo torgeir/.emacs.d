@@ -1328,6 +1328,15 @@ If there is no window in the direction you move, send the keypress for the direc
                            (t (execute-kbd-macro "j"))))))
 #+end_src
 
+*** Popups
+
+Clean up popup definitions
+
+#+begin_src emacs-lisp :tangle no
+(setq display-buffer-alist
+      (assoc-delete-all "^\\*claude llm" display-buffer-alist))
+#+end_src
+
 *** Messages
 
 #+begin_src emacs-lisp
@@ -2656,13 +2665,6 @@ Default openai language model.
   :hook (lambda ()
           (setq-local comint-scroll-to-bottom-on-output nil)
           (setq-local comint-move-point-for-output nil)))
-#+end_src
-
-Clean up popup definitions
-
-#+begin_src emacs-lisp
-;; (setq display-buffer-alist
-;;       (assoc-delete-all "^\\*claude llm" display-buffer-alist))
 #+end_src
 
 **** Shortcuts to pop open prompt with often used dialogs
