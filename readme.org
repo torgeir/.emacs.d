@@ -393,7 +393,10 @@ Programming modes
 #+begin_src emacs-lisp
 (after! emmet-mode
   (add-to-list 'emmet-jsx-major-modes 'typescript-ts-mode)
-  (add-to-list 'emmet-jsx-major-modes 'tsx-ts-mode))
+  (add-to-list 'emmet-jsx-major-modes 'tsx-ts-mode)
+  (add-to-list 'emmet-jsx-major-modes 'deno-ts-mode)
+  (add-to-list 'emmet-jsx-major-modes 'deno-tsx-ts-mode)
+  )
 #+end_src
 
 *** Evil
