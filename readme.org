@@ -3785,6 +3785,9 @@ Useful magit keybindings:
 ~magit-log-arguments~ and the like are not ment to be used like a list you add args to, instead set options in the magit transient buffer by toggling them and saving it with ~c-x c-s~.
 
 #+begin_src emacs-lisp
+(set-popup-rule! "^magit:" :ignore t)
+(set-popup-rule! "^magit-revision" :side 'right :size 0.5)
+
 (after! magit
   (setq git-commit-summary-max-length 72 ;; like github
         magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
@@ -3807,9 +3810,6 @@ Useful magit keybindings:
   (advice-add #'magit-section-backward-sibling :after #'t/magit-move-item-to-top)
 
   (add-hook 'magit-revision-mode-hook 'toggle-truncate-lines))
-
-(set-popup-rule! "^magit:" :ignore t)
-(set-popup-rule! "^magit-revision" :side 'right :size 0.5)
 #+end_src
 
 Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindings never made sense to me. And ~gca~ for amending.
