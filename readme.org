@@ -2925,7 +2925,7 @@ Eww functions that directly enter the eww readability mode after loading a given
 
 **** Hook and keybindings
 
-Some useful eww keybindings
+Some useful =eww= keybindings
 
 #+BEGIN_SRC emacs-lisp
 (after! eww
