@@ -2374,10 +2374,10 @@ Save from agenda
 
 Make org handle links load links that start with
 
-- ~eww:~
-- ~eshell~
-- ~man:~
-- ~vterm:~
+- ~eww:~ eww:nrk.no
+- ~eshell:~ eshell:ls
+- ~man:~ man:curl
+- ~vterm:~ vterm:ls
 
 #+begin_src emacs-lisp
 (add-hook! 'org-mode-hook
