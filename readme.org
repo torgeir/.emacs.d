@@ -989,6 +989,16 @@ Ignore some extra folders from projectile
 *** Workspaces
 
 #+begin_src emacs-lisp
+(defun t/+workspace/switch-to (&optional &rest args)
+  "Custom switch-to workspace, that puts the last visited one first, so its just
+  an enter away."
+  (interactive)
+  (let ((completion-extra-properties
+         `(:display-sort-function
+           ,(lambda (completions)
+              (append (list +workspace--last)
+                      (remove +workspace--last (+workspace-list-names)))))))
+    (call-interactively '+workspace/switch-to)))
 (map!
  :leader "1" '+workspace/switch-to-0
  :leader "2" '+workspace/switch-to-1
@@ -1000,7 +1010,7 @@ Ignore some extra folders from projectile
  :leader "8" '+workspace/switch-to-7
  :leader "9" '+workspace/switch-to-8
  :leader "0" '+workspace/switch-to-final
- :leader "-" '+workspace/switch-to)
+ :leader "-" 't/+workspace/switch-to)
 #+end_src
 
 And fix ~super~ navigation across modes that steal ~SPC~.
