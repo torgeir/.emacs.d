@@ -1214,20 +1214,23 @@ Determines the style of line numbers in effect. If set to =nil=, line numbers ar
 ***** Color parens uniformly
 
 #+begin_src emacs-lisp
-(custom-set-faces!
-  '(show-paren-match :background "unspecified" :foreground "yellow" :weight bold)
-  '(rainbow-delimiters-depth-1-face :foreground "DeepPink4" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-2-face :foreground "DeepPink3" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-3-face :foreground "DeepPink2" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-4-face :foreground "DeepPink1" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-5-face :foreground "maroon4" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-6-face :foreground "maroon3" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-7-face :foreground "maroon2" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-8-face :foreground "maroon1" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-9-face :foreground "VioletRed3" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-10-face :foreground "VioletRed2" :overline nil :underline nil)
-  '(rainbow-delimiters-depth-11-face :foreground "VioletRed1" :overline nil :underline nil)
-  '(rainbow-delimiters-unmatched-face :foreground "Red" :overline nil :underline nil))
+;; Show paren match face
+(set-face-attribute 'show-paren-match nil :background nil :foreground "yellow" :weight 'bold)
+(after! rainbow-delimiters
+  ;; Rainbow delimiters faces
+  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "DeepPink4" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "DeepPink3" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "DeepPink2" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "DeepPink1" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "maroon4" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "maroon3" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-7-face nil :foreground "maroon2" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-8-face nil :foreground "maroon1" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-9-face nil :foreground "VioletRed3" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-10-face nil :foreground "VioletRed2" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-11-face nil :foreground "VioletRed1" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-unmatched-face nil :foreground "Red" :overline nil :underline nil)
+  )
 #+end_src
 
 *** Transparency
