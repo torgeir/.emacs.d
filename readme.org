@@ -1052,11 +1052,31 @@ Make tab accept the current suggestion.
 
 #+begin_src emacs-lisp
 (after! company
+  (defun t/company-doc-scroll-up ()
+    "Scroll up in company documentation."
+    (interactive)
+    (when-let ((win (get-buffer-window " *company-box-1doc*" t)))
+      (with-selected-window win
+        (scroll-down-command))))
+
+  (defun t/company-doc-scroll-down ()
+    "Scroll down in company documentation."
+    (interactive)
+    (when-let ((win (get-buffer-window " *company-box-1doc*" t)))
+      (with-selected-window win
+        (scroll-up-command))))
+
   (map! :map company-active-map
         "<tab>" 'company-complete-selection
         ;; and c-e and right arrow like in zsh-autosuggest
         "C-e" 'company-complete-selection
-        "<right>" 'company-complete-selection))
+        "<right>" 'company-complete-selection
+        ;; force help window
+        "C-h" 'company-show-doc-buffer
+        ;; scroll window
+        "C-S-v" 't/company-doc-scroll-up
+        "C-v" 't/company-doc-scroll-down)
+  )
 #+end_src
 
 *** Tramp
