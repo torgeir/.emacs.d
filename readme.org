@@ -4192,8 +4192,8 @@ Ready some fonts that stand out.
 (after! calendar
   (copy-face font-lock-comment-face 'calendar-week-face)
   (copy-face font-lock-string-face 'calendar-today-face)
-  (set-face-attribute 'holiday nil :foreground "VioletRed1" :weight 'bold :background "unspecified")
-  (set-face-attribute 'calendar-today-face nil :weight 'bold :background "unspecified")
+  (set-face-attribute 'holiday nil :foreground "VioletRed1" :weight 'bold :background nil)
+  (set-face-attribute 'calendar-today-face nil :weight 'bold :background nil)
   (set-face-attribute 'calendar-week-face nil :foreground "VioletRed4"))
 #+end_src
 
