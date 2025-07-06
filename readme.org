@@ -975,15 +975,17 @@ Ignore some extra folders from projectile
 #+begin_src emacs-lisp
 (defun t/+workspace/switch-to (&optional &rest args)
   "Custom switch-to workspace, that puts the last visited one first, so its just
-  an enter away."
+  an enter away. When you start typing, it narrows like usual."
   (interactive)
   (let ((completion-extra-properties
          `(:display-sort-function
            ,(lambda (completions)
-              (if +workspace--last
+              (if (and +workspace--last
+                       ;; and not yet typed anything
+                       (string-empty-p (minibuffer-contents-no-properties)))
                   (append (list +workspace--last)
-                          (remove +workspace--last (+workspace-list-names)))
-                (+workspace-list-names))))))
+                          (remove +workspace--last completions))
+                completions)))))
     (call-interactively '+workspace/switch-to)))
 (map!
  :leader "1" '+workspace/switch-to-0
