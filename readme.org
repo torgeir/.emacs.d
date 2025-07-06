@@ -198,21 +198,6 @@ gpg --edit-key 922E681804CA8D82F1FAFCB177836712DAEA8B95
 # gpg> 5
 #+end_src
 
-#+begin_src emacs-lisp
-(defun t/gpg ()
-  (interactive)
-  (start-process-shell-command
-   "gpg:agent"
-   nil
-   (format
-    "gpg-connect-agent updatestartuptty /bye > /dev/null && \
-       $(gpgconf --list-dirs libexecdir)/gpg-preset-passphrase -c -P '%s' \
-       $(gpg --fingerprint --with-keygrip torgeir@keybase.io | awk '/Keygrip/ {print $3}' | tail -n 1)"
-    (t/1p "keybase.io" "--format json | jq -j '.fields[] | select(.id == \"password\") | .value'")))
-  (let ((p (start-process-shell-command "gpg:test" nil "timeout 0.5s gpg -q --batch -d ~/.authinfo.gpg 1>/dev/null 2>&1")))
-    (set-process-sentinel p (lambda (p event) (message "%s %s" p event)))))
-#+end_src
-
 ** Org file location setup
 
 #+begin_src emacs-lisp
@@ -1858,7 +1843,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
                      :desc "hackernews"  "h" (cmd! (+workspace-switch "*hn*" t)
                                                    (hnreader-news))
                      :desc "rss"         "r" #'=rss
-                     :desc "mail"        "m" (cmd! (t/gpg) (=mu4e))
+                     :desc "mail"        "m" (cmd! (=mu4e))
                      :desc "music"       "M" (cmd! (+workspace-switch "*emms*")
                                                    (emms-cache-set-from-mpd-all)
                                                    (emms-smart-browse))
@@ -4489,7 +4474,7 @@ account default: gmail
  IMAPAccount gmail
  Host imap.gmail.com
  User " (getenv "USER_EMAIL") "
- PassCmd \"timeout 0.5s gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine imap\\.gmail\\.com login "
+ PassCmd \"timeout 10s gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine imap\\.gmail\\.com login "
  (replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL"))
  " port 993/ {print $NF}'\"
  Port 993
@@ -4517,7 +4502,7 @@ account default: gmail
  IMAPAccount junk
  Host imap.gmail.com
  User " (getenv "USER_EMAIL_2") "
- PassCmd \"timeout 0.5s gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine imap\\.gmail\\.com login "
+ PassCmd \"timeout 10s gpg -q --for-your-eyes-only --no-tty --logger-file /dev/null --batch -d ~/.authinfo.gpg | awk '/machine imap\\.gmail\\.com login "
  (replace-regexp-in-string "\\." "\\\\." (getenv "USER_EMAIL_2"))
  " port 993/ {print $NF}'\"
  Port 993
