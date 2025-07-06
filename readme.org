@@ -1746,6 +1746,7 @@ Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~
 
 #+begin_src emacs-lisp
 (set-popup-rule! "^\\*osx-dictionary" :side 'right :size 0.5 :vslot 2)
+(set-popup-rule! "^\\*Dictionary" :side 'right :size 0.5 :vslot 2)
 (setq osx-dictionary-generate-buffer-name-function
       (lambda (&rest args)
         (pop-to-buffer osx-dictionary-buffer-name)
@@ -1755,6 +1756,7 @@ Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~
 *** REPLs
 
 #+begin_src emacs-lisp
+(set-popup-rule! "^\\*ielm" :side 'right :size 0.5 :vslot 2)
 (after! ielm
   (add-hook 'inferior-emacs-lisp-mode-hook 'evil-cleverparens-mode))
 #+end_src
