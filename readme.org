@@ -4392,13 +4392,14 @@ Get rid of consecutive newlines and clean the buffer up. [[https://github.com/do
 
 #+begin_src emacs-lisp
 (after! mu4e
-  (add-hook! 'mu4e-view-rendered-hook :append
+  (add-hook! 'mu4e-view-rendered-hook
     (defun t/mu4e-rendered-mode-hook ()
       (evil-normal-state)
-      (t/start-spray-micro-state)
       (with-current-buffer "*mu4e-article*"
+        (read-only-mode -1)
         (t/remove-consecutive-newlines)
-        (olivetti-mode)))))
+        (t/start-spray-micro-state)
+        (read-only-mode 1)))))
 #+end_src
 
 ***** Remove background color in emails
