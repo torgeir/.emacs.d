@@ -2961,17 +2961,6 @@ Some useful =eww= keybindings
       (call-interactively 'toggle-truncate-lines))))
 #+end_src
 
-*** Reddit
-
-#+begin_src emacs-lisp
-(use-package! reddigg
-  :commands (reddigg-view-main)
-  :config
-  (progn
-    (set-popup-rule! "^\\*reddigg" :ignore t)
-    (setq reddigg-subs '(doomemacs emacs minilab homelab homeserver orgmode sffpc archlinux))))
-#+end_src
-
 *** Nrk.no
 
 A custom function to fetch a clean view of the current news from nrk.no
