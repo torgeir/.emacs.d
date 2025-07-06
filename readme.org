@@ -64,6 +64,13 @@ This config uses the =:config literal= that tangles this file to ~config.el~ on 
 
 I usually navigate this with =c-c c-n= or =c-c c-p=, or =mgg=.
 
+*** Ignore changes in git
+
+#+begin_src sh :tangle no
+git update-index --skip-worktree config.el
+git update-index --skip-worktree custom.el
+#+end_src
+
 ** Lexical scoping everywhere
 
 The madness that is dynamic is too much for anyone, really.
