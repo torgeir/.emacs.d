@@ -674,10 +674,6 @@ Iterate through CamelCase words
 
 *** +onsave apheleia
 
-#+begin_src sh :tangle no :results silent
-npm install -g prettier
-#+end_src
-
 The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It messes up prettier.
 
 #+begin_src emacs-lisp
