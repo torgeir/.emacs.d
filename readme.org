@@ -3896,7 +3896,7 @@ Improved diffs with =magit-delta-mode=. Show the themes with =delta --show-synta
         (magit--put-face (match-beginning 0) boundary
                          'magit-keyword msg))
       ;; Conventional commits
-      (while (string-match "^\\(?:feat\\|fix\\|chore\\|docs\\|style\\|refactor\\|perf\\|test\\)\\(?:\\(?:[(].*[)]\\)\\|\\(?:!\\)\\)?:" msg boundary)
+      (while (string-match "^\\(?:feat\\|fix\\|chore\\|docs\\|style\\|refactor\\|perf\\|test\\|revert\\|ci\\|build\\)\\(?:\\(?:[(].*[)]\\)\\|\\(?:!\\)\\)?:" msg boundary)
         (setq boundary (match-end 0))
         (magit--put-face (match-beginning 0) boundary
                          'magit-keyword msg))))
