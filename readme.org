@@ -778,7 +778,7 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
 
 *** Customize
 
-Doom doesnt use the customize interface. It is useful nonetheless for experimenting with face colors etc
+Doom doesn't use the customize interface. It is useful nonetheless for experimenting with face colors etc
 
 #+begin_src emacs-lisp
 (set-popup-rule! "^\\*Customize" :ignore t)
