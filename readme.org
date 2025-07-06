@@ -1217,7 +1217,7 @@ Determines the style of line numbers in effect. If set to =nil=, line numbers ar
 
 #+begin_src emacs-lisp
 ;; Show paren match face
-(set-face-attribute 'show-paren-match nil :background nil :foreground "yellow" :weight 'bold)
+(set-face-attribute 'show-paren-match nil :background nil :foreground "Green" :weight 'bold)
 (after! rainbow-delimiters
   ;; Rainbow delimiters faces
   (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "DeepPink4" :overline nil :underline nil)
