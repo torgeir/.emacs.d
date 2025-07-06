@@ -434,6 +434,8 @@ Max number of hits shown
 
 **** Indent after paste
 
+Indent after paste if universal arg ~c-u~ was pressed first.
+
 #+begin_src emacs-lisp
 (defun t/indent-after-paste (fn &rest args)
   (evil-start-undo-step)
