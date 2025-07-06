@@ -3617,27 +3617,34 @@ Remove ~C-l~ in normal mode, so that ~recenter-top-bottom~ works. Bring it back 
   (map! :map vterm-mode-map :i "C-l" 'vterm-clear))
 #+end_src
 
-First esc sends escape, second exits to emacs normal mode
+First =esc= sends escape, second =esc= exits to emacs normal mode
 
 #+begin_src emacs-lisp
 (after! vterm
   (comment
-   ;; TODO remove
+   ;; first esc goes to vterm, second goes to normal mode
+   ;; e.g. lets you quit fzf with esc
    (defun t/vterm-escape-second-time-around ()
      (interactive)
      (if (eq last-command 't/vterm-escape-second-time-around)
          (call-interactively 'evil-force-normal-state)
        (call-interactively 'vterm-send-escape)))
    (map! :map vterm-mode-map
-         :i "<escape>" 't/vterm-escape-second-time-around))
-  ;; this is good enough?
+          :i "<escape>" 't/vterm-escape-second-time-around))
+  ;; alternative, this is good enough?
+  ;; e.g. lets you copy from fzf from normal mode
   (map! :map vterm-mode-map
-        :i "M-<escape>" 'vterm-send-escape)
-  (map! :map vterm-mode-map
-        :i "M-:" 'eval-expression))
+         :i "M-<escape>" 'vterm-send-escape))
 #+end_src
 
-Allow vim-like copy from tmux to emacs kill ring
+Sometimes you need to eval from =vterm=.
+
+#+begin_src emacs-lisp
+(map! :map vterm-mode-map
+        :i "M-:" 'eval-expression)
+#+end_src
+
+Allow vim-like copy from tmux to emacs kill ring. Vterm + tmux + =C-b [= + =S-v= + =y=.
 
 #+begin_src emacs-lisp
 (after! vterm
@@ -3646,7 +3653,7 @@ Allow vim-like copy from tmux to emacs kill ring
 
 **** Allow ~edit-command~ from insert mode
 
-Use it with ~^x^e~
+Use it with =vterm=. Type something, then ~^x^e~ to edit in emacs. =C-c C-c= when done.
 
 #+begin_src emacs-lisp
 (after! vterm
