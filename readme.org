@@ -1614,7 +1614,7 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-battery t
         display-time-24hr-format t
         ;; it needs padding to the right
-        display-time-string-forms '(dayname " " day "/" month "    ")
+        display-time-string-forms '(dayname " " day "/" month "       ")
         doom-modeline-major-mode-icon t
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-file-name-style 'truncate-upto-root)
