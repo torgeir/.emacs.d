@@ -3539,7 +3539,7 @@ This is paired with the bash function [[https://github.com/torgeir/dotfiles/blob
 Make pasting from ~consult-yank-from-kill-ring~, =M-y=, actually insert results in ~vterm~.
 
 #+begin_src emacs-lisp
-(defun my/insert-for-yank-vterm-shim (orig-fun &rest args)
+(defun t/insert-for-yank-vterm-shim (orig-fun &rest args)
   (if (eq major-mode 'vterm-mode)
       (let ((inhibit-read-only t))
         (apply #'vterm-insert args))
@@ -3547,9 +3547,9 @@ Make pasting from ~consult-yank-from-kill-ring~, =M-y=, actually insert results 
 #+end_src
 
 #+begin_src emacs-lisp
-(advice-add #'+default/newline :around #'my/insert-for-yank-vterm-shim)
-(advice-add #'insert-char-preview :around #'my/insert-for-yank-vterm-shim)
-(advice-add #'insert-for-yank :around #'my/insert-for-yank-vterm-shim)
+(advice-add #'+default/newline :around #'t/insert-for-yank-vterm-shim)
+(advice-add #'insert-char-preview :around #'t/insert-for-yank-vterm-shim)
+(advice-add #'insert-for-yank :around #'t/insert-for-yank-vterm-shim)
 #+end_src
 
 Keep evil insert mode cursor after shell commands have run.
