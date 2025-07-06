@@ -82,8 +82,6 @@ The madness that is dynamic is too much for anyone, really.
 ** Early fix broken stuff
 
 #+begin_src emacs-lisp
-;; TODO savehist needs this?
-(setq update_os nil)
 #+end_src
 
 ** Packages
