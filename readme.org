@@ -980,8 +980,10 @@ Ignore some extra folders from projectile
   (let ((completion-extra-properties
          `(:display-sort-function
            ,(lambda (completions)
-              (append (list +workspace--last)
-                      (remove +workspace--last (+workspace-list-names)))))))
+              (if +workspace--last
+                  (append (list +workspace--last)
+                          (remove +workspace--last (+workspace-list-names)))
+                (+workspace-list-names))))))
     (call-interactively '+workspace/switch-to)))
 (map!
  :leader "1" '+workspace/switch-to-0
