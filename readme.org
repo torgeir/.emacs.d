@@ -2623,6 +2623,13 @@ Default openai language model.
           (setq-local comint-move-point-for-output nil)))
 #+end_src
 
+Clean up popup definitions
+
+#+begin_src emacs-lisp
+;; (setq display-buffer-alist
+;;       (assoc-delete-all "^\\*claude llm" display-buffer-alist))
+#+end_src
+
 **** Shortcuts to pop open prompt with often used dialogs
 
 #+begin_src emacs-lisp
