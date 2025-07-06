@@ -1,13 +1,13 @@
-console.log("works")
+console.log("works");
 
-console.clear()
+console.clear();
 
-const str = Deno.readFileSync("deno.json")
-const res = Deno.inspect(str)
-console.log(res)
+const str = Deno.readFileSync("deno.json");
+const res = Deno.inspect(str);
+console.log(res);
 
-const a = 1
+const a = 1;
 
-console.log(a)
+console.log(b);
 
-Deno.exit(1)
+Deno.exit(1);

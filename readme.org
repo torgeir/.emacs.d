@@ -918,10 +918,10 @@ Navigate flymake and flycheck errors
                                                           (t (flymake-show-buffer-diagnostics))))
                 :desc "Jump to next error"     "n" (cmd! (cond
                                                           ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-next-error))
-                                                          (t (flymake-goto-next-error))))
+                                                          (t (call-interactively 'flymake-goto-next-error))))
                 :desc "Jump to previous error" "N" (cmd! (cond
                                                           ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-previous-error))
-                                                          (t (flymake-goto-prev-error)))))))
+                                                          (t (call-interactively 'flymake-goto-prev-error)))))))
 #+end_src
 
 **** Skip to flymake issues when skipping through them
