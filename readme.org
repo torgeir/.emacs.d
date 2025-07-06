@@ -3272,7 +3272,6 @@ Remove what the doom =(javascript :lsp)= module sets up for [[file:~/.config/ema
 (after! typescript-ts-mode (t/clean-ts-auto-mode-alist))
 #+end_src
 
-
 Get rid of =tide=, it keeps starting =tsserver=. I don't want it.
 
 #+begin_src emacs-lisp
@@ -3339,7 +3338,8 @@ This expects a =deno.json= somewhere in a parent directory.
   (cl-defmethod eglot-initialization-options ((server eglot-deno))
     "Passes through required deno initialization options"
     '(:enable t :lint t :unstable t))
-  ;; insane hack as i cannot make the default workspace configuration to work with the deno server
+  ;; insane hack as i cannot make the default workspace configuration
+  ;; to work with the deno server
   (cl-defmethod eglot-handle-request
     ((server eglot-deno) (_method (eql workspace/configuration)) &key items)
     "Handle workspace/configuration requests from Deno LSP."
@@ -3532,7 +3532,7 @@ This is paired with the bash function [[https://github.com/torgeir/dotfiles/blob
                         (call-interactively' magit-status))))))
 #+end_src
 
-Make pasting from ~consult-yank-from-kill-ring~ actually insert results in ~vterm~.
+Make pasting from ~consult-yank-from-kill-ring~, =M-y=, actually insert results in ~vterm~.
 
 #+begin_src emacs-lisp
 (defun my/insert-for-yank-vterm-shim (orig-fun &rest args)
