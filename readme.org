@@ -1202,15 +1202,6 @@ Determines the style of line numbers in effect. If set to =nil=, line numbers ar
 (setq-hook! 'prog-mode-hook display-line-numbers-type 'relative)
 #+end_src
 
-Set across all real buffers.
-
-#+begin_src emacs-lisp
-(comment
- (progn
-   (t/in-all-buffers (lambda (b) (setq display-line-numbers 'relative)))
-   (t/in-all-buffers (lambda (b) (setq display-line-numbers nil)))))
-#+end_src
-
 **** Rainbow mode
 
 ***** Rainbow mode in prog modes
