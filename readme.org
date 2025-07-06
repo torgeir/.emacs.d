@@ -776,14 +776,6 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
  )
 #+end_src
 
-**** WIP to locate file in dired
-
-#+begin_src emacs-lisp
-(comment
- (while (not (equal (dired-current-directory) (t/project-root)))
-   (progn (dired-up-directory) (dired-subtree-cycle) (revert-buffer))))
-#+end_src
-
 *** Customize
 
 Doom doesnt use the customize interface. It is useful nonetheless for experimenting with face colors etc
