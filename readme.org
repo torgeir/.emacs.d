@@ -2362,7 +2362,10 @@ Save from agenda
 
 #+begin_src emacs-lisp
 (after! org
-  (set-face-attribute 'org-todo nil :foreground "#94fFe4" :weight 'bold))
+  (add-hook! 'org-mode-hook
+    (defun t/org-mode-colorize-todos ()
+      (interactive)
+      (set-face-attribute 'org-todo nil :foreground "#94fFe4" :weight 'bold))))
 #+end_src
 
 *** Make links appear
