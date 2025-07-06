@@ -5217,7 +5217,8 @@ You could also link to note files from specific days, like this to show notes fr
   "Search for supernote exports, using `consult-fd', from the date of the closest org timestamp."
   (interactive)
   ;; make it so that C-SPC previews the file by using find-file
-  (add-to-list 'embark-default-action-overrides '(file . find-file))
+  (after! embark
+    (add-to-list 'embark-default-action-overrides '(file . find-file)))
   (consult-fd
    (t/user-dropbox-folder "Supernote")
    (concat
