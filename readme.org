@@ -1262,6 +1262,12 @@ Show the buffer and the file
   :config (spacious-padding-mode))
 #+end_src
 
+**** Smooth scrolling
+
+#+begin_src emacs-lisp
+(pixel-scroll-precision-mode 1)
+#+end_src
+
 **** Scroll mru window
 
 Scroll most recently used window when using ~c-m-v~ and ~c-m-S-v~.
