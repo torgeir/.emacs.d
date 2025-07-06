@@ -3200,16 +3200,6 @@ This does not work well with eglot
         (cl-remove-if (lambda (c) (eq (car c) 'kotlin-mode)) eglot-server-programs)))
 #+end_src
 
-**** Eglot ls
-
-#+begin_src sh :tangle no :results silent
-wget https://github.com/fwcd/kotlin-language-server/releases/download/1.3.1/server.zip -O ~/bin/server.zip
-cd ~/bin/
-rm -rf server
-unzip server.zip
-ln -sf server/bin/kotlin-language-server .
-#+end_src
-
 *** Python
 
 **** Eglot ls
