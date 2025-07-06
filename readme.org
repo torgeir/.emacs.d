@@ -4876,6 +4876,8 @@ Then type ~C-ret~ to add something to the playlist.
 
 *** copilot.el
 
+Remember to [[elisp:(copilot-login)][(copilot-login)]] for this to work, turn it on with =SPC t c=.
+
 #+begin_src emacs-lisp
 (use-package! copilot
   :bind (:map copilot-completion-map
