@@ -2491,8 +2491,7 @@ If you need to remove one, do this
 Don't popupize the org code block editor with doom's popup framework, so it opens split wherever it fits like it is by default.
 
 #+begin_src emacs-lisp
-(after! org
-  (set-popup-rule! "^\\*Org Src" :ignore t))
+(set-popup-rule! "^\\*Org Src" :ignore t)
 #+end_src
 
 *** Capture templates
@@ -2741,10 +2740,10 @@ Default openai language model.
 *** Mastodon
 
 #+begin_src emacs-lisp
+(set-popup-rule! "^\\*mastodon" :ignore t)
 (after! mastodon
   (setq mastodon-instance-url "https://fosstodon.org"
         mastodon-active-user "@torgeir@fosstodon.org")
-  (set-popup-rule! "^\\*mastodon" :ignore t)
   (map! :map mastodon-mode-map
         :n "q" #'+workspace/kill
         :n "j" (cmd!
@@ -2869,11 +2868,10 @@ Make ~SPC s o~ open in eww first, then use ~&~ to go to the default browser if n
 **** Popup size
 
 #+begin_src emacs-lisp
-(after! evil
-  ;; the original way
-  ;;(setf (alist-get 'size (display-buffer-assq-regexp "*eww*" display-buffer-alist nil)) 0.6)
-  ;; the doom way
-  (set-popup-rule! "^\\*eww*" :side 'right :size 0.7 :vslot 10))
+;; the original way
+;;(setf (alist-get 'size (display-buffer-assq-regexp "*eww*" display-buffer-alist nil)) 0.6)
+;; the doom way
+(set-popup-rule! "^\\*eww*" :side 'right :size 0.7 :vslot 10)
 #+end_src
 
 **** Readability
@@ -3808,10 +3806,10 @@ Useful magit keybindings:
   (advice-add #'magit-section-forward-sibling :after #'t/magit-move-item-to-top)
   (advice-add #'magit-section-backward-sibling :after #'t/magit-move-item-to-top)
 
-  (add-hook 'magit-revision-mode-hook 'toggle-truncate-lines)
+  (add-hook 'magit-revision-mode-hook 'toggle-truncate-lines))
 
-  (set-popup-rule! "^magit:" :ignore t)
-  (set-popup-rule! "^magit-revision" :side 'right :size 0.5))
+(set-popup-rule! "^magit:" :ignore t)
+(set-popup-rule! "^magit-revision" :side 'right :size 0.5)
 #+end_src
 
 Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindings never made sense to me. And ~gca~ for amending.
@@ -4117,10 +4115,9 @@ Auto tagging of some types of subs.
 **** Window placement
 
 #+begin_src emacs-lisp
-(after! elfeed
-  ;; this is the start of *elfeed-entry-<title>* names of youtube buffers without an elfeed entry
-  (set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t :vslot 10)
-  (set-popup-rule! "^\\*elfeed-entry*" :side 'right :size 0.6 :select t :vslot 5))
+;; this is the start of *elfeed-entry-<title>* names of youtube buffers without an elfeed entry
+(set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t :vslot 10)
+(set-popup-rule! "^\\*elfeed-entry*" :side 'right :size 0.6 :select t :vslot 5)
 #+end_src
 
 **** Youtube feed extraction
@@ -4305,13 +4302,12 @@ Inspiration:
 **** Mu4e
 
 #+begin_src emacs-lisp
+(set-popup-rule! "^\\*mu4e-main" :ignore t)
+(set-popup-rule! "^\\*mu4e-draft" :ignore nil :side 'right :size 0.8)
+(set-popup-rule! "^\\*mu4e-headers" :ignore t :side 'right :size 0.8 :vslot 5 :select t)
+(set-popup-rule! "^\\*mu4e-article" :ignore t :side 'right :size 0.8 :vslot 10 :select t)
+
 (after! mu4e
-
-  (set-popup-rule! "^\\*mu4e-main" :ignore t)
-  (set-popup-rule! "^\\*mu4e-draft" :ignore nil :side 'right :size 0.8)
-  (set-popup-rule! "^\\*mu4e-headers" :ignore t :side 'right :size 0.8 :vslot 5 :select t)
-  (set-popup-rule! "^\\*mu4e-article" :ignore t :side 'right :size 0.8 :vslot 10 :select t)
-
   (add-hook! 'mu4e-main-mode-hook
     (defun t/mu4e-main-mode-hook ()
       (interactive)
