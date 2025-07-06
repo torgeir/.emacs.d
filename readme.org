@@ -1227,10 +1227,9 @@ Determines the style of line numbers in effect. If set to =nil=, line numbers ar
   (set-face-attribute 'rainbow-delimiters-depth-7-face nil :foreground "maroon2" :overline nil :underline nil)
   (set-face-attribute 'rainbow-delimiters-depth-8-face nil :foreground "maroon1" :overline nil :underline nil)
   (set-face-attribute 'rainbow-delimiters-depth-9-face nil :foreground "VioletRed3" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-10-face nil :foreground "VioletRed2" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-11-face nil :foreground "VioletRed1" :overline nil :underline nil)
   (set-face-attribute 'rainbow-delimiters-unmatched-face nil :foreground "Red" :overline nil :underline nil)
-  )
+  (set-face-attribute 'rainbow-delimiters-mismatched-face nil :foreground "Orange" :overline nil :underline nil)
+)
 #+end_src
 
 *** Transparency
