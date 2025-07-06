@@ -790,6 +790,7 @@ Make ~s-s~ save in =customize=. Look up the function of a button using =describe
 Zoom to the previewed org subtree when jumping between headings with =consult-org-heading=.
 
 #+begin_src emacs-lisp
+(setq consult-after-jump-hook '(pulsar-pulse-line))
 (add-hook! 'consult-after-jump-hook :append
   (defun t/after-consult-jump ()
     ""
