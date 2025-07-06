@@ -4884,6 +4884,13 @@ Unload module
   (advice-add #'evil-window-middle :after #'pulsar-pulse-line)
   (advice-add #'evil-window-bottom :after #'pulsar-pulse-line)
 
+  ;; comint
+  (defun t/pulsar-pulse-line (&rest _args)
+    "Pulse line, ignoring any arguments."
+    (pulsar-pulse-line))
+  (advice-add #'comint-next-prompt :after #'t/pulsar-pulse-line)
+  (advice-add #'comint-previous-prompt :after #'t/pulsar-pulse-line)
+
   ;; Bound to `ga' for evil users
   (advice-add #'what-cursor-position :after #'pulsar-pulse-line)
   :config
