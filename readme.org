@@ -3473,6 +3473,10 @@ Or when you ~eval~ something when the repl is open, e.g. =g r a p= (eval around 
  :after typescript-ts-mode
  :map (typescript-ts-mode-map tsx-ts-mode-map)
  :g "M-<return>" #'eglot-code-actions)
+(map!
+ :after deno-ts-mode
+ :map (deno-ts-mode-map deno-tsx-ts-mode-hook)
+ :g "M-<return>" #'eglot-code-actions)
 #+end_src
 
 *** Rust
