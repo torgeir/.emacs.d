@@ -516,7 +516,7 @@ Type ~qq~ to record a macro to ~q~. Move to where you want the number and press 
 Prevent =embark-export=, ~C-e~, from being "popupized" by doom's ~:ui popup~ and its ~(popup +all)~ setting.
 
 #+begin_src emacs-lisp
-(set-popup-rule! "^*Embark" :ignore t)
+(set-popup-rule! "^\\*Embark" :ignore t)
 #+end_src
 
 You can use ~C-SPC~ to preview candidates.
@@ -775,7 +775,7 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
 Doom doesnt use the customize interface. It is useful nonetheless for experimenting with face colors etc
 
 #+begin_src emacs-lisp
-(set-popup-rule! "^*Customize" :ignore t)
+(set-popup-rule! "^\\*Customize" :ignore t)
 #+end_src
 
 Make ~s-s~ save in =customize=. Look up the function of a button using =describe-text-properties= on a button, like the "Apply and Save"
@@ -1957,8 +1957,8 @@ Popup bindings on a norwegian keyboard
 ** Gnus
 
 #+begin_src emacs-lisp
-(set-popup-rule! "^*Summary" :side 'bottom :size 0.5)
-(set-popup-rule! "^*Article" :side 'bottom :size 0.5)
+(set-popup-rule! "^\\*Summary" :side 'bottom :size 0.5)
+(set-popup-rule! "^\\*Article" :side 'bottom :size 0.5)
 (setq gnus-select-method '(nntp "news.gmane.io")) ; A A
 #+end_src
 
@@ -1973,10 +1973,10 @@ One help shortcut, everywhere.
 Keep them on the side for some more room.
 
 #+begin_src emacs-lisp
-(set-popup-rule! "^*info" :side 'right :width 82)
-(set-popup-rule! "^*help" :side 'right :width 82)
-(set-popup-rule! "^*eglot-help" :side 'right :width 82)
-(set-popup-rule! "^*cider-doc" :side 'right :width 82)
+(set-popup-rule! "^\\*info" :side 'right :width 82)
+(set-popup-rule! "^\\*help" :side 'right :width 82)
+(set-popup-rule! "^\\*eglot-help" :side 'right :width 82)
+(set-popup-rule! "^\\*cider-doc" :side 'right :width 82)
 #+end_src
 
 *** Motions
@@ -2443,7 +2443,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 
 #+begin_src emacs-lisp
 (after! org
-  (set-popup-rule! "^*Org Src" :ignore t))
+  (set-popup-rule! "^\\*Org Src" :ignore t))
 #+end_src
 
 *** Capture templates
@@ -2613,7 +2613,7 @@ Default openai language model.
 **** Popup on the side
 
 #+begin_src emacs-lisp
-(set-popup-rule! "^\\*ChatGPT" :size 0.45 :side 'right :quit 'other)
+ (set-popup-rule! "^\\*ChatGPT" :size 0.45 :side 'right :quit 'other)
 (set-popup-rule! "^\\*claude llm"
   :size 0.45
   :side 'right
@@ -2695,7 +2695,7 @@ Default openai language model.
 (after! mastodon
   (setq mastodon-instance-url "https://fosstodon.org"
         mastodon-active-user "@torgeir@fosstodon.org")
-  (set-popup-rule! "^*mastodon" :ignore t)
+  (set-popup-rule! "^\\*mastodon" :ignore t)
   (map! :map mastodon-mode-map
         :n "q" #'+workspace/kill
         :n "j" (cmd!
@@ -2902,7 +2902,7 @@ Some useful eww keybindings
 (use-package! hnreader
   :commands (hnreader-news)
   :config
-  (set-popup-rule! "^*HN" :ignore t))
+  (set-popup-rule! "^\\*HN" :ignore t))
 #+end_src
 
 **** Don't wrap
@@ -2921,7 +2921,7 @@ Some useful eww keybindings
   :commands (reddigg-view-main)
   :config
   (progn
-    (set-popup-rule! "^*reddigg" :ignore t)
+    (set-popup-rule! "^\\*reddigg" :ignore t)
     (setq reddigg-subs '(doomemacs emacs minilab homelab homeserver orgmode sffpc archlinux))))
 #+end_src
 
@@ -4264,10 +4264,10 @@ Inspiration:
 #+begin_src emacs-lisp
 (after! mu4e
 
-  (set-popup-rule! "^*mu4e-main" :ignore t)
-  (set-popup-rule! "^*mu4e-draft" :ignore nil :side 'right :size 0.8)
-  (set-popup-rule! "^*mu4e-headers" :ignore t :side 'right :size 0.8 :vslot 5 :select t)
-  (set-popup-rule! "^*mu4e-article" :ignore t :side 'right :size 0.8 :vslot 10 :select t)
+  (set-popup-rule! "^\\*mu4e-main" :ignore t)
+  (set-popup-rule! "^\\*mu4e-draft" :ignore nil :side 'right :size 0.8)
+  (set-popup-rule! "^\\*mu4e-headers" :ignore t :side 'right :size 0.8 :vslot 5 :select t)
+  (set-popup-rule! "^\\*mu4e-article" :ignore t :side 'right :size 0.8 :vslot 10 :select t)
 
   (add-hook! 'mu4e-main-mode-hook
     (defun t/mu4e-main-mode-hook ()
