@@ -305,7 +305,7 @@ Move ~~/.authinfo.gpg~ to the front. It is originally behind the macos keychain 
 Defaults
 
 #+begin_src emacs-lisp
-(let ((h (* 4 60 60)))
+(let ((h (* 1 60 60)))
   (setq auth-source-do-cache t
         auth-source-cache-expiry h
         password-cache t
