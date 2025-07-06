@@ -49,7 +49,7 @@ Type ~SPC m g g~ to run =consult-org-heading=, then ~C-c C-;~ to =embark-export=
 
 When ~doom sync -u~ fails for some packages, try deleting the cloned repos before running it again.
 
-E.g. ~rm -rf ~~/.config/doom-local/straight/repos/{magit,transient,with-editor}~
+E.g. ~rm -rf ~~/.config/doom-local/straight/repos/{borg,epkg,ghub,magit-section,transient,with-editor,forge,magit}~ then do ~rm -rf build-*-cache.el~
 
 ** Literate config
 
