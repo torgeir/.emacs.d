@@ -4269,8 +4269,8 @@ Evil like navigation.
     (defun t/calendar-mode-hook ()
       (map!
        :map calendar-mode-map
-       :m "H"   #'calendar-scroll-left
-       :m "L"   #'calendar-scroll-right))))
+       :m "H" #'calendar-scroll-left
+       :m "L" #'calendar-scroll-right))))
 #+end_src
 
 *** Re-builder
@@ -4450,7 +4450,7 @@ mkdir -p ~/.maildir/{gmail,junk}
 ***** Export certificates
 
 - On arch or nix on mac: ~/etc/ssl/certs/ca-certificates.crt~
-- On plainmacos: ~Keychain Access -> System Roots -> Certificates -> select all -> Shift+cmd+E~ to ~~/.maildir/certificates/certificates.pem~
+- On plain macos: ~Keychain Access -> System Roots -> Certificates -> select all -> Shift+cmd+E~ to ~~/.maildir/certificates/certificates.pem~
 
 ***** Delete to Trash
 
@@ -4461,6 +4461,7 @@ Go to Gmail IMAP/POP settings (in normal view; the options are not available in 
 #+end_quote
 
 **** Configuration files
+
 ***** Smtp
 
 =brew install msmtp=
@@ -4779,9 +4780,7 @@ Extend evil to flash highlights on =SPC u *=
 
 #+begin_src emacs-lisp
 (add-hook 'find-file-hook
-          (defun t/in-every-file ()
-            ;;(when (string= (file-name-extension buffer-file-name) "ts") (typescript-mode))
-            ))
+          (defun t/in-every-file ()))
 #+end_src
 
 *** Sticky buffer mode
