@@ -20,7 +20,6 @@
 (package! org-ai :recipe (:host github :repo "rksm/org-ai"))
 (package! mastodon :recipe (:host codeberg :repo "martianh/mastodon.el"))
 (package! hnreader)
-(package! reddigg)
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
 (package! remark-mode)
 (package! command-log-mode) ;; C-c o
