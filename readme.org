@@ -1153,13 +1153,13 @@ There's a lot of good [[file:~/.config/doom-local/straight/repos/themes/themes/]
 
 #+begin_src emacs-lisp
 (setq *t-themes* '(doom-feather-dark
-                   doom-flatwhite
-                   t-doom-one
                    catppuccin
-                   doom-vibrant)
+                   doom-flatwhite
+                   ;t-doom-one
+                   ;doom-vibrant
+                   )
       doom-theme (car *t-themes*)
-      t-system-theme-dark 't-doom-one
-      t-system-theme-dark 'catppuccin
+      t-system-theme-dark 'doom-feather-dark
       t-system-theme-light 'doom-flatwhite)
 #+end_src
 

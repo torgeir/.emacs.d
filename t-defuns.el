@@ -1395,13 +1395,13 @@ Prefix arg will force eww."
     (progn
       (t/run-osascript
        "tell application \"System Events\" to tell appearance preferences to set dark mode to not dark mode")
-      (async-shell-command "sh ~/.config/alacritty/alacritty-toggle-appearance"))))
+      (call-process "~/.config/alacritty/alacritty-toggle-appearance"))))
 
 (defun t/load-system-theme ()
   (interactive)
+  (disable-theme doom-theme)
   (load-theme
    (if (t/is-darkmode) t-system-theme-dark t-system-theme-light)))
-
 
 (defun find-up (file)
   (interactive)
