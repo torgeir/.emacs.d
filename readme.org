@@ -599,14 +599,14 @@ Some examples and explanations
   (progn
 
     (setq orderless-matching-styles
-          '(orderless-literal
+          '(orderless-literal     ;; default exact substring match
             ;; orderless-initialism
             ;; orderless-regexp
             ;; orderless-flex
             ))
 
     (setq orderless-style-dispatchers
-          '(initialism-dispatcher ;; suffix search with =
+          '(initialism-dispatcher ;; suffix search with ,
             flex-dispatcher       ;; suffix search with .
             regexp-dispatcher     ;; suffix search with ~
             or-regexp             ;; regex search with foo|bar
@@ -663,6 +663,7 @@ words of the candidate, respectively."
           '(seq (zero-or-more alpha) word-end (zero-or-more (not alpha)))
         (cl-loop for char across component collect `(seq word-start ,char))))))
 #+end_src
+
 *** Editing
 
 Iterate through CamelCase words
