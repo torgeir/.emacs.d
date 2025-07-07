@@ -778,7 +778,8 @@ Prefix arg will force eww."
                "\\1"
                origin)))
     (browse-url
-     (format "https://www.github.com/%s/pulls" url))))
+     (format "%s/pulls"
+             (plist-get (browse-at-remote--get-url-from-remote url) :url)))))
 
 (defun t/projectile-dired ()
   (interactive)
