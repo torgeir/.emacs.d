@@ -1219,7 +1219,7 @@ Determines the style of line numbers in effect. If set to =nil=, line numbers ar
 
 #+begin_src emacs-lisp
 ;; Show paren match face
-(set-face-attribute 'show-paren-match nil :background nil :foreground "Green" :weight 'bold)
+(set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "Green" :weight 'bold)
 (after! rainbow-delimiters
   ;; Rainbow delimiters faces
   (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "DeepPink4" :overline nil :underline nil)
@@ -4222,8 +4222,8 @@ Ready some fonts that stand out.
 (after! calendar
   (copy-face font-lock-comment-face 'calendar-week-face)
   (copy-face font-lock-string-face 'calendar-today-face)
-  (set-face-attribute 'holiday nil :foreground "VioletRed1" :weight 'bold :background nil)
-  (set-face-attribute 'calendar-today-face nil :weight 'bold :background nil)
+  (set-face-attribute 'holiday nil :foreground "VioletRed1" :weight 'bold :background 'unspecified)
+  (set-face-attribute 'calendar-today-face nil :weight 'bold :background 'unspecified)
   (set-face-attribute 'calendar-week-face nil :foreground "VioletRed4"))
 #+end_src
 
