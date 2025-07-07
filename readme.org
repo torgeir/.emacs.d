@@ -2665,7 +2665,7 @@ Default openai language model.
 (set-popup-rule! "^\\*claude llm"
   :size 0.45
   :side 'right
-  :quit 'current
+  :quit nil
   :hook (lambda ()
           (setq-local comint-scroll-to-bottom-on-output nil)
           (setq-local comint-move-point-for-output nil)))
