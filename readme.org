@@ -3273,7 +3273,10 @@ Remove what the doom =(javascript :lsp)= module sets up for [[file:~/.config/ema
   (add-to-list 'auto-mode-alist '("\\.ts\\'" . t/deno-or-ts))
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . t/deno-or-ts)))
 (t/clean-ts-auto-mode-alist)
+;; omg pls make it happen
 (after! typescript-ts-mode (t/clean-ts-auto-mode-alist))
+(add-hook! 'typescript-ts-mode-hook 't/clean-ts-auto-mode-alist)
+(add-hook! 'typescript-tsx-mode-hook 't/clean-ts-auto-mode-alist)
 (add-hook! 'doom-after-init-hook 't/clean-ts-auto-mode-alist)
 #+end_src
 
