@@ -4331,7 +4331,7 @@ Inspiration:
         +mu4e-workspace-name "*email*"
         +mu4e-alert-bell-cmd nil ;; no sounds
         mu4e-split-view 'vertical
-        mu4e-update-interval (* 5 60)
+        mu4e-update-interval (* 15 60) ;; seconds
         mu4e-context-policy nil
         mu4e-attachment-dir "~/Desktop"
         mu4e-mu-binary (executable-find "mu")
