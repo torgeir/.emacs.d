@@ -3334,6 +3334,14 @@ This expects a =deno.json= somewhere in a parent directory.
 ;; required for Deno's color output.
 (add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 
+(after! evil-textobj-tree-sitter
+  (pushnew! evil-textobj-tree-sitter-major-mode-language-alist '(deno-ts-mode . "typescript"))
+  (pushnew! evil-textobj-tree-sitter-major-mode-language-alist '(deno-tsx-ts-mode . "tsx")))
+
+(after! tree-sitter
+  (pushnew! tree-sitter-major-mode-language-alist '(deno-ts-mode . typescript))
+  (pushnew! tree-sitter-major-mode-language-alist '(deno-tsx-ts-mode . tsx)))
+
 (after! eglot
   (defclass eglot-deno (eglot-lsp-server) () :documentation "A custom class for deno lsp.")
   (cl-defmethod eglot-initialization-options ((server eglot-deno))
