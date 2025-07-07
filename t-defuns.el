@@ -1218,7 +1218,7 @@ Prefix arg will force eww."
   "File under cursor is ignored by projectile. Only checks file-name-base."
   (interactive)
   (-any?
-   (lambda (d) (s-matches? d (file-name-base (dired-get-filename))))
+   (lambda (d) (s-matches? d (file-name-base (dired-get-filename nil t))))
    projectile-globally-ignored-directories))
 
 (defun t/dired-show-recursively-0 (path)
@@ -1226,9 +1226,10 @@ Prefix arg will force eww."
   (interactive)
   (when (not (eq (point) (save-excursion (end-of-buffer) (point))))
     (when (and
-           (s-starts-with? path (dired-get-filename))
-           (not (s-starts-with? "." (file-name-base (dired-get-filename))))
-           (not (t/dired-ignored?)))
+           (not (t/dired-ignored?))
+           (s-starts-with? path (dired-get-filename nil t))
+           (not (s-starts-with? "." (file-name-base (dired-get-filename nil t))))
+           )
       (when (dired-subtree--is-expanded-p) (t/dired-subtree-toggle))
       (t/dired-subtree-toggle))
     (forward-line)
