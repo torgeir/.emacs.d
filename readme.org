@@ -949,14 +949,14 @@ Navigate flymake and flycheck errors
 #+end_src
 
 
-**** Eglot flycheck issue
+**** TODO Eglot flycheck issue :outdated:
 
 https://github.com/doomemacs/doomemacs/issues/6466
 
 #+begin_src emacs-lisp
-(after! (eglot flycheck)
-  (push 'eglot flycheck-checkers)
-  (delq! 'eglot flycheck-checkers))
+;;(after! (eglot flycheck)
+;;  (push 'eglot flycheck-checkers)
+;;  (delq! 'eglot flycheck-checkers))
 #+end_src
 
 *** Projects
