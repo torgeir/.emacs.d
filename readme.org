@@ -4809,7 +4809,9 @@ Useful e.g. to make dired act like a directory tree sidebar
 #+begin_src emacs-lisp :results silent
 (define-minor-mode sticky-buffer-mode
   "Make the current window always display this buffer."
-  nil " sticky" nil
+  :lighter " sticky"
+  :init-value nil
+  :keymap nil
   (set-window-dedicated-p (selected-window) sticky-buffer-mode)
   (setq window-size-fixed (if sticky-buffer-mode 'width nil)))
 #+end_src
