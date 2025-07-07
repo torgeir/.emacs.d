@@ -3270,6 +3270,7 @@ Remove what the doom =(javascript :lsp)= module sets up for [[file:~/.config/ema
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . t/deno-or-ts)))
 (t/clean-ts-auto-mode-alist)
 (after! typescript-ts-mode (t/clean-ts-auto-mode-alist))
+(add-hook! 'doom-after-init-hook 't/clean-ts-auto-mode-alist)
 #+end_src
 
 Get rid of =tide=, it keeps starting =tsserver=. I don't want it.
