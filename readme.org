@@ -3831,6 +3831,8 @@ Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindin
                                             (call-interactively 'evil-scroll-line-to-center)))))
 #+end_src
 
+Useful shorthand magit operations, like =SPC gcF= for "git commit fixup".
+
 #+begin_src emacs-lisp
 (map!
  :after magit
