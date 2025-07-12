@@ -1218,9 +1218,10 @@ Determines the style of line numbers in effect. If set to =nil=, line numbers ar
 ***** Color parens uniformly
 
 #+begin_src emacs-lisp
-;; Show paren match face
 (set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "Green" :weight 'bold)
 (after! rainbow-delimiters
+  ;; Show paren match face
+  (set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "Green" :weight 'bold)
   ;; Rainbow delimiters faces
   (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "DeepPink4" :overline nil :underline nil)
   (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "DeepPink3" :overline nil :underline nil)
@@ -3287,9 +3288,10 @@ Remove what the doom =(javascript :lsp)= module sets up for [[file:~/.config/ema
   (add-to-list 'auto-mode-alist '("\\.tsx\\'" . t/deno-or-ts)))
 (t/clean-ts-auto-mode-alist)
 ;; omg pls make it happen
-(after! typescript-ts-mode (t/clean-ts-auto-mode-alist))
-(add-hook! 'typescript-ts-mode-hook 't/clean-ts-auto-mode-alist)
-(add-hook! 'typescript-tsx-mode-hook 't/clean-ts-auto-mode-alist)
+(after! typescript-ts-mode
+  (t/clean-ts-auto-mode-alist)
+  (add-hook! 'typescript-ts-mode-hook 't/clean-ts-auto-mode-alist)
+  (add-hook! 'typescript-tsx-mode-hook 't/clean-ts-auto-mode-alist))
 (add-hook! 'doom-after-init-hook 't/clean-ts-auto-mode-alist)
 #+end_src
 
