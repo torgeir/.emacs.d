@@ -2736,7 +2736,20 @@ Default openai language model.
         chatgpt-shell-openai-key
         (lambda ()
           (auth-source-pick-first-password :host "api.openai.com"))))
+#+end_src
 
+Recenter promt at screen top after submitting
+
+#+begin_src emacs-lisp
+(add-hook! 'comint-output-filter-functions
+  (defun t/llm-comint-recenter-after-output (&optional &rest _)
+    "Recenter to top after output in claude buffers."
+    (when (string-prefix-p "*claude llm" (buffer-name))
+      (run-with-timer "0sec" nil (defun t/gpt-recenter-top ()
+                                   (interactive)
+                                   (evil-normal-state)
+                                   (recenter-top-bottom 5)
+                                   (previous-line))))))
 #+end_src
 
 ** Reading
