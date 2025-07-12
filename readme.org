@@ -1757,7 +1757,7 @@ It has 3 parts, the left, the separator and the right.
 Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~.
 
 #+begin_src emacs-lisp
-(set-popup-rule! "^\\*osx-dictionary" :side 'right :size 0.5 :vslot 2)
+(set-popup-rule! "^\\*osx-dictionary" :side 'right :size 0.5 :vslot 3)
 (set-popup-rule! "^\\*Dictionary" :side 'right :size 0.5 :vslot 2)
 (setq osx-dictionary-generate-buffer-name-function
       (lambda (&rest args)
@@ -1768,7 +1768,7 @@ Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~
 *** REPLs
 
 #+begin_src emacs-lisp
-(set-popup-rule! "^\\*ielm" :side 'right :size 0.5 :vslot 2)
+(set-popup-rule! "^\\*ielm" :side 'right :size 0.5 :vslot 1)
 (after! ielm
   (add-hook 'inferior-emacs-lisp-mode-hook 'evil-cleverparens-mode))
 #+end_src
@@ -2858,6 +2858,7 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
 (setq blacklisted-eww-url-parts '("localhost"
                                   "slack.com"
                                   "github.com"
+                                  "medium.com"
                                   "openai.com"
                                   "twitter.com"
                                   "googleusercontent.com")
@@ -2889,7 +2890,11 @@ Make ~SPC s o~ open in eww first, then use ~&~ to go to the default browser if n
 ;; the original way
 ;;(setf (alist-get 'size (display-buffer-assq-regexp "*eww*" display-buffer-alist nil)) 0.6)
 ;; the doom way
-(set-popup-rule! "^\\*eww*" :side 'right :size 0.7 :vslot 10)
+(set-popup-rule! "^\\*eww*"
+  :side 'right
+  :size 0.7
+  :vslot 10
+  :ignore-window-parameters t)  ; Ignore constraints
 #+end_src
 
 **** Readability
@@ -4151,8 +4156,8 @@ Auto tagging of some types of subs.
 
 #+begin_src emacs-lisp
 ;; this is the start of *elfeed-entry-<title>* names of youtube buffers without an elfeed entry
-(set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t :vslot 10)
-(set-popup-rule! "^\\*elfeed-entry*" :side 'right :size 0.6 :select t :vslot 5)
+(set-popup-rule! "^\\*elfeed-entry-<" :side 'right :size 0.6 :select t :vslot 9)
+(set-popup-rule! "^\\*elfeed-entry*" :side 'right :size 0.6 :select t :vslot 4)
 #+end_src
 
 **** Youtube feed extraction
@@ -4340,7 +4345,7 @@ Inspiration:
 (set-popup-rule! "^\\*mu4e-main" :ignore t)
 (set-popup-rule! "^\\*mu4e-draft" :ignore nil :side 'right :size 0.8)
 (set-popup-rule! "^\\*mu4e-headers" :ignore t :side 'right :size 0.8 :vslot 5 :select t)
-(set-popup-rule! "^\\*mu4e-article" :ignore t :side 'right :size 0.8 :vslot 10 :select t)
+(set-popup-rule! "^\\*mu4e-article" :ignore t :side 'right :size 0.8 :vslot 9 :select t)
 
 (after! mu4e
   (add-hook! 'mu4e-main-mode-hook
