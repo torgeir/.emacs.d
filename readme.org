@@ -4457,6 +4457,7 @@ Get rid of consecutive newlines and clean the buffer up. [[https://github.com/do
         (read-only-mode -1)
         (t/remove-consecutive-newlines)
         (t/start-spray-micro-state)
+        (olivetti-mode)
         (read-only-mode 1)))))
 #+end_src
 
