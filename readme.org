@@ -739,8 +739,15 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
 
 #+begin_src emacs-lisp :results silent
 (defvar t-sidebar-buffer-prefix ":")
+(set-popup-rule! (concat "^" t-sidebar-buffer-prefix)
+  :side 'left
+  :height #'fit-window-to-buffer
+  :dedicated t
+  :quit nil
+  :select nil
+  :parameters '((no-other-window . t)))
 ;; TODO hackery to be able to tweak display-buffer-alist even with doom's set-popup-rule!
-(advice-add #'set-popup-rule! :after
+(comment advice-add #'set-popup-rule! :after
             (defun t/add-display-buffer-alist (fn &rest args)
               (add-to-list 'display-buffer-alist
                            `(,(concat "^" t-sidebar-buffer-prefix)
@@ -2671,9 +2678,12 @@ Default openai language model.
   :size 0.45
   :side 'right
   :quit nil
+  :dedicated t
   :hook (lambda ()
           (setq-local comint-scroll-to-bottom-on-output nil)
-          (setq-local comint-move-point-for-output nil)))
+          (setq-local comint-move-point-for-output nil)
+          ;;(set-window-dedicated-p (selected-window) t)
+))
 #+end_src
 
 **** Shortcuts to pop open prompt with often used dialogs
@@ -4343,9 +4353,9 @@ Inspiration:
 
 #+begin_src emacs-lisp
 (set-popup-rule! "^\\*mu4e-main" :ignore t)
-(set-popup-rule! "^\\*mu4e-draft" :ignore nil :side 'right :size 0.8)
-(set-popup-rule! "^\\*mu4e-headers" :ignore t :side 'right :size 0.8 :vslot 5 :select t)
-(set-popup-rule! "^\\*mu4e-article" :ignore t :side 'right :size 0.8 :vslot 9 :select t)
+(set-popup-rule! "^\\*mu4e-draft"   :ignore nil :dedicated t :side 'right :size 0.8)
+(set-popup-rule! "^\\*mu4e-headers" :ignore t   :dedicated t :side 'right :size 0.8 :vslot 5 :select t)
+(set-popup-rule! "^\\*mu4e-article" :ignore t   :dedicated t :side 'right :size 0.8 :vslot 9 :select t)
 
 (after! mu4e
   (add-hook! 'mu4e-main-mode-hook
