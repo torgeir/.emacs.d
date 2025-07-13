@@ -4365,7 +4365,7 @@ Inspiration:
       (visual-line-mode -1)))
 
   (setq mu4e-maildir "~/.maildir"
-        mu4e-mu-version (if is-mac "1.12.7" "1.12.9")
+        mu4e-mu-version (if is-mac "1.12.7" "1.12.11")
         +mu4e-workspace-name "*email*"
         +mu4e-alert-bell-cmd nil ;; no sounds
         mu4e-split-view 'vertical
