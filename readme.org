@@ -2869,6 +2869,7 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
                                   "slack.com"
                                   "github.com"
                                   "medium.com"
+                                  "anthropic.com"
                                   "openai.com"
                                   "twitter.com"
                                   "googleusercontent.com")
@@ -5332,4 +5333,11 @@ You could also link to note files from specific days, like this to show notes fr
  'git-commit-setup-hook
  (defun t/insert-conventional-commit-msg ()
    (run-with-timer "0sec" nil 't/conventional-commit-msg)))
+#+end_src
+
+** nix
+
+#+begin_src emacs-lisp
+(after! eglot
+  (add-to-list 'eglot-server-programs '(nix-mode . ("nixd"))))
 #+end_src
