@@ -4590,7 +4590,7 @@ account default: gmail
  Far :gmail-remote:
  Near :gmail-local:
  Patterns INBOX
- MaxMessages 10
+ MaxMessages 50
  Sync PullNew Flags
 
  # junk =========================
@@ -4618,7 +4618,7 @@ account default: gmail
  Far :junk-remote:
  Near :junk-local:
  Patterns INBOX
- MaxMessages 10
+ MaxMessages 50
  Sync PullNew Flags
  ")
    'utf-8 (t/user-file ".mbsyncrc")))
