@@ -2869,6 +2869,7 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
                                   "slack.com"
                                   "github.com"
                                   "medium.com"
+                                  "claude.ai"
                                   "anthropic.com"
                                   "openai.com"
                                   "twitter.com"
