@@ -805,7 +805,7 @@ Zoom to the previewed org subtree when jumping between headings with =consult-or
 #+begin_src emacs-lisp
 (setq consult-after-jump-hook '(pulsar-pulse-line))
 (add-hook! 'consult-after-jump-hook :append
-  (defun t/after-consult-jump ()
+  (defun t/after-org-move-jump ()
     ""
     ;; org
     (when (eq major-mode 'org-mode)
@@ -815,6 +815,9 @@ Zoom to the previewed org subtree when jumping between headings with =consult-or
 
     ;; always
     (recenter)))
+
+(advice-add 'org-forward-element :after #'t/after-org-move-jump)
+(advice-add 'org-backward-element :after #'t/after-org-move-jump)
 #+end_src
 
 *** Multiple cursors
