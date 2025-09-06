@@ -2710,7 +2710,7 @@ Default openai language model.
         (chatgpt-shell-prompt-compose nil)
       (chatgpt-shell))
     (comint-next-prompt 1)
-    (run-with-timer "0sec" nil (lambda ()
+    (run-with-timer "1sec" nil (lambda ()
                                  (save-excursion
                                    (when prompt (insert "- " prompt))
                                    (when active-region (insert "\n\n" active-region)))))))
