@@ -66,7 +66,7 @@ I usually navigate this with =c-c c-n= or =c-c c-p=, or =mgg=.
 
 *** Ignore changes in git
 
-#+begin_src sh :tangle no
+#+begin_src sh :tangle no :results none
 git update-index --skip-worktree config.el
 git update-index --skip-worktree custom.el
 #+end_src
