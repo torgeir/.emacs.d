@@ -856,52 +856,18 @@ Prefix arg will force eww."
     (with-current-buffer b
       (funcall fn b))))
 
-(defun t/set-all-window-margins (l r)
-  (dolist (w (window-list))
-    (set-window-margins w l r)))
+(defvar *t-window-margins* '(0 0))
 
-(defvar *t-window-margins* 0)
+(defun t/margin (l &optional r)
+  (interactive (list (or (read-number "Width: " (/ (t/frame-width) 3)))))
+  (setq *t-window-margins* (list l (or r 0))))
 
-(defun t/reset-window-margins (&optional m)
-  "Reset window margins"
-  (interactive)
-  (when m
-    (setq *t-window-margins* m))
-  (t/set-all-window-margins *t-window-margins*
-                            *t-window-margins*))
-
-(defun t/margins-global (&optional m)
-  "Set global window margins M."
-  (interactive (list (string-to-number (read-string "Width: " nil nil "0"))))
-  (let ((m (or m 0)))
-    (setq-default left-margin-width m
-                  right-margin-width m)
-    (t/reset-window-margins m)
-    (add-hook 'window-setup-hook 't/reset-window-margins)
-    (add-hook 'window-configuration-change-hook 't/reset-window-margins)
-    (add-hook '+popup-buffer-mode-hook 't/reset-window-margins)))
-
-(defun t/margins-global-decrease ()
-  "Decrease global window margins."
-  (interactive)
-  (let ((w (- left-margin-width 1)))
-    (when (> w 0)
-      (t/margins-global w))))
-
-(defun t/margins-global-increase ()
-  "Increase global frame margins."
-  (interactive)
-  (let ((w (+ left-margin-width 1)))
-    (when (> w 0)
-      (t/margins-global w))))
-
-(defun t/margins-local (l)
-  "Set buffer local window margin."
-  (interactive (list (string-to-number (read-string "Width: " nil nil "0"))))
-  (let ((l (or l 0)))
-    (setq-default left-margin-width l
-                  right-margin-width l)
-    (set-window-margins (get-buffer-window (current-buffer)) l l)))
+(defun t/update-margins ()
+  "Set left and right margins for the current window."
+  (set-window-margins nil (car *t-window-margins*) (cadr *t-window-margins*)))
+;; Apply to new windows and buffers
+(add-hook 'window-configuration-change-hook 't/update-margins)
+(add-hook 'buffer-list-update-hook 't/update-margins)
 
 (defun t/eww-toggle-images ()
   "Toggle whether images are loaded and reload the current page fro cache."
