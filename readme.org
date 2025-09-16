@@ -1238,6 +1238,7 @@ Determines the style of line numbers in effect. If set to =nil=, line numbers ar
 ***** Rainbow mode in prog modes
 
 #+begin_src emacs-lisp
+(setq show-paren-context-when-offscreen 'overlay)
 (add-hook! '(prog-mode-hook css-mode-hook html-mode-hook) 'rainbow-mode)
 (add-hook! '(prog-mode-hook css-mode-hook html-mode-hook) 'show-paren-mode)
 #+end_src
