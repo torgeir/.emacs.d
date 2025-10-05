@@ -982,6 +982,17 @@ Ignore some extra folders from projectile
 
 *** Workspaces
 
+Prompt for project to launch dired in after new workspace
+
+#+begin_src emacs-lisp
+(defun t/after-workspace-new (&rest _args)
+  "Call t/projectile-dired after creating a new workspace."
+  (run-with-timer 0.1 nil #'t/projectile-dired))
+(advice-add '+workspace-new :after #'t/after-workspace-new)
+#+end_src
+
+Improved switching
+
 #+begin_src emacs-lisp
 (defun t/+workspace/switch-to (&optional &rest args)
   "Custom switch-to workspace, that puts the last visited one first, so its just
