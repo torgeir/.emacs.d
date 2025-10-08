@@ -3876,8 +3876,7 @@ Extend leader map with ~gn~ and ~gN~, for navigating hunks, the g] and g[ bindin
  (:prefix-map
   ("g" . "git")
   (:when (modulep! :ui vc-gutter)
-    :desc "Stage hunk"            "s" (cmd! (let ((git-gutter:ask-p nil))
-                                              (git-gutter:stage-hunk)))
+    :desc "Stage hunk"            "s" (cmd! (call-interactively '+vc-gutter/stage-hunk))
     :desc "Jump to next hunk"     "n" (cmd! (call-interactively '+vc-gutter/next-hunk)
                                             (call-interactively 'evil-scroll-line-to-center))
     :desc "Jump to previous hunk" "N" (cmd! (call-interactively '+vc-gutter/previous-hunk)
