@@ -265,19 +265,6 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
 
 ** Editor
 
-*** Minibuffers
-
-Some commands are useful from within the minibuffer. This needs =enable-recursive-minibuffers=, see below.
-
-#+begin_src emacs-lisp
-(after! vertico
-  (map! :map (vertico-map
-              minibuffer-local-map
-              read--expression-map)
-        :g "C-k" 'kill-line
-        :g "M-SPC" 'doom/leader))
-#+end_src
-
 *** Recursive minibuffers
 
 When you change your mind and need to do something first, after you already started a command that opens the minibuffer. Cancel them with ~C-]~.
@@ -552,12 +539,17 @@ Add a mapping to kill buffers like vterm without all the nagging.
 
 *** Vertico
 
+Some commands are useful from within the minibuffer. =M-SPC= needs =enable-recursive-minibuffers=, see above.
+
 ~C-a c-k~ is so engrained in my fingers, I need it everywhere. ~C-a~ seems to work out of the box.
 
 #+begin_src emacs-lisp
 (after! vertico
-  (map! :map vertico-map
-        :g "C-k" 'kill-line))
+  (map! :map (vertico-map
+              minibuffer-local-map
+              read--expression-map)
+        :g "C-k" 'kill-line
+        :g "M-SPC" 'doom/leader))
 #+end_src
 
 Exclude stuff from ~+default/search-project~ by placing excludes in [[file:~/.rgignore][~/.rgignore]]
