@@ -3564,6 +3564,16 @@ Keep evil insert mode cursor after shell commands have run.
 (advice-add #'vterm--delayed-redraw :after (lambda (&rest args) (evil-refresh-cursor evil-state)))
 #+end_src
 
+**** Vterm buffers are real
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-real-buffer-functions
+  (defun +vterm-buffer-p (buf)
+    (with-current-buffer buf
+      (and (not (+popup-buffer-p))
+           (eq major-mode 'vterm-mode)))))
+#+end_src
+
 **** Color black
 
 The black in the terminal, e.g. when prefixing commands with a =#=, is a little to similar to my theme background. Brighten it slightly.
