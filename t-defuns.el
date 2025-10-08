@@ -34,12 +34,6 @@
                                                       event
                                                       (split-string res "\r?\n")))))))))))
 
-(defun t/evil-ex-define-cmd-local (cmd function)
-  "Locally binds the function FUNCTION to the command CMD."
-  (unless (local-variable-p 'evil-ex-commands)
-    (setq-local evil-ex-commands (copy-alist evil-ex-commands)))
-  (evil-ex-define-cmd cmd function))
-
 (defun t/css-kill-value ()
   "kills the attribute of a css property."
   (interactive)
@@ -65,52 +59,6 @@
     (if (featurep 'apheleia)
         (apheleia-format-buffer 'prettier-json)
       (shell-command-on-region (mark) (point) "python -m json.tool" (buffer-name) t))))
-
-(defun t/build-tags ()
-  "Build ctags file for projectile project, call load-tags when done.
-
-Effectively runs this for the current git project, e.g:
-
-ctags -e -R --options=~/.emacs.d/ctags -f ~/.emacs.d/TAGS ~/.emacs.d/
-
-The same can be done for the current folder only to place a TAGS file in it:
-
-ctags -e -R .
-
-Remember to build Emacs --without-ctags and use the one from `brew' instead,
-it's the one with the correct options needed to generate ctags that Emacs
-understands."
-  (interactive)
-  (message "building project tags..")
-  (lexical-let* ; so lambdas create closures
-   (;; (ctags (expand-file-name "~/.emacs.d/ctags"))
-    (root (projectile-project-root))
-    (tags (shell-quote-argument (concat root "TAGS")))
-    (process (start-process-shell-command "build ctags asynchronously"
-                                          "*ctags async*"
-                                          (concat
-                                           "ctags -e -R"          ; recurse
-                                           " --options=" ctags ; use global config
-                                           " -f " tags " "     ; put it in project/TAGS
-                                           " ."                   ; in the current directory
-                                           ))))
-   (set-process-sentinel process (lambda (process event)
-                                   (t/load-tags tags)))))
-
-(defun t/load-tags (tags)
-  "Loads project tags into tag table."
-  (message "loading project tags..")
-  (visit-tags-table tags)
-  (message "project tags loaded"))
-
-(defun t/find-tag-at-point ()
-  "Go to tag at point, builds and/or load project TAGS file first."
-  (interactive)
-  (let* ((root (projectile-project-root))
-         (tags (shell-quote-argument (concat root "TAGS"))))
-    (if (file-exists-p tags) (t/load-tags tags) (t/build-tags))
-    (when (find-tag-default)
-      (etags-select-find-tag-at-point))))
 
 (defun t/copy-to-clipboard (text &optional push)
   "Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses builtin pbcopy."
@@ -781,6 +729,9 @@ Prefix arg will force eww."
      (format "%s/pulls"
              (plist-get (browse-at-remote--get-url-from-remote url) :url)))))
 
+;; help projectile autoload for the following functions
+(autoload 'projectile-load-known-projects "projectile" "Load known projects" nil)
+
 (defun t/projectile-dired ()
   (interactive)
   (let ((projects (projectile-load-known-projects)))
@@ -794,8 +745,6 @@ Prefix arg will force eww."
 (defun t/projectile-magit-status ()
   (interactive)
   (let ((projects (projectile-load-known-projects)))
-    ;; TODO
-    ;; (autoload-do-load 'my-function 'my-file nil t)
     (if projects
         (projectile-completing-read
          "magit status in project: "
@@ -874,15 +823,6 @@ Prefix arg will force eww."
   (interactive)
   (eww-toggle-images)
   (message "Images are now %s" (if shr-inhibit-images "off" "on")))
-
-(defun t/last-used-window-buffer ()
-  "Switch to the window that displays the most recently selected buffer."
-  (interactive)
-  (let* ((buffers (delq (current-buffer) (buffer-list (selected-frame))))
-         (windows (delq (selected-window) (delq nil (mapcar #'get-buffer-window buffers)))))
-    (if windows
-        (select-window (car windows))
-      (message "no suitable window to switch to"))))
 
 (defun t/word-at-point ()
   "Return word under cursor."
