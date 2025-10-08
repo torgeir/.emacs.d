@@ -2691,13 +2691,12 @@ Default openai language model.
 (set-popup-rule! "^\\*claude llm"
   :size 0.45
   :side 'right
+  :ttl nil
   :quit nil
   :dedicated t
   :hook (lambda ()
           (setq-local comint-scroll-to-bottom-on-output nil)
-          (setq-local comint-move-point-for-output nil)
-          ;;(set-window-dedicated-p (selected-window) t)
-))
+          (setq-local comint-move-point-for-output nil)))
 #+end_src
 
 **** Shortcuts to pop open prompt with often used dialogs
