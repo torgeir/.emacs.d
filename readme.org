@@ -2704,9 +2704,10 @@ Default openai language model.
 
 #+begin_src emacs-lisp
 (use-package! chatgpt-shell
+  :config
+  (setq chatgpt-shell-system-prompt "KEEP IT BRIEF, DONT MAKE STUFF UP, SINGLE EXAMPLES ONLY")
   :init
   (setq chatgpt-shell-model-version "claude-sonnet-4-20250514"
-        chatgpt-shell-system-prompt "KEEP IT BRIEF, SINGLE EXAMPLES ONLY"
         chatgpt-shell-anthropic-key
         (lambda ()
           (auth-source-pick-first-password :host "anthropic.com"))
