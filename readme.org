@@ -1348,12 +1348,7 @@ If there is no window in the direction you move, send the keypress for the direc
 
 *** Popups
 
-Clean up popup definitions
-
-#+begin_src emacs-lisp :tangle no
-(setq display-buffer-alist
-      (assoc-delete-all "^\\*claude llm" display-buffer-alist))
-#+end_src
+Clean up popup definitions with =(+popup-cleanup-rules-h)=
 
 *** Messages
 
