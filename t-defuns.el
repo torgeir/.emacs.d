@@ -815,7 +815,7 @@ Prefix arg will force eww."
 
 (defun t/ip ()
   (interactive)
-  (let ((ip (-> "dig +short myip.opendns.com @resolver1.opendns.com" shell-command-to-string s-trim)))
+  (let ((ip (-> "curl -s 'https://duckduckgo.com/?q=whats+my+ip&ia=answer' | grep -oE 'Your IP address is [^ ]+ ' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+'" shell-command-to-string s-trim)))
     (message ip)
     (kill-new ip)))
 
