@@ -712,22 +712,8 @@ Prefix arg will force eww."
                                  (concat cmd " " (magit-convert-filename-for-git dir))
                                  (lambda (&optional &rest args)
                                    (dired dir)
-                                   (message msg))))))))
-
-(defun t/visit-git-link-pulls ()
-  "Navigate to /pulls for the current git repo."
-  (interactive)
-  (let* ((origin (magit-get
-                  "remote"
-                  (or (magit-get-remote "main")
-                      (magit-get-remote "master")) "url"))
-         (url (replace-regexp-in-string
-               ".+\\.com:\\(.+\\)\\.git"
-               "\\1"
-               origin)))
-    (browse-url
-     (format "%s/pulls"
-             (plist-get (browse-at-remote--get-url-from-remote url) :url)))))
+                                   (message msg)
+                                   (revert-buffer))))))))
 
 ;; help projectile autoload for the following functions
 (autoload 'projectile-load-known-projects "projectile" "Load known projects" nil)
@@ -783,16 +769,15 @@ Prefix arg will force eww."
 (defun t/visit-git-link-pulls ()
   "Navigate to /pulls for the current git repo."
   (interactive)
-  (let* ((origin (magit-get
-                  "remote"
-                  (or (magit-get-remote "main")
-                      (magit-get-remote "master")) "url"))
-         (url (replace-regexp-in-string
-               ".+\\.com:\\(.+\\)\\.git"
-               "\\1"
-               origin)))
-    (browse-url
-     (format "https://www.github.com/%s/pulls" url))))
+  (require 'browse-at-remote)
+  (let* ((origin (magit-get "remote" (or (magit-get-remote "main")
+                                         (magit-get-remote "master")) "url"))
+         (url (replace-regexp-in-string ".+\\.com:\\(.+\\)\\.git" "\\1" origin)))
+    (let* ((burl (browse-at-remote--get-url-from-remote url))
+           (found (not (plist-get burl :unresolved-host))))
+      (browse-url (if found
+                      (format "%s/pulls" (plist-get burl :url))
+                    (format "https://github.com/%s/pulls" url))))))
 
 (defun t/in-all-windows (fn)
   (interactive)
