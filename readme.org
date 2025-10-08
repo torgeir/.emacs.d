@@ -732,14 +732,14 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
 #+begin_src emacs-lisp :results silent
 (defvar t-sidebar-buffer-prefix ":")
 (set-popup-rule! (concat "^" t-sidebar-buffer-prefix)
+  :ttl nil
+  :quit nil
+  :select nil
   :side 'left
   :width (lambda (window)
            (let ((w (/ (frame-width) 3)))
              (with-selected-window window
-               (window-resize window (- w (window-width)) t))))
-  :ttl nil
-  :quit nil
-  :select nil)
+               (window-resize window (- w (window-width)) t)))))
 
 (defun t-toggle-sidebar ()
   (interactive)
@@ -757,7 +757,8 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
       (progn
         (pop-to-buffer sidebar-name)
         (set-window-dedicated-p (selected-window) t)
-        (set-window-parameter (selected-window) 'no-delete-other-windows t)))))
+        (set-window-parameter (selected-window) 'no-delete-other-windows t)
+        (hide-mode-line-mode -1)))))
 #+end_src
 
 ***** How to clean up display buffer alist entries
