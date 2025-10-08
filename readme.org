@@ -1970,6 +1970,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
                                                          (rotate-frame-anticlockwise)
                                                        (rotate-frame-clockwise)))
 
+ :leader :desc "Projectile rg"       "p s" #'t/projectile-rg
  :leader :desc "Projectile dired"    "p d" #'t/projectile-dired
  :leader :desc "Projectile magit"    "p g" #'t/projectile-magit-status
  :leader :desc "Projectile pulls"    "p P" #'t/projectile-visit-git-link-pulls
