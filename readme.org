@@ -2025,6 +2025,16 @@ Motion keys for info mode.
 #+END_SRC
 
 ** Org
+*** Org src edit buffers are real
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-real-buffer-functions
+  (defun +org-src-buffer-p (buf)
+    (with-current-buffer buf
+      (and (boundp 'org-src-mode)
+           org-src-mode))))
+#+end_src
+
 *** Org settings
 
 #+begin_src emacs-lisp
