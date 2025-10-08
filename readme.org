@@ -974,7 +974,7 @@ Prompt for project to launch dired in after new workspace
 #+begin_src emacs-lisp
 (defun t/after-workspace-new (&rest _args)
   "Call t/projectile-dired after creating a new workspace."
-  (run-with-timer 0.1 nil #'t/projectile-dired))
+  (run-with-timer 0.1 nil (cmd! (call-interactively 'doom/find-file-in-other-project))))
 (advice-add '+workspace-new :after #'t/after-workspace-new)
 #+end_src
 
