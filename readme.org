@@ -2119,6 +2119,7 @@ Motion keys for info mode.
 
         ;; bring back deleting characters from insert in org mode
         :i "C-d" nil
+        :i "C-k" nil
 
         :map org-mode-map
         :ni "C-c C-p" #'t/open-prev-heading
