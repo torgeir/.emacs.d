@@ -2297,7 +2297,6 @@ Save from agenda
       "s-s" #'org-save-all-org-buffers)
 #+end_src
 
-
 *** Keybindings
 
 Extensions of some of the [[file:~/.config/emacs/modules/lang/org/config.el::(map! :map org-mode-map][Doom org mode map bindings]].
