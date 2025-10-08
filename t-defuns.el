@@ -790,15 +790,23 @@ Prefix arg will force eww."
     (with-current-buffer b
       (funcall fn b))))
 
-(defvar *t-window-margins* '(0 0))
+(defvar *t-window-margins* '(nil nil))
 
 (defun t/margin (l &optional r)
-  (interactive (list (or (read-number "Width: " (/ (t/frame-width) 3)))))
-  (setq *t-window-margins* (list l (or r 0))))
+  (interactive (list (read-string "Width: ")))
+  (if (string= l "nil")
+      (setq *t-window-margins* (list nil nil))
+    (let* ((l (string-to-number l))
+           (r (and r (string-to-number r))))
+      (setq *t-window-margins* (list l r)))))
 
 (defun t/update-margins ()
   "Set left and right margins for the current window."
-  (set-window-margins nil (car *t-window-margins*) (cadr *t-window-margins*)))
+  (when (not (and (boundp 'olivetti-mode) olivetti-mode))
+    (let ((l (car *t-window-margins*))
+          (r (cadr *t-window-margins*)))
+      (set-window-margins nil l r))))
+
 ;; Apply to new windows and buffers
 (add-hook 'window-configuration-change-hook 't/update-margins)
 (add-hook 'buffer-list-update-hook 't/update-margins)
