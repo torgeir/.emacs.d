@@ -2622,7 +2622,7 @@ Don't popupize the org code block editor with doom's popup framework, so it open
 (define-key evil-inner-text-objects-map "-" 'evil-org-inner-item)
 #+END_SRC
 
-*** Pomodoro                                       :emacs:
+*** Pomodoro
 
 #+begin_src emacs-lisp
 (after! org
