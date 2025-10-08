@@ -2744,6 +2744,7 @@ Default openai language model.
 (use-package! chatgpt-shell
   :init
   (setq chatgpt-shell-model-version "claude-sonnet-4-20250514"
+        chatgpt-shell-system-prompt "KEEP IT BRIEF, SINGLE EXAMPLES ONLY"
         chatgpt-shell-anthropic-key
         (lambda ()
           (auth-source-pick-first-password :host "anthropic.com"))
