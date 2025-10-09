@@ -4863,6 +4863,8 @@ Check if configuration affecting sway is changed, if so reload it
 :header-args:emacs-lisp: :lexical t :results silent
 :END:
 
+*** Real buffers
+
 ~(doom-mark-buffer-as-real-h)~ can make scratch buffer navigable with ~s-j/k~
 
 *** emms mpd
