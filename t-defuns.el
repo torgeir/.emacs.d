@@ -790,15 +790,38 @@ Prefix arg will force eww."
     (with-current-buffer b
       (funcall fn b))))
 
+(defun t/centered ()
+  (interactive)
+  (if (and (boundp 'fringe-mode) fringe-mode)
+      (set-fringe-mode nil)
+    (set-fringe-mode
+     (/ (- (frame-pixel-width)
+           (* 110 (frame-char-width)))
+        2))))
+
 (defvar *t-window-margins* '(nil nil))
 
 (defun t/margin (l &optional r)
   (interactive (list (read-string "Width: ")))
-  (if (string= l "nil")
+  (cond
+   ((string= l "")
+    (t/margin (if (null (car *t-window-margins*)) "80" nil)))
+   ((string= l "nil")
+    (progn
       (setq *t-window-margins* (list nil nil))
-    (let* ((l (string-to-number l))
-           (r (and r (string-to-number r))))
-      (setq *t-window-margins* (list l r)))))
+      (remove-hook 'window-configuration-change-hook 't/update-margins t)
+      (remove-hook 'buffer-list-update-hook 't/update-margins t)))
+   (t 
+    (let* ((values (split-string l))
+           (l-num (let ((first (nth 0 values)))
+                    (if (string= first "nil") nil (string-to-number first))))
+           (r-num (if (> (length values) 1)
+                      (let ((second (nth 1 values)))
+                        (if (string= second "nil") nil (string-to-number second)))
+                    r)))
+      (setq *t-window-margins* (list l-num r-num))
+      (add-hook 'window-configuration-change-hook 't/update-margins nil t)
+      (add-hook 'buffer-list-update-hook 't/update-margins nil t)))))
 
 (defun t/update-margins ()
   "Set left and right margins for the current window."
@@ -807,9 +830,9 @@ Prefix arg will force eww."
           (r (cadr *t-window-margins*)))
       (set-window-margins nil l r))))
 
-;; Apply to new windows and buffers
-(add-hook 'window-configuration-change-hook 't/update-margins)
-(add-hook 'buffer-list-update-hook 't/update-margins)
+;; Apply to new windows and buffers globally
+;; (add-hook 'window-configuration-change-hook 't/update-margins)
+;; (add-hook 'buffer-list-update-hook 't/update-margins)
 
 (defun t/eww-toggle-images ()
   "Toggle whether images are loaded and reload the current page fro cache."
