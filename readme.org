@@ -206,6 +206,21 @@ gpg --edit-key 922E681804CA8D82F1FAFCB177836712DAEA8B95
 # gpg> 5
 #+end_src
 
+Extend trust
+
+#+begin_src sh :noeval :tangle no
+gpg --list-keys
+gpg --edit-key 922E681804CA8D82F1FAFCB177836712DAEA8B95
+expire
+1y
+save
+key 1
+# note the star on the subkey
+expire
+1y
+save
+# gpg
+
 ** Org file location setup
 
 #+begin_src emacs-lisp
