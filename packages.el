@@ -31,3 +31,6 @@
 (package! org-alert)
 (package! spacious-padding)
 (package! mu4e-alert)
+
+;; TODO master is missing?
+(package! iedit :recipe (:branch "main"))

@@ -122,6 +122,9 @@ This is tangled to ~packages.el~ on save.
 (package! org-alert)
 (package! spacious-padding)
 (package! mu4e-alert)
+
+;; TODO master is missing?
+(package! iedit :recipe (:branch "main"))
 #+end_src
 
 *** Try
@@ -5330,4 +5333,13 @@ You could also link to note files from specific days, like this to show notes fr
 #+begin_src emacs-lisp
 (after! eglot
   (add-to-list 'eglot-server-programs '(nix-mode . ("nixd"))))
+#+end_src
+
+** TODO dired subtree toggle
+
+Fix function now gone?
+
+#+begin_src emacs-lisp
+(advice-remove 'dired-subtree-toggle 'nerd-icons-dired--refresh-advice)
+(advice-add 'dired-subtree-toggle :after 'nerd-icons-dired--refresh)
 #+end_src
