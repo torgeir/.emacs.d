@@ -106,9 +106,7 @@ This is tangled to ~packages.el~ on save.
 (package! highlight-symbol)
 (package! olivetti)
 (package! calendar-norway)
-(package! spray)
 (package! dired-subtree)
-(package! org-ai :recipe (:host github :repo "rksm/org-ai"))
 (package! mastodon :recipe (:host codeberg :repo "martianh/mastodon.el"))
 (package! hnreader)
 (package! org-appear :recipe (:host github :repo "awth13/org-appear"))
@@ -1917,7 +1915,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
  :leader :desc "Toggle transparency"   "t T" #'t/transparency
- :leader :desc "Reading"               "r" #'t/start-spray-micro-state
+ :leader :desc "Reading"               "r" #'t/start-micro-state
  :leader :desc "Show whitespace"       "t w" #'whitespace-mode
  :leader :desc "Toggle writeroom"      "t z" #'global-writeroom-mode
 
@@ -2161,14 +2159,6 @@ Use os support if it exists.
                                         (s-equals? "*ChatGPT*" bn))
                                 (olivetti-mode 1)
                                 (t/variable-pitch-mode 1)))))
-(add-hook 'org-ai-mode-hook (defun t/org-ai-mode-hook ()
-                              (interactive)
-                              (advice-add
-                               'org-ctrl-c-ctrl-c
-                               :after
-                               (defun t/org-ai-ctrl-c (&optional &rest any)
-                                 (when (s-equals? "*ChatGPT*" (buffer-name))
-                                   (end-of-buffer))))))
 #+end_src
 
 *** Async source code blocks
@@ -2630,19 +2620,6 @@ Default openai language model.
 (setq-default *t-gpt-models* "gpt-4o-mini")
 #+end_src
 
-**** org-ai: ChatGPT in org mode
-
-#+begin_src emacs-lisp
-(use-package! org-ai
-  :hook (org-mode . org-ai-mode)
-  :init
-  (setq org-ai-jump-to-end-of-block nil
-        org-ai-auto-fill t
-        org-ai-default-chat-system-prompt "You are a helpful, expert programming assistant, that lives inside of emacs. Respond in a way that is useful for a developer. Keep responses brief, don't extensively explain why something works, focus on how.")
-  :config
-  (add-to-list 'org-ai-chat-models *t-gpt-models* t)
-  (setq-default org-ai-default-chat-model *t-gpt-models*))
-#+end_src
 
 **** Popup on the side
 
@@ -2704,7 +2681,6 @@ Default openai language model.
           :desc "explain" "e" (cmd! (t/chatgpt-prompt "What does this code do?"))
           :desc "gen tests" "t" (cmd! (t/chatgpt-prompt "Write a test for this code"))
           :desc "optimize" "o" (cmd! (t/chatgpt-prompt "Refactor this code for speed and tell me what you changed and why it's faster"))
-          :desc "refactor" "r" 'org-ai-refactor-code
           :desc "summarize" "s" (cmd! (t/chatgpt-prompt "Summarize this text:"))))))
 #+end_src
 
@@ -2764,19 +2740,7 @@ Recenter promt at screen top after submitting
 I never really got into this.
 
 #+begin_src emacs-lisp
-(defun t/spray-micro-state (&optional after)
-  (t/micro-state-in-mode
-   'spray-mode
-   after
-   "s" 'spray-slower
-   "f" 'spray-faster
-   "SPC" 'spray-start/stop
-   "b" 'spray-backward-word
-   "w" 'spray-forward-word
-   "<left>" 'spray-backward-word
-   "<right>" 'spray-forward-word))
-
-(defun t/start-spray-micro-state (&optional on-exit)
+(defun t/start-micro-state (&optional on-exit)
   (interactive)
   (let ((map (make-sparse-keymap)))
     (bind-key (kbd "<wheel-right>") 'mwheel-scroll map)
@@ -2799,10 +2763,6 @@ I never really got into this.
                        (cond
                         ((eq major-mode 'elfeed-show-mode) (elfeed-show-prev))
                         ((eq major-mode 'mu4e-view-mode) (mu4e-view-headers-prev)))))) map)
-    (bind-key "s" (cmd!
-                   (when (eq major-mode 'elfeed-show-mode)
-                     (let ((shr-inhibit-images t)) (elfeed-show-refresh)))
-                   (funcall (t/spray-micro-state))) map)
     (bind-key "S" (cmd! (call-interactively 'ellama-summarize)) map)
     (bind-key "r" (cmd! (call-interactively 'eww-readable)) map)
     (bind-key "i" (cmd!
@@ -2816,19 +2776,7 @@ I never really got into this.
     (bind-key "o" (cmd! (call-interactively 'olivetti-mode)) map)
     (set-temporary-overlay-map map t on-exit))
   (when (not (minibuffer-window-active-p (selected-window)))
-    (message "(n)ext page, (p)rev page, (i)mages, (r)eadability, (s)pray mode, (S)ummarize, (o)livetti, (v)ariable pitch")))
-
-(map! :leader :desc "Toggle spray" "t s" (t/spray-micro-state))
-
-(after! spray
-  (setq spray-wpm 720
-        spray-height nil)
-  (add-hook 'spray-mode-hook #'t/spray-mode-hook)
-  (defun t/spray-mode-hook ()
-    (setq-local spray-margin-top (truncate (/ (window-height) 2.5)))
-    (setq-local spray-margin-left (truncate (/ (window-width) 3.5)))
-    (set-face-foreground 'spray-accent-face
-                         (face-foreground 'font-lock-keyword-face))))
+    (message "(n)ext page, (p)rev page, (i)mages, (r)eadability, (S)ummarize, (o)livetti, (v)ariable pitch")))
 #+end_src
 
 *** Eww
@@ -2860,7 +2808,7 @@ This makes ~RET~ on a url open ~eww~. You can still open an external browser wit
             (browse-url-default-browser url))
            ((and host (or (s-contains-p "youtube.com" host) (s-contains-p "youtu.be" host)))
             (elfeed-tube-fetch url)
-            (run-at-time "0 sec" nil 't/start-spray-micro-state))
+            (run-at-time "0 sec" nil 't/start-micro-state))
            (t (eww-browse-url url))))))
 #+end_src
 
@@ -2893,7 +2841,7 @@ Enter readable mode automatically, normally available from pressing ~R~ in eww m
 (add-hook 'eww-after-render-hook (cmd! (call-interactively 'eww-readable)))
 (add-hook 'eww-after-render-hook 'olivetti-mode)
 (add-hook 'eww-after-render-hook 't/variable-pitch-mode)
-(add-hook 'eww-after-render-hook 't/start-spray-micro-state)
+(add-hook 'eww-after-render-hook 't/start-micro-state)
 #+end_src
 
 Eww functions that directly enter the eww readability mode after loading a given url
@@ -2949,8 +2897,7 @@ Some useful =eww= keybindings
      "R" 'eww-readable
      "M-p" 'backward-paragraph
      "M-n" 'forward-paragraph
-     "s-l" 'eww
-     "s" (t/spray-micro-state))))
+     "s-l" 'eww)))
 (add-hook 'eww-mode-hook #'t/eww-hook)
 #+END_SRC
 
@@ -3013,8 +2960,7 @@ A custom function to fetch a clean view of the current news from nrk.no
                           "p" (cmd! nil
                                     (evil-search "^-" nil t)
                                     (evil-ex-nohighlight)
-                                    (recenter nil))
-                          "s" (t/spray-micro-state))))
+                                    (recenter nil)))))
 #+END_SRC
 
 ** Languages
@@ -4103,7 +4049,7 @@ Make reading smoother. Turn on =olivetti-mode= to center content. Wrap lines. Bi
             (defun t/hook-elfeed-show-mode-hook ()
               (t/variable-pitch-mode 1)
               (olivetti-mode 1)
-              (t/start-spray-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
+              (t/start-micro-state (lambda () (equal major-mode 'elfeed-show-mode))))))
 #+end_src
 
 **** xkcd
@@ -4460,7 +4406,7 @@ Get rid of consecutive newlines and clean the buffer up. [[https://github.com/do
       (with-current-buffer "*mu4e-article*"
         (read-only-mode -1)
         (t/remove-consecutive-newlines)
-        (t/start-spray-micro-state)
+        (t/start-micro-state)
         (olivetti-mode)
         (read-only-mode 1)))))
 #+end_src
