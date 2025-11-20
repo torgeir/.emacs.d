@@ -1337,10 +1337,10 @@ Prefix arg will force eww."
     (while (and (not (file-exists-p (expand-file-name file current-dir)))
                 (not (equal current-dir project-root))
                 (not (equal current-dir home-dir)))
-      (setq current-dir (file-name-directory (directory-file-name current-dir))))
-    (if (file-exists-p (expand-file-name file current-dir))
-        (expand-file-name file current-dir)
-      nil)))
+      (((setq current-dir (file-name-directory (directory-file-name current-dir))))
+       (if (file-exists-p (expand-file-name file current-dir))
+           (expand-file-name file current-dir)
+         nil)))))
 
 (provide 't-defuns)
 ;;; t-defuns.el ends here
