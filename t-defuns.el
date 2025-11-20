@@ -805,36 +805,18 @@ Prefix arg will force eww."
 
 (defun t/margin (l &optional r)
   (interactive (list (read-string "Width: ")))
-  (cond
-   ((string= l "")
-    (t/margin (if (null (car *t-window-margins*)) "80" nil)))
-   ((string= l "nil")
-    (progn
-      (setq *t-window-margins* (list nil nil))
-      (remove-hook 'window-configuration-change-hook 't/update-margins t)
-      (remove-hook 'buffer-list-update-hook 't/update-margins t)))
-   (t 
-    (let* ((values (split-string l))
-           (l-num (let ((first (nth 0 values)))
-                    (if (string= first "nil") nil (string-to-number first))))
-           (r-num (if (> (length values) 1)
-                      (let ((second (nth 1 values)))
-                        (if (string= second "nil") nil (string-to-number second)))
-                    r)))
-      (setq *t-window-margins* (list l-num r-num))
-      (add-hook 'window-configuration-change-hook 't/update-margins nil t)
-      (add-hook 'buffer-list-update-hook 't/update-margins nil t)))))
+  (let ((l (if (string= "nil" l)
+               nil
+             (string-to-number l))))
+    (setq *t-window-margins* (list l l)))
+  
+  ;; Apply to new windows and buffers
+  (add-hook 'window-configuration-change-hook 't/update-margins nil t)
+  (add-hook 'buffer-list-update-hook 't/update-margins nil t))
 
 (defun t/update-margins ()
   "Set left and right margins for the current window."
-  (when (not (and (boundp 'olivetti-mode) olivetti-mode))
-    (let ((l (car *t-window-margins*))
-          (r (cadr *t-window-margins*)))
-      (set-window-margins nil l r))))
-
-;; Apply to new windows and buffers globally
-;; (add-hook 'window-configuration-change-hook 't/update-margins)
-;; (add-hook 'buffer-list-update-hook 't/update-margins)
+  (set-window-margins nil (car *t-window-margins*) (cadr *t-window-margins*)))
 
 (defun t/eww-toggle-images ()
   "Toggle whether images are loaded and reload the current page fro cache."
