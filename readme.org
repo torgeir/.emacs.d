@@ -2725,9 +2725,10 @@ Default openai language model.
 
 #+begin_src emacs-lisp
 (use-package! chatgpt-shell
-  :config
-  (setq chatgpt-shell-system-prompt "KEEP IT BRIEF, DONT MAKE STUFF UP, SINGLE EXAMPLES ONLY")
   :init
+  (add-hook 'chatgpt-shell-mode-hook
+            (defun t/gpt-shell-hook ()
+              (setq chatgpt-shell-system-prompt "KEEP IT BRIEF, DONT MAKE STUFF UP, NO LISTS, SINGLE EXAMPLES ONLY")))
   (setq chatgpt-shell-model-version "claude-sonnet-4-20250514"
         chatgpt-shell-anthropic-key
         (lambda ()
