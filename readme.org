@@ -4650,6 +4650,12 @@ and add it to the load path of emacs manually, something like this
 Useful elisp I committed, or decided to work on.
 
 #+begin_src emacs-lisp
+(use-package! vrl-mode
+  :commands vrl-mode
+  :load-path (lambda () (t/user-emacs-file "site-lisp/vrl-mode/")))
+#+end_src
+
+#+begin_src emacs-lisp
 (after! org
   (use-package! ox-gfm
     :commands org-export-dispatch
