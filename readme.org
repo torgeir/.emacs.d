@@ -963,6 +963,7 @@ Ignore some extra folders from projectile
 
 #+begin_src emacs-lisp
 (after! projectile
+  (setq projectile-project-search-path `((,(t/user-file "Projects/") . 1)))
   (add-to-list 'projectile-globally-ignored-directories "^build$")
   (add-to-list 'projectile-globally-ignored-directories "^target$")
   (add-to-list 'projectile-globally-ignored-directories "^\\.log$"))
