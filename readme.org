@@ -3155,7 +3155,13 @@ This does not work well with eglot
 (after! eglot
   ;;(-find (lambda (c) (eq (car c) 'kotlin-mode)) eglot-server-programs)
   (setq eglot-server-programs
-        (cl-remove-if (lambda (c) (eq (car c) 'kotlin-mode)) eglot-server-programs)))
+        (cl-remove-if (lambda (el) (and
+                                    (listp (car el))
+                                    (listp (caar el))
+                                    (equal (caaar el) 'kotlin-mode)))
+                      eglot-server-programs))
+  ;; https://github.com/Kotlin/kotlin-lsp/blob/main/scripts/lsp-kotlin-emacs-eglot.el
+  (add-to-list 'eglot-server-programs '((kotlin-mode kotlin-ts-mode) . ("kotlin-lsp" "--stdio"))))
 #+end_src
 
 *** Python
