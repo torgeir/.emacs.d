@@ -5296,3 +5296,11 @@ Fix function now gone?
 (advice-remove 'dired-subtree-toggle 'nerd-icons-dired--refresh-advice)
 (advice-add 'dired-subtree-toggle :after 'nerd-icons-dired--refresh)
 #+end_src
+
+** printer
+
+#+begin_src emacs-lisp
+(setq printer-name "canonix6500")
+(comment 
+ (lpr-buffer))
+#+end_src
