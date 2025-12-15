@@ -1163,7 +1163,7 @@ Prefix arg will force eww."
 (defun t/dired-locate ()
   "Locate the visited file in dired or t-sidebar."
   (interactive)
-  (let* ((path (s-replace (t/project-root) "" (buffer-file-name)))
+  (let* ((path (s-replace (t/project-root) "" (or (buffer-file-name) "")))
          (path (s-split "/" path))
          (path (remove "" path)))
     (let* ((sidebar (concat ":" (replace-regexp-in-string (expand-file-name "~") "~" (t/project-root)))))
