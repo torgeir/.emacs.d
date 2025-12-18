@@ -677,7 +677,8 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
 
 #+begin_src emacs-lisp
 (after! dired
-  (setq dired-listing-switches "-aBhl  --group-directories-first")
+  (setq dired-listing-switches "-aBhl  --group-directories-first"
+        dired-omit-files "\\`[.]")
   (add-hook 'dired-mode-hook (defun t/dired-truncate-lines ()
                                (interactive)
                                (visual-line-mode -1)
@@ -685,8 +686,7 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
   (add-hook 'dired-mode-hook 'nerd-icons-dired-mode)
   (add-hook 'dired-mode-hook 'dired-subtree-toggle)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-  (add-hook 'dired-mode-hook 'dired-async-mode)
-  )
+  (add-hook 'dired-mode-hook 'dired-async-mode))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -716,6 +716,7 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
                         (call-interactively 'dired-find-file))))
    "C-k" 'dired-kill-subdir
    "<tab>" 't/dired-subtree-tab
+   "C-h" 'dired-omit-mode
    :n "<tab>" 't/dired-subtree-tab
    "<backspace>" 'dired-kill-subdir
    "M-<down>" (cmd! (dired-find-alternate-file))
