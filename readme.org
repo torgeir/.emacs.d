@@ -2126,8 +2126,6 @@ Motion keys for info mode.
         org-special-ctrl-a/e t       ; don't move past ellipsis on c-e
         org-id-link-to-org-use-id t  ; create link if it doesnt exist, or when org-capture -ing (needs %a in template)
         org-attach-directory (t/user-dropbox-folder "/org/attachments")
-        org-attach-id-to-path-function-list '(org-attach-id-ts-folder-format ;; saner attachment folder structure
-                                              org-attach-id-uuid-folder-format)
         org-goto-interface 'outline-path-completion ;; more useful c-c c-j
         org-id-method 'ts
         org-agenda-skip-scheduled-if-done t
