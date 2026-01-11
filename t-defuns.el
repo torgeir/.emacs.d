@@ -199,11 +199,13 @@ hide it (on mac)."
 
 (defun t/split-window-right-and-move-there-dammit ()
   (interactive)
+  (if centered-window-mode (centered-window-mode -1))
   (split-window-right)
   (windmove-right))
 
 (defun t/split-window-below-and-move-there-dammit ()
   (interactive)
+  (if centered-window-mode (centered-window-mode -1))
   (split-window-below)
   (windmove-down))
 

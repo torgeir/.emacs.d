@@ -89,6 +89,9 @@ The madness that is dynamic is too much for anyone, really.
 This is tangled to ~packages.el~ on save.
 
 #+begin_src emacs-lisp :tangle packages.el
+(package! centered-window-mode
+  :pin "701f56cd1d2b68352d29914f05ca1b0037bb2595"
+  :recipe (:host github :repo "nullvec/centered-window-mode" :files ("centered-window.el")))
 (package! nerd-icons-dired)
 (package! d2-mode)
 (package! llm)
@@ -1283,6 +1286,13 @@ Show the buffer and the file
 
 *** Windows
 
+**** Center windows when there's only one
+
+#+begin_src emacs-lisp
+(use-package! centered-window-mode
+  :hook ((prog-mode css-mode html-mode org-mode) . centered-window-mode))
+#+end_src
+
 **** Spacious-padding for more space
 
 #+begin_src emacs-lisp
@@ -1926,6 +1936,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Toggle truncate"       "t u" #'toggle-truncate-lines
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
+ :leader :desc "Toggle centered"       "t s" #'centered-window-mode
  :leader :desc "Toggle transparency"   "t T" #'t/transparency
  :leader :desc "Reading"               "r" #'t/start-micro-state
  :leader :desc "Show whitespace"       "t w" #'whitespace-mode

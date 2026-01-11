@@ -1,3 +1,6 @@
+(package! centered-window-mode
+  :pin "701f56cd1d2b68352d29914f05ca1b0037bb2595"
+  :recipe (:host github :repo "nullvec/centered-window-mode" :files ("centered-window.el")))
 (package! nerd-icons-dired)
 (package! d2-mode)
 (package! llm)
