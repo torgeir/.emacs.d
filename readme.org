@@ -1813,6 +1813,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :g "s--" #'doom/decrease-font-size
  :n "C-+" (cmd! (text-scale-increase 1))
  :n "C--" (cmd! (text-scale-decrease 1))
+ :n "C-0" #'doom/reset-font-size
 
  ;; and on linux?
  "s-?" (cmd! (text-scale-increase 1))
