@@ -1912,9 +1912,10 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
                                           "h" 't/music-seek-backward
                                           "l" 't/music-seek-forward
                                           "L" 't/music-next
-                                          "p" 't/music-play-pause
+                                          "s" 't/music-play-pause
+                                          "p" 't/music-playlist
                                           "b" 't/music-browse
-                                          "s" 't/music-stop)
+                                          "x" 't/music-stop)
  :leader :desc "Show home"         "o h" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/home.org.gpg")))
  :leader :desc "Show da"           "o d" #'(lambda () (interactive) (find-file (t/user-dropbox-folder "org/da.org.gpg")))
  :leader :desc "Open Intellij"     "o i" #'t/open-in-intellij
@@ -4898,7 +4899,7 @@ Check if configuration affecting sway is changed, if so reload it
 Then type ~C-ret~ to add something to the playlist.
 
 #+begin_src emacs-lisp :tangle no
-(after! emms
+(after! emms-playlist-mode
   (setq emms-volume-change-amount 10
         emms-volume-change-function 'emms-volume-mpd-change)
   (defun t/music-volume-up     () (interactive) (emms-volume-raise))
@@ -4907,12 +4908,12 @@ Then type ~C-ret~ to add something to the playlist.
   (defun t/music-stop          () (interactive) (emms-stop))
   (defun t/music-seek-backward () (interactive) (emms-seek-backward))
   (defun t/music-seek-forward  () (interactive) (emms-seek-forward))
+  (defun t/music-playlist      () (interactive) (emms-playlist-mode-go))
   (defun t/music-play-pause    () (interactive) (if emms-player-playing-p
                                                     (emms-pause)
                                                   (emms-start)))
   (defun t/music-prev          () (interactive) (emms-previous))
   (defun t/music-next          () (interactive) (emms-next))
-  (defun t/music-browse        () (interactive) (emms-smart-browse)))
 #+end_src
 
 *** copilot.el
