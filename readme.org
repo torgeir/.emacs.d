@@ -356,9 +356,11 @@ On load theme
 Opt-in to emojis instead :rocket:
 
 #+begin_src emacs-lisp
-(add-hook! 'doom-first-buffer-hook
-  (defun t/after-first-buffer-hook ()
-    (global-emojify-mode -1)))
+;;(add-hook! 'doom-first-buffer-hook
+;;  (defun t/after-first-buffer-hook ()
+;;    (global-emojify-mode -1)))
+(after! emojify
+  (global-emojify-mode -1))
 #+end_src
 
 Soft wrap everywhere
