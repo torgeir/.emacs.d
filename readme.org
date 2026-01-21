@@ -4932,7 +4932,7 @@ Check if configuration affecting sway is changed, if so reload it
 Then type ~C-ret~ to add something to the playlist.
 
 #+begin_src emacs-lisp :tangle no
-(after! emms-playlist-mode
+(after! emms-browser
   (setq emms-volume-change-amount 10
         emms-volume-change-function 'emms-volume-mpd-change)
   (defun t/music-volume-up     () (interactive) (emms-volume-raise))
@@ -4946,7 +4946,7 @@ Then type ~C-ret~ to add something to the playlist.
                                                     (emms-pause)
                                                   (emms-start)))
   (defun t/music-prev          () (interactive) (emms-previous))
-  (defun t/music-next          () (interactive) (emms-next))
+  (defun t/music-next          () (interactive) (emms-next)))
 #+end_src
 
 *** copilot.el
