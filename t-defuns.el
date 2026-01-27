@@ -774,7 +774,7 @@ Prefix arg will force eww."
   (require 'browse-at-remote)
   (let* ((origin (magit-get "remote" (or (magit-get-remote "main")
                                          (magit-get-remote "master")) "url"))
-         (url (replace-regexp-in-string ".+\\.com:\\(.+\\)\\.git" "\\1" origin)))
+         (url (replace-regexp-in-string ".+:\\(.+\\)\\.git" "\\1" origin)))
     (let* ((burl (browse-at-remote--get-url-from-remote url))
            (found (not (plist-get burl :unresolved-host))))
       (browse-url (if found
