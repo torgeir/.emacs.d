@@ -755,7 +755,9 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
   :select nil
   :side 'left
   :width (lambda (window)
-           (let ((w (/ (frame-width) 3)))
+           (let ((w (/ (frame-width) 
+                       (cond ((> (frame-width) 250) 4)
+                             (t 3)))))
              (with-selected-window window
                (window-resize window (- w (window-width)) t)))))
 
