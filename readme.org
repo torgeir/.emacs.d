@@ -1429,6 +1429,22 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~ or ~
   (add-hook! 'doom-load-theme-hook :append #'t/setup-avy))
 #+end_src
 
+**** Indent messes up Avy
+
+#+begin_src emacs-lisp
+(advice-add
+ 'evil-avy-goto-line :around
+ (defun t/around-avy (fn)
+   (interactive)
+   (let ((indent-bars-on?))
+     (when indent-bars-mode
+       (setq indent-bars-on? t)
+       (indent-bars-mode -1))
+     (funcall fn)
+     (when indent-bars-on?
+       (indent-bars-mode 1)))))
+#+end_src
+
 *** Smartparens
 
 Use paredit bindings. Make =`'= a pair in emacs lisp mode.
@@ -5348,3 +5364,4 @@ You could also link to note files from specific days, like this to show notes fr
 (comment 
  (lpr-buffer))
 #+end_src
+
