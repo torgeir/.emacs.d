@@ -3626,16 +3626,19 @@ Some keybindings are so engrained I can't live without them.
 
         ;; send c-up c-down for dir stack zsh navigation
         :i "C-<up>" (cmd! (vterm-send-key "<up>" nil nil t))
-        :i "C-<down>" (cmd! (vterm-send-key "<down>" nil nil t))
-        :i "s-<up>" (cmd! (vterm-send-key "<up>" nil nil t))
-        :i "s-<down>" (cmd! (vterm-send-key "<down>" nil nil t)))
+        :i "C-<down>" (cmd! (vterm-send-key "<down>" nil nil t)) 
 
-  (map! :map vterm-mode-map
+        ;; send page up and page down using shift+arrow keys, as
+        ;; e.g. opencode does not receive scroll in vterm.
+        :ni "S-<up>" (cmd! (vterm-send-key "<prior>" nil nil nil))
+        :ni "S-<down>" (cmd! (vterm-send-key "<next>" nil nil nil))
+        :ni "<wheel-up>" (cmd! (vterm-send-key "<prior>" nil nil nil))
+        :ni "<wheel-down>" (cmd! (vterm-send-key "<next>" nil nil nil))
+
         :m "C-a" (cmd! (vterm-send-key "a" nil nil t))
         :m "M-<backspace>" (cmd! (vterm-send-key "w" nil nil t))
         :i "M-<backspace>" (cmd! (vterm-send-key "w" nil nil t))
-        :i "C-h" (cmd! (vterm-send-key "h" nil nil t))
-        ))
+        :i "C-h" (cmd! (vterm-send-key "h" nil nil t)))) 
 #+end_src
 
 Remove ~C-l~ in normal mode, so that ~recenter-top-bottom~ works. Bring it back in insert mode.
