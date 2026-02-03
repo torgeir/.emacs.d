@@ -2120,12 +2120,15 @@ Motion keys for info mode.
         (evil-previous-line)
         (evil-next-line)
         (evil-forward-word-begin))))
-
+  
   ;; like in normal org, not like in doom
   (map! :after evil-org
-        :map evil-org-mode-map
-        :ni "C-<return>" #'org-insert-heading-respect-content
-
+        ;; remove default binds modules/config/default/config.el
+        ;; to make room for org mode binds to insert items above/below
+        :gi "C-RET" nil
+        :gn [C-return] nil
+        :gi "C-S-RET" nil
+        :gn [C-S-return] nil
         ;; bring back deleting characters from insert in org mode
         :i "C-d" nil
         :i "C-k" nil
