@@ -2324,6 +2324,22 @@ Heading and item bindings
       :localleader "g A" (cmd! (consult-org-heading t 'agenda-with-archives)))
 #+end_src
 
+Patch cache lookup to make :point_up: work.
+
+#+begin_src emacs-lisp
+(after! org
+  (defadvice! +org-element-cache-map-ensure (fn &rest args)
+    :around #'org-element-cache-map
+    (if (org-element--cache-active-p)
+        (apply fn args)
+      (when (derived-mode-p 'org-mode)
+        (org-element-cache-reset)
+        (if (org-element--cache-active-p)
+            (apply fn args)
+          ;; Buffer has no file - skip it silently
+          nil)))))
+#+end_src
+
 Widen
 
 #+begin_src emacs-lisp
