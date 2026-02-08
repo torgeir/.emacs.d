@@ -328,7 +328,8 @@ If FILEXT is provided, return files with extension FILEXT instead."
   "Kill current buffer and the window unconditionally."
   (interactive)
   (if (and
-       (= (pos-bol) (pos-eol) )
+       (or (looking-back "\\$ " 1) ; eshell
+           (= (pos-bol) (pos-eol)))
        (= (save-excursion (goto-char (point-max)))
           (point)))
       (progn
@@ -337,9 +338,12 @@ If FILEXT is provided, return files with extension FILEXT instead."
                           kill-buffer-query-functions))
         (set-buffer-modified-p nil)
         (kill-buffer-and-window))
-    (when (and
-           (not (called-interactively-p))
-           (eq evil-state 'insert)) (delete-char 1))))
+    (progn ;;(message "her %s" (called-interactively-p))
+      (when (and
+             ;; TODO when is this
+             ;;(not (called-interactively-p))
+             (eq evil-state 'insert))
+        (delete-char 1)))))
 
 (defun t/remove-newlines (str)
   (replace-regexp-in-string "[\r\n]+" "" str))
@@ -428,7 +432,8 @@ Prefix arg will force eww."
           ((equal major-mode 'mu4e-view-mode) (browse-url (shr-url-at-point nil)))
           ((equal major-mode 'magit-status-mode) (call-interactively 'forge-browse-dwim))
           ((equal major-mode 'hackernews-mode) (hackernews-browse-url-action (button-at (point))))
-          ((equal major-mode 'org-mode) (org-open-at-point))
+          ;; is (org-open-at-point) better, when?
+          ((equal major-mode 'org-mode) (org-open-at-point-global))
           (t (call-interactively 'browse-url-at-point)))))
 
 (defun t/open-elfeed-in-eww ()
@@ -1091,6 +1096,14 @@ Prefix arg will force eww."
 (defun t/mark-unreal-buffer ()
   (interactive)
   (doom-set-buffer-real (current-buffer) nil))
+
+(defun t/dired-subtree-tab ()
+  (interactive)
+  (cond
+   ((and (t/prefix-arg-universal?)
+         (dired-subtree--is-expanded-p)) (t/dired-close-recursively))
+   ((t/prefix-arg-universal?) (t/dired-open-recursively))
+   (t (t/dired-subtree-toggle))))
 
 (defun t/dired-subtree-toggle ()
   (if (eq major-mode 'dired-sidebar-mode)

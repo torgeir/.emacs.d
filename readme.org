@@ -225,7 +225,7 @@ save
 
 #+begin_src emacs-lisp
 (setq org-directory (expand-file-name "~/Dropbox/org/")
-      org-agenda-files '("~/Dropbox/org")
+      org-agenda-files `(,(expand-file-name "~/Dropbox/org"))
       org-archive-location "%s_archive.gpg::") ; so files are encrypted automatically
 #+end_src
 
@@ -323,6 +323,8 @@ Defaults
   (fset 'epg-wait-for-status 'ignore))
 #+end_src
 
+*** Which key
+
 Wait just long enough.
 
 #+begin_src emacs-lisp
@@ -356,9 +358,6 @@ On load theme
 Opt-in to emojis instead :rocket:
 
 #+begin_src emacs-lisp
-;;(add-hook! 'doom-first-buffer-hook
-;;  (defun t/after-first-buffer-hook ()
-;;    (global-emojify-mode -1)))
 (after! emojify
   (global-emojify-mode -1))
 #+end_src
@@ -413,6 +412,13 @@ I spent so much time with vim, I will probably never give it up.
 
 **** Config
 
+Bring back
+
+#+begin_src emacs-lisp
+(after! evil-escape
+  (setq evil-escape-key-sequence "jk"))
+#+end_src
+
 Useful for ~C-e~ followed by ~C-x C-e~ to eval an s-expression. Makes ~cleverparens~ nav commands like ~L~ and ~H~ move across sexps
 
 #+begin_src emacs-lisp
@@ -438,6 +444,12 @@ Max number of hits shown
 
 #+begin_src emacs-lisp
 (setq anzu-search-threshold 2000)
+#+end_src
+
+**** Certain modes not evil
+
+#+begin_src emacs-lisp
+(set-evil-initial-state! 'emms-browser-mode 'normal)
 #+end_src
 
 **** Indent after paste
@@ -495,11 +507,7 @@ This one makes camelCaseWords into to snakeCaseWords, or the other way around. R
   (setq evil-goggles-duration 0.2
         evil-goggles-enable-delete t
         evil-goggles-enable-change t)
-  (evil-goggles-use-diff-refine-faces)
-  (pushnew! evil-goggles--commands
-            '(evil-cp-delete-line
-              :face evil-goggles-delete-face
-              :advice evil-goggles--generic-blocking-advice)))
+  (evil-goggles-use-magit-faces))
 #+end_src
 
 *** Macros
@@ -516,7 +524,7 @@ A useful macro one for testing stuff out
 
 **** Macro numbered list
 
-Type ~qq~ to record a macro to ~q~. Move to where you want the number and press ~C-x C-k C-i~. Move to the next line start to make the macro repeatble. Type ~q~. Undo. Select the list and hit ~@q~.
+Type ~qq~ to record a macro to ~q~. Move to where you want the number and press ~C-x C-k TAB~. Move to the next line start to make the macro repeatble. Type ~q~. Undo. Select the list and hit ~@q~.
 
 - one
 - two
@@ -552,12 +560,6 @@ Sometimes its useful not to close it. Hit ~q~ after opening it to ~embark-toggle
       (embark-act))))
 #+end_src
 
-Add a mapping to kill buffers like vterm without all the nagging.
-
-#+begin_src emacs-lisp
-(map! :map embark-buffer-map "D" #'t/volatile-kill-buffer-and-window)
-#+end_src
-
 *** Vertico
 
 Some commands are useful from within the minibuffer. =M-SPC= needs =enable-recursive-minibuffers=, see above.
@@ -589,7 +591,8 @@ Disable eldoc on the modeline, makes it so eldoc only appears on ~SPC h .~, i.e.
 Fix issue where =org-eldoc-get-src-lang= is not defined?
 
 #+begin_src emacs-lisp
-(add-hook! 'org-mode-hook (defun t/fix-missing-definition-org-eldoc-get-src-lang ()
+;; TODO REMOVE?
+(comment add-hook! 'org-mode-hook (defun t/fix-missing-definition-org-eldoc-get-src-lang ()
                             (interactive)
                             (require 'org-eldoc)))
 #+end_src
@@ -682,7 +685,8 @@ words of the candidate, respectively."
 Iterate through CamelCase words
 
 #+begin_src emacs-lisp
-(global-subword-mode 1)
+;; TODO REMOVE?
+(comment global-subword-mode 1)
 #+end_src
 
 *** +onsave apheleia
@@ -707,16 +711,6 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
   (add-hook 'dired-mode-hook 'dired-subtree-toggle)
   (add-hook 'dired-mode-hook 'dired-hide-details-mode)
   (add-hook 'dired-mode-hook 'dired-async-mode))
-#+end_src
-
-#+begin_src emacs-lisp
-(defun t/dired-subtree-tab ()
-  (interactive)
-  (cond
-   ((and (t/prefix-arg-universal?)
-         (dired-subtree--is-expanded-p)) (t/dired-close-recursively))
-   ((t/prefix-arg-universal?) (t/dired-open-recursively))
-   (t (t/dired-subtree-toggle))))
 #+end_src
 
 **** Keybindings
@@ -778,8 +772,9 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
         (delete-window (get-buffer-window sidebar-buffer))
       (when (not sidebar-buffer)
         (with-current-buffer (dired-noselect sidebar-project)
-          ;; unadvertise buffer so dired does not consider it on subsequent dired-jum
+          ;; unadvertise buffer so dired does not consider it on subsequent dired-jump
           (dired-unadvertise (dired-current-directory))
+          (sticky-buffer-mode 1)
           (rename-buffer sidebar-name)))
       (progn
         (pop-to-buffer sidebar-name)
@@ -837,7 +832,8 @@ Zoom to the previewed org subtree when jumping between headings with =consult-or
       (org-show-subtree))
 
     ;; always
-    (recenter)))
+    (recenter-top-bottom 0)
+))
 
 (advice-add 'org-forward-element :after #'t/after-org-move-jump)
 (advice-add 'org-backward-element :after #'t/after-org-move-jump)
@@ -982,16 +978,6 @@ Navigate flymake and flycheck errors
 #+end_src
 
 
-**** TODO Eglot flycheck issue :outdated:
-
-https://github.com/doomemacs/doomemacs/issues/6466
-
-#+begin_src emacs-lisp
-;;(after! (eglot flycheck)
-;;  (push 'eglot flycheck-checkers)
-;;  (delq! 'eglot flycheck-checkers))
-#+end_src
-
 *** Projects
 
 Ignore some extra folders from projectile
@@ -1005,19 +991,6 @@ Ignore some extra folders from projectile
 #+end_src
 
 *** Workspaces
-
-Prompt for project to launch dired in after new workspace
-
-#+begin_src emacs-lisp
-(comment
- (defun t/after-workspace-switch (fn &optional &rest args)
-   "Call t/projectile-dired after creating a new workspace."
-   (run-with-timer 0.1 nil (cmd!
-                            (apply fn args)
-                            (if (t/prefix-arg-universal?)
-                                (call-interactively 'doom/find-file-in-other-project)))))
- (advice-add '+workspace-switch-to :around #'t/after-workspace-switch))
-#+end_src
 
 Improved switching
 
@@ -1083,25 +1056,13 @@ Be explicit about when deleting workspaces
  :leader :desc "Swap next" "TAB j" '+workspace/swap-right
  :leader :desc "Swap previous" "TAB k" '+workspace/swap-left)
 
-;; like tmux window nav
 (map!
- ;; make room under c-b
- :gnm "C-b" nil
- :gm :desc "Next workspace" "C-b C-n" '+workspace:switch-next
- :gm :desc "Previous workspace" "C-b C-p" '+workspace:switch-previous
- :map (magit-mode-map vterm-mode-map)
- :gnm "C-b" nil
- :gn :desc "Next workspace" "C-b C-n" '+workspace:switch-next
- :gn :desc "Previous workspace" "C-b C-p" '+workspace:switch-previous)
-
-(map!
- :desc "Goto workspace" "s-t" '+workspace/switch-to
  :desc "Rename workspace" "s-r" '+workspace/rename)
 #+end_src
 
 *** Company
 
-Make tab accept the current suggestion.
+Make tab accept the current suggestion, and make popups scrollable. Note the space.
 
 #+begin_src emacs-lisp
 (after! company
@@ -1156,7 +1117,8 @@ Recentf cleanup logs a lot of error messages, like [[https://discourse.doomemacs
   ;; https://discourse.doomemacs.org/t/recentf-cleanup-logs-a-lot-of-error-messages/3273/4
   (advice-add 'doom--recentf-file-truename-fn :override
               (defun my-recent-truename (file &rest _args)
-                (if (or (not (file-remote-p file)) (equal "sudo" (file-remote-p file 'method)))
+                (if (or (not (file-remote-p file))
+                        (equal "sudo" (file-remote-p file 'method)))
                     (abbreviate-file-name (file-truename (tramp-file-local-name file)))
                   file))))
 #+end_src
@@ -1207,10 +1169,7 @@ There's a lot of good [[file:~/.config/doom-local/straight/repos/themes/themes/]
 #+begin_src emacs-lisp
 (setq *t-themes* '(doom-feather-dark
                    catppuccin
-                   doom-flatwhite
-                   ;t-doom-one
-                   ;doom-vibrant
-                   )
+                   doom-flatwhite)
       doom-theme (car *t-themes*)
       t-system-theme-dark 'doom-feather-dark
       t-system-theme-light 'doom-flatwhite)
@@ -1265,7 +1224,7 @@ Determines the style of line numbers in effect. If set to =nil=, line numbers ar
 (add-hook! '(prog-mode-hook css-mode-hook html-mode-hook) 'show-paren-mode)
 #+end_src
 
-***** Color parens uniformly
+***** TODO Color parens uniformly
 
 #+begin_src emacs-lisp
 (set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "Green" :weight 'bold)
@@ -1344,11 +1303,6 @@ If say a single dired window is visible and it is dedicated, allow splitting, el
 
 #+begin_src emacs-lisp
 (setq split-window-preferred-function 'split-window-sensibly)
-;;(setq split-window-preferred-function
-;;      (lambda (ignored-window)
-;;        (if (= 1 (length (window-list)))
-;;            (split-window-right)
-;;          nil)))
 #+end_src
 
 **** Resize window combinations proportionally
@@ -1390,7 +1344,7 @@ If there is no window in the direction you move, send the keypress for the direc
 
 *** Popups
 
-Clean up popup definitions with =(+popup-cleanup-rules-h)=
+Clean up popup definitions with [[elisp:(+popup-cleanup-rules-h)]]
 
 *** Jump around
 
@@ -1423,7 +1377,7 @@ Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~ or ~
           avy-highlight-first t
           avy-style 'at-full
           avy-background t)
-    (let* ((b "#333") (f "DeepPink1"))
+    (let* ((b "#222") (f "DeepPink1"))
       (set-face-attribute 'avy-background-face nil :foreground b)
       (set-face-attribute 'avy-lead-face   nil :background b :foreground f :weight 'bold)
       (set-face-attribute 'avy-lead-face-0 nil :background b :foreground f :weight 'bold)
@@ -1963,16 +1917,6 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Toggle focus mode"     "t F" #'focus-mode
  :leader :desc "Toggle idle highlight" "t h" #'t-idle-highlight-mode
  :leader :desc "Toggle highlight line" "t H" #'hl-line-mode
- :leader :desc "Toggle variable pitch" "t v" (defun t/variable-pitch-mode (&optional turn-on)
-                                               "https://www.reddit.com/r/DoomEmacs/comments/l9jy0h/how_does_variablepitchmode_work_and_why_does_it/."
-                                               (interactive)
-                                               (if (or turn-on (derived-mode-p 'solaire-mode))
-                                                   (progn
-                                                     (solaire-mode -1)
-                                                     (variable-pitch-mode 1))
-                                                 (progn
-                                                   (variable-pitch-mode nil)
-                                                   (call-interactively 'solaire-mode))))
  :leader :desc "Toggle visual linemode""t V" #'visual-line-mode
  :leader :desc "Toggle truncate"       "t u" #'toggle-truncate-lines
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
@@ -2214,18 +2158,6 @@ Use os support if it exists.
       )
 #+end_src
 
-*** Variable pitch mode
-
-#+begin_src emacs-lisp
-(add-hook! 'org-mode-hook (defun t/variable-pitch-mode-some-buffers ()
-                            (interactive)
-                            (let ((bn (buffer-name)))
-                              (when (or (s-ends-with? "posts.org" bn)
-                                        (s-equals? "*ChatGPT*" bn))
-                                (olivetti-mode 1)
-                                (t/variable-pitch-mode 1)))))
-#+end_src
-
 *** Async source code blocks
 
 Make it possible to use the header argument ~:async true~ for async execution of begin_src code blocks.
@@ -2354,7 +2286,7 @@ Alert a 5 minutes before schedules or deadlines, keep it going for 10. [[https:/
 Save from agenda
 
 #+begin_src emacs-lisp
-(map! :after org-agenda
+(map! :after evil-org-agenda
       :map (evil-org-agenda-mode-map org-super-agenda-header-map org-agenda-keymap)
       :g "h" nil
       :g "j" nil
@@ -2732,6 +2664,8 @@ Default openai language model.
   (with-current-buffer (pop-to-buffer "*ChatGPT*")
     (call-interactively 'org-ctrl-c-ctrl-c)))
 
+(global-set-key [mouse-8] (cmd!)) 
+(global-set-key [mouse-9] #'t/chatgpt-buffer)
 (map! :leader
       (:prefix
        ("o" . "open")
@@ -2757,7 +2691,7 @@ Default openai language model.
   (add-hook 'chatgpt-shell-mode-hook
             (defun t/gpt-shell-hook ()
               (setq chatgpt-shell-system-prompt "KEEP IT BRIEF, DONT MAKE STUFF UP, NO LISTS, SINGLE EXAMPLES ONLY")))
-  (setq chatgpt-shell-model-version "claude-sonnet-4-20250514"
+  (setq chatgpt-shell-model-version "claude-opus-4-5"
         chatgpt-shell-anthropic-key
         (lambda ()
           (auth-source-pick-first-password :host "anthropic.com"))
@@ -2906,7 +2840,6 @@ Enter readable mode automatically, normally available from pressing ~R~ in eww m
 #+begin_src emacs-lisp
 (add-hook 'eww-after-render-hook (cmd! (call-interactively 'eww-readable)))
 (add-hook 'eww-after-render-hook 'olivetti-mode)
-(add-hook 'eww-after-render-hook 't/variable-pitch-mode)
 (add-hook 'eww-after-render-hook 't/start-micro-state)
 #+end_src
 
@@ -3016,17 +2949,16 @@ A custom function to fetch a clean view of the current news from nrk.no
   (beginning-of-buffer)
   (kill-line)
 
-  ;;(darkroom-mode)
   (read-only-mode)
   (funcall (t/micro-state (t/prefix-arg-universal?)
                           "n" (cmd! nil
                                     (evil-search "^-" t t)
                                     (evil-ex-nohighlight)
-                                    (recenter nil))
+                                    (recenter-top-bottom 0))
                           "p" (cmd! nil
                                     (evil-search "^-" nil t)
                                     (evil-ex-nohighlight)
-                                    (recenter nil)))))
+                                    (recenter-top-bottom 0)))))
 #+END_SRC
 
 ** Languages
@@ -3075,10 +3007,9 @@ Move around like in org, collapsing what is moved away from, expanding what is m
 (after! markdown-mode
   (add-hook! 'markdown-mode-hook (defun t/markdown-toggle-pretty ()
                                    (interactive)
-                                   ;; TODO
-                                   ;;(markdown-toggle-url-hiding)
-                                   ;;(markdown-toggle-markup-hiding)
-                                   ;;(markdown-toggle-inline-images)
+                                   (markdown-toggle-url-hiding)
+                                   (markdown-toggle-markup-hiding)
+                                   (markdown-toggle-inline-images)
                                    )))
 #+end_src
 
@@ -3780,6 +3711,13 @@ Goes great with [[file:~/.config/dotfiles/skhdrc::cmd - return \[][these lines f
         :i "C-d" #'t/volatile-kill-buffer-and-window))
 #+end_src
 
+#+begin_src emacs-lisp
+(after! eshell
+  (map! :map eshell-mode-map
+        :n "C-d" (cmd! (call-interactively 'evil-scroll-down))
+        :i "C-d" #'t/volatile-kill-buffer-and-window))
+#+end_src
+
 *** Disable some modes in vterm
 
 ~which-key~ messes with evil movement in ~vterm~, e.g. when attemting to jump somewhere and perform an action on an evil text object, like ~yiw~. This delays it long enough so you can finish your movement command before it kicks in, preventing it from interfering, only when in =vterm-mode=:
@@ -3946,6 +3884,44 @@ Improved diffs with =magit-delta-mode=. Show the themes with =delta --show-synta
 #+end_src
 
 **** Conventional commits
+
+Automatically lookup gradle modules
+
+#+begin_src emacs-lisp
+(defun t/conventional-commit-msg ()
+  "https://www.conventionalcommits.org/en/v1.0.0/"
+  (interactive)
+  (with-current-buffer "COMMIT_EDITMSG"
+    (when (and
+           (file-exists-p (concat (t/project-root) "products")) ;; repo contains products/
+           (looking-at "^$")) ;; empty first line
+      (let ((type (completing-read "Type: " (s-split "|" "build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"))))
+        (insert (format "%s: " type))
+        (when-let ((paths (t/shell-command-to-string
+                           (format "fd build.gradle.kts %s \
+                                 | xargs dirname \
+                                 | tr '/' '\n' \
+                                 | sort -u \
+                                 | grep -v '^$'"
+                                   (t/project-root))))
+                   (module (completing-read "Module: " (s-split "\n" paths))))
+          (backward-char 2)
+          (insert (format "(%s)" module))
+          (end-of-line))
+        (when-let* ((branch (t/shell-command-to-string "git branch --show-current"))
+                    (_ (string-match "VA-\\([0-9]+\\)" branch))
+                    (va (match-string 1 branch)))
+          (insert (format "\n\nVA-%s" va))
+          (previous-line 2)
+          (end-of-line))))))
+
+(add-hook!
+ 'git-commit-setup-hook
+ (defun t/insert-conventional-commit-msg ()
+   (run-with-timer "0sec" nil 't/conventional-commit-msg)))
+#+end_src
+
+***** Magit highlighting
 
 #+begin_src emacs-lisp
 (defun magit-log-propertize-keywords-conventional-commits (_rev msg)
@@ -4896,21 +4872,6 @@ Useful e.g. to make dired act like a directory tree sidebar
  )
 #+end_src
 
-** Linux
-
-*** Reload sway
-
-Check if configuration affecting sway is changed, if so reload it
-
-#+begin_src emacs-lisp
-(add-hook! 'after-save-hook
-  (defun t/reload-sway-after-save ()
-    (when
-        (or (s-ends-with? "i3status-rust/config.toml" (buffer-file-name))
-            (s-ends-with? "config/sway/config" (buffer-file-name)))
-      (call-process-shell-command "swaymsg reload"))))
-#+end_src
-
 ** Someday
 :PROPERTIES:
 :header-args:emacs-lisp: :lexical t :results silent
@@ -4925,26 +4886,25 @@ Check if configuration affecting sway is changed, if so reload it
 #+begin_src emacs-lisp
 (after! emms
   (setq emms-player-list (list 'emms-player-mpd))
-  (add-to-list 'emms-info-functions (list 'emms-info-mpd))
-(emms-cache-set-from-mpd-all))
+  (setq emms-info-functions (list 'emms-info-mpd))
+  (emms-cache-set-from-mpd-all))
   #+end_src
 
 Then type ~C-ret~ to add something to the playlist.
 
-#+begin_src emacs-lisp :tangle no
-(after! emms-browser
+#+begin_src emacs-lisp
+(after! emms
   (setq emms-volume-change-amount 10
-        emms-volume-change-function 'emms-volume-mpd-change)
+        emms-volume-change-function 'emms-volume-mpd-change))
+(progn
   (defun t/music-volume-up     () (interactive) (emms-volume-raise))
   (defun t/music-volume-down   () (interactive) (emms-volume-lower))
   (defun t/music-browse        () (interactive) (emms-smart-browse))
   (defun t/music-stop          () (interactive) (emms-stop))
   (defun t/music-seek-backward () (interactive) (emms-seek-backward))
   (defun t/music-seek-forward  () (interactive) (emms-seek-forward))
-  (defun t/music-playlist      () (interactive) (emms-playlist-mode-go))
-  (defun t/music-play-pause    () (interactive) (if emms-player-playing-p
-                                                    (emms-pause)
-                                                  (emms-start)))
+  (defun t/music-playlist      () (interactive) (condition-case nil (emms-playlist-mode-go) (error (emms-browser))))
+  (defun t/music-play-pause    () (interactive) (if emms-player-playing-p (emms-pause) (emms-start)))
   (defun t/music-prev          () (interactive) (emms-previous))
   (defun t/music-next          () (interactive) (emms-next)))
 #+end_src
@@ -5320,41 +5280,6 @@ You could also link to note files from specific days, like this to show notes fr
      ;; or current date
      (format-time-string "%Y%m%d" nil "Europe/Oslo"))
     )))
-#+end_src
-
-** Conventional commits
-
-#+begin_src emacs-lisp
-(defun t/conventional-commit-msg ()
-  "https://www.conventionalcommits.org/en/v1.0.0/"
-  (interactive)
-  (with-current-buffer "COMMIT_EDITMSG"
-    (when (looking-at "^$") ;; empty first line
-      (let ((type (completing-read "Type: " (s-split "|" "build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"))))
-        (insert (format "%s: " type))
-        (when-let ((_ (file-exists-p (concat (t/project-root) "products")))
-                   (paths (t/shell-command-to-string
-                           (format "fd build.gradle.kts %s \
-                                 | xargs dirname \
-                                 | tr '/' '\n' \
-                                 | sort -u \
-                                 | grep -v '^$'"
-                                   (t/project-root))))
-                   (module (completing-read "Module: " (s-split "\n" paths))))
-          (backward-char 2)
-          (insert (format "(%s)" module))
-          (end-of-line))
-        (when-let* ((branch (t/shell-command-to-string "git branch --show-current"))
-                    (_ (string-match "VA-\\([0-9]+\\)" branch))
-                    (va (match-string 1 branch)))
-          (insert (format "\n\nVA-%s" va))
-          (previous-line 2)
-          (end-of-line))))))
-
-(add-hook!
- 'git-commit-setup-hook
- (defun t/insert-conventional-commit-msg ()
-   (run-with-timer "0sec" nil 't/conventional-commit-msg)))
 #+end_src
 
 ** nix
