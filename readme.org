@@ -2273,8 +2273,10 @@ Some keybindings are so engrained I can't live without them.
         ;; e.g. opencode does not receive scroll in vterm.
         :ni "S-<up>" (cmd! (vterm-send-key "<prior>" nil nil nil))
         :ni "S-<down>" (cmd! (vterm-send-key "<next>" nil nil nil))
-        :ni "<wheel-up>" (cmd! (vterm-send-key "<prior>" nil nil nil))
-        :ni "<wheel-down>" (cmd! (vterm-send-key "<next>" nil nil nil))
+        ;; :ni "<wheel-up>" nil
+        ;; :ni "<wheel-down>" nil
+        :ni "S-<wheel-up>" (cmd! (vterm-send-key "<prior>" nil nil nil))
+        :ni "S-<wheel-down>" (cmd! (vterm-send-key "<next>" nil nil nil))
 
         :m "C-a" (cmd! (vterm-send-key "a" nil nil t))
         :m "M-<backspace>" (cmd! (vterm-send-key "w" nil nil t))
