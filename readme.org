@@ -4499,7 +4499,7 @@ Restores a lost multiedit selection.
 #+begin_src emacs-lisp
 (defun t/font-spec (f &optional s weight)
   (font-spec :family f
-             :size (or s 20)
+             :size (or s 26)
              :weight (or weight 'regular)
              :slant 'normal
              :width 'normal))
