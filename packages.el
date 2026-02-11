@@ -32,6 +32,7 @@
 (package! org-alert)
 (package! spacious-padding)
 (package! mu4e-alert)
+(package! rainbow-delimiters)
 
-;; TODO master is missing?
+;; Default branch is main.
 (package! iedit :recipe (:branch "main"))
