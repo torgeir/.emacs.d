@@ -632,10 +632,7 @@ Motion keys for info mode.
       (outline-show-subtree)
       (when was-narrowed (org-narrow-to-subtree))
       (recenter-top-bottom 0)
-      (progn ;; hack to make eldoc pop up
-        (evil-previous-line)
-        (evil-next-line)
-        (evil-forward-word-begin))))
+      (t/org-eldoc-ping)))
 
 
   (defun t/open-next-heading ()
@@ -648,10 +645,18 @@ Motion keys for info mode.
       (outline-show-subtree)
       (when was-narrowed (org-narrow-to-subtree))
       (recenter-top-bottom 0)
-      (progn ;; hack to make eldoc pop up
-        (evil-previous-line)
-        (evil-next-line)
-        (evil-forward-word-begin))))
+      (t/org-eldoc-ping)))
+
+  (defun t/org-eldoc-ping (&rest _)
+    "Nudge eldoc so the current heading shows after heading moves."
+    (when (and (bound-and-true-p evil-mode) (derived-mode-p 'org-mode))
+      (evil-previous-line)
+      (evil-next-line)
+      (evil-forward-word-begin)))
+
+  ;; also make it work for gj and gk
+  (advice-add 'org-forward-element :after #'t/org-eldoc-ping)
+  (advice-add 'org-backward-element :after #'t/org-eldoc-ping)
   
   ;; like in normal org, not like in doom
   (map! :after evil-org
