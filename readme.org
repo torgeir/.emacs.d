@@ -3948,6 +3948,25 @@ Defaults
   (setq-default epa-file-encrypt-to '("torgeir@keybase.io"))
   ;; https://irreal.org/blog/?p=11827
   (fset 'epg-wait-for-status 'ignore))
+(after! epa-file
+  ;; Ensure .gpg handlers are active during/after init.
+  (epa-file-enable))
+
+(defun t/ensure-gpg-handler (orig-fn filename &rest args)
+  "Ensure .gpg files are opened via epa-file on first visit,
+and don't render unencrypted text files on first find-file,
+of a .org.gpg file."
+  (if (and (stringp filename)
+           (bound-and-true-p epa-file-name-regexp)
+           (string-match-p epa-file-name-regexp filename))
+      (let ((inhibit-file-name-handlers nil))
+        (require 'epa-file)
+        (unless (assoc epa-file-name-regexp file-name-handler-alist)
+          (let ((inhibit-message t))
+            (epa-file-enable)))
+        (apply orig-fn filename args))
+    (apply orig-fn filename args)))
+(advice-add #'find-file-noselect :around #'t/ensure-gpg-handler)
 #+end_src
 
 *** Which key
