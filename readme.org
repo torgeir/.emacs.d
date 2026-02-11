@@ -1190,7 +1190,6 @@ Default openai language model.
 (setq-default *t-gpt-models* "gpt-4o-mini")
 #+end_src
 
-
 **** Popup on the side
 
 #+begin_src emacs-lisp
@@ -3909,7 +3908,6 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
 
 Scratch notes and examples go here to avoid accidental tangling.
 
-
 ** Editor
 
 *** Recursive minibuffers
@@ -4590,7 +4588,6 @@ Navigate flymake and flycheck errors
                     (next-line) ;; again??
                     ))))
 #+end_src
-
 
 *** Projects
 
@@ -5373,7 +5370,6 @@ Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~
 (after! ielm
   (add-hook 'inferior-emacs-lisp-mode-hook 'evil-cleverparens-mode))
 #+end_src
-
 
 ** Validation (no tangle)
 :PROPERTIES:
