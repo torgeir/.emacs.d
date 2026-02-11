@@ -3488,9 +3488,10 @@ Useful e.g. to make dired act like a directory tree sidebar
     (find-file buffer)))
 (defun t/default-workspaces-init ()
   (interactive)
-  (t/+workspace-new "doom" doom-user-dir)
-  (t/+workspace-new "dot" "~/Projects/dotfiles")
-  (t/+workspace-new "nix-darwin" "~/.config/nix-darwin/" "~/.config/nix-darwin/flake.nix" "~/.config/nix-darwin/home/default.nix")
+  (t/+workspace-new ".doom.d" doom-user-dir)
+  (t/+workspace-new "dotfiles" "~/Projects/dotfiles")
+  (when is-mac
+    (t/+workspace-new "nix-darwin" "~/.config/nix-darwin/" "~/.config/nix-darwin/flake.nix" "~/.config/nix-darwin/home/default.nix"))
   (t/+workspace-new "org" (format "%s/home.org.gpg" (car org-agenda-files))))
 (defun t/default-workspaces ()
   (interactive)
