@@ -1,7 +1,7 @@
 #+STARTUP: show2levels
 * torgeir/.doom.d
 :PROPERTIES:
-:header-args:emacs-lisp: :lexical t :results silent
+:header-args:emacs-lisp: :lexical t :results silent :tangle config.el
 :END:
 
 Managing [[https://github.com/torgeir/.emacs.d/tree/d1c9dec646824ab7396b8a35fd7da1416a0580d3][a plain emacs config]] that got closer and closer to what you get ootb with [[https://github.com/doomemacs/doomemacs][doom emacs]] was beginning to feel tedious, so this is an attempt to for a setup with ~feature parity on top of doom emacs. It was probably due a clean up after all these years.
@@ -23,7 +23,7 @@ cd && git clone git@github.com:torgeir/.emacs.d.git ~/.doom.d
 
 Put =~/.doom.d/bin= on path for the terminal shortcuts =e= and =et= to open emacsclient and emacsclient in the terminal.
 
-** Doom help
+** Doom Help
 
 The built in emacs help is fantastic. The doom one on ~SPC h d~ is even better! Here's a few examples.
 
@@ -45,13 +45,13 @@ Type ~SPC m g g~ to run =consult-org-heading=, then ~C-c C-;~ to =embark-export=
 - =setq-default= sets a default value for a variable for all buffers
 - =setq-local= sets a buffer local variable, it needs to be buffer local first =(make-variable-buffer-local '...)=
 
-** Troubleshooting doom
+** Troubleshooting Doom
 
 When ~doom sync -u~ fails for some packages, try deleting the cloned repos before running it again.
 
 E.g. ~rm -rf ~~/.config/doom-local/straight/repos/{borg,epkg,ghub,magit-section,transient,with-editor,forge,magit}~ then do ~rm -rf build-*-cache.el~
 
-** Literate config
+** Literate Config
 
 This config uses the =:config literal= that tangles this file to ~config.el~ on save. The [[file:init.el::setq +literate-config-file (concat (getenv "HOME") "/.doom.d/readme.org")][+literate-config-file]] is set in ~init.el~ and points to this file.
 
@@ -71,7 +71,9 @@ git update-index --skip-worktree config.el
 git update-index --skip-worktree custom.el
 #+end_src
 
-** Lexical scoping everywhere
+** Bootstrap
+
+*** Lexical Scoping
 
 The madness that is dynamic is too much for anyone, really.
 
@@ -79,10 +81,24 @@ The madness that is dynamic is too much for anyone, really.
 ;;; $DOOMLOCALDIR/config.el -*- lexical-binding: t; -*-
 #+end_src
 
-** Early fix broken stuff
+*** T-Defuns
 
-#+begin_src emacs-lisp
+My old collection of more or less useful defuns.
+
+#+begin_src emacs-lisp :tangle config.el
+(progn
+  (defconst is-win (featurep :system 'windows))
+  (defconst is-cygwin (featurep :system 'windows))
+  (defconst is-mac (featurep :system 'macos))
+  (defconst is-linux (featurep :system 'linux))
+  (defmacro comment (&rest _ignore) nil)
+  (defun t/user-file (&optional path) (concat (expand-file-name "~/") (or path "")))
+  (defun t/user-emacs-file (&optional path) (concat doom-user-dir (or path "")))
+  (defun t/user-dropbox-folder (&optional path) (expand-file-name (concat "~/Dropbox" (if is-mac " (Personal)/" "") "/" (or path ""))))
+  (load! (concat doom-user-dir "t-defuns.el")))
 #+end_src
+
+*** Early Fixes
 
 ** Packages
 
@@ -161,7 +177,7 @@ Ignore some of the cached emacs files in recent files
         user-mail-address-2 email-2))
 #+end_src
 
-** 1password
+** 1Password
 
 #+begin_src emacs-lisp
 (defun t/1p (item &optional args)
@@ -179,7 +195,7 @@ Ignore some of the cached emacs files in recent files
           (replace-regexp-in-string (rx "\n" eos) "" (buffer-string)))))))
 #+end_src
 
-*** Doom env from terminal, including SSH_* and GPG_* env vars
+*** Doom Env From Terminal (SSH_*/GPG_*)
 
 Needed to do this to make emacs discover 1p ~SSH_AGENT_SOCK~ set in [[file:~/.zprofile][.zprofile]]. Or run this command from the terminal
 
@@ -187,7 +203,7 @@ Needed to do this to make emacs discover 1p ~SSH_AGENT_SOCK~ set in [[file:~/.zp
 doom env -a ^SSH_ -a ^GPG
 #+end_src
 
-** gpg
+** GPG
 
 [2023-10-07 Sat] On mac this [[https://torgeir.dev/2023/05/downgrade-a-homebrew-package-to-a-version-no-longer-installable/][still needs gnupg@2.4.0]]
 [2024-01-13 Lør] Fixed by [[https://github.com/torgeir/nix-darwin/commit/08b60d649005232fded8b0d1da71dc3beeb7d515][patching gnupg]]
@@ -220,32 +236,43 @@ expire
 1y
 save
 # gpg
-
-** Org file location setup
-
-#+begin_src emacs-lisp
-(setq org-directory (expand-file-name "~/Dropbox/org/")
-      org-agenda-files `(,(expand-file-name "~/Dropbox/org"))
-      org-archive-location "%s_archive.gpg::") ; so files are encrypted automatically
 #+end_src
 
-** t-defuns
-
-My old collection of more or less useful defuns.
+** Health Checks
 
 #+begin_src emacs-lisp
-(progn
-  (defconst is-win (featurep :system 'windows))
-  (defconst is-cygwin (featurep :system 'windows))
-  (defconst is-mac (featurep :system 'macos))
-  (defconst is-linux (featurep :system 'linux))
-  (defun t/user-file (&optional path) (concat (expand-file-name "~/") (or path "")))
-  (defun t/user-emacs-file (&optional path) (concat doom-user-dir (or path "")))
-  (defun t/user-dropbox-folder (&optional path) (expand-file-name (concat "~/Dropbox" (if is-mac " (Personal)/" "") "/" (or path ""))))
-  (load! (concat doom-user-dir "t-defuns.el")))
+(defun t/health-check ()
+  (let* ((cfg (expand-file-name "config.el" doom-user-dir))
+         (org-root (t/user-dropbox-folder "org/"))
+         (org-ok (and (stringp org-directory)
+                      (string= (file-name-as-directory (expand-file-name org-directory))
+                               (file-name-as-directory (expand-file-name org-root)))))
+         (agenda org-agenda-files)
+         (agenda-ok (and (listp agenda) (member org-root agenda)))
+         (parens-ok t)
+         (warned nil))
+    (condition-case err
+        (with-temp-buffer
+          (insert-file-contents cfg)
+          (check-parens))
+      (error
+       (setq parens-ok nil)
+       (message "Health FAIL: check-parens (%s): %s" cfg err)))
+    (when (not org-ok)
+      (setq warned t)
+      (message "Health WARN: org-directory %s" org-directory))
+    (when (not agenda-ok)
+      (setq warned t)
+      (message "Health WARN: org-agenda-files %s" agenda))
+    (when (and parens-ok (not warned))
+      (message "Ok."))))
+
+(add-hook! 'doom-after-init-hook
+  (defun t/run-health-checks ()
+    (run-with-idle-timer 1 nil #'t/health-check)))
 #+end_src
 
-** Micro state
+** Micro State
 
 A small overlay map that exposes a set of key bindings until you press q, or something else not in the keymap.
 
@@ -280,1479 +307,6 @@ And one that enters a ~mode~, then turns on the keymap. It turns ~mode~ off agai
       (set-temporary-overlay-map keymap t (lambda nil
                                             (funcall mode -1)
                                             (when after (after)))))))
-#+end_src
-
-** Editor
-
-*** Recursive minibuffers
-
-When you change your mind and need to do something first, after you already started a command that opens the minibuffer. Cancel them with ~C-]~.
-
-#+begin_src emacs-lisp
-(setq enable-recursive-minibuffers t)
-#+end_src
-
-And a slightly fancier indicator than ~(minibuffer-depth-indicate-mode)~
-
-#+begin_src emacs-lisp
-(use-package! recursion-indicator
-  :config
-  (recursion-indicator-mode))
-#+end_src
-
-*** Auth sources
-
-Move ~~/.authinfo.gpg~ to the front. It is originally behind the macos keychain that doom puts in there.
-
-#+begin_src emacs-lisp
-(after! auth-source (setq auth-sources (nreverse auth-sources)))
-#+end_src
-
-Defaults
-
-#+begin_src emacs-lisp
-(let ((h (* 1 60 60)))
-  (setq auth-source-do-cache t
-        auth-source-cache-expiry h
-        password-cache t
-        password-cache-expiry h))
-
-(after! epa
-  (setq-default epa-file-encrypt-to '("torgeir@keybase.io"))
-  ;; https://irreal.org/blog/?p=11827
-  (fset 'epg-wait-for-status 'ignore))
-#+end_src
-
-*** Which key
-
-Wait just long enough.
-
-#+begin_src emacs-lisp
-(setq which-key-idle-delay 0.5
-      which-key-idle-secondary-delay 0.05)
-#+end_src
-
-*** Disable annoying defaults
-
-Reset [[file:~/.config/emacs/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
-
-#+begin_src emacs-lisp
-;; TODO kjører ikke på linux?
-(add-hook! 'doom-after-init-hook :append
-  (defun t/unbind-drag-stuff ()
-    (interactive)
-    (map! :g "M-<left>"  nil
-          :g "M-<right>" nil)))
-#+end_src
-
-On load theme
-
-#+begin_src emacs-lisp
-(defun t/doom-load-theme-hook (&optional &rest _)
-  "This is unused atm, no longer needed the highlight indent guides mode stuff."
-  (interactive))
-(advice-remove 'load-theme 't/doom-load-theme-hook)
-(advice-add 'load-theme :after 't/doom-load-theme-hook)
-#+end_src
-
-Opt-in to emojis instead :rocket:
-
-#+begin_src emacs-lisp
-(after! emojify
-  (global-emojify-mode -1))
-#+end_src
-
-Soft wrap everywhere
-
-#+begin_src emacs-lisp
-(add-hook! 'doom-after-init-hook
-  (defun t/after-init-hook ()
-    (setq truncate-lines t)
-    (global-visual-line-mode 0)
-    (global-hl-line-mode -1)))
-#+end_src
-
-Programming modes
-
-#+begin_src emacs-lisp
-(add-hook! '(prog-mode-hook text-mode-hook conf-mode-hook)
-  (defun t/prog-mode-hook ()
-    (interactive)))
-#+end_src
-
-*** Whitespace
-
-#+begin_src emacs-lisp
-(after! whitespace
-  (add-to-list 'whitespace-style 'trailing))
-(add-hook!
- '(prog-mode-hook org-mode-hook)
- (defun t/set-whitespace-style ()
-   (interactive)
-   (setq whitespace-style '(face tabs trailing lines ;; space-mark spaces
-                            space-before-tab newline indentation
-                            empty space-after-tab tab-mark
-                            newline-mark missing-newline-at-eof))))
-#+end_src
-
-*** Emmet
-
-#+begin_src emacs-lisp
-(after! emmet-mode
-  (add-to-list 'emmet-jsx-major-modes 'typescript-ts-mode)
-  (add-to-list 'emmet-jsx-major-modes 'tsx-ts-mode)
-  (add-to-list 'emmet-jsx-major-modes 'deno-ts-mode)
-  (add-to-list 'emmet-jsx-major-modes 'deno-tsx-ts-mode)
-  )
-#+end_src
-
-*** Evil
-
-I spent so much time with vim, I will probably never give it up.
-
-**** Config
-
-Bring back
-
-#+begin_src emacs-lisp
-(after! evil-escape
-  (setq evil-escape-key-sequence "jk"))
-#+end_src
-
-Useful for ~C-e~ followed by ~C-x C-e~ to eval an s-expression. Makes ~cleverparens~ nav commands like ~L~ and ~H~ move across sexps
-
-#+begin_src emacs-lisp
-(setq evil-move-beyond-eol t)
-#+end_src
-
-Don't use zz and zq for org src editing
-
-#+begin_src emacs-lisp
-(after! evil-collection
-  (add-to-list 'evil-collection-key-blacklist "ZZ")
-  (add-to-list 'evil-collection-key-blacklist "ZQ"))
-#+end_src
-
-Fine undo
-
-#+begin_src emacs-lisp
-(after! evil
-  (setq evil-want-fine-undo t))
-#+end_src
-
-Max number of hits shown
-
-#+begin_src emacs-lisp
-(setq anzu-search-threshold 2000)
-#+end_src
-
-**** Certain modes not evil
-
-#+begin_src emacs-lisp
-(set-evil-initial-state! 'emms-browser-mode 'normal)
-#+end_src
-
-**** Indent after paste
-
-Indent after paste if universal arg ~c-u~ was pressed first.
-
-#+begin_src emacs-lisp
-(defun t/indent-after-paste (fn &rest args)
-  (evil-start-undo-step)
-  (let* ((u-prefix (t/prefix-arg-universal?))
-         (current-prefix-arg (unless u-prefix current-prefix-arg))
-         (args (if u-prefix (list nil) args)))
-    (apply fn args)
-    (if u-prefix
-        (indent-region (region-beginning) (region-end))))
-  (evil-end-undo-step))
-
-(advice-add 'yank :around #'t/indent-after-paste)
-(advice-add 'evil-paste-before :around #'t/indent-after-paste)
-(advice-add 'evil-paste-after :around #'t/indent-after-paste)
-#+end_src
-
-**** Unbind C-h in evil window bindings
-
-I use ~SPC w h~ instead of ~SPC w C-h~ to move to the left window. ~C-h~ is more useful as =embark-prefix-help-command=, which this falls back to, like in all other keymaps
-
-#+begin_src emacs-lisp
-(map! :after evil :map evil-window-map "C-h" nil)
-#+end_src
-
-Try e.g. ~SPC C-h~ to browse all available commands with vertico.
-
-**** Increment & Decrement number
-
-#+begin_src emacs-lisp
-(map! :n "g-" #'evil-numbers/dec-at-pt
-      :n "g+" #'evil-numbers/inc-at-pt)
-#+end_src
-
-**** Registers
-
-Some macros I once used.
-
-This one makes camelCaseWords into to snakeCaseWords, or the other way around. Run it with ~@c~ or ~@s~.
-
-#+begin_src emacs-lisp
-(evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
-(evil-set-register ?s [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?_ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?\\ ?u ?\\ ?2 ?/ ?g])
-#+end_src
-
-**** Goggles
-
-#+begin_src emacs-lisp
-(after! evil-goggles
-  (setq evil-goggles-duration 0.2
-        evil-goggles-enable-delete t
-        evil-goggles-enable-change t)
-  (evil-goggles-use-magit-faces))
-#+end_src
-
-*** Macros
-
-A useful macro one for testing stuff out
-
-#+begin_src emacs-lisp
-(defmacro comment (&rest ignore)
-  nil)
-
-(comment
- (funcall (t/micro-state nil "m" (cmd! (message "1")))))
-#+end_src
-
-**** Macro numbered list
-
-Type ~qq~ to record a macro to ~q~. Move to where you want the number and press ~C-x C-k TAB~. Move to the next line start to make the macro repeatble. Type ~q~. Undo. Select the list and hit ~@q~.
-
-- one
-- two
-- three
-
-*** Embark
-
-#+begin_src emacs-lisp
-(map!
- :g "C-," #'embark-act ; global
- :map org-mode-map "C-," #'embark-act
- :map minibuffer-mode-map "C-," #'embark-act)
-#+end_src
-
-Prevent =embark-export=, ~C-e~, from being "popupized" by doom's ~:ui popup~ and its ~(popup +all)~ setting.
-
-#+begin_src emacs-lisp
-(set-popup-rule! "^\\*Embark" :ignore t)
-#+end_src
-
-You can use ~C-SPC~ to preview candidates.
-
-Embark improves prefix help commands, e.g. ~C-c C-h~, by showing auto complete that is fuzzy searchable.
-
-Sometimes its useful not to close it. Hit ~q~ after opening it to ~embark-toggle-quit~ before e.g. running ~k~ to kill a buffer. Or use this with ~m-x~
-
-#+begin_src emacs-lisp
-(after! embark
-  (defun embark-act-noquit ()
-    "Run action but don't quit the minibuffer afterwards."
-    (interactive)
-    (let ((embark-quit-after-action nil))
-      (embark-act))))
-#+end_src
-
-*** Vertico
-
-Some commands are useful from within the minibuffer. =M-SPC= needs =enable-recursive-minibuffers=, see above.
-
-~C-a c-k~ is so engrained in my fingers, I need it everywhere. ~C-a~ seems to work out of the box.
-
-#+begin_src emacs-lisp
-(after! vertico
-  (map! :map (vertico-map
-              minibuffer-local-map
-              read--expression-map)
-        :g "C-k" 'kill-line
-        :g "M-SPC" 'doom/leader))
-#+end_src
-
-Exclude stuff from ~+default/search-project~ by placing excludes in [[file:~/.rgignore][~/.rgignore]]
-
-*** Eldoc
-
-Disable eldoc on the modeline, makes it so eldoc only appears on ~SPC h .~, i.e. on  ~m-x eldoc-doc-buffer~
-
-#+begin_src emacs-lisp
-(add-hook! '(web-mode js-mode rjsx-mode typescript-mode typescript-tsx-mode)
-  (defun t/eldoc-only-in-buffer ()
-    (interactive)
-    (setq eldoc-message-function (defun t-void (&optional one two) nil))))
-#+end_src
-
-Fix issue where =org-eldoc-get-src-lang= is not defined?
-
-#+begin_src emacs-lisp
-;; TODO REMOVE?
-(comment add-hook! 'org-mode-hook (defun t/fix-missing-definition-org-eldoc-get-src-lang ()
-                            (interactive)
-                            (require 'org-eldoc)))
-#+end_src
-
-*** Orderless
-
-A tuned version of [[https://protesilaos.com/codelog/2021-01-06-emacs-default-completion/][Prot's]] and [[https://kristofferbalintona.me/posts/202202211546/][Kristoffer Balintona's]] vertico, maginalia and orderless setup
-
-Some examples and explanations
-
-- m-x: name= ^[m] :: contains chars of name in word in order AND starts with regex m
-- m-x: Buffer= e nm= :: contains chars of Buffer in word in order AND contains e AND contains chars of nm in word in order (e.g. like in u<nm>ark)
-- SPC s p: #defun#j gjp, ha, :: rg search for defun, in-emacs matching for long words that have leading inner words starting with g j and p in order, and have leading inner words starting with h and a
-
-#+begin_src emacs-lisp
-(after! orderless
-
-  (setq marginalia-max-relative-age 0)
-
-  (progn
-
-    (setq orderless-matching-styles
-          '(orderless-literal     ;; default exact substring match
-            ;; orderless-initialism
-            ;; orderless-regexp
-            ;; orderless-flex
-            ))
-
-    (setq orderless-style-dispatchers
-          '(initialism-dispatcher ;; suffix search with ,
-            flex-dispatcher       ;; suffix search with .
-            regexp-dispatcher     ;; suffix search with ~
-            or-regexp             ;; regex search with foo|bar
-            ))
-
-    (defun regexp-dispatcher (pattern _index _total)
-      "Matches regexp."
-      (when (string-suffix-p "~" pattern)
-        `(orderless-regexp . ,(substring pattern 0 -1))))
-
-    (defun flex-dispatcher (pattern _index _total)
-      "Matches using any group in any order."
-      (when (string-suffix-p "." pattern)
-        `(orderless-flex . ,(substring pattern 0 -1))))
-
-    (defun or-regexp (pattern index _total)
-      "foo|bar"
-      (cond
-       ((string-suffix-p "|" pattern)
-        `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" (substring pattern 0 -1)) "\\)"))))
-       ((string-match-p "|" pattern)
-        `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" pattern) "\\)"))))))
-
-    (defun literal-dispatcher (pattern _index _total)
-      "Literal style dispatcher using the equals sign as a suffix."
-      (when (string-suffix-p "=" pattern)
-        `(orderless-literal . ,(substring pattern 0 -1))))
-
-    ;;;###autoload
-    (defun initialism-dispatcher (pattern _index _total)
-      "Matches leading on words in order
-E.g.
-#fun#gjp, ha,
-(defun t/js2-get-json-path (&optional hardcoded-array-index))
- ^^^^^       ^   ^    ^               ^         ^
-#fun#gjp, hi,
-Would not match the above as no leading words start h then another word starting with i
-"
-      (when (string-suffix-p "," pattern)
-        `(orderless-strict-initialism . ,(substring pattern 0 -1))))
-
-    (defun orderless-strict-initialism (component)
-      "Match a COMPONENT as a strict initialism, optionally ANCHORED.
-The characters in COMPONENT must occur in the candidate in that
-order at the beginning of subsequent words comprised of letters.
-Only non-letters can be in between the words that start with the
-initials.
-
-If ANCHORED is `start' require that the first initial appear in
-the first word of the candidate.  If ANCHORED is `both' require
-that the first and last initials appear in the first and last
-words of the candidate, respectively."
-      (orderless--separated-by
-          '(seq (zero-or-more alpha) word-end (zero-or-more (not alpha)))
-        (cl-loop for char across component collect `(seq word-start ,char))))))
-#+end_src
-
-*** Editing
-
-Iterate through CamelCase words
-
-#+begin_src emacs-lisp
-;; TODO REMOVE?
-(comment global-subword-mode 1)
-#+end_src
-
-*** +onsave apheleia
-
-The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It messes up prettier.
-
-#+begin_src emacs-lisp
-(setq +format-with-lsp nil)
-#+end_src
-
-*** Dired
-
-#+begin_src emacs-lisp
-(after! dired
-  (setq dired-listing-switches "-aBhl  --group-directories-first"
-        dired-omit-files "\\`[.]")
-  (add-hook 'dired-mode-hook (defun t/dired-truncate-lines ()
-                               (interactive)
-                               (visual-line-mode -1)
-                               (toggle-truncate-lines 1)))
-  (add-hook 'dired-mode-hook 'nerd-icons-dired-mode)
-  (add-hook 'dired-mode-hook 'dired-subtree-toggle)
-  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
-  (add-hook 'dired-mode-hook 'dired-async-mode))
-#+end_src
-
-**** Keybindings
-#+begin_src emacs-lisp
-(after! (:or dired)
-  ;; prevent kill all dired buffers on q
-  (map! :map dired-mode-map :ng "q" 't/volatile-kill-buffer)
-  (map! :map dired-mode-map :ng "Q" 'evil-record-macro)
-  (map!
-   :map (dired-mode-map)
-   :gn "<follow-link>" nil ;; prevents folder opening in split window in addition to down-mouse-1
-   :gn "<down-mouse-1>" (cmd! (mouse-set-point last-input-event)
-                              (let ((split-window-preferred-function nil))
-                                (if (dired-subtree--dired-line-is-directory-or-link-p)
-                                    (t/dired-subtree-tab)
-                                  (find-file (dired-get-filename))))) 
-   "<return>" (cmd! (if (t/prefix-arg-universal?)
-                        (call-interactively 'dired-find-file)
-                      (let ((split-window-preferred-function nil))
-                        (call-interactively 'dired-find-file))))
-   "C-k" 'dired-kill-subdir
-   "<tab>" 't/dired-subtree-tab
-   "C-h" 'dired-omit-mode
-   :n "<tab>" 't/dired-subtree-tab
-   "<backspace>" 'dired-kill-subdir
-   "M-<down>" (cmd! (dired-find-alternate-file))
-   "M-<up>" (cmd! (find-alternate-file ".."))))
-#+end_src
-
-*** Dired sidebar
-
-#+begin_src emacs-lisp
-(after! dired
-  (require 'nerd-icons-dired)
-  (advice-add 'dired-subtree-toggle :after #'nerd-icons-dired--refresh))
-#+end_src
-
-#+begin_src emacs-lisp :results silent
-(defvar t-sidebar-buffer-prefix ":")
-(set-popup-rule! (concat "^" t-sidebar-buffer-prefix)
-  :ttl nil
-  :quit nil
-  :select nil
-  :side 'left
-  :width (lambda (window)
-           (let ((w (/ (frame-width) 
-                       (cond ((> (frame-width) 250) 4)
-                             (t 3)))))
-             (with-selected-window window
-               (window-resize window (- w (window-width)) t)))))
-
-(defun t-toggle-sidebar ()
-  (interactive)
-  (let* ((sidebar-project (replace-regexp-in-string (expand-file-name "~") "~" (t/project-root)))
-         (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
-         (sidebar-buffer (get-buffer sidebar-name))
-         (sidebar-displayed (and sidebar-buffer (get-buffer-window sidebar-buffer))))
-    (if sidebar-displayed
-        (delete-window (get-buffer-window sidebar-buffer))
-      (when (not sidebar-buffer)
-        (with-current-buffer (dired-noselect sidebar-project)
-          ;; unadvertise buffer so dired does not consider it on subsequent dired-jump
-          (dired-unadvertise (dired-current-directory))
-          (sticky-buffer-mode 1)
-          (rename-buffer sidebar-name)))
-      (progn
-        (pop-to-buffer sidebar-name)
-        (set-window-dedicated-p (selected-window) t)
-        (set-window-parameter (selected-window) 'no-delete-other-windows t)
-        (hide-mode-line-mode -1)))))
-#+end_src
-
-**** Dired refresh nerd-icons
-
-#+begin_src emacs-lisp
-(advice-remove 'dired-subtree-toggle 'nerd-icons-dired--refresh-advice)
-(advice-add 'dired-subtree-toggle :after 'nerd-icons-dired--refresh)
-(advice-remove 'dired-revert 't/dired-after-refresh)
-(advice-add 'dired-revert :after (defun t/dired-after-refresh (&optional &args rest) (nerd-icons-dired--refresh)))
-#+end_src
-
-**** How to clean up display buffer alist entries
-
-#+begin_src emacs-lisp
-(comment
- (setq display-buffer-alist
-       (assoc-delete-all "^:" display-buffer-alist))
- )
-#+end_src
-
-*** Customize
-
-Doom doesn't use the customize interface. It is useful nonetheless for experimenting with face colors etc
-
-#+begin_src emacs-lisp
-(set-popup-rule! "^\\*Customize" :ignore t)
-#+end_src
-
-Make ~s-s~ save in =customize=. Look up the function of a button using =describe-text-properties= on a button, like the "Apply and Save"
-
-#+begin_src emacs-lisp
-(map! :map custom-mode-map
-      "s-s" 'Custom-save)
-#+end_src
-
-*** After consult jump - focus subtree after jumping
-
-Zoom to the previewed org subtree when jumping between headings with =consult-org-heading=.
-
-#+begin_src emacs-lisp
-(setq consult-after-jump-hook '(pulsar-pulse-line))
-(add-hook! 'consult-after-jump-hook :append
-  (defun t/after-org-move-jump ()
-    ""
-    ;; org
-    (when (eq major-mode 'org-mode)
-      (when (org-at-heading-p)
-        (outline-hide-sublevels (org-outline-level)))
-      (org-show-subtree))
-
-    ;; always
-    (recenter-top-bottom 0)
-))
-
-(advice-add 'org-forward-element :after #'t/after-org-move-jump)
-(advice-add 'org-backward-element :after #'t/after-org-move-jump)
-#+end_src
-
-*** Multiple cursors
-
-#+begin_src emacs-lisp
-(after! evil
-  (defun t/mc-skip-prev ()
-    (interactive)
-    (evil-multiedit-toggle-or-restrict-region)
-    (evil-multiedit-match-and-prev))
-
-  (defun t/mc-skip-next ()
-    (interactive)
-    (evil-multiedit-toggle-or-restrict-region)
-    (evil-multiedit-match-and-next)))
-#+end_src
-
-Make cursor follow matches so ~m-n~ or ~m-p~ can be used to skip matches easily, depending on what direction you are moving in. ~R~ marks all occurrences from visual.
-
-#+begin_src emacs-lisp
-(after! evil
-  (setq evil-multiedit-follow-matches t)
-  (map!
-   :after evil
-   :mode evil-multiedit-mode
-   ;; for some reason m-j does not work, use m-n and m-p instead
-   :n "M-n"   #'t/mc-skip-next
-   :n "M-p"   #'t/mc-skip-prev
-
-   ;; don't clash with ~evil-cp-delete-sexp~, require visual mode for multi edit
-   :mode emacs-lisp-mode
-   :v "M-d" 'evil-multiedit-match-symbol-and-next))
-
-;; test
-;; test test
-;; test
-#+end_src
-
-Restores a lost multiedit selection.
-
-#+begin_src emacs-lisp
-(map!
- :g "C-M-r" 'evil-multiedit-restore)
-#+end_src
-
-*** Font
-
-#+begin_src emacs-lisp
-(defun t/font-spec (f &optional s weight)
-  (font-spec :family f
-             :size (or s 20)
-             :weight (or weight 'regular)
-             :slant 'normal
-             :width 'normal))
-
-(setq t-fonts `((:face ,"IosevkaTerm Nerd Font")))
-
-(defun t/cycle-fonts (&optional font-spec)
-  (interactive)
-  (setq t-fonts (nconc (last t-fonts) (butlast t-fonts)))
-  (let* ((spec (or font-spec (car t-fonts)))
-         (f (plist-get spec :face))
-         (s (plist-get spec :size))
-         (w (plist-get spec :weight)))
-    (message "Font: %s, size: %s, weight: %s" f s w)
-    (setq doom-font (t/font-spec f s w)
-          doom-variable-pitch-font (t/font-spec "IosevkaEtoile Nerd Font" 19 w)
-          doom-big-font (t/font-spec f 28)
-          doom-font-increment 2)
-    (doom/reload-font)
-    f))
-
-(t/cycle-fonts)
-#+end_src
-
-**** Nerd fonts
-
-Remember to run
-
-#+begin_src emacs-lisp :noeval :tangle no :results no
-(nerd-icons-install-fonts)
-#+end_src
-
-**** List available fontsets
-
-#+begin_src emacs-lisp :tangle no :result no
-(call-interactively 'describe-font)
-#+end_src
-
-or
-
-#+begin_src sh :noeval :tangle no
-fc-list
-#+end_src
-
-*** Errors
-
-Navigate flymake and flycheck errors
-
-#+begin_src emacs-lisp
-(map!
- :leader
- (:prefix-map ("e" . "errors")
-              (:when t
-                :desc "Toggle flycheck"        "t" #'flycheck-mode
-                :desc "List errors"            "l" (cmd! (cond
-                                                          ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-list-errors))
-                                                          (t (flymake-show-buffer-diagnostics))))
-                :desc "Jump to next error"     "n" (cmd! (cond
-                                                          ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-next-error))
-                                                          (t (call-interactively 'flymake-goto-next-error))))
-                :desc "Jump to previous error" "N" (cmd! (cond
-                                                          ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-previous-error))
-                                                          (t (call-interactively 'flymake-goto-prev-error)))))))
-#+end_src
-
-**** Skip to flymake issues when skipping through them
-
-#+begin_src emacs-lisp
-(after! flymake
-  (map!
-   :map flymake-diagnostics-buffer-mode-map
-   :n "C-p" (cmd! (let ((p (point))
-                        (b (current-buffer)))
-                    (previous-line)
-                    (flymake-goto-diagnostic (point))
-                    (pop-to-buffer b)
-                    (goto-char p)
-                    (previous-line) ;; again??
-                    ))
-   :n "C-n" (cmd! (let ((p (point))
-                        (b (current-buffer)))
-                    (next-line)
-                    (flymake-goto-diagnostic (point))
-                    (pop-to-buffer b)
-                    (goto-char p)
-                    (next-line) ;; again??
-                    ))))
-#+end_src
-
-
-*** Projects
-
-Ignore some extra folders from projectile
-
-#+begin_src emacs-lisp
-(after! projectile
-  (setq projectile-project-search-path `((,(t/user-file "Projects/") . 1)))
-  (add-to-list 'projectile-globally-ignored-directories "^build$")
-  (add-to-list 'projectile-globally-ignored-directories "^target$")
-  (add-to-list 'projectile-globally-ignored-directories "^\\.log$"))
-#+end_src
-
-*** Workspaces
-
-Improved switching
-
-#+begin_src emacs-lisp
-(defun t/+workspace/switch-to (&optional &rest args)
-  "Custom switch-to workspace, that puts the last visited one first, so its just
-  an enter away. When you start typing, it narrows like usual."
-  (interactive)
-  (let ((completion-extra-properties
-         `(:display-sort-function
-           ,(lambda (completions)
-              (if (and +workspace--last
-                       ;; and not yet typed anything
-                       (string-empty-p (minibuffer-contents-no-properties)))
-                  (append (list +workspace--last)
-                          (remove +workspace--last completions))
-                completions)))))
-    (call-interactively '+workspace/switch-to)))
-(map!
- :leader "1" '+workspace/switch-to-0
- :leader "2" '+workspace/switch-to-1
- :leader "3" '+workspace/switch-to-2
- :leader "4" '+workspace/switch-to-3
- :leader "5" '+workspace/switch-to-4
- :leader "6" '+workspace/switch-to-5
- :leader "7" '+workspace/switch-to-6
- :leader "8" '+workspace/switch-to-7
- :leader "9" '+workspace/switch-to-8
- :leader "0" '+workspace/switch-to-final
- :leader "-" 't/+workspace/switch-to)
-#+end_src
-
-And fix ~super~ navigation across modes that steal ~SPC~.
-
-#+begin_src emacs-lisp
-(map!
- "s-1" '+workspace/switch-to-0
- "s-2" '+workspace/switch-to-1
- "s-3" '+workspace/switch-to-2
- "s-4" '+workspace/switch-to-3
- "s-5" '+workspace/switch-to-4
- "s-6" '+workspace/switch-to-5
- "s-7" '+workspace/switch-to-6
- "s-8" '+workspace/switch-to-7
- "s-9" '+workspace/switch-to-8
- "s-0" 'doom/reset-font-size)
-#+end_src
-
-Be explicit about when deleting workspaces
-
-#+begin_src emacs-lisp
-(after! (:and evil persp-mode)
-  (define-key! persp-mode-map
-    [remap delete-window] #'delete-window
-    [remap evil-window-delete] #'delete-window))
-
-(map!
- :map doom-leader-workspace-map
- :leader :desc "Other workspace" "TAB '" '+workspace/other
- :leader :desc "New workspace" "TAB w" '+workspace/new-named
- :leader :desc "Next workspace" "TAB n" '+workspace:switch-next
- :leader :desc "Previous workspace" "TAB p" '+workspace:switch-previous
- :leader :desc "Swap next" "TAB j" '+workspace/swap-right
- :leader :desc "Swap previous" "TAB k" '+workspace/swap-left)
-
-(map!
- :desc "Rename workspace" "s-r" '+workspace/rename)
-#+end_src
-
-*** Company
-
-Make tab accept the current suggestion, and make popups scrollable. Note the space.
-
-#+begin_src emacs-lisp
-(after! company
-  (defun t/company-doc-scroll-up ()
-    "Scroll up in company documentation."
-    (interactive)
-    (when-let ((win (get-buffer-window " *company-box-1doc*" t)))
-      (with-selected-window win
-        (scroll-down-command))))
-
-  (defun t/company-doc-scroll-down ()
-    "Scroll down in company documentation."
-    (interactive)
-    (when-let ((win (get-buffer-window " *company-box-1doc*" t)))
-      (with-selected-window win
-        (scroll-up-command))))
-
-  (map! :map company-active-map
-        "<tab>" 'company-complete-selection
-        ;; and c-e and right arrow like in zsh-autosuggest
-        "C-e" 'company-complete-selection
-        "<right>" 'company-complete-selection
-        ;; force help window
-        "C-h" 'company-show-doc-buffer
-        ;; scroll window
-        "C-S-v" 't/company-doc-scroll-up
-        "C-v" 't/company-doc-scroll-down)
-  )
-#+end_src
-
-*** Tramp
-
-#+begin_src emacs-lisp
-(after! tramp
-
-  (setq tramp-default-method "ssh"
-        tramp-verbose 1
-        tramp-default-remote-shell "/bin/bash"
-        tramp-connection-local-default-shell-variables
-        '((shell-file-name . "/bin/bash")
-          (shell-command-switch . "-c")))
-
-  (connection-local-set-profile-variables 'tramp-connection-local-default-shell-profile
-                                          '((shell-file-name . "/bin/bash")
-                                            (shell-command-switch . "-c"))))
-#+end_src
-
-Recentf cleanup logs a lot of error messages, like [[https://discourse.doomemacs.org/t/recentf-cleanup-logs-a-lot-of-error-messages/3273/4][described here]]
-
-#+begin_src emacs-lisp
-(after! tramp
-  ;; https://discourse.doomemacs.org/t/recentf-cleanup-logs-a-lot-of-error-messages/3273/4
-  (advice-add 'doom--recentf-file-truename-fn :override
-              (defun my-recent-truename (file &rest _args)
-                (if (or (not (file-remote-p file))
-                        (equal "sudo" (file-remote-p file 'method)))
-                    (abbreviate-file-name (file-truename (tramp-file-local-name file)))
-                  file))))
-#+end_src
-
-
-Editorconfig is extremely slow, e.g. when using ~doom/sudo-find-file~ to open, say, ~/etc/systemd/system/~. This fixes that.
-
-#+begin_src emacs-lisp
-(after! tramp
-  (setq tramp-ignored-file-name-regexp ".editorconfig"))
-#+end_src
-
-**** Github Codespaces
-
-Add for Github codespaces over ssh, for tramp editing, e.g. with ~C-x C-f /ghcs:codespace-name:/path/to/file~
-
-Thanks to https://blog.sumtypeofway.com/posts/emacs-config.html for this one
-
-#+begin_src emacs-lisp
-(after! tramp
-  (let ((ghcs (assoc "ghcs" tramp-methods))
-        (ghcs-methods '((tramp-login-program "gh")
-                        (tramp-login-args (("codespace") ("ssh") ("-c") ("%h")))
-                        (tramp-remote-shell "/bin/sh")
-                        (tramp-remote-shell-login ("-l"))
-                        (tramp-remote-shell-args ("-c")))))
-    ;; just for debugging the methods
-    (if ghcs (setcdr ghcs ghcs-methods)
-      (push (cons "ghcs" ghcs-methods) tramp-methods))))
-#+end_src
-
-The above needs the following feature in the codespace
-
-#+begin_src json :tangle no :results no
-{
-    "features": {
-        "ghcr.io/devcontainers/features/sshd:1": {
-            "version": "latest"
-        }
-    }
-}
-#+end_src
-
-*** Themes
-
-There's a lot of good [[file:~/.config/doom-local/straight/repos/themes/themes/][doom themes]]. I [[file:~/.config/doom-local/straight/repos/themes/themes/doom-one-theme.el::bg `(,(doom-darken "#282c34" 0.5) "black" "black"][tuned doom-one a little]], darkening some of the colors even more. Its in [[file:themes/t-doom-one-theme.el::(def-doom-theme t-doom-one][themes/t-doom-one-theme.el]].
-
-#+begin_src emacs-lisp
-(setq *t-themes* '(doom-feather-dark
-                   catppuccin
-                   doom-flatwhite)
-      doom-theme (car *t-themes*)
-      t-system-theme-dark 'doom-feather-dark
-      t-system-theme-light 'doom-flatwhite)
-#+end_src
-
-Cycle through nice ones.
-
-#+begin_src emacs-lisp
-(defun t/cycle-theme ()
-  "Cycle through the themes of `*t-themes*`."
-  (interactive)
-  (setq *t-themes*
-        (if (t/prefix-arg-universal?)
-            (append (list (car (reverse *t-themes*))) (butlast *t-themes*))
-          (append (cdr *t-themes*) (list (car *t-themes*)))))
-  (let ((theme (car *t-themes*)))
-    (disable-theme doom-theme)
-    (load-theme theme t)
-    (setq doom-theme theme)
-    (message "Theme: %s" theme)))
-#+end_src
-
-Bind it to =SPC t t=. To cycle the other way around do =SPC u= =SPC t t=
-
-#+begin_src emacs-lisp
-(map! :leader "t t" #'t/cycle-theme)
-#+end_src
-
-And cycle between the selected =t-system-theme-dark= and =t-system-theme-light= when the system appearance is changed on macos.
-
-#+begin_src emacs-lisp
-(advice-remove 't/toggle-system-appearence :after)
-(advice-add 't/toggle-system-appearence :after 't/load-system-theme)
-#+end_src
-
-**** Line numbers
-
-Determines the style of line numbers in effect. If set to =nil=, line numbers are disabled. For relative line numbers, set this to =relative=. Off by default, =relative= in programming modes. Toggle them with =SPC t l=.
-
-#+begin_src emacs-lisp
-(setq display-line-numbers-type nil)
-(setq-hook! 'prog-mode-hook display-line-numbers-type 'relative)
-#+end_src
-
-**** Rainbow mode
-
-***** Rainbow mode in prog modes
-
-#+begin_src emacs-lisp
-(setq show-paren-context-when-offscreen 'overlay)
-(add-hook! '(prog-mode-hook css-mode-hook html-mode-hook) 'rainbow-mode)
-(add-hook! '(prog-mode-hook css-mode-hook html-mode-hook) 'show-paren-mode)
-#+end_src
-
-***** TODO Color parens uniformly
-
-#+begin_src emacs-lisp
-(set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "Green" :weight 'bold)
-(after! rainbow-delimiters
-  ;; Show paren match face
-  (set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "Green" :weight 'bold)
-  ;; Rainbow delimiters faces
-  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "DeepPink4" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "DeepPink3" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "DeepPink2" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "DeepPink1" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "maroon4" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "maroon3" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-7-face nil :foreground "maroon2" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-8-face nil :foreground "maroon1" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-9-face nil :foreground "VioletRed3" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-unmatched-face nil :foreground "Red" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-mismatched-face nil :foreground "Orange" :overline nil :underline nil)
-)
-#+end_src
-
-*** Transparency
-
-#+begin_src emacs-lisp
-(let ((tr 99))
-  (t/transparency tr)
-  (comment
-   (advice-remove #'load-theme :after)
-   (advice-remove #'load-theme :before)
-   )
-  (advice-add #'doom/reload-theme :after (cmd! (t/transparency tr))))
-#+end_src
-
-*** Frame
-
-Show the buffer and the file
-
-#+begin_src emacs-lisp
-(setq frame-title-format "%b (%f)")
-#+end_src
-
-*** Windows
-
-**** Center windows when there's only one
-
-#+begin_src emacs-lisp
-(use-package! centered-window-mode
-  :hook ((prog-mode css-mode html-mode org-mode) . centered-window-mode))
-#+end_src
-
-**** Spacious-padding for more space
-
-#+begin_src emacs-lisp
-(use-package! spacious-padding
-  :defer t
-  :config (spacious-padding-mode))
-#+end_src
-
-**** Smooth scrolling
-
-#+begin_src emacs-lisp
-(pixel-scroll-precision-mode 1)
-#+end_src
-
-**** Scroll mru window
-
-Scroll most recently used window when using ~c-m-v~ and ~c-m-S-v~.
-
-#+begin_src emacs-lisp
-(setq other-window-scroll-default #'get-lru-window)
-#+end_src
-
-**** Split windows manually
-
-If say a single dired window is visible and it is dedicated, allow splitting, else never allow splitting.
-
-#+begin_src emacs-lisp
-(setq split-window-preferred-function 'split-window-sensibly)
-#+end_src
-
-**** Resize window combinations proportionally
-
-#+begin_src emacs-lisp
-(setq-default window-combination-resize t)
-#+end_src
-
-**** Resize using arrow keys
-
-If there is no window in the direction you move, send the keypress for the direction instead =hjkl=.
-
-#+begin_src emacs-lisp
-(map! :after evil
-      :map evil-window-map
-      "s" (t/micro-state
-           nil
-           "<left>" (cmd! (cond
-                           ((and (window-in-direction 'right) (window-in-direction 'left)) (evil-resize-window (- (window-width) 8) t))
-                           ((window-in-direction 'left) (evil-resize-window (+ (window-width) 8) t))
-                           ((window-in-direction 'right) (evil-resize-window (- (window-width) 8) t))
-                           (t (execute-kbd-macro "h"))))
-           "<right>" (cmd! (cond
-                            ((and (window-in-direction 'right) (window-in-direction 'left)) (evil-resize-window (+ (window-width) 8) t))
-                            ((window-in-direction 'right) (evil-resize-window (+ (window-width) 8) t))
-                            ((window-in-direction 'left) (evil-resize-window (- (window-width) 8) t))
-                            (t (execute-kbd-macro "l"))))
-           "<up>" (cmd! (cond
-                         ((and (window-in-direction 'up) (window-in-direction 'down)) (evil-resize-window (+ (window-height) 4)))
-                         ((window-in-direction 'down) (evil-resize-window (- (window-height) 4)))
-                         ((window-in-direction 'up) (evil-resize-window (+ (window-height) 4)))
-                         (t (execute-kbd-macro "k"))))
-           "<down>" (cmd! (cond
-                           ((and (window-in-direction 'up) (window-in-direction 'down)) (evil-resize-window (- (window-height) 4)))
-                           ((window-in-direction 'up) (evil-resize-window (- (window-height) 4)))
-                           ((window-in-direction 'down) (evil-resize-window (+ (window-height) 4)))
-                           (t (execute-kbd-macro "j"))))))
-#+end_src
-
-*** Popups
-
-Clean up popup definitions with [[elisp:(+popup-cleanup-rules-h)]]
-
-*** Jump around
-
-Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~ or ~SPC u~.
-
-#+begin_src emacs-lisp
-(map!
- :leader
- (:prefix-map ("j" . "jump")
-              (:when t
-                :desc "Jump to window"      "W" #'ace-window
-                :desc "Jump to word"        "w" #'avy-goto-word-1
-                :desc "Jump to line"        "l" #'avy-goto-line
-                :desc "org: Jump to header" "h" #'avy-org-goto-heading-timer
-                :desc "Jump to char"        "c" #'avy-goto-char-2
-                :desc "Jump to char"        "C" #'avy-goto-char)))
-#+end_src
-
-**** Avy tweaks
-
-#+begin_src emacs-lisp
-(after! (avy evil-integration)
-  (defun t/setup-avy (&optional frame)
-    (interactive)
-    (setq avy-keys '(?j ?f ?d ?k ?s ?a)
-          avy-timeout-seconds 0.2
-          ;;avy-all-windows 'all-frames
-          avy-all-windows nil
-          avy-case-fold-search nil
-          avy-highlight-first t
-          avy-style 'at-full
-          avy-background t)
-    (let* ((b "#222") (f "DeepPink1"))
-      (set-face-attribute 'avy-background-face nil :foreground b)
-      (set-face-attribute 'avy-lead-face   nil :background b :foreground f :weight 'bold)
-      (set-face-attribute 'avy-lead-face-0 nil :background b :foreground f :weight 'bold)
-      (set-face-attribute 'avy-lead-face-1 nil :background b :foreground f :weight 'bold)
-      (set-face-attribute 'avy-lead-face-2 nil :background b :foreground f :weight 'bold)))
-
-  (t/setup-avy)
-
-  ;;Also after creating a new frame when emacs is in daemon mode
-  (add-hook! 'doom-load-theme-hook :append #'t/setup-avy))
-#+end_src
-
-**** Indent messes up Avy
-
-#+begin_src emacs-lisp
-(advice-add
- 'evil-avy-goto-line :around
- (defun t/around-avy (fn)
-   (interactive)
-   (let ((indent-bars-on?))
-     (when indent-bars-mode
-       (setq indent-bars-on? t)
-       (indent-bars-mode -1))
-     (funcall fn)
-     (when indent-bars-on?
-       (indent-bars-mode 1)))))
-#+end_src
-
-*** Smartparens
-
-Use paredit bindings. Make =`'= a pair in emacs lisp mode.
-
-#+begin_src emacs-lisp
-(after! smartparens
-  (sp-local-pair 'emacs-lisp-mode "`" "'" :when '(sp-in-docstring-p))
-  (add-hook! (clojure-mode emacs-lisp-mode cider-repl-mode) :append #'smartparens-strict-mode)
-  (sp-use-paredit-bindings))
-#+end_src
-
-And add some extra pairs for org mode.
-
-#+begin_src emacs-lisp
-(after! smartparens
-  (sp-with-modes 'org-mode
-    (sp-local-pair "`" "'" :when '(sp-in-docstring-p))
-    (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
-    (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-    (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-    (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-    (sp-local-pair "<" ">" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-    (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
-    (sp-local-pair "«" "»")))
-#+end_src
-
-Smartparens-mode paredit bindings in org mode messes up ~M-up~ and ~M-down~, bring them back.
-
-#+begin_src emacs-lisp
-(add-hook! 'org-mode-hook
-  (defun t/org-mode-hook ()
-    (map!
-     :map evil-motion-state-local-map
-     "M-<up>"    'org-metaup
-     "M-<down>"  'org-metadown
-     "M-S-<right>" 'org-shiftmetaright
-     "M-S-<left>" 'org-shiftmetaleft)))
-#+end_src
-
-Don't create cache files
-
-#+begin_src emacs-lisp
-(add-hook! 'org-mode-hook (defun t/org-disable-auto-save-mode () (interactive) (auto-save-mode -1)))
-#+end_src
-
-Bring back ~C-k~ in the minibuffer. Overrides [[file:~/.config/emacs/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]].
-
-#+begin_src emacs-lisp
-(map! :map (evil-ex-completion-map evil-ex-search-keymap)
-      :gi "C-k" #'kill-line)
-(define-key!
-  :keymaps +default-minibuffer-maps
-  "C-k" #'kill-line)
-#+end_src
-
-**** Wrap around
-
-Support wrapping sexps by holding super, both in normal mode and insert mode, from the front and the back of expressions.
-
-#+begin_src emacs-lisp
-(map! :map smartparens-mode-map
-      ;; literally S-s-8 on a norwegian mac keyboard
-      :n "s-(" (cmd! (evil-emacs-state nil)
-                     (sp-wrap-with-pair "\(")
-                     (evil-normal-state nil))
-      :i "s-(" (cmd! (sp-wrap-with-pair "\("))
-
-      ;; literally S-s-MetaRight-8 on my norwegian mac keyboard
-      :n "s-{" (cmd! (evil-emacs-state nil)
-                     (sp-wrap-with-pair "\{")
-                     (evil-normal-state nil))
-      :i "s-{" (cmd! (sp-wrap-with-pair "\{"))
-
-      ;; literally S-MetaRight-8 on my norwegian mac keyboard
-      :n "s-[" (cmd! (evil-emacs-state nil)
-                     (sp-wrap-with-pair "\[")
-                     (evil-normal-state nil))
-      :i "s-[" (cmd! (sp-wrap-with-pair "\["))
-
-      ;; literally S-s-9 on a norwegian mac keyboard
-      :n "s-)" (cmd! (evil-emacs-state nil)
-                     (backward-sexp)
-                     (sp-wrap-with-pair "\(")
-                     (forward-sexp)
-                     (evil-normal-state nil))
-      :i "s-)" (cmd! (backward-sexp)
-                     (sp-wrap-with-pair "(")
-                     (forward-sexp))
-
-      ;; literally S-s-MetaRight-9 on my norwegian mac keyboard
-      :n "s-}" (cmd! (evil-emacs-state nil)
-                     (backward-sexp)
-                     (sp-wrap-with-pair "\{")
-                     (forward-sexp)
-                     (evil-normal-state nil))
-      :i "s-}" (cmd! (backward-sexp)
-                     (sp-wrap-with-pair "\{")
-                     (forward-sexp))
-
-      ;; literally S-MetaRight-9 on my norwegian mac keyboard
-      :n "s-]" (cmd! (evil-emacs-state nil)
-                     (backward-sexp)
-                     (sp-wrap-with-pair "\[")
-                     (forward-sexp)
-                     (evil-normal-state nil))
-      :i "s-]" (cmd! (backward-sexp)
-                     (sp-wrap-with-pair "\[")
-                     (forward-sexp)))
-#+end_src
-
-**** Expand braces
-
-[[file:~/.config/emacs/modules/config/default/config.el::dolist (brace '("(" "{" "\[")][Override this to always expand braces]].
-
-#+begin_src emacs-lisp
-(after! smartparens
-  (sp-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " " ")))
-  (sp-pair "(" nil :post-handlers '(("||\n[i]" "RET") ("| " " ")))
-  (sp-pair "[" nil :post-handlers '(("||\n[i]" "RET"))))
-#+end_src
-
-*** Distraction free / Zen
-
-A _really global_ global writeroom mode. The function is redefined such that if writeroom-major-modes is nil, writeroom-mode is activated in ALL buffers.
-
-#+begin_src emacs-lisp
-(setq writeroom-major-modes nil)
-(defun turn-on-writeroom-mode ()
-  (interactive)
-  (when (or (not writeroom-major-modes)
-            (apply 'derived-mode-p writeroom-major-modes))
-    (writeroom-mode 1)))
-#+end_src
-
-The [[https://docs.doomemacs.org/latest/modules/ui/zen/][doom default text scale of 2]] is a bit heavy
-
-#+begin_src emacs-lisp
-(setq +zen-text-scale 0)
-#+end_src
-
-Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly bound to ~s-?~. Give it an even more awkward binding.
-
-#+begin_src emacs-lisp
-(map! :map writeroom-mode-map
-      "s-?" (cmd! (text-scale-increase 1))
-      "s-:" 'writeroom-toggle-mode-line)
-#+end_src
-
-And screens are big, so a bit more space for text is nice.
-
-#+begin_src emacs-lisp :results silent
-(defun t/sidebar-frac (&optional ignore)
-  (let* ((w-px (frame-pixel-width (selected-frame)))
-         (h-px (frame-pixel-height (selected-frame)))
-         (w (frame-width (selected-frame))))
-    ;; noisy
-    ;; (message "w: %s, w-px: %s, h-px: %s" w w-px h-px)
-    (cond
-     ((< w-px h-px) (/ (float 1) 3))
-     ((> w 200) (/ (float 2) 5))
-     ((and (> w 160) (> w-px 1440)) (/ (float 3) 7))
-     (t (/ (float 2) 5)))))
-(after! writeroom-mode
-  (setq writeroom-width (t/sidebar-frac)))
-(after! olivetti
-  (setq olivetti-minimum-body-width 100)
-  (setq-default olivetti-body-width (floor (* (frame-width (selected-frame)) (t/sidebar-frac))))
-  (add-to-list 'window-size-change-functions 'olivetti-set-window t))
-#+end_src
-
-Adjust margins equally across modes.
-
-#+begin_src emacs-lisp
-(map! :map evil-window-map
-      "M" (t/micro-state
-           nil
-           "<left>" (cmd! (cond
-                           ((and (boundp 'writeroom-mode) writeroom-mode) (writeroom-decrease-width))
-                           ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-shrink))
-                           (t (t/margins-global-decrease))))
-           "<right>" (cmd! (cond
-                            ((and (boundp 'writeroom-mode) writeroom-mode) (writeroom-increase-width))
-                            ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-expand))
-                            (t (t/margins-global-increase))))))
-#+end_src
-
-*** Modeline
-
-Show workspace in modeline, adjust bar width, moar iconz, truncate path.
-
-#+begin_src emacs-lisp
-(defun t/doom-modeline-mode-hook (&optional &rest ignore)
-  (interactive)
-  (setq doom-modeline-persp-name t
-        doom-modeline-persp-icon t
-        ;; doom-modeline-height (* 2 (font-get (or (and doom-big-font-mode doom-big-font) doom-font) :size))
-        ;; doom-feather-dark-padded-modeline t
-        doom-themes-padded-modeline t
-        doom-modeline-bar-width 4
-        doom-modeline-github t
-        doom-modeline-repl t
-        doom-modeline-battery t
-        display-time-24hr-format t
-        ;; it needs padding to the right
-        display-time-string-forms '(dayname " " day "/" month "       ")
-        doom-modeline-major-mode-icon t
-        doom-modeline-major-mode-color-icon t
-        doom-modeline-buffer-file-name-style 'truncate-upto-root)
-  (use-package! mu4e-alert
-    :after mu4e
-    :init (setq doom-modeline-mu4e nil)
-    :config (mu4e-alert-enable-mode-line-display))
-  (after! doom-modeline
-    (set-face-attribute 'doom-modeline-persp-name nil :foreground "DeepPink2" :weight 'bold :italic nil)
-    (display-battery-mode)
-    (display-time-mode)
-    (doom-modeline-github-timer)))
-(t/doom-modeline-mode-hook)
-(add-hook! 'doom-load-theme-hook :append #'t/doom-modeline-mode-hook)
-#+end_src
-
-**** Doom modeline customization
-:PROPERTIES:
-:header-args: :noeval t :tangle no
-:END:
-
-Read more on [[https://github.com/seagle0128/doom-modeline][seagle0128/doom-modeline]]
-
-***** Get a modeline
-
-#+begin_src emacs-lisp
-(doom-modeline 'main)
-#+end_src
-
-#+RESULTS:
-| :eval | (doom-modeline-format--main) |
-
-***** Create a modeline
-
-You could add your own segments to something like this.
-
-#+begin_src emacs-lisp
-(doom-modeline-def-modeline 't-modeline
-  '(bar window-number modals matches buffer-info-simple)
-  '(media-info major-mode time))
-#+end_src
-
-#+RESULTS:
-: doom-modeline-format--t-modeline
-
-Running it creates the function
-
-#+begin_src emacs-lisp
-(doom-modeline-format--t-modeline)
-#+end_src
-
-#+RESULTS:
-| ((:eval (doom-modeline-segment--bar)) (:eval (doom-modeline-segment--window-number)) (:eval (doom-modeline-segment--modals)) (:eval (doom-modeline-segment--matches)) (:eval (doom-modeline-segment--buffer-info-simple)))  |   | ((:eval (doom-modeline-segment--media-info)) (:eval (doom-modeline-segment--major-mode)) (:eval (doom-modeline-segment--time))) |
-
-***** Set the modeline
-
-#+begin_src emacs-lisp
-(doom-modeline-set-modeline 't-modeline)
-#+end_src
-
-#+RESULTS:
-| %e | (:eval (doom-modeline-format--t-modeline)) |
-
-***** This sets buffer-local ~mode-line-format~ to show it
-
-#+begin_src emacs-lisp
-mode-line-format
-#+end_src
-
-#+RESULTS:
-| %e | (:eval (doom-modeline-format--t-modeline)) |
-
-To set it by default ~(setf (default-value 'mode-line-format) ...)~ is used
-
-**** Create your own segment
-
-#+begin_src emacs-lisp
-(after! doom-modeline
-  (doom-modeline-def-segment tasks
-    "Display # of tasks not refiled. Use (nerd-icons-insert-faicon) to look up icons."
-    (concat
-     (doom-modeline-spc)
-     (when-let ((icon (doom-modeline-icon 'faicon "nf-fae-checklist_o" "🗉" "")))
-       (concat
-        (doom-modeline-display-icon icon)
-        (doom-modeline-vspc)
-        (if (not (get-buffer "tasks.org"))
-            "n/a"
-          (with-current-buffer "tasks.org"
-            (let ((count 0))
-              ;; for each heading
-              (org-map-entries
-               (lambda (&optional heading)
-                 (when (not (org-entry-is-done-p))
-                   (setq count (1+ count))))
-               ;; all headline
-               t
-               ;; in file
-               'file)
-              ;; needs to be string
-              (format "%s" count))))
-        (doom-modeline-vspc)
-        )))))
-#+end_src
-
-**** Extend the doom 'main default one, by advicing it
-
-It has 3 parts, the left, the separator and the right.
-
-#+begin_src emacs-lisp
-(defun t/around-doom-modeline-format--main (fn)
-  (interactive)
-  (let ((res (funcall fn)))
-    (list
-     (nth 0 res)
-     (nth 1 res)
-     (cons '(:eval (doom-modeline-segment--tasks))
-           (nth 2 res)))))
-
-(advice-remove 'doom-modeline-format--main 't/around-doom-modeline-format--main)
-(advice-add 'doom-modeline-format--main :around 't/around-doom-modeline-format--main)
-#+end_src
-
-*** Dictionary
-
-Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~.
-
-#+begin_src emacs-lisp
-(set-popup-rule! "^\\*osx-dictionary" :side 'right :size 0.5 :vslot 3)
-(set-popup-rule! "^\\*Dictionary" :side 'right :size 0.5 :vslot 2)
-(setq osx-dictionary-generate-buffer-name-function
-      (lambda (&rest args)
-        (pop-to-buffer osx-dictionary-buffer-name)
-        osx-dictionary-buffer-name))
-#+end_src
-
-*** REPLs
-
-#+begin_src emacs-lisp
-(set-popup-rule! "^\\*ielm" :side 'right :size 0.5 :vslot 1)
-(after! ielm
-  (add-hook 'inferior-emacs-lisp-mode-hook 'evil-cleverparens-mode))
 #+end_src
 
 ** Dotfiles
@@ -2127,7 +681,10 @@ Motion keys for info mode.
              ((equal major-mode 'org-mode) (concat "%a"))
              (t (get-text-property (point) 'shr-url)))))
 
-  (setq org-tags-column -60
+  (setq org-directory (t/user-dropbox-folder "org/")
+        org-agenda-files (list org-directory)
+        org-archive-location "%s_archive.gpg::" ; so files are encrypted automatically
+        org-tags-column -60
         org-hide-emphasis-markers t  ; hide symbols like ~ and / when wrapped around text
         org-support-shift-select t   ; shift can be used to mark multiple lines
         org-special-ctrl-k t         ; don't clear tags, etc
@@ -3772,6 +2329,26 @@ By entering ~vterm-copy-mode~ before running the search vterm will be prevented 
 
 ** VC
 
+*** VC Gutter refresh
+
+Magit commits can leave the VC gutter stale until you visit the buffer again. Force a refresh after magit updates and after a commit finishes.
+
+#+begin_src emacs-lisp
+(defun t/vc-gutter-refresh-all (&rest _)
+  (if (fboundp '+vc-gutter-update-h)
+      (dolist (buf (buffer-list))
+        (with-current-buffer buf
+          (when buffer-file-name
+            (+vc-gutter-update-h))))
+    (message "+vc-gutter-update-h not available; skipping refresh")))
+
+(after! magit
+  (add-hook! 'magit-post-refresh-hook #'t/vc-gutter-refresh-all))
+
+(after! git-commit
+  (add-hook! 'git-commit-post-finish-hook #'t/vc-gutter-refresh-all))
+#+end_src
+
 *** Ediff
 
 Sometimes you need both changes.
@@ -4888,6 +3465,166 @@ Useful e.g. to make dired act like a directory tree sidebar
  )
 #+end_src
 
+** default workspaces
+
+#+begin_src emacs-lisp
+(after! workspaces
+  (advice-add '+workspace/kill-session :before 'eglot-shutdown-all))
+(defun t/+workspace-new (name &rest buffers)
+  (interactive)
+  (+workspace-switch name t)
+  (dolist (buffer (reverse buffers))
+    (find-file buffer)))
+(defun t/default-workspaces-init ()
+  (interactive)
+  (t/+workspace-new "doom" doom-user-dir)
+  (t/+workspace-new "dot" "~/Projects/dotfiles")
+  (t/+workspace-new "nix-darwin" "~/.config/nix-darwin/" "~/.config/nix-darwin/flake.nix" "~/.config/nix-darwin/home/default.nix")
+  (t/+workspace-new "org" (format "%s/home.org.gpg" (car org-agenda-files))))
+(defun t/default-workspaces ()
+  (interactive)
+  (if (equal '("main") (+workspace-list-names))
+      (t/default-workspaces-init)
+    (message "Workspaces exist, bailing: %s" (+workspace-list-names))))
+#+end_src
+
+** Send to kindle
+
+#+begin_src emacs-lisp
+(defcustom send-to-kindle-from-email
+  (getenv "USER_EMAIL")
+  "Your own email address to send from via mu4e."
+  :type 'string
+  :group 'send-to-kindle)
+
+(defcustom send-to-kindle-to-email
+  nil
+  "Your Kindle email address to send pdf to, or look it up from 1p."
+  :type 'string
+  :group 'send-to-kindle)
+
+(defun send-to-kindle-as-txt (review)
+  (interactive "P")
+  (unless send-to-kindle-from-email
+    (setq send-to-kindle-from-email
+          (read-string "From email address: ")))
+  (unless send-to-kindle-to-email
+    (setq send-to-kindle-to-email
+          ;;(read-string "To email address: ")
+          (t/1p "send-to-kindle" "--format json | jq -j '.fields[] | select(.id == \"username\") | .value'")))
+  (let* ((content (string-trim (if (region-active-p)
+                                   (buffer-substring (region-beginning) (region-end))
+                                 (buffer-string))))
+         (note-name
+          (cond ((equal major-mode 'eww-mode) (nth 1 eww-data))
+                ((equal major-mode 'elfeed-show-mode) (elfeed-entry-title elfeed-show-entry))
+                (t (let ((name (string-trim (read-string "Note name: "))))
+                     (if (string-empty-p name)
+                         (nth
+                          0 (string-split
+                             (substring content 0 (min 40 (length content))) "\n"))
+                       name)))))
+         (path (concat (temporary-file-directory) note-name))
+         (txt (concat path ".txt"))
+         (buffer (get-buffer-create (generate-new-buffer-name "*Email txt*"))))
+    (with-temp-buffer
+      (insert content)
+      (write-file txt))
+    (with-current-buffer buffer
+      (erase-buffer)
+      (message-mode)
+      (insert
+       (format
+        "From: %s
+To: %s
+Subject: %s
+--text follows this line--
+<#multipart type=mixed>
+<#part type=\"text/plain\" filename=\"%s\" disposition=attachment>
+<#/part>
+<#/multipart>"
+        send-to-kindle-from-email
+        send-to-kindle-to-email
+        note-name txt))
+      (unless review
+        (message-send-and-exit)))
+    (when review
+      (switch-to-buffer buffer))))
+#+end_src
+
+** d2
+
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.d2\\'" . d2-mode))
+(setq d2-output-format ".svg")
+(setq d2-output-format ".png")
+
+(add-hook! 'after-save-hook
+  (defun t/recompile-d2-on-save ()
+    (when (s-ends-with? ".d2" (buffer-file-name))
+      (call-interactively 'd2-compile))))
+#+end_src
+
+** Supernote
+
+Try it [2025-05-20 tir]. Run [[elisp:(call-interactively 't/supernote)][(t/supernote)]] on any paragraph under the current heading, after the org mode date, to search for notes made on the day of it.
+
+E.g. if you run it from here ><, this ends up searching for ~txt 20250520~, which shows all supernote exports for the day.
+
+I use ~C-SPC~ to preview it, pick the right note, and usually ~C-,~ (embark-act) followed by ~<~ to insert the note where the cursor is.
+
+You could also link to note files from specific days, like this to show notes from May: [[elisp:(t/supernote "202505")][(t/supernote "202505")]].
+
+#+begin_src emacs-lisp
+(defun t/supernote (&optional search-date)
+  "Search for supernote exports, using `consult-fd', from the date of the closest org timestamp."
+  (interactive)
+  ;; make it so that C-SPC previews the file by using find-file
+  (after! embark
+    (add-to-list 'embark-default-action-overrides '(file . find-file)))
+  (consult-fd
+   (t/user-dropbox-folder "Supernote")
+   (concat
+    "txt "
+    (or
+     search-date
+     ;; org date at point
+     (when-let* ((type (org-element-type (org-element-context)))
+                 (closest-heading-pos (org-element-begin (org-element-lineage
+                                                          (org-element-at-point)
+                                                          '(headline)
+                                                          'with-self)))
+                 (timestamp-cons (let ((pos (point)))
+                                   ;; move to timestamp start
+                                   (if (re-search-backward "\\[[0-9]" closest-heading-pos t 1)
+                                       (save-excursion (org-element-timestamp-parser))
+                                     nil)))
+                 (timestamp (cadr timestamp-cons)))
+       (let* ((y (plist-get timestamp :year-start))
+              (m (plist-get timestamp :month-start))
+              (d (plist-get timestamp :day-start))
+              (date (format "%s%s%s" y (format "%02d" m) (format "%02d" d))))
+         date))
+     ;; or current date
+     (format-time-string "%Y%m%d" nil "Europe/Oslo"))
+    )))
+#+end_src
+
+** nix
+
+#+begin_src emacs-lisp
+(after! eglot
+  (add-to-list 'eglot-server-programs '(nix-mode . ("nixd"))))
+#+end_src
+
+** printer
+
+#+begin_src emacs-lisp
+(setq printer-name "canonix6500")
+(comment 
+ (lpr-buffer))
+#+end_src
+
 ** Someday
 :PROPERTIES:
 :header-args:emacs-lisp: :lexical t :results silent
@@ -4904,7 +3641,7 @@ Useful e.g. to make dired act like a directory tree sidebar
   (setq emms-player-list (list 'emms-player-mpd))
   (setq emms-info-functions (list 'emms-info-mpd))
   (emms-cache-set-from-mpd-all))
-  #+end_src
+#+end_src
 
 Then type ~C-ret~ to add something to the playlist.
 
@@ -5153,163 +3890,1491 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
         (ellama-summarize)))))
 #+end_src
 
-** default workspaces
+** Notes (no tangle)
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+Scratch notes and examples go here to avoid accidental tangling.
+
+
+** Editor
+
+*** Recursive minibuffers
+
+When you change your mind and need to do something first, after you already started a command that opens the minibuffer. Cancel them with ~C-]~.
 
 #+begin_src emacs-lisp
-(after! workspaces
-  (advice-add '+workspace/kill-session :before 'eglot-shutdown-all))
-(defun t/+workspace-new (name &rest buffers)
+(setq enable-recursive-minibuffers t)
+#+end_src
+
+And a slightly fancier indicator than ~(minibuffer-depth-indicate-mode)~
+
+#+begin_src emacs-lisp
+(use-package! recursion-indicator
+  :config
+  (recursion-indicator-mode))
+#+end_src
+
+*** Auth sources
+
+Move ~~/.authinfo.gpg~ to the front. It is originally behind the macos keychain that doom puts in there.
+
+#+begin_src emacs-lisp
+(after! auth-source (setq auth-sources (nreverse auth-sources)))
+#+end_src
+
+Defaults
+
+#+begin_src emacs-lisp
+(let ((h (* 1 60 60)))
+  (setq auth-source-do-cache t
+        auth-source-cache-expiry h
+        password-cache t
+        password-cache-expiry h))
+
+(after! epa
+  (setq-default epa-file-encrypt-to '("torgeir@keybase.io"))
+  ;; https://irreal.org/blog/?p=11827
+  (fset 'epg-wait-for-status 'ignore))
+#+end_src
+
+*** Which key
+
+Wait just long enough.
+
+#+begin_src emacs-lisp
+(setq which-key-idle-delay 0.5
+      which-key-idle-secondary-delay 0.05)
+#+end_src
+
+*** Disable annoying defaults
+
+Reset [[file:~/.config/emacs/modules/config/default/config.el::(map! "<M-up>" #'drag-stuff-up][drag stuff on meta arrows]], ~m-left/right~ is too engrained to move between words.
+
+#+begin_src emacs-lisp
+;; TODO kjører ikke på linux?
+(add-hook! 'doom-after-init-hook :append
+  (defun t/unbind-drag-stuff ()
+    (interactive)
+    (map! :g "M-<left>"  nil
+          :g "M-<right>" nil)))
+#+end_src
+
+On load theme
+
+#+begin_src emacs-lisp
+(defun t/doom-load-theme-hook (&optional &rest _)
+  "This is unused atm, no longer needed the highlight indent guides mode stuff."
+  (interactive))
+(advice-remove 'load-theme 't/doom-load-theme-hook)
+(advice-add 'load-theme :after 't/doom-load-theme-hook)
+#+end_src
+
+Opt-in to emojis instead :rocket:
+
+#+begin_src emacs-lisp
+(after! emojify
+  (global-emojify-mode -1))
+#+end_src
+
+Soft wrap everywhere
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-after-init-hook
+  (defun t/after-init-hook ()
+    (setq truncate-lines t)
+    (global-visual-line-mode 0)
+    (global-hl-line-mode -1)))
+#+end_src
+
+Programming modes
+
+#+begin_src emacs-lisp
+(add-hook! '(prog-mode-hook text-mode-hook conf-mode-hook)
+  (defun t/prog-mode-hook ()
+    (interactive)))
+#+end_src
+
+*** Whitespace
+
+#+begin_src emacs-lisp
+(after! whitespace
+  (add-to-list 'whitespace-style 'trailing))
+(add-hook!
+ '(prog-mode-hook org-mode-hook)
+ (defun t/set-whitespace-style ()
+   (interactive)
+   (setq whitespace-style '(face tabs trailing lines ;; space-mark spaces
+                            space-before-tab newline indentation
+                            empty space-after-tab tab-mark
+                            newline-mark missing-newline-at-eof))))
+#+end_src
+
+*** Emmet
+
+#+begin_src emacs-lisp
+(after! emmet-mode
+  (add-to-list 'emmet-jsx-major-modes 'typescript-ts-mode)
+  (add-to-list 'emmet-jsx-major-modes 'tsx-ts-mode)
+  (add-to-list 'emmet-jsx-major-modes 'deno-ts-mode)
+  (add-to-list 'emmet-jsx-major-modes 'deno-tsx-ts-mode)
+  )
+#+end_src
+
+*** Evil
+
+I spent so much time with vim, I will probably never give it up.
+
+**** Config
+
+Bring back
+
+#+begin_src emacs-lisp
+(after! evil-escape
+  (setq evil-escape-key-sequence "jk"))
+#+end_src
+
+Useful for ~C-e~ followed by ~C-x C-e~ to eval an s-expression. Makes ~cleverparens~ nav commands like ~L~ and ~H~ move across sexps
+
+#+begin_src emacs-lisp
+(setq evil-move-beyond-eol t)
+#+end_src
+
+Don't use zz and zq for org src editing
+
+#+begin_src emacs-lisp
+(after! evil-collection
+  (add-to-list 'evil-collection-key-blacklist "ZZ")
+  (add-to-list 'evil-collection-key-blacklist "ZQ"))
+#+end_src
+
+Fine undo
+
+#+begin_src emacs-lisp
+(after! evil
+  (setq evil-want-fine-undo t))
+#+end_src
+
+Max number of hits shown
+
+#+begin_src emacs-lisp
+(setq anzu-search-threshold 2000)
+#+end_src
+
+**** Certain modes not evil
+
+#+begin_src emacs-lisp
+(set-evil-initial-state! 'emms-browser-mode 'normal)
+#+end_src
+
+**** Indent after paste
+
+Indent after paste if universal arg ~c-u~ was pressed first.
+
+#+begin_src emacs-lisp
+(defun t/indent-after-paste (fn &rest args)
+  (evil-start-undo-step)
+  (let* ((u-prefix (t/prefix-arg-universal?))
+         (current-prefix-arg (unless u-prefix current-prefix-arg))
+         (args (if u-prefix (list nil) args)))
+    (apply fn args)
+    (if u-prefix
+        (indent-region (region-beginning) (region-end))))
+  (evil-end-undo-step))
+
+(advice-add 'yank :around #'t/indent-after-paste)
+(advice-add 'evil-paste-before :around #'t/indent-after-paste)
+(advice-add 'evil-paste-after :around #'t/indent-after-paste)
+#+end_src
+
+**** Unbind C-h in evil window bindings
+
+I use ~SPC w h~ instead of ~SPC w C-h~ to move to the left window. ~C-h~ is more useful as =embark-prefix-help-command=, which this falls back to, like in all other keymaps
+
+#+begin_src emacs-lisp
+(map! :after evil :map evil-window-map "C-h" nil)
+#+end_src
+
+Try e.g. ~SPC C-h~ to browse all available commands with vertico.
+
+**** Increment & Decrement number
+
+#+begin_src emacs-lisp
+(map! :n "g-" #'evil-numbers/dec-at-pt
+      :n "g+" #'evil-numbers/inc-at-pt)
+#+end_src
+
+**** Registers
+
+Some macros I once used.
+
+This one makes camelCaseWords into to snakeCaseWords, or the other way around. Run it with ~@c~ or ~@s~.
+
+#+begin_src emacs-lisp
+(evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
+(evil-set-register ?s [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?_ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?\\ ?u ?\\ ?2 ?/ ?g])
+#+end_src
+
+**** Goggles
+
+#+begin_src emacs-lisp
+(after! evil-goggles
+  (setq evil-goggles-duration 0.2
+        evil-goggles-enable-delete t
+        evil-goggles-enable-change t)
+  (evil-goggles-use-magit-faces))
+#+end_src
+
+*** Macros
+
+A useful macro one for testing stuff out
+
+#+begin_src emacs-lisp
+(comment
+ (funcall (t/micro-state nil "m" (cmd! (message "1")))))
+#+end_src
+
+**** Macro numbered list
+
+Type ~qq~ to record a macro to ~q~. Move to where you want the number and press ~C-x C-k TAB~. Move to the next line start to make the macro repeatble. Type ~q~. Undo. Select the list and hit ~@q~.
+
+- one
+- two
+- three
+
+*** Embark
+
+#+begin_src emacs-lisp
+(map!
+ :g "C-," #'embark-act ; global
+ :map org-mode-map "C-," #'embark-act
+ :map minibuffer-mode-map "C-," #'embark-act)
+#+end_src
+
+Prevent =embark-export=, ~C-e~, from being "popupized" by doom's ~:ui popup~ and its ~(popup +all)~ setting.
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*Embark" :ignore t)
+#+end_src
+
+You can use ~C-SPC~ to preview candidates.
+
+Embark improves prefix help commands, e.g. ~C-c C-h~, by showing auto complete that is fuzzy searchable.
+
+Sometimes its useful not to close it. Hit ~q~ after opening it to ~embark-toggle-quit~ before e.g. running ~k~ to kill a buffer. Or use this with ~m-x~
+
+#+begin_src emacs-lisp
+(after! embark
+  (defun embark-act-noquit ()
+    "Run action but don't quit the minibuffer afterwards."
+    (interactive)
+    (let ((embark-quit-after-action nil))
+      (embark-act))))
+#+end_src
+
+*** Vertico
+
+Some commands are useful from within the minibuffer. =M-SPC= needs =enable-recursive-minibuffers=, see above.
+
+~C-a c-k~ is so engrained in my fingers, I need it everywhere. ~C-a~ seems to work out of the box.
+
+#+begin_src emacs-lisp
+(after! vertico
+  (map! :map (vertico-map
+              minibuffer-local-map
+              read--expression-map)
+        :g "C-k" 'kill-line
+        :g "M-SPC" 'doom/leader))
+#+end_src
+
+Exclude stuff from ~+default/search-project~ by placing excludes in [[file:~/.rgignore][~/.rgignore]]
+
+*** Eldoc
+
+Disable eldoc on the modeline, makes it so eldoc only appears on ~SPC h .~, i.e. on  ~m-x eldoc-doc-buffer~
+
+#+begin_src emacs-lisp
+(add-hook! '(web-mode js-mode rjsx-mode typescript-mode typescript-tsx-mode)
+  (defun t/eldoc-only-in-buffer ()
+    (interactive)
+    (setq eldoc-message-function (defun t-void (&optional one two) nil))))
+#+end_src
+
+Fix issue where =org-eldoc-get-src-lang= is not defined?
+
+#+begin_src emacs-lisp
+;; TODO REMOVE?
+(comment add-hook! 'org-mode-hook (defun t/fix-missing-definition-org-eldoc-get-src-lang ()
+                            (interactive)
+                            (require 'org-eldoc)))
+#+end_src
+
+*** Orderless
+
+A tuned version of [[https://protesilaos.com/codelog/2021-01-06-emacs-default-completion/][Prot's]] and [[https://kristofferbalintona.me/posts/202202211546/][Kristoffer Balintona's]] vertico, maginalia and orderless setup
+
+Some examples and explanations
+
+- m-x: name= ^[m] :: contains chars of name in word in order AND starts with regex m
+- m-x: Buffer= e nm= :: contains chars of Buffer in word in order AND contains e AND contains chars of nm in word in order (e.g. like in u<nm>ark)
+- SPC s p: #defun#j gjp, ha, :: rg search for defun, in-emacs matching for long words that have leading inner words starting with g j and p in order, and have leading inner words starting with h and a
+
+#+begin_src emacs-lisp
+(after! orderless
+
+  (setq marginalia-max-relative-age 0)
+
+  (progn
+
+    (setq orderless-matching-styles
+          '(orderless-literal     ;; default exact substring match
+            ;; orderless-initialism
+            ;; orderless-regexp
+            ;; orderless-flex
+            ))
+
+    (setq orderless-style-dispatchers
+          '(initialism-dispatcher ;; suffix search with ,
+            flex-dispatcher       ;; suffix search with .
+            regexp-dispatcher     ;; suffix search with ~
+            or-regexp             ;; regex search with foo|bar
+            ))
+
+    (defun regexp-dispatcher (pattern _index _total)
+      "Matches regexp."
+      (when (string-suffix-p "~" pattern)
+        `(orderless-regexp . ,(substring pattern 0 -1))))
+
+    (defun flex-dispatcher (pattern _index _total)
+      "Matches using any group in any order."
+      (when (string-suffix-p "." pattern)
+        `(orderless-flex . ,(substring pattern 0 -1))))
+
+    (defun or-regexp (pattern index _total)
+      "foo|bar"
+      (cond
+       ((string-suffix-p "|" pattern)
+        `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" (substring pattern 0 -1)) "\\)"))))
+       ((string-match-p "|" pattern)
+        `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" pattern) "\\)"))))))
+
+    (defun literal-dispatcher (pattern _index _total)
+      "Literal style dispatcher using the equals sign as a suffix."
+      (when (string-suffix-p "=" pattern)
+        `(orderless-literal . ,(substring pattern 0 -1))))
+
+    ;;;###autoload
+    (defun initialism-dispatcher (pattern _index _total)
+      "Matches leading on words in order
+E.g.
+#fun#gjp, ha,
+(defun t/js2-get-json-path (&optional hardcoded-array-index))
+ ^^^^^       ^   ^    ^               ^         ^
+#fun#gjp, hi,
+Would not match the above as no leading words start h then another word starting with i
+"
+      (when (string-suffix-p "," pattern)
+        `(orderless-strict-initialism . ,(substring pattern 0 -1))))
+
+    (defun orderless-strict-initialism (component)
+      "Match a COMPONENT as a strict initialism, optionally ANCHORED.
+The characters in COMPONENT must occur in the candidate in that
+order at the beginning of subsequent words comprised of letters.
+Only non-letters can be in between the words that start with the
+initials.
+
+If ANCHORED is `start' require that the first initial appear in
+the first word of the candidate.  If ANCHORED is `both' require
+that the first and last initials appear in the first and last
+words of the candidate, respectively."
+      (orderless--separated-by
+          '(seq (zero-or-more alpha) word-end (zero-or-more (not alpha)))
+        (cl-loop for char across component collect `(seq word-start ,char))))))
+#+end_src
+
+*** Editing
+
+Iterate through CamelCase words
+
+#+begin_src emacs-lisp
+;; TODO REMOVE?
+(comment global-subword-mode 1)
+#+end_src
+
+*** +onsave apheleia
+
+The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It messes up prettier.
+
+#+begin_src emacs-lisp
+(setq +format-with-lsp nil)
+#+end_src
+
+*** Dired
+
+#+begin_src emacs-lisp
+(after! dired
+  (setq dired-listing-switches "-aBhl  --group-directories-first"
+        dired-omit-files "\\`[.]")
+  (add-hook 'dired-mode-hook (defun t/dired-truncate-lines ()
+                               (interactive)
+                               (visual-line-mode -1)
+                               (toggle-truncate-lines 1)))
+  (add-hook 'dired-mode-hook 'nerd-icons-dired-mode)
+  (add-hook 'dired-mode-hook 'dired-subtree-toggle)
+  (add-hook 'dired-mode-hook 'dired-hide-details-mode)
+  (add-hook 'dired-mode-hook 'dired-async-mode))
+#+end_src
+
+**** Keybindings
+#+begin_src emacs-lisp
+(after! (:or dired)
+  ;; prevent kill all dired buffers on q
+  (map! :map dired-mode-map :ng "q" 't/volatile-kill-buffer)
+  (map! :map dired-mode-map :ng "Q" 'evil-record-macro)
+  (map!
+   :map (dired-mode-map)
+   :gn "<follow-link>" nil ;; prevents folder opening in split window in addition to down-mouse-1
+   :gn "<down-mouse-1>" (cmd! (mouse-set-point last-input-event)
+                              (let ((split-window-preferred-function nil))
+                                (if (dired-subtree--dired-line-is-directory-or-link-p)
+                                    (t/dired-subtree-tab)
+                                  (find-file (dired-get-filename))))) 
+   "<return>" (cmd! (if (t/prefix-arg-universal?)
+                        (call-interactively 'dired-find-file)
+                      (let ((split-window-preferred-function nil))
+                        (call-interactively 'dired-find-file))))
+   "C-k" 'dired-kill-subdir
+   "<tab>" 't/dired-subtree-tab
+   "C-h" 'dired-omit-mode
+   :n "<tab>" 't/dired-subtree-tab
+   "<backspace>" 'dired-kill-subdir
+   "M-<down>" (cmd! (dired-find-alternate-file))
+   "M-<up>" (cmd! (find-alternate-file ".."))))
+#+end_src
+
+*** Dired sidebar
+
+#+begin_src emacs-lisp
+(after! dired
+  (require 'nerd-icons-dired)
+  (advice-add 'dired-subtree-toggle :after #'nerd-icons-dired--refresh))
+#+end_src
+
+#+begin_src emacs-lisp :results silent
+(defvar t-sidebar-buffer-prefix ":")
+(set-popup-rule! (concat "^" t-sidebar-buffer-prefix)
+  :ttl nil
+  :quit nil
+  :select nil
+  :side 'left
+  :width (lambda (window)
+           (let ((w (/ (frame-width) 
+                       (cond ((> (frame-width) 250) 4)
+                             (t 3)))))
+             (with-selected-window window
+               (window-resize window (- w (window-width)) t)))))
+
+(defun t-toggle-sidebar ()
   (interactive)
-  (+workspace-switch name t)
-  (dolist (buffer (reverse buffers))
-    (find-file buffer)))
-(defun t/default-workspaces-init ()
+  (let* ((sidebar-project (replace-regexp-in-string (expand-file-name "~") "~" (t/project-root)))
+         (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
+         (sidebar-buffer (get-buffer sidebar-name))
+         (sidebar-displayed (and sidebar-buffer (get-buffer-window sidebar-buffer))))
+    (if sidebar-displayed
+        (delete-window (get-buffer-window sidebar-buffer))
+      (when (not sidebar-buffer)
+        (with-current-buffer (dired-noselect sidebar-project)
+          ;; unadvertise buffer so dired does not consider it on subsequent dired-jump
+          (dired-unadvertise (dired-current-directory))
+          (sticky-buffer-mode 1)
+          (rename-buffer sidebar-name)))
+      (progn
+        (pop-to-buffer sidebar-name)
+        (set-window-dedicated-p (selected-window) t)
+        (set-window-parameter (selected-window) 'no-delete-other-windows t)
+        (hide-mode-line-mode -1)))))
+#+end_src
+
+**** Dired refresh nerd-icons
+
+#+begin_src emacs-lisp
+(advice-remove 'dired-subtree-toggle 'nerd-icons-dired--refresh-advice)
+(advice-add 'dired-subtree-toggle :after 'nerd-icons-dired--refresh)
+(advice-remove 'dired-revert 't/dired-after-refresh)
+(advice-add 'dired-revert :after (defun t/dired-after-refresh (&optional &args rest) (nerd-icons-dired--refresh)))
+#+end_src
+
+**** How to clean up display buffer alist entries
+
+#+begin_src emacs-lisp
+(comment
+ (setq display-buffer-alist
+       (assoc-delete-all "^:" display-buffer-alist))
+ )
+#+end_src
+
+*** Customize
+
+Doom doesn't use the customize interface. It is useful nonetheless for experimenting with face colors etc
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*Customize" :ignore t)
+#+end_src
+
+Make ~s-s~ save in =customize=. Look up the function of a button using =describe-text-properties= on a button, like the "Apply and Save"
+
+#+begin_src emacs-lisp
+(map! :map custom-mode-map
+      "s-s" 'Custom-save)
+#+end_src
+
+*** After consult jump - focus subtree after jumping
+
+Zoom to the previewed org subtree when jumping between headings with =consult-org-heading=.
+
+#+begin_src emacs-lisp
+(setq consult-after-jump-hook '(pulsar-pulse-line))
+(add-hook! 'consult-after-jump-hook :append
+  (defun t/after-org-move-jump ()
+    ""
+    ;; org
+    (when (eq major-mode 'org-mode)
+      (when (org-at-heading-p)
+        (outline-hide-sublevels (org-outline-level)))
+      (org-show-subtree))
+
+    ;; always
+    (recenter-top-bottom 0)
+))
+
+(advice-add 'org-forward-element :after #'t/after-org-move-jump)
+(advice-add 'org-backward-element :after #'t/after-org-move-jump)
+#+end_src
+
+*** Multiple cursors
+
+#+begin_src emacs-lisp
+(after! evil
+  (defun t/mc-skip-prev ()
+    (interactive)
+    (evil-multiedit-toggle-or-restrict-region)
+    (evil-multiedit-match-and-prev))
+
+  (defun t/mc-skip-next ()
+    (interactive)
+    (evil-multiedit-toggle-or-restrict-region)
+    (evil-multiedit-match-and-next)))
+#+end_src
+
+Make cursor follow matches so ~m-n~ or ~m-p~ can be used to skip matches easily, depending on what direction you are moving in. ~R~ marks all occurrences from visual.
+
+#+begin_src emacs-lisp
+(after! evil
+  (setq evil-multiedit-follow-matches t)
+  (map!
+   :after evil
+   :mode evil-multiedit-mode
+   ;; for some reason m-j does not work, use m-n and m-p instead
+   :n "M-n"   #'t/mc-skip-next
+   :n "M-p"   #'t/mc-skip-prev
+
+   ;; don't clash with ~evil-cp-delete-sexp~, require visual mode for multi edit
+   :mode emacs-lisp-mode
+   :v "M-d" 'evil-multiedit-match-symbol-and-next))
+
+;; test
+;; test test
+;; test
+#+end_src
+
+Restores a lost multiedit selection.
+
+#+begin_src emacs-lisp
+(map!
+ :g "C-M-r" 'evil-multiedit-restore)
+#+end_src
+
+*** Font
+
+#+begin_src emacs-lisp
+(defun t/font-spec (f &optional s weight)
+  (font-spec :family f
+             :size (or s 20)
+             :weight (or weight 'regular)
+             :slant 'normal
+             :width 'normal))
+
+(setq t-fonts `((:face ,"IosevkaTerm Nerd Font")))
+
+(defun t/cycle-fonts (&optional font-spec)
   (interactive)
-  (t/+workspace-new "doom" doom-user-dir)
-  (t/+workspace-new "dot" "~/Projects/dotfiles")
-  (t/+workspace-new "nix-darwin" "~/.config/nix-darwin/" "~/.config/nix-darwin/flake.nix" "~/.config/nix-darwin/home/default.nix")
-  (t/+workspace-new "org" (format "%s/home.org.gpg" (car org-agenda-files))))
-(defun t/default-workspaces ()
+  (setq t-fonts (nconc (last t-fonts) (butlast t-fonts)))
+  (let* ((spec (or font-spec (car t-fonts)))
+         (f (plist-get spec :face))
+         (s (plist-get spec :size))
+         (w (plist-get spec :weight)))
+    (message "Font: %s, size: %s, weight: %s" f s w)
+    (setq doom-font (t/font-spec f s w)
+          doom-variable-pitch-font (t/font-spec "IosevkaEtoile Nerd Font" 19 w)
+          doom-big-font (t/font-spec f 28)
+          doom-font-increment 2)
+    (doom/reload-font)
+    f))
+
+(t/cycle-fonts)
+#+end_src
+
+**** Nerd fonts
+
+Remember to run
+
+#+begin_src emacs-lisp :noeval :tangle no :results no
+(nerd-icons-install-fonts)
+#+end_src
+
+**** List available fontsets
+
+#+begin_src emacs-lisp :tangle no :result no
+(call-interactively 'describe-font)
+#+end_src
+
+or
+
+#+begin_src sh :noeval :tangle no
+fc-list
+#+end_src
+
+*** Errors
+
+Navigate flymake and flycheck errors
+
+#+begin_src emacs-lisp
+(map!
+ :leader
+ (:prefix-map ("e" . "errors")
+              (:when t
+                :desc "Toggle flycheck"        "t" #'flycheck-mode
+                :desc "List errors"            "l" (cmd! (cond
+                                                          ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-list-errors))
+                                                          (t (flymake-show-buffer-diagnostics))))
+                :desc "Jump to next error"     "n" (cmd! (cond
+                                                          ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-next-error))
+                                                          (t (call-interactively 'flymake-goto-next-error))))
+                :desc "Jump to previous error" "N" (cmd! (cond
+                                                          ((and (boundp 'flycheck-mode) flycheck-mode) (flycheck-previous-error))
+                                                          (t (call-interactively 'flymake-goto-prev-error)))))))
+#+end_src
+
+**** Skip to flymake issues when skipping through them
+
+#+begin_src emacs-lisp
+(after! flymake
+  (map!
+   :map flymake-diagnostics-buffer-mode-map
+   :n "C-p" (cmd! (let ((p (point))
+                        (b (current-buffer)))
+                    (previous-line)
+                    (flymake-goto-diagnostic (point))
+                    (pop-to-buffer b)
+                    (goto-char p)
+                    (previous-line) ;; again??
+                    ))
+   :n "C-n" (cmd! (let ((p (point))
+                        (b (current-buffer)))
+                    (next-line)
+                    (flymake-goto-diagnostic (point))
+                    (pop-to-buffer b)
+                    (goto-char p)
+                    (next-line) ;; again??
+                    ))))
+#+end_src
+
+
+*** Projects
+
+Ignore some extra folders from projectile
+
+#+begin_src emacs-lisp
+(after! projectile
+  (setq projectile-project-search-path `((,(t/user-file "Projects/") . 1)))
+  (add-to-list 'projectile-globally-ignored-directories "^build$")
+  (add-to-list 'projectile-globally-ignored-directories "^target$")
+  (add-to-list 'projectile-globally-ignored-directories "^\\.log$"))
+#+end_src
+
+*** Workspaces
+
+Improved switching
+
+#+begin_src emacs-lisp
+(defun t/+workspace/switch-to (&optional &rest args)
+  "Custom switch-to workspace, that puts the last visited one first, so its just
+  an enter away. When you start typing, it narrows like usual."
   (interactive)
-  (if (equal '("main") (+workspace-list-names))
-      (t/default-workspaces-init)
-    (message "Workspaces exist, bailing: %s" (+workspace-list-names))))
+  (let ((completion-extra-properties
+         `(:display-sort-function
+           ,(lambda (completions)
+              (if (and +workspace--last
+                       ;; and not yet typed anything
+                       (string-empty-p (minibuffer-contents-no-properties)))
+                  (append (list +workspace--last)
+                          (remove +workspace--last completions))
+                completions)))))
+    (call-interactively '+workspace/switch-to)))
+(map!
+ :leader "1" '+workspace/switch-to-0
+ :leader "2" '+workspace/switch-to-1
+ :leader "3" '+workspace/switch-to-2
+ :leader "4" '+workspace/switch-to-3
+ :leader "5" '+workspace/switch-to-4
+ :leader "6" '+workspace/switch-to-5
+ :leader "7" '+workspace/switch-to-6
+ :leader "8" '+workspace/switch-to-7
+ :leader "9" '+workspace/switch-to-8
+ :leader "0" '+workspace/switch-to-final
+ :leader "-" 't/+workspace/switch-to)
 #+end_src
 
-** Send to kindle
+And fix ~super~ navigation across modes that steal ~SPC~.
 
 #+begin_src emacs-lisp
-(defcustom send-to-kindle-from-email
-  (getenv "USER_EMAIL")
-  "Your own email address to send from via mu4e."
-  :type 'string
-  :group 'send-to-kindle)
-
-(defcustom send-to-kindle-to-email
-  nil
-  "Your Kindle email address to send pdf to, or look it up from 1p."
-  :type 'string
-  :group 'send-to-kindle)
-
-(defun send-to-kindle-as-txt (review)
-  (interactive "P")
-  (unless send-to-kindle-from-email
-    (setq send-to-kindle-from-email
-          (read-string "From email address: ")))
-  (unless send-to-kindle-to-email
-    (setq send-to-kindle-to-email
-          ;;(read-string "To email address: ")
-          (t/1p "send-to-kindle" "--format json | jq -j '.fields[] | select(.id == \"username\") | .value'")))
-  (let* ((content (string-trim (if (region-active-p)
-                                   (buffer-substring (region-beginning) (region-end))
-                                 (buffer-string))))
-         (note-name
-          (cond ((equal major-mode 'eww-mode) (nth 1 eww-data))
-                ((equal major-mode 'elfeed-show-mode) (elfeed-entry-title elfeed-show-entry))
-                (t (let ((name (string-trim (read-string "Note name: "))))
-                     (if (string-empty-p name)
-                         (nth
-                          0 (string-split
-                             (substring content 0 (min 40 (length content))) "\n"))
-                       name)))))
-         (path (concat (temporary-file-directory) note-name))
-         (txt (concat path ".txt"))
-         (buffer (get-buffer-create (generate-new-buffer-name "*Email txt*"))))
-    (with-temp-buffer
-      (insert content)
-      (write-file txt))
-    (with-current-buffer buffer
-      (erase-buffer)
-      (message-mode)
-      (insert
-       (format
-        "From: %s
-To: %s
-Subject: %s
---text follows this line--
-<#multipart type=mixed>
-<#part type=\"text/plain\" filename=\"%s\" disposition=attachment>
-<#/part>
-<#/multipart>"
-        send-to-kindle-from-email
-        send-to-kindle-to-email
-        note-name txt))
-      (unless review
-        (message-send-and-exit)))
-    (when review
-      (switch-to-buffer buffer))))
+(map!
+ "s-1" '+workspace/switch-to-0
+ "s-2" '+workspace/switch-to-1
+ "s-3" '+workspace/switch-to-2
+ "s-4" '+workspace/switch-to-3
+ "s-5" '+workspace/switch-to-4
+ "s-6" '+workspace/switch-to-5
+ "s-7" '+workspace/switch-to-6
+ "s-8" '+workspace/switch-to-7
+ "s-9" '+workspace/switch-to-8
+ "s-0" 'doom/reset-font-size)
 #+end_src
 
-** d2
+Be explicit about when deleting workspaces
 
 #+begin_src emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.d2\\'" . d2-mode))
-(setq d2-output-format ".svg")
-(setq d2-output-format ".png")
+(after! (:and evil persp-mode)
+  (define-key! persp-mode-map
+    [remap delete-window] #'delete-window
+    [remap evil-window-delete] #'delete-window))
 
-(add-hook! 'after-save-hook
-  (defun t/recompile-d2-on-save ()
-    (when (s-ends-with? ".d2" (buffer-file-name))
-      (call-interactively 'd2-compile))))
+(map!
+ :map doom-leader-workspace-map
+ :leader :desc "Other workspace" "TAB '" '+workspace/other
+ :leader :desc "New workspace" "TAB w" '+workspace/new-named
+ :leader :desc "Next workspace" "TAB n" '+workspace:switch-next
+ :leader :desc "Previous workspace" "TAB p" '+workspace:switch-previous
+ :leader :desc "Swap next" "TAB j" '+workspace/swap-right
+ :leader :desc "Swap previous" "TAB k" '+workspace/swap-left)
+
+(map!
+ :desc "Rename workspace" "s-r" '+workspace/rename)
 #+end_src
 
-** Supernote
+*** Company
 
-Try it [2025-05-20 tir]. Run [[elisp:(call-interactively 't/supernote)][(t/supernote)]] on any paragraph under the current heading, after the org mode date, to search for notes made on the day of it.
-
-E.g. if you run it from here ><, this ends up searching for ~txt 20250520~, which shows all supernote exports for the day.
-
-I use ~C-SPC~ to preview it, pick the right note, and usually ~C-,~ (embark-act) followed by ~<~ to insert the note where the cursor is.
-
-You could also link to note files from specific days, like this to show notes from May: [[elisp:(t/supernote "202505")][(t/supernote "202505")]].
+Make tab accept the current suggestion, and make popups scrollable. Note the space.
 
 #+begin_src emacs-lisp
-(defun t/supernote (&optional search-date)
-  "Search for supernote exports, using `consult-fd', from the date of the closest org timestamp."
+(after! company
+  (defun t/company-doc-scroll-up ()
+    "Scroll up in company documentation."
+    (interactive)
+    (when-let ((win (get-buffer-window " *company-box-1doc*" t)))
+      (with-selected-window win
+        (scroll-down-command))))
+
+  (defun t/company-doc-scroll-down ()
+    "Scroll down in company documentation."
+    (interactive)
+    (when-let ((win (get-buffer-window " *company-box-1doc*" t)))
+      (with-selected-window win
+        (scroll-up-command))))
+
+  (map! :map company-active-map
+        "<tab>" 'company-complete-selection
+        ;; and c-e and right arrow like in zsh-autosuggest
+        "C-e" 'company-complete-selection
+        "<right>" 'company-complete-selection
+        ;; force help window
+        "C-h" 'company-show-doc-buffer
+        ;; scroll window
+        "C-S-v" 't/company-doc-scroll-up
+        "C-v" 't/company-doc-scroll-down)
+  )
+#+end_src
+
+*** Tramp
+
+#+begin_src emacs-lisp
+(after! tramp
+
+  (setq tramp-default-method "ssh"
+        tramp-verbose 1
+        tramp-default-remote-shell "/bin/bash"
+        tramp-connection-local-default-shell-variables
+        '((shell-file-name . "/bin/bash")
+          (shell-command-switch . "-c")))
+
+  (connection-local-set-profile-variables 'tramp-connection-local-default-shell-profile
+                                          '((shell-file-name . "/bin/bash")
+                                            (shell-command-switch . "-c"))))
+#+end_src
+
+Recentf cleanup logs a lot of error messages, like [[https://discourse.doomemacs.org/t/recentf-cleanup-logs-a-lot-of-error-messages/3273/4][described here]]
+
+#+begin_src emacs-lisp
+(after! tramp
+  ;; https://discourse.doomemacs.org/t/recentf-cleanup-logs-a-lot-of-error-messages/3273/4
+  (advice-add 'doom--recentf-file-truename-fn :override
+              (defun my-recent-truename (file &rest _args)
+                (if (or (not (file-remote-p file))
+                        (equal "sudo" (file-remote-p file 'method)))
+                    (abbreviate-file-name (file-truename (tramp-file-local-name file)))
+                  file))))
+#+end_src
+
+
+Editorconfig is extremely slow, e.g. when using ~doom/sudo-find-file~ to open, say, ~/etc/systemd/system/~. This fixes that.
+
+#+begin_src emacs-lisp
+(after! tramp
+  (setq tramp-ignored-file-name-regexp ".editorconfig"))
+#+end_src
+
+**** Github Codespaces
+
+Add for Github codespaces over ssh, for tramp editing, e.g. with ~C-x C-f /ghcs:codespace-name:/path/to/file~
+
+Thanks to https://blog.sumtypeofway.com/posts/emacs-config.html for this one
+
+#+begin_src emacs-lisp
+(after! tramp
+  (let ((ghcs (assoc "ghcs" tramp-methods))
+        (ghcs-methods '((tramp-login-program "gh")
+                        (tramp-login-args (("codespace") ("ssh") ("-c") ("%h")))
+                        (tramp-remote-shell "/bin/sh")
+                        (tramp-remote-shell-login ("-l"))
+                        (tramp-remote-shell-args ("-c")))))
+    ;; just for debugging the methods
+    (if ghcs (setcdr ghcs ghcs-methods)
+      (push (cons "ghcs" ghcs-methods) tramp-methods))))
+#+end_src
+
+The above needs the following feature in the codespace
+
+#+begin_src json :tangle no :results no
+{
+    "features": {
+        "ghcr.io/devcontainers/features/sshd:1": {
+            "version": "latest"
+        }
+    }
+}
+#+end_src
+
+*** Themes
+
+There's a lot of good [[file:~/.config/doom-local/straight/repos/themes/themes/][doom themes]]. I [[file:~/.config/doom-local/straight/repos/themes/themes/doom-one-theme.el::bg `(,(doom-darken "#282c34" 0.5) "black" "black"][tuned doom-one a little]], darkening some of the colors even more. Its in [[file:themes/t-doom-one-theme.el::(def-doom-theme t-doom-one][themes/t-doom-one-theme.el]].
+
+#+begin_src emacs-lisp
+(setq *t-themes* '(doom-feather-dark
+                   catppuccin
+                   doom-flatwhite)
+      doom-theme (car *t-themes*)
+      t-system-theme-dark 'doom-feather-dark
+      t-system-theme-light 'doom-flatwhite)
+#+end_src
+
+Cycle through nice ones.
+
+#+begin_src emacs-lisp
+(defun t/cycle-theme ()
+  "Cycle through the themes of `*t-themes*`."
   (interactive)
-  ;; make it so that C-SPC previews the file by using find-file
-  (after! embark
-    (add-to-list 'embark-default-action-overrides '(file . find-file)))
-  (consult-fd
-   (t/user-dropbox-folder "Supernote")
-   (concat
-    "txt "
-    (or
-     search-date
-     ;; org date at point
-     (when-let* ((type (org-element-type (org-element-context)))
-                 (closest-heading-pos (org-element-begin (org-element-lineage
-                                                          (org-element-at-point)
-                                                          '(headline)
-                                                          'with-self)))
-                 (timestamp-cons (let ((pos (point)))
-                                   ;; move to timestamp start
-                                   (if (re-search-backward "\\[[0-9]" closest-heading-pos t 1)
-                                       (save-excursion (org-element-timestamp-parser))
-                                     nil)))
-                 (timestamp (cadr timestamp-cons)))
-       (let* ((y (plist-get timestamp :year-start))
-              (m (plist-get timestamp :month-start))
-              (d (plist-get timestamp :day-start))
-              (date (format "%s%s%s" y (format "%02d" m) (format "%02d" d))))
-         date))
-     ;; or current date
-     (format-time-string "%Y%m%d" nil "Europe/Oslo"))
-    )))
+  (setq *t-themes*
+        (if (t/prefix-arg-universal?)
+            (append (list (car (reverse *t-themes*))) (butlast *t-themes*))
+          (append (cdr *t-themes*) (list (car *t-themes*)))))
+  (let ((theme (car *t-themes*)))
+    (disable-theme doom-theme)
+    (load-theme theme t)
+    (setq doom-theme theme)
+    (message "Theme: %s" theme)))
 #+end_src
 
-** nix
+Bind it to =SPC t t=. To cycle the other way around do =SPC u= =SPC t t=
 
 #+begin_src emacs-lisp
-(after! eglot
-  (add-to-list 'eglot-server-programs '(nix-mode . ("nixd"))))
+(map! :leader "t t" #'t/cycle-theme)
 #+end_src
 
-** printer
+And cycle between the selected =t-system-theme-dark= and =t-system-theme-light= when the system appearance is changed on macos.
 
 #+begin_src emacs-lisp
-(setq printer-name "canonix6500")
-(comment 
- (lpr-buffer))
+(advice-remove 't/toggle-system-appearence :after)
+(advice-add 't/toggle-system-appearence :after 't/load-system-theme)
 #+end_src
 
+**** Line numbers
+
+Determines the style of line numbers in effect. If set to =nil=, line numbers are disabled. For relative line numbers, set this to =relative=. Off by default, =relative= in programming modes. Toggle them with =SPC t l=.
+
+#+begin_src emacs-lisp
+(setq display-line-numbers-type nil)
+(setq-hook! 'prog-mode-hook display-line-numbers-type 'relative)
+#+end_src
+
+**** Rainbow mode
+
+***** Rainbow mode in prog modes
+
+#+begin_src emacs-lisp
+(setq show-paren-context-when-offscreen 'overlay)
+(add-hook! '(prog-mode-hook css-mode-hook html-mode-hook) 'rainbow-mode)
+(add-hook! '(prog-mode-hook css-mode-hook html-mode-hook) 'show-paren-mode)
+#+end_src
+
+***** TODO Color parens uniformly
+
+#+begin_src emacs-lisp
+(set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "Green" :weight 'bold)
+(after! rainbow-delimiters
+  ;; Show paren match face
+  (set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "Green" :weight 'bold)
+  ;; Rainbow delimiters faces
+  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "DeepPink4" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "DeepPink3" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "DeepPink2" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "DeepPink1" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "maroon4" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "maroon3" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-7-face nil :foreground "maroon2" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-8-face nil :foreground "maroon1" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-depth-9-face nil :foreground "VioletRed3" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-unmatched-face nil :foreground "Red" :overline nil :underline nil)
+  (set-face-attribute 'rainbow-delimiters-mismatched-face nil :foreground "Orange" :overline nil :underline nil)
+)
+#+end_src
+
+*** Transparency
+
+#+begin_src emacs-lisp
+(comment let ((tr 99))
+  (t/transparency tr)
+  (comment
+   (advice-remove #'load-theme :after)
+   (advice-remove #'load-theme :before)
+   )
+  (advice-add #'doom/reload-theme :after (cmd! (t/transparency tr))))
+#+end_src
+
+*** Frame
+
+Show the buffer and the file
+
+#+begin_src emacs-lisp
+(setq frame-title-format "%b (%f)")
+#+end_src
+
+*** Windows
+
+**** Center windows when there's only one
+
+#+begin_src emacs-lisp
+(use-package! centered-window-mode
+  :hook ((prog-mode css-mode html-mode org-mode) . centered-window-mode))
+#+end_src
+
+**** Spacious-padding for more space
+
+#+begin_src emacs-lisp
+(use-package! spacious-padding
+  :defer t
+  :config (spacious-padding-mode))
+#+end_src
+
+**** Smooth scrolling
+
+#+begin_src emacs-lisp
+(pixel-scroll-precision-mode 1)
+#+end_src
+
+**** Scroll mru window
+
+Scroll most recently used window when using ~c-m-v~ and ~c-m-S-v~.
+
+#+begin_src emacs-lisp
+(setq other-window-scroll-default #'get-lru-window)
+#+end_src
+
+**** Split windows manually
+
+If say a single dired window is visible and it is dedicated, allow splitting, else never allow splitting.
+
+#+begin_src emacs-lisp
+(setq split-window-preferred-function 'split-window-sensibly)
+#+end_src
+
+**** Resize window combinations proportionally
+
+#+begin_src emacs-lisp
+(setq-default window-combination-resize t)
+#+end_src
+
+**** Resize using arrow keys
+
+If there is no window in the direction you move, send the keypress for the direction instead =hjkl=.
+
+#+begin_src emacs-lisp
+(map! :after evil
+      :map evil-window-map
+      "s" (t/micro-state
+           nil
+           "<left>" (cmd! (cond
+                           ((and (window-in-direction 'right) (window-in-direction 'left)) (evil-resize-window (- (window-width) 8) t))
+                           ((window-in-direction 'left) (evil-resize-window (+ (window-width) 8) t))
+                           ((window-in-direction 'right) (evil-resize-window (- (window-width) 8) t))
+                           (t (execute-kbd-macro "h"))))
+           "<right>" (cmd! (cond
+                            ((and (window-in-direction 'right) (window-in-direction 'left)) (evil-resize-window (+ (window-width) 8) t))
+                            ((window-in-direction 'right) (evil-resize-window (+ (window-width) 8) t))
+                            ((window-in-direction 'left) (evil-resize-window (- (window-width) 8) t))
+                            (t (execute-kbd-macro "l"))))
+           "<up>" (cmd! (cond
+                         ((and (window-in-direction 'up) (window-in-direction 'down)) (evil-resize-window (+ (window-height) 4)))
+                         ((window-in-direction 'down) (evil-resize-window (- (window-height) 4)))
+                         ((window-in-direction 'up) (evil-resize-window (+ (window-height) 4)))
+                         (t (execute-kbd-macro "k"))))
+           "<down>" (cmd! (cond
+                           ((and (window-in-direction 'up) (window-in-direction 'down)) (evil-resize-window (- (window-height) 4)))
+                           ((window-in-direction 'up) (evil-resize-window (- (window-height) 4)))
+                           ((window-in-direction 'down) (evil-resize-window (+ (window-height) 4)))
+                           (t (execute-kbd-macro "j"))))))
+#+end_src
+
+*** Popups
+
+Clean up popup definitions with [[elisp:(+popup-cleanup-rules-h)]]
+
+*** Jump around
+
+Some of these, like ~SPC j c~ works across windows when prefixed with ~C-u~ or ~SPC u~.
+
+#+begin_src emacs-lisp
+(map!
+ :leader
+ (:prefix-map ("j" . "jump")
+              (:when t
+                :desc "Jump to window"      "W" #'ace-window
+                :desc "Jump to word"        "w" #'avy-goto-word-1
+                :desc "Jump to line"        "l" #'avy-goto-line
+                :desc "org: Jump to header" "h" #'avy-org-goto-heading-timer
+                :desc "Jump to char"        "c" #'avy-goto-char-2
+                :desc "Jump to char"        "C" #'avy-goto-char)))
+#+end_src
+
+**** Avy tweaks
+
+#+begin_src emacs-lisp
+(after! (avy evil-integration)
+  (defun t/setup-avy (&optional frame)
+    (interactive)
+    (setq avy-keys '(?j ?f ?d ?k ?s ?a)
+          avy-timeout-seconds 0.2
+          ;;avy-all-windows 'all-frames
+          avy-all-windows nil
+          avy-case-fold-search nil
+          avy-highlight-first t
+          avy-style 'at-full
+          avy-background t)
+    (let* ((b "#222") (f "DeepPink1"))
+      (set-face-attribute 'avy-background-face nil :foreground b)
+      (set-face-attribute 'avy-lead-face   nil :background b :foreground f :weight 'bold)
+      (set-face-attribute 'avy-lead-face-0 nil :background b :foreground f :weight 'bold)
+      (set-face-attribute 'avy-lead-face-1 nil :background b :foreground f :weight 'bold)
+      (set-face-attribute 'avy-lead-face-2 nil :background b :foreground f :weight 'bold)))
+
+  (t/setup-avy)
+
+  ;;Also after creating a new frame when emacs is in daemon mode
+  (add-hook! 'doom-load-theme-hook :append #'t/setup-avy))
+#+end_src
+
+**** Indent messes up Avy
+
+#+begin_src emacs-lisp
+(advice-add
+ 'evil-avy-goto-line :around
+ (defun t/around-avy (fn)
+   (interactive)
+   (let ((indent-bars-on?))
+     (when indent-bars-mode
+       (setq indent-bars-on? t)
+       (indent-bars-mode -1))
+     (funcall fn)
+     (when indent-bars-on?
+       (indent-bars-mode 1)))))
+#+end_src
+
+*** Smartparens
+
+Use paredit bindings. Make =`'= a pair in emacs lisp mode.
+
+#+begin_src emacs-lisp
+(after! smartparens
+  (sp-local-pair 'emacs-lisp-mode "`" "'" :when '(sp-in-docstring-p))
+  (add-hook! (clojure-mode emacs-lisp-mode cider-repl-mode) :append #'smartparens-strict-mode)
+  (sp-use-paredit-bindings))
+#+end_src
+
+And add some extra pairs for org mode.
+
+#+begin_src emacs-lisp
+(after! smartparens
+  (sp-with-modes 'org-mode
+    (sp-local-pair "`" "'" :when '(sp-in-docstring-p))
+    (sp-local-pair "*" "*" :actions '(insert wrap) :unless '(sp-point-after-word-p sp-point-at-bol-p) :wrap "C-*" :skip-match 'sp--org-skip-asterisk)
+    (sp-local-pair "_" "_" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "/" "/" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "~" "~" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "<" ">" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "=" "=" :unless '(sp-point-after-word-p) :post-handlers '(("[d1]" "SPC")))
+    (sp-local-pair "«" "»")))
+#+end_src
+
+Smartparens-mode paredit bindings in org mode messes up ~M-up~ and ~M-down~, bring them back.
+
+#+begin_src emacs-lisp
+(add-hook! 'org-mode-hook
+  (defun t/org-mode-hook ()
+    (map!
+     :map evil-motion-state-local-map
+     "M-<up>"    'org-metaup
+     "M-<down>"  'org-metadown
+     "M-S-<right>" 'org-shiftmetaright
+     "M-S-<left>" 'org-shiftmetaleft)))
+#+end_src
+
+Don't create cache files
+
+#+begin_src emacs-lisp
+(add-hook! 'org-mode-hook (defun t/org-disable-auto-save-mode () (interactive) (auto-save-mode -1)))
+#+end_src
+
+Bring back ~C-k~ in the minibuffer. Overrides [[file:~/.config/emacs/modules/config/default/+evil-bindings.el::map! :map (evil-ex-completion-map evil-ex-search-keymap][+evil-bindings.el]].
+
+#+begin_src emacs-lisp
+(map! :map (evil-ex-completion-map evil-ex-search-keymap)
+      :gi "C-k" #'kill-line)
+(define-key!
+  :keymaps +default-minibuffer-maps
+  "C-k" #'kill-line)
+#+end_src
+
+**** Wrap around
+
+Support wrapping sexps by holding super, both in normal mode and insert mode, from the front and the back of expressions.
+
+#+begin_src emacs-lisp
+(map! :map smartparens-mode-map
+      ;; literally S-s-8 on a norwegian mac keyboard
+      :n "s-(" (cmd! (evil-emacs-state nil)
+                     (sp-wrap-with-pair "\(")
+                     (evil-normal-state nil))
+      :i "s-(" (cmd! (sp-wrap-with-pair "\("))
+
+      ;; literally S-s-MetaRight-8 on my norwegian mac keyboard
+      :n "s-{" (cmd! (evil-emacs-state nil)
+                     (sp-wrap-with-pair "\{")
+                     (evil-normal-state nil))
+      :i "s-{" (cmd! (sp-wrap-with-pair "\{"))
+
+      ;; literally S-MetaRight-8 on my norwegian mac keyboard
+      :n "s-[" (cmd! (evil-emacs-state nil)
+                     (sp-wrap-with-pair "\[")
+                     (evil-normal-state nil))
+      :i "s-[" (cmd! (sp-wrap-with-pair "\["))
+
+      ;; literally S-s-9 on a norwegian mac keyboard
+      :n "s-)" (cmd! (evil-emacs-state nil)
+                     (backward-sexp)
+                     (sp-wrap-with-pair "\(")
+                     (forward-sexp)
+                     (evil-normal-state nil))
+      :i "s-)" (cmd! (backward-sexp)
+                     (sp-wrap-with-pair "(")
+                     (forward-sexp))
+
+      ;; literally S-s-MetaRight-9 on my norwegian mac keyboard
+      :n "s-}" (cmd! (evil-emacs-state nil)
+                     (backward-sexp)
+                     (sp-wrap-with-pair "\{")
+                     (forward-sexp)
+                     (evil-normal-state nil))
+      :i "s-}" (cmd! (backward-sexp)
+                     (sp-wrap-with-pair "\{")
+                     (forward-sexp))
+
+      ;; literally S-MetaRight-9 on my norwegian mac keyboard
+      :n "s-]" (cmd! (evil-emacs-state nil)
+                     (backward-sexp)
+                     (sp-wrap-with-pair "\[")
+                     (forward-sexp)
+                     (evil-normal-state nil))
+      :i "s-]" (cmd! (backward-sexp)
+                     (sp-wrap-with-pair "\[")
+                     (forward-sexp)))
+#+end_src
+
+**** Expand braces
+
+[[file:~/.config/emacs/modules/config/default/config.el::dolist (brace '("(" "{" "\[")][Override this to always expand braces]].
+
+#+begin_src emacs-lisp
+(after! smartparens
+  (sp-pair "{" nil :post-handlers '(("||\n[i]" "RET") ("| " " ")))
+  (sp-pair "(" nil :post-handlers '(("||\n[i]" "RET") ("| " " ")))
+  (sp-pair "[" nil :post-handlers '(("||\n[i]" "RET"))))
+#+end_src
+
+*** Distraction free / Zen
+
+A _really global_ global writeroom mode. The function is redefined such that if writeroom-major-modes is nil, writeroom-mode is activated in ALL buffers.
+
+#+begin_src emacs-lisp
+(setq writeroom-major-modes nil)
+(defun turn-on-writeroom-mode ()
+  (interactive)
+  (when (or (not writeroom-major-modes)
+            (apply 'derived-mode-p writeroom-major-modes))
+    (writeroom-mode 1)))
+#+end_src
+
+The [[https://docs.doomemacs.org/latest/modules/ui/zen/][doom default text scale of 2]] is a bit heavy
+
+#+begin_src emacs-lisp
+(setq +zen-text-scale 0)
+#+end_src
+
+Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly bound to ~s-?~. Give it an even more awkward binding.
+
+#+begin_src emacs-lisp
+(map! :map writeroom-mode-map
+      "s-?" (cmd! (text-scale-increase 1))
+      "s-:" 'writeroom-toggle-mode-line)
+#+end_src
+
+And screens are big, so a bit more space for text is nice.
+
+#+begin_src emacs-lisp :results silent
+(defun t/sidebar-frac (&optional ignore)
+  (let* ((w-px (frame-pixel-width (selected-frame)))
+         (h-px (frame-pixel-height (selected-frame)))
+         (w (frame-width (selected-frame))))
+    ;; noisy
+    ;; (message "w: %s, w-px: %s, h-px: %s" w w-px h-px)
+    (cond
+     ((< w-px h-px) (/ (float 1) 3))
+     ((> w 200) (/ (float 2) 5))
+     ((and (> w 160) (> w-px 1440)) (/ (float 3) 7))
+     (t (/ (float 2) 5)))))
+(after! writeroom-mode
+  (setq writeroom-width (t/sidebar-frac)))
+(after! olivetti
+  (setq olivetti-minimum-body-width 100)
+  (setq-default olivetti-body-width (floor (* (frame-width (selected-frame)) (t/sidebar-frac))))
+  (add-to-list 'window-size-change-functions 'olivetti-set-window t))
+#+end_src
+
+Adjust margins equally across modes.
+
+#+begin_src emacs-lisp
+(map! :map evil-window-map
+      "M" (t/micro-state
+           nil
+           "<left>" (cmd! (cond
+                           ((and (boundp 'writeroom-mode) writeroom-mode) (writeroom-decrease-width))
+                           ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-shrink))
+                           (t (t/margins-global-decrease))))
+           "<right>" (cmd! (cond
+                            ((and (boundp 'writeroom-mode) writeroom-mode) (writeroom-increase-width))
+                            ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-expand))
+                            (t (t/margins-global-increase))))))
+#+end_src
+
+*** Modeline
+
+Show workspace in modeline, adjust bar width, moar iconz, truncate path.
+
+#+begin_src emacs-lisp
+(defun t/doom-modeline-mode-hook (&optional &rest ignore)
+  (interactive)
+  (setq doom-modeline-persp-name t
+        doom-modeline-persp-icon t
+        ;; doom-modeline-height (* 2 (font-get (or (and doom-big-font-mode doom-big-font) doom-font) :size))
+        ;; doom-feather-dark-padded-modeline t
+        doom-themes-padded-modeline t
+        doom-modeline-bar-width 4
+        doom-modeline-github t
+        doom-modeline-repl t
+        doom-modeline-battery t
+        display-time-24hr-format t
+        ;; it needs padding to the right
+        display-time-string-forms '(dayname " " day "/" month "       ")
+        doom-modeline-major-mode-icon t
+        doom-modeline-major-mode-color-icon t
+        doom-modeline-buffer-file-name-style 'truncate-upto-root)
+  (use-package! mu4e-alert
+    :after mu4e
+    :init (setq doom-modeline-mu4e nil)
+    :config (mu4e-alert-enable-mode-line-display))
+  (after! doom-modeline
+    (set-face-attribute 'doom-modeline-persp-name nil :foreground "DeepPink2" :weight 'bold :italic nil)
+    (display-battery-mode)
+    (display-time-mode)
+    (doom-modeline-github-timer)))
+(t/doom-modeline-mode-hook)
+(add-hook! 'doom-load-theme-hook :append #'t/doom-modeline-mode-hook)
+#+end_src
+
+**** Doom modeline customization
+:PROPERTIES:
+:header-args: :noeval t :tangle no
+:END:
+
+Read more on [[https://github.com/seagle0128/doom-modeline][seagle0128/doom-modeline]]
+
+***** Get a modeline
+
+#+begin_src emacs-lisp :tangle no
+(doom-modeline 'main)
+#+end_src
+
+#+RESULTS:
+| :eval | (doom-modeline-format--main) |
+
+***** Create a modeline
+
+You could add your own segments to something like this.
+
+#+begin_src emacs-lisp :tangle no
+(doom-modeline-def-modeline 't-modeline
+  '(bar window-number modals matches buffer-info-simple)
+  '(media-info major-mode time))
+#+end_src
+
+#+RESULTS:
+: doom-modeline-format--t-modeline
+
+Running it creates the function
+
+#+begin_src emacs-lisp :tangle no
+(doom-modeline-format--t-modeline)
+#+end_src
+
+#+RESULTS:
+| ((:eval (doom-modeline-segment--bar)) (:eval (doom-modeline-segment--window-number)) (:eval (doom-modeline-segment--modals)) (:eval (doom-modeline-segment--matches)) (:eval (doom-modeline-segment--buffer-info-simple)))  |   | ((:eval (doom-modeline-segment--media-info)) (:eval (doom-modeline-segment--major-mode)) (:eval (doom-modeline-segment--time))) |
+
+***** Set the modeline
+
+#+begin_src emacs-lisp :tangle no
+(doom-modeline-set-modeline 't-modeline)
+#+end_src
+
+#+RESULTS:
+| %e | (:eval (doom-modeline-format--t-modeline)) |
+
+***** This sets buffer-local ~mode-line-format~ to show it
+
+#+begin_src emacs-lisp :tangle no
+mode-line-format
+#+end_src
+
+#+RESULTS:
+| %e | (:eval (doom-modeline-format--t-modeline)) |
+
+To set it by default ~(setf (default-value 'mode-line-format) ...)~ is used
+
+**** Create your own segment
+
+#+begin_src emacs-lisp
+(after! doom-modeline
+  (doom-modeline-def-segment tasks
+    "Display # of tasks not refiled. Use (nerd-icons-insert-faicon) to look up icons."
+    (concat
+     (doom-modeline-spc)
+     (when-let ((icon (doom-modeline-icon 'faicon "nf-fae-checklist_o" "🗉" "")))
+       (concat
+        (doom-modeline-display-icon icon)
+        (doom-modeline-vspc)
+        (if (not (get-buffer "tasks.org"))
+            "n/a"
+          (with-current-buffer "tasks.org"
+            (let ((count 0))
+              ;; for each heading
+              (org-map-entries
+               (lambda (&optional heading)
+                 (when (not (org-entry-is-done-p))
+                   (setq count (1+ count))))
+               ;; all headline
+               t
+               ;; in file
+               'file)
+              ;; needs to be string
+              (format "%s" count))))
+        (doom-modeline-vspc)
+        )))))
+#+end_src
+
+**** Extend the doom 'main default one, by advicing it
+
+It has 3 parts, the left, the separator and the right.
+
+#+begin_src emacs-lisp
+(after! doom-modeline
+  (defun t/around-doom-modeline-format--main (fn)
+    (interactive)
+    (let ((res (funcall fn)))
+      (list
+       (nth 0 res)
+       (nth 1 res)
+       (cons '(:eval (doom-modeline-segment--tasks))
+             (nth 2 res)))))
+
+  (advice-remove 'doom-modeline-format--main 't/around-doom-modeline-format--main)
+  (advice-add 'doom-modeline-format--main :around 't/around-doom-modeline-format--main))
+#+end_src
+
+*** Dictionary
+
+Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~.
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*osx-dictionary" :side 'right :size 0.5 :vslot 3)
+(set-popup-rule! "^\\*Dictionary" :side 'right :size 0.5 :vslot 2)
+(setq osx-dictionary-generate-buffer-name-function
+      (lambda (&rest args)
+        (pop-to-buffer osx-dictionary-buffer-name)
+        osx-dictionary-buffer-name))
+#+end_src
+
+*** REPLs
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*ielm" :side 'right :size 0.5 :vslot 1)
+(after! ielm
+  (add-hook 'inferior-emacs-lisp-mode-hook 'evil-cleverparens-mode))
+#+end_src
+
+
+** Validation (no tangle)
+:PROPERTIES:
+:header-args: :tangle no
+:END:
+
+- Run `check-parens` on `config.el`.
+- Confirm `org-directory` and `org-agenda-files` point at `~/Dropbox/org`.
+- Reload with `(+literate/reload)`; restart if needed.
