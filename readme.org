@@ -100,6 +100,17 @@ My old collection of more or less useful defuns.
 
 *** Early Fixes
 
+**** Restart Emacs (Nix wrapper)
+
+Restarting via `restart-emacs` reuses the running Emacs binary. On Nix, that
+binary lives in the store and may disappear, so pin restarts to the wrapper.
+
+#+begin_src emacs-lisp
+(after! restart-emacs
+  (defun restart-emacs--get-emacs-binary ()
+    "/etc/profiles/per-user/torgeir/bin/emacs"))
+#+end_src
+
 ** Packages
 
 This is tangled to ~packages.el~ on save.
