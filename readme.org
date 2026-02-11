@@ -4388,10 +4388,10 @@ The built in ~apheleia~ is enough, don't need ~eglot~ formatting as well. It mes
         (with-current-buffer (dired-noselect sidebar-project)
           ;; unadvertise buffer so dired does not consider it on subsequent dired-jump
           (dired-unadvertise (dired-current-directory))
-          (sticky-buffer-mode 1)
           (rename-buffer sidebar-name)))
       (progn
         (pop-to-buffer sidebar-name)
+        (sticky-buffer-mode 1)
         (set-window-dedicated-p (selected-window) t)
         (set-window-parameter (selected-window) 'no-delete-other-windows t)
         (hide-mode-line-mode -1)))))
