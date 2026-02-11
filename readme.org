@@ -476,7 +476,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Toggle truncate"       "t u" #'toggle-truncate-lines
  :leader :desc "Toggle margins"        "t M" #'t/margins-global
  :leader :desc "Toggle olivetti"       "t o" #'olivetti-mode
- :leader :desc "Toggle centered"       "t s" #'centered-window-mode
+ :leader :desc "Toggle centered"       "t s" #'t/centered-window-global-toggle
  :leader :desc "Toggle transparency"   "t T" #'t/transparency
  :leader :desc "Reading"               "r" #'t/start-micro-state
  :leader :desc "Show whitespace"       "t w" #'whitespace-mode
@@ -4886,8 +4886,33 @@ Show the buffer and the file
 **** Center windows when there's only one
 
 #+begin_src emacs-lisp
-(use-package! centered-window-mode
-  :hook ((prog-mode css-mode html-mode org-mode) . centered-window-mode))
+(use-package! centered-window
+  :config
+  (defvar t-centered-window-mode-hooks
+    '(prog-mode-hook css-mode-hook html-mode-hook org-mode-hook)
+    "Hooks where centered-window-mode should be enabled.")
+  (defvar t/centered-window-mode-modes
+    '(prog-mode css-mode html-mode org-mode)
+    "Major modes where centered-window-mode should be applied.")
+  (defvar t/centered-window-global-enabled t
+    "Whether centered-window-mode is enabled via hooks.")
+  (defun t/centered-window--apply-to-buffers (enable)
+    "Enable or disable centered-window-mode in existing buffers."
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+        (when (apply #'derived-mode-p t/centered-window-mode-modes)
+          (centered-window-mode (if enable 1 -1))))))
+  (defun t/centered-window-global-toggle ()
+    "Toggle centered-window-mode globally and update hooks."
+    (interactive)
+    (setq t/centered-window-global-enabled (not t/centered-window-global-enabled))
+    (if t/centered-window-global-enabled
+        (add-hook! t-centered-window-mode-hooks #'centered-window-mode)
+      (remove-hook! t-centered-window-mode-hooks #'centered-window-mode))
+    (t/centered-window--apply-to-buffers t/centered-window-global-enabled))
+  (when t/centered-window-global-enabled
+    (add-hook! t-centered-window-mode-hooks #'centered-window-mode))
+)
 #+end_src
 
 **** Spacious-padding for more space
