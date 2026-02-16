@@ -1274,6 +1274,9 @@ Clock in like =SPC m c i=.
             (defun t/gpt-shell-hook ()
               (setq chatgpt-shell-system-prompt "KEEP IT BRIEF, DONT MAKE STUFF UP, NO LISTS, SINGLE EXAMPLES ONLY")))
   (setq chatgpt-shell-model-version "gpt-5.2"
+        chatgpt-shell-anthropic-key
+        (lambda ()
+          (auth-source-pick-first-password :host "anthropic.com"))
         chatgpt-shell-openai-key
         (lambda ()
           (auth-source-pick-first-password :host "api.openai.com"))))
