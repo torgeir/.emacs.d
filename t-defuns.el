@@ -168,6 +168,16 @@ hide it (on mac)."
            (delete-frame)
          (error (save-buffers-kill-emacs)))))))
 
+(defun t/copy-file-full-name ()
+  "Copy the file full name into the kill ring, from the dired file at point or
+the current buffer."
+  (interactive)
+  (let ((filename (cond ((equal major-mode 'dired-mode) (dired-get-filename))
+                        (t (buffer-file-name)))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer full name '%s'" filename))))
+
 (defun t/copy-buffer-file-name ()
   "Copy the current buffer file name into the kill ring."
   (interactive)
