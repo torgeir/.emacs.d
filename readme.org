@@ -1348,12 +1348,17 @@ Recenter prompt at screen top after submitting
         (agent-shell-openai-make-authentication
          :codex-api-key
          (lambda ()
-           (auth-source-pick-first-password :host "api.openai.com")))))
+           (auth-source-pick-first-password :host "api.openai.com")))
+        agent-shell-screenshot-command '("grimshot" "save" "area")))
 #+end_src
 
 ***** Keybindings
 
 #+begin_src emacs-lisp
+(map! :map agent-shell-mode-map
+      :i "n" (cmd! (insert "n"))
+      :i "p" (cmd! (insert "p")))
+
 (map!
  :leader
  (:prefix-map
@@ -1371,8 +1376,20 @@ Recenter prompt at screen top after submitting
 Fix evil mode glitch where tab does not move to expandable location.
 
 #+begin_src emacs-lisp
-(advice-add 'agent-shell-previous-item :after (defun t/agent-shell-prev () (forward-char 2)))
-(advice-add 'agent-shell-next-item :after (defun t/agent-shell-next () (forward-char 2)))
+(after! agent-shell
+  (advice-add 'agent-shell-previous-item
+              :after (defun t/agent-shell-prev () (forward-char 2)))
+  (advice-add 'agent-shell-next-item
+              :after (defun t/agent-shell-next () (forward-char 2))))
+#+end_src
+
+***** Fix another tab glitch
+
+When moving next and previous in the compose buffer the same thing happens when you move to a toggleable heading.
+
+#+begin_src emacs-lisp
+(after! agent-shell
+  (advice-add 'agent-shell-viewport-compose-peek-last :after 'evil-insert-state))
 #+end_src
 
 ** Reading
