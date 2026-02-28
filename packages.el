@@ -7,6 +7,8 @@
 (package! ellama)
 (package! pulsar)
 (package! chatgpt-shell)
+(package! agent-shell)
+(package! shell-maker)
 (package! copilot
   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el" "dist")))
 (package! tide :disable t)

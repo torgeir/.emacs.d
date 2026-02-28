@@ -337,7 +337,7 @@ If FILEXT is provided, return files with extension FILEXT instead."
 (defun t/volatile-kill-buffer-and-window ()
   "Kill current buffer and the window unconditionally."
   (interactive)
-  (if (and
+  (if (or
        (or (looking-back "\\$ " 1) ; eshell
            (= (pos-bol) (pos-eol)))
        (= (save-excursion (goto-char (point-max)))

@@ -125,6 +125,8 @@ This is tangled to ~packages.el~ on save.
 (package! ellama)
 (package! pulsar)
 (package! chatgpt-shell)
+(package! agent-shell)
+(package! shell-maker)
 (package! copilot
   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el" "dist")))
 (package! tide :disable t)
@@ -1198,7 +1200,7 @@ Clock in like =SPC m c i=.
                "p" #'org-pomodoro))
 #+end_src
 
-*** OpenAI: GPT
+*** AI
 
 Default openai language model.
 
@@ -1271,7 +1273,7 @@ Default openai language model.
           :desc "summarize" "s" (cmd! (t/chatgpt-prompt "Summarize this text:"))))))
 #+end_src
 
-**** Try [[https://github.com/xenodium/chatgpt-shell][chatgpt-shell]]
+**** [[https://github.com/xenodium/chatgpt-shell][chatgpt-shell]]
 
 #+begin_src emacs-lisp
 (use-package! chatgpt-shell
@@ -1279,27 +1281,98 @@ Default openai language model.
   (add-hook 'chatgpt-shell-mode-hook
             (defun t/gpt-shell-hook ()
               (setq chatgpt-shell-system-prompt "KEEP IT BRIEF, DONT MAKE STUFF UP, NO LISTS, SINGLE EXAMPLES ONLY")))
-  (setq chatgpt-shell-model-version "claude-opus-4-5"
-        chatgpt-shell-anthropic-key
-        (lambda ()
-          (auth-source-pick-first-password :host "anthropic.com"))
+  (setq chatgpt-shell-model-version "gpt-5.2"
         chatgpt-shell-openai-key
         (lambda ()
           (auth-source-pick-first-password :host "api.openai.com"))))
 #+end_src
 
-Recenter promt at screen top after submitting
+Recenter prompt at screen top after submitting
 
 #+begin_src emacs-lisp
 (add-hook! 'comint-output-filter-functions
   (defun t/llm-comint-recenter-after-output (&optional &rest _)
     "Recenter to top after output in claude buffers."
-    (when (string-prefix-p "*claude llm" (buffer-name))
-      (run-with-timer "0sec" nil (defun t/gpt-recenter-top ()
-                                   (interactive)
-                                   (evil-normal-state)
-                                   (recenter-top-bottom 5)
-                                   (previous-line))))))
+    (when (or (string-prefix-p "*claude llm" (buffer-name))
+              (string-prefix-p "*chatgpt llm" (buffer-name))
+              (string-prefix-p "Codex Agent" (buffer-name)))
+      (defun t/gpt-recenter ()
+        (interactive)
+        ;; (evil-normal-state)
+        (save-excursion
+          (recenter-top-bottom 10)
+          (previous-line)))
+      (advice-add 'agent-shell-previous-item :after 't/gpt-recenter)
+      (advice-add 'agent-shell-next-item :after 't/gpt-recenter)
+      (run-with-timer "0sec" nil 't/gpt-recenter))))
+#+end_src
+
+**** [[https://github.com/xenodium/agent-shell][agent-shell]]
+
+***** Chatgpt chat tweaks
+
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*chatgpt llm"
+  :size 0.45
+  :side 'right
+  :ttl nil
+  :quit nil
+  :dedicated t
+  :hook (lambda ()
+          (setq-local comint-scroll-to-bottom-on-output nil)
+          (setq-local comint-move-point-for-output nil)))
+#+end_src
+
+***** Make agent buffers real
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-real-buffer-functions
+  (defun +agent-buffer-p (buf)
+    (with-current-buffer buf
+      (and (eq major-mode 'agent-shell-mode)))))
+#+end_src
+
+***** Default mode
+
+#+begin_src emacs-lisp
+(after! evil
+  (evil-set-initial-state 'agent-shell-mode 'normal))
+#+end_src
+
+***** Initialize package
+
+#+begin_src emacs-lisp
+(use-package! agent-shell
+  :config
+  (setq agent-shell-openai-authentication
+        (agent-shell-openai-make-authentication
+         :codex-api-key
+         (lambda ()
+           (auth-source-pick-first-password :host "api.openai.com")))))
+#+end_src
+
+***** Keybindings
+
+#+begin_src emacs-lisp
+(map!
+ :leader
+ (:prefix-map
+  ("a" . "ai")
+  (:when (modulep! :tools magit)
+    :desc "ai"      "i" #'agent-shell
+    :desc "ai"      "a" #'agent-shell
+    :desc "compose" "c" #'agent-shell-prompt-compose
+    ))
+ )
+#+end_src
+
+***** Fix tab glitch
+
+Fix evil mode glitch where tab does not move to expandable location.
+
+#+begin_src emacs-lisp
+(advice-add 'agent-shell-previous-item :after (defun t/agent-shell-prev () (forward-char 2)))
+(advice-add 'agent-shell-next-item :after (defun t/agent-shell-next () (forward-char 2)))
 #+end_src
 
 ** Reading
