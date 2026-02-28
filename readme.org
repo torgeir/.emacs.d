@@ -927,6 +927,14 @@ Widen
  :localleader :desc "Narrow to subtree" "s n" 'org-narrow-to-subtree)
 #+end_src
 
+Bring back some emacs bindings
+
+#+begin_src emacs-lisp
+(map! :map evil-org-mode-map
+      :i "C-k" 'evil-delete-line
+      :i "C-j" 'evil-ret)
+#+end_src
+
 *** Colors
 
 #+begin_src emacs-lisp
