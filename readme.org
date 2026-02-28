@@ -5543,3 +5543,11 @@ Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~
 - Run `check-parens` on `config.el`.
 - Confirm `org-directory` and `org-agenda-files` point at `~/Dropbox/org`.
 - Reload with `(+literate/reload)`; restart if needed.
+
+** Workspace overlay
+
+Load the workspace overlay from its own file.
+
+#+begin_src emacs-lisp
+(load! "workspace-overlay")
+#+end_src
