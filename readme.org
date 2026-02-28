@@ -2184,12 +2184,30 @@ Make pasting from ~consult-yank-from-kill-ring~, =M-y=, actually insert results 
       (let ((inhibit-read-only t))
         (apply #'vterm-insert args))
     (apply orig-fun args)))
+
+(defun t/vterm-evil-paste-shim (orig-fun &rest args)
+  (if (eq major-mode 'vterm-mode)
+      (let* ((inhibit-read-only t)
+             (reg (and (boundp 'evil-this-register) evil-this-register))
+             (text (cond
+                    ((and reg (characterp reg)
+                          (fboundp 'evil-get-register))
+                     (evil-get-register reg t))
+                    ((fboundp 'current-kill)
+                     (current-kill 0 t)))))
+        (if (and text (not (equal text "")))
+            (vterm-insert text)
+          (apply orig-fun args)))
+    (apply orig-fun args)))
 #+end_src
 
 #+begin_src emacs-lisp
 (advice-add #'+default/newline :around #'t/insert-for-yank-vterm-shim)
 (advice-add #'insert-char-preview :around #'t/insert-for-yank-vterm-shim)
 (advice-add #'insert-for-yank :around #'t/insert-for-yank-vterm-shim)
+(advice-add #'evil-paste-after :around #'t/vterm-evil-paste-shim)
+(advice-add #'evil-paste-before :around #'t/vterm-evil-paste-shim)
+
 #+end_src
 
 Keep evil insert mode cursor after shell commands have run.
