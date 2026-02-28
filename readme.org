@@ -5082,6 +5082,10 @@ Show the buffer and the file
 **** Center windows when there's only one
 
 #+begin_src emacs-lisp
+(after! centered-window
+  (defun cwm-update-fringe-background ()
+    (set-face-attribute 'fringe nil
+                        :background (face-attribute 'default :background))))
 (use-package! centered-window
   :config
   (defvar t-centered-window-mode-hooks
@@ -5106,9 +5110,23 @@ Show the buffer and the file
         (add-hook! t-centered-window-mode-hooks #'centered-window-mode)
       (remove-hook! t-centered-window-mode-hooks #'centered-window-mode))
     (t/centered-window--apply-to-buffers t/centered-window-global-enabled))
-  (when t/centered-window-global-enabled
-    (add-hook! t-centered-window-mode-hooks #'centered-window-mode))
-)
+  (when (and ;;(not is-mac)
+             t/centered-window-global-enabled)
+    (add-hook! t-centered-window-mode-hooks #'centered-window-mode)))
+#+end_src
+
+***** Centered window mode, margins instead of fringes
+
+Fixes modeline moving away, =set-window-margins= instead of =set-frine-margins=
+
+#+begin_src emacs-lisp
+(comment after! centered-window
+  (defun cwm-center-window-instructions (instructions)
+    (let* ((window (cwm-centering-instructions-window instructions))
+           (width (cwm-centering-instructions-left-width instructions)))
+      (set-window-margins window
+                          (if width (/ width (frame-char-width)) 0)
+                          (if width (/ width (frame-char-width)) 0)))))
 #+end_src
 
 **** Spacious-padding for more space
