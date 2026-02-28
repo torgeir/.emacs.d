@@ -5,6 +5,7 @@
 - If no server: `emacs --batch --eval "(require 'org)" --eval "(setq org-confirm-babel-evaluate nil)" --eval "(with-current-buffer (find-file-noselect \"/home/torgeir/.config/doom.d/readme.org\") (org-babel-tangle))"`.
 - Always run `M-x check-parens` on `config.el` after tangling; do this before any restart.
 - Restart: `emacsclient -e '(doom/restart)'` or `emacsclient -e '(doom/restart-and-restore)'`.
+- When committing changes to `readme.org`, prefer partial staging (`git add -p readme.org`) and only commit the relevant hunks.
 
 What to look for if things break:
 - Unclosed `#+begin_src`/`#+end_src` blocks (they silently skip later tangles).

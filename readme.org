@@ -4172,7 +4172,13 @@ Bring back
 
 #+begin_src emacs-lisp
 (after! evil-escape
-  (setq evil-escape-key-sequence "jk"))
+  (setq evil-escape-key-sequence "jk"
+        evil-escape-delay 0.2)
+  (setq evil-escape-inhibit-functions
+        (delq #'+evil-inhibit-escape-in-minibuffer-fn
+              evil-escape-inhibit-functions))
+  (setq evil-escape-excluded-states
+        (delq 'emacs evil-escape-excluded-states)))
 #+end_src
 
 Useful for ~C-e~ followed by ~C-x C-e~ to eval an s-expression. Makes ~cleverparens~ nav commands like ~L~ and ~H~ move across sexps
