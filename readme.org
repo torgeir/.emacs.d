@@ -512,6 +512,7 @@ Highlight dotfiles that are sourced from the shell in ~sh-mode~ based on their f
  :leader :desc "Projectile dired"    "p d" #'t/projectile-dired
  :leader :desc "Projectile magit"    "p g" #'t/projectile-magit-status
  :leader :desc "Projectile pulls"    "p P" #'t/projectile-visit-git-link-pulls
+ :leader :desc "Persp forget"        "p K" #'persp-remove-buffer
 
  :leader :desc "Scratch buffer"      "b s" #'doom/open-scratch-buffer
 
