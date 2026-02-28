@@ -4832,11 +4832,36 @@ Make tab accept the current suggestion, and make popups scrollable. Note the spa
       (with-selected-window win
         (scroll-up-command))))
 
+  (defun t/company-abort-and-self-insert ()
+    "Abort completion, then insert the typed character."
+    (interactive)
+    (company-abort)
+    (call-interactively 'self-insert-command))
+
+  (defun t/company-ret ()
+    "Abort completion, then run the normal RET command."
+    (interactive)
+    (let ((buf (current-buffer)))
+      (company-abort)
+      (run-at-time
+       0 nil
+       (lambda ()
+         (when (buffer-live-p buf)
+           (with-current-buffer buf
+             (let* ((keys (kbd "RET"))
+                    (cmd (key-binding keys t)))
+               (if (commandp cmd)
+                   (call-interactively cmd)
+                 (call-interactively 'newline)))))))))
+
   (map! :map company-active-map
         "<tab>" 'company-complete-selection
-        ;; and c-e and right arrow like in zsh-autosuggest
+        ;; and c-e like in zsh-autosuggest
         "C-e" 'company-complete-selection
-        "<right>" 'company-complete-selection
+        "<right>" 'company-abort
+        "." 't/company-abort-and-self-insert
+        "RET" 't/company-ret
+        "<return>" 't/company-ret
         ;; force help window
         "C-h" 'company-show-doc-buffer
         ;; scroll window
