@@ -610,11 +610,7 @@ Motion keys for info mode.
 *** Org src edit buffers are real
 
 #+begin_src emacs-lisp
-(add-hook! 'doom-real-buffer-functions
-  (defun +org-src-buffer-p (buf)
-    (with-current-buffer buf
-      (and (boundp 'org-src-mode)
-           org-src-mode))))
+(add-hook 'org-src-mode-hook #'doom-mark-buffer-as-real-h)
 #+end_src
 
 *** Org settings
@@ -1202,12 +1198,6 @@ Clock in like =SPC m c i=.
 
 *** AI
 
-Default openai language model.
-
-#+begin_src emacs-lisp
-(setq-default *t-gpt-models* "gpt-4o-mini")
-#+end_src
-
 **** Popup on the side
 
 #+begin_src emacs-lisp
@@ -1326,10 +1316,7 @@ Recenter prompt at screen top after submitting
 ***** Make agent buffers real
 
 #+begin_src emacs-lisp
-(add-hook! 'doom-real-buffer-functions
-  (defun +agent-buffer-p (buf)
-    (with-current-buffer buf
-      (and (eq major-mode 'agent-shell-mode)))))
+(add-hook 'agent-shell-mode-hook #'doom-mark-buffer-as-real-h)
 #+end_src
 
 ***** Default mode
