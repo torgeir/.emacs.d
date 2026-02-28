@@ -624,6 +624,8 @@ Motion keys for info mode.
 (after! org
 
   (add-hook! 'org-mode-hook 'evil-cleverparens-mode)
+  (add-hook! 'org-mode-hook (lambda () (setq truncate-lines t)))
+  (add-hook! 'org-mode-hook (lambda () (visual-line-mode -1)))
 
   (defun t/open-prev-heading ()
     (interactive)
