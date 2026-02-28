@@ -4553,7 +4553,7 @@ Restores a lost multiedit selection.
          (w (plist-get spec :weight)))
     (message "Font: %s, size: %s, weight: %s" f s w)
     (setq doom-font (t/font-spec f s w)
-          doom-variable-pitch-font (t/font-spec "IosevkaEtoile Nerd Font" 19 w)
+          doom-variable-pitch-font (t/font-spec "Iosevka Nerd Font" 19 w)
           doom-big-font (t/font-spec f 28)
           doom-font-increment 2)
     (doom/reload-font)
