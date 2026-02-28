@@ -4178,7 +4178,9 @@ Bring back
         (delq #'+evil-inhibit-escape-in-minibuffer-fn
               evil-escape-inhibit-functions))
   (setq evil-escape-excluded-states
-        (delq 'emacs evil-escape-excluded-states)))
+        (thread-last evil-escape-excluded-states
+          (delq 'visual)
+          (delq 'emacs))))
 #+end_src
 
 Useful for ~C-e~ followed by ~C-x C-e~ to eval an s-expression. Makes ~cleverparens~ nav commands like ~L~ and ~H~ move across sexps
