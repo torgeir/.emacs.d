@@ -1,4 +1,4 @@
-#+STARTUP: show2levels
+#+STARTUP: showeverything
 * torgeir/.doom.d
 :PROPERTIES:
 :header-args:emacs-lisp: :lexical t :results silent :tangle config.el
