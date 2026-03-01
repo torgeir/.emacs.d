@@ -78,6 +78,15 @@
                             'face 'header-line)))
     (list align right)))
 
+(defun t/workspace-overlay--refresh-box ()
+  "Refresh header line box colors to match the current theme."
+  (interactive)
+  (let* ((face 'header-line)
+         (bg (or (face-background face nil t)
+                 (face-background 'default nil t))))
+    (when bg
+      (set-face-attribute face nil :box `(:line-width 1 :color ,bg)))))
+
 (defun t/workspace-overlay--apply-window (window &rest _args)
   "Apply header line to WINDOW.
 
@@ -102,6 +111,7 @@ Accept extra ARGS for compatibility with window hooks."
 (defun t/workspace-overlay-refresh (&rest _args)
   "Refresh overlay on all windows."
   (interactive)
+  (t/workspace-overlay--refresh-box)
   (dolist (frame (frame-list))
     (dolist (window (window-list frame 'no-minibuf))
       (t/workspace-overlay--apply-window window))))

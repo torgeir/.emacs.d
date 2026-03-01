@@ -4117,7 +4117,10 @@ On load theme
 #+begin_src emacs-lisp
 (defun t/doom-load-theme-hook (&optional &rest _)
   "This is unused atm, no longer needed the highlight indent guides mode stuff."
-  (interactive))
+  (interactive)
+  (t/doom-modeline--refresh-box)
+  (when (fboundp 't/workspace-overlay--refresh-box)
+    (t/workspace-overlay--refresh-box)))
 (advice-remove 'load-theme 't/doom-load-theme-hook)
 (advice-add 'load-theme :after 't/doom-load-theme-hook)
 #+end_src
@@ -5418,7 +5421,7 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-persp-icon nil
         ;; doom-modeline-height (* 2 (font-get (or (and doom-big-font-mode doom-big-font) doom-font) :size))
         ;; doom-feather-dark-padded-modeline t
-        doom-themes-padded-modeline nil
+        doom-themes-padded-modeline t
         doom-modeline-bar-width 4
         doom-modeline-github t
         doom-modeline-repl t
@@ -5438,29 +5441,23 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
   (after! doom-modeline
     (set-face-attribute 'doom-modeline-persp-name nil :foreground "DeepPink2" :weight 'bold :italic nil)
     (when (boundp 'doom-one-padded-modeline)
-      (setq doom-one-padded-modeline 0))
+      (setq doom-one-padded-modeline 1))
     (display-battery-mode)
     (display-time-mode)
-    (doom-modeline-github-timer)))
-(defun t/doom-modeline-apply-faces ()
-  "Reapply modeline face sizing after reload/theme changes."
-  (dolist (buffer (buffer-list))
-    (with-current-buffer buffer
-      (setq face-remapping-alist
-            (assq-delete-all 'mode-line
-                             (assq-delete-all 'mode-line-inactive
-                                              face-remapping-alist)))))
-  (set-face-attribute 'mode-line nil
-                      :height 1.0
-                      :box nil)
-  (set-face-attribute 'mode-line-inactive nil
-                      :height 1.0
-                      :box nil))
-(t/doom-modeline-mode-hook)
-(add-hook! 'doom-load-theme-hook :append #'t/doom-modeline-mode-hook)
-(add-hook! 'doom-load-theme-hook :append #'t/doom-modeline-apply-faces)
-(add-hook! 'after-load-theme-hook :append #'t/doom-modeline-apply-faces)
-(add-hook! 'doom-after-reload-hook #'t/doom-modeline-apply-faces)
+    ))
+
+(defun t/doom-modeline--refresh-box ()
+  "Refresh modeline box colors to match the current theme."
+  (interactive)
+  (let ((faces '(mode-line mode-line-inactive))
+        (fallback 'default))
+    (when (facep 'mode-line-active)
+      (push 'mode-line-active faces))
+    (dolist (face faces)
+      (let ((bg (or (face-background face nil t)
+                    (face-background fallback nil t))))
+        (when bg
+          (set-face-attribute face nil :box `(:line-width 5 :color ,bg)))))))
 #+end_src
 
 **** Doom modeline customization
