@@ -5338,12 +5338,13 @@ Support wrapping sexps by holding super, both in normal mode and insert mode, fr
 A _really global_ global writeroom mode. The function is redefined such that if writeroom-major-modes is nil, writeroom-mode is activated in ALL buffers.
 
 #+begin_src emacs-lisp
-(setq writeroom-major-modes nil)
-(defun turn-on-writeroom-mode ()
-  (interactive)
-  (when (or (not writeroom-major-modes)
-            (apply 'derived-mode-p writeroom-major-modes))
-    (writeroom-mode 1)))
+(after! writeroom-mode
+  (setq writeroom-major-modes nil)
+  (defun turn-on-writeroom-mode ()
+    (interactive)
+    (when (or (not writeroom-major-modes)
+              (apply 'derived-mode-p writeroom-major-modes))
+      (writeroom-mode 1))))
 #+end_src
 
 The [[https://docs.doomemacs.org/latest/modules/ui/zen/][doom default text scale of 2]] is a bit heavy
@@ -5363,22 +5364,19 @@ Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly 
 And screens are big, so a bit more space for text is nice.
 
 #+begin_src emacs-lisp :results silent
-(defun t/sidebar-frac (&optional ignore)
+(defun t/centered-frac (&optional ignore)
   (let* ((w-px (frame-pixel-width (selected-frame)))
          (h-px (frame-pixel-height (selected-frame)))
          (w (frame-width (selected-frame))))
     ;; noisy
     ;; (message "w: %s, w-px: %s, h-px: %s" w w-px h-px)
     (cond
-     ((< w-px h-px) (/ (float 1) 3))
-     ((> w 200) (/ (float 2) 5))
-     ((and (> w 160) (> w-px 1440)) (/ (float 3) 7))
-     (t (/ (float 2) 5)))))
+     (t (/ (float 5) 7)))))
 (after! writeroom-mode
-  (setq writeroom-width (t/sidebar-frac)))
+  (setq writeroom-width (t/centered-frac)))
 (after! olivetti
   (setq olivetti-minimum-body-width 100)
-  (setq-default olivetti-body-width (floor (* (frame-width (selected-frame)) (t/sidebar-frac))))
+  (setq-default olivetti-body-width (floor (* (frame-width (selected-frame)) (t/centered-frac))))
   (add-to-list 'window-size-change-functions 'olivetti-set-window t))
 #+end_src
 
