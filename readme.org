@@ -1244,8 +1244,6 @@ Clock in like =SPC m c i=.
   (with-current-buffer (pop-to-buffer "*ChatGPT*")
     (call-interactively 'org-ctrl-c-ctrl-c)))
 
-(global-set-key [mouse-8] (cmd!)) 
-(global-set-key [mouse-9] #'t/chatgpt-buffer)
 (map! :leader
       (:prefix
        ("o" . "open")
@@ -4021,6 +4019,15 @@ EOF" (replace-regexp-in-string "`" "\\\\`" json)) ;; bash cant handle ` in EOF?
 Scratch notes and examples go here to avoid accidental tangling.
 
 ** Editor
+
+*** Mouse
+
+Back and forward on the mouse.
+
+#+begin_src emacs-lisp
+(global-set-key [mouse-8] (cmd! (call-interactively 'previous-buffer)))
+(global-set-key [mouse-9] (cmd! (call-interactively 'next-buffer)))
+#+end_src
 
 *** Recursive minibuffers
 

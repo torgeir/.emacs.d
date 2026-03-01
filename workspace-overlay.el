@@ -25,6 +25,27 @@
                         :foreground "#666666"
                         :height 0.8))))
 
+(defun t/workspace-overlay--close-button ()
+  "Return the propertized close button for the overlay."
+  (let ((map (make-sparse-keymap)))
+    (define-key map [header-line mouse-1]
+                (lambda (event)
+                  (interactive "e")
+                  (with-selected-window (posn-window (event-start event))
+                    (kill-current-buffer))))
+    (propertize "x"
+                't/workspace-overlay t
+                'face '(:inherit header-line
+                        :slant normal
+                        :weight normal
+                        :underline nil
+                        :box nil
+                        :foreground "#666666"
+                        :height 0.8)
+                'mouse-face 'mode-line-highlight
+                'help-echo "Close buffer"
+                'local-map map)))
+
 (defun t/workspace-overlay--label-px (window label)
   "Return pixel width for LABEL in WINDOW's frame."
   (if (and (display-graphic-p (window-frame window))
@@ -49,9 +70,17 @@
 
 (defun t/workspace-overlay--format-p (value)
   "Return non-nil if VALUE is this overlay's header-line format."
-  (and (stringp value)
-       (text-property-any 0 (length value)
-                          't/workspace-overlay t value)))
+  (cond
+   ((stringp value)
+    (text-property-any 0 (length value)
+                       't/workspace-overlay t value))
+   ((listp value)
+    (seq-some (lambda (item)
+                (and (stringp item)
+                     (text-property-any 0 (length item)
+                                        't/workspace-overlay t item)))
+              value))
+   (t nil)))
 
 (defun t/workspace-overlay--blank ()
   "Return a blank header-line placeholder for inactive windows."
@@ -77,13 +106,25 @@
 (defun t/workspace-overlay--format (window active)
   "Return header line showing the current workspace at the right edge."
   (let* ((label (when active (t/workspace-overlay--label window)))
-         (pad (when label (t/workspace-overlay--align window label)))
+         (close (when active (t/workspace-overlay--close-button)))
+         (right (when active
+                  (let* ((label-fit
+                          (if (display-graphic-p (window-frame window))
+                              label
+                            (let* ((width (window-body-width window))
+                                   (close-width (string-width close))
+                                   (available (max 0 (- width close-width 1)))
+                                   (fit (truncate-string-to-width label available
+                                                                  nil nil "...")))
+                              fit)))
+                         (close-with-space (concat " " close " ")))
+                    (list close-with-space label-fit))))
          (left (let ((prev (window-parameter window
                                              't/workspace-overlay-prev-header-line)))
                  (when (and prev (not (t/workspace-overlay--format-p prev)))
                    (format-mode-line prev nil window)))))
     (if active
-        (concat (or left "") (or pad "") label)
+        (append (when left (list left)) right)
       (if left
           (concat left (t/workspace-overlay--blank))
         (t/workspace-overlay--blank)))))
