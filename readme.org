@@ -5410,31 +5410,52 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
 (defun t/doom-modeline-mode-hook (&optional &rest ignore)
   (interactive)
   (setq doom-modeline-persp-name t
-        doom-modeline-persp-icon t
+        doom-modeline-persp-icon nil
         ;; doom-modeline-height (* 2 (font-get (or (and doom-big-font-mode doom-big-font) doom-font) :size))
         ;; doom-feather-dark-padded-modeline t
-        doom-themes-padded-modeline t
+        doom-themes-padded-modeline nil
         doom-modeline-bar-width 4
         doom-modeline-github t
         doom-modeline-repl t
         doom-modeline-battery t
         display-time-24hr-format t
-        ;; it needs padding to the right
-        display-time-string-forms '(dayname " " day "/" month "       ")
+        display-time-string-forms
+        '((let ((s (format-time-string "%a %e/%-m")))
+            (replace-regexp-in-string "  +" " " s)))
         doom-modeline-major-mode-icon t
         doom-modeline-major-mode-color-icon t
-        doom-modeline-buffer-file-name-style 'truncate-upto-root)
+        doom-modeline-buffer-file-name-style 'truncate-upto-project)
+  (t/doom-modeline-apply-faces)
   (use-package! mu4e-alert
     :after mu4e
     :init (setq doom-modeline-mu4e nil)
     :config (mu4e-alert-enable-mode-line-display))
   (after! doom-modeline
     (set-face-attribute 'doom-modeline-persp-name nil :foreground "DeepPink2" :weight 'bold :italic nil)
+    (when (boundp 'doom-one-padded-modeline)
+      (setq doom-one-padded-modeline 0))
     (display-battery-mode)
     (display-time-mode)
     (doom-modeline-github-timer)))
+(defun t/doom-modeline-apply-faces ()
+  "Reapply modeline face sizing after reload/theme changes."
+  (dolist (buffer (buffer-list))
+    (with-current-buffer buffer
+      (setq face-remapping-alist
+            (assq-delete-all 'mode-line
+                             (assq-delete-all 'mode-line-inactive
+                                              face-remapping-alist)))))
+  (set-face-attribute 'mode-line nil
+                      :height 1.0
+                      :box nil)
+  (set-face-attribute 'mode-line-inactive nil
+                      :height 1.0
+                      :box nil))
 (t/doom-modeline-mode-hook)
 (add-hook! 'doom-load-theme-hook :append #'t/doom-modeline-mode-hook)
+(add-hook! 'doom-load-theme-hook :append #'t/doom-modeline-apply-faces)
+(add-hook! 'after-load-theme-hook :append #'t/doom-modeline-apply-faces)
+(add-hook! 'doom-after-reload-hook #'t/doom-modeline-apply-faces)
 #+end_src
 
 **** Doom modeline customization
@@ -5532,17 +5553,49 @@ It has 3 parts, the left, the separator and the right.
 
 #+begin_src emacs-lisp
 (after! doom-modeline
-  (defun t/around-doom-modeline-format--main (fn)
-    (interactive)
-    (let ((res (funcall fn)))
-      (list
-       (nth 0 res)
-       (nth 1 res)
-       (cons '(:eval (doom-modeline-segment--tasks))
-             (nth 2 res)))))
+  (advice-remove 'doom-modeline-format--main
+                 #'t/around-doom-modeline-format--main)
+  (defun t/doom-modeline--clean-persp-seg (seg)
+    "Trim extra padding from persp segments."
+    (when (stringp seg)
+      (setq seg (copy-sequence seg))
+      (remove-text-properties 0 (length seg) '(display nil) seg)
+      (setq seg (replace-regexp-in-string "  +" " " seg))
+      (setq seg (replace-regexp-in-string "\\`\\(.\\)[[:space:]]+" "\\1" seg))
+      (setq seg (string-trim seg)))
+    seg)
+  (dolist (fn '(doom-modeline-segment--persp-name
+                doom-modeline-segment--persp-icon
+                doom-modeline-segment--persp-name-active
+                doom-modeline-segment--persp-name-inactive))
+    (when (fboundp fn)
+      (advice-add fn :filter-return #'t/doom-modeline--clean-persp-seg)))
+  (defun t/doom-modeline--has-tasks-seg-p (segments)
+    (seq-some (lambda (seg)
+                (or (equal seg '(:eval (doom-modeline-segment--tasks)))
+                    (and (listp seg)
+                         (eq (car seg) :eval)
+                         (equal (cadr seg)
+                                '(doom-modeline-segment--tasks)))))
+              segments))
+  (defun t/doom-modeline-join-format (res)
+    "Join modeline left/right segments into a single list."
+    (if (and (listp res) (= (length res) 3))
+        (let* ((lhs (nth 0 res))
+               (rhs (nth 2 res))
+               (tasks (unless (or (t/doom-modeline--has-tasks-seg-p lhs)
+                                  (t/doom-modeline--has-tasks-seg-p rhs))
+                        (list '(:eval (doom-modeline-segment--tasks))))))
+          (list (append lhs
+                        tasks
+                        rhs)
+                nil
+                nil))
+      res))
 
-  (advice-remove 'doom-modeline-format--main 't/around-doom-modeline-format--main)
-  (advice-add 'doom-modeline-format--main :around 't/around-doom-modeline-format--main))
+  (dolist (fn (apropos-internal "^doom-modeline-format--" #'fboundp))
+    (advice-remove fn #'t/doom-modeline-join-format)
+    (advice-add fn :filter-return #'t/doom-modeline-join-format)))
 #+end_src
 
 *** Dictionary
