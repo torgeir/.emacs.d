@@ -5574,5 +5574,6 @@ Fix ~+lookup/dictionary-definition~ so that it adheres to ~display-buffer-alist~
 Load the workspace overlay from its own file.
 
 #+begin_src emacs-lisp
-(load! "workspace-overlay")
+(after! (persp-mode)
+  (load! "workspace-overlay"))
 #+end_src
