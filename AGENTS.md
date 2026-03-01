@@ -1,5 +1,7 @@
 # Emacs config (literate)
 
+- Always stay in `/home/torgeir/.doom.d`; do not search or edit files outside it unless explicitly asked.
+- After any config edit, run the reload dance (tangle/reload + `check-parens`) automatically without asking.
 - Source of truth: `readme.org` in `DOOMDIR` (`/home/torgeir/.doom.d`).
 - Tangle + reload: `emacsclient -e '(+literate/reload)'` (alias of `doom/reload`).
 - If no server: `emacs --batch --eval "(require 'org)" --eval "(setq org-confirm-babel-evaluate nil)" --eval "(with-current-buffer (find-file-noselect \"/home/torgeir/.config/doom.d/readme.org\") (org-babel-tangle))"`.
