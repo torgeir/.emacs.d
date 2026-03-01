@@ -1,29 +1,81 @@
 (defun t/workspace-overlay--name ()
   "Return the current workspace name."
-  (cond
-   ((fboundp '+workspace-current-name)
-    (+workspace-current-name))
-   ((fboundp 'persp-name)
-    (persp-name (get-current-persp)))
-   (t "default")))
+  (or (condition-case nil
+          (when (fboundp '+workspace-current-name)
+            (+workspace-current-name))
+        (error nil))
+      (condition-case nil
+          (when (and (fboundp 'persp-name)
+                     (fboundp 'get-current-persp))
+            (persp-name (get-current-persp)))
+        (error nil))
+      "default"))
+
+(defun t/workspace-overlay--window-from-args (args)
+  "Return a usable window from ARGS."
+  (let ((win nil)
+        (frame nil))
+    (dolist (arg args)
+      (cond
+       ((windowp arg) (setq win arg))
+       ((framep arg) (setq frame arg))))
+    (cond
+     (win win)
+     (frame (frame-selected-window frame))
+     (t (selected-window)))))
+
+(defun t/workspace-overlay--buffer-in-current-p (buffer)
+  "Return non-nil if BUFFER belongs to the current workspace."
+  (when (and (fboundp 'get-current-persp)
+             (fboundp 'persp-buffers))
+    (condition-case nil
+        (memq buffer (persp-buffers (get-current-persp)))
+      (error nil))))
+
+(defun t/workspace-overlay--modeline-shows-workspace-p (buffer &optional window)
+  "Return non-nil if doom-modeline shows a workspace for BUFFER."
+  (when (and (fboundp 'doom-modeline-segment--persp-name)
+             (window-live-p window))
+    (with-selected-window window
+      (with-current-buffer buffer
+        (condition-case nil
+            (let* ((seg (doom-modeline-segment--persp-name))
+                   (text (when (stringp seg) (string-trim seg)))
+                   (face (get-text-property 0 'face seg)))
+              (and text
+                   (not (string-empty-p text))
+                   (not (eq face 'doom-modeline-persp-buffer-not-in-persp))))
+          (error nil))))))
+
+(defun t/workspace-overlay--buffer-workspace (buffer &optional window)
+  "Return the workspace name for BUFFER."
+  (let ((fallback (t/workspace-overlay--name)))
+    (cond
+     ((fboundp 'persp-buffer-in-other-p)
+      (with-current-buffer buffer
+        (cond
+         ((t/workspace-overlay--buffer-in-current-p buffer)
+          fallback)
+         ((condition-case nil
+              (persp-buffer-in-other-p buffer)
+            (error nil))
+          nil)
+         (t fallback))))
+     (t fallback))))
 
 (defun t/workspace-overlay--label (&optional window)
   "Return the propertized label for the overlay in WINDOW."
   (let* ((window (or window (selected-window)))
          (buffer (window-buffer window))
-         (workspace (t/workspace-overlay--name))
+         (workspace (t/workspace-overlay--buffer-workspace buffer window))
          (path (or (buffer-file-name buffer)
                    (buffer-name buffer)))
-         (label (format "%s: %s" workspace path)))
+         (label (if workspace
+                    (format "%s: %s" workspace path)
+                  (format "%s" path))))
     (propertize label
                 't/workspace-overlay t
-                'face '(:inherit header-line
-                        :slant normal
-                        :weight normal
-                        :underline nil
-                        :box nil
-                        :foreground "#666666"
-                        :height 0.8))))
+                'face (t/workspace-overlay--face))))
 
 (defun t/workspace-overlay--close-button ()
   "Return the propertized close button for the overlay."
@@ -35,13 +87,7 @@
                     (kill-current-buffer))))
     (propertize "x"
                 't/workspace-overlay t
-                'face '(:inherit header-line
-                        :slant normal
-                        :weight normal
-                        :underline nil
-                        :box nil
-                        :foreground "#666666"
-                        :height 0.8)
+                'face (t/workspace-overlay--face)
                 'mouse-face 'mode-line-highlight
                 'help-echo "Close buffer"
                 'local-map map)))
@@ -86,22 +132,36 @@
   "Return a blank header-line placeholder for inactive windows."
   (propertize " "
               't/workspace-overlay t
-              'face '(:inherit header-line
-                      :box nil
-                      :height 0.8)))
+              'face (t/workspace-overlay--blank-face)))
 
-(defvar-local t/workspace-overlay-prev-face-remap nil)
+(defun t/workspace-overlay--default-bg ()
+  "Return the default background color for the selected frame."
+  (or (face-background 'default nil t)
+      (frame-parameter nil 'background-color)))
 
-(defvar t/workspace-overlay--last-window nil)
+(defun t/workspace-overlay--face ()
+  "Return the face for overlay text."
+  (let* ((family (face-attribute 'header-line :family nil t))
+         (base `(:inherit header-line
+                 :slant normal
+                 :weight normal
+                 :underline nil
+                 :box nil
+                 :foreground "#666666"
+                 :height 0.8)))
+    (if family
+        (append base (list :family family))
+      base)))
 
-(defun t/workspace-overlay--ensure-face-remap (buffer)
-  "Ensure BUFFER uses a smaller header-line face."
-  (with-current-buffer buffer
-    (unless t/workspace-overlay-prev-face-remap
-      (setq t/workspace-overlay-prev-face-remap face-remapping-alist))
-    (setq face-remapping-alist
-          (cons '(header-line (:height 0.8 :box nil))
-                (assq-delete-all 'header-line face-remapping-alist)))))
+(defun t/workspace-overlay--blank-face ()
+  "Return the face for blank overlay areas."
+  (let* ((family (face-attribute 'header-line :family nil t))
+         (base `(:inherit header-line
+                 :box nil
+                 :height 0.8)))
+    (if family
+        (append base (list :family family))
+      base)))
 
 (defun t/workspace-overlay--format (window active)
   "Return header line showing the current workspace at the right edge."
@@ -136,18 +196,18 @@
 
 (defun t/workspace-overlay--apply-window (window &optional active)
   "Apply workspace header line to WINDOW only."
-  (let ((current (window-parameter window 'header-line-format))
-        (buffer (window-buffer window)))
-    (when (and (null (window-parameter window
-                                       't/workspace-overlay-prev-header-line))
-               (not (t/workspace-overlay--format-p current)))
+  (when (window-live-p window)
+    (let ((current (window-parameter window 'header-line-format))
+          (buffer (window-buffer window)))
+      (when (and (null (window-parameter window
+                                         't/workspace-overlay-prev-header-line))
+                 (not (t/workspace-overlay--format-p current)))
+        (set-window-parameter window
+                              't/workspace-overlay-prev-header-line
+                              current))
       (set-window-parameter window
-                            't/workspace-overlay-prev-header-line
-                            current))
-    (t/workspace-overlay--ensure-face-remap buffer)
-    (set-window-parameter window
-                          'header-line-format
-                          (t/workspace-overlay--format window active))))
+                            'header-line-format
+                            (t/workspace-overlay--format window active)))))
 
 (defun t/workspace-overlay--clear-window (window)
   "Restore WINDOW's header line and clear overlay state."
@@ -156,25 +216,22 @@
     (set-window-parameter window 'header-line-format prev)
     (set-window-parameter window 't/workspace-overlay-prev-header-line nil)))
 
-(defun t/workspace-overlay--select-window (window &rest _)
+(defun t/workspace-overlay--select-window (&rest args)
   "Show overlay in WINDOW for its frame."
-  (let ((frame (window-frame window)))
-    (set-frame-parameter frame 't/workspace-overlay-window window)
-    (dolist (win (window-list frame 'no-minibuf))
-      (t/workspace-overlay--apply-window win (eq win window)))))
+  (let* ((window (t/workspace-overlay--window-from-args args))
+         (frame (window-frame window)))
+    (when (window-live-p window)
+      (set-frame-parameter frame 't/workspace-overlay-window window)
+      (dolist (win (window-list frame 'no-minibuf))
+        (t/workspace-overlay--apply-window win (eq win window))))))
 
-(defun t/workspace-overlay--on-window-buffer-change (window _prev &rest _)
+(defun t/workspace-overlay--on-window-buffer-change (&rest args)
   "Reapply overlay when WINDOW's buffer changes."
-  (t/workspace-overlay--apply-window
-   window
-   (eq window (frame-selected-window (window-frame window)))))
-
-(defun t/workspace-overlay--post-command ()
-  "Refresh overlay when window selection changes."
-  (let ((current (selected-window)))
-    (unless (eq current t/workspace-overlay--last-window)
-      (setq t/workspace-overlay--last-window current)
-      (t/workspace-overlay--select-window current))))
+  (let ((window (t/workspace-overlay--window-from-args args)))
+    (when (window-live-p window)
+      (t/workspace-overlay--apply-window
+       window
+       (eq window (frame-selected-window (window-frame window)))))))
 
 (defun t/workspace-overlay-refresh ()
   "Reapply workspace header line formatting to selected windows."
@@ -193,6 +250,10 @@
   ;; Defer so window configs restored by workspace switch are in place.
   (run-at-time 0 nil #'t/workspace-overlay-refresh))
 
+(defun t/workspace-overlay--deferred-refresh (&rest _)
+  "Refresh overlay after face/theme changes settle."
+  (run-at-time 0 nil #'t/workspace-overlay-refresh))
+
 (define-minor-mode t/workspace-overlay-mode
   "Show the current workspace in the top-right corner."
   :global t
@@ -204,12 +265,12 @@
                   #'t/workspace-overlay--on-window-buffer-change)
         (add-hook 'window-configuration-change-hook
                   #'t/workspace-overlay-refresh)
-        (add-hook 'post-command-hook
-                  #'t/workspace-overlay--post-command)
         (add-hook '+workspace-switch-hook
                   #'t/workspace-overlay--on-workspace-switch)
         (add-hook 'after-load-theme-hook
-                  #'t/workspace-overlay-refresh)
+                  #'t/workspace-overlay--deferred-refresh)
+        (add-hook 'doom-after-reload-hook
+                  #'t/workspace-overlay--deferred-refresh)
         (t/workspace-overlay-refresh))
     (remove-hook 'window-selection-change-functions
                  #'t/workspace-overlay--select-window)
@@ -217,21 +278,17 @@
                  #'t/workspace-overlay--on-window-buffer-change)
     (remove-hook 'window-configuration-change-hook
                  #'t/workspace-overlay-refresh)
-    (remove-hook 'post-command-hook
-                 #'t/workspace-overlay--post-command)
     (remove-hook '+workspace-switch-hook
                  #'t/workspace-overlay--on-workspace-switch)
     (remove-hook 'after-load-theme-hook
-                 #'t/workspace-overlay-refresh)
+                 #'t/workspace-overlay--deferred-refresh)
+    (remove-hook 'doom-after-reload-hook
+                 #'t/workspace-overlay--deferred-refresh)
     (dolist (frame (frame-list))
       (when-let ((window (frame-parameter frame 't/workspace-overlay-window)))
         (when (window-live-p window)
           (t/workspace-overlay--clear-window window))
         (set-frame-parameter frame 't/workspace-overlay-window nil)))
-    (dolist (buffer (buffer-list))
-      (with-current-buffer buffer
-        (when t/workspace-overlay-prev-face-remap
-          (setq face-remapping-alist t/workspace-overlay-prev-face-remap)
-          (setq t/workspace-overlay-prev-face-remap nil))))))
+    ))
 
 (t/workspace-overlay-mode 1)
