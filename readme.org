@@ -1352,7 +1352,7 @@ Recenter prompt at screen top after submitting
          :codex-api-key
          (lambda ()
            (auth-source-pick-first-password :host "api.openai.com")))
-        agent-shell-screenshot-command '("grimshot" "save" "area")))
+        agent-shell-screenshot-command (if is-mac nil '("grimshot" "save" "area"))))
 #+end_src
 
 ***** Keybindings
@@ -5039,22 +5039,24 @@ Determines the style of line numbers in effect. If set to =nil=, line numbers ar
 ***** Color parens
 
 #+begin_src emacs-lisp
-(after! rainbow-delimiters
-  ;; Show paren match face
-  (set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "SpringGreen" :weight 'bold)
-  ;; Rainbow delimiters faces
-  (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "DeepPink4" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "DeepPink3" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "DeepPink2" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "DeepPink1" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "maroon4" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "maroon3" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-7-face nil :foreground "maroon2" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-8-face nil :foreground "maroon1" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-depth-9-face nil :foreground "VioletRed3" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-unmatched-face nil :foreground "Red" :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-mismatched-face nil :foreground "Orange" :overline nil :underline nil)
-)
+(defun t/rainbow-delimiters() 
+  (after! rainbow-delimiters
+    ;; Show paren match face
+    (set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "SpringGreen" :weight 'bold)
+    ;; Rainbow delimiters faces
+    (set-face-attribute 'rainbow-delimiters-depth-1-face nil :foreground "DeepPink4" :overline nil :underline nil)
+    (set-face-attribute 'rainbow-delimiters-depth-2-face nil :foreground "DeepPink3" :overline nil :underline nil)
+    (set-face-attribute 'rainbow-delimiters-depth-3-face nil :foreground "DeepPink2" :overline nil :underline nil)
+    (set-face-attribute 'rainbow-delimiters-depth-4-face nil :foreground "DeepPink1" :overline nil :underline nil)
+    (set-face-attribute 'rainbow-delimiters-depth-5-face nil :foreground "maroon4" :overline nil :underline nil)
+    (set-face-attribute 'rainbow-delimiters-depth-6-face nil :foreground "maroon3" :overline nil :underline nil)
+    (set-face-attribute 'rainbow-delimiters-depth-7-face nil :foreground "maroon2" :overline nil :underline nil)
+    (set-face-attribute 'rainbow-delimiters-depth-8-face nil :foreground "maroon1" :overline nil :underline nil)
+    (set-face-attribute 'rainbow-delimiters-depth-9-face nil :foreground "VioletRed3" :overline nil :underline nil)
+    (set-face-attribute 'rainbow-delimiters-unmatched-face nil :foreground "Red" :overline nil :underline nil)
+    (set-face-attribute 'rainbow-delimiters-mismatched-face nil :foreground "Orange" :overline nil :underline nil)))
+(t/rainbow-delimiters)
+(add-hook! 'doom-load-theme-hook :append #'t/rainbow-delimiters)
 #+end_src
 
 *** Transparency
@@ -5409,6 +5411,15 @@ Bring back text zoom in writeroom mode, moving away toggle mode-line, awkwardly 
       "s-:" 'writeroom-toggle-mode-line)
 #+end_src
 
+Sometimes content is still cut off after the mode was on
+
+#+begin_src emacs-lisp
+(advice-add 'global-writeroom-mode :after
+  (defun t/after-writeroom (&optional &rest ignore)
+    (when (not global-writeroom-mode)
+      (visual-fill-column-mode -1))))
+#+end_src
+
 And screens are big, so a bit more space for text is nice.
 
 #+begin_src emacs-lisp :results silent
@@ -5417,9 +5428,10 @@ And screens are big, so a bit more space for text is nice.
          (h-px (frame-pixel-height (selected-frame)))
          (w (frame-width (selected-frame))))
     ;; noisy
-    ;; (message "w: %s, w-px: %s, h-px: %s" w w-px h-px)
+    ;;(message "w: %s, w-px: %s, h-px: %s" w w-px h-px)
     (cond
-     (t (/ (float 5) 7)))))
+     ((> w 270) (/ (float 1) 2))
+     (t (/ (float 5) 8)))))
 (after! writeroom-mode
   (setq writeroom-width (t/centered-frac)))
 (after! olivetti
@@ -5467,7 +5479,6 @@ Show workspace in modeline, adjust bar width, moar iconz, truncate path.
         doom-modeline-major-mode-icon t
         doom-modeline-major-mode-color-icon t
         doom-modeline-buffer-file-name-style 'truncate-upto-project)
-  (t/doom-modeline-apply-faces)
   (use-package! mu4e-alert
     :after mu4e
     :init (setq doom-modeline-mu4e nil)
