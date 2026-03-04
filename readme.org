@@ -4141,21 +4141,23 @@ On load theme
 (advice-add 'load-theme :after 't/doom-load-theme-hook)
 #+end_src
 
+Soft wrap everywhere.
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-after-init-hook :append
+  (defun t/after-init-hook ()
+    (global-visual-line-mode 1)
+    (global-visual-wrap-prefix-mode 1)
+    (global-hl-line-mode -1)))
+#+end_src
+
 Opt-in to emojis instead :rocket:
 
 #+begin_src emacs-lisp
-(after! emojify
-  (global-emojify-mode -1))
-#+end_src
-
-Soft wrap everywhere
-
-#+begin_src emacs-lisp
-(add-hook! 'doom-after-init-hook
-  (defun t/after-init-hook ()
-    (setq truncate-lines t)
-    (global-visual-line-mode 0)
-    (global-hl-line-mode -1)))
+(add-hook! 'doom-first-buffer-hook :append
+  (defun t/after-first-buffer-hook ()
+    (global-emojify-mode -1)
+    (spacious-padding-mode 1)))
 #+end_src
 
 Programming modes
@@ -4173,6 +4175,7 @@ Programming modes
   (add-to-list 'whitespace-style 'trailing))
 (add-hook!
  '(prog-mode-hook org-mode-hook)
+ :append
  (defun t/set-whitespace-style ()
    (interactive)
    (setq whitespace-style '(face tabs trailing lines ;; space-mark spaces
