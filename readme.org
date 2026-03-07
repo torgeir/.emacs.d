@@ -4048,8 +4048,11 @@ Scratch notes and examples go here to avoid accidental tangling.
 Back and forward on the mouse.
 
 #+begin_src emacs-lisp
-(global-set-key [mouse-8] (cmd! (call-interactively 'previous-buffer)))
-(global-set-key [mouse-9] (cmd! (call-interactively 'next-buffer)))
+(global-set-key [mouse-8] 'previous-buffer)
+(global-set-key [mouse-9] 'next-buffer)
+(map! :map eww-mode-map
+      [mouse-8] 'eww-back-url
+      [mouse-9] 'eww-forward-url)
 #+end_src
 
 *** Recursive minibuffers
