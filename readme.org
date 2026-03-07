@@ -47,9 +47,12 @@ Type ~SPC m g g~ to run =consult-org-heading=, then ~C-c C-;~ to =embark-export=
 
 ** Troubleshooting Doom
 
-When ~doom sync -u~ fails for some packages, try deleting the cloned repos before running it again.
+When ~doom sync -u~ fails for some packages, e.g. magit and the like, try deleting the cloned repos before running it again.
 
-E.g. ~rm -rf ~~/.config/doom-local/straight/repos/{borg,epkg,ghub,magit-section,transient,with-editor,forge,magit}~ then do ~rm -rf build-*-cache.el~
+#+begin_src emacs-lisp :tangle no :results none
+rm -rf ~/.config/doom-local/straight/repos/{borg,epkg,ghub,magit-section,transient,with-editor,forge,magit}
+rm -rf ~/.config/doom-local/straight/build-*-cache.el
+#+end_src
 
 ** Literate Config
 
