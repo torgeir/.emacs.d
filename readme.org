@@ -739,6 +739,13 @@ Use os support if it exists.
       )
 #+end_src
 
+With org 9.8 ~org-toggle-inline-images~ is no more. ~SPC u~ prefix clears images.
+
+#+begin_src emacs-lisp
+(map! :map org-mode-map "C-c <C-i>"  #'org-link-preview)
+(map! :map evil-org-mode-map :n "zi" #'org-link-preview)
+#+end_src
+
 *** Async source code blocks
 
 Make it possible to use the header argument ~:async true~ for async execution of begin_src code blocks.
