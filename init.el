@@ -1058,6 +1058,9 @@ When 'quit' is set, quits window when any other key is pressed."
 	 (llama    gh "tarsius/llama" "d430d48")
 	 (with-editor gh "magit/with-editor" "64211dc")
 	 (transient gh "magit/transient" "7131bec"))
+  :init
+  (when is-mac
+    (setq magit-git-executable "/etc/profiles/per-user/torgeir/bin/git"))
   :config
   (add-hook 'magit-revision-mode-hook 'toggle-truncate-lines)
   (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
