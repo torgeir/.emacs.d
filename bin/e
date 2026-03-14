@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 emacsclient=/etc/profiles/per-user/torgeir/bin/emacsclient
+name=$HOME/.emacs.d/server/server
 if [ -n "$INSIDE_EMACS" ]; then
-  $emacsclient -n -c "$@" # 2> /dev/null
+  $emacsclient --socket-name $name -n -c "$@" # 2> /dev/null
 else
-  $emacsclient -a "" -n -q "$@"
+  $emacsclient --socket-name $name -a "" -n -q "$@"
 fi
