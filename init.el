@@ -658,13 +658,17 @@
 
 ;;; server
 (require 'server)
-(setq server-name "server")
+;; make server dir the same if emacs or open -a Emacs is run
+;; emacsclient --socket-name $HOME/.emacs.d/server/server
+(let ((dir (expand-file-name "server" user-emacs-directory)))
+  (unless (file-directory-p dir)
+    (make-directory dir t)
+    (set-file-modes dir #o700))
+  (setq server-socket-dir dir))
 (let ((server-file (expand-file-name server-name server-socket-dir)))
   (unless (server-running-p server-name)
-    (when (file-exists-p server-file)
-      (ignore-errors (delete-file server-file)))
+    (when (file-exists-p server-file) (ignore-errors (delete-file server-file)))
     (server-start)))
-
 
 ;;; y/n
 (setq read-answer-short t)
@@ -1046,6 +1050,7 @@ When 'quit' is set, quits window when any other key is pressed."
 	     magit-file-stage
 	     magit-diff-dwim
 	     magit-push
+	     magit-commit
 	     magit-commit-amend
 	     magit-commit-instant-fixup)
   :deps ((compat   gh "emacs-compat/compat" "38df650")
@@ -1069,6 +1074,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-g-map "e" #'magit-ediff-dwim)
 (keymap-set t-leader-g-map "P" #'magit-push)
 (keymap-set t-leader-g-map "c a" #'magit-commit-amend)
+(keymap-set t-leader-g-map "c c" #'magit-commit)
 (keymap-set t-leader-g-map "c F" #'magit-commit-instant-fixup)
 
 ;; hunk binds
