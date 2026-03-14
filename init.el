@@ -1485,12 +1485,20 @@ When 'quit' is set, quits window when any other key is pressed."
 	 (lambda ()
 	   (auth-source-pick-first-password :host "api.openai.com")))
 	agent-shell-screenshot-command (if is-mac nil '("grimshot" "save" "area")))
-  (defun t-agent-shell-ctrl-d ()
+  (defun t-shell-maker-input-empty-p ()
+    "Return non-nil when pending comint input is empty."
+    (if-let ((proc (get-buffer-process (current-buffer))))
+	(let ((input (buffer-substring-no-properties
+		      (marker-position (process-mark proc))
+		      (point-max))))
+	  (string-empty-p (string-trim input)))
+      t))
+  (defun t-shell-maker-ctrl-d ()
     (interactive)
     (if (and (eobp)
 	     (or (not (fboundp 'shell-maker-point-at-last-prompt-p))
 		 (shell-maker-point-at-last-prompt-p))
-	     (not (agent-shell--input)))
+	     (t-shell-maker-input-empty-p))
 	(if (window-live-p (selected-window))
 	    (kill-buffer-and-window)
 	  (kill-buffer))
@@ -1506,7 +1514,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (advice-add 'shell-maker-submit :after #'t/agent-shell--recenter)
   (after! evil
     (evil-define-key 'insert agent-shell-mode-map (kbd "C-k") #'kill-line)
-    (evil-define-key 'insert agent-shell-mode-map (kbd "C-d") #'t-agent-shell-ctrl-d)))
+    (evil-define-key 'insert agent-shell-mode-map (kbd "C-d") #'t-shell-maker-ctrl-d)))
 
 ;;; chatgpt-shell
 (t-package chatgpt-shell gh "xenodium/chatgpt-shell" "cbad6ff" nil
@@ -1540,6 +1548,8 @@ When 'quit' is set, quits window when any other key is pressed."
 		      (lambda (reg)
 			(save-excursion (when reg (insert "\n\n" reg))))
 		      reg)))
+  (after! evil
+    (evil-define-key 'insert chatgpt-shell-mode-map (kbd "C-d") #'t-shell-maker-ctrl-d))
   (keymap-set t-leader-map "a s" #'t/chatgpt-shell))
 
 ;;; comint

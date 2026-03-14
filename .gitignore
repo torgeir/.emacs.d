@@ -10,8 +10,15 @@
 /.clj-kondo/
 /.beads/
 /.agent-shell/
+/.DS_Store
 /auto-save-list/
 /projects
 /perspective-state.el
 /multisession/
 /emojis/
+/tramp
+/request/
+/.chatgpt-shell.el
+/.idea
+/chatgpt
+/recentf
