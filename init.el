@@ -1077,12 +1077,15 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-g-map "e" #'magit-ediff-dwim)
 (keymap-set t-leader-g-map "P" #'magit-push)
 (keymap-set t-leader-g-map "c a" #'magit-commit-amend)
-(keymap-set t-leader-g-map "c c" #'magit-commit)
+(keymap-set t-leader-g-map "c c" #'magit-commit-create)
 (keymap-set t-leader-g-map "c F" #'magit-commit-instant-fixup)
 
 ;; hunk binds
 (keymap-set t-leader-g-map "h" (t/micro-state
 				nil
+				"a" 'magit-commit-amend
+				"c" 'magit-commit-create
+				"f" 'magit-commit-instant-fixup
 				"r" 'diff-hl-revert-hunk
 				"s" 'diff-hl-stage-current-hunk
 				"p" 'diff-hl-previous-hunk
@@ -2105,3 +2108,11 @@ words of the candidate, respectively."
 ;;; TODO apheleia
 
 ;;; org capture .gpg.org archiving
+
+;;; TODO did not need this after all?
+;;(t-package exec-path-from-shell gh "purcell/exec-path-from-shell" "7552abf" nil
+;;  ;; TODO try without
+;;  :if nil
+;;  :config
+;;  (exec-path-from-shell-initialize))
+
