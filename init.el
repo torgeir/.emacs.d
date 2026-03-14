@@ -194,10 +194,20 @@
              (saved-point (when win (window-point win)))
              (saved-start (when win (window-start win))))
         (erase-buffer)
-      (insert "t packages\n\n")
+      (insert "-- t packages --\n\n")
+      (insert-text-button "install queued"
+                          'action (lambda (_btn) (t-install-queued-packages))
+                          'follow-link t
+                          'help-echo "Install queued packages")
+      (insert " ")
+      (insert-text-button "rescan"
+                          'action (lambda (_btn) (t-rescan-packages))
+                          'follow-link t
+                          'help-echo "Rescan packages")
+      (insert "\n\n")
       (insert (format "%-20s %-4s %-28s %-8s %s\n"
 		      "name" "prov" "repo" "rev" "status"))
-      (insert (make-string 100 ?-) "\n")
+      (insert (make-string 73 ?-) "\n")
       (cl-labels
 	  ((insert-line
 	     (name &optional prefix)
@@ -565,7 +575,8 @@
         (t--status-set name "queued")
         (t--queue-package spec)))))
   (unless no-show
-    (t--display-status-buffer)))
+    (t--display-status-buffer)
+    (message "t: rescan complete.")))
 
 (defun t--register-package (name host repo rev subdir use-package-form &optional deps dep-of)
   (let* ((existing (t--registry-find name))
@@ -647,7 +658,7 @@
 
 ;;; server
 (require 'server)
-(setq server-name "t-emacs")
+(setq server-name "server")
 (let ((server-file (expand-file-name server-name server-socket-dir)))
   (unless (server-running-p server-name)
     (when (file-exists-p server-file)
@@ -676,6 +687,15 @@ When 'quit' is set, quits window when any other key is pressed."
 		   keymap t (lambda () (when quit (quit-window))))))
         (when quit
           (keymap-set keymap "q" (cmd! (funcall exit))))))))
+
+;;; micro state: read
+(defun t/read ()
+  (interactive)
+  (funcall
+   (t/micro-state
+    nil
+    "p" 'evil-scroll-up
+    "n" 'evil-scroll-down)))
 
 ;;; macros
 (defmacro comment (&rest _ignore) nil)
@@ -1023,6 +1043,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package magit gh "magit/magit" "b9f19ba" nil
   :commands (magit-log
 	     magit-status
+	     magit-file-stage
 	     magit-diff-dwim
 	     magit-push
 	     magit-commit-amend
@@ -1060,7 +1081,7 @@ When 'quit' is set, quits window when any other key is pressed."
 				"k" 'diff-hl-previous-hunk
 				"j" 'diff-hl-next-hunk
 				))
-(keymap-set t-leader-g-map "S" #'diff-hl-stage-file)
+(keymap-set t-leader-g-map "S" #'magit-file-stage)
 (keymap-set t-leader-g-map "U" #'diff-hl-unstage-file)
 (keymap-set t-leader-g-map "r" #'diff-hl-revert-hunk)
 (keymap-set t-leader-g-map "n" #'diff-hl-next-hunk)
@@ -1173,7 +1194,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "h C" #'describe-char)
 (keymap-set t-leader-map "h e" #'view-echo-area-messages)
 (keymap-set t-leader-map "h f" #'describe-function)
-(keymap-set t-leader-map "h i" #'consult-info)
+(keymap-set t-leader-map "h i" (cmd! (require 'consult-info) (consult-info)))
 (keymap-set t-leader-map "h h" #'consult-man)
 (keymap-set t-leader-map "h F" #'describe-face)
 (keymap-set t-leader-map "h k" #'describe-key)
@@ -1326,6 +1347,8 @@ When 'quit' is set, quits window when any other key is pressed."
   (evil-define-key 'motion Info-mode-map (kbd t-leader-alt) t-leader-map)
   (evil-define-key 'normal Info-mode-map (kbd "H") #'Info-history-back)
   (evil-define-key 'normal Info-mode-map (kbd "L") #'Info-history-forward)
+  (keymap-set Info-mode-map "<mouse-8>" 'Info-history-back)
+  (keymap-set Info-mode-map "<mouse-9>" 'Info-history-forward)
   (unbind-key (kbd "h") 'Info-mode-map)
   (unbind-key (kbd "l") 'Info-mode-map))
 
@@ -1625,7 +1648,7 @@ When 'quit' is set, quits window when any other key is pressed."
 	 ;; always revert
 	 (after-init . global-auto-revert-mode))
   :init
-  (setq fill-column 90) ;; prevents breaks of 89 filled paragraphs
+  (setq-default fill-column 90) ;; prevents breaks of 89 filled paragraphs
   (add-hook 'after-init-hook (cmd! (menu-bar-mode -1)))
   (add-hook 'after-init-hook (cmd! (tool-bar-mode -1)))
   :custom
@@ -1783,6 +1806,9 @@ words of the candidate, respectively."
 (add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
 (t/set-pairs 'emacs-lisp-mode '((?` . ?')))
 
+;;; lang: prog
+(add-hook 'prog-mode-hook 'outline-minor-mode)
+
 ;;; emojis :rocket:
 (t-package emojify gh "iqbalansari/emacs-emojify" "1b72641" nil
   :commands (global-emojify-mode)
@@ -1795,10 +1821,7 @@ words of the candidate, respectively."
 (keymap-set t-leader-map "o o" (cmd! (let ((default-directory (t/org-file)))
 				       (call-interactively 'find-file))))
 (keymap-set t-leader-map "o h" #'hnreader-news)
-(keymap-set t-leader-map "r r" (t/micro-state
-				nil
-				"p" 'evil-scroll-up
-				"n" 'evil-scroll-down))
+(keymap-set t-leader-map "r r" 't/read)
 
 ;;; snippets
 (use-package tempo
@@ -1861,6 +1884,7 @@ words of the candidate, respectively."
 	org-log-redeadline 'time     ; log when deadline changes
 	org-log-reschedule 'time     ; log when schedule changes
 	org-reverse-note-order t     ; newest notes first
+	org-default-notes-file (t/org-file "tasks.org")
 	)
   :config
   (t/set-pairs 'org-mode '((?~ . ?~) (?= . ?=) (?` . ?') (?< . ?>) (?/ . ?/) (?« . ?») (?_ . ?_)))
@@ -1895,14 +1919,53 @@ words of the candidate, respectively."
   :config
   (org-alert-enable))
 
+;;; mail
+(t-package notmuch gh "notmuch/notmuch" "076d597" "emacs"
+  :commands (notmuch)
+  :init
+  (setq notmuch-show-logo nil
+	notmuch-hello-auto-refresh t
+	notmuch-search-oldest-first nil
+	notmuch-show-empty-saved-searches t
+	notmuch-saved-searches
+        `((:name "📥 inbox"
+           :query "tag:inbox"
+           :sort-order newest-first
+           :key ,(kbd "i"))
+          (:name "✉️ all unread (inbox)"
+           :query "tag:unread and tag:inbox"
+           :sort-order newest-first
+           :key ,(kbd "u"))))
+  (setq notmuch-archive-tags nil ; dont archive email
+	notmuch-show-text/html-blocked-images "." ; block everything
+        notmuch-message-replied-tags '("+replied")
+        notmuch-message-forwarded-tags '("+forwarded")
+        notmuch-show-mark-read-tags '("-unread")
+        notmuch-draft-tags '("+draft")
+        notmuch-draft-folder "drafts"
+        notmuch-draft-save-plaintext 'ask)
+  (add-hook 'notmuch-show-mode-hook 'olivetti-mode)
+  (add-hook 'notmuch-show-mode-hook 't/read)
+  (add-hook 'notmuch-search-mode-hook 'olivetti-mode)
+  (keymap-set t-leader-map "o m" 'notmuch))
+
+(setq user-full-name "Torgeir Thoresen"
+      user-mail-address "torgeir.thoresen@gmail.com")
+
+(setq sendmail-program (executable-find "msmtp")
+      send-mail-function #'smtpmail-send-it
+      message-sendmail-f-is-evil t
+      message-send-mail-function #'message-send-mail-with-sendmail)
+
 ;;; epa encrypt org
 (after! auth-source (setq auth-sources '("~/.authinfo.gpg")))
 (after! epa
   (setq-default epa-file-encrypt-to '("torgeir@keybase.io"))
   ;; https://irreal.org/blog/?p=11827
   (fset 'epg-wait-for-status 'ignore))
-(after! epa-file
-  (epa-file-enable))
+;; (after! epa-file (epa-file-enable))
+(add-hook 'after-init-hook 'epa-file-enable)
+(add-hook 'after-init-hook 'auth-source-forget-all-cached)
 
 ;;; rainbows
 (defun t/rainbow ()
@@ -2019,3 +2082,7 @@ words of the candidate, respectively."
 ;;          (compat gh "emacs-compat/compat" "38df650"))
 ;;   :config
 ;;   (keymap-set t-leader-map "t c" 'copilot-mode))
+
+;;; TODO apheleia
+
+;;; org capture .gpg.org archiving

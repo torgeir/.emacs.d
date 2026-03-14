@@ -12,3 +12,6 @@
 /.agent-shell/
 /auto-save-list/
 /projects
+/perspective-state.el
+/multisession/
+/emojis/
