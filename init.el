@@ -1980,8 +1980,8 @@ words of the candidate, respectively."
   ;; https://irreal.org/blog/?p=11827
   (fset 'epg-wait-for-status 'ignore))
 ;; (after! epa-file (epa-file-enable))
-(add-hook 'after-init-hook 'epa-file-enable)
-(add-hook 'after-init-hook 'auth-source-forget-all-cached)
+(add-hook 'server-after-make-frame-hook 'epa-file-enable)
+(add-hook 'server-after-make-frame-hook 'auth-source-forget-all-cached)
 
 ;;; rainbows
 (defun t/rainbow ()
