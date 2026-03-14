@@ -1,0 +1,16 @@
+old/*
+.DS_Store
+/.lsp/
+/.clj-kondo/
+/packages.el
+/test-files/venv/
+/test-files/node_modules/
+/test-files/package-lock.json
+/test-files/clj/.cpcache/
+/.idea/
+/.log/
+/.nrepl-port
+/workspace
+/config.el
+.direnv/
+node_modules/

@@ -1,91 +1,53 @@
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:foreground "#ccc"))))
- '(Info-quoted ((t (:inherit fixed-pitch-serif :foreground "#888"))))
- '(bookmark-face ((t (:underline "DarkOrange1"))))
- '(company-box-background ((t (:background "#21242b"))) t)
- '(company-tooltip ((t (:background "#21242b"))))
- '(dictionary-word-definition-face ((t nil)))
- '(eshell-ls-executable ((t (:inherit doom-modeline-info :weight bold))))
- '(evil-goggles-default-face ((t (:inherit region :background "#2f2157"))))
- '(evil-goggles-delete-face ((t (:inherit magit-diff-removed))))
- '(evil-goggles-paste-face ((t (:inherit magit-diff-added))))
- '(evil-goggles-undo-redo-add-face ((t (:inherit magit-diff-added))))
- '(evil-goggles-undo-redo-remove-face ((t (:inherit magit-diff-removed))))
- '(font-lock-builtin-face ((t (:foreground "#e678dd"))))
- '(font-lock-comment-face ((t (:foreground "#5a9fc0"))))
- '(font-lock-constant-face ((t (:foreground "#baa1e1"))))
- '(font-lock-doc-face ((t (:inherit font-lock-comment-face :foreground "gray60"))))
- '(font-lock-function-name-face ((t (:foreground "#ff78dd"))))
- '(font-lock-keyword-face ((t (:foreground "#31afff"))))
- '(font-lock-string-face ((t (:foreground "#98da65"))))
- '(font-lock-type-face ((t (:foreground "#febf7B"))))
- '(font-lock-variable-name-face ((t (:foreground "#ecaeff"))))
- '(hackernews-comment-count ((t (:inherit org-code))))
- '(hackernews-comment-count-face ((t (:inherit org-code))) t)
- '(hackernews-link ((t (:inherit font-lock-keyword-face))))
- '(hackernews-link-face ((t (:inherit font-lock-keyword-face))) t)
- '(helm-candidate-number ((t nil)))
- '(highlight-numbers-number ((t (:inherit bold :foreground "#ff9548"))))
- '(highlight-symbol-face ((t (:inherit hl-line :background "#351859"))))
- '(hl-line ((t (:extend t :background "#202020"))))
- '(holiday ((t (:foreground "OliveDrab3"))))
- '(ivy-current-match ((t (:extend t :background "#2f2157"))))
- '(js2-external-variable ((t nil)))
- '(lazy-highlight ((t (:background "#2266A0" :foreground "#DFDFDF" :weight bold))))
- '(lsp-face-highlight-read ((t (:background "#222" :foreground "#DFDFDF" :weight normal))))
- '(lsp-face-highlight-textual ((t (:background "#0F085D" :foreground "#919ad9" :weight bold))))
- '(markdown-header-face ((t (:inherit bold :foreground "#66bb5c"))))
- '(match ((t (:background "#233063" :foreground "#a7da1e" :weight bold))))
- '(org-agenda-dimmed-todo-face ((t (:inherit org-level-2))))
- '(org-checkbox-statistics-todo ((t (:inherit org-todo))))
- '(org-code ((t (:foreground "VioletRed1"))))
- '(org-date ((t (:foreground "turquoise2"))))
- '(org-done ((t (:strike-through nil))))
- '(org-headline-done ((t (:strike-through t))))
- '(org-level-1 ((t (:foreground "#51afef" :weight semi-bold :height 1.0 :background nil))))
- '(org-scheduled-previously ((t (:inherit error))))
- '(org-special-keyword ((t (:foreground "gray25"))))
- '(org-tag ((t (:foreground "#7bda75" :weight normal))))
- '(rainbow-delimiters-unmatched-face ((t (:foreground "#e0211d" :overline nil :underline t))))
- '(region ((t (:extend t :background "#351859"))))
- '(spray-accent-face ((t (:inherit spray-base-face :foreground "#51afef"))))
- '(terraform--resource-name-face ((t nil)))
- '(twittering-uri-face ((t (:foreground "gray30" :underline nil))))
- '(twittering-username-face ((t (:foreground "#98da75" :underline nil)))))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(all-the-icons-ivy-rich-mode t)
- '(ansi-color-names-vector
-   ["#d2ceda" "#f2241f" "#67b11d" "#b1951d" "#3a81c3" "#a31db1" "#21b8c7" "#655370"])
- '(company-box-doc-delay 0.01)
+ '(auth-source-save-behavior nil)
  '(custom-safe-themes
-   '("2f1518e906a8b60fac943d02ad415f1d8b3933a5a7f75e307e6e9a26ef5bf570" "6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" default))
- '(evil-collection-mode-list
-   '(apropos calendar dired eww hackernews help info ivy outline rg w3m wdired xref) nil nil "Customized with use-package evil-collection")
- '(exec-path-from-shell-arguments '("-l"))
- '(flycheck-javascript-flow-args nil)
- '(helm-source-names-using-follow '("home.org_archive" "bekk.org" "Imenu" "AG"))
- '(ivy-mode t)
- '(ivy-rich-mode t)
- '(ivy-use-virtual-buffers t)
- '(json-reformat:indent-width *t-indent* t)
- '(lsp-clients-kotlin-server-executable
-   "/Users/torgeir/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
- '(lsp-kotlin-language-server-path
-   "/Users/torgeir/bin/kotlin-language-server-install/server/bin/kotlin-language-server" nil nil "Customized with use-package kotlin-mode")
- '(lsp-python-ms-extra-paths ["venv"])
- '(nntp-authinfo-file "~/.authinfo.gpg")
- '(pos-tip-background-color "#36473A")
- '(pos-tip-foreground-color "#FFFFC8")
- '(send-mail-function 'smtpmail-send-it)
- '(smtpmail-smtp-server "imap.gmail.com" t)
- '(smtpmail-smtp-service 25 t)
- '(tags-add-tables t)
- '(visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
+   '("a060c0315a44bee19ac87414571131c8c8fad7a940bda0102da67410e66833aa"
+     "c95f1add64292a11748891ea78c5c234afe74d9f1e326cbc20e5f517c048f770"
+     "c38ca564fb26ae0414ed076b9a8462cdfbb1e20eb651001bfaa789e842fdbfdd"
+     "0527c20293f587f79fc1544a2472c8171abcc0fa767074a0d3ebac74793ab117"
+     "a9eeab09d61fef94084a95f82557e147d9630fbbb82a837f971f83e66e21e5ad"
+     "013728cb445c73763d13e39c0e3fd52c06eefe3fbd173a766bfd29c6d040f100"
+     "7cf720b5ecb20f43fbeef85380a5a7c44cfff091aa8c1b0265d0297ab3bd5d3f"
+     "1c698719e9d4a63a25e97c59db57d104845b93152002bba2642fe4a850e931c4"
+     "c865644bfc16c7a43e847828139b74d1117a6077a845d16e71da38c8413a5aaa"
+     "6d0be7d58f4169e34ea0f3aad456f0e4f8414430c612efe66ec6739ad5ee5e26"
+     "4ff1c4d05adad3de88da16bd2e857f8374f26f9063b2d77d38d14686e3868d8d" default))
+ '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
+ '(org-outline-path-complete-in-steps nil)
+ '(org-refile-use-outline-path 'file)
+ '(safe-local-variable-values
+   '((org-log-done-with-time) (org-startup-with-link-previews)
+     (eval defun t/open-jira-link-at-point nil (interactive)
+      (eww-browse-with-external-browser
+       (format "https://domstol.atlassian.net/browse/%s"
+               (thing-at-point 'symbol))))
+     (eval progn
+      (after! forge
+        (add-to-list 'forge-alist
+                     '("personal" "api.github.com" "github.com"
+                       forge-github-repository))
+        (add-to-list 'forge-alist
+                     '("work" "api.github.com" "github.com"
+                       forge-github-repository)))
+      (after! browse-at-remote
+        (add-to-list 'browse-at-remote-remote-type-regexps
+                     '(:host "^personal$" :type "github" :actual-host
+                       "github.com"))
+        (add-to-list 'browse-at-remote-remote-type-regexps
+                     '(:host "^work$" :type "github" :actual-host "github.com")))))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(evil-goggles-change-face ((t (:inherit diff-refine-removed))))
+ '(evil-goggles-delete-face ((t (:inherit diff-refine-removed))))
+ '(evil-goggles-paste-face ((t (:inherit diff-refine-added))))
+ '(evil-goggles-undo-redo-add-face ((t (:inherit diff-refine-added))))
+ '(evil-goggles-undo-redo-change-face ((t (:inherit diff-refine-changed))))
+ '(evil-goggles-undo-redo-remove-face ((t (:inherit diff-refine-removed))))
+ '(evil-goggles-yank-face ((t (:inherit diff-refine-changed)))))
