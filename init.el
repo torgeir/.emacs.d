@@ -1478,6 +1478,32 @@ When 'quit' is set, quits window when any other key is pressed."
     (keymap-set evil-normal-state-map "s-<return>" #'vterm))
   (keymap-set vterm-copy-mode-map "i" #'t-vterm-copy-mode-insert))
 
+;;; vterm: dired, magit etc follows terminal dir
+(after! vterm
+  ;; https://github.com/akermu/emacs-libvterm#how-can-i-get-the-directory-tracking-in-a-more-understandable-way
+  ;; see dotfiles/source/functions
+  (add-to-list
+   'vterm-eval-cmds
+   '("update-pwd" (lambda (path) (setq default-directory path))))
+
+  (add-to-list
+   'vterm-eval-cmds
+   '("magit-diff" (lambda (path)
+                    (let ((default-directory path))
+                      (call-interactively' magit-diff)))))
+
+  (add-to-list
+   'vterm-eval-cmds
+   '("magit-log" (lambda (path)
+                   (let ((default-directory path))
+                     (call-interactively' magit-log)))))
+
+  (add-to-list
+   'vterm-eval-cmds
+   '("magit-status" (lambda (path)
+                      (let ((default-directory path))
+                        (call-interactively' magit-status))))))
+
 ;;; agent-shell
 (t-package agent-shell gh "xenodium/agent-shell" "b3e556c" nil
   :deps ((acp gh "xenodium/acp.el" "f7e20ce")
