@@ -1128,7 +1128,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; files
 (keymap-set t-leader-map "f f" (t/consult-with-region 'consult-find))
-(keymap-set t-leader-map "f D" (cmd! (dired (consult-dir))))
+(keymap-set t-leader-map "f D" (cmd! (dired (read-directory-name "Dired: "))))
 (keymap-set t-leader-map "f r" #'recentf)
 (keymap-set t-leader-map "f l" #'t-toggle-sidebar)
 (keymap-set t-leader-map "f L" 't/dired-locate)
@@ -1413,11 +1413,18 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; perspectives
 (t-package perspective gh "nex3/perspective-el" "64ef5ea" nil
+  :commands (persp-switch
+	     persp-switch-to-buffer
+	     persp-kill
+	     persp-state-save
+	     persp-state-load)
   :init
   (setq persp-state-default-file
 	(expand-file-name "perspective-state.el" user-emacs-directory)
 	persp-mode-prefix-key nil
 	persp-suppress-no-prefix-key-warning t)
+  (keymap-set t-leader-map "-" #'persp-switch)
+  (keymap-set t-leader-map "TAB" perspective-map)
   :config
   (persp-mode 1)
   (t/sync-persp-face)
@@ -1505,18 +1512,17 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package agent-shell gh "xenodium/agent-shell" "b3e556c" nil
   :deps ((acp gh "xenodium/acp.el" "f7e20ce")
 	 (shell-maker gh "xenodium/shell-maker" "8c64f0b"))
+  :commands (agent-shell)
   :init
-  (require 'agent-shell) ;; why tho
-  (keymap-set t-leader-map "a a" #'agent-shell)
-  (keymap-set t-leader-map "a i" #'agent-shell)
-  (keymap-set t-leader-map "a c" #'agent-shell)
-  (setq agent-shell-header-style 'text
-	agent-shell-session-strategy 'prompt
+  (after! agent-shell
+    (setq
 	agent-shell-openai-authentication
 	(agent-shell-openai-make-authentication
 	 :codex-api-key
 	 (lambda ()
-	   (auth-source-pick-first-password :host "api.openai.com")))
+	   (auth-source-pick-first-password :host "api.openai.com")))))
+  (setq agent-shell-header-style 'text
+	agent-shell-session-strategy 'prompt
 	agent-shell-screenshot-command (if is-mac nil '("grimshot" "save" "area")))
   (defun t-shell-maker-input-empty-p ()
     "Return non-nil when pending comint input is empty."
@@ -1545,6 +1551,9 @@ When 'quit' is set, quits window when any other key is pressed."
 	(with-selected-window win
 	  (recenter-top-bottom 5)))))
   (advice-add 'shell-maker-submit :after #'t/agent-shell--recenter)
+  (keymap-set t-leader-map "a a" #'agent-shell)
+  (keymap-set t-leader-map "a i" #'agent-shell)
+  (keymap-set t-leader-map "a c" #'agent-shell)
   (after! evil
     (evil-define-key 'insert agent-shell-mode-map (kbd "C-k") #'kill-line)
     (evil-define-key 'insert agent-shell-mode-map (kbd "C-d") #'t-shell-maker-ctrl-d)))
@@ -1789,11 +1798,16 @@ words of the candidate, respectively."
   )
 
 ;;; consult
-(t-package consult gh "minad/consult" "f8c2ef5" nil)
-
-;;; consult-dir
-(t-package consult-dir gh "karthink/consult-dir" "1497b46" nil
-  :deps ((consult gh "minad/consult" "f8c2ef5")))
+(t-package consult gh "minad/consult" "f8c2ef5" nil
+  :commands (consult-buffer
+	     consult-line
+	     consult-line-multi
+	     consult-ripgrep
+	     consult-git-grep
+	     consult-grep
+	     consult-find
+	     consult-man
+	     consult-completion-in-region))
 
 ;;; marginalia
 (t-package marginalia gh "minad/marginalia" "d28a5e5" nil
