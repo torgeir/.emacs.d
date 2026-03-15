@@ -1421,11 +1421,6 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; perspectives
 (t-package perspective gh "nex3/perspective-el" "64ef5ea" nil
-  :commands (persp-switch
-	           persp-switch-to-buffer
-	           persp-kill
-	           persp-state-save
-	           persp-state-load)
   :init
   (setq persp-state-default-file
 	      (expand-file-name "perspective-state.el" user-emacs-directory)
