@@ -2024,6 +2024,14 @@ words of the candidate, respectively."
 (t-package notmuch gh "notmuch/notmuch" "076d597" "emacs"
   :commands (notmuch)
   :init
+  (after! notmuch
+    (require 'notmuch-address)
+    ;; address completion in common recipient headers
+    (dolist (h '("To" "Cc" "Bcc"))
+      (add-to-list 'message-completion-alist (cons h #'notmuch-address-expand-name)))
+    ;; file outgoing mail
+    (setq notmuch-fcc-dirs "sent +sent -inbox"))
+  (setq notmuch-identities '(("Torgeir Thoresen <torgeir.thoresen@gmail.com>")))
   (setq notmuch-show-logo nil
 	      notmuch-hello-auto-refresh t
 	      notmuch-search-oldest-first nil
@@ -2033,6 +2041,10 @@ words of the candidate, respectively."
 		             :query "tag:inbox"
 		             :sort-order newest-first
 		             :key ,(kbd "i"))
+          (:name " inbox today"
+		             :query "date:today"
+		             :sort-order newest-first
+		             :key ,(kbd "t"))
           (:name "✉️ all unread (inbox)"
 		             :query "tag:unread and tag:inbox"
 		             :sort-order newest-first
