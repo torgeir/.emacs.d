@@ -929,8 +929,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "g" t-leader-g-map)
 
 ;;; fonts
-(defvar t-font-height 200)
-(setq t-font-height 180)
+(setq t-font-height 200)
 (set-face-attribute 'default nil :height t-font-height)
 
 (keymap-set global-map "C-+" (cmd! (text-scale-set
@@ -941,8 +940,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (defun t/adjust-font (fn inc)
   (interactive)
   (let ((h (face-attribute 'default :height)))
-    (set-face-attribute 'default nil
-			:height (funcall fn h inc))))
+    (set-face-attribute 'default nil :height (funcall fn h inc))))
 (defun t/reset-font ()
   (interactive)
   (set-face-attribute 'default nil :height t-font-height))
@@ -1908,7 +1906,14 @@ words of the candidate, respectively."
 	org-reverse-note-order t     ; newest notes first
 	org-default-notes-file (t/org-file "tasks.org")
 	)
+  (defun t/org-double-mouse-1 (event)
+    "Toggle heading visibility when double-clicking an Org heading."
+    (interactive "e")
+    (mouse-set-point event)
+    (when (org-at-heading-p)
+      (org-cycle)))
   :config
+  (keymap-set org-mode-map "<double-mouse-1>" #'t/org-double-mouse-1)
   (t/set-pairs 'org-mode '((?~ . ?~) (?= . ?=) (?` . ?') (?< . ?>) (?/ . ?/) (?« . ?») (?_ . ?_)))
   (after! evil 
     (evil-set-initial-state 'org-agenda-mode 'motion))
