@@ -194,66 +194,68 @@
              (saved-point (when win (window-point win)))
              (saved-start (when win (window-start win))))
         (erase-buffer)
-      (insert "-- t packages --\n\n")
-      (insert-text-button "install queued"
-                          'action (lambda (_btn) (t-install-queued-packages))
-                          'follow-link t
-                          'help-echo "Install queued packages")
-      (insert " ")
-      (insert-text-button "rescan"
-                          'action (lambda (_btn) (t-rescan-packages))
-                          'follow-link t
-                          'help-echo "Rescan packages")
-      (insert "\n\n")
-      (insert (format "%-20s %-4s %-28s %-8s %s\n"
-		      "name" "prov" "repo" "rev" "status"))
-      (insert (make-string 73 ?-) "\n")
-      (cl-labels
-	  ((insert-line
-	     (name &optional prefix)
-	     (let* ((status (gethash name t-package-status "unknown"))
-		    (meta (gethash name t-package-meta))
-		    (in-progress (member status '("cloning" "checking out")))
-		    (spin (when in-progress
-			    (nth t-spinner-index t-spinner-frames)))
-		    (label (if spin (format "%s %s" spin status) status))
-		    (host (or (plist-get meta :host) ""))
-		    (repo (string-remove-suffix ".git" (or (plist-get meta :repo) "")))
-		    (rev (or (plist-get meta :rev) ""))
-		    (name-text (format "%s%s" (or prefix "") (symbol-name name))))
-	       (insert (format "%-20s %-4s %-28s" name-text host repo))
-	       (if meta
-		   (let* ((rev-text (format "%-8s" rev))
-			  (url (t--repo-commit-url
-				(plist-get meta :host)
-				(plist-get meta :repo)
-				(plist-get meta :rev))))
-		     (insert
-		      (propertize
-		       (format " %s" rev-text)
-		       'mouse-face 'highlight
-		       'help-echo "Open commit"
-		       'keymap (let ((map (make-sparse-keymap)))
-				 (define-key map [mouse-1]
-					     (lambda ()
-					       (interactive)
-					       (browse-url url)))
-				 map))))
-		 (insert (format " %-8s" rev)))
-	       (insert (format " %s\n" label)))))
-	(let (top-level)
-	  (dolist (name t-package-order)
-	    (let* ((meta (gethash name t-package-meta))
-		   (dep-of (plist-get meta :dep-of)))
-	      (unless dep-of
-		(push name top-level))))
-	  (setq top-level (nreverse top-level))
-	  (dolist (name top-level)
-	    (insert-line name)
-	    (let* ((meta (gethash name t-package-meta))
-		   (deps (plist-get meta :deps)))
-	      (dolist (dep deps)
-		(insert-line dep "- "))))))
+	      (insert "-- t packages --\n\n")
+	      (insert-text-button
+	       "install queued"
+         'action (lambda (_btn) (t-install-queued-packages))
+         'follow-link t
+         'help-echo "Install queued packages")
+	      (insert " ")
+	      (insert-text-button
+	       "rescan"
+         'action (lambda (_btn) (t-rescan-packages))
+         'follow-link t
+         'help-echo "Rescan packages")
+	      (insert "\n\n")
+	      (insert (format "%-20s %-4s %-28s %-8s %s\n"
+			                  "name" "prov" "repo" "rev" "status"))
+	      (insert (make-string 73 ?-) "\n")
+	      (cl-labels
+	          ((insert-line
+	             (name &optional prefix)
+	             (let* ((status (gethash name t-package-status "unknown"))
+		                  (meta (gethash name t-package-meta))
+		                  (in-progress (member status '("cloning" "checking out")))
+		                  (spin (when in-progress
+			                        (nth t-spinner-index t-spinner-frames)))
+		                  (label (if spin (format "%s %s" spin status) status))
+		                  (host (or (plist-get meta :host) ""))
+		                  (repo (string-remove-suffix ".git" (or (plist-get meta :repo) "")))
+		                  (rev (or (plist-get meta :rev) ""))
+		                  (name-text (format "%s%s" (or prefix "") (symbol-name name))))
+		             (insert (format "%-20s %-4s %-28s" name-text host repo))
+		             (if meta
+		                 (let* ((rev-text (format "%-8s" rev))
+			                      (url (t--repo-commit-url
+				                          (plist-get meta :host)
+				                          (plist-get meta :repo)
+				                          (plist-get meta :rev))))
+		                   (insert
+			                  (propertize
+			                   (format " %s" rev-text)
+			                   'mouse-face 'highlight
+			                   'help-echo "Open commit"
+			                   'keymap (let ((map (make-sparse-keymap)))
+				                           (define-key map [mouse-1]
+					                                     (lambda ()
+						                                     (interactive)
+						                                     (browse-url url)))
+				                           map))))
+		               (insert (format " %-8s" rev)))
+		             (insert (format " %s\n" label)))))
+	        (let (top-level)
+	          (dolist (name t-package-order)
+	            (let* ((meta (gethash name t-package-meta))
+		                 (dep-of (plist-get meta :dep-of)))
+		            (unless dep-of
+		              (push name top-level))))
+	          (setq top-level (nreverse top-level))
+	          (dolist (name top-level)
+	            (insert-line name)
+	            (let* ((meta (gethash name t-package-meta))
+		                 (deps (plist-get meta :deps)))
+		            (dolist (dep deps)
+		              (insert-line dep "- "))))))
         (setq buffer-read-only nil)
         (when (and win saved-point saved-start)
           (set-window-point win saved-point)
@@ -566,7 +568,7 @@
       (t--status-register name)
       (cond
        ((t--package-up-to-date-p pkg-dir rev)
-         (t--status-set name "installed")
+        (t--status-set name "installed")
         (t--package-add-load-path name (plist-get spec :subdir)))
        ((t--package-outdated-p pkg-dir rev)
         (t--status-set name "outdated")
@@ -644,14 +646,14 @@
 ;; / packages-diy
 
 (add-hook 't-package-install-complete-hook
-	  (lambda ()
-	    (unless t--reload-in-progress
-	      (let ((t--reload-in-progress t))
-		(load-file user-init-file)
-		(when (fboundp 'evil-mode) (evil-mode 1))
-		(find-file user-init-file)
-		(delete-other-windows)
-		(message "Ready, go.")))))
+	        (lambda ()
+	          (unless t--reload-in-progress
+	            (let ((t--reload-in-progress t))
+		            (load-file user-init-file)
+		            (when (fboundp 'evil-mode) (evil-mode 1))
+		            (find-file user-init-file)
+		            (delete-other-windows)
+		            (message "Ready, go.")))))
 
 ;;; custom
 (setq custom-file null-device)
@@ -688,7 +690,7 @@ When 'quit' is set, quits window when any other key is pressed."
     (lambda ()
       (interactive)
       (let ((exit (set-temporary-overlay-map
-		   keymap t (lambda () (when quit (quit-window))))))
+		               keymap t (lambda () (when quit (quit-window))))))
         (when quit
           (keymap-set keymap "q" (cmd! (funcall exit))))))))
 
@@ -846,7 +848,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (-any?
    (lambda (d) (s-matches? d (file-name-base (dired-get-filename nil t))))
    (and (boundp 'projectile-globally-ignored-directories)
-	 projectile-globally-ignored-directories)))
+	      projectile-globally-ignored-directories)))
 
 (defun t/dired-show-recursively-0 (path)
   "Recursively opens all directories for this path."
@@ -933,9 +935,9 @@ When 'quit' is set, quits window when any other key is pressed."
 (set-face-attribute 'default nil :height t-font-height)
 
 (keymap-set global-map "C-+" (cmd! (text-scale-set
-				    (1+ text-scale-mode-amount))))
+				                            (1+ text-scale-mode-amount))))
 (keymap-set global-map "C--" (cmd! (text-scale-set
-				    (1- text-scale-mode-amount))))
+				                            (1- text-scale-mode-amount))))
 (keymap-set global-map "C-0" (cmd! (text-scale-set 0)))
 (defun t/adjust-font (fn inc)
   (interactive)
@@ -958,19 +960,18 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; general
 (keymap-set t-leader-map "," (cmd!
-			      (if (t/prefix-arg-universal?)
-				  (call-interactively 'consult-buffer-other-window)
-				(call-interactively 'consult-buffer)
-				)))
-(keymap-set t-leader-map "." #'consult-find)
+			                        (if (t/prefix-arg-universal?)
+				                          (call-interactively 'consult-buffer-other-window)
+				                        (call-interactively 'consult-buffer)
+				                        )))
 (keymap-set t-leader-map "RET" #'consult-bookmark)
 (keymap-set t-leader-map "u" #'universal-argument)
 (keymap-set t-leader-map t-leader #'find-file)
 (let ((maps (list minibuffer-local-map
-		  minibuffer-local-ns-map
-		  minibuffer-local-completion-map
-		  minibuffer-local-must-match-map
-		  minibuffer-local-isearch-map)))
+		              minibuffer-local-ns-map
+		              minibuffer-local-completion-map
+		              minibuffer-local-must-match-map
+		              minibuffer-local-isearch-map)))
   (dolist (map maps)
     (keymap-set map t-leader-alt t-leader-map)))
 
@@ -985,17 +986,17 @@ When 'quit' is set, quits window when any other key is pressed."
 (defun t--apply-pairs (pairs)
   (electric-pair-local-mode 1)
   (let ((seen nil)
-	(combined nil))
+	      (combined nil))
     (dolist (pair (append (default-value 'electric-pair-pairs) pairs))
       (unless (member pair seen)
-	(push pair seen)
-	(push pair combined)))
+	      (push pair seen)
+	      (push pair combined)))
     (setq-local electric-pair-pairs (nreverse combined)))
   (setq-local electric-pair-text-pairs electric-pair-pairs)
   (setq-local electric-pair-inhibit-predicate
-	      (lambda (c)
-		(and (not (assoc c pairs))
-		     (funcall #'electric-pair-default-inhibit c)))))
+	            (lambda (c)
+		            (and (not (assoc c pairs))
+		                 (funcall #'electric-pair-default-inhibit c)))))
 
 (defun t--apply-pairs-for-mode ()
   (let ((pairs (alist-get major-mode t--pairs-alist)))
@@ -1010,18 +1011,18 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "t d" #'toggle-debug-on-error)
 (keymap-set t-leader-map "t e" #'global-emojify-mode)
 (keymap-set t-leader-map "t i" (defun t/toggle-images ()
-				 (interactive)
-				 (when (equal major-mode 'eww-mode)
-				   (eww-toggle-images))))
+				                         (interactive)
+				                         (when (equal major-mode 'eww-mode)
+				                           (eww-toggle-images))))
 (keymap-set t-leader-map "t b" #'tool-bar-mode)
 (keymap-set t-leader-map "t l" #'display-line-numbers-mode)
 (keymap-set t-leader-map "t L" (cmd!
-				(display-line-numbers-mode -1)
-				(setq display-line-numbers-type
-				      (if (eq t display-line-numbers-type)
-					  'relative
-					t))
-				(display-line-numbers-mode 1)))
+				                        (display-line-numbers-mode -1)
+				                        (setq display-line-numbers-type
+				                              (if (eq t display-line-numbers-type)
+					                                'relative
+					                              t))
+				                        (display-line-numbers-mode 1)))
 (keymap-set t-leader-map "t m" #'menu-bar-mode)
 (keymap-set t-leader-map "t u" #'toggle-truncate-lines)
 (keymap-set t-leader-map "t v" #'visual-line-mode)
@@ -1044,18 +1045,18 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; magit
 (t-package magit gh "magit/magit" "b9f19ba" nil
   :commands (magit-log
-	     magit-status
-	     magit-file-stage
-	     magit-diff-dwim
-	     magit-push
-	     magit-commit
-	     magit-commit-amend
-	     magit-commit-instant-fixup)
+	           magit-status
+	           magit-file-stage
+	           magit-diff-dwim
+	           magit-push
+	           magit-commit
+	           magit-commit-amend
+	           magit-commit-instant-fixup)
   :deps ((compat   gh "emacs-compat/compat" "38df650")
-	 (cond-let gh "tarsius/cond-let" "8bf87d4")
-	 (llama    gh "tarsius/llama" "d430d48")
-	 (with-editor gh "magit/with-editor" "64211dc")
-	 (transient gh "magit/transient" "7131bec"))
+	       (cond-let gh "tarsius/cond-let" "8bf87d4")
+	       (llama    gh "tarsius/llama" "d430d48")
+	       (with-editor gh "magit/with-editor" "64211dc")
+	       (transient gh "magit/transient" "7131bec"))
   :init
   (when is-mac
     (setq magit-git-executable "/etc/profiles/per-user/torgeir/bin/git"))
@@ -1063,9 +1064,9 @@ When 'quit' is set, quits window when any other key is pressed."
   (add-hook 'magit-revision-mode-hook 'toggle-truncate-lines)
   (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
   (dolist (magit-map (list
-		      magit-diff-mode-map
-		      magit-log-mode-map
-		      magit-status-mode-map))
+		                  magit-diff-mode-map
+		                  magit-log-mode-map
+		                  magit-status-mode-map))
     (keymap-set magit-map t-leader t-leader-map)))
 
 ;; magit binds
@@ -1080,17 +1081,18 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;; hunk binds
 (keymap-set t-leader-g-map "h" (t/micro-state
-				nil
-				"a" 'magit-commit-amend
-				"c" 'magit-commit-create
-				"f" 'magit-commit-instant-fixup
-				"r" 'diff-hl-revert-hunk
-				"s" 'diff-hl-stage-current-hunk
-				"p" 'diff-hl-previous-hunk
-				"n" 'diff-hl-next-hunk
-				"k" 'diff-hl-previous-hunk
-				"j" 'diff-hl-next-hunk
-				))
+				                        nil
+				                        "a" 'magit-commit-amend
+				                        "c" 'magit-commit-create
+				                        "f" 'magit-commit-instant-fixup
+				                        "?" 'diff-hl-revert-hunk
+ 				                        "r" 'diff-hl-revert-hunk
+				                        "s" 'diff-hl-stage-current-hunk
+				                        "p" 'diff-hl-previous-hunk
+				                        "n" 'diff-hl-next-hunk
+				                        "k" 'diff-hl-previous-hunk
+				                        "j" 'diff-hl-next-hunk
+				                        ))
 (keymap-set t-leader-g-map "S" #'magit-file-stage)
 (keymap-set t-leader-g-map "U" #'diff-hl-unstage-file)
 (keymap-set t-leader-g-map "r" #'diff-hl-revert-hunk)
@@ -1110,12 +1112,13 @@ When 'quit' is set, quits window when any other key is pressed."
   (lambda (arg)
     (interactive "P")
     (let ((region (and (region-active-p)
-		       (buffer-substring-no-properties
-			(region-beginning) (region-end)))))
+		                   (buffer-substring-no-properties
+			                  (region-beginning) (region-end)))))
       (evil-exit-visual-state)
       (let ((this-command fn)
             (real-this-command fn))
         (funcall fn arg region)))))
+(keymap-set t-leader-map "." (t/consult-with-region 'consult-find))
 (keymap-set t-leader-map "s s" (t/consult-with-region 't/consult-line-dwim))
 (keymap-set t-leader-map "s S" (t/consult-with-region 'consult-line-multi))
 (keymap-set t-leader-map "s p" (t/consult-with-region 'consult-ripgrep))
@@ -1127,7 +1130,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "s e" #'emoji-search)
 
 ;;; files
-(keymap-set t-leader-map "f f" (t/consult-with-region 'consult-find))
+(keymap-set t-leader-map "f f" #'find-file)
 (keymap-set t-leader-map "f D" (cmd! (dired (read-directory-name "Dired: "))))
 (keymap-set t-leader-map "f r" #'recentf)
 (keymap-set t-leader-map "f l" #'t-toggle-sidebar)
@@ -1142,34 +1145,34 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package avy gh "abo-abo/avy" "933d1f3" nil
   :deps ((cl-lib sav "emacs/elpa.git" "790948a"))
   :commands (avy-goto-char-2
-	     avy-goto-line
-	     avy-move-line
-	     avy-goto-word-or-subword-1)
+	           avy-goto-line
+	           avy-move-line
+	           avy-goto-word-or-subword-1)
   :init
   (keymap-set t-leader-map "j c" #'avy-goto-char-2)
   (keymap-set t-leader-map "j l" #'avy-goto-line)
   (keymap-set t-leader-map "j m" #'avy-move-line)
   (keymap-set t-leader-map "j w" #'avy-goto-word-or-subword-1)
   (setq avy-keys '(?j ?f ?d ?k ?s ?a)
-	avy-timeout-seconds 0.2
-	;;avy-all-windows 'all-frames
-	avy-all-windows nil
-	avy-case-fold-search nil
-	avy-highlight-first t
-	avy-style 'at-full
-	avy-background t)
+	      avy-timeout-seconds 0.2
+	      ;;avy-all-windows 'all-frames
+	      avy-all-windows nil
+	      avy-case-fold-search nil
+	      avy-highlight-first t
+	      avy-style 'at-full
+	      avy-background t)
   (defun t/setup-avy ()
     (interactive)
     (after! avy
       (let* ((bb (face-background 'default nil t))
-	     (b (face-background 'default nil t))
-	     (f "DeepPink1"))
-	(set-face-attribute 'avy-background-face nil :foreground "#657")
-	(set-face-attribute 'avy-lead-face   nil :background b :foreground f :weight 'bold)
-	(set-face-attribute 'avy-lead-face-0 nil :background b :foreground f :weight 'bold)
-	(set-face-attribute 'avy-lead-face-1 nil :background b :foreground f :weight 'bold)
-	(set-face-attribute 'avy-lead-face-2 nil :background b :foreground f :weight 'bold)
-	t)))
+	           (b (face-background 'default nil t))
+	           (f "DeepPink1"))
+	      (set-face-attribute 'avy-background-face nil :foreground "#657")
+	      (set-face-attribute 'avy-lead-face   nil :background b :foreground f :weight 'bold)
+	      (set-face-attribute 'avy-lead-face-0 nil :background b :foreground f :weight 'bold)
+	      (set-face-attribute 'avy-lead-face-1 nil :background b :foreground f :weight 'bold)
+	      (set-face-attribute 'avy-lead-face-2 nil :background b :foreground f :weight 'bold)
+	      t)))
   (add-hook 'after-change-major-mode-hook 't/setup-avy))
 
 ;;; eval
@@ -1236,36 +1239,41 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set global-map "M-s-<left>" #'evil-window-left)
 (keymap-set global-map "M-s-<down>" #'evil-window-down)
 
-(keymap-set t-leader-map "w M" (t/micro-state
-           nil
-           "<left>" (cmd! (cond
-                           ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-shrink))
-                           ))
-           "<right>" (cmd! (cond
-                            ((and (boundp 'olivetti-mode) olivetti-mode) (olivetti-expand))
-                            ))))
-(keymap-set t-leader-map "w s" (t/micro-state
-			      nil
-			      "<left>" (cmd! (cond
-					      ((and (window-in-direction 'right) (window-in-direction 'left)) (evil-resize-window (- (window-width) 8) t))
-					      ((window-in-direction 'left) (evil-resize-window (+ (window-width) 8) t))
-					      ((window-in-direction 'right) (evil-resize-window (- (window-width) 8) t))
-					      (t (execute-kbd-macro "h"))))
-			      "<right>" (cmd! (cond
-					       ((and (window-in-direction 'right) (window-in-direction 'left)) (evil-resize-window (+ (window-width) 8) t))
-					       ((window-in-direction 'right) (evil-resize-window (+ (window-width) 8) t))
-					       ((window-in-direction 'left) (evil-resize-window (- (window-width) 8) t))
-					       (t (execute-kbd-macro "l"))))
-			      "<up>" (cmd! (cond
-					    ((and (window-in-direction 'up) (window-in-direction 'down)) (evil-resize-window (+ (window-height) 4)))
-					    ((window-in-direction 'down) (evil-resize-window (- (window-height) 4)))
-					    ((window-in-direction 'up) (evil-resize-window (+ (window-height) 4)))
-					    (t (execute-kbd-macro "k"))))
-			      "<down>" (cmd! (cond
-					      ((and (window-in-direction 'up) (window-in-direction 'down)) (evil-resize-window (- (window-height) 4)))
-					      ((window-in-direction 'up) (evil-resize-window (- (window-height) 4)))
-					      ((window-in-direction 'down) (evil-resize-window (+ (window-height) 4)))
-					      (t (execute-kbd-macro "j"))))))
+(keymap-set t-leader-map "w M"
+	          (t/micro-state nil
+			                     "<left>" (cmd! (cond
+					                                 ((and (boundp 'olivetti-mode) olivetti-mode)
+					                                  (olivetti-shrink))))
+			                     "<right>" (cmd! (cond
+					                                  ((and (boundp 'olivetti-mode) olivetti-mode)
+					                                   (olivetti-expand))))))
+(keymap-set t-leader-map "w s"
+	          (t/micro-state
+	           nil
+	           "<left>" (cmd! (cond
+			                       ((and (window-in-direction 'right) (window-in-direction 'left))
+			                        (evil-resize-window (- (window-width) 8) t))
+			                       ((window-in-direction 'left) (evil-resize-window (+ (window-width) 8) t))
+			                       ((window-in-direction 'right) (evil-resize-window (- (window-width) 8) t))
+			                       (t (execute-kbd-macro "h"))))
+	           "<right>" (cmd! (cond
+			                        ((and (window-in-direction 'right) (window-in-direction 'left))
+			                         (evil-resize-window (+ (window-width) 8) t))
+			                        ((window-in-direction 'right) (evil-resize-window (+ (window-width) 8) t))
+			                        ((window-in-direction 'left) (evil-resize-window (- (window-width) 8) t))
+			                        (t (execute-kbd-macro "l"))))
+	           "<up>" (cmd! (cond
+			                     ((and (window-in-direction 'up) (window-in-direction 'down))
+			                      (evil-resize-window (+ (window-height) 4)))
+			                     ((window-in-direction 'down) (evil-resize-window (- (window-height) 4)))
+			                     ((window-in-direction 'up) (evil-resize-window (+ (window-height) 4)))
+			                     (t (execute-kbd-macro "k"))))
+	           "<down>" (cmd! (cond
+			                       ((and (window-in-direction 'up) (window-in-direction 'down))
+			                        (evil-resize-window (- (window-height) 4)))
+			                       ((window-in-direction 'up) (evil-resize-window (- (window-height) 4)))
+			                       ((window-in-direction 'down) (evil-resize-window (+ (window-height) 4)))
+			                       (t (execute-kbd-macro "j"))))))
 
 ;;; undo
 (t-package undo-fu gh "emacsmirror/undo-fu" "b4ce5ed" nil
@@ -1281,22 +1289,22 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package evil gh "emacs-evil/evil" "729d9a5" nil
   :init
   (setq evil-want-integration t
-	evil-want-keybinding nil
-	evil-want-C-u-scroll t
-	evil-split-window-right t
-	evil-split-window-below t
-	evil-move-beyond-eol t
-	evil-search-module 'evil-search)
+	      evil-want-keybinding nil
+	      evil-want-C-u-scroll t
+	      evil-split-window-right t
+	      evil-split-window-below t
+	      evil-move-beyond-eol t
+	      evil-search-module 'evil-search)
   :hook (after-init . evil-mode)
   :config
   (defun t--set-evil-cursors (&optional frame)
     (with-selected-frame (or frame (selected-frame))
       (let ((normal-color (or (face-foreground 'cursor nil t)
-			      (frame-parameter nil 'cursor-color)
-			      (face-foreground 'default nil t))))
-	(setq evil-emacs-state-cursor '(box "orange")
-	      evil-normal-state-cursor `(box ,normal-color))
-	(evil-refresh-cursor))))
+			                        (frame-parameter nil 'cursor-color)
+			                        (face-foreground 'default nil t))))
+	      (setq evil-emacs-state-cursor '(box "orange")
+	            evil-normal-state-cursor `(box ,normal-color))
+	      (evil-refresh-cursor))))
   (add-hook 'after-load-theme-hook #'t--set-evil-cursors)
   (add-hook 'after-make-frame-functions #'t--set-evil-cursors)
   (add-hook 'after-init-hook #'t--set-evil-cursors)
@@ -1401,10 +1409,10 @@ When 'quit' is set, quits window when any other key is pressed."
   (when (facep 'persp-selected-face)
     (with-selected-frame (or frame (selected-frame))
       (set-face-attribute 'persp-selected-face nil
-			  :inherit 'mode-line
-			  :foreground (face-attribute 'mode-line :foreground nil t)
-			  :background (face-attribute 'mode-line :background nil t)
-			  ))))
+			                    :inherit 'mode-line
+			                    :foreground (face-attribute 'mode-line :foreground nil t)
+			                    :background (face-attribute 'mode-line :background nil t)
+			                    ))))
 (add-hook 'after-load-theme-hook #'t/sync-persp-face)
 (add-hook 'doric-themes-after-load-theme-hook #'t/sync-persp-face)
 (add-hook 'after-make-frame-functions #'t/sync-persp-face)
@@ -1414,17 +1422,15 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; perspectives
 (t-package perspective gh "nex3/perspective-el" "64ef5ea" nil
   :commands (persp-switch
-	     persp-switch-to-buffer
-	     persp-kill
-	     persp-state-save
-	     persp-state-load)
+	           persp-switch-to-buffer
+	           persp-kill
+	           persp-state-save
+	           persp-state-load)
   :init
   (setq persp-state-default-file
-	(expand-file-name "perspective-state.el" user-emacs-directory)
-	persp-mode-prefix-key nil
-	persp-suppress-no-prefix-key-warning t)
-  (keymap-set t-leader-map "-" #'persp-switch)
-  (keymap-set t-leader-map "TAB" perspective-map)
+	      (expand-file-name "perspective-state.el" user-emacs-directory)
+	      persp-mode-prefix-key nil
+	      persp-suppress-no-prefix-key-warning t)
   :config
   (persp-mode 1)
   (t/sync-persp-face)
@@ -1441,7 +1447,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package doric-themes gh "protesilaos/doric-themes" "86a3b91" nil
   :init
   (setq doric-themes-to-toggle '(doric-fire doric-water)
-	doric-themes-to-rotate '(doric-fire doric-plum doric-water doric-siren))
+	      doric-themes-to-rotate '(doric-fire doric-plum doric-water doric-siren))
   :config
   (doric-themes-select 'doric-plum))
 
@@ -1511,45 +1517,44 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; agent-shell
 (t-package agent-shell gh "xenodium/agent-shell" "b3e556c" nil
   :deps ((acp gh "xenodium/acp.el" "f7e20ce")
-	 (shell-maker gh "xenodium/shell-maker" "8c64f0b"))
+	       (shell-maker gh "xenodium/shell-maker" "8c64f0b"))
   :commands (agent-shell)
   :init
   (after! agent-shell
-    (setq
-	agent-shell-openai-authentication
-	(agent-shell-openai-make-authentication
-	 :codex-api-key
-	 (lambda ()
-	   (auth-source-pick-first-password :host "api.openai.com")))))
+    (setq agent-shell-openai-authentication
+	        (agent-shell-openai-make-authentication
+	         :codex-api-key
+	         (lambda ()
+	           (auth-source-pick-first-password :host "api.openai.com")))))
   (setq agent-shell-header-style 'text
-	agent-shell-session-strategy 'prompt
-	agent-shell-screenshot-command (if is-mac nil '("grimshot" "save" "area")))
+	      agent-shell-session-strategy 'prompt
+	      agent-shell-screenshot-command (if is-mac nil '("grimshot" "save" "area")))
   (defun t-shell-maker-input-empty-p ()
     "Return non-nil when pending comint input is empty."
     (if-let ((proc (get-buffer-process (current-buffer))))
-	(let ((input (buffer-substring-no-properties
-		      (marker-position (process-mark proc))
-		      (point-max))))
-	  (string-empty-p (string-trim input)))
+	      (let ((input (buffer-substring-no-properties
+		                  (marker-position (process-mark proc))
+		                  (point-max))))
+	        (string-empty-p (string-trim input)))
       t))
   (defun t-shell-maker-ctrl-d ()
     (interactive)
     (if (and (eobp)
-	     (or (not (fboundp 'shell-maker-point-at-last-prompt-p))
-		 (shell-maker-point-at-last-prompt-p))
-	     (t-shell-maker-input-empty-p))
-	(if (window-live-p (selected-window))
-	    (kill-buffer-and-window)
-	  (kill-buffer))
+	           (or (not (fboundp 'shell-maker-point-at-last-prompt-p))
+		             (shell-maker-point-at-last-prompt-p))
+	           (t-shell-maker-input-empty-p))
+	      (if (window-live-p (selected-window))
+	          (kill-buffer-and-window)
+	        (kill-buffer))
       (if (fboundp 'comint-delchar-or-maybe-eof)
-	  (comint-delchar-or-maybe-eof 1)
-	(delete-char 1))))
+	        (comint-delchar-or-maybe-eof 1)
+	      (delete-char 1))))
   (defun t/agent-shell--recenter (&rest _)
     "Recenter current agent-shell window to a fixed offset."
     (when (derived-mode-p 'agent-shell-mode)
       (when-let ((win (get-buffer-window (current-buffer) t)))
-	(with-selected-window win
-	  (recenter-top-bottom 5)))))
+	      (with-selected-window win
+	        (recenter-top-bottom 5)))))
   (advice-add 'shell-maker-submit :after #'t/agent-shell--recenter)
   (keymap-set t-leader-map "a a" #'agent-shell)
   (keymap-set t-leader-map "a i" #'agent-shell)
@@ -1561,35 +1566,35 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; chatgpt-shell
 (t-package chatgpt-shell gh "xenodium/chatgpt-shell" "cbad6ff" nil
   :deps ((shell-maker gh "xenodium/shell-maker" "8c64f0b")
-	 (transient gh "magit/transient" "7131bec"))
+	       (transient gh "magit/transient" "7131bec"))
   :commands (chatgpt-shell chatgpt-shell-prompt-compose)
   :init
   (add-hook 'chatgpt-shell-mode-hook
-	    (defun t/gpt-shell-hook ()
-	      (setq chatgpt-shell-system-prompt "KEEP IT BRIEF, DONT MAKE STUFF UP, NO LISTS, SINGLE EXAMPLES ONLY")))
+	          (defun t/gpt-shell-hook ()
+	            (setq chatgpt-shell-system-prompt "KEEP IT BRIEF, DONT MAKE STUFF UP, NO LISTS, SINGLE EXAMPLES ONLY")))
   (setq chatgpt-shell-model-version "gpt-5.2"
         chatgpt-shell-anthropic-key
-	(lambda ()
-	  (auth-source-pick-first-password :host "anthropic.com"))
-	chatgpt-shell-openai-key
-	(lambda ()
-	  (auth-source-pick-first-password :host "api.openai.com")))
+	      (lambda ()
+	        (auth-source-pick-first-password :host "anthropic.com"))
+	      chatgpt-shell-openai-key
+	      (lambda ()
+	        (auth-source-pick-first-password :host "api.openai.com")))
   (defun t/chatgpt-shell (beg end)
     "Pop open an org mode buffer with the selection region and an optional prompt
   prepended."
     (interactive (list (and (mark t) (region-beginning))
-		       (and (mark t) (region-end))))
+		                   (and (mark t) (region-end))))
     (let ((reg (when (region-active-p)
-		 (buffer-substring beg end)))
-	  (major-mode-name (symbol-name major-mode)))
+		             (buffer-substring beg end)))
+	        (major-mode-name (symbol-name major-mode)))
       (if (or (t/prefix-arg-universal?))
-	  (chatgpt-shell-prompt-compose nil)
-	(chatgpt-shell))
+	        (chatgpt-shell-prompt-compose nil)
+	      (chatgpt-shell))
       (comint-next-prompt 1)
       (run-with-timer "1sec" nil
-		      (lambda (reg)
-			(save-excursion (when reg (insert "\n\n" reg))))
-		      reg)))
+		                  (lambda (reg)
+			                  (save-excursion (when reg (insert "\n\n" reg))))
+		                  reg)))
   (after! evil
     (evil-define-key 'insert chatgpt-shell-mode-map (kbd "C-d") #'t-shell-maker-ctrl-d))
   (keymap-set t-leader-map "a s" #'t/chatgpt-shell))
@@ -1606,7 +1611,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (defun t-dired-k ()
     (interactive)
     (if current-prefix-arg
-	(dired-kill-subdir)
+	      (dired-kill-subdir)
       (dired-previous-line 1)))
   (evil-set-initial-state 'dired-mode 'normal)
   (add-hook 'dired-mode-hook #'dired-hide-details-mode)
@@ -1622,16 +1627,16 @@ When 'quit' is set, quits window when any other key is pressed."
     (kbd "<mouse-2>") nil ;; after hold
     ;; mouse always togggles folder or opens file
     (kbd "<down-mouse-1>") (cmd! (mouse-set-point last-input-event)
-			      (let ((split-window-preferred-function nil))
-				(if (dired-subtree--dired-line-is-directory-or-link-p)
-				    (t/dired-subtree-tab)
-				  (find-file (dired-get-filename)))))
+				                         (let ((split-window-preferred-function nil))
+				                           (if (dired-subtree--dired-line-is-directory-or-link-p)
+				                               (t/dired-subtree-tab)
+				                             (find-file (dired-get-filename)))))
     (kbd "<tab>") #'t/dired-subtree-tab
     ;; open never split
     (kbd "<return>") (cmd! (if (t/prefix-arg-universal?)
-			       (call-interactively 'dired-find-file)
-			     (let ((split-window-preferred-function nil))
-			       (call-interactively 'dired-find-file))))))
+			                         (call-interactively 'dired-find-file)
+			                       (let ((split-window-preferred-function nil))
+			                         (call-interactively 'dired-find-file))))))
 
 
 ;;; corfu
@@ -1642,9 +1647,9 @@ When 'quit' is set, quits window when any other key is pressed."
   (when (require 'corfu-popupinfo) (corfu-popupinfo-mode))
   (when (require 'corfu-auto))
   (setq corfu-auto nil
-	corfu-auto-delay 0.2
-	corfu-auto-trigger "-" ;; Custom trigger characters
-	corfu-quit-no-match 'separator)
+	      corfu-auto-delay 0.2
+	      corfu-auto-trigger "-" ;; Custom trigger characters
+	      corfu-quit-no-match 'separator)
   :config
   (global-corfu-mode)
   (defun corfu-move-to-minibuffer ()
@@ -1653,8 +1658,8 @@ When 'quit' is set, quits window when any other key is pressed."
     (pcase completion-in-region--data
       (`(,beg ,end ,table ,pred ,extras)
        (let ((completion-extra-properties extras)
-	     completion-cycle-threshold completion-cycling)
-	 (consult-completion-in-region beg end table pred)))))
+	           completion-cycle-threshold completion-cycling)
+	       (consult-completion-in-region beg end table pred)))))
   (keymap-set corfu-map "M-m" #'corfu-move-to-minibuffer)
   (add-to-list 'corfu-continue-commands #'corfu-move-to-minibuffer)
   (keymap-set corfu-map "TAB" 'corfu-move-to-minibuffer)
@@ -1693,14 +1698,28 @@ When 'quit' is set, quits window when any other key is pressed."
 
 (use-package emacs
   :hook (;;(after-init . pixel-scroll-mode)
-	 ;; enable arrow at end of line when wrapping
-	 (after-init . toggle-truncate-lines)
-	 ;; indent soft wraps
-	 (after-init . global-visual-wrap-prefix-mode)
-	 ;; always revert
-	 (after-init . global-auto-revert-mode))
+	       ;; enable arrow at end of line when wrapping
+	       (after-init . toggle-truncate-lines)
+	       ;; indent soft wraps
+	       (after-init . global-visual-wrap-prefix-mode)
+	       ;; always revert
+	       (after-init . global-auto-revert-mode))
   :init
-  (setq-default fill-column 90) ;; prevents breaks of 89 filled paragraphs
+  (setq-default fill-column 90 ;; prevents breaks of 89 filled paragraphs
+                indent-tabs-mode nil
+                tab-width 2
+                standard-indent 2)
+  (setq c-basic-offset 2
+        js-indent-level 2
+        typescript-indent-level 2
+        python-indent-offset 2
+        rust-indent-offset 2
+        sh-basic-offset 2
+        css-indent-offset 2
+        web-mode-markup-indent-offset 2
+        web-mode-code-indent-offset 2
+        web-mode-css-indent-offset 2
+        yaml-indent-offset 2)
   (add-hook 'after-init-hook (cmd! (menu-bar-mode -1)))
   (add-hook 'after-init-hook (cmd! (tool-bar-mode -1)))
   :custom
@@ -1731,46 +1750,46 @@ When 'quit' is set, quits window when any other key is pressed."
   (completion-category-defaults nil) ;; Disable defaults, use our settings
   (completion-pcm-leading-wildcard t)
   (progn
-   (setq orderless-matching-styles
-	 '(orderless-literal     ;; default exact substring match
-	   ;; orderless-initialism
-	   ;; orderless-regexp
-	   ;; orderless-flex
-	   ))
+    (setq orderless-matching-styles
+	        '(orderless-literal     ;; default exact substring match
+	          ;; orderless-initialism
+	          ;; orderless-regexp
+	          ;; orderless-flex
+	          ))
 
-   (setq orderless-style-dispatchers
-         '(initialism-dispatcher ;; suffix search with ,
-           flex-dispatcher       ;; suffix search with .
-           regexp-dispatcher     ;; suffix search with ~
-           or-regexp             ;; regex search with foo|bar
-           ))
+    (setq orderless-style-dispatchers
+          '(initialism-dispatcher ;; suffix search with ,
+            flex-dispatcher       ;; suffix search with .
+            regexp-dispatcher     ;; suffix search with ~
+            or-regexp             ;; regex search with foo|bar
+            ))
 
-   (defun regexp-dispatcher (pattern _index _total)
-     "Matches regexp."
-     (when (string-suffix-p "~" pattern)
-       `(orderless-regexp . ,(substring pattern 0 -1))))
+    (defun regexp-dispatcher (pattern _index _total)
+      "Matches regexp."
+      (when (string-suffix-p "~" pattern)
+	      `(orderless-regexp . ,(substring pattern 0 -1))))
 
-   (defun flex-dispatcher (pattern _index _total)
-     "Matches using any group in any order."
-     (when (string-suffix-p "." pattern)
-       `(orderless-flex . ,(substring pattern 0 -1))))
+    (defun flex-dispatcher (pattern _index _total)
+      "Matches using any group in any order."
+      (when (string-suffix-p "." pattern)
+	      `(orderless-flex . ,(substring pattern 0 -1))))
 
-   (defun or-regexp (pattern index _total)
-     "foo|bar"
-     (cond
-      ((string-suffix-p "|" pattern)
-       `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" (substring pattern 0 -1)) "\\)"))))
-      ((string-match-p "|" pattern)
-       `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" pattern) "\\)"))))))
+    (defun or-regexp (pattern index _total)
+      "foo|bar"
+      (cond
+       ((string-suffix-p "|" pattern)
+	      `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" (substring pattern 0 -1)) "\\)"))))
+       ((string-match-p "|" pattern)
+	      `(orderless-regexp . ,(concat "\\(" (concat (s-replace "|" "\\|" pattern) "\\)"))))))
 
-   (defun literal-dispatcher (pattern _index _total)
-     "Literal style dispatcher using the equals sign as a suffix."
-     (when (string-suffix-p "=" pattern)
-       `(orderless-literal . ,(substring pattern 0 -1))))
+    (defun literal-dispatcher (pattern _index _total)
+      "Literal style dispatcher using the equals sign as a suffix."
+      (when (string-suffix-p "=" pattern)
+	      `(orderless-literal . ,(substring pattern 0 -1))))
 
     ;;;###autoload
-   (defun initialism-dispatcher (pattern _index _total)
-     "Matches leading on words in order
+    (defun initialism-dispatcher (pattern _index _total)
+      "Matches leading on words in order
 E.g.
 #fun#gjp, ha,
 (defun t/js2-get-json-path (&optional hardcoded-array-index))
@@ -1778,11 +1797,11 @@ E.g.
 #fun#gjp, hi,
 Would not match the above as no leading words start h then another word starting with i
 "
-     (when (string-suffix-p "," pattern)
-       `(orderless-strict-initialism . ,(substring pattern 0 -1))))
+      (when (string-suffix-p "," pattern)
+	      `(orderless-strict-initialism . ,(substring pattern 0 -1))))
 
-   (defun orderless-strict-initialism (component)
-     "Match a COMPONENT as a strict initialism, optionally ANCHORED.
+    (defun orderless-strict-initialism (component)
+      "Match a COMPONENT as a strict initialism, optionally ANCHORED.
 The characters in COMPONENT must occur in the candidate in that
 order at the beginning of subsequent words comprised of letters.
 Only non-letters can be in between the words that start with the
@@ -1792,22 +1811,22 @@ If ANCHORED is `start' require that the first initial appear in
 the first word of the candidate.  If ANCHORED is `both' require
 that the first and last initials appear in the first and last
 words of the candidate, respectively."
-     (orderless--separated-by
-         '(seq (zero-or-more alpha) word-end (zero-or-more (not alpha)))
-       (cl-loop for char across component collect `(seq word-start ,char)))))
+      (orderless--separated-by
+          '(seq (zero-or-more alpha) word-end (zero-or-more (not alpha)))
+	      (cl-loop for char across component collect `(seq word-start ,char)))))
   )
 
 ;;; consult
 (t-package consult gh "minad/consult" "f8c2ef5" nil
   :commands (consult-buffer
-	     consult-line
-	     consult-line-multi
-	     consult-ripgrep
-	     consult-git-grep
-	     consult-grep
-	     consult-find
-	     consult-man
-	     consult-completion-in-region))
+	           consult-line
+	           consult-line-multi
+	           consult-ripgrep
+	           consult-git-grep
+	           consult-grep
+	           consult-find
+	           consult-man
+	           consult-completion-in-region))
 
 ;;; marginalia
 (t-package marginalia gh "minad/marginalia" "d28a5e5" nil
@@ -1827,13 +1846,13 @@ words of the candidate, respectively."
   :commands (pulsar-pulse-line pulsar-pulse-region)
   :init
   (dolist (fn '(comint-next-prompt
-		comint-previous-prompt))
-      (advice-add (quote fn) :after (cmd! (pulsar-pulse-line))))
+		            comint-previous-prompt))
+    (advice-add (quote fn) :after (cmd! (pulsar-pulse-line))))
   (after! evil
     (dolist (fn '(evil-window-right
-		  evil-window-bottom
-		  evil-window-left
-		  evil-window-up))
+		              evil-window-bottom
+		              evil-window-left
+		              evil-window-up))
       (advice-add (quote fn) :after (cmd! (pulsar-pulse-line)))))
   :config
   (setq pulsar-pulse-on-window-change t)
@@ -1880,7 +1899,7 @@ words of the candidate, respectively."
 (keymap-set t-leader-map "o a a" #'org-agenda)
 (keymap-set t-leader-map "o w" #'eww)
 (keymap-set t-leader-map "o o" (cmd! (let ((default-directory (t/org-file)))
-				       (call-interactively 'find-file))))
+				                               (call-interactively 'find-file))))
 (keymap-set t-leader-map "o h" #'hnreader-news)
 (keymap-set t-leader-map "r r" 't/read)
 
@@ -1907,7 +1926,7 @@ words of the candidate, respectively."
 ;;; hackernews
 (t-package hnreader gh "thanhvg/emacs-hnreader" "a56f67a" nil
   :deps ((request gh "tkf/emacs-request" "6f419b5")
-	 (promise gh "chuntaro/emacs-promise" "cec51fe"))
+	       (promise gh "chuntaro/emacs-promise" "cec51fe"))
   :commands (hnreader-news))
 
 ;;; browser
@@ -1930,23 +1949,30 @@ words of the candidate, respectively."
         ;; don't block while waiting, defaults to 3
         eglot-sync-connect nil))
 
+;;; apheleia
+(t-package apheleia gh "radian-software/apheleia" "e6e5d55" nil
+  :config
+  (apheleia-global-mode +1))
+
 ;;; org
 (use-package org
   :init
   (defun t/org-file (&optional file)
     (concat (expand-file-name "~/Dropbox/org") "/" file))
   (setq org-directory (t/org-file)
-	org-agenda-files (list org-directory)
-	org-attach-directory (t/org-file "attachments/")
-	org-id-method 'ts  ; 'uuid is default
-	org-special-ctrl-k t         ; don't clear tags, etc
-	org-special-ctrl-a/e t       ; don't move past ellipsis on c-e
-	org-log-done 'time           ; log when todos are completed
-	org-log-redeadline 'time     ; log when deadline changes
-	org-log-reschedule 'time     ; log when schedule changes
-	org-reverse-note-order t     ; newest notes first
-	org-default-notes-file (t/org-file "tasks.org")
-	)
+	      org-agenda-files (list org-directory)
+	      org-agenda-file-regexp "\\`[^.].*\\.org\\(\\.gpg\\)?\\'"
+	      org-archive-location "%s_archive.gpg::" ; so files are encrypted automatically
+	      org-attach-directory (t/org-file "attachments/")
+	      org-id-method 'ts  ; 'uuid is default
+	      org-special-ctrl-k t     ; don't clear tags, etc
+	      org-special-ctrl-a/e t   ; don't move past ellipsis on c-e
+	      org-log-done 'time       ; log when todos are completed
+	      org-log-redeadline 'time ; log when deadline changes
+	      org-log-reschedule 'time ; log when schedule changes
+	      org-reverse-note-order t ; newest notes first
+	      org-default-notes-file (t/org-file "tasks.org")
+	      )
   (defun t/org-double-mouse-1 (event)
     "Toggle heading visibility when double-clicking an Org heading."
     (interactive "e")
@@ -1977,13 +2003,13 @@ words of the candidate, respectively."
 (t-package org-alert gh "spegoraro/org-alert" "0bc04cea" nil
   :commands (org-alert-enable org-alert-disable org-alert-deadlines)
   :deps ((alert gh "jwiegley/alert" "79f6936a")
-	 (cl-lib sav "emacs/elpa.git" "790948a"))
+	       (cl-lib sav "emacs/elpa.git" "790948a"))
   :init
   (setq alert-default-style (if is-mac 'osx-notifier 'libnotify))
   (setq org-alert-interval (* 5 60)
-	org-alert-notify-cutoff 5
-	org-alert-notify-after-event-cutoff 5
-	org-alert-time-match-string "\\(?:SCHEDULED\\|DEADLINE\\):.*?<.*?\\([0-9]\\{2\\}:[0-9]\\{2\\}\\).*>")
+	      org-alert-notify-cutoff 5
+	      org-alert-notify-after-event-cutoff 5
+	      org-alert-time-match-string "\\(?:SCHEDULED\\|DEADLINE\\):.*?<.*?\\([0-9]\\{2\\}:[0-9]\\{2\\}\\).*>")
   :config
   (org-alert-enable))
 
@@ -1992,20 +2018,20 @@ words of the candidate, respectively."
   :commands (notmuch)
   :init
   (setq notmuch-show-logo nil
-	notmuch-hello-auto-refresh t
-	notmuch-search-oldest-first nil
-	notmuch-show-empty-saved-searches t
-	notmuch-saved-searches
+	      notmuch-hello-auto-refresh t
+	      notmuch-search-oldest-first nil
+	      notmuch-show-empty-saved-searches t
+	      notmuch-saved-searches
         `((:name "📥 inbox"
-           :query "tag:inbox"
-           :sort-order newest-first
-           :key ,(kbd "i"))
+		             :query "tag:inbox"
+		             :sort-order newest-first
+		             :key ,(kbd "i"))
           (:name "✉️ all unread (inbox)"
-           :query "tag:unread and tag:inbox"
-           :sort-order newest-first
-           :key ,(kbd "u"))))
+		             :query "tag:unread and tag:inbox"
+		             :sort-order newest-first
+		             :key ,(kbd "u"))))
   (setq notmuch-archive-tags nil ; dont archive email
-	notmuch-show-text/html-blocked-images "." ; block everything
+	      notmuch-show-text/html-blocked-images "." ; block everything
         notmuch-message-replied-tags '("+replied")
         notmuch-message-forwarded-tags '("+forwarded")
         notmuch-show-mark-read-tags '("-unread")
@@ -2042,9 +2068,9 @@ words of the candidate, respectively."
   (set-face-attribute 'show-paren-match nil :background 'unspecified :foreground "SpringGreen" :weight 'bold)
   ;; Rainbow delimiters faces
   (let ((colors '("DeepPink4" "DeepPink3" "DeepPink2" "DeepPink1"
-		  "maroon4" "maroon3" "maroon2" "maroon1"
-		  "VioletRed3"))
-	(face-fmt "rainbow-delimiters-depth-%d-face"))
+		              "maroon4" "maroon3" "maroon2" "maroon1"
+		              "VioletRed3"))
+	      (face-fmt "rainbow-delimiters-depth-%d-face"))
     (dotimes (i (length colors))
       (set-face-attribute (intern (format face-fmt (1+ i))) nil :foreground (nth i colors) :overline nil :underline nil)))
   (set-face-attribute 'rainbow-delimiters-unmatched-face nil :foreground "Red" :bold t :overline nil :underline nil)
@@ -2052,7 +2078,7 @@ words of the candidate, respectively."
 
 (t-package rainbow-delimiters gh "Fanael/rainbow-delimiters" "f40ece5" nil
   :hook (;;(after-change-major-mode . rainbow-delimiters-mode)
-	 (prog-mode . rainbow-delimiters-mode))
+	       (prog-mode . rainbow-delimiters-mode))
   :init
   (require 'rainbow-delimiters)
   :config
@@ -2092,20 +2118,20 @@ words of the candidate, respectively."
 (defun t/tasks-left ()
   (interactive)
   (if (not (get-buffer "tasks.org"))
-            "n/a"
-          (with-current-buffer "tasks.org"
-            (let ((count 0))
-              ;; for each heading
-              (org-map-entries
-               (lambda (&optional heading)
-                 (when (not (org-entry-is-done-p))
-                   (setq count (1+ count))))
-               ;; all headline
-               t
-               ;; in file
-               'file)
-              ;; needs to be string
-              (format "%s" count)))))
+      "n/a"
+    (with-current-buffer "tasks.org"
+      (let ((count 0))
+        ;; for each heading
+        (org-map-entries
+         (lambda (&optional heading)
+           (when (not (org-entry-is-done-p))
+             (setq count (1+ count))))
+         ;; all headline
+         t
+         ;; in file
+         'file)
+        ;; needs to be string
+        (format "%s" count)))))
 
 
 (after! evil
@@ -2150,14 +2176,3 @@ words of the candidate, respectively."
 ;;          (compat gh "emacs-compat/compat" "38df650"))
 ;;   :config
 ;;   (keymap-set t-leader-map "t c" 'copilot-mode))
-
-;;; TODO apheleia
-
-;;; org capture .gpg.org archiving
-
-;;; TODO did not need this after all?
-;;(t-package exec-path-from-shell gh "purcell/exec-path-from-shell" "7552abf" nil
-;;  ;; TODO try without
-;;  :if nil
-;;  :config
-;;  (exec-path-from-shell-initialize))
