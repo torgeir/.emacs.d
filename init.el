@@ -802,6 +802,8 @@ When 'quit' is set, quits window when any other key is pressed."
 
 (defun t/dired-subtree-tab ()
   (interactive)
+  (unless (featurep 'dired-subtree)
+    (require 'dired-subtree))
   (cond
    ((and (t/prefix-arg-universal?)
          (dired-subtree--is-expanded-p)) (t/dired-close-recursively))
@@ -866,6 +868,8 @@ When 'quit' is set, quits window when any other key is pressed."
 
 (defun t/dired-locate-path (path)
   "Locate PATH in a dired listing."
+  (unless (featurep 'dired-subtree)
+    (require 'dired-subtree))
   (beginning-of-buffer)
   (forward-line)
   (dolist (el path)
@@ -931,8 +935,13 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "g" t-leader-g-map)
 
 ;;; fonts
-(setq t-font-height 200)
-(set-face-attribute 'default nil :height t-font-height)
+(setq t-font-height 220)
+(set-face-attribute 'default nil
+                    :family "Iosevka Nerd Font Mono"
+                    :height t-font-height)
+(set-face-attribute 'variable-pitch nil
+                    :family "IosevkaTerm Nerd Font Propo"
+                    :height t-font-height)
 
 (keymap-set global-map "C-+" (cmd! (text-scale-set
 				                            (1+ text-scale-mode-amount))))
@@ -1027,9 +1036,12 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "t u" #'toggle-truncate-lines)
 (keymap-set t-leader-map "t v" #'visual-line-mode)
 (keymap-set t-leader-map "t w" #'whitespace-mode)
-(keymap-set t-leader-map "t t" #'doric-themes-toggle)
-(keymap-set t-leader-map "t r" #'doric-themes-rotate)
+;;(keymap-set t-leader-map "t t" #'doric-themes-toggle)
+(keymap-set t-leader-map "t t" #'doric-themes-rotate)
 (keymap-set t-leader-map "t T" #'t/transparency)
+(keymap-set t-leader-map "t r" (cmd!
+                                (buffer-face-mode 'toggle)
+                                (when buffer-face-mode (t/read))))
 
 ;;; quit
 (keymap-set t-leader-map "q r" #'restart-emacs)
@@ -1545,11 +1557,11 @@ When 'quit' is set, quits window when any other key is pressed."
 	        (comint-delchar-or-maybe-eof 1)
 	      (delete-char 1))))
   (defun t/agent-shell--recenter (&rest _)
-    "Recenter current agent-shell window to a fixed offset."
-    (when (derived-mode-p 'agent-shell-mode)
+    "Recenter comint buffers to a fixed offset after submit."
+    (when (derived-mode-p 'comint-mode)
       (when-let ((win (get-buffer-window (current-buffer) t)))
-	      (with-selected-window win
-	        (recenter-top-bottom 5)))))
+        (with-selected-window win
+          (recenter-top-bottom 5)))))
   (advice-add 'shell-maker-submit :after #'t/agent-shell--recenter)
   (keymap-set t-leader-map "a a" #'agent-shell)
   (keymap-set t-leader-map "a i" #'agent-shell)
