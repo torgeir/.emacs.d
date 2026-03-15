@@ -962,7 +962,7 @@ When 'quit' is set, quits window when any other key is pressed."
 				  (call-interactively 'consult-buffer-other-window)
 				(call-interactively 'consult-buffer)
 				)))
-(keymap-set t-leader-map "." #'find-file)
+(keymap-set t-leader-map "." #'consult-find)
 (keymap-set t-leader-map "RET" #'consult-bookmark)
 (keymap-set t-leader-map "u" #'universal-argument)
 (keymap-set t-leader-map t-leader #'find-file)
@@ -1098,9 +1098,37 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-g-map "p" #'diff-hl-previous-hunk)
 (keymap-set t-leader-g-map "s" #'diff-hl-stage-current-hunk)
 
+;;; search
+(defun t/consult-line-dwim (&optional ignore init)
+  "'consult-line', also in 'vterm-mode', without returning to prompt when done."
+  (interactive)
+  (when (derived-mode-p 'vterm-mode)
+    (vterm-copy-mode 1))
+  (consult-line init))
+(defun t/consult-with-region (fn)
+  "Run consult 'fn' with selected region as the query."
+  (lambda (arg)
+    (interactive "P")
+    (let ((region (and (region-active-p)
+		       (buffer-substring-no-properties
+			(region-beginning) (region-end)))))
+      (evil-exit-visual-state)
+      (let ((this-command fn)
+            (real-this-command fn))
+        (funcall fn arg region)))))
+(keymap-set t-leader-map "s s" (t/consult-with-region 't/consult-line-dwim))
+(keymap-set t-leader-map "s S" (t/consult-with-region 'consult-line-multi))
+(keymap-set t-leader-map "s p" (t/consult-with-region 'consult-ripgrep))
+(keymap-set t-leader-map "s g" (t/consult-with-region 'consult-git-grep))
+(keymap-set t-leader-map "s G" (t/consult-with-region 'consult-grep))
+(keymap-set t-leader-map "s d" (cmd! (dired (read-directory-name "Ripgrep dir: " default-directory nil t))))
+(keymap-set t-leader-map "s M" #'evil-show-marks)
+(keymap-set t-leader-map "s R" #'evil-show-registers)
+(keymap-set t-leader-map "s e" #'emoji-search)
+
 ;;; files
-(keymap-set t-leader-map "f f" (cmd! (call-interactively 'find-file)))
-(keymap-set t-leader-map "f D" (cmd! (dired (read-directory-name "Ripgrep where: " nil nil t))))
+(keymap-set t-leader-map "f f" (t/consult-with-region 'consult-find))
+(keymap-set t-leader-map "f D" (cmd! (dired (consult-dir))))
 (keymap-set t-leader-map "f r" #'recentf)
 (keymap-set t-leader-map "f l" #'t-toggle-sidebar)
 (keymap-set t-leader-map "f L" 't/dired-locate)
@@ -1108,38 +1136,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "f P"
             (cmd!
              (let ((default-directory user-emacs-directory))
-               (call-interactively #'find-file))))
-
-;;; search
-(defun t/consult-line-dwim (&optional ignore init)
-  "'consult-line', also in 'vterm-mode', without returning to prompt when done."
-  (interactive)
-  (if (derived-mode-p 'vterm-mode)
-      (progn
-	(vterm-copy-mode 1)
-	(consult-line init)))
-  (consult-line init))
-(defun t/consult-with-region (fn)
-  "Run consult 'fn' with selected region as the query."
-  (cmd!
-   (let ((region (and (region-active-p)
-		      (buffer-substring-no-properties
-		       (region-beginning) (region-end)))))
-     (evil-exit-visual-state)
-     (funcall fn default-directory region))))
-(keymap-set t-leader-map "s s" (t/consult-with-region 't/consult-line-dwim))
-(keymap-set t-leader-map "s S" (t/consult-with-region 'consult-line-multi))
-(keymap-set t-leader-map "s p" (t/consult-with-region 'consult-ripgrep))
-(keymap-set t-leader-map "s g" (t/consult-with-region 'consult-git-grep))
-(keymap-set t-leader-map "s G" (t/consult-with-region 'consult-grep))
-(keymap-set t-leader-map "s D" (t/consult-with-region
-				(lambda (ignore region)
-				  (interactive)
-				  (consult-ripgrep
-				   (read-directory-name "Ripgrep where: " nil nil t) region))))
-(keymap-set t-leader-map "s M" #'evil-show-marks)
-(keymap-set t-leader-map "s R" #'evil-show-registers)
-(keymap-set t-leader-map "s e" #'emoji-search)
+               (call-interactively #'consult-find))))
 
 ;;; avy
 (t-package avy gh "abo-abo/avy" "933d1f3" nil
@@ -1794,6 +1791,10 @@ words of the candidate, respectively."
 ;;; consult
 (t-package consult gh "minad/consult" "f8c2ef5" nil)
 
+;;; consult-dir
+(t-package consult-dir gh "karthink/consult-dir" "1497b46" nil
+  :deps ((consult gh "minad/consult" "f8c2ef5")))
+
 ;;; marginalia
 (t-package marginalia gh "minad/marginalia" "d28a5e5" nil
   :config
@@ -2146,4 +2147,3 @@ words of the candidate, respectively."
 ;;  :if nil
 ;;  :config
 ;;  (exec-path-from-shell-initialize))
-
