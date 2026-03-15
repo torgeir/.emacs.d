@@ -1136,6 +1136,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "s p" (t/consult-with-region 'consult-ripgrep))
 (keymap-set t-leader-map "s g" (t/consult-with-region 'consult-git-grep))
 (keymap-set t-leader-map "s G" (t/consult-with-region 'consult-grep))
+(keymap-set t-leader-map "s i" 'consult-imenu)
 (keymap-set t-leader-map "s d" (cmd! (dired (read-directory-name "Ripgrep dir: " default-directory nil t))))
 (keymap-set t-leader-map "s M" #'evil-show-marks)
 (keymap-set t-leader-map "s R" #'evil-show-registers)
