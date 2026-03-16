@@ -1898,7 +1898,7 @@ words of the candidate, respectively."
 ;;; lang: markdown
 (t-package markdown-mode gh "jrblevin/markdown-mode" "107a368" nil
   :commands markdown-mode
-  :mode ("\\.md\\'" . markdown-mode)
+  :mode (("\\.md\\'" . markdown-mode))
   :config
   (markdown-toggle-url-hiding))
 
@@ -2182,17 +2182,14 @@ words of the candidate, respectively."
 
 ;;; org mode + heading functions + eldoc ping
 
-;;; capture
-
 ;;; deno
-
-;;; vterm evals
 
 ;;; evil-cleverparens
 
 ;;; tree-sitter
 
-;;; evil goggles
+;;; goggles
+;; https://github.com/edkolev/evil-goggles
 
 ;;; goto next error/flymake
 
@@ -2216,3 +2213,17 @@ words of the candidate, respectively."
 ;;          (compat gh "emacs-compat/compat" "38df650"))
 ;;   :config
 ;;   (keymap-set t-leader-map "t c" 'copilot-mode))
+
+;;; direnv
+(t-package direnv gh "wbolster/emacs-direnv" "c0bf3b8" nil)
+
+;;; yaml
+(t-package yaml gh "yoshiki/yaml-mode" "c0bf3b8" nil
+  :mode (("\\.ya?ml\\'" . yaml-ts-mode)))
+
+(comment t-package exec-path-from-shell gh "purcell/exec-path-from-shell" "7552abf" nil
+         :commands (exec-path-from-shell-initialize))
+
+;;; timers are useful
+(put 'list-timers 'disabled nil)
+
