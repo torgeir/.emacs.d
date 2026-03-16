@@ -2102,6 +2102,18 @@ words of the candidate, respectively."
       message-sendmail-f-is-evil t
       message-send-mail-function #'message-send-mail-with-sendmail)
 
+(defun t/fetch-mail ()
+  (interactive)
+  (epa-file-enable)
+  (auth-source-forget-all-cached)
+  (message "Fetching..")
+  (async-shell-command "notmuch new" "*t-notmuch-out*" "*t-notmuch-err*"))
+
+(add-to-list
+ 'display-buffer-alist '("^\\*t-notmuch-out\\*$"
+                         (display-buffer-no-window)
+                         (allow-no-window . t)))
+
 ;;; epa encrypt org
 (after! auth-source (setq auth-sources '("~/.authinfo.gpg")))
 (after! epa
@@ -2110,6 +2122,7 @@ words of the candidate, respectively."
   (fset 'epg-wait-for-status 'ignore))
 ;; (after! epa-file (epa-file-enable))
 (add-hook 'server-after-make-frame-hook 'epa-file-enable)
+(add-hook 'org-mode-hook 'epa-file-enable) 
 (add-hook 'server-after-make-frame-hook 'auth-source-forget-all-cached)
 
 ;;; rainbows
