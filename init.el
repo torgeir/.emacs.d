@@ -1073,6 +1073,7 @@ When 'quit' is set, quits window when any other key is pressed."
 	           magit-diff-dwim
 	           magit-push
 	           magit-commit
+	           magit-commit-create
 	           magit-commit-amend
 	           magit-commit-instant-fixup)
   :deps ((compat   gh "emacs-compat/compat" "38df650")
