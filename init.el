@@ -650,9 +650,8 @@
 	          (unless t--reload-in-progress
 	            (let ((t--reload-in-progress t))
 		            (load-file user-init-file)
-		            (when (fboundp 'evil-mode) (evil-mode 1))
-		            (find-file user-init-file)
-		            (delete-other-windows)
+		            (when (and (fboundp 'evil-mode) (not evil-mode))
+                  (evil-mode 1))
 		            (message "Ready, go.")))))
 
 ;;; custom
