@@ -1503,10 +1503,21 @@ When 'quit' is set, quits window when any other key is pressed."
     (vterm-reset-cursor-point)
     (evil-insert-state))
   ;; leader
+  (keymap-set vterm-copy-mode-map "i" #'t-vterm-copy-mode-insert)
   (after! evil
     (evil-define-key 'insert vterm-mode-map (kbd "C-d") #'t-vterm-ctrl-d)
-    (keymap-set evil-normal-state-map "s-<return>" #'vterm))
-  (keymap-set vterm-copy-mode-map "i" #'t-vterm-copy-mode-insert))
+    ;; exit from e.g. fzf without going to normal mode, like esc
+    (evil-define-key 'insert vterm-mode-map (kbd "M-<escape>") #'vterm-send-escape)
+    (evil-define-key 'insert vterm-mode-map (kbd "S-<up>") (cmd! (vterm-send-key "<prior>" nil nil nil)))
+    (evil-define-key 'insert vterm-mode-map (kbd "S-<down>") (cmd! (vterm-send-key "<next>" nil nil nil))))
+  (defun t/vterm-project (arg)
+    (interactive "P")
+    (let (;;(default-directory (t/project-root)) ; force init dir to root
+          (vterm-buffer-name (format "*vterm:%s*" (t/project-root))))
+      (vterm arg)))
+  (dolist (map (list evil-motion-state-map
+                     evil-normal-state-map))
+    (keymap-set map "s-<return>" #'t/vterm-project)))
 
 ;;; vterm: dired, magit etc follows terminal dir
 (after! vterm
