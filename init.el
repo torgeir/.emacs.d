@@ -1979,8 +1979,16 @@ words of the candidate, respectively."
 	      org-log-redeadline 'time ; log when deadline changes
 	      org-log-reschedule 'time ; log when schedule changes
 	      org-reverse-note-order t ; newest notes first
+        org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "NEXT(n)" "|" "DONE(d)" "CANCELLED(c)"))
 	      org-default-notes-file (t/org-file "tasks.org")
-	      )
+        org-capture-templates
+        `(("t" "Task" entry (file+olp org-default-notes-file "tasks") "* TODO %? \n\n%i\n\n" :prepend t :empty-lines-after 1)
+          ("d" "Da" entry (file+olp ,(t/org-file "da.org.gpg") "Tasks") "* TODO %? \n\n%i" :prepend t :empty-lines-after 1)
+          ("b" "Bekk" entry (file+olp ,(t/org-file "bekk.org.gpg") "Tasks") "* TODO %? \n\n%i" :prepend t :empty-lines-after 1)
+          ("f" "File/item (or elfeed)" entry (file+olp org-default-notes-file "Tasks") "* TODO %? %^G\n\n%i%a\n\n" :prepend t :empty-lines-after 1)
+          ("l" "Link (eww, mu4e, etc)" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-link-template) :prepend t :empty-lines-after 1)
+          ("c" "Chrome location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template) :prepend t :empty-lines-after 1)
+          ("p" "Post" entry (file+olp "~/Code/posts/content-org/blog.org" "Drafts") (function org-hugo-new-subtree-post-capture-template))))
   (defun t/org-double-mouse-1 (event)
     "Toggle heading visibility when double-clicking an Org heading."
     (interactive "e")
