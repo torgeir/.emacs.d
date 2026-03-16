@@ -1024,7 +1024,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (setf (alist-get mode t--pairs-alist) pairs)
   (add-hook (intern (format "%s-hook" mode)) #'t--apply-pairs-for-mode))
 
-;;; debug
+;;; toggles
 (keymap-set t-leader-map "t d" #'toggle-debug-on-error)
 (keymap-set t-leader-map "t e" #'global-emojify-mode)
 (keymap-set t-leader-map "t i" (defun t/toggle-images ()
@@ -1061,6 +1061,9 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "b d" #'kill-current-buffer)
 (keymap-set t-leader-map "b n" #'evil-buffer-new)
 (keymap-set t-leader-map "b O" #'persp-kill-other-buffers)
+
+;;; compile
+(keymap-set t-leader-map "c c" #'compile)
 
 ;;; magit
 (t-package magit gh "magit/magit" "b9f19ba" nil
