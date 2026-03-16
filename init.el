@@ -927,13 +927,15 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "g" t-leader-g-map)
 
 ;;; fonts
-(setq t-font-height 240)
+(setq t-font-height 200)
 (set-face-attribute 'default nil
                     :family "Iosevka Nerd Font Mono"
                     :height t-font-height)
 (set-face-attribute 'variable-pitch nil
                     :family "IosevkaTerm Nerd Font Propo"
-                    :height t-font-height)
+                    :height (- t-font-height 50)
+                    :weight 'ultra-light
+                    :slant 'normal)
 
 (keymap-set global-map "C-+" (cmd! (text-scale-set
 				                            (1+ text-scale-mode-amount))))
@@ -1949,8 +1951,8 @@ words of the candidate, respectively."
   :config
   (after! evil
     (evil-define-key 'normal eww-mode-map (kbd t-leader) t-leader-map))
-  (keymap-set eww-mode-map "<wheel-left>" 'eww-back-url)
-  (keymap-set eww-mode-map "<wheel-right>" 'eww-forward-url)
+  (keymap-set eww-mode-map "<triple-wheel-left>" 'eww-back-url)
+  (keymap-set eww-mode-map "<triple-wheel-right>" 'eww-forward-url)
   (keymap-set eww-mode-map "<mouse-8>" 'eww-back-url)
   (keymap-set eww-mode-map "<mouse-9>" 'eww-forward-url)
   (add-hook 'eww-after-render-hook (cmd! (call-interactively 'eww-readable)))
