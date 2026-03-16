@@ -789,6 +789,15 @@ When 'quit' is set, quits window when any other key is pressed."
         (set-window-dedicated-p (selected-window) t)
         (set-window-parameter (selected-window) 'no-delete-other-windows t)))))
 
+;;; dired, no hidden files
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (dired-omit-mode 1)
+            (setq-local dired-omit-files "\\`\\..+\\'")))
+;; TODO better way
+(setq insert-directory-program "/etc/profiles/per-user/torgeir/bin/ls"
+      dired-listing-switches "-al --group-directories-first")
+
 (t-package dired-subtree gh "Fuco1/dired-hacks" "de9336f" nil
   :deps ((dash gh "magnars/dash.el" "d3a84021"))
   :commands (dired-subtree-toggle dired-subtree--dired-line-is-directory-or-link-p))
