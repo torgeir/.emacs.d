@@ -772,7 +772,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 (defun t-toggle-sidebar ()
   (interactive)
-  (let* ((sidebar-project (replace-regexp-in-string (expand-file-name "~") "~" default-directory))
+  (let* ((sidebar-project (t/project-root))
          (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
          (sidebar-buffer (get-buffer sidebar-name))
          (sidebar-displayed (and sidebar-buffer (get-buffer-window sidebar-buffer))))
@@ -840,8 +840,8 @@ When 'quit' is set, quits window when any other key is pressed."
 (defun t/project-root ()
   "Get project root without throwing."
   (interactive)
-  (let ()
-    (or (expand-file-name default-directory))))
+  (or (string-trim-right (shell-command-to-string "git rev-parse --show-toplevel") "\n")
+      (expand-file-name default-directory)))
 
 (defun t/dired-ignored? ()
   "File under cursor is ignored by projectile. Only checks file-name-base."
@@ -892,7 +892,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (let* ((path (s-replace (t/project-root) "" (or (buffer-file-name) "")))
          (path (s-split "/" path))
          (path (remove "" path)))
-    (let* ((sidebar (concat ":" (replace-regexp-in-string (expand-file-name "~") "~" (t/project-root)))))
+    (let* ((sidebar (concat ":" (t/project-root))))
       (if (get-buffer sidebar)
           (pop-to-buffer sidebar)
         (t-toggle-sidebar)))
