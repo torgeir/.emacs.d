@@ -943,7 +943,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "g" t-leader-g-map)
 
 ;;; fonts
-(setq t-font-height 220)
+(setq t-font-height 240)
 (set-face-attribute 'default nil
                     :family "Iosevka Nerd Font Mono"
                     :height t-font-height)
