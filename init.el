@@ -2219,8 +2219,6 @@ words of the candidate, respectively."
 
 ;;; nerd icons dired
 
-;;; display mode alist
-
 ;;; own modules
 
 ;;; winner undo redo
