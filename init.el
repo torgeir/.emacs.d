@@ -1,27 +1,4 @@
 ;;; init.el --- Init -*- lexical-binding: t; -*-
-(defun t/update-init-from-gist ()
-  "Replace init.el with content from the init.el gist."
-  (interactive)
-  (require 'url)
-  (let ((url "https://gist.githubusercontent.com/torgeir/5dbe29ff4d31ee2bbc62e0c7fe35b8aa/raw/init.el")
-        (dest (expand-file-name "init.el" user-emacs-directory))
-        buf)
-    (unwind-protect
-        (progn
-          (setq buf (url-retrieve-synchronously url t t))
-          (unless (buffer-live-p buf)
-            (error "Failed to fetch gist"))
-          (with-current-buffer buf
-            (goto-char (point-min))
-            (unless (search-forward "\n\n" nil t)
-              (error "No HTTP body found"))
-            (let ((body (buffer-substring-no-properties (point) (point-max))))
-              (with-temp-file dest
-                (insert body)))))
-      (when (buffer-live-p buf)
-        (kill-buffer buf)))
-    (message "t: wrote %s from gist" dest)))
-
 (message "Yo.")
 
 ;;; system checks
@@ -56,7 +33,6 @@
 ;;; packages-diy
 (require 'subr-x)
 (require 'cl-lib)
-
 
 (setq package-user-dir (expand-file-name "elpa" user-emacs-directory))
 (defvar t-package-queue nil)
@@ -701,6 +677,14 @@ When 'quit' is set, quits window when any other key is pressed."
     nil
     "p" 'evil-scroll-up
     "n" 'evil-scroll-down)))
+
+;;; secrets: refresh cache
+(defun t/read-first-secret (&rest args)
+  (let ((secret (apply 'auth-source-pick-first-password args)))
+    (when (not secret)
+      (epa-file-enable)
+      (auth-source-forget-all-cached))
+    (apply 'auth-source-pick-first-password args)))
 
 ;;; macros
 (defmacro comment (&rest _ignore) nil)
@@ -1556,7 +1540,7 @@ When 'quit' is set, quits window when any other key is pressed."
 	        (agent-shell-openai-make-authentication
 	         :codex-api-key
 	         (lambda ()
-	           (auth-source-pick-first-password :host "api.openai.com")))))
+	           (t/read-first-secret :host "api.openai.com")))))
   (setq agent-shell-header-style 'text
 	      agent-shell-session-strategy 'prompt
 	      agent-shell-screenshot-command (if is-mac nil '("grimshot" "save" "area")))
@@ -1606,10 +1590,10 @@ When 'quit' is set, quits window when any other key is pressed."
   (setq chatgpt-shell-model-version "gpt-5.2"
         chatgpt-shell-anthropic-key
 	      (lambda ()
-	        (auth-source-pick-first-password :host "anthropic.com"))
+	        (t/read-first-secret :host "anthropic.com"))
 	      chatgpt-shell-openai-key
 	      (lambda ()
-	        (auth-source-pick-first-password :host "api.openai.com")))
+	        (t/read-first-secret :host "api.openai.com")))
   (defun t/chatgpt-shell (beg end)
     "Pop open an org mode buffer with the selection region and an optional prompt
   prepended."
