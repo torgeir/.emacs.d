@@ -2241,8 +2241,7 @@ words of the candidate, respectively."
 (t-package direnv gh "wbolster/emacs-direnv" "c0bf3b8" nil)
 
 ;;; yaml
-(t-package yaml gh "yoshiki/yaml-mode" "c0bf3b8" nil
-  :mode (("\\.ya?ml\\'" . yaml-ts-mode)))
+(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
 
 (comment t-package exec-path-from-shell gh "purcell/exec-path-from-shell" "7552abf" nil
          :commands (exec-path-from-shell-initialize))
