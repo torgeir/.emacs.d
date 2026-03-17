@@ -1191,14 +1191,22 @@ When 'quit' is set, quits window when any other key is pressed."
 	           avy-move-line
 	           avy-goto-word-or-subword-1)
   :init
-  (keymap-set t-leader-map "j c" #'avy-goto-char-2)
-  (keymap-set t-leader-map "j l" #'avy-goto-line)
-  (keymap-set t-leader-map "j m" #'avy-move-line)
-  (keymap-set t-leader-map "j w" #'avy-goto-word-or-subword-1)
+  (defmacro t/avy-all-windows (fn)
+    "Make avy search all windows if C-u is given."
+    `(lambda (arg)
+       (interactive "P")
+       (let ((avy-all-windows (equal arg '(4)))
+             (current-prefix-arg nil))
+         (call-interactively #',fn))))
+  (keymap-set t-leader-map "j c" (t/avy-all-windows avy-goto-char-2))
+  (keymap-set t-leader-map "j l" (t/avy-all-windows avy-goto-line))
+  (keymap-set t-leader-map "j m" (t/avy-all-windows avy-move-line))
+  (keymap-set t-leader-map "j w" (t/avy-all-windowr avy-goto-word-or-subword-1))
   (setq avy-keys '(?j ?f ?d ?k ?s ?a)
 	      avy-timeout-seconds 0.2
 	      ;;avy-all-windows 'all-frames
 	      avy-all-windows nil
+        avy-single-candidate-jump nil ; always specify candidate
 	      avy-case-fold-search nil
 	      avy-highlight-first t
 	      avy-style 'at-full
