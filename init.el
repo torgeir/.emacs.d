@@ -1730,6 +1730,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 (use-package emacs
   :hook (;;(after-init . pixel-scroll-mode)
+	       (after-init . winner-mode)
 	       ;; enable arrow at end of line when wrapping
 	       (after-init . toggle-truncate-lines)
 	       ;; indent soft wraps
