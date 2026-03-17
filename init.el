@@ -750,7 +750,8 @@ When 'quit' is set, quits window when any other key is pressed."
       (with-selected-window win
         (set-window-dedicated-p win t)
         (t--resize-sidebar win)
-        (setq-local window-size-fixed 'width)))
+        ;; (setq-local window-size-fixed 'width)
+        ))
     win))
 
 (add-to-list 'display-buffer-alist
