@@ -1526,6 +1526,14 @@ When 'quit' is set, quits window when any other key is pressed."
   :commands (vterm)
   :init
   (keymap-set t-leader-map "o t" #'vterm)
+  (after! evil
+    (defun t/vterm-project (arg)
+      (interactive "P")
+      (let ((vterm-buffer-name (format "*vterm:%s*" (t/project-root))))
+        (vterm arg)))
+    (dolist (map (list evil-motion-state-map
+                       evil-normal-state-map))
+      (keymap-set map "s-<return>" #'t/vterm-project)))
   :config
   (setq vterm-shell (or (executable-find "zsh") "/bin/zsh" "/bin/bash"))
   (defun t-vterm-ctrl-d ()
@@ -1548,15 +1556,7 @@ When 'quit' is set, quits window when any other key is pressed."
     ;; exit from e.g. fzf without going to normal mode, like esc
     (evil-define-key 'insert vterm-mode-map (kbd "M-<escape>") #'vterm-send-escape)
     (evil-define-key 'insert vterm-mode-map (kbd "S-<up>") (cmd! (vterm-send-key "<prior>" nil nil nil)))
-    (evil-define-key 'insert vterm-mode-map (kbd "S-<down>") (cmd! (vterm-send-key "<next>" nil nil nil))))
-  (defun t/vterm-project (arg)
-    (interactive "P")
-    (let (;;(default-directory (t/project-root)) ; force init dir to root
-          (vterm-buffer-name (format "*vterm:%s*" (t/project-root))))
-      (vterm arg)))
-  (dolist (map (list evil-motion-state-map
-                     evil-normal-state-map))
-    (keymap-set map "s-<return>" #'t/vterm-project)))
+    (evil-define-key 'insert vterm-mode-map (kbd "S-<down>") (cmd! (vterm-send-key "<next>" nil nil nil)))))
 
 ;;; vterm: dired, magit etc follows terminal dir
 (after! vterm
