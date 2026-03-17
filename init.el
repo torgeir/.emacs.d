@@ -57,8 +57,9 @@
   (concat (pcase host
             ('gh "https://github.com/")
             ('gl "https://gitlab.com/")
+            ('cb "https://codeberg.org/")
             ('sav "https://git.savannah.gnu.org/git/")
-            (_ (error "Unknown host")))
+            (_ (error (concat "Unknown host, got " host))))
           repo))
 
 (defun t--repo-web-url (host repo)
@@ -66,8 +67,9 @@
     (concat (pcase host
               ('gh "https://github.com/")
               ('gl "https://gitlab.com/")
+              ('cb "https://codeberg.org/")
               ('sav "https://git.savannah.gnu.org/git/")
-              (_ (error "Unknown host")))
+              (_ (error (concat "Unknown host, got " host))))
             clean-repo)))
 
 (defun t--repo-commit-url (host repo rev)
@@ -75,8 +77,9 @@
     (pcase host
       ('gh (format "https://github.com/%s/commit/%s" clean-repo rev))
       ('gl (format "https://gitlab.com/%s/-/commit/%s" clean-repo rev))
+      ('cb (format "https://codeberg.org/%s/commit/%s" clean-repo rev))
       ('sav (format "https://git.savannah.gnu.org/git/%s?a=commit;h=%s" clean-repo rev))
-      (_ (error "Unknown host")))))
+      (_ (error (concat "Unknown host, got " host))))))
 
 (defun t--package-dir (name)
   (expand-file-name (symbol-name name) package-user-dir))
@@ -1186,6 +1189,18 @@ When 'quit' is set, quits window when any other key is pressed."
 	      t)))
   (add-hook 'after-change-major-mode-hook 't/setup-avy))
 
+;;; jump to links
+(t-package link-hint gh "noctuid/link-hint.el" "8fda5dc" nil
+  :deps ((avy gh "abo-abo/avy" "933d1f3"))
+  :commands (link-hint-open-link
+             link-hint-copy-link)
+  :init
+  (keymap-set t-leader-map "s l" (cmd!
+                                  (if (t/prefix-arg-universal?)
+                                      (call-interactively 'link-hint-copy-link)
+                                    (call-interactively 'link-hint-open-link))))
+  (keymap-set t-leader-map "s L" #'ffap-menu))
+
 ;;; eval
 (keymap-set t-leader-map "m e b" #'eval-buffer)
 
@@ -2235,3 +2250,7 @@ words of the candidate, respectively."
 ;;; timers are useful
 (put 'list-timers 'disabled nil)
 
+;;; git timetravel
+(t-package git-timemachine cb "pidu/git-timemachine" "d1346a7" nil
+  :init
+  (keymap-set t-leader-map "g T" 'git-timemachine))
