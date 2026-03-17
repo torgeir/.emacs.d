@@ -1080,6 +1080,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (dolist (magit-map (list
 		                  magit-diff-mode-map
 		                  magit-log-mode-map
+		                  magit-process-mode-map
 		                  magit-status-mode-map))
     (keymap-set magit-map t-leader t-leader-map)))
 
