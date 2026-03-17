@@ -1115,6 +1115,32 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-g-map "p" #'diff-hl-previous-hunk)
 (keymap-set t-leader-g-map "s" #'diff-hl-stage-current-hunk)
 
+;;; ediff
+(defvar t-ediff--saved-wconf nil)
+
+(after! ediff
+  (setq ediff-diff-options "-w" ; turn off whitespace checking
+        ediff-split-window-function #'split-window-horizontally
+        ediff-window-setup-function #'ediff-setup-windows-plain
+        ediff-use-long-help-message nil)
+
+  (defun t/ediff-save-wconf ()
+    (setq t-ediff--saved-wconf (current-window-configuration)))
+
+  (defun t/ediff-restore-wconf ()
+    (when (window-configuration-p t-ediff--saved-wconf)
+      (set-window-configuration t-ediff--saved-wconf)))
+
+  (add-hook 'ediff-before-setup-hook #'t/ediff-save-wconf)
+  (add-hook 'ediff-quit-hook #'t/ediff-restore-wconf 'append)
+  (add-hook 'ediff-suspend-hook #'t/ediff-restore-wconf 'append)
+
+  (after! evil
+    (evil-define-key 'normal ediff-mode-map (kbd t-leader) t-leader-map)
+    (evil-define-key 'motion ediff-mode-map (kbd t-leader) t-leader-map)
+    (evil-define-key 'normal ediff-mode-map (kbd t-leader-alt) t-leader-map)
+    (evil-define-key 'motion ediff-mode-map (kbd t-leader-alt) t-leader-map)))
+
 ;;; search
 (defun t/consult-line-dwim (&optional ignore init)
   "'consult-line', also in 'vterm-mode', without returning to prompt when done."
