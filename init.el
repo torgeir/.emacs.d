@@ -1176,10 +1176,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "f l" #'t-toggle-sidebar)
 (keymap-set t-leader-map "f L" 't/dired-locate)
 
-(keymap-set t-leader-map "f P"
-            (cmd!
-             (let ((default-directory user-emacs-directory))
-               (call-interactively #'consult-find))))
+(keymap-set t-leader-map "f P" (cmd! (consult-find user-emacs-directory "init.el")))
 
 ;;; avy
 (t-package avy gh "abo-abo/avy" "933d1f3" nil
