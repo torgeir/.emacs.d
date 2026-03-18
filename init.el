@@ -1232,10 +1232,7 @@ When 'quit' is set, quits window when any other key is pressed."
   :commands (link-hint-open-link
              link-hint-copy-link)
   :init
-  (keymap-set t-leader-map "s l" (cmd!
-                                  (if (t/prefix-arg-universal?)
-                                      (call-interactively 'link-hint-copy-link)
-                                    (call-interactively 'link-hint-open-link))))
+  (keymap-set t-leader-map "s l" (t/avy-all-windows link-hint-open-link))
   (keymap-set t-leader-map "s L" #'ffap-menu))
 
 ;;; eval
