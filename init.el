@@ -1764,10 +1764,14 @@ When 'quit' is set, quits window when any other key is pressed."
   ;; Persist minibuffer history for Vertico and other completions.
   (savehist-mode))
 
+(use-package winner
+  :hook ((after-init . winner-mode))
+  :init
+  (keymap-set t-leader-map "w u" #'winner-undo)
+  (keymap-set t-leader-map "w r" #'winner-redo))
+
 (use-package emacs
-  :hook (;;(after-init . pixel-scroll-mode)
-	       (after-init . winner-mode)
-	       ;; enable arrow at end of line when wrapping
+  :hook (;; enable arrow at end of line when wrapping
 	       (after-init . toggle-truncate-lines)
 	       ;; indent soft wraps
 	       (after-init . global-visual-wrap-prefix-mode)
