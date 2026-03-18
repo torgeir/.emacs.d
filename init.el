@@ -1685,7 +1685,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (add-hook 'dired-mode-hook #'dired-hide-details-mode)
   (evil-define-key 'normal dired-mode-map
     (kbd t-leader) t-leader-map
-    ;; (kbd "<return>") #'dired-find-file
+    (kbd "H") #'dired-omit-mode
     (kbd "j") #'dired-next-line
     (kbd "k") #'t-dired-k
     (kbd "(") (cmd! (dired-hide-details-mode 1))
