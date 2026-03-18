@@ -651,10 +651,7 @@
     (server-start)))
 
 ;;; y/n
-(setq read-answer-short t)
-(if (boundp 'use-short-answers)
-    (setq use-short-answers t)
-  (advice-add 'yes-or-no-p :override #'y-or-n-p))
+(setopt use-short-answers t)
 
 ;;; micro state
 (defun t/micro-state (quit key fn &rest bindings)
