@@ -782,9 +782,6 @@ When 'quit' is set, quits window when any other key is pressed."
             (dired-omit-mode 1)
             (setq-local dired-omit-files "\\`\\..+\\'")))
 (setq dired-listing-switches "-al --group-directories-first")
-(when is-mac
-  ;; TODO better way
-  (setq insert-directory-program "/etc/profiles/per-user/torgeir/bin/ls"))
 
 (t-package dired-subtree gh "Fuco1/dired-hacks" "de9336f" nil
   :deps ((dash gh "magnars/dash.el" "d3a84021"))
@@ -1070,9 +1067,6 @@ When 'quit' is set, quits window when any other key is pressed."
 	       (llama    gh "tarsius/llama" "d430d48")
 	       (with-editor gh "magit/with-editor" "64211dc")
 	       (transient gh "magit/transient" "7131bec"))
-  :init
-  (when is-mac
-    (setq magit-git-executable "/etc/profiles/per-user/torgeir/bin/git"))
   :config
   (add-hook 'magit-revision-mode-hook 'toggle-truncate-lines)
   (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
