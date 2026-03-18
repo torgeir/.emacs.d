@@ -2255,6 +2255,11 @@ words of the candidate, respectively."
 
 ;;; goggles
 ;; https://github.com/edkolev/evil-goggles
+(t-package evil-goggles gh "edkolev/evil-goggles" "34ca276" nil
+  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
+  :hook (after-init . evil-goggles-mode)
+  :config
+  (evil-goggles-use-magit-faces))
 
 ;;; goto next error/flymake
 
