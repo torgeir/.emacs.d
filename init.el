@@ -1454,6 +1454,25 @@ When 'quit' is set, quits window when any other key is pressed."
   :config
   (evil-commentary-mode))
 
+;;; evil-cleverparens
+(t-package evil-cleverparens gh "emacs-evil/evil-cleverparens" "4c413a1" nil
+  :deps ((evil gh "emacs-evil/evil" "729d9a5")
+         (paredit gh "emacsmirror/paredit" "af07577")
+         (smartparens gh "Fuco1/smartparens" "82d2cf0"))
+  :hook (emacs-lisp-mode . evil-cleverparens-mode))
+
+;;; goggles
+;; https://github.com/edkolev/evil-goggles
+(t-package evil-goggles gh "edkolev/evil-goggles" "34ca276" nil
+  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
+  :hook (after-init . evil-goggles-mode)
+  :config
+  (evil-goggles-use-magit-faces))
+
+;;; direnv
+(t-package direnv gh "wbolster/emacs-direnv" "c0bf3b8" nil)
+
+
 ;;; TODO
 (t-package hl-todo gh "tarsius/hl-todo" "9540fc4" nil
   :config
@@ -2246,32 +2265,13 @@ words of the candidate, respectively."
 
 ;;; deno
 
-;;; evil-cleverparens
-(t-package evil-cleverparens gh "emacs-evil/evil-cleverparens" "4c413a1" nil
-  :deps ((evil gh "emacs-evil/evil" "729d9a5")
-         (paredit gh "emacsmirror/paredit" "af07577")
-         (smartparens gh "Fuco1/smartparens" "82d2cf0"))
-  :hook (emacs-lisp-mode . evil-cleverparens-mode))
-
 ;;; tree-sitter
-
-;;; goggles
-;; https://github.com/edkolev/evil-goggles
-(t-package evil-goggles gh "edkolev/evil-goggles" "34ca276" nil
-  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
-  :hook (after-init . evil-goggles-mode)
-  :config
-  (evil-goggles-use-magit-faces))
 
 ;;; goto next error/flymake
 
 ;;; nerd icons dired
 
 ;;; own modules
-
-;;; winner undo redo
-
-;;; highlight symbol
 
 ;;; commit semantic
 
@@ -2283,9 +2283,6 @@ words of the candidate, respectively."
 ;;          (compat gh "emacs-compat/compat" "38df650"))
 ;;   :config
 ;;   (keymap-set t-leader-map "t c" 'copilot-mode))
-
-;;; direnv
-(t-package direnv gh "wbolster/emacs-direnv" "c0bf3b8" nil)
 
 ;;; yaml
 (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
