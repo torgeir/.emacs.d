@@ -1021,7 +1021,6 @@ When 'quit' is set, quits window when any other key is pressed."
 				                         (interactive)
 				                         (when (equal major-mode 'eww-mode)
 				                           (eww-toggle-images))))
-(keymap-set t-leader-map "t b" #'tool-bar-mode)
 (keymap-set t-leader-map "t l" #'display-line-numbers-mode)
 (keymap-set t-leader-map "t L" (cmd!
 				                        (display-line-numbers-mode -1)
@@ -1817,6 +1816,14 @@ When 'quit' is set, quits window when any other key is pressed."
         yaml-indent-offset 2)
   (add-hook 'after-init-hook (cmd! (menu-bar-mode -1)))
   (add-hook 'after-init-hook (cmd! (tool-bar-mode -1)))
+  (keymap-set global-map "C-M-<left>" 'tab-bar-switch-to-prev-tab)
+  (keymap-set global-map "C-M-<right>" 'tab-bar-switch-to-next-tab)
+  (keymap-set t-leader-map "t b b" #'tab-bar-mode)
+  (keymap-set t-leader-map "t b w" #'tab-bar-close-tab)
+  (keymap-set t-leader-map "t b t" #'tab-bar-new-tab)
+  (keymap-set t-leader-map "t b n" #'tab-bar-switch-to-next-tab)
+  (keymap-set t-leader-map "t b p" #'tab-bar-switch-to-prev-tab)
+  (keymap-set t-leader-map "t b r" #'tab-bar-rename-tab)
   :custom
   ;; vertico shows context menu in `vertico-multiform-mode'
   (context-menu-mode t)
