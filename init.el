@@ -782,9 +782,10 @@ When 'quit' is set, quits window when any other key is pressed."
           (lambda ()
             (dired-omit-mode 1)
             (setq-local dired-omit-files "\\`\\..+\\'")))
-;; TODO better way
-(setq insert-directory-program "/etc/profiles/per-user/torgeir/bin/ls"
-      dired-listing-switches "-al --group-directories-first")
+(setq dired-listing-switches "-al --group-directories-first")
+(when is-mac
+  ;; TODO better way
+  (setq insert-directory-program "/etc/profiles/per-user/torgeir/bin/ls"))
 
 (t-package dired-subtree gh "Fuco1/dired-hacks" "de9336f" nil
   :deps ((dash gh "magnars/dash.el" "d3a84021"))
@@ -1201,7 +1202,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set t-leader-map "j c" (t/avy-all-windows avy-goto-char-2))
   (keymap-set t-leader-map "j l" (t/avy-all-windows avy-goto-line))
   (keymap-set t-leader-map "j m" (t/avy-all-windows avy-move-line))
-  (keymap-set t-leader-map "j w" (t/avy-all-windowr avy-goto-word-or-subword-1))
+  (keymap-set t-leader-map "j w" (t/avy-all-windows avy-goto-word-or-subword-1))
   (setq avy-keys '(?j ?f ?d ?k ?s ?a)
 	      avy-timeout-seconds 0.2
 	      ;;avy-all-windows 'all-frames
