@@ -1525,7 +1525,7 @@ When 'quit' is set, quits window when any other key is pressed."
   :init
   (keymap-set t-leader-map "o t" #'vterm)
   (after! evil
-    (defun t/vterm-project (arg)
+    (defun t/vterm-project (&optional arg)
       (interactive "P")
       (let ((vterm-buffer-name (format "*vterm:%s*" (t/project-root))))
         (vterm arg)))
