@@ -273,6 +273,8 @@
     (goto-char (point-min))
     (let ((log-window (split-window-below)))
       (set-window-buffer log-window log-buffer)
+      (with-selected-window log-window
+        (end-of-buffer))
       (set-window-point log-window (point-max))
       (set-window-start log-window (point-max)))))
 
