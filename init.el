@@ -1632,13 +1632,20 @@ When 'quit' is set, quits window when any other key is pressed."
       (if (fboundp 'comint-delchar-or-maybe-eof)
 	        (comint-delchar-or-maybe-eof 1)
 	      (delete-char 1))))
-  (defun t/agent-shell--recenter (&rest _)
+  (defun t/agent-shell--recenter (&optional &rest _)
     "Recenter comint buffers to a fixed offset after submit."
     (when (derived-mode-p 'comint-mode)
       (when-let ((win (get-buffer-window (current-buffer) t)))
         (with-selected-window win
           (recenter-top-bottom 5)))))
-  (advice-add 'shell-maker-submit :after #'t/agent-shell--recenter)
+  (advice-add 'agent-shell--start :filter-return
+              (defun t/agent-shell--after-start (shell-buffer)
+                (with-current-buffer shell-buffer
+                  (agent-shell-subscribe-to
+                   :shell-buffer shell-buffer
+                   :event 'prompt-ready
+                   :on-event 't/agent-shell--recenter))
+                shell-buffer))
   (keymap-set t-leader-map "a a" #'agent-shell)
   (keymap-set t-leader-map "a i" #'agent-shell)
   (keymap-set t-leader-map "a c" #'agent-shell)
