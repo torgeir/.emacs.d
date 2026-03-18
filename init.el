@@ -2134,7 +2134,8 @@ words of the candidate, respectively."
   (add-hook 'notmuch-show-mode-hook 'olivetti-mode)
   (add-hook 'notmuch-show-mode-hook 't/read)
   (add-hook 'notmuch-search-mode-hook 'olivetti-mode)
-  (keymap-set t-leader-map "o m" 'notmuch))
+  (keymap-set t-leader-map "o m" 'notmuch)
+  (keymap-set t-leader-map "o M" (cmd! (notmuch) (t/fetch-mail))))
 
 (setq user-full-name "Torgeir Thoresen"
       user-mail-address "torgeir.thoresen@gmail.com")
@@ -2148,8 +2149,7 @@ words of the candidate, respectively."
   (interactive)
   (epa-file-enable)
   (auth-source-forget-all-cached)
-  (message "Fetching..")
-  (async-shell-command "notmuch new" "*t-notmuch-out*" "*t-notmuch-err*"))
+  (notmuch-poll))
 
 (add-to-list
  'display-buffer-alist '("^\\*t-notmuch-out\\*$"
