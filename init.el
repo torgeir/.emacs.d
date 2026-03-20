@@ -730,73 +730,6 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set global-map "s-D" (cmd! (split-window-vertically) (evil-window-down 1)))
 (keymap-set global-map "s-q" #'evil-save-and-quit)
 
-;;; t-sidebar
-(defvar t-sidebar-buffer-prefix ":")
-
-(defun t--sidebar-width ()
-  (let* ((fw (frame-width))
-         (div (if (> fw 250) 4 3)))
-    (/ fw div)))
-
-(defun t--resize-sidebar (win)
-  (when (window-live-p win)
-    (let ((desired (t--sidebar-width)))
-      (when (integerp desired)
-        (let ((delta (- desired (window-width win))))
-          (when (/= delta 0)
-            (condition-case _err
-                (window-resize win delta t)
-              (error nil))))))))
-
-(defun t--display-sidebar (buffer alist)
-  (let ((win (display-buffer-in-side-window
-              buffer
-              (append alist
-                      '((side . left)
-                        (slot . 0)
-                        (window-parameters . ((no-delete-other-windows . t))))))))
-    (when (window-live-p win)
-      (with-selected-window win
-        (set-window-dedicated-p win t)
-        (t--resize-sidebar win)
-        ;; (setq-local window-size-fixed 'width)
-        ))
-    win))
-
-(add-to-list 'display-buffer-alist
-             `(,(concat "^" (regexp-quote t-sidebar-buffer-prefix))
-               . (t--display-sidebar)))
-
-(defun t-toggle-sidebar ()
-  (interactive)
-  (let* ((sidebar-project (t/project-root))
-         (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
-         (sidebar-buffer (get-buffer sidebar-name))
-         (sidebar-displayed (and sidebar-buffer (get-buffer-window sidebar-buffer))))
-    (if sidebar-displayed
-        (delete-window (get-buffer-window sidebar-buffer))
-      (when (not sidebar-buffer)
-        (with-current-buffer (dired-noselect sidebar-project)
-          ;; unadvertise buffer so dired does not consider it on subsequent dired-jump
-          (dired-unadvertise (dired-current-directory))
-          (rename-buffer sidebar-name)
-          (dired-hide-details-mode)))
-      (progn
-        (pop-to-buffer sidebar-name)
-        (set-window-dedicated-p (selected-window) t)
-        (set-window-parameter (selected-window) 'no-delete-other-windows t)))))
-
-;;; dired, no hidden files
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (dired-omit-mode 1)
-            (setq-local dired-omit-files "\\`\\..+\\'")))
-(setq dired-listing-switches "-al --group-directories-first")
-
-(t-package dired-subtree gh "Fuco1/dired-hacks" "de9336f" nil
-  :deps ((dash gh "magnars/dash.el" "d3a84021"))
-  :commands (dired-subtree-toggle dired-subtree--dired-line-is-directory-or-link-p))
-
 (t-package s gh "magnars/s.el" "dda84d3" nil)
 
 (defun t/prefix-arg-universal? ()
@@ -1471,6 +1404,107 @@ When 'quit' is set, quits window when any other key is pressed."
   :hook (after-init . evil-goggles-mode)
   :config
   (evil-goggles-use-magit-faces))
+;;; t-sidebar
+(defvar t-sidebar-buffer-prefix ":")
+
+(defun t--sidebar-width ()
+  (let* ((fw (frame-width))
+         (div (if (> fw 250) 4 3)))
+    (/ fw div)))
+
+(defun t--resize-sidebar (win)
+  (when (window-live-p win)
+    (let ((desired (t--sidebar-width)))
+      (when (integerp desired)
+        (let ((delta (- desired (window-width win))))
+          (when (/= delta 0)
+            (condition-case _err
+                (window-resize win delta t)
+              (error nil))))))))
+
+(defun t--display-sidebar (buffer alist)
+  (let ((win (display-buffer-in-side-window
+              buffer
+              (append alist
+                      '((side . left)
+                        (slot . 0)
+                        (window-parameters . ((no-delete-other-windows . t))))))))
+    (when (window-live-p win)
+      (with-selected-window win
+        (set-window-dedicated-p win t)
+        (t--resize-sidebar win)
+        ;; (setq-local window-size-fixed 'width)
+        ))
+    win))
+
+(add-to-list 'display-buffer-alist
+             `(,(concat "^" (regexp-quote t-sidebar-buffer-prefix))
+               . (t--display-sidebar)))
+
+(defun t-toggle-sidebar ()
+  (interactive)
+  (let* ((sidebar-project (t/project-root))
+         (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
+         (sidebar-buffer (get-buffer sidebar-name))
+         (sidebar-displayed (and sidebar-buffer (get-buffer-window sidebar-buffer))))
+    (if sidebar-displayed
+        (delete-window (get-buffer-window sidebar-buffer))
+      (when (not sidebar-buffer)
+        (with-current-buffer (dired-noselect sidebar-project)
+          ;; unadvertise buffer so dired does not consider it on subsequent dired-jump
+          (dired-unadvertise (dired-current-directory))
+          (rename-buffer sidebar-name)
+          (dired-hide-details-mode)))
+      (progn
+        (pop-to-buffer sidebar-name)
+        (set-window-dedicated-p (selected-window) t)
+        (set-window-parameter (selected-window) 'no-delete-other-windows t)))))
+
+;;; dired
+(use-package dired
+  :ensure nil
+  :init
+  (setq dired-auto-revert-buffer t
+        dired-listing-switches "-lah --group-directories-first")
+  (add-hook 'dired-mode-hook
+            (defun t/dired-setup-hidden-files ()
+              (dired-omit-mode 1)
+              (setq-local dired-omit-files "^\\."))))
+(after! '(dired evil)
+  (defun t-dired-k ()
+    "Kill subdir."
+    (interactive)
+    (if current-prefix-arg
+	      (dired-kill-subdir)
+      (dired-previous-line 1)))
+  (evil-set-initial-state 'dired-mode 'normal)
+  (add-hook 'dired-mode-hook #'dired-hide-details-mode)
+  (evil-define-key 'normal dired-mode-map
+    (kbd t-leader) t-leader-map
+    (kbd "H") #'dired-omit-mode
+    (kbd "j") #'dired-next-line
+    (kbd "k") #'t-dired-k
+    (kbd "(") (cmd! (dired-hide-details-mode 1))
+    (kbd ")") (cmd! (dired-hide-details-mode 0))
+    (kbd "q") #'quit-window
+    (kbd "<tab>") #'t/dired-subtree-tab
+    (kbd "<follow-link>") nil
+    (kbd "<mouse-2>") nil ;; after hold
+    ;; mouse always togggles folder or opens file
+    (kbd "<down-mouse-1>") (cmd! (mouse-set-point last-input-event)
+				                         (let ((split-window-preferred-function nil))
+				                           (if (dired-subtree--dired-line-is-directory-or-link-p)
+				                               (t/dired-subtree-tab)
+				                             (find-file (dired-get-filename)))))
+    ;; open never split
+    (kbd "<return>") (cmd! (if (t/prefix-arg-universal?)
+			                         (call-interactively 'dired-find-file)
+			                       (let ((split-window-preferred-function nil))
+			                         (call-interactively 'dired-find-file))))))
+
+(t-package dired-subtree gh "Fuco1/dired-hacks" "de9336f" nil
+  :deps ((dash gh "magnars/dash.el" "d3a84021"))
+  :commands (dired-subtree-toggle dired-subtree--dired-line-is-directory-or-link-p))
 
 ;;; direnv
 (t-package direnv gh "wbolster/emacs-direnv" "c0bf3b8" nil)
@@ -1698,39 +1732,8 @@ When 'quit' is set, quits window when any other key is pressed."
   (after! evil
     (evil-define-key 'insert comint-mode-map (kbd "C-a") #'comint-bol)))
 
-;;; dired
-(after! '(dired evil)
-  (setq dired-use-ls-dired nil)
-  (defun t-dired-k ()
-    (interactive)
-    (if current-prefix-arg
-	      (dired-kill-subdir)
-      (dired-previous-line 1)))
-  (evil-set-initial-state 'dired-mode 'normal)
-  (add-hook 'dired-mode-hook #'dired-hide-details-mode)
-  (evil-define-key 'normal dired-mode-map
-    (kbd t-leader) t-leader-map
-    (kbd "H") #'dired-omit-mode
-    (kbd "j") #'dired-next-line
-    (kbd "k") #'t-dired-k
-    (kbd "(") (cmd! (dired-hide-details-mode 1))
-    (kbd ")") (cmd! (dired-hide-details-mode 0))
-    (kbd "q") #'quit-window
-    (kbd "<follow-link>") nil
-    (kbd "<mouse-2>") nil ;; after hold
-    ;; mouse always togggles folder or opens file
-    (kbd "<down-mouse-1>") (cmd! (mouse-set-point last-input-event)
-				                         (let ((split-window-preferred-function nil))
-				                           (if (dired-subtree--dired-line-is-directory-or-link-p)
-				                               (t/dired-subtree-tab)
-				                             (find-file (dired-get-filename)))))
-    (kbd "<tab>") #'t/dired-subtree-tab
-    ;; open never split
-    (kbd "<return>") (cmd! (if (t/prefix-arg-universal?)
-			                         (call-interactively 'dired-find-file)
-			                       (let ((split-window-preferred-function nil))
-			                         (call-interactively 'dired-find-file))))))
-
+;;; ripgrep
+(setq xref-search-program 'ripgrep)
 
 ;;; corfu
 (t-package corfu gh "minad/corfu" "d2a995c" nil
