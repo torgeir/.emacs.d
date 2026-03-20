@@ -1115,6 +1115,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "s M" #'evil-show-marks)
 (keymap-set t-leader-map "s R" #'evil-show-registers)
 (keymap-set t-leader-map "s e" #'emoji-search)
+(keymap-set t-leader-map "s u" #'t/sudo-edit)
 
 ;;; files
 (keymap-set t-leader-map "f f" #'find-file)
@@ -2477,3 +2478,10 @@ With prefix ARG, insert the result inline instead. =>."
          (lambda (o) (delete-overlay o))
          ov)))))
 (global-set-key (kbd "C-x C-e") #'emacs-solo/eval-last-sexp-overlay)
+
+(defun t/sudo-edit (&optional arg)
+  "Edit currently visited file as root."
+  (interactive "P")
+  (if (or arg (not buffer-file-name))
+      (find-file (concat "/sudo:root@localhost:" (read-file-name "Find file (as root): ")))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
