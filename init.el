@@ -1859,17 +1859,20 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set global-map "C-TAB" #'completion-at-point)
   (keymap-set global-map "C-," #'embark-act))
 
+;;; minibuffer history vertico
 (use-package savehist
   :init
   ;; Persist minibuffer history for Vertico and other completions.
   (savehist-mode))
 
+;;; window undo redo
 (use-package winner
   :hook ((after-init . winner-mode))
   :init
   (keymap-set t-leader-map "w u" #'winner-undo)
   (keymap-set t-leader-map "w r" #'winner-redo))
 
+;;; emacs 
 (use-package emacs
   :hook (;; enable arrow at end of line when wrapping
 	       (after-init . toggle-truncate-lines)
