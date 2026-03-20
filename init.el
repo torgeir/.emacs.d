@@ -2409,3 +2409,36 @@ words of the candidate, respectively."
            (match-string 2 url)
            (concat (match-string 1 url) "/" (match-string 2 url))
            (substring (match-string 3 url) 0 7))))
+
+
+(defun t/conventional-commit-msg ()
+  "https://www.conventionalcommits.org/en/v1.0.0/"
+  (interactive)
+  (with-current-buffer "COMMIT_EDITMSG"
+    (when (and
+           (file-exists-p (concat (t/project-root) "products")) ;; repo contains products/
+           (looking-at "^$")) ;; empty first line
+      (let ((type (completing-read "Type: " (s-split "|" "build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"))))
+        (insert (format "%s: " type))
+        (when-let ((paths (t/shell-command-to-string
+                           (format "fd build.gradle.kts %s \
+                                 | xargs dirname \
+                                 | tr '/' '\n' \
+                                 | sort -u \
+                                 | grep -v '^$'"
+                                   (t/project-root))))
+                   (module (completing-read "Module: " (s-split "\n" paths))))
+          (backward-char 2)
+          (insert (format "(%s)" module))
+          (end-of-line))
+        (when-let* ((branch (t/shell-command-to-string "git branch --show-current"))
+                    (_ (string-match "VA-\\([0-9]+\\)" branch))
+                    (va (match-string 1 branch)))
+          (insert (format "\n\nVA-%s" va))
+          (previous-line 2)
+          (end-of-line))))))
+
+(add-hook
+ 'git-commit-setup-hook
+ (defun t/insert-conventional-commit-msg ()
+   (run-with-timer "0sec" nil 't/conventional-commit-msg)))
