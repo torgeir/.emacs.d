@@ -2376,3 +2376,26 @@ words of the candidate, respectively."
     (funcall (lambda (repos) (completing-read "Open repo: " repos nil t)))
     (funcall (lambda (repo) (format "https://github.com/%s/%s" repo (if (t/prefix-arg-universal?) "pulls" ""))))
     (browse-url)))
+
+(defun t/diary-last-day-of-month (date)
+  "Return `t` if DATE is the last day of the month.
+
+  ORG-MODE:  * My Task
+  SCHEDULED: <%%(diary-last-day-of-month date)>
+  DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
+
+  See also:  (setq org-agenda-include-diary t)
+  \(diary-last-day-of-month '(2 28 2017))"
+
+  (require 'org-clock)
+  (= (calendar-extract-day date)
+     (calendar-last-day-of-month (calendar-extract-month date)
+                                 (calendar-extract-year date))))
+
+(defun t/diary-last-day-of-week ()
+  "Return `t` if DATE is the last day of the week."
+  (require 'org-clock)
+  (= 5 ; friday
+     (org-day-of-week (calendar-extract-day date)
+                      (calendar-extract-month date)
+                      (calendar-extract-year date))))
