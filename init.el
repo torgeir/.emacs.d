@@ -1371,6 +1371,14 @@ When 'quit' is set, quits window when any other key is pressed."
   :config
   (evil-collection-init))
 
+;;; evil-escape
+(t-package evil-escape gh "syl20bnr/evil-escape" "f4e9116" nil
+  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
+  :init
+  (setq evil-escape-key-sequence (kbd "jk"))
+  :config
+  (evil-escape-mode))
+
 ;;; evil-visualstar
 (t-package evil-visualstar gh "bling/evil-visualstar" "06c053d" nil
   :config
