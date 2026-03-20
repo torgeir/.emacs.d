@@ -1527,6 +1527,21 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package direnv gh "wbolster/emacs-direnv" "c0bf3b8" nil
   :hook ((prog-mode-hook . direnv-mode)))
 
+;;; .env files
+(use-package conf-mode
+  :mode ("\\.env\\..*\\'" "\\.env\\'")
+  :init
+  (add-to-list 'auto-mode-alist '("\\.env\\'" . conf-mode)))
+
+;;; compilation
+(use-package compile
+  :init
+  (setq compilation-always-kill t
+        compilation-scroll-output t
+        ansi-color-for-compilation-mode t)
+  :config
+  (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
+
 ;;; TODO
 (t-package hl-todo gh "tarsius/hl-todo" "9540fc4" nil
   :config
