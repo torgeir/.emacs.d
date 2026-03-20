@@ -1174,6 +1174,9 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; eval
 (keymap-set t-leader-map "m e b" #'eval-buffer)
+(keymap-set t-leader-map "m e d" #'eval-defun)
+(keymap-set t-leader-map "m e r" #'eval-region)
+(keymap-set t-leader-map "m e e" #'eval-last-sexp)
 
 ;;; project
 (defun t--project-dir-name (dir)
