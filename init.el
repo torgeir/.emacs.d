@@ -1692,6 +1692,7 @@ When 'quit' is set, quits window when any other key is pressed."
       (when-let ((win (get-buffer-window (current-buffer) t)))
         (with-selected-window win
           (recenter-top-bottom 5)))))
+  (advice-add 'shell-maker-submit :after #'t/agent-shell--recenter)
   (advice-add 'agent-shell--start :filter-return
               (defun t/agent-shell--after-start (shell-buffer)
                 (with-current-buffer shell-buffer
