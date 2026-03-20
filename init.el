@@ -7,29 +7,6 @@
 (defconst is-bsd (memq system-type '(darwin gnu/kfreebsd)))
 (defconst is-windows (memq system-type '(windows-nt ms-dos cygwin)))
 
-;;; early init - does this really need its own file?
-;; temporarily raise gc limits during startup, restore after.
-(defvar t--backup-gc-cons-threshold gc-cons-threshold)
-(defvar t--backup-gc-cons-percentage gc-cons-percentage)
-(setq gc-cons-threshold most-positive-fixnum)
-(setq gc-cons-percentage 1.0)
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setq gc-cons-threshold t--backup-gc-cons-threshold)
-            (setq gc-cons-percentage t--backup-gc-cons-percentage))
-          100)
-
-;; reduce file-name handler overhead during startup, restore after.
-(defvar t--old-file-name-handler-alist file-name-handler-alist)
-(setq file-name-handler-alist nil)
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (setq file-name-handler-alist t--old-file-name-handler-alist))
-          101)
-
-;; improve throughput for subprocess i/o (lsp, ripgrep, git).
-(setq read-process-output-max (* 2 1024 1024))
-
 ;;; packages-diy
 (require 'subr-x)
 (require 'cl-lib)
