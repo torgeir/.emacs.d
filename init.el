@@ -1819,6 +1819,8 @@ When 'quit' is set, quits window when any other key is pressed."
 (use-package emacs
   :hook (;; enable arrow at end of line when wrapping
 	       (after-init . toggle-truncate-lines)
+         ;; open .gz files automatically
+         (after-init . auto-compression-mode)
 	       ;; indent soft wraps
 	       (after-init . global-visual-wrap-prefix-mode)
 	       ;; always revert
