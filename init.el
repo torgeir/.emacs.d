@@ -1421,7 +1421,9 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set Info-mode-map "<mouse-8>" 'Info-history-back)
   (keymap-set Info-mode-map "<mouse-9>" 'Info-history-forward)
   (unbind-key (kbd "h") 'Info-mode-map)
-  (unbind-key (kbd "l") 'Info-mode-map))
+  (unbind-key (kbd "l") 'Info-mode-map)
+  (add-hook 'Info-mode-hook 'olivetti-mode)
+  (add-hook 'Info-mode-hook 'variable-pitch-mode))
 
 ;;; woman mode
 (after! (evil woman)
@@ -1709,6 +1711,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package agent-shell gh "xenodium/agent-shell" "b3e556c" nil
   :deps ((acp gh "xenodium/acp.el" "f7e20ce")
 	       (shell-maker gh "xenodium/shell-maker" "8c64f0b"))
+  :hook ((agent-shell-mode-hook . olivetti-mode))
   :commands (agent-shell)
   :init
   (after! agent-shell
@@ -1766,6 +1769,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package chatgpt-shell gh "xenodium/chatgpt-shell" "cbad6ff" nil
   :deps ((shell-maker gh "xenodium/shell-maker" "8c64f0b")
 	       (transient gh "magit/transient" "7131bec"))
+  :hook ((chatgpt-shell-mode-hook . olivetti-mode))
   :commands (chatgpt-shell chatgpt-shell-prompt-compose)
   :init
   (add-hook 'chatgpt-shell-mode-hook
