@@ -2331,15 +2331,9 @@ words of the candidate, respectively."
 
 ;;; deno
 
-;;; tree-sitter
-
 ;;; goto next error/flymake
 
-;;; nerd icons dired
-
 ;;; own modules
-
-;;; commit semantic
 
 ;;; copilot
 ;; TODO needs some npm package
@@ -2349,9 +2343,6 @@ words of the candidate, respectively."
 ;;          (compat gh "emacs-compat/compat" "38df650"))
 ;;   :config
 ;;   (keymap-set t-leader-map "t c" 'copilot-mode))
-
-(comment t-package exec-path-from-shell gh "purcell/exec-path-from-shell" "7552abf" nil
-         :commands (exec-path-from-shell-initialize))
 
 ;;; timers are useful
 (put 'list-timers 'disabled nil)
@@ -2431,6 +2422,15 @@ words of the candidate, respectively."
            (concat (match-string 1 url) "/" (match-string 2 url))
            (substring (match-string 3 url) 0 7))))
 
+(defun t/exec-path-from-shell ()
+  "Import env vars from a login zsh and update `exec-path'."
+  (interactive)
+  (let ((lines (split-string (shell-command-to-string "zsh -lic 'env'") "\n" t)))
+    (dolist (line lines)
+      (when (string-match "\\`\\([^=]+\\)=\\(.*\\)\\'" line)
+        (setenv (match-string 1 line) (match-string 2 line)))))
+  (when-let ((path (getenv "PATH")))
+    (setq exec-path (split-string path path-separator t))))
 
 (defun t/conventional-commit-msg ()
   "https://www.conventionalcommits.org/en/v1.0.0/"
