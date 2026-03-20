@@ -2049,9 +2049,9 @@ words of the candidate, respectively."
    "Insert a defun skeleton.")
   )
 
-(define-abbrev-table 'global-abbrev-table
-  '(("fun" "" tempo-template-elisp-defun 0)
-    ("log" "" tempo-template-js-log 0)))
+(comment define-abbrev-table 'global-abbrev-table
+         '(("fun" "" tempo-template-elisp-defun 0)
+           ("log" "" tempo-template-js-log 0)))
 
 ;;; hackernews
 (t-package hnreader gh "thanhvg/emacs-hnreader" "a56f67a" nil
@@ -2339,6 +2339,31 @@ words of the candidate, respectively."
 (t-package git-timemachine cb "pidu/git-timemachine" "d1346a7" nil
   :init
   (keymap-set t-leader-map "g T" 'git-timemachine))
+
+;;; snippets
+(use-package abbrev
+  :ensure nil
+  :custom
+  (save-abbrevs nil)
+  :config
+  (define-abbrev-table 'global-abbrev-table
+	  '(("todo"  "TODO:")
+	    ("fixme" "FIXME:")
+	    ("note"  "NOTE:")
+	    ("hack"  "HACK:")
+      ("log" "console.log(@);" (lambda () (search-backward "@") (delete-char 1)))
+      ("warn" "console.warn(@);" (lambda () (search-backward "@") (delete-char 1)))
+      ("err" "console.err(@);" (lambda () (search-backward "@") (delete-char 1)))
+      ("defun" "(defun (@) )" (lambda () (search-backward "@") (delete-char 1)))
+      ("lambda" "(lambda (&optional @) )" (lambda () (search-backward "@") (delete-char 1)))
+      ))
+  (keymap-set global-map "M-/" nil) ;; default dabbrev-expand
+  (define-key global-map [remap indent-for-tab-command]
+              (defun t/tab ()
+                (interactive)
+                (or (expand-abbrev)
+                    (indent-for-tab-command))))) 
+
 ;;; t/defuns
 
 (defun t/browse-git-repo ()
