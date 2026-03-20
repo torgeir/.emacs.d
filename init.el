@@ -2228,10 +2228,6 @@ words of the candidate, respectively."
   (setq-default epa-file-encrypt-to '("torgeir@keybase.io"))
   ;; https://irreal.org/blog/?p=11827
   (fset 'epg-wait-for-status 'ignore))
-;; (after! epa-file (epa-file-enable))
-(add-hook 'server-after-make-frame-hook 'epa-file-enable)
-(add-hook 'org-mode-hook 'epa-file-enable) 
-(add-hook 'server-after-make-frame-hook 'auth-source-forget-all-cached)
 
 ;;; rainbows
 (defun t/rainbow ()
