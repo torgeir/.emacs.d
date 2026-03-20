@@ -1328,7 +1328,7 @@ When 'quit' is set, quits window when any other key is pressed."
     (evil-define-key 'normal Buffer-menu-mode-map (kbd "RET") #'Buffer-menu-select)
     (evil-define-key 'motion Buffer-menu-mode-map (kbd "RET") #'Buffer-menu-select)))
 
-;;; evil folds
+;;; evil folds, diy
 (defun t-fold-closed-at-point-p ()
   (let ((p (line-end-position)))
     (or (get-char-property p 'invisible)
@@ -1371,14 +1371,14 @@ When 'quit' is set, quits window when any other key is pressed."
   :hook ((emacs-lisp-mode . evil-cleverparens-mode)
          (emacs-lisp-mode . enable-paredit-mode)))
 
-;;; goggles
+;;; evil-goggles
 ;; https://github.com/edkolev/evil-goggles
 (t-package evil-goggles gh "edkolev/evil-goggles" "34ca276" nil
   :deps ((evil gh "emacs-evil/evil" "729d9a5"))
   :hook ((after-init . evil-goggles-mode)
          (after-init . evil-goggles-use-magit-faces)))
 
-;;; snipe with f/F/t/T
+;;; evil-snipe with f/F/t/T
 (t-package evil-snipe gh "hlissner/evil-snipe" "16317d7" nil
   :hook ((after-init . evil-snipe-mode)
          (after-init . evil-snipe-override-mode)))
