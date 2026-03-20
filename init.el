@@ -1373,6 +1373,31 @@ When 'quit' is set, quits window when any other key is pressed."
   :config
   (evil-collection-init))
 
+;;; evil-commentary
+(t-package evil-commentary gh "linktohack/evil-commentary" "c5945f2" nil
+  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
+  :config
+  (evil-commentary-mode))
+
+;;; evil-cleverparens
+(t-package evil-cleverparens gh "emacs-evil/evil-cleverparens" "4c413a1" nil
+  :deps ((evil gh "emacs-evil/evil" "729d9a5")
+         (paredit gh "emacsmirror/paredit" "af07577")
+         (smartparens gh "Fuco1/smartparens" "82d2cf0"))
+  :hook (emacs-lisp-mode . evil-cleverparens-mode))
+
+;;; goggles
+;; https://github.com/edkolev/evil-goggles
+(t-package evil-goggles gh "edkolev/evil-goggles" "34ca276" nil
+  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
+  :hook ((after-init . evil-goggles-mode)
+         (after-init . evil-goggles-use-magit-faces)))
+
+;;; snipe with f/F/t/T
+(t-package evil-snipe gh "hlissner/evil-snipe" "16317d7" nil
+  :hook ((after-init . evil-snipe-mode)
+         (after-init . evil-snipe-override-mode)))
+
 ;;; info mode
 (after! (evil info)
   (evil-define-key 'normal Info-mode-map (kbd t-leader) t-leader-map)
@@ -1411,31 +1436,6 @@ When 'quit' is set, quits window when any other key is pressed."
   (evil-define-key 'normal debugger-mode-map (kbd t-leader-alt) t-leader-map)
   (evil-define-key 'motion debugger-mode-map (kbd t-leader) t-leader-map)
   (evil-define-key 'motion debugger-mode-map (kbd t-leader-alt) t-leader-map))
-
-;;; evil-commentary
-(t-package evil-commentary gh "linktohack/evil-commentary" "c5945f2" nil
-  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
-  :config
-  (evil-commentary-mode))
-
-;;; evil-cleverparens
-(t-package evil-cleverparens gh "emacs-evil/evil-cleverparens" "4c413a1" nil
-  :deps ((evil gh "emacs-evil/evil" "729d9a5")
-         (paredit gh "emacsmirror/paredit" "af07577")
-         (smartparens gh "Fuco1/smartparens" "82d2cf0"))
-  :hook (emacs-lisp-mode . evil-cleverparens-mode))
-
-;;; goggles
-;; https://github.com/edkolev/evil-goggles
-(t-package evil-goggles gh "edkolev/evil-goggles" "34ca276" nil
-  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
-  :hook ((after-init . evil-goggles-mode)
-         (after-init . evil-goggles-use-magit-faces)))
-
-;;; snipe with f/F/t/T
-(t-package evil-snipe gh "hlissner/evil-snipe" "16317d7" nil
-  :hook ((after-init . evil-snipe-mode)
-         (after-init . evil-snipe-override-mode)))
 
 ;;; t-sidebar
 (defvar t-sidebar-buffer-prefix ":")
@@ -2018,7 +2018,7 @@ words of the candidate, respectively."
   (setq pulsar-pulse-on-window-change t)
   (pulsar-global-mode 1))
 
-;;; air
+;;; spacious-padding
 (t-package spacious-padding gh "protesilaos/spacious-padding" "a9cddfb" nil
   :commands (spacious-padding-mode)
   :hook (after-init . spacious-padding-mode))
