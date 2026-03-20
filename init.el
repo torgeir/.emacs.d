@@ -1024,7 +1024,9 @@ When 'quit' is set, quits window when any other key is pressed."
 		                  magit-log-mode-map
 		                  magit-process-mode-map
 		                  magit-status-mode-map))
-    (keymap-set magit-map t-leader t-leader-map)))
+    (keymap-set magit-map t-leader t-leader-map))
+  (after! evil
+    (evil-define-key 'normal magit-status-mode-map "$" 'magit-process-buffer)))
 
 ;; magit binds
 (keymap-set t-leader-g-map "g" #'magit-status)
