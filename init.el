@@ -1305,7 +1305,7 @@ When 'quit' is set, quits window when any other key is pressed."
       (let ((normal-color (or (face-foreground 'cursor nil t)
 			                        (frame-parameter nil 'cursor-color)
 			                        (face-foreground 'default nil t))))
-	      (setq evil-emacs-state-cursor '(box "orange")
+	      (setq evil-emacs-state-cursor '(box "gold")
 	            evil-normal-state-cursor `(box ,normal-color))
 	      (evil-refresh-cursor))))
   (add-hook 'after-load-theme-hook #'t--set-evil-cursors)
