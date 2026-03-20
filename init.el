@@ -2016,25 +2016,6 @@ words of the candidate, respectively."
   :config
   (global-diff-hl-mode))
 
-;;; lang:nix
-(t-package nix-ts-mode gh "nix-community/nix-ts-mode" "3198317" nil
-  :mode (("\\.nix\\'" . nix-ts-mode)))
-
-;;; lang: markdown
-(t-package markdown-mode gh "jrblevin/markdown-mode" "107a368" nil
-  :commands markdown-mode
-  :mode (("\\.md\\'" . markdown-mode))
-  :config
-  (markdown-toggle-url-hiding))
-
-;;; lang: elisp
-(add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
-(t/set-pairs 'emacs-lisp-mode '((?` . ?')))
-
-;;; lang: prog
-(add-hook 'prog-mode-hook 'outline-minor-mode)
-(add-hook 'prog-mode-hook 'editorconfig-mode)
-
 ;;; emojis :rocket:
 (t-package emojify gh "iqbalansari/emacs-emojify" "1b72641" nil
   :commands (global-emojify-mode)
@@ -2338,9 +2319,6 @@ words of the candidate, respectively."
 ;;   :config
 ;;   (keymap-set t-leader-map "t c" 'copilot-mode))
 
-;;; yaml
-(add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-ts-mode))
-
 (comment t-package exec-path-from-shell gh "purcell/exec-path-from-shell" "7552abf" nil
          :commands (exec-path-from-shell-initialize))
 
@@ -2482,3 +2460,90 @@ With prefix ARG, insert the result inline instead. =>."
     (if (or arg (not buffer-file-name))
         (find-file (format fmt (read-file-name "Find file (as root): ")))
       (find-alternate-file (format fmt buffer-file-name)))))
+
+;;; lang: elisp
+(add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
+(t/set-pairs 'emacs-lisp-mode '((?` . ?')))
+
+;;; lang: prog
+(add-hook 'prog-mode-hook 'outline-minor-mode)
+(add-hook 'prog-mode-hook 'editorconfig-mode)
+
+;;; lang: nix
+(t-package nix-ts-mode gh "nix-community/nix-ts-mode" "3198317" nil
+  :mode (("\\.nix\\'" . nix-ts-mode)))
+
+;;; lang: markdown
+(t-package markdown-mode gh "jrblevin/markdown-mode" "107a368" nil
+  :commands markdown-mode
+  :mode (("\\.md\\'" . markdown-mode))
+  :config
+  (markdown-toggle-url-hiding))
+
+;;; lang: xml
+(use-package nxml-mode
+  :mode "\\.xml\\'")
+
+;;; tree-sitter: setup
+(use-package treesit
+  :init
+  (add-to-list
+   'treesit-extra-load-path
+   (expand-file-name "tree-sitter" (or (getenv "XDG_DATA_HOME")
+                                       (expand-file-name "~/.local/share")))))
+
+;;; tree-sitter: ts
+(use-package typescript-ts-mode
+  :mode "\\.ts\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist '(typescript-mode . typescript-ts-mode)))
+
+;;; tree-sitter: tsx
+(use-package tsx-ts-mode
+  :mode "\\.tsx\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist '(js-jsx-mode . tsx-ts-mode)))
+
+;;; tree-sitter: js
+(use-package js-ts-mode
+  :mode (("\\.js\\'" . js-ts-mode)
+         ("\\.jsx\\'" . tsx-ts-mode))
+  :init
+  (add-to-list 'major-mode-remap-alist '(js-mode . js-ts-mode)))
+
+;;; tree-sitter: json
+(use-package json-ts-mode
+  :mode "\\.json\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist '(json-mode . json-ts-mode)))
+
+;;; tree-sitter: html
+(use-package html-ts-mode
+  :mode "\\.html\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist '(html-mode . html-ts-mode)))
+
+;;; tree-sitter: css
+(use-package css-ts-mode
+  :mode (("\\.css\\'" . css-ts-mode)
+         ("\\.less\\'" . css-ts-mode))
+  :init
+  (add-to-list 'major-mode-remap-alist '(css-mode . css-ts-mode)))
+
+;;; tree-sitter: python
+(use-package python-ts-mode
+  :mode "\\.py\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode)))
+
+;;; tree-sitter: bash
+(use-package bash-ts-mode
+  :mode "\\.sh\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode)))
+
+;;; tree-sitter: yaml
+(use-package yaml-ts-mode
+  :mode "\\.ya?ml\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode)))
