@@ -1029,6 +1029,7 @@ When 'quit' is set, quits window when any other key is pressed."
     (evil-define-key 'normal magit-status-mode-map "$" 'magit-process-buffer)))
 
 ;; magit binds
+(keymap-set t-leader-g-map "b" #'t/browse-git-repo)
 (keymap-set t-leader-g-map "g" #'magit-status)
 (keymap-set t-leader-g-map "l" #'magit-log)
 (keymap-set t-leader-g-map "d" #'magit-diff-dwim)
@@ -2333,3 +2334,15 @@ words of the candidate, respectively."
 (t-package git-timemachine cb "pidu/git-timemachine" "d1346a7" nil
   :init
   (keymap-set t-leader-map "g T" 'git-timemachine))
+;;; t/defuns
+
+(defun t/browse-git-repo ()
+  "Browse git repo from ~/.gitrepos."
+  (interactive)
+  (thread-last
+    (shell-command-to-string (format "cat %s/.gitrepos" (expand-file-name "~")))
+    (string-trim-right)
+    (split-string)
+    (funcall (lambda (repos) (completing-read "Open repo: " repos nil t)))
+    (funcall (lambda (repo) (format "https://github.com/%s/%s" repo (if (t/prefix-arg-universal?) "pulls" ""))))
+    (browse-url)))
