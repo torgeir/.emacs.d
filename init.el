@@ -930,6 +930,9 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; utf-8
 (modify-coding-system-alist 'file "" 'utf-8)
 
+;;; show columns
+(setq column-number-mode t)
+
 ;;; diy smartparens
 (defvar t--pairs-alist nil)
 
