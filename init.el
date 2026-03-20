@@ -1414,6 +1414,19 @@ When 'quit' is set, quits window when any other key is pressed."
   (unbind-key (kbd "h") 'Info-mode-map)
   (unbind-key (kbd "l") 'Info-mode-map))
 
+;;; woman mode
+(after! (evil woman)
+  (evil-define-key 'normal woman-mode-map (kbd t-leader) t-leader-map)
+  (evil-define-key 'motion woman-mode-map (kbd t-leader) t-leader-map)
+  (evil-define-key 'normal woman-mode-map (kbd t-leader-alt) t-leader-map)
+  (evil-define-key 'motion woman-mode-map (kbd t-leader-alt) t-leader-map)
+  (evil-define-key 'normal woman-mode-map (kbd "H") #'WoMan-previous-manpage)
+  (evil-define-key 'normal woman-mode-map (kbd "L") #'WoMan-next-manpage)
+  (keymap-set woman-mode-map "<mouse-8>" 'WoMan-previous-manpage)
+  (keymap-set woman-mode-map "<mouse-9>" 'WoMan-next-manpage)
+  (unbind-key (kbd "h") 'woman-mode-map)
+  (unbind-key (kbd "l") 'woman-mode-map))
+
 ;;; help-mode leader
 (after! evil
   (evil-define-key 'normal help-mode-map (kbd t-leader) t-leader-map)
