@@ -1204,7 +1204,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "h C" #'describe-char)
 (keymap-set t-leader-map "h e" #'view-echo-area-messages)
 (keymap-set t-leader-map "h f" #'describe-function)
-(keymap-set t-leader-map "h i" (cmd! (require 'consult-info) (consult-info)))
+(keymap-set t-leader-map "h i" (cmd! (require 'consult-info) (call-interactively 'consult-info)))
 (keymap-set t-leader-map "h h" #'consult-man)
 (keymap-set t-leader-map "h F" #'describe-face)
 (keymap-set t-leader-map "h k" #'describe-key)
@@ -1463,16 +1463,6 @@ When 'quit' is set, quits window when any other key is pressed."
          (div (if (> fw 250) 4 3)))
     (/ fw div)))
 
-(defun t--resize-sidebar (win)
-  (when (window-live-p win)
-    (let ((desired (t--sidebar-width)))
-      (when (integerp desired)
-        (let ((delta (- desired (window-width win))))
-          (when (/= delta 0)
-            (condition-case _err
-                (window-resize win delta t)
-              (error nil))))))))
-
 (defun t--display-sidebar (buffer alist)
   (let ((win (display-buffer-in-side-window
               buffer
@@ -1483,13 +1473,13 @@ When 'quit' is set, quits window when any other key is pressed."
     (when (window-live-p win)
       (with-selected-window win
         (set-window-dedicated-p win t)
-        (t--resize-sidebar win)
         ;; (setq-local window-size-fixed 'width)
         ))
     win))
 
 (add-to-list 'display-buffer-alist
              `(,(concat "^" (regexp-quote t-sidebar-buffer-prefix))
+               (window-width . t--sidebar-width)
                . (t--display-sidebar)))
 
 (defun t-toggle-sidebar ()
@@ -1580,6 +1570,14 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package hl-todo gh "tarsius/hl-todo" "9540fc4" nil
   :config
   (global-hl-todo-mode))
+
+;;; colors
+(t-package rainbow-mode gh "emacsmirror/rainbow-mode" "f7db3b5" nil
+  :hook ((css-mode-hook . rainbow-mode)
+         (html-mode-hook . rainbow-mode)
+         (prog-mode-hook . rainbow-mode))
+  :init
+  (keymap-set t-leader-map "t c" 'rainbow-mode))
 
 ;;; theme synced persp face
 (defun t/sync-persp-face (&optional frame)
@@ -2477,7 +2475,7 @@ words of the candidate, respectively."
    (run-with-timer "0sec" nil 't/conventional-commit-msg)))
 
 ;; elisp eval in overlay
-(defun emacs-solo/eval-last-sexp-overlay (arg)
+(defun t/eval-last-sexp-overlay (arg)
   "Eval last sexp and show result inline as overlay.
 With prefix ARG, insert the result inline instead. =>."
   (interactive "P")
@@ -2488,13 +2486,16 @@ With prefix ARG, insert the result inline instead. =>."
       (let* ((value (elisp--eval-last-sexp nil))
              (str (concat arrow (format "%S" value)))
              (ov (make-overlay (point) (point))))
+        (when (bound-and-true-p t/eval-last-sexp-overlay--ov)
+          (delete-overlay t/eval-last-sexp-overlay--ov))
+        (setq-local t/eval-last-sexp-overlay--ov ov)
         (overlay-put ov 'after-string
                      (propertize str 'face 'font-lock-comment-face))
         (run-with-timer
-         3 nil
+         30 nil
          (lambda (o) (delete-overlay o))
          ov)))))
-(global-set-key (kbd "C-x C-e") #'emacs-solo/eval-last-sexp-overlay)
+(global-set-key (kbd "C-x C-e") #'t/eval-last-sexp-overlay)
 
 (defun t/sudo-edit (&optional arg)
   "Edit currently visited file as root."
