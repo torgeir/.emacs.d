@@ -839,6 +839,9 @@ When 'quit' is set, quits window when any other key is pressed."
 (setq create-lockfiles nil)
 (setq auto-save-default nil)
 
+;; show columns
+(setq column-number-mode t)
+
 ;;; leader key
 (defvar t-leader "SPC")
 (defvar t-leader-alt "M-SPC")
@@ -907,9 +910,6 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; utf-8
 (modify-coding-system-alist 'file "" 'utf-8)
-
-;;; show columns
-(setq column-number-mode t)
 
 ;;; diy smartparens
 (defvar t--pairs-alist nil)
