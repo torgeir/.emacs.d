@@ -860,6 +860,24 @@ When 'quit' is set, quits window when any other key is pressed."
                     :height (- t-font-height 50)
                     :weight 'ultra-light
                     :slant 'normal)
+(set-face-attribute 'fixed-pitch nil
+                    :family "IosevkaTerm Nerd Font Propo"
+                    :height (- t-font-height 50))
+
+(after! org
+  (dolist (face '(org-block
+                  org-code
+                  org-verbatim
+                  org-table
+                  org-formula
+                  org-block-begin-line
+                  org-block-end-line
+                  org-meta-line))
+    (set-face-attribute face nil :inherit 'fixed-pitch)))
+
+(after! markdown-mode
+  (set-face-attribute 'markdown-code-face nil :inherit 'fixed-pitch)
+  (set-face-attribute 'markdown-inline-code-face nil :inherit 'fixed-pitch))
 
 (keymap-set global-map "C-+" (cmd! (text-scale-set
 				                            (1+ text-scale-mode-amount))))
