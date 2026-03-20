@@ -754,8 +754,10 @@ When 'quit' is set, quits window when any other key is pressed."
 (defun t/project-root ()
   "Get project root without throwing."
   (interactive)
-  (or (string-trim-right (shell-command-to-string "git rev-parse --show-toplevel") "\n")
-      (expand-file-name default-directory)))
+  (let ((root (with-temp-buffer
+                (when (zerop (process-file "git" nil t nil "rev-parse" "--show-toplevel"))
+                  (string-trim-right (buffer-string) "\n")))))
+    (or root (expand-file-name default-directory))))
 
 (defun t/dired-ignored? ()
   "File under cursor is ignored by projectile. Only checks file-name-base."
