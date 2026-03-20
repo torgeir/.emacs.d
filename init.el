@@ -2077,7 +2077,7 @@ words of the candidate, respectively."
 	       (promise gh "chuntaro/emacs-promise" "cec51fe"))
   :commands (hnreader-news))
 
-;;; browser
+;;; eww browser
 (use-package eww
   :config
   (after! evil
