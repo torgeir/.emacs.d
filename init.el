@@ -1208,6 +1208,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "h h" #'consult-man)
 (keymap-set t-leader-map "h F" #'describe-face)
 (keymap-set t-leader-map "h k" #'describe-key)
+(keymap-set t-leader-map "h K" #'Info-goto-emacs-key-command-node)
 (keymap-set t-leader-map "h m" #'describe-mode)
 (keymap-set t-leader-map "h M" #'describe-keymap)
 (keymap-set t-leader-map "h p" #'describe-package)
