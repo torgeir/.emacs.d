@@ -1300,8 +1300,8 @@ When 'quit' is set, quits window when any other key is pressed."
 	      evil-symbol-word-search t)
   :hook (after-init . evil-mode)
   :config
-  (defun t--set-evil-cursors (&optional frame)
-    (with-selected-frame (or frame (selected-frame))
+  (defun t--set-evil-cursors (&optional arg)
+    (with-selected-frame (if (framep arg) arg (selected-frame))
       (let ((normal-color (or (face-foreground 'cursor nil t)
 			                        (frame-parameter nil 'cursor-color)
 			                        (face-foreground 'default nil t))))
@@ -1309,6 +1309,7 @@ When 'quit' is set, quits window when any other key is pressed."
 	            evil-normal-state-cursor `(box ,normal-color))
 	      (evil-refresh-cursor))))
   (add-hook 'after-load-theme-hook #'t--set-evil-cursors)
+  (add-hook 'enable-theme-functions #'t--set-evil-cursors)
   (add-hook 'after-make-frame-functions #'t--set-evil-cursors)
   (add-hook 'after-init-hook #'t--set-evil-cursors)
   (t--set-evil-cursors)
