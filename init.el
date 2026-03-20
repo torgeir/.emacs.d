@@ -1210,6 +1210,8 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; code
 (keymap-set t-leader-map "c d" #'xref-find-definitions)
 (keymap-set t-leader-map "p p" #'t-project-switch-find-file)
+(keymap-set t-leader-map "p r" #'t-rescan-packages)
+(keymap-set t-leader-map "p i" #'t-install-queued-packages)
 
 ;;; windows
 (keymap-set t-leader-map "w d" #'delete-window)
@@ -1401,9 +1403,14 @@ When 'quit' is set, quits window when any other key is pressed."
 ;; https://github.com/edkolev/evil-goggles
 (t-package evil-goggles gh "edkolev/evil-goggles" "34ca276" nil
   :deps ((evil gh "emacs-evil/evil" "729d9a5"))
-  :hook (after-init . evil-goggles-mode)
-  :config
-  (evil-goggles-use-magit-faces))
+  :hook ((after-init . evil-goggles-mode)
+         (after-init . evil-goggles-use-magit-faces)))
+
+;;; snipe with f/F/t/T
+(t-package evil-snipe gh "hlissner/evil-snipe" "16317d7" nil
+  :hook ((after-init . evil-snipe-mode)
+         (after-init . evil-snipe-override-mode)))
+
 ;;; t-sidebar
 (defvar t-sidebar-buffer-prefix ":")
 
@@ -1507,8 +1514,8 @@ When 'quit' is set, quits window when any other key is pressed."
   :commands (dired-subtree-toggle dired-subtree--dired-line-is-directory-or-link-p))
 
 ;;; direnv
-(t-package direnv gh "wbolster/emacs-direnv" "c0bf3b8" nil)
-
+(t-package direnv gh "wbolster/emacs-direnv" "c0bf3b8" nil
+  :hook ((prog-mode-hook . direnv-mode)))
 
 ;;; TODO
 (t-package hl-todo gh "tarsius/hl-todo" "9540fc4" nil
