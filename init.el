@@ -911,7 +911,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; utf-8
 (modify-coding-system-alist 'file "" 'utf-8)
 
-;;; diy smartparens
+;;; t/set-pairs: diy smartparens
 (defvar t--pairs-alist nil)
 
 (defun t--apply-pairs (pairs)
