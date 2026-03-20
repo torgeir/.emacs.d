@@ -927,6 +927,9 @@ When 'quit' is set, quits window when any other key is pressed."
 (setq make-backup-files nil
       auto-save-default nil)
 
+;;; utf-8
+(modify-coding-system-alist 'file "" 'utf-8)
+
 ;;; diy smartparens
 (defvar t--pairs-alist nil)
 
