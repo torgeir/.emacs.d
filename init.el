@@ -2157,7 +2157,17 @@ words of the candidate, respectively."
     (evil-define-key 'motion org-agenda-keymap (kbd "d") #'org-agenda-day-view)
     (evil-define-key 'motion org-agenda-keymap (kbd "w") #'org-agenda-week-view)
     (evil-define-key 'motion org-agenda-keymap (kbd "y") #'org-agenda-year-view)
-    (evil-define-key 'motion org-agenda-keymap (kbd "m") #'org-agenda-month-view)))
+    (evil-define-key 'motion org-agenda-keymap (kbd "m") #'org-agenda-month-view))
+  (after! org
+    (dolist (cell (list
+                   (cons "ss" "src")
+                   (cons "se" "src emacs-lisp")
+                   (cons "sp" "src python")
+                   (cons "sn" "src nix")
+                   (cons "sj" "src javascript")
+                   (cons "sh" "src sh")
+                   (cons "d" "description")))
+      (add-to-list 'org-structure-template-alist cell))))
 
 ;;; epa encrypt org
 (after! auth-source (setq auth-sources '("~/.authinfo.gpg")))
