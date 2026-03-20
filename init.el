@@ -2071,26 +2071,6 @@ words of the candidate, respectively."
 (keymap-set t-leader-map "o h" #'hnreader-news)
 (keymap-set t-leader-map "r r" 't/read)
 
-;;; snippets
-(use-package tempo
-  :config
-  (tempo-define-template
-   "js-log"
-   '("console.log(" (p) ");" >)
-   "js-log"
-   "Insert a defun skeleton.")
-  (tempo-define-template
-   "elisp-defun"
-   '("(defun" (p "Name: ") " (" (p "Args: ") ")\n  \"\" \n  (interactive)\n  " p "\n)"
-     >)
-   "elisp-defun"
-   "Insert a defun skeleton.")
-  )
-
-(comment define-abbrev-table 'global-abbrev-table
-         '(("fun" "" tempo-template-elisp-defun 0)
-           ("log" "" tempo-template-js-log 0)))
-
 ;;; hackernews
 (t-package hnreader gh "thanhvg/emacs-hnreader" "a56f67a" nil
   :deps ((request gh "tkf/emacs-request" "6f419b5")
