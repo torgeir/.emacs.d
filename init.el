@@ -2475,6 +2475,7 @@ With prefix ARG, insert the result inline instead. =>."
 (defun t/sudo-edit (&optional arg)
   "Edit currently visited file as root."
   (interactive "P")
-  (if (or arg (not buffer-file-name))
-      (find-file (concat "/sudo:root@localhost:" (read-file-name "Find file (as root): ")))
-    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+  (let ((fmt "/sudo:root@localhost:%s" ))
+    (if (or arg (not buffer-file-name))
+        (find-file (format fmt (read-file-name "Find file (as root): ")))
+      (find-alternate-file (format fmt buffer-file-name)))))
