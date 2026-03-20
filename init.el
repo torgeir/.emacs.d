@@ -626,6 +626,16 @@
 (add-hook 'emacs-startup-hook #'t-install-queued-packages)
 ;; / packages-diy
 
+;;; frame title
+(setq frame-title-format
+      '(:eval
+        (let ((project (project-current)))
+          (concat "Emacs - "
+                  (if project
+                      (concat "[p] " (project-name project))
+                    (buffer-name))))))
+
+;;; after install pkgs
 (add-hook 't-package-install-complete-hook
 	        (lambda ()
 	          (unless t--reload-in-progress
