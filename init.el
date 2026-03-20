@@ -1400,7 +1400,6 @@ When 'quit' is set, quits window when any other key is pressed."
          (emacs-lisp-mode . enable-paredit-mode)))
 
 ;;; evil-goggles
-;; https://github.com/edkolev/evil-goggles
 (t-package evil-goggles gh "edkolev/evil-goggles" "34ca276" nil
   :deps ((evil gh "emacs-evil/evil" "729d9a5"))
   :hook ((after-init . evil-goggles-mode)
