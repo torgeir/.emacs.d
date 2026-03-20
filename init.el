@@ -2442,3 +2442,23 @@ words of the candidate, respectively."
  'git-commit-setup-hook
  (defun t/insert-conventional-commit-msg ()
    (run-with-timer "0sec" nil 't/conventional-commit-msg)))
+
+;; elisp eval in overlay
+(defun emacs-solo/eval-last-sexp-overlay (arg)
+  "Eval last sexp and show result inline as overlay.
+With prefix ARG, insert the result inline instead. =>."
+  (interactive "P")
+  (let ((arrow " ; => "))
+    (if arg
+        (let ((value (elisp--eval-last-sexp nil)))
+          (insert arrow (format "%S" value)))
+      (let* ((value (elisp--eval-last-sexp nil))
+             (str (concat arrow (format "%S" value)))
+             (ov (make-overlay (point) (point))))
+        (overlay-put ov 'after-string
+                     (propertize str 'face 'font-lock-comment-face))
+        (run-with-timer
+         3 nil
+         (lambda (o) (delete-overlay o))
+         ov)))))
+(global-set-key (kbd "C-x C-e") #'emacs-solo/eval-last-sexp-overlay)
