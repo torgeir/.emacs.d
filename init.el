@@ -2140,6 +2140,13 @@ words of the candidate, respectively."
     (evil-define-key 'motion org-agenda-keymap (kbd "y") #'org-agenda-year-view)
     (evil-define-key 'motion org-agenda-keymap (kbd "m") #'org-agenda-month-view)))
 
+;;; epa encrypt org
+(after! auth-source (setq auth-sources '("~/.authinfo.gpg")))
+(after! epa
+  (setq-default epa-file-encrypt-to '("torgeir@keybase.io"))
+  ;; https://irreal.org/blog/?p=11827
+  (fset 'epg-wait-for-status 'ignore))
+
 ;;; pomodoro
 (t-package org-pomodoro gh "marcinkoziej/org-pomodoro" "3f5bcfb8" nil
   :commands (org-pomodoro)
@@ -2221,13 +2228,6 @@ words of the candidate, respectively."
  'display-buffer-alist '("^\\*t-notmuch-out\\*$"
                          (display-buffer-no-window)
                          (allow-no-window . t)))
-
-;;; epa encrypt org
-(after! auth-source (setq auth-sources '("~/.authinfo.gpg")))
-(after! epa
-  (setq-default epa-file-encrypt-to '("torgeir@keybase.io"))
-  ;; https://irreal.org/blog/?p=11827
-  (fset 'epg-wait-for-status 'ignore))
 
 ;;; rainbows
 (defun t/rainbow ()
