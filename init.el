@@ -891,6 +891,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "RET" #'consult-bookmark)
 (keymap-set t-leader-map "u" #'universal-argument)
 (keymap-set t-leader-map t-leader #'find-file)
+;; leader map minibuffer
 (let ((maps (list minibuffer-local-map
 		              minibuffer-local-ns-map
 		              minibuffer-local-completion-map
