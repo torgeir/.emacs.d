@@ -1470,17 +1470,16 @@ When 'quit' is set, quits window when any other key is pressed."
                       '((side . left)
                         (slot . 0)
                         (window-parameters . ((no-delete-other-windows . t))))))))
+    (when (bufferp win)
+      (setq win (get-buffer-window win)))
     (when (window-live-p win)
-      (with-selected-window win
-        (set-window-dedicated-p win t)
-        ;; (setq-local window-size-fixed 'width)
-        ))
+      (set-window-dedicated-p win t))
     win))
 
 (add-to-list 'display-buffer-alist
              `(,(concat "^" (regexp-quote t-sidebar-buffer-prefix))
-               (window-width . t--sidebar-width)
-               . (t--display-sidebar)))
+               (t--display-sidebar)
+               (window-width . ,(t--sidebar-width))))
 
 (defun t-toggle-sidebar ()
   (interactive)
