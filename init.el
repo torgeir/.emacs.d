@@ -250,10 +250,9 @@
     (goto-char (point-min))
     (let ((log-window (split-window-below)))
       (set-window-buffer log-window log-buffer)
-      (with-selected-window log-window
-        (end-of-buffer))
-      (set-window-point log-window (point-max))
-      (set-window-start log-window (point-max)))))
+      (select-window log-window)
+      (with-current-buffer log-buffer
+        (end-of-buffer)))))
 
 (defun t--spinner-tick ()
   (setq t-spinner-index
