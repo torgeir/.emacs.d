@@ -1359,8 +1359,10 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package evil-cleverparens gh "emacs-evil/evil-cleverparens" "4c413a1" nil
   :deps ((evil gh "emacs-evil/evil" "729d9a5")
          (paredit gh "emacsmirror/paredit" "af07577")
+         (dash gh "magnars/dash.el" "d3a84021")
          (smartparens gh "Fuco1/smartparens" "82d2cf0"))
-  :hook (emacs-lisp-mode . evil-cleverparens-mode))
+  :hook ((emacs-lisp-mode . evil-cleverparens-mode)
+         (emacs-lisp-mode . enable-paredit-mode)))
 
 ;;; goggles
 ;; https://github.com/edkolev/evil-goggles
