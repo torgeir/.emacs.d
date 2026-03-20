@@ -1384,6 +1384,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (evil-define-key 'motion image-mode-map (kbd t-leader-alt) t-leader-map))
 
 ;;; help-mode
+(setq help-window-select t)
 (after! (evil evil-collection)
   (evil-define-key 'normal help-mode-map (kbd "H") #'help-go-back)
   (evil-define-key 'normal help-mode-map (kbd "L") #'help-go-forward))
