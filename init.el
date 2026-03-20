@@ -1276,7 +1276,8 @@ When 'quit' is set, quits window when any other key is pressed."
 	      evil-split-window-right t
 	      evil-split-window-below t
 	      evil-move-beyond-eol t
-	      evil-search-module 'evil-search)
+	      evil-search-module 'evil-search
+	      evil-symbol-word-search t)
   :hook (after-init . evil-mode)
   :config
   (defun t--set-evil-cursors (&optional frame)
