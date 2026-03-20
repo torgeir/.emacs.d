@@ -616,6 +616,7 @@
 	        (lambda ()
 	          (unless t--reload-in-progress
 	            (let ((t--reload-in-progress t))
+                (t-rescan-packages t)
 		            (load-file user-init-file)
 		            (when (and (fboundp 'evil-mode) (not evil-mode))
                   (evil-mode 1))
