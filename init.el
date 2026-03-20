@@ -2017,6 +2017,7 @@ words of the candidate, respectively."
 
 ;;; lang: prog
 (add-hook 'prog-mode-hook 'outline-minor-mode)
+(add-hook 'prog-mode-hook 'editorconfig-mode)
 
 ;;; emojis :rocket:
 (t-package emojify gh "iqbalansari/emacs-emojify" "1b72641" nil
