@@ -2399,3 +2399,13 @@ words of the candidate, respectively."
      (org-day-of-week (calendar-extract-day date)
                       (calendar-extract-month date)
                       (calendar-extract-year date))))
+
+(defun t/gh-to-package (url)
+  "Convert provided `url' to a package installation declaration, and insert it."
+  (interactive (list (read-string "GitHub commit url: " (thing-at-point 'url))))
+  (unless (string-match "github\\.com/\\([^/]+\\)/\\([^/]+\\)/commit/\\([0-9a-f]+\\)" url) (user-error "Bad URL"))
+  (insert
+   (format "(t-package %s gh %S %S nil)"
+           (match-string 2 url)
+           (concat (match-string 1 url) "/" (match-string 2 url))
+           (substring (match-string 3 url) 0 7))))
