@@ -1141,15 +1141,14 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set t-leader-map "j l" (t/avy-all-windows avy-goto-line))
   (keymap-set t-leader-map "j m" (t/avy-all-windows avy-move-line))
   (keymap-set t-leader-map "j w" (t/avy-all-windows avy-goto-word-or-subword-1))
-  (setq avy-keys '(?j ?f ?d ?k ?s ?a)
-	      avy-timeout-seconds 0.2
-	      ;;avy-all-windows 'all-frames
-	      avy-all-windows nil
-        avy-single-candidate-jump nil ; always specify candidate
+  (setq avy-all-windows nil
+	      avy-background t
 	      avy-case-fold-search nil
 	      avy-highlight-first t
 	      avy-style 'at-full
-	      avy-background t)
+	      avy-timeout-seconds 0.2
+        avy-single-candidate-jump nil ; always specify candidate
+        avy-keys '(?j ?f ?d ?k ?s ?a))
   (defun t/setup-avy ()
     (interactive)
     (after! avy
