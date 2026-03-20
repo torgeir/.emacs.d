@@ -1354,16 +1354,15 @@ When 'quit' is set, quits window when any other key is pressed."
   (let ((p (line-end-position)))
     (or (get-char-property p 'invisible)
         (cl-some (lambda (ov) (overlay-get ov 'invisible)) (overlays-at p)))))
-
-(evil-define-command t-fold-zA ()
-  (if (t-fold-closed-at-point-p)
-      (evil-open-fold-rec)
-    (evil-toggle-fold)))
-
 (after! evil
+  (evil-define-command t-fold-zA ()
+    (if (t-fold-closed-at-point-p)
+        (evil-open-fold-rec)
+      (evil-toggle-fold)))
   ;; switcharoo, fold like vim
   (define-key evil-normal-state-map (kbd "zA") #'evil-toggle-fold)
   (define-key evil-normal-state-map (kbd "za") #'t-fold-zA))
+
 ;;; evil-collection
 (t-package evil-collection gh "emacs-evil/evil-collection" "7680834" nil
   :deps ((annalist gh "noctuid/annalist.el" "e1ef5da")
