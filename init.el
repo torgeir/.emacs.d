@@ -2511,13 +2511,22 @@ With prefix ARG, insert the result inline instead. =>."
         (find-file (format fmt (read-file-name "Find file (as root): ")))
       (find-alternate-file (format fmt buffer-file-name)))))
 
-;;; lang: elisp
-(add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
-(t/set-pairs 'emacs-lisp-mode '((?` . ?')))
-
 ;;; lang: prog
 (add-hook 'prog-mode-hook 'outline-minor-mode)
 (add-hook 'prog-mode-hook 'editorconfig-mode)
+
+;;; lang: prog, outline
+(after! outline
+  (define-key outline-minor-mode-map [double-mouse-1]
+              (defun t/outline-double-click (event)
+                "Toggle outline fold at mouse EVENT using `t-fold-zA'."
+                (interactive "e")
+                (mouse-set-point event)
+                (call-interactively #'t-fold-zA))))
+
+;;; lang: elisp
+(add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
+(t/set-pairs 'emacs-lisp-mode '((?` . ?')))
 
 ;;; lang: nix
 (t-package nix-ts-mode gh "nix-community/nix-ts-mode" "3198317" nil
