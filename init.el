@@ -2672,3 +2672,9 @@ With prefix ARG, insert the result inline instead. =>."
 
 ;;; support local only config
 (require 'private-init (expand-file-name "private-init.el") t)
+
+;;; modeline: time
+(setq display-time-format " %H:%M"
+      display-time-default-load-average nil
+      display-time-mail-file 'none)
+(add-hook 'after-init-hook 'display-time-mode)
