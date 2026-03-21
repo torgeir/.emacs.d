@@ -1,6 +1,52 @@
 ;;; init.el --- Init -*- lexical-binding: t; -*-
 (message "Yo.")
 
+;;; macros
+(defmacro comment (&rest _ignore) nil)
+(comment (funcall (t/micro-state nil "j" 'previous-line)))
+
+(defmacro cmd! (&rest body)
+  `(lambda (&rest _args)
+     (interactive)
+     ,@body))
+
+(defmacro after! (targets &rest body)
+  (declare (indent 1))
+  (let* ((target-list (cond
+                       ((and (consp targets) (eq (car targets) 'quote))
+                        (cadr targets))
+                       ((listp targets) targets)
+                       (t (list targets))))
+         (form `(progn ,@body)))
+    (dolist (target (reverse target-list) form)
+      (setq form `(with-eval-after-load ',target ,form)))))
+
+(defun t/isodate ()
+  (interactive)
+  (let ((time (format-time-string "%Y-%m-%dT%H:%M:%S.%3NZ" nil "UTC")))
+    (if (called-interactively-p 'interactive)
+        (insert time)
+      time)))
+
+
+(defun t/modeline-segment (before fn)
+  (let* ((seg `(:eval (funcall ',fn)))
+         (update (lambda (fmt)
+                   (let (r (ml fmt))
+                     (while ml
+                       (if (and (consp (car ml)) (memq fn (flatten-tree (car ml))))
+                           (progn (when (equal (car r) " ") (pop r)) (pop ml))
+                         (push (pop ml) r)))
+                     (let* ((c (nreverse r)) (pos (and before (cl-position before c :test #'equal))))
+                       (if pos (append (cl-subseq c 0 pos) `(" " ,seg) (cl-subseq c pos))
+                         `(" " ,seg ,@c)))))))
+    (setq-default mode-line-format (funcall update (default-value 'mode-line-format)))
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+        (when (local-variable-p 'mode-line-format)
+          (setq-local mode-line-format (funcall update mode-line-format)))))
+    (force-mode-line-update t)))
+
 ;;; system checks
 (defconst is-mac (eq system-type 'darwin))
 (defconst is-linux (eq system-type 'gnu/linux))
@@ -674,26 +720,6 @@ When 'quit' is set, quits window when any other key is pressed."
       (epa-file-enable)
       (auth-source-forget-all-cached))
     (apply 'auth-source-pick-first-password args)))
-
-;;; macros
-(defmacro comment (&rest _ignore) nil)
-(comment (funcall (t/micro-state nil "j" 'previous-line)))
-
-(defmacro cmd! (&rest body)
-  `(lambda (&rest _args)
-     (interactive)
-     ,@body))
-
-(defmacro after! (targets &rest body)
-  (declare (indent 1))
-  (let* ((target-list (cond
-                       ((and (consp targets) (eq (car targets) 'quote))
-                        (cadr targets))
-                       ((listp targets) targets)
-                       (t (list targets))))
-         (form `(progn ,@body)))
-    (dolist (target (reverse target-list) form)
-      (setq form `(with-eval-after-load ',target ,form)))))
 
 ;;; default binds
 (keymap-set global-map "s-a" #'mark-whole-buffer)
@@ -2317,26 +2343,27 @@ words of the candidate, respectively."
 (advice-add 'org-clock-in :after 't/org-clock-start)
 (advice-add 'org-clock-out :after 't/org-clock-stop)
 
-;;; TODO should be on modeline
-(defun t/tasks-left ()
-  (interactive)
-  (if (not (get-buffer "tasks.org"))
-      "n/a"
-    (with-current-buffer "tasks.org"
-      (let ((count 0))
-        ;; for each heading
-        (org-map-entries
-         (lambda (&optional heading)
-           (when (not (org-entry-is-done-p))
-             (setq count (1+ count))))
-         ;; all headline
-         t
-         ;; in file
-         'file)
-        ;; needs to be string
-        (format "%s" count)))))
+;;; remaining tasks.org in the modeline
+(run-with-timer
+ 2 nil (cmd! (t/modeline-segment
+              'evil-mode-line-tag
+              (defun t/tasks-left ()
+                (interactive)
+                (with-current-buffer "tasks.org"
+                  (let ((count 0))
+                    ;; for each heading
+                    (org-map-entries
+                     (lambda (&optional heading)
+                       (when (not (org-entry-is-done-p))
+                         (setq count (1+ count))))
+                     ;; all headline
+                     t
+                     ;; in file
+                     'file)
+                    ;; needs to be string
+                    (format "%s" count)))))))
 
-
+;;; evil: registers camelCase snake_case
 (after! evil
   (evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
   (evil-set-register ?s [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?_ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?\\ ?u ?\\ ?2 ?/ ?g]))
@@ -2382,7 +2409,7 @@ words of the candidate, respectively."
       ("log" "console.log(@);" (lambda () (search-backward "@") (delete-char 1)))
       ("warn" "console.warn(@);" (lambda () (search-backward "@") (delete-char 1)))
       ("err" "console.err(@);" (lambda () (search-backward "@") (delete-char 1)))
-      ("defun" "(defun (@) )" (lambda () (search-backward "@") (delete-char 1)))
+      ("defun" "(defun @ () )" (lambda () (search-backward "@") (delete-char 1)))
       ("lambda" "(lambda (&optional @) )" (lambda () (search-backward "@") (delete-char 1)))
       ))
   (keymap-set global-map "M-/" nil) ;; default dabbrev-expand
