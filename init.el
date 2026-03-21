@@ -1688,8 +1688,12 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package olivetti gh "rnkn/olivetti" "845eb7a" nil
   :commands (olivetti-mode)
   :init
+  (defun t/nice-width ()
+    (cond ((> (window-width) 175) 0.5)
+          (t 0.6)))
+  (setq t-nice-width (t/nice-width))
   (add-hook 'olivetti-mode-on-hook (defun t/olivetti-width ()
-                                     (setq-local olivetti-body-width 0.6)))
+                                     (setq-local olivetti-body-width t-nice-width)))
   (keymap-set t-leader-map "r o" #'olivetti-mode))
 
 ;;; vterm
