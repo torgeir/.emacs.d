@@ -2556,6 +2556,7 @@ With prefix ARG, insert the result inline instead. =>."
 ;;; lang: elisp
 (add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
 (t/set-pairs 'emacs-lisp-mode '((?` . ?')))
+(add-hook 'inferior-emacs-lisp-mode 'enable-paredit-mode)
 
 ;;; lang: nix
 (t-package nix-ts-mode gh "nix-community/nix-ts-mode" "3198317" nil
