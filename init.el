@@ -859,12 +859,14 @@ When 'quit' is set, quits window when any other key is pressed."
                     :height t-font-height)
 (set-face-attribute 'variable-pitch nil
                     :family "IosevkaTerm Nerd Font Propo"
+                    ;; :family "IosevkaTermSlab Nerd Font Propo"
                     :height (- t-font-height 50)
-                    :weight 'ultra-light
+                    ;; :weight 'ultra-light
+                    :weight 'light
                     :slant 'normal)
 (set-face-attribute 'fixed-pitch nil
                     :family "IosevkaTerm Nerd Font Propo"
-                    :height (- t-font-height 50))
+                    :height (- t-font-height 20))
 
 (after! org
   (dolist (face '(org-block
@@ -2052,6 +2054,11 @@ words of the candidate, respectively."
   :config
   (setq pulsar-pulse-on-window-change t)
   (pulsar-global-mode 1))
+
+;;; smooth scroll, even over images
+(t-package ultra-scroll gh "jdtsmith/ultra-scroll" "bfd7871" nil
+  :config
+  (ultra-scroll-mode 1))
 
 ;;; spacious-padding
 (t-package spacious-padding gh "protesilaos/spacious-padding" "a9cddfb" nil
