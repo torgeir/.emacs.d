@@ -2653,5 +2653,11 @@ With prefix ARG, insert the result inline instead. =>."
 (after! (tramp compile)
   (remove-hook 'compilation-mode-hook #'tramp-compile-disable-ssh-controlmaster-options))
 
+;; quick preview of the diff of what you're asked to save.
+(add-to-list 'save-some-buffers-action-alist
+             (list "d"
+                   (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
+                   "show diff between the buffer and its file"))
+
 ;;; support local only config
 (require 'private-init (expand-file-name "private-init.el") t)
