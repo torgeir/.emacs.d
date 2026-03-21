@@ -30,19 +30,19 @@
         (insert time)
       time)))
 
-;;; modeline segments
-(defun t/modeline-segment (before fn)
-  (let* ((seg `(:eval (funcall ',fn)))
-         (update (lambda (fmt)
-                   (let* ((cleaned (seq-remove (lambda (item) (and (consp item) (memq fn (flatten-tree item)))) fmt))
-                          (pos (and before (cl-position before cleaned :test #'equal))))
-                     (if pos (append (cl-subseq cleaned 0 pos) (list seg) (cl-subseq cleaned pos)) (cons seg cleaned))))))
-    (setq-default mode-line-format (funcall update (default-value 'mode-line-format)))
-    (dolist (buf (buffer-list))
-      (with-current-buffer buf
-        (when (local-variable-p 'mode-line-format)
-          (setq-local mode-line-format (funcall update mode-line-format)))))
-    (force-mode-line-update t)))
+;;; modeline string segments, reloadable
+;; inspect mode-line-format to find extension points
+;; add to list prevents multiple occurrences
+(setq t-modeline-format " ")
+(setq t-modeline-sexp '(t-modeline-format ("" t-modeline-format)))
+(setq mode-line-misc-info (remove t-modeline-sexp mode-line-misc-info))
+(add-to-list 'mode-line-misc-info t-modeline-sexp)
+
+;;; modeline function segments, reloadable
+(defun t/modeline-segs () (list "[" (t/tasks-left) "]"))
+(setq t-modeline-eval '(:eval (t/modeline-segs)))
+(setq mode-line-misc-info (remove t-modeline-eval mode-line-misc-info))
+(add-to-list 'mode-line-misc-info t-modeline-eval)
 
 ;;; system checks
 (defconst is-mac (eq system-type 'darwin))
@@ -2357,24 +2357,23 @@ words of the candidate, respectively."
 (advice-add 'org-clock-out :after 't/org-clock-stop)
 
 ;;; remaining tasks.org in the modeline
-(run-with-timer
- 2 nil (cmd! (t/modeline-segment
-              'evil-mode-line-tag
-              (defun t/tasks-left ()
-                (interactive)
-                (with-current-buffer "tasks.org"
-                  (let ((count 0))
-                    ;; for each heading
-                    (org-map-entries
-                     (lambda (&optional heading)
-                       (when (not (org-entry-is-done-p))
-                         (setq count (1+ count))))
-                     ;; all headline
-                     t
-                     ;; in file
-                     'file)
-                    ;; needs to be string
-                    (format "%s" count)))))))
+(defun t/tasks-left ()
+  (interactive)
+  (condition-case err
+      (with-current-buffer "tasks.org"
+        (let ((count 0))
+          ;; for each heading
+          (org-map-entries
+           (lambda (&optional heading)
+             (when (and (org-entry-is-todo-p)
+                        (not (org-entry-is-done-p)))
+               (setq count (1+ count))))
+           ;; all headlines
+           t
+           'file)
+          ;; needs to be string
+          (format "%s" count)))
+    (error "-")))
 
 ;;; evil: registers camelCase snake_case
 (after! evil
@@ -2530,10 +2529,7 @@ With prefix ARG, insert the result inline instead. =>."
         (setq-local t/eval-last-sexp-overlay--ov ov)
         (overlay-put ov 'after-string
                      (propertize str 'face 'font-lock-comment-face))
-        (run-with-timer
-         30 nil
-         (lambda (o) (delete-overlay o))
-         ov)))))
+        (run-with-timer 6 nil (lambda (o) (delete-overlay o)) ov)))))
 (global-set-key (kbd "C-x C-e") #'t/eval-last-sexp-overlay)
 
 (defun t/sudo-edit (&optional arg)
