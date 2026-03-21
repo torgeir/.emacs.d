@@ -867,6 +867,9 @@ When 'quit' is set, quits window when any other key is pressed."
 ;; show columns
 (setq column-number-mode t)
 
+;; timers are useful
+(put 'list-timers 'disabled nil)
+
 ;;; leader key
 (defvar t-leader "SPC")
 (defvar t-leader-alt "M-SPC")
@@ -949,11 +952,6 @@ When 'quit' is set, quits window when any other key is pressed."
   (dolist (map maps)
     (keymap-set map t-leader-alt t-leader-map)))
 
-(setq display-line-numbers-type 'relative)
-
-(setq make-backup-files nil
-      auto-save-default nil)
-
 ;;; utf-8
 (modify-coding-system-alist 'file "" 'utf-8)
 
@@ -983,6 +981,8 @@ When 'quit' is set, quits window when any other key is pressed."
 (defun t/set-pairs (mode pairs)
   (setf (alist-get mode t--pairs-alist) pairs)
   (add-hook (intern (format "%s-hook" mode)) #'t--apply-pairs-for-mode))
+
+(setq display-line-numbers-type 'relative)
 
 ;;; toggles
 (keymap-set t-leader-map "t d" #'toggle-debug-on-error)
@@ -1021,8 +1021,12 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "b n" #'evil-buffer-new)
 (keymap-set t-leader-map "b O" #'persp-kill-other-buffers)
 
-;;; compile
+;;; code, compile
 (keymap-set t-leader-map "c c" #'compile)
+(keymap-set t-leader-map "c d" #'xref-find-definitions)
+
+;;; org-capture
+(keymap-set t-leader-map "x" #'org-capture)
 
 ;;; magit
 (t-package magit gh "magit/magit" "b9f19ba" nil
@@ -1083,6 +1087,11 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-g-map "n" #'diff-hl-next-hunk)
 (keymap-set t-leader-g-map "p" #'diff-hl-previous-hunk)
 (keymap-set t-leader-g-map "s" #'diff-hl-stage-current-hunk)
+
+;;; git timetravel
+(t-package git-timemachine cb "pidu/git-timemachine" "d1346a7" nil
+  :init
+  (keymap-set t-leader-map "g T" 'git-timemachine))
 
 ;;; ediff
 (defvar t-ediff--saved-wconf nil)
@@ -1244,8 +1253,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "h v" #'describe-variable)
 (keymap-set t-leader-map "h r r" (cmd! (load-file (expand-file-name "init.el" user-emacs-directory))))
 
-;;; code
-(keymap-set t-leader-map "c d" #'xref-find-definitions)
+;;; project
 (keymap-set t-leader-map "p p" #'t-project-switch-find-file)
 (keymap-set t-leader-map "p r" #'t-rescan-packages)
 (keymap-set t-leader-map "p o" (cmd!
@@ -1588,6 +1596,7 @@ When 'quit' is set, quits window when any other key is pressed."
 			                       (let ((split-window-preferred-function nil))
 			                         (call-interactively 'dired-find-file))))))
 
+;;; dired subtree
 (t-package dired-subtree gh "Fuco1/dired-hacks" "de9336f" nil
   :deps ((dash gh "magnars/dash.el" "d3a84021"))
   :commands (dired-subtree-toggle dired-subtree--dired-line-is-directory-or-link-p))
@@ -1611,7 +1620,7 @@ When 'quit' is set, quits window when any other key is pressed."
   :config
   (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
 
-;;; TODO
+;;; highlight TODO
 (t-package hl-todo gh "tarsius/hl-todo" "9540fc4" nil
   :config
   (global-hl-todo-mode))
@@ -1704,6 +1713,7 @@ When 'quit' is set, quits window when any other key is pressed."
           (kill-buffer))
       (vterm-send-key "d" nil nil t)))
   (defun t-vterm-copy-mode-insert ()
+    "Pressing i quits copy mode and goes to prompt."
     (interactive)
     (vterm-copy-mode -1)
     (vterm-reset-cursor-point)
@@ -2305,8 +2315,8 @@ words of the candidate, respectively."
 	      (face-fmt "rainbow-delimiters-depth-%d-face"))
     (dotimes (i (length colors))
       (set-face-attribute (intern (format face-fmt (1+ i))) nil :foreground (nth i colors) :overline nil :underline nil)))
-  (set-face-attribute 'rainbow-delimiters-unmatched-face nil :foreground "Red" :bold t :overline nil :underline nil)
-  (set-face-attribute 'rainbow-delimiters-mismatched-face nil :foreground "Orange" :bold t :overline nil :underline nil))
+  (set-face-attribute 'rainbow-delimiters-unmatched-face nil :foreground "Red" :bold t :overline nil :underline t)
+  (set-face-attribute 'rainbow-delimiters-mismatched-face nil :foreground "Cyan" :bold t :overline nil :underline t))
 
 (t-package rainbow-delimiters gh "Fanael/rainbow-delimiters" "f40ece5" nil
   :hook (;;(after-change-major-mode . rainbow-delimiters-mode)
@@ -2390,13 +2400,6 @@ words of the candidate, respectively."
 ;;   :config
 ;;   (keymap-set t-leader-map "t c" 'copilot-mode))
 
-;;; timers are useful
-(put 'list-timers 'disabled nil)
-
-;;; git timetravel
-(t-package git-timemachine cb "pidu/git-timemachine" "d1346a7" nil
-  :init
-  (keymap-set t-leader-map "g T" 'git-timemachine))
 
 ;;; snippets
 (use-package abbrev
