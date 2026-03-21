@@ -2645,11 +2645,13 @@ With prefix ARG, insert the result inline instead. =>."
   (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode)))
 
 ;;; tramp
-;; https://coredumped.dev/2025/06/18/making-tramp-go-brrrr
+;; https://coredumped.dev/2025/06/18/making-tramp-go-brrrr./
 (after! tramp
-  (setq tramp-copy-size-limit (* 2 1024 1024) ;; 2MB
+  (setq tramp-verbose 2
+        tramp-copy-size-limit (* 2 1024 1024) ;; 2MB
         tramp-use-scp-direct-remote-copying t
-        tramp-verbose 2))
+        remote-file-name-inhibit-locks t
+        remote-file-name-inhibit-auto-save-visited t))
 (connection-local-set-profile-variables
  'remote-direct-async-process '((tramp-direct-async-process . t)))
 
@@ -2659,6 +2661,8 @@ With prefix ARG, insert the result inline instead. =>."
 (declare-function tramp-compile-disable-ssh-controlmaster-options "")
 (after! (tramp compile)
   (remove-hook 'compilation-mode-hook #'tramp-compile-disable-ssh-controlmaster-options))
+
+(setq magit-tramp-pipe-stty-settings 'pty)
 
 ;; quick preview of the diff of what you're asked to save.
 (add-to-list 'save-some-buffers-action-alist
