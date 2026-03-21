@@ -8,11 +8,13 @@
 (comment (funcall (t/micro-state nil "j" 'previous-line)))
 
 (defmacro cmd! (&rest body)
+  "Run body in interactive lambda."
   `(lambda (&rest _args)
      (interactive)
      ,@body))
 
 (defmacro after! (targets &rest body)
+  "Wait for target or targets to load before running body."
   (declare (indent 1))
   (let* ((target-list (cond
                        ((and (consp targets) (eq (car targets) 'quote))
@@ -24,6 +26,7 @@
       (setq form `(with-eval-after-load ',target ,form)))))
 
 (defun t/isodate ()
+  "Return iso date time string, insert it if c-u is given."
   (interactive)
   (let ((time (format-time-string "%Y-%m-%dT%H:%M:%S.%3NZ" nil "UTC")))
     (if (called-interactively-p 'interactive)
