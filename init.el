@@ -1,4 +1,6 @@
 ;;; init.el --- Init -*- lexical-binding: t; -*-
+(require 'cl-lib)
+
 (message "Yo.")
 
 ;;; macros
@@ -28,18 +30,13 @@
         (insert time)
       time)))
 
-
+;;; modeline segments
 (defun t/modeline-segment (before fn)
   (let* ((seg `(:eval (funcall ',fn)))
          (update (lambda (fmt)
-                   (let (r (ml fmt))
-                     (while ml
-                       (if (and (consp (car ml)) (memq fn (flatten-tree (car ml))))
-                           (progn (when (equal (car r) " ") (pop r)) (pop ml))
-                         (push (pop ml) r)))
-                     (let* ((c (nreverse r)) (pos (and before (cl-position before c :test #'equal))))
-                       (if pos (append (cl-subseq c 0 pos) `(" " ,seg) (cl-subseq c pos))
-                         `(" " ,seg ,@c)))))))
+                   (let* ((cleaned (seq-remove (lambda (item) (and (consp item) (memq fn (flatten-tree item)))) fmt))
+                          (pos (and before (cl-position before cleaned :test #'equal))))
+                     (if pos (append (cl-subseq cleaned 0 pos) (list seg) (cl-subseq cleaned pos)) (cons seg cleaned))))))
     (setq-default mode-line-format (funcall update (default-value 'mode-line-format)))
     (dolist (buf (buffer-list))
       (with-current-buffer buf
