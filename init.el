@@ -2606,3 +2606,6 @@ With prefix ARG, insert the result inline instead. =>."
 (declare-function tramp-compile-disable-ssh-controlmaster-options "")
 (after! (tramp compile)
   (remove-hook 'compilation-mode-hook #'tramp-compile-disable-ssh-controlmaster-options))
+
+;;; support local only config
+(require 'private-init (expand-file-name "private-init.el") t)
