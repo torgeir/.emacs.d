@@ -1248,7 +1248,13 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "c d" #'xref-find-definitions)
 (keymap-set t-leader-map "p p" #'t-project-switch-find-file)
 (keymap-set t-leader-map "p r" #'t-rescan-packages)
-(keymap-set t-leader-map "p i" #'t-install-queued-packages)
+(keymap-set t-leader-map "p o" (cmd!
+                                (shell-command
+                                 (format (cond
+                                          (is-mac "open -a Finder -- %s")
+                                          (is-linux "xdg-open %s")
+                                          (t (user-error "Dunno how to open")))
+                                         (shell-quote-argument (expand-file-name default-directory))))))
 
 ;;; windows
 (keymap-set t-leader-map "w d" #'delete-window)
