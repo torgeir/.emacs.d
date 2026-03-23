@@ -339,11 +339,11 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
                                              (plist-get meta :repo)
                                              rev)))
                           (define-key map [mouse-1]
-                            (lambda ()
-                              (interactive)
-                              (find-file (expand-file-name "init.el" user-emacs-directory))
-                              (goto-char (point-min))
-                              (search-forward query nil t)))
+                                      (lambda ()
+                                        (interactive)
+                                        (find-file (expand-file-name "init.el" user-emacs-directory))
+                                        (goto-char (point-min))
+                                        (search-forward query nil t)))
                           map)))
               (insert (format (format " %%-%ds %%-%ds" prov-w repo-w) host-str repo))
               ;; Rev: always links to its own commit page
@@ -358,7 +358,7 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
                       'help-echo "Open commit"
                       'keymap (let ((map (make-sparse-keymap)))
                                 (define-key map [mouse-1]
-                                  (lambda () (interactive) (browse-url url)))
+                                            (lambda () (interactive) (browse-url url)))
                                 map))))
                 (insert (format (format " %%-%ds" rev-w) rev)))
               ;; Status column (before latest)
@@ -384,7 +384,7 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
                       'help-echo (if supports-compare "Compare with installed rev" "Open latest commit")
                       'keymap (let ((map (make-sparse-keymap)))
                                 (define-key map [mouse-1]
-                                  (lambda () (interactive) (browse-url latest-url)))
+                                            (lambda () (interactive) (browse-url latest-url)))
                                 map))))
                   (insert " ")
                   (insert-text-button
@@ -1599,6 +1599,9 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set evil-insert-state-map "C-k" #'kill-line)
   (keymap-set evil-normal-state-map "M-<up>" #'t-move-line-up)
   (keymap-set evil-normal-state-map "M-<down>" #'t-move-line-down)
+  ;; org-mode conflicts
+  (keymap-unset evil-normal-state-map "M-<up>" #'t-move-line-up)
+  (keymap-unset evil-normal-state-map "M-<down>" #'t-move-line-down)
   
   (after! evil
     (evil-define-key 'normal Buffer-menu-mode-map (kbd "RET") #'Buffer-menu-select)
