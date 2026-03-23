@@ -63,6 +63,7 @@
 (defvar t-package-status (make-hash-table :test #'equal))
 (defvar t-package-meta (make-hash-table :test #'equal))
 (defvar t-package-registry nil)
+(defvar t-package-conflicts nil)
 (defvar t-package-status-buffer "*t-packages*")
 (defvar t-package-log-buffer "*t-packages-log*")
 (defvar t-package-in-progress nil)
@@ -75,6 +76,10 @@
 (defvar t-spinner-frames '("|" "/" "-" "\\"))
 (defvar t-spinner-index 0)
 (defvar t-spinner-timer nil)
+(defvar t-package-latest (make-hash-table :test #'equal))
+(defvar t-fetch-queue nil)
+(defvar t-fetch-active (make-hash-table :test #'equal))
+(defvar t-fetch-in-progress nil)
 
 (defun t--repo-url (host repo)
   (concat (pcase host
@@ -101,7 +106,16 @@
       ('gh (format "https://github.com/%s/commit/%s" clean-repo rev))
       ('gl (format "https://gitlab.com/%s/-/commit/%s" clean-repo rev))
       ('cb (format "https://codeberg.org/%s/commit/%s" clean-repo rev))
-      ('sav (format "https://git.savannah.gnu.org/git/%s?a=commit;h=%s" clean-repo rev))
+      ('sav (format "https://git.savannah.gnu.org/cgit/%s/commit/?id=%s" repo rev))
+      (_ (error (concat "Unknown host, got " host))))))
+
+(defun t--repo-compare-url (host repo rev-from rev-to)
+  (let ((clean-repo (string-remove-suffix ".git" repo)))
+    (pcase host
+      ('gh (format "https://github.com/%s/compare/%s...%s" clean-repo rev-from rev-to))
+      ('gl (format "https://gitlab.com/%s/-/compare/%s...%s" clean-repo rev-from rev-to))
+      ('cb (format "https://codeberg.org/%s/compare/%s...%s" clean-repo rev-from rev-to))
+      ('sav (format "https://git.savannah.gnu.org/cgit/%s/commit/?id=%s" repo rev-to))
       (_ (error (concat "Unknown host, got " host))))))
 
 (defun t--package-dir (name)
@@ -179,15 +193,56 @@
    (or (and (processp p) (process-get p 't-name)) "git")
    output))
 
-(defun t--status-line (name meta status)
-  (let* ((in-progress (member status '("cloning" "checking out")))
-         (spin (when in-progress
-                 (nth t-spinner-index t-spinner-frames)))
-         (label (if spin (format "%s %s" spin status) status))
-         (host (or (plist-get meta :host) ""))
-         (repo (string-remove-suffix ".git" (or (plist-get meta :repo) "")))
-         (rev (or (plist-get meta :rev) "")))
-    (format "%-20s %-4s %-28s %-8s %s\n" name host repo rev label)))
+(defun t--collect-rows ()
+  "Return an ordered list of row plists for the packages buffer.
+Each plist has :name :name-text :host :repo :rev :status :meta."
+  (let* ((conflicted (mapcar #'car t-package-conflicts))
+         top-level rows)
+    (dolist (name t-package-order)
+      (let* ((meta (gethash name t-package-meta))
+             (dep-of (plist-get meta :dep-of)))
+        (unless dep-of
+          (push name top-level))))
+    (setq top-level (sort (nreverse top-level) (lambda (a b) (string< (symbol-name a) (symbol-name b)))))
+    (dolist (name top-level)
+      (let* ((status (gethash name t-package-status "unknown"))
+             (meta (gethash name t-package-meta))
+             (in-progress (member status '("cloning" "checking out")))
+             (spin (when in-progress (nth t-spinner-index t-spinner-frames)))
+             (label (if spin (format "%s %s" spin status) status))
+             (host (let ((h (plist-get meta :host))) (if h (symbol-name h) "")))
+             (repo (string-remove-suffix ".git" (or (plist-get meta :repo) "")))
+             (rev (or (plist-get meta :rev) ""))
+             (name-text (symbol-name name))
+             (conflict (memq name conflicted)))
+        (push (list :name name :name-text name-text :conflict conflict
+                    :host host :repo repo :rev rev :status label :meta meta)
+              rows))
+      (let* ((parent-meta (gethash name t-package-meta))
+             (dep-specs (plist-get parent-meta :dep-specs))
+             (deps (sort (copy-sequence (plist-get parent-meta :deps))
+                         (lambda (a b) (string< (symbol-name a) (symbol-name b))))))
+        (dolist (dep deps)
+          (let* ((meta (gethash dep t-package-meta))
+                 (dep-spec (seq-find (lambda (s) (eq (car s) dep)) dep-specs))
+                 (declared-rev (if dep-spec (nth 3 dep-spec) (plist-get meta :rev)))
+                 (pkg-dir (t--package-dir dep))
+                 (status (cond
+                          ((t--package-up-to-date-p pkg-dir declared-rev) "installed")
+                          ((t--package-outdated-p pkg-dir declared-rev) "outdated")
+                          (t (gethash dep t-package-status "unknown"))))
+                 (in-progress (member status '("cloning" "checking out")))
+                 (spin (when in-progress (nth t-spinner-index t-spinner-frames)))
+                 (label (if spin (format "%s %s" spin status) status))
+                 (host (let ((h (plist-get meta :host))) (if h (symbol-name h) "")))
+                 (repo (string-remove-suffix ".git" (or (plist-get meta :repo) "")))
+                 (rev (or declared-rev ""))
+                 (name-text (format "- %s" dep))
+                 (conflict (memq dep conflicted)))
+            (push (list :name dep :name-text name-text :conflict conflict
+                        :host host :repo repo :rev rev :status label :meta meta)
+                  rows)))))
+    (nreverse rows)))
 
 (defun t--status-render ()
   (let ((buf (get-buffer-create t-package-status-buffer)))
@@ -196,68 +251,154 @@
              (saved-point (when win (window-point win)))
              (saved-start (when win (window-start win))))
         (erase-buffer)
-	      (insert "-- t packages --\n\n")
-	      (insert-text-button
-	       "install queued"
+        (insert "-- t packages --\n\n")
+        (insert-text-button
+         "install queued"
          'action (lambda (_btn) (t-install-queued-packages))
          'follow-link t
          'help-echo "Install queued packages")
-	      (insert " ")
-	      (insert-text-button
-	       "rescan"
+        (insert " ")
+        (insert-text-button
+         "rescan"
          'action (lambda (_btn) (t-rescan-packages))
          'follow-link t
          'help-echo "Rescan packages")
-	      (insert "\n\n")
-	      (insert (format "%-20s %-4s %-28s %-8s %s\n"
-			                  "name" "prov" "repo" "rev" "status"))
-	      (insert (make-string 73 ?-) "\n")
-	      (cl-labels
-	          ((insert-line
-	             (name &optional prefix)
-	             (let* ((status (gethash name t-package-status "unknown"))
-		                  (meta (gethash name t-package-meta))
-		                  (in-progress (member status '("cloning" "checking out")))
-		                  (spin (when in-progress
-			                        (nth t-spinner-index t-spinner-frames)))
-		                  (label (if spin (format "%s %s" spin status) status))
-		                  (host (or (plist-get meta :host) ""))
-		                  (repo (string-remove-suffix ".git" (or (plist-get meta :repo) "")))
-		                  (rev (or (plist-get meta :rev) ""))
-		                  (name-text (format "%s%s" (or prefix "") (symbol-name name))))
-		             (insert (format "%-20s %-4s %-28s" name-text host repo))
-		             (if meta
-		                 (let* ((rev-text (format "%-8s" rev))
-			                      (url (t--repo-commit-url
-				                          (plist-get meta :host)
-				                          (plist-get meta :repo)
-				                          (plist-get meta :rev))))
-		                   (insert
-			                  (propertize
-			                   (format " %s" rev-text)
-			                   'mouse-face 'highlight
-			                   'help-echo "Open commit"
-			                   'keymap (let ((map (make-sparse-keymap)))
-				                           (define-key map [mouse-1]
-					                                     (lambda ()
-						                                     (interactive)
-						                                     (browse-url url)))
-				                           map))))
-		               (insert (format " %-8s" rev)))
-		             (insert (format " %s\n" label)))))
-	        (let (top-level)
-	          (dolist (name t-package-order)
-	            (let* ((meta (gethash name t-package-meta))
-		                 (dep-of (plist-get meta :dep-of)))
-		            (unless dep-of
-		              (push name top-level))))
-	          (setq top-level (nreverse top-level))
-	          (dolist (name top-level)
-	            (insert-line name)
-	            (let* ((meta (gethash name t-package-meta))
-		                 (deps (plist-get meta :deps)))
-		            (dolist (dep deps)
-		              (insert-line dep "- "))))))
+        (insert " ")
+        (insert-text-button
+         "fetch latest"
+         'action (lambda (_btn) (t-fetch-latest-package-versions))
+         'follow-link t
+         'help-echo "Fetch latest upstream SHAs for all packages")
+        (insert "\n\n")
+        (let* ((rows (t--collect-rows))
+               ;; Determine which packages have a pending latest SHA (differs from pinned rev)
+               (latest-pending
+                (lambda (row)
+                  (let* ((name (plist-get row :name))
+                         (rev (plist-get row :rev))
+                         (latest (gethash name t-package-latest)))
+                    (and latest (not (string= latest rev))))))
+               (show-latest (seq-some latest-pending rows))
+               ;; Column widths from content
+               (name-w (apply #'max 4 (mapcar (lambda (r)
+                                                (+ (length (plist-get r :name-text))
+                                                   (if (plist-get r :conflict) 2 0)))
+                                              rows)))
+               (prov-w (apply #'max 4 (mapcar (lambda (r) (length (plist-get r :host))) rows)))
+               (repo-w (apply #'max 4 (mapcar (lambda (r) (length (plist-get r :repo))) rows)))
+               (rev-w (apply #'max 3 (mapcar (lambda (r) (length (plist-get r :rev))) rows)))
+               (status-w (apply #'max 6 (mapcar (lambda (r) (length (plist-get r :status))) rows)))
+               ;; latest-sha-w: width of the SHA cell alone
+               (latest-sha-w (when show-latest
+                               (apply #'max 0
+                                      (mapcar (lambda (r)
+                                                (let* ((name (plist-get r :name))
+                                                       (rev (plist-get r :rev))
+                                                       (latest (gethash name t-package-latest)))
+                                                  (if (and latest (not (string= latest rev)))
+                                                      (length latest)
+                                                    0)))
+                                              rows))))
+               ;; latest-col-w: full column width = sha + " copy" + " dismiss",
+               ;; floored at len("latest") so the header always fits
+               (latest-col-w (when show-latest
+                               (max (length "latest")
+                                    (+ latest-sha-w 1 (length "copy") 1 (length "dismiss")))))
+               (sep-w (+ name-w 1 prov-w 1 repo-w 1 rev-w 1 status-w
+                         (if show-latest (+ 1 latest-col-w) 0))))
+          ;; Header
+          (insert (format (format "%%-%ds %%-%ds %%-%ds %%-%ds %%-%ds%%s\n"
+                                  name-w prov-w repo-w rev-w status-w)
+                          "name" "prov" "repo" "rev" "status"
+                          (if show-latest (format (format " %%s") "latest") "")))
+          (insert (make-string sep-w ?-) "\n")
+          ;; Rows
+          (dolist (row rows)
+            (let* ((name (plist-get row :name))
+                   (name-text (plist-get row :name-text))
+                   (conflict (plist-get row :conflict))
+                   (host-str (plist-get row :host))
+                   (repo (plist-get row :repo))
+                   (rev (plist-get row :rev))
+                   (label (plist-get row :status))
+                   (meta (plist-get row :meta))
+                   (latest (gethash name t-package-latest))
+                   (latest-differs (and latest (not (string= latest rev))))
+                   (padded-name (format (format "%%-%ds" (- name-w (if conflict 2 0))) name-text)))
+              (insert
+               (propertize
+                (if conflict
+                    (concat padded-name (propertize " !" 'face '(:foreground "red")))
+                  padded-name)
+                'mouse-face 'highlight
+                'help-echo (format "Jump to t-package %s in init.el" name)
+                'keymap (let ((map (make-sparse-keymap))
+                              (query (format "%s %s \"%s\" \"%s\""
+                                             name
+                                             (plist-get meta :host)
+                                             (plist-get meta :repo)
+                                             rev)))
+                          (define-key map [mouse-1]
+                            (lambda ()
+                              (interactive)
+                              (find-file (expand-file-name "init.el" user-emacs-directory))
+                              (goto-char (point-min))
+                              (search-forward query nil t)))
+                          map)))
+              (insert (format (format " %%-%ds %%-%ds" prov-w repo-w) host-str repo))
+              ;; Rev: always links to its own commit page
+              (if meta
+                  (let ((url (t--repo-commit-url (plist-get meta :host)
+                                                 (plist-get meta :repo)
+                                                 (plist-get meta :rev))))
+                    (insert
+                     (propertize
+                      (format (format " %%-%ds" rev-w) rev)
+                      'mouse-face 'highlight
+                      'help-echo "Open commit"
+                      'keymap (let ((map (make-sparse-keymap)))
+                                (define-key map [mouse-1]
+                                  (lambda () (interactive) (browse-url url)))
+                                map))))
+                (insert (format (format " %%-%ds" rev-w) rev)))
+              ;; Status column (before latest)
+              (insert (format (format " %%-%ds" status-w) label))
+              ;; Latest SHA column — every row occupies exactly latest-col-w chars
+              (when show-latest
+                (insert " ")
+                (cond
+                 ((not latest-differs)
+                  (insert (make-string latest-col-w ? )))
+                 ((member latest '("fetching" "error"))
+                  (insert (format (format "%%-%ds" latest-col-w) latest)))
+                 (t
+                  (let* ((host-sym (plist-get meta :host))
+                         (supports-compare (memq host-sym '(gh gl cb)))
+                         (latest-url (if supports-compare
+                                         (t--repo-compare-url host-sym (plist-get meta :repo) rev latest)
+                                       (t--repo-commit-url host-sym (plist-get meta :repo) latest))))
+                    (insert
+                     (propertize
+                      (format (format "%%-%ds" latest-sha-w) latest)
+                      'mouse-face 'highlight
+                      'help-echo (if supports-compare "Compare with installed rev" "Open latest commit")
+                      'keymap (let ((map (make-sparse-keymap)))
+                                (define-key map [mouse-1]
+                                  (lambda () (interactive) (browse-url latest-url)))
+                                map))))
+                  (insert " ")
+                  (insert-text-button
+                   "copy"
+                   'action (let ((sha latest)) (lambda (_btn) (kill-new sha) (message "Copied %s" sha)))
+                   'follow-link t
+                   'help-echo (format "Copy %s to clipboard" latest))
+                  (insert " ")
+                  (insert-text-button
+                   "dismiss"
+                   'action (let ((pkg name)) (lambda (_btn) (remhash pkg t-package-latest) (t--status-render)))
+                   'follow-link t
+                   'help-echo "Dismiss this update"))))
+              (insert "\n"))))
         (setq buffer-read-only nil)
         (when (and win saved-point saved-start)
           (set-window-point win saved-point)
@@ -499,6 +640,56 @@
         (process-put clone-process 't-pkg-dir pkg-dir)
         (process-put clone-process 't-head-file head-file)))))
 
+(defun t--fetch-output-filter (p output)
+  (let ((prev (or (process-get p 't-output) "")))
+    (process-put p 't-output (concat prev output))))
+
+(defun t--fetch-sentinel (p _event)
+  (when (eq (process-status p) 'exit)
+    (let* ((name (process-get p 't-name))
+           (raw (or (process-get p 't-output) ""))
+           (sha (car (split-string raw))))
+      (if (and (= 0 (process-exit-status p)) sha (>= (length sha) 7))
+          (puthash name (substring sha 0 7) t-package-latest)
+        (puthash name "error" t-package-latest))
+      (remhash name t-fetch-active)
+      (t--status-render)
+      (t--fetch-next-available)
+      (when (and (= 0 (hash-table-count t-fetch-active))
+                 (null t-fetch-queue))
+        (setq t-fetch-in-progress nil)
+        (message "t: latest SHAs fetched.")))))
+
+(defun t--fetch-one-package (spec)
+  (let* ((name (plist-get spec :name))
+         (host (plist-get spec :host))
+         (repo (plist-get spec :repo))
+         (url (t--repo-url host repo)))
+    (puthash name "fetching" t-package-latest)
+    (puthash name t t-fetch-active)
+    (let ((proc (make-process
+                 :name (format "t-fetch-%s" name)
+                 :filter #'t--fetch-output-filter
+                 :noquery t
+                 :command (list "git" "ls-remote" url "HEAD")
+                 :sentinel #'t--fetch-sentinel)))
+      (process-put proc 't-name name))))
+
+(defun t--fetch-next-available ()
+  (while (and t-fetch-queue
+              (< (hash-table-count t-fetch-active) t-package-max-parallel))
+    (t--fetch-one-package (pop t-fetch-queue))))
+
+(defun t-fetch-latest-package-versions ()
+  "Fetch the latest HEAD SHA for all registered packages and display in the packages buffer."
+  (interactive)
+  (clrhash t-package-latest)
+  (clrhash t-fetch-active)
+  (setq t-fetch-queue (copy-sequence t-package-registry))
+  (setq t-fetch-in-progress t)
+  (t--status-render)
+  (t--fetch-next-available))
+
 (defun t-install-queued-packages ()
   (interactive)
   (when (and t-package-in-progress
@@ -558,6 +749,11 @@
            (message "t: failed to remove %s (%s)."
                     name (error-message-string err))))))))
 
+(defun t--check-conflicts ()
+  (dolist (conflict t-package-conflicts)
+    (user-error "t: package %s declared with different revs: %s vs %s"
+                (nth 0 conflict) (nth 1 conflict) (nth 2 conflict))))
+
 (defun t-rescan-packages (&optional no-show)
   (interactive)
   (setq t-package-queue nil)
@@ -580,10 +776,12 @@
         (t--status-set name "queued")
         (t--queue-package spec)))))
   (unless no-show
-    (t--display-status-buffer)
+    (t--display-status-buffer))
+  (t--check-conflicts)
+  (unless no-show
     (message "t: rescan complete.")))
 
-(defun t--register-package (name host repo rev subdir use-package-form &optional deps dep-of)
+(defun t--register-package (name host repo rev subdir use-package-form &optional deps dep-of dep-specs)
   (let* ((existing (t--registry-find name))
          (existing-rev (and existing (plist-get existing :rev)))
          (existing-dep-of (and existing (plist-get existing :dep-of)))
@@ -592,8 +790,7 @@
         (progn
           (t--log "Duplicate package %s with mismatched revs: %s vs %s"
                   name existing-rev rev)
-          (user-error "t: package %s declared with different revs: %s vs %s"
-                      name existing-rev rev))
+          (push (list name existing-rev rev) t-package-conflicts))
       (let* ((pkg-dir (t--package-dir name))
              (spec (list :name name
                          :host host
@@ -605,7 +802,7 @@
                          :use-package-form use-package-form)))
         (t--registry-add spec)
         (t--status-register name)
-        (puthash name (list :host host :repo repo :rev rev :deps deps :dep-of dep-of)
+        (puthash name (list :host host :repo repo :rev rev :deps deps :dep-of dep-of :dep-specs dep-specs)
                  t-package-meta)
         (cond
          ((t--package-up-to-date-p pkg-dir rev)
@@ -643,7 +840,7 @@
       `(progn
          ,@dep-forms
          (t--register-package
-          ',name ',host ,repo ,rev ,subdir ',form ',dep-names nil)))))
+          ',name ',host ,repo ,rev ,subdir ',form ',dep-names nil ',deps)))))
 
 (add-hook 'emacs-startup-hook #'t-install-queued-packages)
 ;; / packages-diy
@@ -732,6 +929,18 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set global-map "s-d" (cmd! (split-window-horizontally) (evil-window-right 1)))
 (keymap-set global-map "s-D" (cmd! (split-window-vertically) (evil-window-down 1)))
 (keymap-set global-map "s-q" #'evil-save-and-quit)
+
+;; Reset package declaration state on each eval so only packages declared
+;; below are tracked. This ensures branch switches are handled correctly:
+;; evaluating a branch that lacks a package removes it from the registry
+;; rather than leaving a stale entry that would show as outdated.
+(setq t-package-registry nil
+      t-package-order nil
+      t-package-queue nil
+      t-package-pending-activation nil
+      t-package-conflicts nil)
+(clrhash t-package-meta)
+(clrhash t-package-status)
 
 (t-package s gh "magnars/s.el" "dda84d3" nil)
 
@@ -2678,3 +2887,5 @@ With prefix ARG, insert the result inline instead. =>."
       display-time-default-load-average nil
       display-time-mail-file 'none)
 (add-hook 'after-init-hook 'display-time-mode)
+
+(t--check-conflicts)
