@@ -2852,6 +2852,11 @@ With prefix ARG, insert the result inline instead. =>."
 (use-package nxml-mode
   :mode "\\.xml\\'")
 
+;;; lang: nginx
+(t-package nginx-mode gh "ajc/nginx-mode" "c4ac5de" nil
+  :mode (("\\.conf\\.template\\'" . nginx-mode)
+         ("\\.conf\\'" . nginx-mode)))
+
 ;;; tree-sitter: setup
 (use-package treesit
   :init
