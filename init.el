@@ -2178,10 +2178,10 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set t-leader-map "w u" #'winner-undo)
   (keymap-set t-leader-map "w r" #'winner-redo))
 
-;;; emacs 
+;;; emacs
 (use-package emacs
   :hook (;; enable arrow at end of line when wrapping
-	       (after-init . toggle-truncate-lines)
+	       (after-init . global-visual-line-mode)
          ;; open .gz files automatically
          (after-init . auto-compression-mode)
 	       ;; indent soft wraps
