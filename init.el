@@ -2415,9 +2415,12 @@ words of the candidate, respectively."
 
 ;;; org
 (use-package org
+  :hook ((org-mode-hook . org-indent-mode))
   :init
   (defun t/org-file (&optional file)
     (concat (expand-file-name "~/Dropbox/org") "/" file))
+  (add-hook 'org-mode-hook (defun t/load-babel-extensions ()
+                             (unless (featurep 'ob-dot) (require 'ob-dot))))
   (setq org-directory (t/org-file)
 	      org-agenda-files (list org-directory)
 	      org-agenda-file-regexp "\\`[^.].*\\.org\\(\\.gpg\\)?\\'"
