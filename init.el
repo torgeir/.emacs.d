@@ -1619,9 +1619,8 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set evil-normal-state-map "M-<up>" #'t-move-line-up)
   (keymap-set evil-normal-state-map "M-<down>" #'t-move-line-down)
   ;; org-mode conflicts
-  (keymap-unset evil-normal-state-map "M-<up>" #'t-move-line-up)
-  (keymap-unset evil-normal-state-map "M-<down>" #'t-move-line-down)
-
+  ;;(keymap-set evil-normal-state-map "M-<up>" #'t-move-line-up)
+  ;;(keymap-set evil-normal-state-map "M-<down>" #'t-move-line-down)
   (after! evil
     (evil-define-key 'normal Buffer-menu-mode-map (kbd "RET") #'Buffer-menu-select)
     (evil-define-key 'motion Buffer-menu-mode-map (kbd "RET") #'Buffer-menu-select)))
