@@ -2825,6 +2825,12 @@ With prefix ARG, insert the result inline instead. =>."
    (expand-file-name "tree-sitter" (or (getenv "XDG_DATA_HOME")
                                        (expand-file-name "~/.local/share")))))
 
+;;; tree-sitter: docker
+(use-package dockerfile-ts-mode
+  :mode "\\Dockerfile\\'"
+  :init
+  (add-to-list 'major-mode-remap-alist '(dockerfile-mode . dockerfile-ts-mode)))
+
 ;;; tree-sitter: ts
 (use-package typescript-ts-mode
   :mode "\\.ts\\'"
