@@ -3,6 +3,8 @@
 
 (message "Yo.")
 
+(defvar t-colors '(:hl "#f5b" :done "#546" :head "#5bf"))
+
 ;;; macros
 (defmacro comment (&rest _ignore) nil)
 (comment (funcall (t/micro-state nil "j" 'previous-line)))
@@ -1167,6 +1169,19 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; utf-8
 (modify-coding-system-alist 'file "" 'utf-8)
+
+;;; mac specific
+(when is-mac
+  ;; dark title bar
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+  (setq
+   ;; makes \ not be interpreted as M-/?
+   mac-option-modifier 'meta
+   mac-right-option-modifier nil
+   ;; bind fn to H-
+   ns-function-modifier 'hyper
+   trash-directory "~/.Trash/emacs"))
 
 ;;; t/set-pairs: diy smartparens
 (defvar t--pairs-alist nil)
