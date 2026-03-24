@@ -2413,6 +2413,8 @@ words of the candidate, respectively."
   :config
   (keymap-set org-mode-map "<double-mouse-1>" #'t/org-double-mouse-1)
   (t/set-pairs 'org-mode '((?~ . ?~) (?= . ?=) (?` . ?') (?< . ?>) (?/ . ?/) (?« . ?») (?_ . ?_)))
+  (after! evil
+    (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m l")) #'org-insert-link))
   (after! evil 
     (evil-set-initial-state 'org-agenda-mode 'motion))
   (after! (evil org-agenda)
