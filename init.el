@@ -1166,6 +1166,9 @@ When 'quit' is set, quits window when any other key is pressed."
 		              minibuffer-local-isearch-map)))
   (dolist (map maps)
     (keymap-set map t-leader-alt t-leader-map)))
+;; minibuffer map
+(after! evil
+  (evil-define-key 'insert minibuffer-mode-map (kbd "C-y") #'yank))
 
 ;;; utf-8
 (modify-coding-system-alist 'file "" 'utf-8)
@@ -1618,7 +1621,7 @@ When 'quit' is set, quits window when any other key is pressed."
   ;; org-mode conflicts
   (keymap-unset evil-normal-state-map "M-<up>" #'t-move-line-up)
   (keymap-unset evil-normal-state-map "M-<down>" #'t-move-line-down)
-  
+
   (after! evil
     (evil-define-key 'normal Buffer-menu-mode-map (kbd "RET") #'Buffer-menu-select)
     (evil-define-key 'motion Buffer-menu-mode-map (kbd "RET") #'Buffer-menu-select)))
@@ -1642,9 +1645,27 @@ When 'quit' is set, quits window when any other key is pressed."
   :deps ((annalist gh "noctuid/annalist.el" "e1ef5da")
          (evil gh "emacs-evil/evil" "729d9a5"))
   :init
-  (setq evil-collection-setup-minibuffer t)
+  (setq evil-collection-setup-minibuffer t
+        ;; Don't use zz and zq for org src editing
+        evil-collection-key-blacklist '("ZZ" "ZQ"))
   :config
   (evil-collection-init))
+
+;;; evil-anzu
+(t-package evil-anzu gh "emacsorphanage/evil-anzu" "7309650" nil
+  :hook (after-init . global-anzu-mode)
+  :deps ((anzu gh "emacsorphanage/anzu" "21cb5ab"))
+  :config
+  (set-face-attribute 'anzu-mode-line nil :foreground (plist-get t-colors :hl))
+  (set-face-attribute 'anzu-mode-line-no-match nil :foreground (plist-get t-colors :head)))
+
+;;; evil-surround
+(t-package evil-surround gh "emacs-evil/evil-surround" "da05c60" nil
+  :hook (after-init . global-evil-surround-mode)
+  :config
+  (after! evil
+    (evil-define-key 'visual evil-surround-mode-map "S" 'evil-substitute)
+    (evil-define-key 'visual evil-surround-mode-map "s" 'evil-surround-region)))
 
 ;;; evil-escape
 (t-package evil-escape gh "syl20bnr/evil-escape" "f4e9116" nil
@@ -2435,7 +2456,7 @@ words of the candidate, respectively."
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m l l")) #'org-insert-link)
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m l t")) #'org-toggle-link-display)
     )
-  (after! evil 
+  (after! evil
     (evil-set-initial-state 'org-agenda-mode 'motion))
   (after! (evil org-agenda)
     (evil-define-key 'motion org-agenda-keymap (kbd "H") #'org-agenda-earlier)
@@ -2680,7 +2701,7 @@ words of the candidate, respectively."
               (defun t/tab ()
                 (interactive)
                 (or (expand-abbrev)
-                    (indent-for-tab-command))))) 
+                    (indent-for-tab-command)))))
 
 ;;; t/defuns
 
