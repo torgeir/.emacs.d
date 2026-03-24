@@ -2446,8 +2446,7 @@ words of the candidate, respectively."
     (evil-define-key 'motion org-agenda-keymap (kbd "y") #'org-agenda-year-view)
     (evil-define-key 'motion org-agenda-keymap (kbd "m") #'org-agenda-month-view))
   ;; colors and heights
-  (setq t-colors '(:todo "#f5b" :done "#546" :head "#5bf"))
-  (set-face-attribute 'org-todo nil :foreground (plist-get t-colors :todo))
+  (set-face-attribute 'org-todo nil :foreground (plist-get t-colors :hl))
   (set-face-attribute 'org-done nil :foreground (plist-get t-colors :done) :strike-through t)
   (set-face-attribute 'org-headline-done nil :foreground (plist-get t-colors :done) :strike-through t)
   (set-face-attribute 'org-document-title nil :foreground (plist-get t-colors :head))
