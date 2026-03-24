@@ -1091,6 +1091,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "g" t-leader-g-map)
 
 ;;; fonts
+(setq t-font "Iosevka Nerd Font Mono")
 (setq t-font-height 200)
 (set-face-attribute 'default nil
                     :family "Iosevka Nerd Font Mono"
@@ -2422,6 +2423,23 @@ words of the candidate, respectively."
     (evil-define-key 'motion org-agenda-keymap (kbd "w") #'org-agenda-week-view)
     (evil-define-key 'motion org-agenda-keymap (kbd "y") #'org-agenda-year-view)
     (evil-define-key 'motion org-agenda-keymap (kbd "m") #'org-agenda-month-view))
+  ;; colors and heights
+  (setq t-colors '(:todo "#f5b" :done "#546" :head "#5bf"))
+  (set-face-attribute 'org-todo nil :foreground (plist-get t-colors :todo))
+  (set-face-attribute 'org-done nil :foreground (plist-get t-colors :done) :strike-through t)
+  (set-face-attribute 'org-headline-done nil :foreground (plist-get t-colors :done) :strike-through t)
+  (set-face-attribute 'org-document-title nil :foreground (plist-get t-colors :head))
+  (dolist (face '((org-level-1 . 1.35)
+                  (org-level-2 . 1.3)
+                  (org-level-3 . 1.2)
+                  (org-level-4 . 1.1)
+                  (org-level-5 . 1.1)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font t-font :weight 'bold :height (cdr face)))
+  (set-face-attribute 'org-document-title nil :font t-font :weight 'bold :height 1.8)
+  ;; templates
   (after! org
     (dolist (cell (list
                    (cons "ss" "src")
