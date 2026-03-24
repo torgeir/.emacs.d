@@ -1924,7 +1924,12 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package doric-themes gh "protesilaos/doric-themes" "86a3b91" nil
   :init
   (setq doric-themes-to-toggle '(doric-fire doric-water)
-	      doric-themes-to-rotate '(doric-plum doric-fire doric-water doric-siren))
+	      doric-themes-to-rotate '(doric-plum
+                                 doric-magma
+                                 doric-water
+                                 doric-valley
+                                 doric-almond
+                                 doric-walnut))
   :config
   (doric-themes-select 'doric-plum))
 
