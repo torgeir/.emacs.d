@@ -2419,7 +2419,8 @@ words of the candidate, respectively."
 
 ;;; org
 (use-package org
-  :hook ((org-mode-hook . org-indent-mode))
+  :hook ((org-mode . org-indent-mode)
+         (org-mode . olivetti-mode))
   :init
   (defun t/org-file (&optional file)
     (concat (expand-file-name "~/Dropbox/org") "/" file))
