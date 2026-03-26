@@ -44,7 +44,9 @@
 (add-to-list 'mode-line-misc-info t-modeline-sexp)
 
 ;;; modeline function segments, reloadable
-(defun t/modeline-segs () (list "[" (t/tasks-left) "]"))
+(defun t/modeline-segs ()
+  (when (fboundp 't/tasks-left)
+    (list "[" (t/tasks-left) "]")))
 (setq t-modeline-eval '(:eval (t/modeline-segs)))
 (setq mode-line-misc-info (remove t-modeline-eval mode-line-misc-info))
 (add-to-list 'mode-line-misc-info t-modeline-eval)
@@ -2646,21 +2648,26 @@ words of the candidate, respectively."
 ;;; remaining tasks.org in the modeline
 (defun t/tasks-left ()
   (interactive)
-  (condition-case err
-      (with-current-buffer "tasks.org"
-        (let ((count 0))
-          ;; for each heading
-          (org-map-entries
-           (lambda (&optional heading)
-             (when (and (org-entry-is-todo-p)
-                        (not (org-entry-is-done-p)))
-               (setq count (1+ count))))
-           ;; all headlines
-           t
-           'file)
-          ;; needs to be string
-          (format "%s" count)))
-    (error "-")))
+  (propertize
+   (condition-case err
+       (with-current-buffer "tasks.org"
+         (let ((count 0))
+           ;; for each heading
+           (org-map-entries
+            (lambda (&optional heading)
+              (when (and (org-entry-is-todo-p)
+                         (not (org-entry-is-done-p)))
+                (setq count (1+ count))))
+            ;; all headlines
+            t
+            'file)
+           ;; needs to be string
+           (format "%s" count)))
+     (error "-"))
+   'mouse-face 'mode-line-highlight
+   'help-echo (concat "mouse-1: " org-default-notes-file)
+   'local-map (make-mode-line-mouse-map
+               'mouse-1 (cmd! (find-file org-default-notes-file)))))
 
 ;;; evil: registers camelCase snake_case
 (after! evil
