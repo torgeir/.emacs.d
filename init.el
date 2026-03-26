@@ -1447,6 +1447,11 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "m e d" #'eval-defun)
 (keymap-set t-leader-map "m e r" #'eval-region)
 (keymap-set t-leader-map "m e e" #'eval-last-sexp)
+(keymap-set t-leader-map "m e :" #'eval-expression)
+
+;;; org search
+(keymap-set t-leader-map "m g g" #'consult-org-agenda)
+(keymap-set t-leader-map "m g A" (cmd! (consult-org-heading t 'agenda-with-archives)))
 
 ;;; project
 (defun t--project-dir-name (dir)
@@ -1474,7 +1479,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "h C" #'describe-char)
 (keymap-set t-leader-map "h e" #'view-echo-area-messages)
 (keymap-set t-leader-map "h f" #'describe-function)
-(keymap-set t-leader-map "h i" (cmd! (require 'consult-info) (call-interactively 'consult-info)))
+(keymap-set t-leader-map "h i" #'consult-info)
 (keymap-set t-leader-map "h h" #'consult-man)
 (keymap-set t-leader-map "h F" #'describe-face)
 (keymap-set t-leader-map "h k" #'describe-key)
@@ -2324,7 +2329,11 @@ words of the candidate, respectively."
 	           consult-grep
 	           consult-find
 	           consult-man
-	           consult-completion-in-region))
+	           consult-completion-in-region)
+  :config
+  (after! consult
+    (require 'consult-org)
+    (require 'consult-info)))
 
 ;;; marginalia
 (t-package marginalia gh "minad/marginalia" "d28a5e5" nil
@@ -2433,6 +2442,7 @@ words of the candidate, respectively."
 	      org-agenda-file-regexp "\\`[^.].*\\.org\\(\\.gpg\\)?\\'"
 	      org-archive-location "%s_archive.gpg::" ; so files are encrypted automatically
 	      org-attach-directory (t/org-file "attachments/")
+        org-tags-column -55
 	      org-id-method 'ts  ; 'uuid is default
 	      org-special-ctrl-k t     ; don't clear tags, etc
 	      org-special-ctrl-a/e t   ; don't move past ellipsis on c-e
