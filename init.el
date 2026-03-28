@@ -1260,6 +1260,10 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; org-capture
 (keymap-set t-leader-map "x" #'org-capture)
+(keymap-set t-leader-map "n p" #'narrow-to-page)
+(keymap-set t-leader-map "n d" #'narrow-to-defun)
+(keymap-set t-leader-map "n r" #'narrow-to-region)
+(keymap-set t-leader-map "n w" #'widen)
 
 ;;; magit
 (t-package magit gh "magit/magit" "b9f19ba" nil
@@ -2475,9 +2479,21 @@ words of the candidate, respectively."
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m i t")) #'org-toggle-inline-images)
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m l l")) #'org-insert-link)
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m l t")) #'org-toggle-link-display)
-    )
+    (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " n b")) #'org-narrow-to-block)
+    (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " n e")) #'org-narrow-to-element)
+    (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " n t")) #'org-narrow-to-subtree)
+    (keymap-set org-mode-map "<double-mouse-1>" (defun t/org-double-click (e)
+                                                  (interactive "e")
+                                                  (mouse-set-point e)
+                                                  (cond
+                                                   ((org-at-item-checkbox-p) (org-toggle-checkbox))
+                                                   ((org-at-heading-p) (org-cycle))
+                                                   (t (org-open-at-point))))))
   (after! evil
-    (evil-set-initial-state 'org-agenda-mode 'motion))
+    (evil-set-initial-state 'org-agenda-mode 'motion)
+    ;; narrow
+    (evil-define-key '(normal motion visual) org-mode-map (kbd "zn") #'org-narrow-to-subtree)
+    (evil-define-key '(normal motion visual) org-mode-map (kbd "zN") #'widen))
   (after! (evil org-agenda)
     (evil-define-key 'motion org-agenda-keymap (kbd "H") #'org-agenda-earlier)
     (evil-define-key 'motion org-agenda-keymap (kbd "L") #'org-agenda-later)
