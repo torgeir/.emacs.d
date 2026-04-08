@@ -2481,6 +2481,10 @@ words of the candidate, respectively."
           ("l" "Link (eww, mu4e, etc)" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-link-template) :prepend t :empty-lines-after 1)
           ("c" "Chrome location" entry (file+olp org-default-notes-file "Tasks") (function t/org-capture-chrome-link-template) :prepend t :empty-lines-after 1)
           ("p" "Post" entry (file+olp "~/Code/posts/content-org/blog.org" "Drafts") (function org-hugo-new-subtree-post-capture-template))))
+  ;; org refile shows all agenda files and full path in match
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 3))
+        org-refile-use-outline-path 'file
+        org-outline-path-complete-in-steps nil)
   (defun t/org-double-mouse-1 (event)
     "Toggle heading visibility when double-clicking an Org heading."
     (interactive "e")
