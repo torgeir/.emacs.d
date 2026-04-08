@@ -1357,12 +1357,29 @@ When 'quit' is set, quits window when any other key is pressed."
     (evil-define-key 'motion ediff-mode-map (kbd t-leader-alt) t-leader-map)))
 
 ;;; search
-(defun t/consult-line-dwim (&optional ignore init)
-  "'consult-line', also in 'vterm-mode', without returning to prompt when done."
+(defun t/consult-line-dwim (&optional _ignore init)
+  "Use `consult-ripgrep-file' when visiting a file, otherwise use `consult-line'."
   (interactive)
   (when (derived-mode-p 'vterm-mode)
     (vterm-copy-mode 1))
-  (consult-line init))
+  (let ((file (buffer-file-name (buffer-base-buffer))))
+    (if file
+        (t/consult-ripgrep-file file init)
+      (consult-line init))))
+
+(defun t/consult-ripgrep-file (file &optional initial)
+  "Ripgrep search restricted to a single FILE."
+  (interactive (list (or (buffer-file-name)
+                         (read-file-name "Ripgrep file: " nil nil t))
+                     nil))
+  (let* ((file (expand-file-name file))
+         (default-directory (file-name-directory file)))
+    (consult--grep
+     (concat "Ripgrep (in single file: " file ")")
+     (lambda (_paths) (consult--ripgrep-make-builder (list file)))
+     default-directory
+     initial)))
+
 (defun t/consult-with-region (fn)
   "Run consult 'fn' with selected region as the query."
   (lambda (arg)
