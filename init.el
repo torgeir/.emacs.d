@@ -1159,7 +1159,7 @@ When 'quit' is set, quits window when any other key is pressed."
 				                        )))
 (keymap-set t-leader-map "RET" #'consult-bookmark)
 (keymap-set t-leader-map "u" #'universal-argument)
-(keymap-set t-leader-map t-leader #'find-file)
+(keymap-set t-leader-map t-leader #'consult-fd)
 ;; leader map minibuffer
 (let ((maps (list minibuffer-local-map
 		              minibuffer-local-ns-map
@@ -1391,7 +1391,7 @@ When 'quit' is set, quits window when any other key is pressed."
       (let ((this-command fn)
             (real-this-command fn))
         (funcall fn arg region)))))
-(keymap-set t-leader-map "." (t/consult-with-region 'consult-find))
+(keymap-set t-leader-map "." (t/consult-with-region 'consult-fd))
 (keymap-set t-leader-map "s s" (t/consult-with-region 't/consult-line-dwim))
 (keymap-set t-leader-map "s S" (t/consult-with-region 'consult-line-multi))
 (keymap-set t-leader-map "s p" (t/consult-with-region 'consult-ripgrep))
