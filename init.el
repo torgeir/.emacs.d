@@ -2869,6 +2869,7 @@ With prefix ARG, insert the result inline instead. =>."
         (run-with-timer 6 nil (lambda (o) (delete-overlay o)) ov)))))
 (global-set-key (kbd "C-x C-e") #'t/eval-last-sexp-overlay)
 
+;;; sudo edit
 (defun t/sudo-edit (&optional arg)
   "Edit currently visited file as root."
   (interactive "P")
