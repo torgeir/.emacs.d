@@ -1644,9 +1644,9 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set evil-insert-state-map "C-e" #'evil-end-of-line)
   (keymap-set evil-normal-state-map "C-k" #'kill-line)
   (keymap-set evil-insert-state-map "C-k" #'kill-line)
-  (keymap-set evil-normal-state-map "M-<up>" #'t-move-line-up)
-  (keymap-set evil-normal-state-map "M-<down>" #'t-move-line-down)
   ;; org-mode conflicts
+  ;;(keymap-set evil-normal-state-map "M-<up>" nil)
+  ;;(keymap-set evil-normal-state-map "M-<down>" nil)
   ;;(keymap-set evil-normal-state-map "M-<up>" #'t-move-line-up)
   ;;(keymap-set evil-normal-state-map "M-<down>" #'t-move-line-down)
   (after! evil
