@@ -2190,7 +2190,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (when (require 'vertico-sort nil t)
     (setq vertico-sort-function #'vertico-sort-history-alpha))
   (keymap-set vertico-map "M-?" #'minibuffer-completion-help)
-  (keymap-set vertico-map "M-RET" #'minibuffer-force-complete-and-exit)
+  (keymap-set vertico-map "M-<return>" #'vertico-exit-input)
   (keymap-set vertico-map "M-TAB" #'minibuffer-complete)
   (keymap-set global-map "C-<SPC>" #'completion-at-point)
   (keymap-set global-map "C-<tab>" #'completion-at-point)
