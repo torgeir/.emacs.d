@@ -2904,6 +2904,11 @@ With prefix ARG, insert the result inline instead. =>."
 (t-package nix-ts-mode gh "nix-community/nix-ts-mode" "3198317" nil
   :mode (("\\.nix\\'" . nix-ts-mode)))
 
+;;; lang: kotlin
+;; https://gitlab.com/bricka/emacs-kotlin-ts-mode/-/commit/8b909743d2f6e72a8ad3b52e3a5ee412bf7cc4b2
+(t-package kotlin-ts-mode gl "bricka/emacs-kotlin-ts-mode" "8b90974" nil
+  :mode (("\\.kts?\\'" . kotlin-ts-mode)))
+
 ;;; lang: markdown
 (t-package markdown-mode gh "jrblevin/markdown-mode" "107a368" nil
   :commands markdown-mode
