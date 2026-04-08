@@ -1111,15 +1111,17 @@ When 'quit' is set, quits window when any other key is pressed."
                     :family "IosevkaTerm Nerd Font Propo"
                     :height (- t-font-height 20))
 
+(setq t-faces '(default variable-pitch fixed-pitch)
+      t-org-faces '(org-block
+                    org-code
+                    org-verbatim
+                    org-table
+                    org-formula
+                    org-block-begin-line
+                    org-block-end-line
+                    org-meta-line))
 (after! org
-  (dolist (face '(org-block
-                  org-code
-                  org-verbatim
-                  org-table
-                  org-formula
-                  org-block-begin-line
-                  org-block-end-line
-                  org-meta-line))
+  (dolist (face t-org-faces)
     (set-face-attribute face nil :inherit 'fixed-pitch)))
 
 (after! markdown-mode
@@ -1133,12 +1135,13 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set global-map "C-0" (cmd! (text-scale-set 0)))
 (defun t/adjust-font (fn inc)
   (interactive)
-  (dolist (face (list 'default 'variable-pitch 'fixed-pitch))
+  (dolist (face (append t-faces t-org-faces))
     (let ((h (face-attribute face :height)))
       (set-face-attribute face nil :height (funcall fn h inc)))))
 (defun t/reset-font ()
   (interactive)
-  (set-face-attribute 'default nil :height t-font-height))
+  (dolist (face (append t-faces t-org-faces))
+    (set-face-attribute face nil :height t-font-height)))
 (keymap-set global-map "s-<kp-add>" (cmd! (t/adjust-font '+ 10)))
 (keymap-set global-map "s-+" (cmd! (t/adjust-font '+ 10)))
 (keymap-set global-map "s--" (cmd! (t/adjust-font '- 10)))
