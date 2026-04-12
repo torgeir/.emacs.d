@@ -1289,9 +1289,12 @@ When 'quit' is set, quits window when any other key is pressed."
 	       (llama    gh "tarsius/llama" "d430d48")
 	       (with-editor gh "magit/with-editor" "64211dc")
 	       (transient gh "magit/transient" "7131bec"))
+  :init
+  (setq-default magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   :config
   (add-hook 'magit-revision-mode-hook 'toggle-truncate-lines)
   (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
+  (add-hook 'magit-mode-hook 'turn-off-evil-surround-mode)
   (dolist (magit-map (list
 		                  magit-diff-mode-map
 		                  magit-log-mode-map
@@ -1587,6 +1590,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (setq evil-want-integration t
 	      evil-want-keybinding nil
 	      evil-want-C-u-scroll t
+        evil-want-Y-yank-to-eol t
 	      evil-split-window-right t
 	      evil-split-window-below t
 	      evil-move-beyond-eol t
@@ -2910,7 +2914,7 @@ With prefix ARG, insert the result inline instead. =>."
   :commands markdown-mode
   :mode (("\\.md\\'" . markdown-mode))
   :config
-  (markdown-toggle-url-hiding))
+  (comment markdown-toggle-url-hiding))
 
 ;;; lang: xml
 (use-package nxml-mode
