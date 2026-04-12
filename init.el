@@ -2000,7 +2000,11 @@ When 'quit' is set, quits window when any other key is pressed."
     ;; exit from e.g. fzf without going to normal mode, like esc
     (evil-define-key 'insert vterm-mode-map (kbd "M-<escape>") #'vterm-send-escape)
     (evil-define-key 'insert vterm-mode-map (kbd "S-<up>") (cmd! (vterm-send-key "<prior>" nil nil nil)))
-    (evil-define-key 'insert vterm-mode-map (kbd "S-<down>") (cmd! (vterm-send-key "<next>" nil nil nil)))))
+    (evil-define-key 'insert vterm-mode-map (kbd "S-<down>") (cmd! (vterm-send-key "<next>" nil nil nil)))
+    (evil-define-key 'insert vterm-mode-map (kbd "C-M-<up>")    (cmd! (vterm-send-key "<up>" nil t t)))
+    (evil-define-key 'insert vterm-mode-map (kbd "C-M-<right>") (cmd! (vterm-send-key "<right>" nil t t)))
+    (evil-define-key 'insert vterm-mode-map (kbd "C-M-<down>")  (cmd! (vterm-send-key "<down>" nil t t)))
+    (evil-define-key 'insert vterm-mode-map (kbd "C-M-<left>")  (cmd! (vterm-send-key "<left>" nil t t)))))
 
 ;;; vterm: dired, magit etc follows terminal dir
 (after! vterm
