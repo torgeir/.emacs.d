@@ -1183,6 +1183,7 @@ When 'quit' is set, quits window when any other key is pressed."
   ;; dark title bar
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
+  ;; (modify-frame-parameters (selected-frame) default-frame-alist)
   (setq
    ;; makes \ not be interpreted as M-/?
    mac-option-modifier 'meta
@@ -1221,7 +1222,11 @@ When 'quit' is set, quits window when any other key is pressed."
 (setq display-line-numbers-type 'relative)
 
 ;;; toggles
-(keymap-set t-leader-map "t d" #'toggle-debug-on-error)
+(keymap-set t-leader-map "t d"
+            (cmd!
+             (set-window-dedicated-p (selected-window)
+                                     (not (window-dedicated-p (selected-window))))))
+(keymap-set t-leader-map "t D" #'toggle-debug-on-error)
 (keymap-set t-leader-map "t e" #'global-emojify-mode)
 (keymap-set t-leader-map "t i" (defun t/toggle-images ()
 				                         (interactive)
