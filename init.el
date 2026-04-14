@@ -2011,6 +2011,7 @@ When 'quit' is set, quits window when any other key is pressed."
     (evil-define-key 'insert vterm-mode-map (kbd "M-<escape>") #'vterm-send-escape)
     (evil-define-key 'insert vterm-mode-map (kbd "S-<up>") (cmd! (vterm-send-key "<prior>" nil nil nil)))
     (evil-define-key 'insert vterm-mode-map (kbd "S-<down>") (cmd! (vterm-send-key "<next>" nil nil nil)))
+    (evil-define-key 'insert vterm-mode-map (kbd "C-x")    (cmd! (vterm-send-key "<x>" nil nil t)))
     (evil-define-key 'insert vterm-mode-map (kbd "C-M-<up>")    (cmd! (vterm-send-key "<up>" nil t t)))
     (evil-define-key 'insert vterm-mode-map (kbd "C-M-<right>") (cmd! (vterm-send-key "<right>" nil t t)))
     (evil-define-key 'insert vterm-mode-map (kbd "C-M-<down>")  (cmd! (vterm-send-key "<down>" nil t t)))
