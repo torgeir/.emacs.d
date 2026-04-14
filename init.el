@@ -870,7 +870,8 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
 		            (message "Ready, go.")))))
 
 ;;; custom
-(setq custom-file null-device)
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
 
 ;;; server
 (require 'server)
