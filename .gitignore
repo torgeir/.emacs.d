@@ -32,3 +32,5 @@
 /ielm-history.eld
 /eshell/
 /.org-id-locations
+/custom.el
+/.claude/
