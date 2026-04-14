@@ -2670,7 +2670,7 @@ words of the candidate, respectively."
   "Sets the transparency of the frame window. 0=transparent/100=opaque."
   (interactive)
   (let* ((f (window-frame (selected-window)))
-         (v (or v
+         (v (or (and (boundp 'v) v)
                 (string-to-number
                  (read-string (format "Opacity is %s. Enter a value from 0 - 100, or press enter for 100: "
                                       (frame-parameter f 'alpha))
