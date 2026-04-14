@@ -1945,6 +1945,7 @@ When 'quit' is set, quits window when any other key is pressed."
     (add-hook 'project-switch-project-hook #'t--persp-switch-to-project)))
 
 ;;; themes
+(t-package catppuccin-theme gh "catppuccin/emacs" "4544014" nil)
 (t-package doric-themes gh "protesilaos/doric-themes" "86a3b91" nil
   :init
   (setq doric-themes-to-toggle '(doric-fire doric-water)
