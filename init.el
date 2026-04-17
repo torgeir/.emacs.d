@@ -1327,6 +1327,8 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-g-map "b" #'t/browse-git-repo)
 (keymap-set t-leader-g-map "g" #'magit-status)
 (keymap-set t-leader-g-map "l" #'magit-log)
+(keymap-set t-leader-g-map "L" #'magit-log-buffer-file)
+(keymap-set t-leader-g-map "B" #'magit-blame)
 (keymap-set t-leader-g-map "d" #'magit-diff-dwim)
 (keymap-set t-leader-g-map "e" #'magit-ediff-dwim)
 (keymap-set t-leader-g-map "P" #'magit-push)
