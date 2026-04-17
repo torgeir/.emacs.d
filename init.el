@@ -2529,6 +2529,8 @@ words of the candidate, respectively."
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m h")) #'org-toggle-heading)
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m t i")) #'org-toggle-inline-images)
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m i t")) #'org-toggle-inline-images)
+    (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m c i")) #'org-clock-in)
+    (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m c o")) #'org-clock-out)
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m l l")) #'org-insert-link)
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " m l t")) #'org-toggle-link-display)
     (evil-define-key '(normal motion visual) org-mode-map (kbd (concat t-leader " n b")) #'org-narrow-to-block)
