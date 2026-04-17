@@ -923,6 +923,12 @@ When 'quit' is set, quits window when any other key is pressed."
       (auth-source-forget-all-cached))
     (apply 'auth-source-pick-first-password args)))
 
+;;; kill ring
+;; save external clipboard content into the kill ring before overwriting it.
+(setq save-interprogram-paste-before-kill t)
+;; don't clutter the kill ring with identical entries from repeated kills.
+(setq kill-do-not-save-duplicates t)
+
 ;;; default binds
 (keymap-set global-map "s-a" #'mark-whole-buffer)
 (keymap-set global-map "s-c" #'kill-ring-save)
@@ -1073,8 +1079,20 @@ When 'quit' is set, quits window when any other key is pressed."
 (setq auto-window-vscroll nil)
 (setq scroll-preserve-screen-position t)
 
+;; disable bidirectional display reordering for LTR-only text; big perf win in large files.
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+(setq bidi-inhibit-bpa t)
+
+;; don't draw a cursor or paint selections in windows that aren't focused.
+(setq cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
+
 ;; reduce lag while typing in large buffers.
 (setq redisplay-skip-fontification-on-input t)
+
+;; defer syntax highlighting until you stop typing, avoiding mid-keystroke stutter.
+(setq jit-lock-defer-time 0)
 
 ;; no backups, lockfiles, or autosave files.
 (setq make-backup-files nil)
@@ -1896,6 +1914,9 @@ When 'quit' is set, quits window when any other key is pressed."
   :config
   (add-hook 'compilation-filter-hook #'ansi-color-compilation-filter))
 
+;; automatically chmod +x any saved file that starts with a shebang line.
+(add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
+
 ;;; highlight TODO
 (t-package hl-todo gh "tarsius/hl-todo" "9540fc4" nil
   :config
@@ -2206,7 +2227,9 @@ When 'quit' is set, quits window when any other key is pressed."
 (use-package savehist
   :init
   ;; Persist minibuffer history for Vertico and other completions.
-  (savehist-mode))
+  (savehist-mode)
+  ;; also persist the kill ring so clipboard history survives Emacs restarts.
+  (setq savehist-additional-variables '(kill-ring search-ring regexp-search-ring)))
 
 ;;; window undo redo
 (use-package winner
@@ -2443,6 +2466,9 @@ words of the candidate, respectively."
 
 ;;; eglot
 (use-package eglot)
+
+;; default read buffer is 64KB; LSP servers routinely send multi-MB responses.
+(setq read-process-output-max (* 4 1024 1024))
 
 (after! eglot
   (setq eglot-connect-timeout (* 60 20)
