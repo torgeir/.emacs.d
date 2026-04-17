@@ -1815,8 +1815,9 @@ When 'quit' is set, quits window when any other key is pressed."
   (let ((win (display-buffer-in-side-window
               buffer
               (append alist
-                      '((side . left)
+                      `((side . left)
                         (slot . 0)
+                        (window-width . ,(t--sidebar-width))
                         (window-parameters . ((no-delete-other-windows . t))))))))
     (when (bufferp win)
       (setq win (get-buffer-window win)))
@@ -1826,8 +1827,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 (add-to-list 'display-buffer-alist
              `(,(concat "^" (regexp-quote t-sidebar-buffer-prefix))
-               (t--display-sidebar)
-               (window-width . ,(t--sidebar-width))))
+               (t--display-sidebar)))
 
 (defun t-toggle-sidebar ()
   (interactive)
