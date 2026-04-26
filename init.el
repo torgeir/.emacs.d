@@ -3028,6 +3028,15 @@ With prefix ARG, insert the result inline instead. =>."
   :init
   (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode)))
 
+;;; pdf tools
+(t-package pdf-tools gh "vedang/pdf-tools" "365f882" nil
+  :mode (("\\.pdf\\'" . pdf-view-mode))
+  :config
+  (after! evil
+    (evil-define-key 'normal pdf-view-mode-map (kbd t-leader) t-leader-map)
+    (evil-define-key 'normal pdf-view-mode-map (kbd "p") 'pdf-view-previous-page)
+    (evil-define-key 'normal pdf-view-mode-map (kbd "n") 'pdf-view-next-page)))
+
 ;;; tramp
 ;; https://coredumped.dev/2025/06/18/making-tramp-go-brrrr./
 (after! tramp
