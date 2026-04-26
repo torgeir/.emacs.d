@@ -3029,6 +3029,17 @@ With prefix ARG, insert the result inline instead. =>."
   (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode)))
 
 ;;; tramp
+(after! tramp-gvfs
+  ;; Tramp persists the "gio-tool" check to ~/.emacs.d/tramp. If a nil was
+  ;; cached in a session where gio wasn't found, it sticks across restarts and
+  ;; causes Tramp to keep calling the removed gvfs-* binaries instead of gio.
+  ;; Flush any stale nil entries so the check re-runs fresh each session.
+  (maphash
+   (lambda (key _)
+     (when (and (tramp-file-name-p key)
+                (null (tramp-get-connection-property key "gio-tool" :missing)))
+       (tramp-flush-connection-property key "gio-tool")))
+   tramp-cache-data))
 ;; https://coredumped.dev/2025/06/18/making-tramp-go-brrrr./
 (after! tramp
   (setq tramp-verbose 2
