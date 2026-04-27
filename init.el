@@ -2246,10 +2246,10 @@ When 'quit' is set, quits window when any other key is pressed."
 (use-package emacs
   :hook (;; enable arrow at end of line when wrapping
 	       (after-init . global-visual-line-mode)
-         ;; open .gz files automatically
-         (after-init . auto-compression-mode)
 	       ;; indent soft wraps
 	       (after-init . global-visual-wrap-prefix-mode)
+         ;; open .gz files automatically
+         (after-init . auto-compression-mode)
 	       ;; always revert
 	       (after-init . global-auto-revert-mode))
   :init
