@@ -2238,6 +2238,10 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set t-leader-map "w u" #'winner-undo)
   (keymap-set t-leader-map "w r" #'winner-redo))
 
+
+(setq-default truncate-lines t
+              ;;truncate-partial-width-windows nil
+              )
 ;;; emacs
 (use-package emacs
   :hook (;; enable arrow at end of line when wrapping
