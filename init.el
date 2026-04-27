@@ -1668,19 +1668,6 @@ When 'quit' is set, quits window when any other key is pressed."
     (evil-define-key 'normal Buffer-menu-mode-map (kbd "RET") #'Buffer-menu-select)
     (evil-define-key 'motion Buffer-menu-mode-map (kbd "RET") #'Buffer-menu-select)))
 
-;;; evil folds, diy
-(defun t-fold-closed-at-point-p ()
-  (let ((p (line-end-position)))
-    (or (get-char-property p 'invisible)
-        (cl-some (lambda (ov) (overlay-get ov 'invisible)) (overlays-at p)))))
-(after! evil
-  (evil-define-command t-fold-zA ()
-    (if (t-fold-closed-at-point-p)
-        (evil-open-fold-rec)
-      (evil-toggle-fold)))
-  ;; switcharoo, fold like vim
-  (define-key evil-normal-state-map (kbd "zA") #'evil-toggle-fold)
-  (define-key evil-normal-state-map (kbd "za") #'t-fold-zA))
 
 ;;; evil-collection
 (t-package evil-collection gh "emacs-evil/evil-collection" "7680834" nil
@@ -2924,22 +2911,12 @@ With prefix ARG, insert the result inline instead. =>."
       (find-alternate-file (format fmt buffer-file-name)))))
 
 ;;; lang: prog
-(add-hook 'prog-mode-hook 'outline-minor-mode)
 (add-hook 'prog-mode-hook 'editorconfig-mode)
 
-;;; lang: prog, outline
-(after! outline
-  (define-key outline-minor-mode-map [double-mouse-1]
-              (defun t/outline-double-click (event)
-                "Toggle outline fold at mouse EVENT using `t-fold-zA'."
-                (interactive "e")
-                (mouse-set-point event)
-                (call-interactively #'t-fold-zA))))
-
 ;;; lang: elisp
-(add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
 (t/set-pairs 'emacs-lisp-mode '((?` . ?')))
-(add-hook 'inferior-emacs-lisp-mode 'enable-paredit-mode)
+(add-hook 'inferior-emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
 
 ;;; lang: nix
 (t-package nix-ts-mode gh "nix-community/nix-ts-mode" "3198317" nil
@@ -2954,8 +2931,8 @@ With prefix ARG, insert the result inline instead. =>."
 (t-package markdown-mode gh "jrblevin/markdown-mode" "107a368" nil
   :commands markdown-mode
   :mode (("\\.md\\'" . markdown-mode))
-  :config
-  (comment markdown-toggle-url-hiding))
+  :hook ((markdown-mode-hook . outline-minor-mode))
+  :config (comment markdown-toggle-url-hiding))
 
 ;;; lang: xml
 (use-package nxml-mode
@@ -3074,6 +3051,61 @@ With prefix ARG, insert the result inline instead. =>."
              (list "d"
                    (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
                    "show diff between the buffer and its file"))
+
+;;; fold: treesit-fold
+(t-package treesit-fold gh "emacs-tree-sitter/treesit-fold" "e6b215b" nil
+  :hook
+  ((kotlin-ts-mode     . treesit-fold-mode)
+   (typescript-ts-mode . treesit-fold-mode)
+   (js-ts-mode         . treesit-fold-mode)
+   (tsx-ts-mode        . treesit-fold-mode)
+   (bash-ts-mode       . treesit-fold-mode)
+   (nix-ts-mode        . treesit-fold-mode)
+   (python-ts-mode     . treesit-fold-mode)
+   (rust-ts-mode       . treesit-fold-mode)
+   (go-ts-mode         . treesit-fold-mode)
+   (json-ts-mode       . treesit-fold-mode)
+   (css-ts-mode        . treesit-fold-mode)
+   (html-ts-mode       . treesit-fold-mode)
+   (toml-ts-mode       . treesit-fold-mode)
+   (dockerfile-ts-mode . treesit-fold-mode)
+   ))
+
+;;; fold: outline-indent
+(t-package outline-indent gh "jamescherti/outline-indent.el" "996f9cd" nil
+  :init
+  (setq outline-indent-ellipsis "..."
+        outline-minor-mode-use-buttons nil)
+  :commands (outline-indent-minor-mode)
+  :hook
+  ((yaml-ts-mode        . outline-indent-minor-mode)
+   (python-mode-hook    . outline-indent-minor-mode)
+   (python-ts-mode-hook . outline-indent-minor-mode)
+   (yaml-mode-hook      . outline-indent-minor-mode)
+   (yaml-ts-mode-hook   . outline-indent-minor-mode)))
+
+;;; fold: kirigami
+(t-package kirigami gh "jamescherti/kirigami.el" "2201dbf" nil
+  :commands (kirigami-toggle-fold
+             kirigami-open-fold-rec
+             kirigami-open-fold
+             kirigami-open-folds
+             kirigami-close-fold
+             kirigami-close-folds)
+  :init
+  (after! evil
+    (keymap-set evil-normal-state-map "z a" #'kirigami-toggle-fold)
+    (keymap-set evil-normal-state-map "z A" #'kirigami-open-fold-rec)
+    (keymap-set evil-normal-state-map "z c" #'kirigami-close-fold)
+    (keymap-set evil-normal-state-map "z o" #'kirigami-open-fold)
+    (keymap-set evil-normal-state-map "z r" #'kirigami-open-folds)
+    (keymap-set evil-normal-state-map "z m" #'kirigami-close-folds))
+  (after! outline
+    (define-key outline-minor-mode-map [double-mouse-1]
+                (defun t/fold-double-click (event)
+                  (interactive "e")
+                  (mouse-set-point event)
+                  (call-interactively #'kirigami-toggle-fold)))))
 
 ;;; support local only config
 (require 'private-init (expand-file-name "private-init.el") t)
