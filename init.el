@@ -1832,6 +1832,9 @@ When 'quit' is set, quits window when any other key is pressed."
           (dired-hide-details-mode)))
       (progn
         (pop-to-buffer sidebar-name)
+        (with-current-buffer sidebar-name
+          (visual-line-mode -1)
+          (setq-local truncate-lines t))
         (set-window-dedicated-p (selected-window) t)
         (set-window-parameter (selected-window) 'no-delete-other-windows t)))))
 
@@ -1844,7 +1847,10 @@ When 'quit' is set, quits window when any other key is pressed."
   (add-hook 'dired-mode-hook
             (defun t/dired-setup-hidden-files ()
               (dired-omit-mode 1)
-              (setq-local dired-omit-files "^\\."))))
+              (setq-local dired-omit-files "^\\.")
+              ;; Keep sidebar/dired entries on one visual line.
+              (visual-line-mode -1)
+              (setq-local truncate-lines t))))
 (after! '(dired evil)
   (defun t-dired-k ()
     "Kill subdir."
