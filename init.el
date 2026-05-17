@@ -912,13 +912,18 @@ When 'quit' is set, quits window when any other key is pressed."
   (funcall
    (t/micro-state
     nil
-    "p" 'evil-scroll-up
+    "p" (cmd!
+         (condition-case nil
+             (call-interactively 'evil-scroll-up)
+           (error
+            (when (derived-mode-p 'notmuch-show-mode)
+              (notmuch-show-previous-thread-show)))))
     "n" (cmd!
-         (condition-case err
+         (condition-case nil
              (call-interactively 'evil-scroll-down)
            (error
             (when (derived-mode-p 'notmuch-show-mode)
-              (call-interactively 'notmuch-show-next-thread-show))))))))
+              (notmuch-show-next-thread-show))))))))
 
 ;;; secrets: refresh cache
 (defun t/read-first-secret (&rest args)
@@ -2676,6 +2681,9 @@ words of the candidate, respectively."
   (add-hook 'notmuch-show-mode-hook 'olivetti-mode)
   (add-hook 'notmuch-show-mode-hook 't/read)
   (add-hook 'notmuch-search-mode-hook 'olivetti-mode)
+  (add-hook 'notmuch-search-mode-hook (cmd!
+                                       (visual-line-mode -1)
+                                       (setq-local truncate-lines t)))
   (keymap-set t-leader-map "o m" 'notmuch)
   (keymap-set t-leader-map "o M" (cmd! (notmuch) (t/fetch-mail))))
 
