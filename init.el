@@ -3148,3 +3148,37 @@ With prefix ARG, insert the result inline instead. =>."
 (add-hook 'after-init-hook 'display-time-mode)
 
 (t--check-conflicts)
+
+;;; supernote
+
+(defun t/supernote--resolve-date (&optional date)
+  "Return DATE (YYYYMMDD) or the closest org timestamp date at point, or today's date."
+  (or
+   date
+   (when-let* ((closest-heading-pos (org-element-begin
+                                     (org-element-lineage (org-element-at-point) '(headline) 'with-self)))
+               (timestamp-cons (let ((pos (point)))
+                                 (if (re-search-backward "\\[[0-9]" closest-heading-pos t 1)
+                                     (save-excursion (org-element-timestamp-parser))
+                                   nil)))
+               (timestamp (cadr timestamp-cons)))
+     (let* ((y (plist-get timestamp :year-start))
+            (m (plist-get timestamp :month-start))
+            (d (plist-get timestamp :day-start)))
+       (format "%s%02d%02d" y m d)))
+   (format-time-string "txt %Y%m%d" nil "Europe/Oslo")))
+
+(defun t/supernote (&optional search-date)
+  "Search for supernote exports, using `consult-fd', from the resolved date."
+  (interactive)
+  (after! embark
+    (add-to-list 'embark-default-action-overrides '(file . find-file)))
+  (consult-fd
+   (concat (getenv "HOME") "/Dropbox/Supernote")
+   (concat (t/supernote--resolve-date search-date))))
+
+(defun t/insert-supernote-link (&optional date)
+  "Insert an org link that runs `t/supernote' for DATE (YYYYMMDD)."
+  (interactive)
+  (let* ((d (t/supernote--resolve-date date)))
+    (insert (format "[[elisp:(t/supernote %S)][Notes %s]]" d d))))
