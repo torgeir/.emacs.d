@@ -1290,8 +1290,11 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "c c" #'compile)
 (keymap-set t-leader-map "c d" #'xref-find-definitions)
 
+;;; m-x using leader
+(keymap-set t-leader-map "x" #'execute-extended-command)
+
 ;;; org-capture
-(keymap-set t-leader-map "x" #'org-capture)
+(keymap-set t-leader-map "X" #'org-capture)
 (keymap-set t-leader-map "n p" #'narrow-to-page)
 (keymap-set t-leader-map "n d" #'narrow-to-defun)
 (keymap-set t-leader-map "n r" #'narrow-to-region)
