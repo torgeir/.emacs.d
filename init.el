@@ -3182,6 +3182,7 @@ With prefix ARG, insert the result inline instead. =>."
   (interactive)
   (let* ((d (t/supernote--resolve-date date)))
     (insert (format "[[elisp:(t/supernote %S)][Notes %s]]" d d))))
+
 ;;; t-defun pr's
 (t-package f gh "rejeep/f.el" "931b6d0" nil)
 (t-package browse-at-remote gh "rmuslimov/browse-at-remote" "38e5ffd" nil
@@ -3197,3 +3198,17 @@ With prefix ARG, insert the result inline instead. =>."
                  '(:host "^personal$" :type "github" :actual-host "github.com"))
     (add-to-list 'browse-at-remote-remote-type-regexps
                  '(:host "^work$" :type "github" :actual-host "github.com"))))
+
+(defun t/visit-git-link-pulls ()
+  "Navigate to /pulls for the current git repo."
+  (interactive)
+  (require 'browse-at-remote)
+  (let* ((origin (magit-get "remote" (or (magit-get-remote "main")
+                                         (magit-get-remote "master")) "url"))
+         (url (replace-regexp-in-string ".+:\\(.+\\)\\.git" "\\1" origin)))
+    (let* ((burl (browse-at-remote--get-url-from-remote url))
+           (found (not (plist-get burl :unresolved-host))))
+      (browse-url (if found
+                      (format "%s/pulls" (plist-get burl :url))
+                    (format "https://github.com/%s/pulls" url))))))
+
