@@ -4,5 +4,5 @@ name=$HOME/.emacs.d/server/server
 if [ -n "$INSIDE_EMACS" ]; then
   $emacsclient --socket-name $name -a "" -n -q "$@"
 else
-  $emacsclient --socket-name $name -nw "$@"
+  emacs -nw "$@"
 fi

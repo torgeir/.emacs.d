@@ -913,7 +913,12 @@ When 'quit' is set, quits window when any other key is pressed."
    (t/micro-state
     nil
     "p" 'evil-scroll-up
-    "n" 'evil-scroll-down)))
+    "n" (cmd!
+         (condition-case err
+             (call-interactively 'evil-scroll-down)
+           (error
+            (when (derived-mode-p 'notmuch-show-mode)
+              (call-interactively 'notmuch-show-next-thread-show))))))))
 
 ;;; secrets: refresh cache
 (defun t/read-first-secret (&rest args)
