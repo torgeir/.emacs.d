@@ -3182,3 +3182,18 @@ With prefix ARG, insert the result inline instead. =>."
   (interactive)
   (let* ((d (t/supernote--resolve-date date)))
     (insert (format "[[elisp:(t/supernote %S)][Notes %s]]" d d))))
+;;; t-defun pr's
+(t-package f gh "rejeep/f.el" "931b6d0" nil)
+(t-package browse-at-remote gh "rmuslimov/browse-at-remote" "38e5ffd" nil
+  :deps ((dash gh "magnars/dash.el" "d3a84021")
+         (f gh "rejeep/f.el" "931b6d0")
+         (s gh "magnars/s.el" "dda84d3")
+         (cl-lib sav "emacs/elpa.git" "790948a"))
+  :init
+  (keymap-set t-leader-g-map "o o" #'browse-at-remote)
+  :config
+  (progn ;; after! browse-at-remote
+    (add-to-list 'browse-at-remote-remote-type-regexps
+                 '(:host "^personal$" :type "github" :actual-host "github.com"))
+    (add-to-list 'browse-at-remote-remote-type-regexps
+                 '(:host "^work$" :type "github" :actual-host "github.com"))))
