@@ -2253,7 +2253,9 @@ When 'quit' is set, quits window when any other key is pressed."
               )
 ;;; emacs
 (use-package emacs
-  :hook (;; enable arrow at end of line when wrapping
+  :hook (
+         (after-init . t/exec-path-from-shell)
+         ;; enable arrow at end of line when wrapping
 	       (after-init . global-visual-line-mode)
 	       ;; indent soft wraps
 	       (after-init . global-visual-wrap-prefix-mode)
