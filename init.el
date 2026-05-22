@@ -2587,7 +2587,14 @@ words of the candidate, respectively."
                     (org-level-7 . 1.1)
                     (org-level-8 . 1.1)))
       (set-face-attribute (car face) nil :font t-font :weight 'bold :height (cdr face)))
-    (set-face-attribute 'org-document-title nil :font t-font :weight 'bold :height 1.8))
+    (set-face-attribute 'org-document-title nil :font t-font :weight 'bold :height 1.8)
+    (progn
+      (set-face-attribute 'org-level-1 nil :foreground "#FFFFFF")
+      (set-face-attribute 'org-level-2 nil :foreground "#EAF6F8")
+      (set-face-attribute 'org-level-3 nil :foreground "#CFEAED")
+      (set-face-attribute 'org-level-4 nil :foreground "#7FB9C6")
+      (set-face-attribute 'org-level-5 nil :foreground "#2D6F7E"))
+    )
   (t/set-org-faces)
   (add-hook 'after-load-theme-hook #'t/set-org-faces)
   ;; templates
