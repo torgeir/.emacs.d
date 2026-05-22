@@ -1319,6 +1319,10 @@ When 'quit' is set, quits window when any other key is pressed."
   :init
   (setq-default magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   :config
+  (defun t/magit-recenter-top (&rest _) (when (called-interactively-p 'interactive) (recenter 0)))
+  (advice-add 'magit-section-forward-sibling :after 't/magit-recenter-top)
+  (advice-add 'magit-section-backward-sibling :after 't/magit-recenter-top)
+
   (add-hook 'magit-revision-mode-hook 'toggle-truncate-lines)
   (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh)
   (add-hook 'magit-mode-hook 'turn-off-evil-surround-mode)
