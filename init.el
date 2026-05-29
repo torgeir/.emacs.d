@@ -3220,3 +3220,52 @@ With prefix ARG, insert the result inline instead. =>."
                       (format "%s/pulls" (plist-get burl :url))
                     (format "https://github.com/%s/pulls" url))))))
 
+
+;;; diminish diy
+(progn
+  (require 'cl-lib)
+  (defvar mode-line-cleaner-alist
+    `((auto-complete-mode . " α")
+      (anzu-mode . "")
+      (apheleia-mode . " A")
+      (apheleia-global-mode . " A")
+      (eldoc-mode . " e")
+      (global-eldoc-mode . " E")
+      (outline-mode . " O")
+      (outline-minor-mode . " o")
+      (evil-collection-unimpaired-mode . "u")
+      (yas/minor-mode . " υ")
+      (markdown-mode . " md")
+      (rainbow-mode . " r")
+      (paredit-mode . " π"))
+    "Alist for `clean-mode-line'.")
+
+  (defun t/clean-mode-line ()
+    (interactive)
+    (cl-loop for (mode . mode-str) in mode-line-cleaner-alist
+             do (let ((cell (assq mode minor-mode-alist)))
+                  (when cell
+                    (setcdr cell (list mode-str))))
+             when (eq mode major-mode)
+             do (setq mode-name mode-str)))
+
+  (add-hook 'after-change-major-mode-hook #'t/clean-mode-line))
+
+;;; open in intellij
+(defun t/open-in-intellij ()
+  "Opens current file in IntelliJ IDEA."
+  (interactive)
+  (let* ((cmd "/Applications/IntelliJ\\ IDEA.app/Contents/MacOS/idea %s")
+         (args " --line %d --column %d %s")
+         (root (t/project-root))
+         (file-name (buffer-file-name))
+         (command
+          (if file-name
+              (format (concat cmd args)
+                      root
+                      (line-number-at-pos)
+                      (current-column)
+                      (shell-quote-argument file-name))
+            (format cmd root))))
+    (start-process-shell-command "intellij" nil command)
+    (t/osascript-activate "IntelliJ IDEA")))
