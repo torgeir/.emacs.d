@@ -2412,7 +2412,11 @@ words of the candidate, respectively."
 ;;; embark
 (t-package embark gh "oantolin/embark" "e023888" nil
   :commands (embark-act)
-  :deps ((compat gh "emacs-compat/compat" "38df650")))
+  :deps ((compat gh "emacs-compat/compat" "38df650"))
+  :init
+  (progn
+    ;; recenter after skipping with gj in embark export
+    (setq next-error-recenter t)))
 
 ;;; wgrep
 (t-package wgrep gh "mhayashi1120/Emacs-wgrep" "49f09ab" nil)
