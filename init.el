@@ -5,6 +5,12 @@
 
 (defvar t-colors '(:hl "#f5b" :done "#546" :head "#5bf"))
 
+;;; fix temp dir missing when nix-shell emacs
+(when (or (not (file-exists-p temporary-file-directory))
+          (file-remote-p temporary-file-directory))
+  (setenv "TMPDIR" "/tmp")
+  (setq temporary-file-directory "/tmp/"))
+
 ;;; macros
 (defmacro comment (&rest _ignore) nil)
 (comment (funcall (t/micro-state nil "j" 'previous-line)))
