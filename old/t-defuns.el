@@ -49,8 +49,8 @@
 (defmacro t/rename-modeline (package-name mode new-name)
   "per package modeline rename for mode."
   `(eval-after-load ,package-name
-    '(defadvice ,mode (after t/rename-modeline activate)
-       (setq mode-name ,new-name))))
+     '(defadvice ,mode (after t/rename-modeline activate)
+        (setq mode-name ,new-name))))
 
 (defun t/json-format ()
   "pretty prints json in selected region."
@@ -317,13 +317,6 @@ If FILEXT is provided, return files with extension FILEXT instead."
     (with-current-buffer buffer
       (when (eq 'org-mode major-mode)
         (org-redisplay-inline-images)))))
-
-(defun t/project-root ()
-  "Get project root without throwing."
-  (interactive)
-  (let (projectile-require-project-root strict-p)
-    (or (projectile-project-root)
-        default-directory)))
 
 (defun t/volatile-kill-buffer ()
   "Kill current buffer unconditionally."
@@ -1337,7 +1330,7 @@ Prefix arg will force eww."
 (defun find-up (file)
   (interactive)
   (let* ((current-dir default-directory)
-         (project-root (projectile-project-root))
+         (project-root (t/project-root))
          (home-dir (t/user-file "")))
     (while (and (not (file-exists-p (expand-file-name file current-dir)))
                 (not (equal current-dir project-root))

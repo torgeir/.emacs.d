@@ -44,18 +44,18 @@
 ;;; modeline string segments, reloadable
 ;; inspect mode-line-format to find extension points
 ;; add to list prevents multiple occurrences
-(setq t-modeline-format " ")
-(setq t-modeline-sexp '(t-modeline-format ("" t-modeline-format)))
-(setq mode-line-misc-info (remove t-modeline-sexp mode-line-misc-info))
-(add-to-list 'mode-line-misc-info t-modeline-sexp)
+;; (setq t-modeline-format " ")
+;; (setq t-modeline-sexp '(t-modeline-format ("" t-modeline-format)))
+;; (setq mode-line-misc-info (remove t-modeline-sexp mode-line-misc-info))
+;; (add-to-list 'mode-line-misc-info t-modeline-sexp)
 
 ;;; modeline function segments, reloadable
-(defun t/modeline-segs ()
-  (when (fboundp 't/tasks-left)
-    (list "[" (t/tasks-left) "]")))
-(setq t-modeline-eval '(:eval (t/modeline-segs)))
-(setq mode-line-misc-info (remove t-modeline-eval mode-line-misc-info))
-(add-to-list 'mode-line-misc-info t-modeline-eval)
+;; (defun t/modeline-segs ()
+;;   (when (fboundp 't/tasks-left)
+;;     (list "[" (t/tasks-left) "]")))
+;; (setq t-modeline-eval '(:eval (t/modeline-segs)))
+;; (setq mode-line-misc-info (remove t-modeline-eval mode-line-misc-info))
+;; (add-to-list 'mode-line-misc-info t-modeline-eval)
 
 ;;; system checks
 (defconst is-mac (eq system-type 'darwin))
@@ -968,6 +968,9 @@ When 'quit' is set, quits window when any other key is pressed."
       t-package-conflicts nil)
 (clrhash t-package-meta)
 (clrhash t-package-status)
+
+;;; modeline: sleek
+(t-package sleek-modeline gh "abidanBrito/sleek-modeline" "e3e2e4a" nil :hook after-init-hook)
 
 (t-package s gh "magnars/s.el" "dda84d3" nil)
 
@@ -2426,7 +2429,7 @@ words of the candidate, respectively."
   :init
   (progn
     ;; recenter after skipping with gj in embark export
-    (setq next-error-recenter t)))
+    (setq next-error-recenter 6)))
 
 ;;; wgrep
 (t-package wgrep gh "mhayashi1120/Emacs-wgrep" "49f09ab" nil)
@@ -3289,3 +3292,9 @@ With prefix ARG, insert the result inline instead. =>."
   (setq indent-bars-color '(highlight :face-bg t :blend 0.1))
   :config
   (keymap-set t-leader-map "t g" #'indent-bars-mode))
+(defun t/jira-insert ()
+  (interactive)
+  (insert (shell-command-to-string "va")))
+
+;;; t-defuns
+(load-file (expand-file-name "~/.emacs.d/old/t-defuns.el"))
