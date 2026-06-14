@@ -1963,7 +1963,7 @@ When 'quit' is set, quits window when any other key is pressed."
 	      (expand-file-name "perspective-state.el" user-emacs-directory)
 	      persp-mode-prefix-key nil
 	      persp-suppress-no-prefix-key-warning t
-	      persp-show-modestring 'header)
+	      persp-show-modestring t)
   :config
   (persp-mode 1)
   (t/sync-persp-face)

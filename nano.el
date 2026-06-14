@@ -100,9 +100,9 @@
   (let ((bg (face-background 'default)))
     (dolist (face '(mode-line mode-line-active mode-line-inactive))
       (set-face-attribute face nil
-                          :background bg :foreground bg
+                          :background bg :foreground (face-foreground 'nano-faded)
                           :underline nil :overline nil
-                          :height 0.1 :box `(:line-width 1 :color ,bg))))
+                          :height 1.0 :box `(:line-width 1 :color ,bg))))
   )
 
 (defun nano-light (&rest args)
@@ -139,7 +139,8 @@
 (if (member "-light" command-line-args) (nano-light) (nano-dark))
 
 ;; --- Header & mode lines ----------------------------------------------------
-(setq-default mode-line-format "")
+(setq-default mode-line-format
+              '(:eval (when (mode-line-window-selected-p) (persp-mode-line))))
 (setq-default header-line-format
               '(:eval
                 (let* ((prefix (cond (buffer-read-only     '("RO" . nano-default-i))
@@ -152,8 +153,7 @@
                                                            (t "unknown")))
                                        " mode)")))
                        (coords (format-mode-line "%c:%l "))
-                       (p (unless minimal (persp-mode-line)))
-                       (p-len (string-width (format-mode-line (or p "")))))
+                       (p-len 0))
                   (list
                    (propertize " " 'face (cdr prefix)  'display '(raise -0.25))
                    (propertize (car prefix) 'face (cdr prefix))
@@ -162,15 +162,6 @@
                    (when mode (propertize mode 'face `(:foreground ,(plist-get t-colors :head))))
                    (propertize " " 'display `(space :align-to (- right ,(+ (length coords) p-len 2))))
                    (propertize coords 'face 'nano-faded)
-                   (when p (propertize " " 'face 'nano-faded))
-                   (when p
-                     (mapcar (lambda (s)
-                               (if (and (stringp s)
-                                        (null (get-text-property 0 'face s)))
-                                   (propertize s 'face 'nano-faded)
-                                 s))
-                             (if (listp p) p (list p))))
-                   (when p (propertize " " 'face 'nano-faded))
                    ))))
 
 ;; --- Minibuffer setup -------------------------------------------------------
