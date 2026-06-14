@@ -90,7 +90,7 @@
                   ((nano-faded-i nano-strong) . (show-paren-match))))
     (nano-link-face (car item) (cdr item)))
 
-  ;; Mode & header lines 
+  ;; Mode & header lines
   (set-face-attribute 'header-line nil
                       :background 'unspecified
                       :underline nil
@@ -123,11 +123,11 @@
   "NANO dark theme (based on nord colors)"
 
   (interactive)
-  (nano-set-face 'nano-default "#ECEFF4" "#2E3440") ;; Snow Storm 3 
+  (nano-set-face 'nano-default "#ECEFF4" "#2E3440") ;; Snow Storm 3
   (nano-set-face 'nano-strong "#ECEFF4" nil 'regular) ;; Polar Night 0
   (nano-set-face 'nano-highlight nil "#3B4252")  ;; Polar Night 1
-  (nano-set-face 'nano-subtle nil "#434C5E") ;; Polar Night 2 
-  (nano-set-face 'nano-faded "#677691") ;; 
+  (nano-set-face 'nano-subtle nil "#434C5E") ;; Polar Night 2
+  (nano-set-face 'nano-faded "#677691") ;;
   (nano-set-face 'nano-salient "#81A1C1")  ;; Frost 2
   (nano-set-face 'nano-popout "#D08770") ;; Aurora 1
   (nano-set-face 'nano-critical (plist-get t-colors :head))
