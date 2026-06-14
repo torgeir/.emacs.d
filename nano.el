@@ -105,8 +105,22 @@
                           :height 1.0 :box `(:line-width 1 :color ,bg))))
   )
 
+(defun nano-flatwhite-highlights (kw-fg kw-bg str-fg str-bg const-fg const-bg var-fg var-bg)
+  "Apply flatwhite-style tinted background highlights to key font-lock faces.
+Each pair (FG BG) tints keywords, strings, constants, and variables
+with a pastel background + darker same-hue foreground."
+  (dolist (spec `((font-lock-keyword-face       ,kw-fg    ,kw-bg)
+                  (font-lock-builtin-face        ,kw-fg    ,kw-bg)
+                  (font-lock-string-face         ,str-fg   ,str-bg)
+                  (font-lock-string-delimiter-face ,str-fg ,str-bg)
+                  (font-lock-constant-face       ,const-fg ,const-bg)
+                  (font-lock-variable-name-face  ,var-fg   ,var-bg)))
+    (set-face-attribute (car spec) nil
+                        :foreground (cadr spec)
+                        :background (caddr spec))))
+
 (defun nano-light (&rest args)
-  "NANO light theme (based on material colors)"
+  "NANO light theme (based on material colors) with flatwhite-style bg highlights"
 
   (interactive)
   (nano-set-face 'nano-default "#37474F" "#FFFFFF") ;; Blue Grey / L800
@@ -117,10 +131,15 @@
   (nano-set-face 'nano-salient "#673AB7") ;; Deep Purple / L500
   (nano-set-face 'nano-popout "#FFAB91") ;; Deep Orange / L200
   (nano-set-face 'nano-critical "#FF6F00") ;; Amber / L900
-  (nano-install-theme))
+  (nano-install-theme)
+  (nano-flatwhite-highlights
+   "#4527A0" "#EDE7F6"   ;; keywords: deep purple text / L50 bg
+   "#2E7D32" "#F1F8E9"   ;; strings:  dark green text / L50 bg
+   "#00695C" "#E0F2F1"   ;; constants: dark teal text / L50 bg
+   "#1A237E" "#E8EAF6")) ;; variables: indigo text / L50 bg
 
 (defun nano-dark (&rest args)
-  "NANO dark theme (based on nord colors)"
+  "NANO dark theme (based on nord colors) with flatwhite-style bg highlights"
 
   (interactive)
   (nano-set-face 'nano-default "#ECEFF4" "#2E3440") ;; Snow Storm 3
@@ -131,7 +150,12 @@
   (nano-set-face 'nano-salient "#81A1C1")  ;; Frost 2
   (nano-set-face 'nano-popout "#D08770") ;; Aurora 1
   (nano-set-face 'nano-critical (plist-get t-colors :head))
-  (nano-install-theme))
+  (nano-install-theme)
+  (nano-flatwhite-highlights
+   "#C397D8" "#352A4A"   ;; keywords: lavender / dark purple bg
+   "#A3BE8C" "#2B3B2B"   ;; strings:  aurora green / dark green bg
+   "#8FBCBB" "#1E3535"   ;; constants: frost teal / dark teal bg
+   "#88C0D0" "#253545")) ;; variables: frost blue / dark blue bg
 
 ;; --- Command line theme chooser ---------------------------------------------
 (add-to-list 'command-switch-alist '("-dark"  . nano-dark))
