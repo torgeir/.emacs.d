@@ -1946,9 +1946,9 @@ When 'quit' is set, quits window when any other key is pressed."
   (when (facep 'persp-selected-face)
     (with-selected-frame (or frame (selected-frame))
       (set-face-attribute 'persp-selected-face nil
-			                    :inherit 'mode-line
-			                    :foreground (face-attribute 'mode-line :foreground nil t)
-			                    :background (face-attribute 'mode-line :background nil t)
+			                    :inherit 'header-line
+			                    :foreground (plist-get t-colors :hl)
+			                    :background 'unspecified
 			                    ))))
 (add-hook 'after-load-theme-hook #'t/sync-persp-face)
 (add-hook 'doric-themes-after-load-theme-hook #'t/sync-persp-face)
@@ -1962,7 +1962,8 @@ When 'quit' is set, quits window when any other key is pressed."
   (setq persp-state-default-file
 	      (expand-file-name "perspective-state.el" user-emacs-directory)
 	      persp-mode-prefix-key nil
-	      persp-suppress-no-prefix-key-warning t)
+	      persp-suppress-no-prefix-key-warning t
+	      persp-show-modestring 'header)
   :config
   (persp-mode 1)
   (t/sync-persp-face)
@@ -1976,20 +1977,23 @@ When 'quit' is set, quits window when any other key is pressed."
     (add-hook 'project-switch-project-hook #'t--persp-switch-to-project)))
 
 ;;; themes
-(t-package batppuccin-mocha-theme gh "bbatsov/batppuccin-emacs" "492b657" nil
-  :config
-  (load-theme 'batppuccin-mocha t))
-(t-package doric-themes gh "protesilaos/doric-themes" "86a3b91" nil
-  :init
-  (setq doric-themes-to-toggle '(doric-fire doric-water)
-	      doric-themes-to-rotate '(doric-water
-                                 doric-valley
-                                 doric-plum
-                                 doric-magma
-                                 doric-almond
-                                 doric-walnut))
-  :config
-  (doric-themes-select 'doric-water))
+;; (t-package batppuccin-mocha-theme gh "bbatsov/batppuccin-emacs" "492b657" nil
+;;   :config
+;;   (load-theme 'batppuccin-mocha t))
+;; (t-package doric-themes gh "protesilaos/doric-themes" "86a3b91" nil
+;;   :init
+;;   (setq doric-themes-to-toggle '(doric-fire doric-water)
+;; 	      doric-themes-to-rotate '(doric-water
+;;                                  doric-valley
+;;                                  doric-plum
+;;                                  doric-magma
+;;                                  doric-almond
+;;                                  doric-walnut))
+;;   :config
+;;   (doric-themes-select 'doric-water))
+
+;;; nano
+(load-file (expand-file-name "~/.emacs.d/nano.el"))
 
 ;;; which-key
 (t-package which-key sav "emacs/elpa.git" "ac5afbe" nil
