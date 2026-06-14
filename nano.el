@@ -130,7 +130,7 @@
   (nano-set-face 'nano-faded "#677691") ;; 
   (nano-set-face 'nano-salient "#81A1C1")  ;; Frost 2
   (nano-set-face 'nano-popout "#D08770") ;; Aurora 1
-  (nano-set-face 'nano-critical "#EBCB8B") ;; Aurora 2
+  (nano-set-face 'nano-critical (plist-get t-colors :head))
   (nano-install-theme))
 
 ;; --- Command line theme chooser ---------------------------------------------

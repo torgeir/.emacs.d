@@ -3277,3 +3277,9 @@ With prefix ARG, insert the result inline instead. =>."
             (format cmd root))))
     (start-process-shell-command "intellij" nil command)
     (t/osascript-activate "IntelliJ IDEA")))
+
+(t-package indent-bars gh "jdtsmith/indent-bars" "f95fee1" nil
+  :init
+  (setq indent-bars-color '(highlight :face-bg t :blend 0.1))
+  :config
+  (keymap-set t-leader-map "t g" #'indent-bars-mode))
