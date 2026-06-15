@@ -3,7 +3,7 @@
 
 (message "Yo.")
 
-(defvar t-colors '(:hl "#f5b" :done "#546" :head "#5bf"))
+(defvar t-colors '(:hl "#f5b" :done "#445" :head "#5bf"))
 
 ;;; fix temp dir missing when nix-shell emacs
 (when (or (not (file-exists-p temporary-file-directory))
@@ -41,7 +41,7 @@
         (insert time)
       time)))
 
-;;; modeline string segments, reloadable
+;;; modeline: string segments, reloadable
 ;; inspect mode-line-format to find extension points
 ;; add to list prevents multiple occurrences
 ;; (setq t-modeline-format " ")
@@ -49,7 +49,7 @@
 ;; (setq mode-line-misc-info (remove t-modeline-sexp mode-line-misc-info))
 ;; (add-to-list 'mode-line-misc-info t-modeline-sexp)
 
-;;; modeline function segments, reloadable
+;;; modeline: function segments, reloadable
 ;; (defun t/modeline-segs ()
 ;;   (when (fboundp 't/tasks-left)
 ;;     (list "[" (t/tasks-left) "]")))
@@ -970,10 +970,12 @@ When 'quit' is set, quits window when any other key is pressed."
 (clrhash t-package-status)
 
 ;;; modeline: sleek
-(t-package sleek-modeline gh "abidanBrito/sleek-modeline" "e3e2e4a" nil :hook after-init-hook)
+;;(t-package sleek-modeline gh "abidanBrito/sleek-modeline" "e3e2e4a" nil :hook after-init-hook)
 
+;;; s.el
 (t-package s gh "magnars/s.el" "dda84d3" nil)
 
+;;; dired defuns
 (defun t/prefix-arg-universal? ()
   "Check if the function was called with the c-u universal prefix."
   (equal '(4) current-prefix-arg))
@@ -1027,10 +1029,10 @@ When 'quit' is set, quits window when any other key is pressed."
 (defun t/dired-ignored? ()
   "File under cursor is ignored by projectile. Only checks file-name-base."
   (interactive)
-  (-any?
-   (lambda (d) (s-matches? d (file-name-base (dired-get-filename nil t))))
-   (and (boundp 'projectile-globally-ignored-directories)
-	      projectile-globally-ignored-directories)))
+  (when (featurep 'projectile)
+    (-any?
+     (lambda (d) (s-matches? d (file-name-base (dired-get-filename nil t))))
+     projectile-globally-ignored-directories)))
 
 (defun t/dired-show-recursively-0 (path)
   "Recursively opens all directories for this path."
@@ -1132,9 +1134,16 @@ When 'quit' is set, quits window when any other key is pressed."
 (defvar t-leader-g-map (make-sparse-keymap) "git")
 (keymap-set t-leader-map "g" t-leader-g-map)
 
+(defun t/bind-leader-maps (&rest maps)
+  (dolist (map maps)
+    (evil-define-key 'normal map (kbd t-leader) t-leader-map)
+    (evil-define-key 'motion map (kbd t-leader) t-leader-map)
+    (evil-define-key 'normal map (kbd t-leader-alt) t-leader-map)
+    (evil-define-key 'motion map (kbd t-leader-alt) t-leader-map)))
+
 ;;; fonts
 (setq t-font "Iosevka Nerd Font Mono")
-(setq t-font-height 200)
+(setq t-font-height 250)
 (set-face-attribute 'default nil
                     :family "Iosevka Nerd Font Mono"
                     :height t-font-height)
@@ -1160,7 +1169,8 @@ When 'quit' is set, quits window when any other key is pressed."
                     org-meta-line))
 (after! org
   (dolist (face t-org-faces)
-    (set-face-attribute face nil :inherit 'fixed-pitch)))
+    (when (facep face)
+      (set-face-attribute face nil :inherit 'fixed-pitch))))
 
 (after! markdown-mode
   (set-face-attribute 'markdown-code-face nil :inherit 'fixed-pitch)
@@ -1174,12 +1184,15 @@ When 'quit' is set, quits window when any other key is pressed."
 (defun t/adjust-font (fn inc)
   (interactive)
   (dolist (face (append t-faces t-org-faces))
-    (let ((h (face-attribute face :height)))
-      (set-face-attribute face nil :height (funcall fn h inc)))))
+    (when (facep face)
+      (let ((h (face-attribute face :height)))
+        (when (numberp h)
+          (set-face-attribute face nil :height (funcall fn h inc)))))))
 (defun t/reset-font ()
   (interactive)
   (dolist (face (append t-faces t-org-faces))
-    (set-face-attribute face nil :height t-font-height)))
+    (when (facep face)
+      (set-face-attribute face nil :height t-font-height))))
 (keymap-set global-map "s-<kp-add>" (cmd! (t/adjust-font '+ 10)))
 (keymap-set global-map "s-+" (cmd! (t/adjust-font '+ 10)))
 (keymap-set global-map "s--" (cmd! (t/adjust-font '- 10)))
@@ -1282,8 +1295,30 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "t u" #'toggle-truncate-lines)
 (keymap-set t-leader-map "t v" #'visual-line-mode)
 (keymap-set t-leader-map "t w" #'whitespace-mode)
-;;(keymap-set t-leader-map "t t" #'doric-themes-toggle)
-(keymap-set t-leader-map "t t" #'doric-themes-rotate)
+
+(defun t/refresh-vterm-bgs ()
+  "Refresh vterm buffer backgrounds after theme change."
+  (dolist (buf (buffer-list))
+    (with-current-buffer buf
+      (when (and (derived-mode-p 'vterm-mode)
+                 (boundp 'vterm--term) vterm--term
+                 (boundp 'vterm--process) (process-live-p vterm--process))
+        (when-let ((win (get-buffer-window buf t)))
+          (let* ((inhibit-read-only t)
+                 (h (window-body-height win))
+                 (w (max vterm-min-window-width
+                         (- (window-body-width win)
+                            (vterm--get-margin-width)))))
+            (when (> h 1)
+              (vterm--set-size vterm--term (1- h) w)
+              (vterm--set-size vterm--term h w))))))))
+(keymap-set t-leader-map "t t" (defun t/nano-theme-rotate ()
+                                 "Toggle between nano-light and nano-dark."
+                                 (interactive)
+                                 (if (eq (frame-parameter nil 'background-mode) 'light)
+                                     (nano-dark)
+                                   (nano-light))
+                                 (t/refresh-vterm-bgs)))
 (keymap-set t-leader-map "t T" #'t/transparency)
 (keymap-set t-leader-map "t r" (cmd!
                                 (buffer-face-mode 'toggle)
@@ -1407,10 +1442,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (add-hook 'ediff-suspend-hook #'t/ediff-restore-wconf 'append)
 
   (after! evil
-    (evil-define-key 'normal ediff-mode-map (kbd t-leader) t-leader-map)
-    (evil-define-key 'motion ediff-mode-map (kbd t-leader) t-leader-map)
-    (evil-define-key 'normal ediff-mode-map (kbd t-leader-alt) t-leader-map)
-    (evil-define-key 'motion ediff-mode-map (kbd t-leader-alt) t-leader-map)))
+    (t/bind-leader-maps ediff-mode-map)))
 
 ;;; search
 (defun t/consult-line-dwim (&optional _ignore init)
@@ -1649,7 +1681,7 @@ When 'quit' is set, quits window when any other key is pressed."
 			                        (frame-parameter nil 'cursor-color)
 			                        (face-foreground 'default nil t))))
 	      (setq evil-emacs-state-cursor '(box "gold")
-	            evil-normal-state-cursor `(box ,normal-color))
+	            evil-normal-state-cursor `(box ,(plist-get t-colors :head)))
 	      (evil-refresh-cursor))))
   (add-hook 'after-load-theme-hook #'t--set-evil-cursors)
   (add-hook 'enable-theme-functions #'t--set-evil-cursors)
@@ -1702,7 +1734,7 @@ When 'quit' is set, quits window when any other key is pressed."
   :init
   (setq evil-collection-setup-minibuffer t
         ;; Don't use zz and zq for org src editing
-        evil-collection-key-blacklist '("ZZ" "ZQ"))
+        evil-collection-key-blacklist '("ZZ" "ZQ" "SPC" "M-SPC"))
   :config
   (evil-collection-init))
 
@@ -1763,25 +1795,19 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; info mode
 (after! (evil info)
-  (evil-define-key 'normal Info-mode-map (kbd t-leader) t-leader-map)
-  (evil-define-key 'motion Info-mode-map (kbd t-leader) t-leader-map)
-  (evil-define-key 'normal Info-mode-map (kbd t-leader-alt) t-leader-map)
-  (evil-define-key 'motion Info-mode-map (kbd t-leader-alt) t-leader-map)
+  (t/bind-leader-maps Info-mode-map)
   (evil-define-key 'normal Info-mode-map (kbd "H") #'Info-history-back)
   (evil-define-key 'normal Info-mode-map (kbd "L") #'Info-history-forward)
   (keymap-set Info-mode-map "<mouse-8>" 'Info-history-back)
   (keymap-set Info-mode-map "<mouse-9>" 'Info-history-forward)
   (unbind-key (kbd "h") 'Info-mode-map)
   (unbind-key (kbd "l") 'Info-mode-map)
-  (add-hook 'Info-mode-hook 'olivetti-mode)
+  ;; (add-hook 'Info-mode-hook 'olivetti-mode)
   (add-hook 'Info-mode-hook 'variable-pitch-mode))
 
 ;;; woman mode
 (after! (evil woman)
-  (evil-define-key 'normal woman-mode-map (kbd t-leader) t-leader-map)
-  (evil-define-key 'motion woman-mode-map (kbd t-leader) t-leader-map)
-  (evil-define-key 'normal woman-mode-map (kbd t-leader-alt) t-leader-map)
-  (evil-define-key 'motion woman-mode-map (kbd t-leader-alt) t-leader-map)
+  (t/bind-leader-maps woman-mode-map)
   (evil-define-key 'normal woman-mode-map (kbd "H") #'WoMan-previous-manpage)
   (evil-define-key 'normal woman-mode-map (kbd "L") #'WoMan-next-manpage)
   (keymap-set woman-mode-map "<mouse-8>" 'WoMan-previous-manpage)
@@ -1789,32 +1815,24 @@ When 'quit' is set, quits window when any other key is pressed."
   (unbind-key (kbd "h") 'woman-mode-map)
   (unbind-key (kbd "l") 'woman-mode-map))
 
-;;; help-mode leader
+;;; help-mode / custom-mode leader
 (after! evil
-  (evil-define-key 'normal help-mode-map (kbd t-leader) t-leader-map)
-  (evil-define-key 'motion help-mode-map (kbd t-leader) t-leader-map)
-  (evil-define-key 'normal help-mode-map (kbd t-leader-alt) t-leader-map)
-  (evil-define-key 'motion help-mode-map (kbd t-leader-alt) t-leader-map))
+  (t/bind-leader-maps help-mode-map custom-mode-map))
 
 ;;; help-mode
 (setq help-window-select t)
 (after! (evil evil-collection)
   (evil-define-key 'normal help-mode-map (kbd "H") #'help-go-back)
-  (evil-define-key 'normal help-mode-map (kbd "L") #'help-go-forward))
+  (evil-define-key 'normal help-mode-map (kbd "L") #'help-go-forward)
+  (t/bind-leader-maps help-mode-map))
 
 ;;; image-mode leader
 (after! (evil image-mode)
-  (evil-define-key 'normal image-mode-map (kbd t-leader) t-leader-map)
-  (evil-define-key 'motion image-mode-map (kbd t-leader) t-leader-map)
-  (evil-define-key 'normal image-mode-map (kbd t-leader-alt) t-leader-map)
-  (evil-define-key 'motion image-mode-map (kbd t-leader-alt) t-leader-map))
+  (t/bind-leader-maps image-mode-map))
 
 ;;; debugger-mode
 (after! (evil debug)
-  (evil-define-key 'normal debugger-mode-map (kbd t-leader) t-leader-map)
-  (evil-define-key 'normal debugger-mode-map (kbd t-leader-alt) t-leader-map)
-  (evil-define-key 'motion debugger-mode-map (kbd t-leader) t-leader-map)
-  (evil-define-key 'motion debugger-mode-map (kbd t-leader-alt) t-leader-map))
+  (t/bind-leader-maps debugger-mode-map))
 
 ;;; t-sidebar
 (defvar t-sidebar-buffer-prefix ":")
@@ -1863,6 +1881,50 @@ When 'quit' is set, quits window when any other key is pressed."
           (setq-local truncate-lines t))
         (set-window-dedicated-p (selected-window) t)
         (set-window-parameter (selected-window) 'no-delete-other-windows t)))))
+
+;;; dired icons
+;; U+F07B = nf-fa-folder, U+F016 = nf-fa-file-o (NF2 PUA range, safe i in Iosevka)
+(defun t/dired-icon (file)
+  (if (file-directory-p file)
+      (char-to-string #xF07B)
+    (char-to-string #xF016)))
+
+(defvar-local t/dired-icons-timer nil)
+
+(defun t/dired-icons-do ()
+  (remove-overlays (point-min) (point-max) 't/dired-icon t)
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (when-let* ((file (dired-get-filename nil t))
+                  (pos  (dired-move-to-filename)))
+        (let ((ov (make-overlay pos pos)))
+          (overlay-put ov 't/dired-icon t)
+          (overlay-put ov 'before-string
+                       (propertize (concat (t/dired-icon file) " ") 'face 'nano-faded))))
+      (forward-line 1))))
+
+(defun t/dired-add-icons ()
+  "Debounce icon redraws so rapid hook calls coalesce into one scan."
+  (when (timerp t/dired-icons-timer)
+    (cancel-timer t/dired-icons-timer))
+  (let ((buf (current-buffer)))
+    (setq t/dired-icons-timer
+          (run-with-idle-timer 0 nil
+                               (lambda ()
+                                 (when (buffer-live-p buf)
+                                   (with-current-buffer buf
+                                     (setq t/dired-icons-timer nil)
+                                     (t/dired-icons-do))))))))
+
+(add-hook 'dired-after-readin-hook         #'t/dired-add-icons)
+(add-hook 'dired-subtree-after-insert-hook #'t/dired-add-icons)
+(add-hook 'dired-subtree-after-remove-hook #'t/dired-add-icons)
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (add-hook 'after-change-functions
+                      (lambda (&rest _) (t/dired-add-icons))
+                      nil t)))
 
 ;;; dired
 (use-package dired
@@ -1949,7 +2011,7 @@ When 'quit' is set, quits window when any other key is pressed."
   :init
   (keymap-set t-leader-map "t c" 'rainbow-mode))
 
-;;; theme synced persp face
+;;; theme synced persp-face
 (defun t/sync-persp-face (&optional frame)
   "Make selected workspace font fit the theme."
   (when (facep 'persp-selected-face)
@@ -1958,7 +2020,7 @@ When 'quit' is set, quits window when any other key is pressed."
 			                    :inherit 'header-line
 			                    :foreground (plist-get t-colors :hl)
 			                    :background 'unspecified
-			                    ))))
+			                    :box nil))))
 (add-hook 'after-load-theme-hook #'t/sync-persp-face)
 (add-hook 'doric-themes-after-load-theme-hook #'t/sync-persp-face)
 (add-hook 'after-make-frame-functions #'t/sync-persp-face)
@@ -1978,6 +2040,8 @@ When 'quit' is set, quits window when any other key is pressed."
   (t/sync-persp-face)
   (keymap-set t-leader-map "-" #'persp-switch)
   (keymap-set t-leader-map "TAB" 'perspective-map)
+  (keymap-set t-leader-map "a n" #'persp-next)
+  (keymap-set t-leader-map "a p" #'persp-prev)
   (after! perspective
     (keymap-set perspective-map "k" #'persp-kill)
     (keymap-set perspective-map "s" #'persp-state-save)
@@ -1985,23 +2049,8 @@ When 'quit' is set, quits window when any other key is pressed."
   (after! project
     (add-hook 'project-switch-project-hook #'t--persp-switch-to-project)))
 
-;;; themes
-;; (t-package batppuccin-mocha-theme gh "bbatsov/batppuccin-emacs" "492b657" nil
-;;   :config
-;;   (load-theme 'batppuccin-mocha t))
-;; (t-package doric-themes gh "protesilaos/doric-themes" "86a3b91" nil
-;;   :init
-;;   (setq doric-themes-to-toggle '(doric-fire doric-water)
-;; 	      doric-themes-to-rotate '(doric-water
-;;                                  doric-valley
-;;                                  doric-plum
-;;                                  doric-magma
-;;                                  doric-almond
-;;                                  doric-walnut))
-;;   :config
-;;   (doric-themes-select 'doric-water))
 
-;;; nano
+;;; theme: nano
 (load-file (expand-file-name "~/.emacs.d/nano.el"))
 
 ;;; which-key
@@ -2098,7 +2147,8 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package agent-shell gh "xenodium/agent-shell" "b3e556c" nil
   :deps ((acp gh "xenodium/acp.el" "f7e20ce")
 	       (shell-maker gh "xenodium/shell-maker" "8c64f0b"))
-  :hook ((agent-shell-mode-hook . olivetti-mode))
+  :hook (;; (agent-shell-mode-hook . olivetti-mode)
+         )
   :commands (agent-shell)
   :init
   (after! agent-shell
@@ -2156,7 +2206,8 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package chatgpt-shell gh "xenodium/chatgpt-shell" "cbad6ff" nil
   :deps ((shell-maker gh "xenodium/shell-maker" "8c64f0b")
 	       (transient gh "magit/transient" "7131bec"))
-  :hook ((chatgpt-shell-mode-hook . olivetti-mode))
+  :hook (;; (chatgpt-shell-mode-hook . olivetti-mode)
+         )
   :commands (chatgpt-shell chatgpt-shell-prompt-compose)
   :init
   (add-hook 'chatgpt-shell-mode-hook
@@ -2415,7 +2466,8 @@ words of the candidate, respectively."
   :config
   (after! consult
     (require 'consult-org)
-    (require 'consult-info)))
+    (require 'consult-info)
+    (require 'consult-imenu)))
 
 ;;; marginalia
 (t-package marginalia gh "minad/marginalia" "d28a5e5" nil
@@ -2458,8 +2510,34 @@ words of the candidate, respectively."
 
 ;;; spacious-padding
 (t-package spacious-padding gh "protesilaos/spacious-padding" "a9cddfb" nil
-  :commands (spacious-padding-mode)
+  :config
+  (setq spacious-padding-widths
+        '( :internal-border-width 32
+           :header-line-width 4
+           :mode-line-width 6
+           :right-divider-width 30
+           :scroll-bar-width 8
+           :fringe-width 8))
   :hook (after-init . spacious-padding-mode))
+
+(defun t/spacious-padding-restore-header-line (&rest _)
+  "Re-apply nano face styling after spacious-padding resets it."
+  (let ((bg (face-background 'default))
+        (ml-width (or (plist-get spacious-padding-widths :mode-line-width) 6)))
+    (set-face-attribute 'header-line nil
+                        :background 'unspecified
+                        :underline nil
+                        :box `(:line-width 1 :color ,(face-background 'nano-default))
+                        :inherit 'nano-subtle)
+    (dolist (face '(mode-line mode-line-active mode-line-inactive))
+      (set-face-attribute face nil
+                          :box `(:line-width ,ml-width :color ,bg :style nil)))))
+
+;; nano-install-theme doesn't call enable-theme, so spacious-padding's
+;; enable-theme-functions hook never fires on theme rotation.
+(advice-add 'nano-install-theme :after #'spacious-padding-set-faces)
+(advice-add 'spacious-padding-set-faces :after #'t/spacious-padding-restore-header-line)
+(advice-add 'nano-install-theme :after #'t/refresh-vterm-bgs)
 
 ;;; git gutter
 (t-package diff-hl gh "dgutov/diff-hl" "bb9af85" nil
@@ -2476,6 +2554,7 @@ words of the candidate, respectively."
          (ht gh "Wilfred/ht.el" "1c49aad")))
 
 ;;; apps
+(keymap-set t-leader-map "o c" #'calendar)
 (keymap-set t-leader-map "o a a" #'org-agenda)
 (keymap-set t-leader-map "o w" #'eww)
 (keymap-set t-leader-map "o o" (cmd! (let ((default-directory (t/org-file)))
@@ -2493,13 +2572,15 @@ words of the candidate, respectively."
 (use-package eww
   :config
   (after! evil
-    (evil-define-key 'normal eww-mode-map (kbd t-leader) t-leader-map))
+    (t/bind-leader-maps eww-mode-map))
   (keymap-set eww-mode-map "<triple-wheel-left>" 'eww-back-url)
   (keymap-set eww-mode-map "<triple-wheel-right>" 'eww-forward-url)
   (keymap-set eww-mode-map "<mouse-8>" 'eww-back-url)
   (keymap-set eww-mode-map "<mouse-9>" 'eww-forward-url)
   (add-hook 'eww-after-render-hook (cmd! (call-interactively 'eww-readable)))
-  (add-hook 'eww-after-render-hook 'olivetti-mode))
+  ;; (add-hook 'eww-after-render-hook 'olivetti-mode)
+  (remove-hook 'eww-after-render-hook 'olivetti-mode)
+  )
 
 ;;; eglot
 (use-package eglot)
@@ -2520,7 +2601,8 @@ words of the candidate, respectively."
 ;;; org
 (use-package org
   :hook ((org-mode . org-indent-mode)
-         (org-mode . olivetti-mode))
+         ;; (org-mode . olivetti-mode)
+         )
   :init
   (defun t/org-file (&optional file)
     (concat (expand-file-name "~/Dropbox/org") "/" file))
@@ -2600,6 +2682,8 @@ words of the candidate, respectively."
     (set-face-attribute 'org-done nil :foreground (plist-get t-colors :done) :strike-through t)
     (set-face-attribute 'org-headline-done nil :foreground (plist-get t-colors :done) :strike-through t)
     (set-face-attribute 'org-document-title nil :foreground (plist-get t-colors :head))
+    (set-face-attribute 'org-link nil :underline t)
+    (set-face-attribute 'org-meta-line nil :inherit 'org-document-info-keyword)
     (dolist (face '((org-level-1 . 1.35)
                     (org-level-2 . 1.3)
                     (org-level-3 . 1.2)
@@ -2610,15 +2694,22 @@ words of the candidate, respectively."
                     (org-level-8 . 1.1)))
       (set-face-attribute (car face) nil :font t-font :weight 'bold :height (cdr face)))
     (set-face-attribute 'org-document-title nil :font t-font :weight 'bold :height 1.8)
-    (progn
-      (set-face-attribute 'org-level-1 nil :foreground "#FFFFFF")
-      (set-face-attribute 'org-level-2 nil :foreground "#EAF6F8")
-      (set-face-attribute 'org-level-3 nil :foreground "#CFEAED")
-      (set-face-attribute 'org-level-4 nil :foreground "#7FB9C6")
-      (set-face-attribute 'org-level-5 nil :foreground "#2D6F7E"))
-    )
+    (let* ((bg (face-background 'default))
+           (base (face-background 'nano-subtle))
+           (dark-p (eq 'dark (frame-parameter nil 'background-mode))))
+      (dolist (face '(org-hide org-indent))
+        (when (facep face)
+          (set-face-attribute face nil :foreground bg)))
+      (cl-loop for face in '(org-level-1 org-level-2 org-level-3 org-level-4 org-level-5 org-level-6 org-level-7 org-level-8)
+               for amount in '(50 42 34 26 18 14 10 8)
+               do (set-face-attribute face nil
+                                      :background bg
+                                      :foreground (if dark-p
+                                                      (color-lighten-name base amount)
+                                                    (color-darken-name base amount))))))
   (t/set-org-faces)
   (add-hook 'after-load-theme-hook #'t/set-org-faces)
+  (advice-add 'nano-install-theme :after #'t/set-org-faces)
   ;; templates
   (after! org
     (dolist (cell (list
@@ -2631,7 +2722,7 @@ words of the candidate, respectively."
                    (cons "d" "description")))
       (add-to-list 'org-structure-template-alist cell))))
 
-;;; epa encrypt org
+;;; epa encrypt org - auth-source-forget-all-cached
 (after! auth-source (setq auth-sources '("~/.authinfo.gpg")))
 (after! epa
   (setq-default epa-file-encrypt-to '("torgeir@keybase.io"))
@@ -2695,9 +2786,9 @@ words of the candidate, respectively."
         notmuch-draft-tags '("+draft")
         notmuch-draft-folder "drafts"
         notmuch-draft-save-plaintext 'ask)
-  (add-hook 'notmuch-show-mode-hook 'olivetti-mode)
+  ;; (add-hook 'notmuch-show-mode-hook 'olivetti-mode)
   (add-hook 'notmuch-show-mode-hook 't/read)
-  (add-hook 'notmuch-search-mode-hook 'olivetti-mode)
+  ;; (add-hook 'notmuch-search-mode-hook 'olivetti-mode)
   (add-hook 'notmuch-search-mode-hook (cmd!
                                        (visual-line-mode -1)
                                        (setq-local truncate-lines t)))
@@ -2759,6 +2850,7 @@ words of the candidate, respectively."
     (set-frame-parameter f 'alpha v)
     (message "Remember to run m-x redraw-display.")))
 
+;;; org-clock-in/org-clock-out
 (defun t/org-clock-start (&optional &rest args)
   (interactive)
   (when (not (featurep 'org-pomodoro))
@@ -2806,24 +2898,12 @@ words of the candidate, respectively."
   (evil-set-register ?s [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?_ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?\\ ?u ?\\ ?2 ?/ ?g]))
 
 ;;; -- stuff not brought over --
-
 ;;; org mode + heading functions + eldoc ping
-
 ;;; deno
-
 ;;; goto next error/flymake
-
-;;; own modules
-
-;;; copilot
-;; TODO needs some npm package
-;; (t-package copilot gh "copilot-emacs/copilot.el" "59a4a29" nil
-;;   :deps ((editorconfig gh "editorconfig/editorconfig-emacs" "b18fcf7")
-;;          (track-changes gh "emacs-straight/track-changes" "6d8fb08")
-;;          (compat gh "emacs-compat/compat" "38df650"))
-;;   :config
-;;   (keymap-set t-leader-map "t c" 'copilot-mode))
-
+;; spc t e l - errors list
+;; spc t e n - errors next
+;; spc t e p - errors next
 
 ;;; snippets
 (use-package abbrev
@@ -2850,7 +2930,6 @@ words of the candidate, respectively."
                     (indent-for-tab-command)))))
 
 ;;; t/defuns
-
 (defun t/browse-git-repo ()
   "Browse git repo from ~/.gitrepos."
   (interactive)
@@ -2957,6 +3036,8 @@ With prefix ARG, insert the result inline instead. =>."
         (run-with-timer 6 nil (lambda (o) (delete-overlay o)) ov)))))
 (global-set-key (kbd "C-x C-e") #'t/eval-last-sexp-overlay)
 
+;;; old t-defuns
+(load-file (expand-file-name "~/.emacs.d/old/t-defuns.el"))
 ;;; sudo edit
 (defun t/sudo-edit (&optional arg)
   "Edit currently visited file as root."
@@ -3074,7 +3155,7 @@ With prefix ARG, insert the result inline instead. =>."
   :mode (("\\.pdf\\'" . pdf-view-mode))
   :config
   (after! evil
-    (evil-define-key 'normal pdf-view-mode-map (kbd t-leader) t-leader-map)
+    (t/bind-leader-maps pdf-view-mode-map)
     (evil-define-key 'normal pdf-view-mode-map (kbd "p") 'pdf-view-previous-page)
     (evil-define-key 'normal pdf-view-mode-map (kbd "n") 'pdf-view-next-page)))
 
@@ -3175,7 +3256,6 @@ With prefix ARG, insert the result inline instead. =>."
 (t--check-conflicts)
 
 ;;; supernote
-
 (defun t/supernote--resolve-date (&optional date)
   "Return DATE (YYYYMMDD) or the closest org timestamp date at point, or today's date."
   (or
@@ -3208,7 +3288,7 @@ With prefix ARG, insert the result inline instead. =>."
   (let* ((d (t/supernote--resolve-date date)))
     (insert (format "[[elisp:(t/supernote %S)][Notes %s]]" d d))))
 
-;;; t-defun pr's
+;;; browse pr's
 (t-package f gh "rejeep/f.el" "931b6d0" nil)
 (t-package browse-at-remote gh "rmuslimov/browse-at-remote" "38e5ffd" nil
   :deps ((dash gh "magnars/dash.el" "d3a84021")
@@ -3236,7 +3316,6 @@ With prefix ARG, insert the result inline instead. =>."
       (browse-url (if found
                       (format "%s/pulls" (plist-get burl :url))
                     (format "https://github.com/%s/pulls" url))))))
-
 
 ;;; diminish diy
 (progn
@@ -3287,6 +3366,7 @@ With prefix ARG, insert the result inline instead. =>."
     (start-process-shell-command "intellij" nil command)
     (t/osascript-activate "IntelliJ IDEA")))
 
+;;; indent-bars
 (t-package indent-bars gh "jdtsmith/indent-bars" "f95fee1" nil
   :init
   (setq indent-bars-color '(highlight :face-bg t :blend 0.1))
@@ -3296,5 +3376,35 @@ With prefix ARG, insert the result inline instead. =>."
   (interactive)
   (insert (shell-command-to-string "va")))
 
-;;; t-defuns
-(load-file (expand-file-name "~/.emacs.d/old/t-defuns.el"))
+;;; calendar
+(t-package calendar-norway gh "unhammer/calendar-norway.el" "0db0ea6" nil)
+(after! calendar
+  (setq calendar-date-style 'iso
+        calendar-week-start-day 1
+        calendar-mark-holidays-flag t
+        calendar-today-marker 'calendar-today
+        )
+  (add-hook 'calendar-today-visible-hook #'calendar-mark-today)
+  (t/bind-leader-maps calendar-mode-map)
+  (when (require 'calendar-norway nil t)
+    (add-hook 'calendar-initial-window-hook
+              (defun t/calendar-initial-window-hook ()
+                (setq  calendar-intermonth-header '(propertize "w" 'font-lock-face 'font-lock-warning-face)
+                       calendar-intermonth-text '(propertize
+                                                  (format "%2d" (car
+                                                                 (calendar-iso-from-absolute
+                                                                  (calendar-absolute-from-gregorian
+                                                                   (list month day year)))))
+                                                  'font-lock-face
+                                                  'font-lock-warning-face))
+                (set-face-attribute 'calendar-today nil :inherit 'font-lock-string-face :weight 'bold :background 'unspecified)
+                (set-face-attribute 'holiday nil :inherit 'font-lock-comment-face :background 'unspecified)
+                (setq calendar-day-header-array ["sø" "ma" "ti" "on" "to" "fr" "lø"]
+                      calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]
+                      solar-n-hemi-seasons '("Vårjevndøgn" "Sommersolverv" "Høstjevndøgn" "Vintersolverv")
+                      calendar-holidays (append
+                                         calendar-norway-raude-dagar
+                                         calendar-norway-andre-merkedagar
+                                         calendar-norway-dst))
+                (calendar-redraw)))))
+

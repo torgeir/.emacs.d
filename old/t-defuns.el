@@ -1139,9 +1139,10 @@ Prefix arg will force eww."
 (defun t/dired-ignored? ()
   "File under cursor is ignored by projectile. Only checks file-name-base."
   (interactive)
-  (-any?
-   (lambda (d) (s-matches? d (file-name-base (dired-get-filename nil t))))
-   projectile-globally-ignored-directories))
+  (when (featurep 'projectile)
+    (-any?
+     (lambda (d) (s-matches? d (file-name-base (dired-get-filename nil t))))
+     projectile-globally-ignored-directories)))
 
 (defun t/dired-show-recursively-0 (path)
   "Recursively opens all directories for this path."
