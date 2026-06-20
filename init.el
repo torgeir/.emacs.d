@@ -2868,6 +2868,25 @@ words of the candidate, respectively."
 (advice-add 'org-clock-in :after 't/org-clock-start)
 (advice-add 'org-clock-out :after 't/org-clock-stop)
 
+;;; org-mode copy markdown
+(after! org
+  (keymap-set org-mode-map "C-c m"
+              (defun t/org-copy-to-markdown-clipboard ()
+                "Export org region (or buffer) to Markdown and copy to clipboard.
+With no active region, exports the whole buffer."
+                (interactive)
+                (require 'ox-md)
+                (let* ((text (if (use-region-p)
+                                 (buffer-substring-no-properties (region-beginning)
+                                                                 (region-end))
+                               (buffer-substring-no-properties (point-min) (point-max))))
+                       (md (org-export-string-as text 'md t '(:with-toc nil
+                                                                        :with-author nil
+                                                                        :with-date nil
+                                                                        :with-title nil))))
+                  (kill-new md)
+                  (message "Markdown copied (%d chars)" (length md))))))
+
 ;;; remaining tasks.org in the modeline
 (defun t/tasks-left ()
   (interactive)
@@ -3407,4 +3426,3 @@ With prefix ARG, insert the result inline instead. =>."
                                          calendar-norway-andre-merkedagar
                                          calendar-norway-dst))
                 (calendar-redraw)))))
-
