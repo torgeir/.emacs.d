@@ -1143,7 +1143,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; fonts
 (setq t-font "Iosevka Nerd Font Mono")
-(setq t-font-height 250)
+(setq t-font-height 150)
 (set-face-attribute 'default nil
                     :family "Iosevka Nerd Font Mono"
                     :height t-font-height)
@@ -2147,8 +2147,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package agent-shell gh "xenodium/agent-shell" "b3e556c" nil
   :deps ((acp gh "xenodium/acp.el" "f7e20ce")
 	       (shell-maker gh "xenodium/shell-maker" "8c64f0b"))
-  :hook (;; (agent-shell-mode-hook . olivetti-mode)
-         )
+  ;; :hook ((agent-shell-mode-hook . olivetti-mode))
   :commands (agent-shell)
   :init
   (after! agent-shell
@@ -2206,8 +2205,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package chatgpt-shell gh "xenodium/chatgpt-shell" "cbad6ff" nil
   :deps ((shell-maker gh "xenodium/shell-maker" "8c64f0b")
 	       (transient gh "magit/transient" "7131bec"))
-  :hook (;; (chatgpt-shell-mode-hook . olivetti-mode)
-         )
+  ;; :hook ((chatgpt-shell-mode-hook . olivetti-mode))
   :commands (chatgpt-shell chatgpt-shell-prompt-compose)
   :init
   (add-hook 'chatgpt-shell-mode-hook
@@ -3408,6 +3406,9 @@ With prefix ARG, insert the result inline instead. =>."
   (when (require 'calendar-norway nil t)
     (add-hook 'calendar-initial-window-hook
               (defun t/calendar-initial-window-hook ()
+                (after! evil
+                  (evil-define-key 'normal calendar-mode-map (kbd "L") #'calendar-scroll-left-three-months)
+                  (evil-define-key 'normal calendar-mode-map (kbd "H") #'calendar-scroll-right-three-months))
                 (setq  calendar-intermonth-header '(propertize "w" 'font-lock-face 'font-lock-warning-face)
                        calendar-intermonth-text '(propertize
                                                   (format "%2d" (car
@@ -3416,7 +3417,8 @@ With prefix ARG, insert the result inline instead. =>."
                                                                    (list month day year)))))
                                                   'font-lock-face
                                                   'font-lock-warning-face))
-                (set-face-attribute 'calendar-today nil :inherit 'font-lock-string-face :weight 'bold :background 'unspecified)
+                (set-face-attribute 'calendar-today nil :inherit 'font-lock-string-face :weight 'bold :underline nil
+                                    :background 'unspecified :foreground (plist-get t-colors :hl))
                 (set-face-attribute 'holiday nil :inherit 'font-lock-comment-face :background 'unspecified)
                 (setq calendar-day-header-array ["sø" "ma" "ti" "on" "to" "fr" "lø"]
                       calendar-day-name-array ["Søndag" "Mandag" "Tirsdag" "Onsdag" "Torsdag" "Fredag" "Lørdag"]

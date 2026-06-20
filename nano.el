@@ -13,9 +13,9 @@
 ;; --- Frame / windows layout & behavior --------------------------------------
 (setq default-frame-alist
       '(;;(height . 44) (width  . 81)
-        (left-fringe . 0) (right-fringe . 0)
+        ;; (left-fringe . 0) (right-fringe . 0)
         (internal-border-width . 32) (vertical-scroll-bars . nil)
-        (bottom-divider-width . 0) (right-divider-width . 0)
+        (bottom-divider-width . 32) (right-divider-width . 32)
         (undecorated-round . t)))
 (modify-frame-parameters nil default-frame-alist)
 ;;(setq-default pop-up-windows nil)
@@ -96,14 +96,15 @@
   (set-face-attribute 'header-line nil
                       :background 'unspecified
                       :underline nil
-                      :box `(:line-width 1 :color ,(face-background 'nano-default))
+                      :box nil
                       :inherit 'nano-subtle)
   (let ((bg (face-background 'default)))
     (dolist (face '(mode-line mode-line-active mode-line-inactive))
       (set-face-attribute face nil
                           :background bg :foreground (face-foreground 'nano-faded)
                           :underline nil :overline nil
-                          :height 1.0 :box `(:line-width 1 :color ,bg)))
+                          :height 1
+                          :box `(:line-width 5 :color ,bg)))
     (set-face-attribute 'fringe nil :background bg)))
 
 (defun nano-set-dired-subtree-faces ()
