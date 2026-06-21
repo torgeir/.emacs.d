@@ -338,15 +338,19 @@ with a pastel background + darker same-hue foreground."
                                                            ((stringp mode-name) mode-name)
                                                            (t "unknown")))
                                        " mode)")))
+                       (tasks '(t/modeline-segs))
                        (coords (format-mode-line "%c:%l ")))
                   (list
                    (propertize " " 'face (cdr prefix)  'display '(raise -0.25))
                    (propertize (car prefix) 'face (cdr prefix))
                    (propertize " " 'face (cdr prefix) 'display '(raise +0.25))
                    (propertize (format-mode-line " %b ") 'face 'nano-strong)
-                   (when mode (propertize mode 'face `(:foreground ,(plist-get t-colors :head))))
-                   (propertize " " 'display `(space :align-to (- right ,(+ (length coords) 2))))
-                   (propertize coords 'face 'nano-faded)
+                   (when mode (propertize mode 'face `(:foreground ,(plist-get t-colors :hl))))
+                   (propertize " " 'display `(space :align-to (- right ,(+ (length coords)
+                                                                           (length (eval tasks))
+                                                                           2))))
+                   `(:eval ,tasks)
+                   (propertize (format " %s" coords) 'face 'nano-faded)
                    ))))
 
 ;; --- Minibuffer setup -------------------------------------------------------

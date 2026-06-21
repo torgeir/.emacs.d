@@ -50,9 +50,12 @@
 ;; (add-to-list 'mode-line-misc-info t-modeline-sexp)
 
 ;;; modeline: function segments, reloadable
-;; (defun t/modeline-segs ()
-;;   (when (fboundp 't/tasks-left)
-;;     (list "[" (t/tasks-left) "]")))
+(defun t/is-propertized? (s) (get-text-property 0 'face s))
+(defun t/modeline-segs ()
+  (when (fboundp 't/tasks-left)
+    (mapcar
+     (lambda (s) (if (not (t/is-propertized? s)) (propertize s 'face 'nano-faded) s))
+     (list "[" (t/tasks-left) "]"))))
 ;; (setq t-modeline-eval '(:eval (t/modeline-segs)))
 ;; (setq mode-line-misc-info (remove t-modeline-eval mode-line-misc-info))
 ;; (add-to-list 'mode-line-misc-info t-modeline-eval)
@@ -2888,26 +2891,28 @@ With no active region, exports the whole buffer."
 ;;; remaining tasks.org in the modeline
 (defun t/tasks-left ()
   (interactive)
-  (propertize
-   (condition-case err
-       (with-current-buffer "tasks.org"
-         (let ((count 0))
-           ;; for each heading
-           (org-map-entries
-            (lambda (&optional heading)
-              (when (and (org-entry-is-todo-p)
-                         (not (org-entry-is-done-p)))
-                (setq count (1+ count))))
-            ;; all headlines
-            t
-            'file)
-           ;; needs to be string
-           (format "%s" count)))
-     (error "-"))
-   'mouse-face 'mode-line-highlight
-   'help-echo (concat "mouse-1: " org-default-notes-file)
-   'local-map (make-mode-line-mouse-map
-               'mouse-1 (cmd! (find-file org-default-notes-file)))))
+  (let ((map (make-sparse-keymap)))
+    (define-key map [mode-line mouse-1] (cmd! (find-file org-default-notes-file)))
+    (define-key map [header-line mouse-1] (cmd! (find-file org-default-notes-file)))
+    (propertize
+     (condition-case err
+         (with-current-buffer "tasks.org"
+           (let ((count 0))
+             ;; for each heading
+             (org-map-entries
+              (lambda (&optional heading)
+                (when (and (org-entry-is-todo-p)
+                           (not (org-entry-is-done-p)))
+                  (setq count (1+ count))))
+              ;; all headlines
+              t
+              'file)
+             ;; needs to be string
+             (propertize (format "%s" count) 'face 'nano-salient)))
+       (error "-"))
+     'mouse-face 'mode-line-highlight
+     'help-echo (concat "mouse-1: " org-default-notes-file)
+     'local-map map)))
 
 ;;; evil: registers camelCase snake_case
 (after! evil
@@ -2938,6 +2943,7 @@ With no active region, exports the whole buffer."
       ("err" "console.err(@);" (lambda () (search-backward "@") (delete-char 1)))
       ("defun" "(defun @ () )" (lambda () (search-backward "@") (delete-char 1)))
       ("lambda" "(lambda (&optional @) )" (lambda () (search-backward "@") (delete-char 1)))
+      ("fn" "function () { @ }" (lambda () (search-backward "@") (delete-char 1)))
       ))
   (keymap-set global-map "M-/" nil) ;; default dabbrev-expand
   (define-key global-map [remap indent-for-tab-command]
@@ -3428,3 +3434,74 @@ With prefix ARG, insert the result inline instead. =>."
                                          calendar-norway-andre-merkedagar
                                          calendar-norway-dst))
                 (calendar-redraw)))))
+
+;;; deno
+
+(define-derived-mode deno-ts-mode typescript-ts-mode "Deno" "Major mode for Deno." :group 'deno-ts-mode)
+(define-derived-mode deno-tsx-ts-mode tsx-ts-mode "Deno[TSX]" "Major mode for TSX and JSX with Deno." :group 'deno-ts-mode)
+;; required for Deno's color output.
+(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+
+(after! evil-textobj-tree-sitter
+  (pushnew! evil-textobj-tree-sitter-major-mode-language-alist '(deno-ts-mode . "typescript"))
+  (pushnew! evil-textobj-tree-sitter-major-mode-language-alist '(deno-tsx-ts-mode . "tsx")))
+
+(after! tree-sitter
+  (pushnew! tree-sitter-major-mode-language-alist '(deno-ts-mode . typescript))
+  (pushnew! tree-sitter-major-mode-language-alist '(deno-tsx-ts-mode . tsx)))
+
+(after! eglot
+  (defclass eglot-deno (eglot-lsp-server) () :documentation "A custom class for deno lsp.")
+  (cl-defmethod eglot-initialization-options ((server eglot-deno))
+    "Passes through required deno initialization options"
+    '(:enable t :lint t :unstable t))
+  ;; insane hack as i cannot make the default workspace configuration
+  ;; to work with the deno server
+  (cl-defmethod eglot-handle-request
+    ((server eglot-deno) (_method (eql workspace/configuration)) &key items)
+    "Handle workspace/configuration requests from Deno LSP."
+    (apply #'vector
+           (mapcar
+            (lambda (item)
+              (let ((section (plist-get item :section)))
+                (pcase section
+                  ("typescript"
+                   `(:inlayHints (:parameterNames (:enabled "all" :suppressWhenArgumentMatchesName t)
+                                                  :parameterTypes (:enabled t)
+                                                  :variableTypes (:enabled t :suppressWhenTypeMatchesName t)
+                                                  :propertyDeclarationTypes (:enabled t)
+                                                  :functionLikeReturnTypes (:enabled t)
+                                                  :enumMemberValues (:enabled t))))
+                  (_ nil))))
+            items)))
+  (add-to-list 'eglot-server-programs
+               '(((deno-ts-mode :language-id "typescript")
+                  (deno-tsx-ts-mode :language-id "typescriptreact")) . (eglot-deno "deno" "lsp"))))
+
+(defun t/deno-or-ts ()
+  "Load deno tsx, deno ts, tsx or ts mode."
+  (interactive)
+  (let ((looks-like-deno (or (find-up "deno.json") (find-up "deno.jsonc")))
+        (is-tsx (string-equal (file-name-extension (buffer-file-name)) "tsx")))
+    (if looks-like-deno
+        (progn
+          (if is-tsx (deno-tsx-ts-mode) (deno-ts-mode))
+          (message "Looked like deno, switched to it 🦕"))
+      (if is-tsx (tsx-ts-mode) (typescript-ts-mode)))))
+
+(after! apheleia
+  (add-to-list 'apheleia-mode-alist '(deno-ts-mode . denofmt-ts))
+  (add-to-list 'apheleia-mode-alist '(deno-tsx-ts-mode . denofmt-tsx)))
+
+;; FIXME
+;; (map!
+;;  :after deno-ts-mode
+;;  :map (deno-ts-mode-map deno-tsx-ts-mode-hook)
+;;  :g "M-<return>" #'eglot-code-actions)
+
+(after! emmet-mode
+  (add-to-list 'emmet-jsx-major-modes 'deno-ts-mode)
+  (add-to-list 'emmet-jsx-major-modes 'deno-tsx-ts-mode))
+
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . t/deno-or-ts))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . t/deno-or-ts))
