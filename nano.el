@@ -7,8 +7,9 @@
                     )
 (set-face-attribute 'bold nil :weight 'regular)
 (set-face-attribute 'bold-italic nil :weight 'regular)
-(set-display-table-slot standard-display-table 'truncation (make-glyph-code ?…))
-(set-display-table-slot standard-display-table 'wrap (make-glyph-code ?–))
+(defface nano-truncation '((t)) "")
+(set-display-table-slot standard-display-table 'truncation (make-glyph-code ?… 'nano-truncation))
+(set-display-table-slot standard-display-table 'wrap (make-glyph-code ?↵ 'nano-truncation))
 
 ;; --- Frame / windows layout & behavior --------------------------------------
 (setq default-frame-alist
@@ -105,7 +106,15 @@
                           :underline nil :overline nil
                           :height 1
                           :box `(:line-width 5 :color ,bg)))
-    (set-face-attribute 'fringe nil :background bg)))
+    (set-face-attribute 'fringe nil :background bg)
+    (set-face-attribute 'fringe nil :background bg :height 1.0 :box `(:line-width 1 :color ,bg)))
+  (set-face-attribute 'nano-truncation nil
+                      :foreground (face-background 'nano-subtle)
+                      :background 'unspecified)
+  (set-fringe-bitmap-face 'left-curly-arrow  'nano-truncation)
+  (set-fringe-bitmap-face 'right-curly-arrow 'nano-truncation)
+  (set-fringe-bitmap-face 'right-arrow       'nano-truncation)
+  (set-fringe-bitmap-face 'left-arrow        'nano-truncation))
 
 (defun nano-set-dired-subtree-faces ()
   "Set dired-subtree depth faces to progressively darkened theme background."

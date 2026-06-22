@@ -2326,7 +2326,7 @@ When 'quit' is set, quits window when any other key is pressed."
   :hook (
          (after-init . t/exec-path-from-shell)
          ;; enable arrow at end of line when wrapping
-	       (after-init . global-visual-line-mode)
+	       ;; (after-init . global-visual-line-mode)
 	       ;; indent soft wraps
 	       (after-init . global-visual-wrap-prefix-mode)
          ;; open .gz files automatically
@@ -2532,7 +2532,9 @@ words of the candidate, respectively."
                         :inherit 'nano-subtle)
     (dolist (face '(mode-line mode-line-active mode-line-inactive))
       (set-face-attribute face nil
-                          :box `(:line-width ,ml-width :color ,bg :style nil)))))
+                          :box `(:line-width ,ml-width :color ,bg :style nil)))
+    (set-fringe-bitmap-face 'left-curly-arrow  'nano-truncation)
+    (set-fringe-bitmap-face 'right-curly-arrow 'nano-truncation)))
 
 ;; nano-install-theme doesn't call enable-theme, so spacious-padding's
 ;; enable-theme-functions hook never fires on theme rotation.
@@ -2680,8 +2682,6 @@ words of the candidate, respectively."
   (defun t/set-org-faces ()
     (interactive)
     (set-face-attribute 'org-todo nil :foreground (plist-get t-colors :hl))
-    (set-face-attribute 'org-done nil :foreground (plist-get t-colors :done) :strike-through t)
-    (set-face-attribute 'org-headline-done nil :foreground (plist-get t-colors :done) :strike-through t)
     (set-face-attribute 'org-document-title nil :foreground (plist-get t-colors :head))
     (set-face-attribute 'org-link nil :underline t)
     (set-face-attribute 'org-meta-line nil :inherit 'org-document-info-keyword)
@@ -2697,7 +2697,12 @@ words of the candidate, respectively."
     (set-face-attribute 'org-document-title nil :font t-font :weight 'bold :height 1.8)
     (let* ((bg (face-background 'default))
            (base (face-background 'nano-subtle))
-           (dark-p (eq 'dark (frame-parameter nil 'background-mode))))
+           (dark-p (eq 'dark (frame-parameter nil 'background-mode)))
+           (done-fg (if dark-p ;; see amount, below
+                        (color-lighten-name base 0)
+                      (color-darken-name base 0))))
+      (set-face-attribute 'org-done nil :foreground done-fg :strike-through t)
+      (set-face-attribute 'org-headline-done nil :foreground done-fg :strike-through t)
       (dolist (face '(org-hide org-indent))
         (when (facep face)
           (set-face-attribute face nil :foreground bg)))
