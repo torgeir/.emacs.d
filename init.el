@@ -990,6 +990,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (cond
    ((and (t/prefix-arg-universal?)
          (dired-subtree--is-expanded-p)) (t/dired-close-recursively))
+   ((numberp current-prefix-arg) (t/dired-open-recursively current-prefix-arg))
    ((t/prefix-arg-universal?) (t/dired-open-recursively))
    (t (t/dired-subtree-toggle))))
 
@@ -1011,15 +1012,15 @@ When 'quit' is set, quits window when any other key is pressed."
           (t/dired-subtree-toggle))
         (forward-line)))))
 
-(defun t/dired-open-recursively ()
-  "Open all directories starting with this directory's path."
+(defun t/dired-open-recursively (&optional depth)
+  "Open all directories starting with this directory's path, up to DEPTH levels."
   (interactive)
   (let ((path (dired-get-filename)))
     (save-excursion
       (when (dired-subtree--is-expanded-p) (t/dired-subtree-toggle))
       (t/dired-subtree-toggle)
       (forward-line)
-      (t/dired-show-recursively-0 path))))
+      (t/dired-show-recursively-0 path depth))))
 
 (defun t/project-root ()
   "Get project root without throwing."
@@ -1037,19 +1038,23 @@ When 'quit' is set, quits window when any other key is pressed."
      (lambda (d) (s-matches? d (file-name-base (dired-get-filename nil t))))
      projectile-globally-ignored-directories)))
 
-(defun t/dired-show-recursively-0 (path)
-  "Recursively opens all directories for this path."
+(defun t/dired-show-recursively-0 (path &optional max-depth)
+  "Recursively opens all directories for PATH, up to MAX-DEPTH levels."
   (interactive)
   (when (not (eq (point) (save-excursion (end-of-buffer) (point))))
-    (when (and
-           (not (t/dired-ignored?))
-           (s-starts-with? path (dired-get-filename nil t))
-           (not (s-starts-with? "." (file-name-base (dired-get-filename nil t))))
-           )
-      (when (dired-subtree--is-expanded-p) (t/dired-subtree-toggle))
-      (t/dired-subtree-toggle))
+    (let ((current (dired-get-filename nil t)))
+      (when (and
+             current
+             (not (t/dired-ignored?))
+             (s-starts-with? path current)
+             (not (s-starts-with? "." (file-name-base current)))
+             (or (null max-depth)
+                 (< (length (split-string (substring current (length (file-name-as-directory path))) "/" t))
+                    max-depth)))
+        (when (dired-subtree--is-expanded-p) (t/dired-subtree-toggle))
+        (t/dired-subtree-toggle)))
     (forward-line)
-    (t/dired-show-recursively-0 path)))
+    (t/dired-show-recursively-0 path max-depth)))
 
 (defun t/dired-locate-path (path)
   "Locate PATH in a dired listing."
@@ -1079,7 +1084,7 @@ When 'quit' is set, quits window when any other key is pressed."
          (path (s-split "/" path))
          (path (remove "" path)))
     (let* ((sidebar (concat ":" (t/project-root))))
-      (if (get-buffer sidebar)
+      (if (t/sidebar-visible?)
           (pop-to-buffer sidebar)
         (t-toggle-sidebar)))
     (when (t/prefix-arg-universal?)
@@ -1139,14 +1144,15 @@ When 'quit' is set, quits window when any other key is pressed."
 
 (defun t/bind-leader-maps (&rest maps)
   (dolist (map maps)
-    (evil-define-key 'normal map (kbd t-leader) t-leader-map)
-    (evil-define-key 'motion map (kbd t-leader) t-leader-map)
-    (evil-define-key 'normal map (kbd t-leader-alt) t-leader-map)
-    (evil-define-key 'motion map (kbd t-leader-alt) t-leader-map)))
+    (when (keymapp map)
+      (evil-define-key* 'normal map (kbd t-leader) t-leader-map)
+      (evil-define-key* 'motion map (kbd t-leader) t-leader-map)
+      (evil-define-key* 'normal map (kbd t-leader-alt) t-leader-map)
+      (evil-define-key* 'motion map (kbd t-leader-alt) t-leader-map))))
 
 ;;; fonts
 (setq t-font "Iosevka Nerd Font Mono")
-(setq t-font-height 150)
+(setq t-font-height (if is-mac 220 150))
 (set-face-attribute 'default nil
                     :family "Iosevka Nerd Font Mono"
                     :height t-font-height)
@@ -1388,7 +1394,8 @@ When 'quit' is set, quits window when any other key is pressed."
     (evil-define-key 'normal magit-status-mode-map "$" 'magit-process-buffer)))
 
 ;; magit binds
-(keymap-set t-leader-g-map "b" #'t/browse-git-repo)
+(keymap-set t-leader-g-map "b" #'magit-blame)
+(keymap-set t-leader-g-map "B" #'t/browse-git-repo)
 (keymap-set t-leader-g-map "g" #'magit-status)
 (keymap-set t-leader-g-map "l" #'magit-log)
 (keymap-set t-leader-g-map "d" #'magit-diff-dwim)
@@ -1567,6 +1574,26 @@ When 'quit' is set, quits window when any other key is pressed."
     (when proj
       (project-remember-project proj))
     (project-find-file)))
+
+;;; highlight stuff
+(progn
+  (use-package hi-lock
+    :init
+    (add-hook 'after-init-hook 'global-hi-lock-mode))
+  (defun t/hi-lock-face-at-point ()
+    (interactive)
+    (seq-filter (lambda (f) (string-prefix-p "hi-" (symbol-name f)))
+                (ensure-list (get-text-property (point) 'face))))
+  (keymap-set t-leader-map "h l r" #'highlight-regexp)
+  (keymap-set t-leader-map "h l p" #'highlight-phrase)
+  (keymap-set t-leader-map "h l s" #'highlight-symbol-at-point)
+  (keymap-set t-leader-map "h l l" (defun t/hi-lock-or-remove ()
+                                     (interactive)
+                                     (if (t/hi-lock-face-at-point)
+                                         (call-interactively 'unhighlight-regexp)
+                                       (call-interactively 'highlight-symbol-at-point))))
+  (keymap-set t-leader-map "h l k" #'unhighlight-regexp)
+  (keymap-set t-leader-map "h l DEL" #'unhighlight-regexp))
 
 ;;; describe
 (keymap-set t-leader-map "h a" #'apropos)
@@ -1819,8 +1846,9 @@ When 'quit' is set, quits window when any other key is pressed."
   (unbind-key (kbd "l") 'woman-mode-map))
 
 ;;; help-mode / custom-mode leader
-(after! evil
+(after! (evil evil-collection)
   (t/bind-leader-maps help-mode-map custom-mode-map))
+(keymap-set custom-mode-map "s-s" 'Custom-save)
 
 ;;; help-mode
 (setq help-window-select t)
@@ -1863,13 +1891,19 @@ When 'quit' is set, quits window when any other key is pressed."
              `(,(concat "^" (regexp-quote t-sidebar-buffer-prefix))
                (t--display-sidebar)))
 
+(defun t/sidebar-visible? ()
+  (interactive)
+  (let* ((sidebar-project (t/project-root))
+         (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
+         (sidebar-buffer (get-buffer sidebar-name)))
+    (and sidebar-buffer (get-buffer-window sidebar-buffer))))
+
 (defun t-toggle-sidebar ()
   (interactive)
   (let* ((sidebar-project (t/project-root))
          (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
-         (sidebar-buffer (get-buffer sidebar-name))
-         (sidebar-displayed (and sidebar-buffer (get-buffer-window sidebar-buffer))))
-    (if sidebar-displayed
+         (sidebar-buffer (get-buffer sidebar-name)))
+    (if (t/sidebar-visible?)
         (delete-window (get-buffer-window sidebar-buffer))
       (when (not sidebar-buffer)
         (with-current-buffer (dired-noselect sidebar-project)
@@ -1959,6 +1993,8 @@ When 'quit' is set, quits window when any other key is pressed."
     (kbd "(") (cmd! (dired-hide-details-mode 1))
     (kbd ")") (cmd! (dired-hide-details-mode 0))
     (kbd "q") #'quit-window
+    ;;(kbd "C-u") #'evil-scroll-up
+    (kbd "TAB") #'t/dired-subtree-tab
     (kbd "<tab>") #'t/dired-subtree-tab
     (kbd "<follow-link>") nil
     (kbd "<mouse-2>") nil ;; after hold
@@ -2486,6 +2522,8 @@ words of the candidate, respectively."
 
 ;;; wgrep
 (t-package wgrep gh "mhayashi1120/Emacs-wgrep" "49f09ab" nil)
+(evil-define-key 'normal grep-mode-map (kbd "gj") #'next-error-no-select)
+(evil-define-key 'normal grep-mode-map (kbd "gk") #'previous-error-no-select)
 
 ;;; pulsar
 (t-package pulsar gh "protesilaos/pulsar" "70956bf" nil
@@ -3090,7 +3128,25 @@ With prefix ARG, insert the result inline instead. =>."
 ;;; lang: kotlin
 ;; https://gitlab.com/bricka/emacs-kotlin-ts-mode/-/commit/8b909743d2f6e72a8ad3b52e3a5ee412bf7cc4b2
 (t-package kotlin-ts-mode gl "bricka/emacs-kotlin-ts-mode" "8b90974" nil
-  :mode (("\\.kts?\\'" . kotlin-ts-mode)))
+  :mode (("\\.kts?\\'" . kotlin-ts-mode))
+  :config
+  (defun t/fix-kotlin-ts-null-literal ()
+    (when (derived-mode-p 'kotlin-ts-mode)
+      (let ((fixed (treesit-font-lock-rules
+                    :language 'kotlin
+                    :feature 'constant
+                    :override t
+                    '(["null" (boolean_literal)] @font-lock-constant-face
+                      ((simple_identifier) @font-lock-constant-face
+                       (:match "^[A-Z_][A-Z_0-9]*$" @font-lock-constant-face))))))
+        (setq-local treesit-font-lock-settings
+                    (mapcar (lambda (entry)
+                              (if (eq (nth 2 entry) 'constant)
+                                  (car fixed)
+                                entry))
+                            treesit-font-lock-settings))
+        (treesit-font-lock-recompute-features))))
+  (advice-add 'kotlin-ts-mode :after #'t/fix-kotlin-ts-null-literal))
 
 ;;; lang: markdown
 (t-package markdown-mode gh "jrblevin/markdown-mode" "107a368" nil
@@ -3396,8 +3452,6 @@ With prefix ARG, insert the result inline instead. =>."
 
 ;;; indent-bars
 (t-package indent-bars gh "jdtsmith/indent-bars" "f95fee1" nil
-  :init
-  (setq indent-bars-color '(highlight :face-bg t :blend 0.1))
   :config
   (keymap-set t-leader-map "t g" #'indent-bars-mode))
 (defun t/jira-insert ()

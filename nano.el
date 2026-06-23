@@ -66,24 +66,28 @@
                                            lazy-highlight widget-field))
                   (nano-faded .     (shadow
                                      font-lock-comment-face
+                                     org-block-begin-line
+                                     org-block-end-line
                                      font-lock-doc-face
                                      icomplete-section
                                      completions-annotations))
                   (nano-popout .    (warning
                                      font-lock-string-face))
-                  (nano-salient .   (success link
-                                             help-argument-name
-                                             custom-visibility
-                                             font-lock-type-face
-                                             font-lock-keyword-face
-                                             font-lock-builtin-face
-                                             completions-common-part
-                                             dired-directory))
-                  (nano-strong .    (font-lock-function-name-face
-                                     font-lock-variable-name-face
+                  (nano-salient .   (success
+                                     link
+                                     org-block
+                                     help-argument-name
+                                     custom-visibility
+                                     font-lock-type-face
+                                     font-lock-keyword-face
+                                     font-lock-builtin-face
+                                     completions-common-part
+                                     dired-directory))
+                  (nano-strong .    (font-lock-variable-name-face
                                      icomplete-first-match
                                      minibuffer-prompt))
                   (nano-critical .  (error
+                                     font-lock-function-name-face
                                      completions-first-difference))
                   (nano-faded-i .   (help-key-binding))
                   (nano-default-i . (custom-button-mouse
@@ -125,6 +129,7 @@
                   (unless (facep face) (make-face face))
                   (set-face-attribute face nil
                                       :background (color-darken-name bg (* depth 2)))))))
+
 
 (defun nano-set-magit-faces (specs)
   "Set magit faces from SPECS, a list of (face fg bg). nil leaves that attribute unspecified."
@@ -331,7 +336,7 @@ with a pastel background + darker same-hue foreground."
 ;; --- Command line theme chooser, initial theme ------------------------------
 (add-to-list 'command-switch-alist '("-dark"  . nano-dark))
 (add-to-list 'command-switch-alist '("-light" . nano-light))
-(if (eq 'dark (frame-parameter nil 'background-mode)) (nano-light) (nano-dark))
+(if (eq 'light (frame-parameter nil 'background-mode)) (nano-light) (nano-dark))
 
 ;; --- Header & mode lines ----------------------------------------------------
 (setq-default mode-line-format
