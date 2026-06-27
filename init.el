@@ -2272,7 +2272,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set t-leader-map "r o" #'olivetti-mode))
 
 ;;; vterm
-(t-package vterm gh "akermu/emacs-libvterm" "a01a289" nil
+(t-package vterm gh "akermu/emacs-libvterm" "9495966" nil
   :commands (vterm)
   :init
   (keymap-set t-leader-map "o t" #'vterm)
