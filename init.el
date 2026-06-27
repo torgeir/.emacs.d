@@ -2311,7 +2311,7 @@ When 'quit' is set, quits window when any other key is pressed."
                         (call-interactively' magit-status))))))
 
 ;;; agent-shell
-(t-package agent-shell gh "xenodium/agent-shell" "b3e556c" nil
+(t-package agent-shell gh "xenodium/agent-shell" "c59a0a9" nil
   :deps ((acp gh "xenodium/acp.el" "3ddfa90")
 	       (shell-maker gh "xenodium/shell-maker" "55c383c"))
   ;; :hook ((agent-shell-mode-hook . olivetti-mode))
