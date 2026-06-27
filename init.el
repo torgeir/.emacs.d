@@ -1450,7 +1450,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "n w" #'widen)
 
 ;;; magit
-(t-package magit gh "magit/magit" "b9f19ba" nil
+(t-package magit gh "magit/magit" "fb2c5ce" nil
   :commands (magit-log
 	           magit-status
 	           magit-file-stage
@@ -1461,10 +1461,10 @@ When 'quit' is set, quits window when any other key is pressed."
 	           magit-commit-amend
 	           magit-commit-instant-fixup)
   :deps ((compat   gh "emacs-compat/compat" "a0d6465")
-	       (cond-let gh "tarsius/cond-let" "8bf87d4")
-	       (llama    gh "tarsius/llama" "d430d48")
-	       (with-editor gh "magit/with-editor" "64211dc")
-	       (transient gh "magit/transient" "7131bec"))
+	       (cond-let gh "tarsius/cond-let" "21b9e98")
+	       (llama    gh "tarsius/llama" "4d40240")
+	       (with-editor gh "magit/with-editor" "36c3461")
+	       (transient gh "magit/transient" "9d103f3"))
   :init
   (setq-default magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
   :config
@@ -2336,7 +2336,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; chatgpt-shell
 (t-package chatgpt-shell gh "xenodium/chatgpt-shell" "cbad6ff" nil
   :deps ((shell-maker gh "xenodium/shell-maker" "43ee9e1")
-	       (transient gh "magit/transient" "7131bec"))
+	       (transient gh "magit/transient" "9d103f3"))
   ;; :hook ((chatgpt-shell-mode-hook . olivetti-mode))
   :commands (chatgpt-shell chatgpt-shell-prompt-compose)
   :init
