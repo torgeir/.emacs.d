@@ -453,16 +453,25 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
        (inhibit-same-window . t)))))
 
 (defun t--display-status-and-log-buffers-exclusive ()
-  (let* ((status-buffer (t--status-render))
-         (log-buffer (get-buffer-create t-package-log-buffer)))
-    (delete-other-windows)
-    (switch-to-buffer status-buffer)
-    (goto-char (point-min))
-    (let ((log-window (split-window-below)))
-      (set-window-buffer log-window log-buffer)
-      (select-window log-window)
+  ;; Show the status buffer (reusing its window if already visible) and the
+  ;; log in a dedicated bottom side window, without destroying the currently
+  ;; active window layout.
+  (let ((status-buffer (t--status-render))
+        (log-buffer (get-buffer-create t-package-log-buffer)))
+    (display-buffer
+     status-buffer
+     '((display-buffer-reuse-window display-buffer-pop-up-window)
+       (inhibit-same-window . t)))
+    (display-buffer
+     log-buffer
+     '((display-buffer-reuse-window display-buffer-in-side-window)
+       (side . bottom)
+       (slot . 0)
+       (window-height . 0.3)))
+    (when-let ((win (get-buffer-window log-buffer t)))
       (with-current-buffer log-buffer
-        (end-of-buffer)))))
+        (goto-char (point-max))
+        (set-window-point win (point-max))))))
 
 (defun t--spinner-tick ()
   (setq t-spinner-index
