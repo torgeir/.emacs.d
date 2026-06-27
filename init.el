@@ -1507,7 +1507,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; avy
 (t-package avy gh "abo-abo/avy" "933d1f3" nil
-  :deps ((cl-lib sav "emacs/elpa.git" "790948a"))
+  :deps ((cl-lib sav "emacs/elpa.git" "85aeefd"))
   :commands (avy-goto-char-2
 	           avy-goto-line
 	           avy-move-line
@@ -1700,7 +1700,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; evil
 ;; Must be set before loading evil or evil-collection.
 (setq evil-want-keybinding nil)
-(t-package evil gh "emacs-evil/evil" "729d9a5" nil
+(t-package evil gh "emacs-evil/evil" "3b678a2" nil
   :init
   (setq evil-want-integration t
 	      evil-want-keybinding nil
@@ -1768,7 +1768,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; evil-collection
 (t-package evil-collection gh "emacs-evil/evil-collection" "7680834" nil
   :deps ((annalist gh "noctuid/annalist.el" "e1ef5da")
-         (evil gh "emacs-evil/evil" "729d9a5"))
+         (evil gh "emacs-evil/evil" "3b678a2"))
   :init
   (setq evil-collection-setup-minibuffer t
         ;; Don't use zz and zq for org src editing
@@ -1794,7 +1794,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; evil-escape
 (t-package evil-escape gh "syl20bnr/evil-escape" "f4e9116" nil
-  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
+  :deps ((evil gh "emacs-evil/evil" "3b678a2"))
   :init
   (setq evil-escape-key-sequence (kbd "jk"))
   :config
@@ -1807,13 +1807,13 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; evil-commentary
 (t-package evil-commentary gh "linktohack/evil-commentary" "c5945f2" nil
-  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
+  :deps ((evil gh "emacs-evil/evil" "3b678a2"))
   :config
   (evil-commentary-mode))
 
 ;;; evil-cleverparens
 (t-package evil-cleverparens gh "emacs-evil/evil-cleverparens" "4c413a1" nil
-  :deps ((evil gh "emacs-evil/evil" "729d9a5")
+  :deps ((evil gh "emacs-evil/evil" "3b678a2")
          (paredit gh "emacsmirror/paredit" "af07577")
          (dash gh "magnars/dash.el" "d3a8402")
          (smartparens gh "Fuco1/smartparens" "82d2cf0"))
@@ -1822,7 +1822,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; evil-goggles
 (t-package evil-goggles gh "edkolev/evil-goggles" "34ca276" nil
-  :deps ((evil gh "emacs-evil/evil" "729d9a5"))
+  :deps ((evil gh "emacs-evil/evil" "3b678a2"))
   :hook ((after-init . evil-goggles-mode)
          (after-init . evil-goggles-use-magit-faces)))
 
@@ -2101,7 +2101,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (load-file (expand-file-name "~/.emacs.d/nano.el"))
 
 ;;; which-key
-(t-package which-key sav "emacs/elpa.git" "ac5afbe" nil
+(t-package which-key sav "emacs/elpa.git" "85aeefd" nil
   :init
   (which-key-mode))
 
@@ -2591,7 +2591,7 @@ words of the candidate, respectively."
 
 ;;; git gutter
 (t-package diff-hl gh "dgutov/diff-hl" "bb9af85" nil
-  :deps ((cl-lib sav "emacs/elpa.git" "790948a"))
+  :deps ((cl-lib sav "emacs/elpa.git" "85aeefd"))
   :init
   (setq diff-hl-show-staged-changes nil)
   :config
@@ -2786,13 +2786,13 @@ words of the candidate, respectively."
 (t-package org-pomodoro gh "marcinkoziej/org-pomodoro" "3f5bcfb8" nil
   :commands (org-pomodoro)
   :deps ((alert gh "jwiegley/alert" "79f6936a")
-         (cl-lib sav "emacs/elpa.git" "790948a")))
+         (cl-lib sav "emacs/elpa.git" "85aeefd")))
 
 ;;; alerts
 (t-package org-alert gh "spegoraro/org-alert" "0bc04cea" nil
   :commands (org-alert-enable org-alert-disable org-alert-deadlines)
   :deps ((alert gh "jwiegley/alert" "79f6936a")
-	       (cl-lib sav "emacs/elpa.git" "790948a"))
+	       (cl-lib sav "emacs/elpa.git" "85aeefd"))
   :init
   (setq alert-default-style (if is-mac 'osx-notifier 'libnotify))
   (setq org-alert-interval (* 5 60)
@@ -3387,7 +3387,7 @@ With prefix ARG, insert the result inline instead. =>."
   :deps ((dash gh "magnars/dash.el" "d3a8402")
          (f gh "rejeep/f.el" "931b6d0")
          (s gh "magnars/s.el" "dda84d3")
-         (cl-lib sav "emacs/elpa.git" "790948a"))
+         (cl-lib sav "emacs/elpa.git" "85aeefd"))
   :init
   (keymap-set t-leader-g-map "o o" #'browse-at-remote)
   :config
