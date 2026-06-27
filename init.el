@@ -3221,7 +3221,7 @@ With prefix ARG, insert the result inline instead. =>."
 
 ;;; lang: kotlin
 ;; https://gitlab.com/bricka/emacs-kotlin-ts-mode/-/commit/8b909743d2f6e72a8ad3b52e3a5ee412bf7cc4b2
-(t-package kotlin-ts-mode gl "bricka/emacs-kotlin-ts-mode" "8b90974" nil
+(t-package kotlin-ts-mode gl "bricka/emacs-kotlin-ts-mode" "39e30e4" nil
   :mode (("\\.kts?\\'" . kotlin-ts-mode))
   :config
   (defun t/fix-kotlin-ts-null-literal ()
