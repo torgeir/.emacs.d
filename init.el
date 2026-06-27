@@ -839,6 +839,9 @@ Refuses to run unless the `user-emacs-directory' git work tree is clean."
     (when (and (null t-package-queue)
                t-package-registry)
       (t-rescan-packages t))
+    ;; Always (re)surface the status + log windows when invoked, so they reappear
+    ;; even if the user closed them and regardless of whether anything is queued.
+    (t--display-status-and-log-buffers-exclusive)
     (if t-package-queue
         (let* ((names (mapcar (lambda (spec) (plist-get spec :name))
                               t-package-queue))
@@ -851,7 +854,6 @@ Refuses to run unless the `user-emacs-directory' git work tree is clean."
             (setq t-package-in-progress t)
             (setq t-package-complete-announced nil)
             (t--reset-queued-statuses)
-            (t--display-status-and-log-buffers-exclusive)
             (t--spinner-start)
             (t--install-next-available)))
       (message "t: packages already installed."))))
