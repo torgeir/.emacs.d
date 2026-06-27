@@ -312,11 +312,11 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
                                                       (length latest)
                                                     0)))
                                               rows))))
-               ;; latest-col-w: full column width = sha + " copy" + " dismiss",
+               ;; latest-col-w: full column width = sha + " copy" + " dismiss" + " bump",
                ;; floored at len("latest") so the header always fits
                (latest-col-w (when show-latest
                                (max (length "latest")
-                                    (+ latest-sha-w 1 (length "copy") 1 (length "dismiss")))))
+                                    (+ latest-sha-w 1 (length "copy") 1 (length "dismiss") 1 (length "bump")))))
                (sep-w (+ name-w 1 prov-w 1 repo-w 1 rev-w 1 status-w
                          (if show-latest (+ 1 latest-col-w) 0))))
           ;; Header
@@ -410,7 +410,14 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
                    "dismiss"
                    'action (let ((pkg name)) (lambda (_btn) (remhash pkg t-package-latest) (t--status-render)))
                    'follow-link t
-                   'help-echo "Dismiss this update"))))
+                   'help-echo "Dismiss this update")
+                  (insert " ")
+                  (insert-text-button
+                   "bump"
+                   'action (let ((pkg name) (sha latest))
+                             (lambda (_btn) (t-bump-package pkg sha)))
+                   'follow-link t
+                   'help-echo (format "Update init.el references to %s and rescan" latest)))))
               (insert "\n"))))
         (setq buffer-read-only nil)
         (when (and win saved-point saved-start)
@@ -702,6 +709,56 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
   (setq t-fetch-in-progress t)
   (t--status-render)
   (t--fetch-next-available))
+
+(defun t--bump-rev-in-file (repo latest)
+  "Replace every rev string following \"REPO\" in init.el with LATEST.
+Matches both top-level `t-package' declarations and `:deps' entries,
+since both use the form `host \"repo\" \"rev\"'. Returns the number of
+references updated."
+  (let ((init-file (expand-file-name "init.el" user-emacs-directory))
+        (count 0))
+    (with-current-buffer (find-file-noselect init-file)
+      (save-excursion
+        (goto-char (point-min))
+        (let ((regex (concat "\"" (regexp-quote repo) "\"[ \t\n]+\"\\([^\"]*\\)\"")))
+          (while (re-search-forward regex nil t)
+            (unless (string= (match-string 1) latest)
+              (replace-match latest t t nil 1))
+            (setq count (1+ count)))))
+      (save-buffer))
+    count))
+
+(defun t--bump-update-memory (name latest)
+  "Update the in-memory rev for NAME (and any `:dep-specs' referencing it)
+to LATEST so a following rescan reflects the new pinned rev."
+  (let ((spec (t--registry-find name)))
+    (when spec (plist-put spec :rev latest)))
+  (let ((meta (gethash name t-package-meta)))
+    (when meta
+      (plist-put meta :rev latest)
+      (puthash name meta t-package-meta)))
+  (maphash
+   (lambda (_pkg meta)
+     (dolist (dep-spec (plist-get meta :dep-specs))
+       (when (and (eq (car dep-spec) name)
+                  (nthcdr 3 dep-spec))
+         (setcar (nthcdr 3 dep-spec) latest))))
+   t-package-meta))
+
+(defun t-bump-package (name latest)
+  "Bump NAME to the LATEST sha: rewrite every reference to its repo in
+init.el (top-level declaration and `:deps' entries alike), save the
+buffer, update in-memory state, and rescan."
+  (let* ((meta (gethash name t-package-meta))
+         (repo (plist-get meta :repo)))
+    (if (not repo)
+        (message "t: no repo known for %s, cannot bump." name)
+      (let ((n (t--bump-rev-in-file repo latest)))
+        (t--bump-update-memory name latest)
+        (remhash name t-package-latest)
+        (message "t: bumped %s to %s (%d reference%s updated)."
+                 name latest n (if (= n 1) "" "s"))
+        (t-rescan-packages)))))
 
 (defun t-install-queued-packages ()
   (interactive)
