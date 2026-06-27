@@ -458,10 +458,13 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
   ;; active window layout.
   (let ((status-buffer (t--status-render))
         (log-buffer (get-buffer-create t-package-log-buffer)))
-    (display-buffer
-     status-buffer
-     '((display-buffer-reuse-window display-buffer-pop-up-window)
-       (inhibit-same-window . t)))
+    ;; Only surface the status buffer if it isn't already on screen — the user
+    ;; is usually already in it (clicked "install queued" there); re-rendering
+    ;; above is enough, and displaying it would pop a redundant second window.
+    (unless (get-buffer-window status-buffer t)
+      (display-buffer
+       status-buffer
+       '((display-buffer-reuse-window display-buffer-pop-up-window))))
     (display-buffer
      log-buffer
      '((display-buffer-reuse-window display-buffer-in-side-window)
