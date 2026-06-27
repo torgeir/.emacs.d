@@ -2923,7 +2923,7 @@ words of the candidate, respectively."
   (org-alert-enable))
 
 ;;; mail
-(t-package notmuch gh "notmuch/notmuch" "076d597" "emacs"
+(t-package notmuch gh "notmuch/notmuch" "039533f" "emacs"
   :commands (notmuch)
   :init
   (after! notmuch
