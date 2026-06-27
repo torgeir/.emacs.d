@@ -2250,7 +2250,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; agent-shell
 (t-package agent-shell gh "xenodium/agent-shell" "b3e556c" nil
   :deps ((acp gh "xenodium/acp.el" "f7e20ce")
-	       (shell-maker gh "xenodium/shell-maker" "8c64f0b"))
+	       (shell-maker gh "xenodium/shell-maker" "43ee9e1"))
   ;; :hook ((agent-shell-mode-hook . olivetti-mode))
   :commands (agent-shell)
   :init
@@ -2307,7 +2307,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; chatgpt-shell
 (t-package chatgpt-shell gh "xenodium/chatgpt-shell" "cbad6ff" nil
-  :deps ((shell-maker gh "xenodium/shell-maker" "8c64f0b")
+  :deps ((shell-maker gh "xenodium/shell-maker" "43ee9e1")
 	       (transient gh "magit/transient" "7131bec"))
   ;; :hook ((chatgpt-shell-mode-hook . olivetti-mode))
   :commands (chatgpt-shell chatgpt-shell-prompt-compose)
