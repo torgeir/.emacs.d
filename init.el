@@ -2935,7 +2935,7 @@ words of the candidate, respectively."
   (fset 'epg-wait-for-status 'ignore))
 
 ;;; pomodoro
-(t-package org-pomodoro gh "marcinkoziej/org-pomodoro" "3f5bcfb8" nil
+(t-package org-pomodoro gh "marcinkoziej/org-pomodoro" "3f5bcfb" nil
   :commands (org-pomodoro)
   :deps ((alert gh "jwiegley/alert" "31fc568")
          (cl-lib sav "emacs/elpa.git" "85aeefd")))
