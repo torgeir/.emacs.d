@@ -1844,7 +1844,7 @@ When 'quit' is set, quits window when any other key is pressed."
 			                       (t (execute-kbd-macro "j"))))))
 
 ;;; undo
-(t-package undo-fu gh "emacsmirror/undo-fu" "b4ce5ed" nil
+(t-package undo-fu gh "emacsmirror/undo-fu" "5684ef2" nil
   :init
   (setq evil-undo-system 'undo-fu))
 
