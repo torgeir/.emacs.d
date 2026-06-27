@@ -336,7 +336,7 @@ with a pastel background + darker same-hue foreground."
 ;; --- Command line theme chooser, initial theme ------------------------------
 (add-to-list 'command-switch-alist '("-dark"  . nano-dark))
 (add-to-list 'command-switch-alist '("-light" . nano-light))
-(if (eq 'light (frame-parameter nil 'background-mode)) (nano-light) (nano-dark))
+(if (eq 'light (frame-parameter nil 'background-mode)) (nano-dark) (nano-dark))
 
 ;; --- Header & mode lines ----------------------------------------------------
 (setq-default mode-line-format
