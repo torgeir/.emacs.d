@@ -2706,7 +2706,7 @@ words of the candidate, respectively."
   (pulsar-global-mode 1))
 
 ;;; smooth scroll, even over images
-(t-package ultra-scroll gh "jdtsmith/ultra-scroll" "bfd7871" nil
+(t-package ultra-scroll gh "jdtsmith/ultra-scroll" "5be267d" nil
   :config
   (ultra-scroll-mode 1))
 
