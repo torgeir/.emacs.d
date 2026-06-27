@@ -2309,7 +2309,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; agent-shell
 (t-package agent-shell gh "xenodium/agent-shell" "b3e556c" nil
-  :deps ((acp gh "xenodium/acp.el" "f7e20ce")
+  :deps ((acp gh "xenodium/acp.el" "3ddfa90")
 	       (shell-maker gh "xenodium/shell-maker" "55c383c"))
   ;; :hook ((agent-shell-mode-hook . olivetti-mode))
   :commands (agent-shell)
