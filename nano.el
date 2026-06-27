@@ -356,8 +356,28 @@ with a pastel background + darker same-hue foreground."
                                        "")))
                        (tasks '(t/modeline-segs))
                        (coords (format-mode-line "%c:%l "))
-                       (is-main-window (mode-line-window-selected-p)))
+                       (is-main-window (mode-line-window-selected-p))
+                       ;; olivetti centers the body with window margins. In the
+                       ;; header line, position 0 is the window's left edge (so
+                       ;; we must indent past the left margin), but `right'
+                       ;; already refers to the text-area edge (so right-aligned
+                       ;; content needs no adjustment). We also paint both margins
+                       ;; with the default background so the dim header "box" is
+                       ;; confined to the body width.
+                       (margins (window-margins))
+                       (lmargin (or (car margins) 0))
+                       (rmargin (or (cdr margins) 0))
+                       (default-bg (face-background 'default nil t)))
                   (list
+                   ;; NB: must be a string, never nil — a nil at the head of a
+                   ;; mode-line list is read as a `(symbol then else)' conditional
+                   ;; and swallows the rest of the header.
+                   (if (> lmargin 0)
+                       ;; default background so the dim header "box" starts at the
+                       ;; RW badge instead of bleeding into the left margin
+                       (propertize " " 'display `(space :width ,lmargin)
+                                   'face `(:background ,default-bg))
+                     "")
                    (propertize " " 'face (cdr prefix)  'display '(raise -0.25))
                    (propertize (car prefix) 'face (cdr prefix))
                    (propertize " " 'face (cdr prefix) 'display '(raise +0.25))
@@ -371,6 +391,14 @@ with a pastel background + darker same-hue foreground."
                    `(:eval (when ,is-main-window ,tasks))
                    (propertize (format " %s" coords) 'face 'nano-faded)
                    (when is-main-window (propertize "*" 'face `(:foreground ,(plist-get t-colors :hl))))
+                   (when (> rmargin 0)
+                     ;; keep one dim cell after "*" for breathing room, then fill
+                     ;; the right margin with the default background so the dim
+                     ;; header "box" stays confined to the body width
+                     (concat
+                      (propertize " " 'display '(space :width 1))
+                      (propertize " " 'display `(space :align-to (+ right ,rmargin 1))
+                                  'face `(:background ,default-bg))))
                    ))))
 
 ;; --- Minibuffer setup -------------------------------------------------------
