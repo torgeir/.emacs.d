@@ -2761,7 +2761,7 @@ words of the candidate, respectively."
         eglot-sync-connect nil))
 
 ;;; apheleia
-(t-package apheleia gh "radian-software/apheleia" "e6e5d55" nil
+(t-package apheleia gh "radian-software/apheleia" "14a0bb4" nil
   :config
   (apheleia-global-mode +1))
 
