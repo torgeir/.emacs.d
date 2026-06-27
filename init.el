@@ -794,7 +794,15 @@ buffer, update in-memory state, and rescan."
 
 (defun t-packages-log ()
   (interactive)
-  (display-buffer (get-buffer-create t-package-log-buffer)))
+  ;; Show in a dedicated bottom side window so it doesn't restructure the
+  ;; currently active window layout (side windows live outside the main
+  ;; window tree and restore cleanly when closed).
+  (display-buffer
+   (get-buffer-create t-package-log-buffer)
+   '((display-buffer-reuse-window display-buffer-in-side-window)
+     (side . bottom)
+     (slot . 0)
+     (window-height . 0.3))))
 
 (defun t-uninstall-package (name)
   (interactive
