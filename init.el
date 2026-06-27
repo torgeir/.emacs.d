@@ -2198,7 +2198,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 
 ;;; highlight TODO
-(t-package hl-todo gh "tarsius/hl-todo" "9540fc4" nil
+(t-package hl-todo gh "tarsius/hl-todo" "527d545" nil
   :config
   (global-hl-todo-mode))
 
