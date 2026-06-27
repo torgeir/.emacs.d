@@ -787,6 +787,15 @@ Return non-nil on success."
     (and (= 0 (process-file "git" nil nil nil "add" "--" file))
          (= 0 (process-file "git" nil nil nil "commit" "-m" message "--" file)))))
 
+(defun t--refresh-magit-status-buffers ()
+  "Refresh all live `magit-status-mode' buffers so a new commit shows up."
+  (when (fboundp 'magit-refresh)
+    (dolist (buf (buffer-list))
+      (when (buffer-live-p buf)
+        (with-current-buffer buf
+          (when (derived-mode-p 'magit-status-mode)
+            (magit-refresh)))))))
+
 (defun t-bump-package (name latest)
   "Bump NAME to the LATEST sha: rewrite every reference to its repo in
 init.el (top-level declaration and `:deps' entries alike), save the
@@ -805,8 +814,10 @@ Refuses to run unless the `user-emacs-directory' git work tree is clean."
         (t--bump-update-memory name latest)
         (remhash name t-package-latest)
         (if (t--emacs-repo-commit (format "bump %s to %s" name latest) "init.el")
-            (message "t: bumped %s to %s (%d reference%s updated) and committed."
-                     name latest n (if (= n 1) "" "s"))
+            (progn
+              (t--refresh-magit-status-buffers)
+              (message "t: bumped %s to %s (%d reference%s updated) and committed."
+                       name latest n (if (= n 1) "" "s")))
           (message "t: bumped %s to %s (%d reference%s updated); commit failed."
                    name latest n (if (= n 1) "" "s")))
         (t-rescan-packages))))))
