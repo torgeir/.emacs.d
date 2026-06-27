@@ -3251,7 +3251,7 @@ With prefix ARG, insert the result inline instead. =>."
 (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
 
 ;;; lang: nix
-(t-package nix-ts-mode gh "nix-community/nix-ts-mode" "3198317" nil
+(t-package nix-ts-mode gh "nix-community/nix-ts-mode" "f256c92" nil
   :mode (("\\.nix\\'" . nix-ts-mode)))
 
 ;;; lang: kotlin
