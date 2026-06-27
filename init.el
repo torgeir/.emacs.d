@@ -128,7 +128,7 @@
       ('gh (format "https://github.com/%s/compare/%s...%s" clean-repo rev-from rev-to))
       ('gl (format "https://gitlab.com/%s/-/compare/%s...%s" clean-repo rev-from rev-to))
       ('cb (format "https://codeberg.org/%s/compare/%s...%s" clean-repo rev-from rev-to))
-      ('sav (format "https://git.savannah.gnu.org/cgit/%s/commit/?id=%s" repo rev-to))
+      ('sav (format "https://cgit.git.savannah.gnu.org/cgit/%s/commit/?id=%s" repo rev-to))
       (_ (error (concat "Unknown host, got " host))))))
 
 (defun t--package-dir (name)
