@@ -1766,8 +1766,8 @@ When 'quit' is set, quits window when any other key is pressed."
 
 
 ;;; evil-collection
-(t-package evil-collection gh "emacs-evil/evil-collection" "7680834" nil
-  :deps ((annalist gh "noctuid/annalist.el" "e1ef5da")
+(t-package evil-collection gh "emacs-evil/evil-collection" "1621831" nil
+  :deps ((annalist gh "noctuid/annalist.el" "f83019d")
          (evil gh "emacs-evil/evil" "3b678a2"))
   :init
   (setq evil-collection-setup-minibuffer t
