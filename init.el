@@ -175,30 +175,36 @@
     (dolist (dir ext-dirs)
       (add-to-list 'load-path dir))))
 
-(defun t--log (fmt &rest args)
+(defun t--log-insert (insert-fn)
+  "Append to the log buffer via INSERT-FN, keeping any window (and the buffer)
+that was already at end-of-buffer pinned to the new end so it keeps following.
+Window-point is checked/updated per window, since a non-selected window keeps
+its own point independent of the buffer's point."
   (let ((buf (get-buffer-create t-package-log-buffer)))
     (with-current-buffer buf
-      (let ((follow (and (get-buffer-window buf)
-                         (= (point) (point-max)))))
-        (goto-char (point-max))
-        (insert (apply #'format fmt args) "\n")
-        (when (and follow (get-buffer-window buf))
-          (goto-char (point-max)))))))
+      (let* ((windows (get-buffer-window-list buf nil t))
+             (follow-buffer (= (point) (point-max)))
+             (follow-windows (seq-filter (lambda (w) (= (window-point w) (point-max)))
+                                         windows)))
+        (save-excursion
+          (goto-char (point-max))
+          (funcall insert-fn))
+        (when follow-buffer (goto-char (point-max)))
+        (dolist (w follow-windows)
+          (set-window-point w (point-max)))))))
+
+(defun t--log (fmt &rest args)
+  (t--log-insert (lambda () (insert (apply #'format fmt args) "\n"))))
 
 (defun t--process-output (name output)
   (let* ((prefix (format "[%s] " name))
          (text (replace-regexp-in-string "\r" "\n" output))
-         (lines (split-string text "\n"))
-         (buf (get-buffer-create t-package-log-buffer)))
-    (with-current-buffer buf
-      (let ((follow (and (get-buffer-window buf)
-                         (= (point) (point-max)))))
-        (goto-char (point-max))
-        (dolist (line lines)
-          (unless (string-empty-p line)
-            (insert prefix line "\n")))
-        (when (and follow (get-buffer-window buf))
-          (goto-char (point-max)))))))
+         (lines (split-string text "\n")))
+    (t--log-insert
+     (lambda ()
+       (dolist (line lines)
+         (unless (string-empty-p line)
+           (insert prefix line "\n")))))))
 
 ;; Back-compat for any in-flight processes still using the old filter.
 (defun t--process-filter (p output)
@@ -859,12 +865,19 @@ Refuses to run unless the `user-emacs-directory' git work tree is clean."
   ;; Show in a dedicated bottom side window so it doesn't restructure the
   ;; currently active window layout (side windows live outside the main
   ;; window tree and restore cleanly when closed).
-  (display-buffer
-   (get-buffer-create t-package-log-buffer)
-   '((display-buffer-reuse-window display-buffer-in-side-window)
-     (side . bottom)
-     (slot . 0)
-     (window-height . 0.3))))
+  (let* ((buf (get-buffer-create t-package-log-buffer))
+         (win (display-buffer
+               buf
+               '((display-buffer-reuse-window display-buffer-in-side-window)
+                 (side . bottom)
+                 (slot . 0)
+                 (window-height . 0.3)))))
+    ;; Select the log window and run `end-of-buffer' interactively in it (same
+    ;; as pressing M-> there) so the window stays pinned to the bottom and keeps
+    ;; following process output redirected there.
+    (when (window-live-p win)
+      (with-selected-window win
+        (call-interactively #'end-of-buffer)))))
 
 (defun t-uninstall-package (name)
   (interactive
