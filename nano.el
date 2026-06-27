@@ -124,7 +124,7 @@
   "Set dired-subtree depth faces to progressively darkened theme background."
   (require 'color)
   (let ((bg (face-background 'default)))
-    (cl-loop for depth from 1 to 10
+    (cl-loop for depth from 1 to 20
              do (let ((face (intern (format "dired-subtree-depth-%d-face" depth))))
                   (unless (facep face) (make-face face))
                   (set-face-attribute face nil
@@ -340,7 +340,9 @@ with a pastel background + darker same-hue foreground."
 
 ;; --- Header & mode lines ----------------------------------------------------
 (setq-default mode-line-format
-              '(" " (:eval (when (mode-line-window-selected-p) (persp-mode-line)))))
+              '(" ")
+              ;;'(" " (:eval (when (mode-line-window-selected-p) (persp-mode-line))))
+              )
 (setq-default header-line-format
               '(:eval
                 (let* ((prefix (cond (buffer-read-only     '("RO" . nano-default-i))
@@ -348,23 +350,27 @@ with a pastel background + darker same-hue foreground."
                                      (t                    '("RW" . nano-faded-i))))
                        (minimal (string-prefix-p ":" (buffer-name)))
                        (mode (unless minimal
-                               (concat "(" (downcase (cond ((consp mode-name) (car mode-name))
-                                                           ((stringp mode-name) mode-name)
-                                                           (t "unknown")))
-                                       " mode)")))
+                               (concat "" (downcase (cond ((consp mode-name) (car mode-name))
+                                                          ((stringp mode-name) mode-name)
+                                                          (t "unknown")))
+                                       "")))
                        (tasks '(t/modeline-segs))
-                       (coords (format-mode-line "%c:%l ")))
+                       (coords (format-mode-line "%c:%l "))
+                       (is-main-window (mode-line-window-selected-p)))
                   (list
                    (propertize " " 'face (cdr prefix)  'display '(raise -0.25))
                    (propertize (car prefix) 'face (cdr prefix))
                    (propertize " " 'face (cdr prefix) 'display '(raise +0.25))
+                   (propertize (format-mode-line (if (window-dedicated-p) " !" "")) 'face `(:foreground ,(plist-get t-colors :hl)))
                    (propertize (format-mode-line " %b ") 'face 'nano-strong)
                    (when mode (propertize mode 'face `(:foreground ,(plist-get t-colors :hl))))
+                   (when (and is-main-window (boundp 't-idle-highlight-mode) t-idle-highlight-mode) " 🔦")
                    (propertize " " 'display `(space :align-to (- right ,(+ (length coords)
-                                                                           (length (eval tasks))
+                                                                           (if is-main-window (length (eval tasks)) 0)
                                                                            2))))
-                   `(:eval ,tasks)
+                   `(:eval (when ,is-main-window ,tasks))
                    (propertize (format " %s" coords) 'face 'nano-faded)
+                   (when is-main-window (propertize "*" 'face `(:foreground ,(plist-get t-colors :hl))))
                    ))))
 
 ;; --- Minibuffer setup -------------------------------------------------------

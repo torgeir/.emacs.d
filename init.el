@@ -978,6 +978,19 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; s.el
 (t-package s gh "magnars/s.el" "dda84d3" nil)
 
+;;; git project root
+(defun t/project-root ()
+  "Return git worktree root, even when called from inside .git/."
+  (interactive)
+  (let* ((dir  (file-name-as-directory (expand-file-name default-directory)))
+         (base (if (string-match "/\\.git/" dir)
+                   (substring dir 0 (match-beginning 0))
+                 dir)))
+    (or (with-temp-buffer
+          (when (zerop (process-file "git" nil t nil "-C" base "rev-parse" "--show-toplevel"))
+            (string-trim-right (buffer-string) "\n")))
+        (directory-file-name base))))
+
 ;;; dired defuns
 (defun t/prefix-arg-universal? ()
   "Check if the function was called with the c-u universal prefix."
@@ -1021,14 +1034,6 @@ When 'quit' is set, quits window when any other key is pressed."
       (t/dired-subtree-toggle)
       (forward-line)
       (t/dired-show-recursively-0 path depth))))
-
-(defun t/project-root ()
-  "Get project root without throwing."
-  (interactive)
-  (let ((root (with-temp-buffer
-                (when (zerop (process-file "git" nil t nil "rev-parse" "--show-toplevel"))
-                  (string-trim-right (buffer-string) "\n")))))
-    (or root (expand-file-name default-directory))))
 
 (defun t/dired-ignored? ()
   "File under cursor is ignored by projectile. Only checks file-name-base."
@@ -1293,6 +1298,7 @@ When 'quit' is set, quits window when any other key is pressed."
 				                         (when (equal major-mode 'eww-mode)
 				                           (eww-toggle-images))))
 (keymap-set t-leader-map "t l" #'display-line-numbers-mode)
+(keymap-set t-leader-map "t h" #'t-idle-highlight-mode)
 (keymap-set t-leader-map "t L" (cmd!
 				                        (display-line-numbers-mode -1)
 				                        (setq display-line-numbers-type
@@ -1495,6 +1501,10 @@ When 'quit' is set, quits window when any other key is pressed."
 
 (keymap-set t-leader-map "f P" (cmd! (consult-find user-emacs-directory "init.el")))
 
+;;; insert
+(keymap-set t-leader-map "i e" #'emojify-insert-emoji)
+(keymap-set t-leader-map "i u" #'t/insert-unicode)
+
 ;;; avy
 (t-package avy gh "abo-abo/avy" "933d1f3" nil
   :deps ((cl-lib sav "emacs/elpa.git" "790948a"))
@@ -1520,7 +1530,7 @@ When 'quit' is set, quits window when any other key is pressed."
 	      avy-highlight-first t
 	      avy-style 'at-full
 	      avy-timeout-seconds 0.2
-        avy-single-candidate-jump nil ; always specify candidate
+        avy-single-candidate-jump nil   ; always specify candidate
         avy-keys '(?j ?f ?d ?k ?s ?a))
   (defun t/setup-avy ()
     (interactive)
@@ -1626,15 +1636,13 @@ When 'quit' is set, quits window when any other key is pressed."
                                          (shell-quote-argument (expand-file-name default-directory))))))
 
 ;;; windows
-(keymap-set t-leader-map "w d" #'delete-window)
-(keymap-set t-leader-map "w m m" #'delete-other-windows)
-(keymap-set t-leader-map "w t" #'evil-window-rotate-downwards)
+(after! evil
+  (keymap-set t-leader-map "w" evil-window-map) ;; elpa/evil/evil-maps.el
+  (keymap-set t-leader-map "w d" #'delete-window)
+  (keymap-set t-leader-map "w m m" #'delete-other-windows)
+  (keymap-set t-leader-map "w t" #'evil-window-rotate-downwards))
 
 ;;; window nav
-(keymap-set t-leader-map "w l" #'evil-window-right)
-(keymap-set t-leader-map "w h" #'evil-window-left)
-(keymap-set t-leader-map "w j" #'evil-window-down)
-(keymap-set t-leader-map "w k" #'evil-window-up)
 (keymap-set t-leader-map "w L" #'evil-window-move-far-right)
 (keymap-set t-leader-map "w H" #'evil-window-move-far-left)
 (keymap-set t-leader-map "w K" #'evil-window-move-very-top)
@@ -2373,7 +2381,8 @@ When 'quit' is set, quits window when any other key is pressed."
   (setq-default fill-column 90 ;; prevents breaks of 89 filled paragraphs
                 indent-tabs-mode nil
                 tab-width 2
-                standard-indent 2)
+                standard-indent 2
+                word-wrap t)
   (setq c-basic-offset 2
         js-indent-level 2
         typescript-indent-level 2
@@ -3055,7 +3064,7 @@ With no active region, exports the whole buffer."
   (interactive)
   (with-current-buffer "COMMIT_EDITMSG"
     (when (and
-           (file-exists-p (concat (t/project-root) "products")) ;; repo contains products/
+           (file-exists-p (concat (t/project-root) "/products")) ;; repo contains ./products
            (looking-at "^$")) ;; empty first line
       (let ((type (completing-read "Type: " (s-split "|" "build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"))))
         (insert (format "%s: " type))
@@ -3564,3 +3573,103 @@ With prefix ARG, insert the result inline instead. =>."
 
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . t/deno-or-ts))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . t/deno-or-ts))
+
+;;; t idle highlight mode
+(defvar t-idle-highlight-idle-time 0.3
+  "Time before idle highlight kicks in.")
+
+(defvar t-idle-highlight-flash-duration 1.5
+  "Time of idle highlight flash duration.")
+
+(defvar t-idle-highlight--timer nil
+  "Idle timer that triggers the highlight when user is idle.")
+
+(define-minor-mode t-idle-highlight-mode
+  "Minor mode that will highlight symbol at point when emacs is idle."
+  :init-value nil
+  :global t
+  :lighter " t-idle-highlight"
+  (if t-idle-highlight-mode
+      (progn
+        (add-hook 'pre-command-hook 't/unhighlight-in-all-buffers)
+        (setq t-idle-highlight--timer
+              (run-with-idle-timer
+               t-idle-highlight-idle-time
+               t
+               't/highlight-in-all-buffers)))
+    (progn
+      (remove-hook 'pre-command-hook 't/unhighlight-in-all-buffers)
+      (when t-idle-highlight--timer
+        (cancel-timer t-idle-highlight--timer)
+        (setq t-idle-highlight--timer nil)
+        (t/unhighlight-in-all-buffers)))))
+
+(defface t-idle-highlight-face
+  '((t (:weight bold :inherit nano-popout)))
+  "Idle highlighting face.")
+
+(defface t-idle-highlight-face-loud
+  '((t (:weight bold :background "#f0a" :foreground "#dadada")))
+  "Idle highlighting face, loud.")
+
+(defun t/flash-in-all-buffers ()
+  "Highlight symbol at point across all buffers temporarily."
+  (interactive)
+  (t/highlight-in-all-buffers 't-idle-highlight-face-loud)
+  (run-at-time (format "%d sec" t-idle-highlight-flash-duration) nil 't/unhighlight-in-all-buffers))
+
+(defun t/highlight-with-all-buffers (fn)
+  (if-let ((symbol
+            (if (use-region-p)
+                ;; +1 for evil
+                (buffer-substring-no-properties (region-beginning) (+ 1 (region-end)))
+              (thing-at-point 'symbol t))))
+      (save-excursion
+        (let ((tail (buffer-list)))
+          (while tail
+            (let ((buffer (car tail)))
+              (set-buffer buffer)
+              (funcall fn symbol)
+              (setq tail (cdr tail))))))))
+
+(defvar-local t-highlight-overlays nil)
+
+(defun t/highlight-in-all-buffers (&optional face)
+  "Highlight region text (if active) or symbol at point in all buffers."
+  (interactive)
+  (t/highlight-with-all-buffers
+   (lambda (text)
+     (unless (and (stringp text) (> (length text) 0))
+       (user-error "No text to highlight"))
+     (let ((f (or face 't-idle-highlight-face)))
+       (mapc #'delete-overlay t-highlight-overlays)
+       (setq t-highlight-overlays nil)
+       (save-excursion
+         (goto-char (point-min))
+         (while (search-forward text nil t)
+           (let ((ov (make-overlay (match-beginning 0) (match-end 0) nil t t)))
+             (overlay-put ov 'face f)
+             (push ov t-highlight-overlays))))))))
+
+(defun t/unhighlight-in-all-buffers ()
+  "Remove all symbol/text highlights in all buffers."
+  (interactive)
+  (t/highlight-with-all-buffers
+   (lambda (_text)
+     (mapc #'delete-overlay t-highlight-overlays)
+     (setq t-highlight-overlays nil))))
+
+;;; insert unicode
+(defun t/insert-unicode (name)
+  "Insert unicode by name. Query for name when interactive."
+  (interactive
+   (let* ((table (ucs-names))
+          (completion-extra-properties
+           `(:annotation-function
+             ,(lambda (cand)
+                (let* ((cp (gethash cand table))
+                       (ch (and cp (char-to-string cp))))
+                  (if cp (format "  %s  U+%04X" ch cp) "")))
+             :categoryunicode-name)))
+     (list (completing-read "Unicode: " table nil t))))
+  (insert-char (gethash name (ucs-names))))

@@ -792,11 +792,12 @@ Prefix arg will force eww."
 (defun t/in-all-windows (fn)
   (interactive)
   (dolist (w (window-list))
-    (funcall fn w)))
+    (with-selected-window w
+      (funcall fn w))))
 
 (defun t/in-all-buffers (fn)
   (interactive)
-  (dolist (b (doom-buffer-list))
+  (dolist (b (buffer-list))
     (with-current-buffer b
       (funcall fn b))))
 
