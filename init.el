@@ -2711,7 +2711,7 @@ words of the candidate, respectively."
   (ultra-scroll-mode 1))
 
 ;;; spacious-padding
-(t-package spacious-padding gh "protesilaos/spacious-padding" "a9cddfb" nil
+(t-package spacious-padding gh "protesilaos/spacious-padding" "0fdbfdb" nil
   :config
   (setq spacious-padding-widths
         '( :internal-border-width 32
