@@ -2245,7 +2245,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (which-key-mode))
 
 ;;; writing
-(t-package olivetti gh "rnkn/olivetti" "845eb7a" nil
+(t-package olivetti gh "rnkn/olivetti" "d2ccae5" nil
   :commands (olivetti-mode)
   :init
   (defun t/nice-width ()
