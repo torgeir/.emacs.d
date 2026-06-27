@@ -354,7 +354,10 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
                           (define-key map [mouse-1]
                                       (lambda ()
                                         (interactive)
-                                        (find-file (expand-file-name "init.el" user-emacs-directory))
+                                        ;; Open init.el in another window so the
+                                        ;; *t-packages* buffer keeps its own window.
+                                        (find-file-other-window
+                                         (expand-file-name "init.el" user-emacs-directory))
                                         (goto-char (point-min))
                                         (search-forward query nil t)))
                           map)))
@@ -668,8 +671,13 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
   (when (eq (process-status p) 'exit)
     (let* ((name (process-get p 't-name))
            (raw (or (process-get p 't-output) ""))
-           (sha (car (split-string raw))))
-      (if (and (= 0 (process-exit-status p)) sha (>= (length sha) 7))
+           ;; `git ls-remote' prints "<40-hex-sha>\tHEAD", but stderr (e.g.
+           ;; savannah/gitlab "warning: redirecting to ..." lines) is mixed
+           ;; into the output. Match the hex sha explicitly instead of taking
+           ;; the first whitespace token, which could be "warning".
+           (sha (when (string-match "\\b[0-9a-f]\\{40\\}\\b" raw)
+                  (match-string 0 raw))))
+      (if (and (= 0 (process-exit-status p)) sha)
           (puthash name (substring sha 0 7) t-package-latest)
         (puthash name "error" t-package-latest))
       (remhash name t-fetch-active)
@@ -834,30 +842,42 @@ buffer, update in-memory state, and rescan."
 
 (defun t-rescan-packages (&optional no-show)
   (interactive)
-  (setq t-package-queue nil)
-  (setq t-package-order nil)
-  (setq t-package-pending-activation nil)
-  (clrhash t-package-status)
-  (dolist (spec t-package-registry)
-    (let* ((name (plist-get spec :name))
-           (pkg-dir (t--package-dir name))
-           (rev (plist-get spec :rev)))
-      (t--status-register name)
-      (cond
-       ((t--package-up-to-date-p pkg-dir rev)
-        (t--status-set name "installed")
-        (t--package-add-load-path name (plist-get spec :subdir)))
-       ((t--package-outdated-p pkg-dir rev)
-        (t--status-set name "outdated")
-        (t--queue-package spec))
-       (t
-        (t--status-set name "queued")
-        (t--queue-package spec)))))
-  (unless no-show
-    (t--display-status-buffer))
-  (t--check-conflicts)
-  (unless no-show
-    (message "t: rescan complete.")))
+  ;; Remember the cursor's line before the redraw and restore it afterwards,
+  ;; so rescan (and bump, which calls rescan) doesn't jump the cursor to the
+  ;; top. Line-based since the buffer is erased and rebuilt with the same rows.
+  (let* ((buf (get-buffer t-package-status-buffer))
+         (win (and buf (get-buffer-window buf)))
+         (saved-line (and win (with-current-buffer buf
+                                (line-number-at-pos (window-point win))))))
+    (setq t-package-queue nil)
+    (setq t-package-order nil)
+    (setq t-package-pending-activation nil)
+    (clrhash t-package-status)
+    (dolist (spec t-package-registry)
+      (let* ((name (plist-get spec :name))
+             (pkg-dir (t--package-dir name))
+             (rev (plist-get spec :rev)))
+        (t--status-register name)
+        (cond
+         ((t--package-up-to-date-p pkg-dir rev)
+          (t--status-set name "installed")
+          (t--package-add-load-path name (plist-get spec :subdir)))
+         ((t--package-outdated-p pkg-dir rev)
+          (t--status-set name "outdated")
+          (t--queue-package spec))
+         (t
+          (t--status-set name "queued")
+          (t--queue-package spec)))))
+    (unless no-show
+      (t--display-status-buffer))
+    (t--check-conflicts)
+    (when (and win saved-line (window-live-p win) (buffer-live-p buf))
+      (with-current-buffer buf
+        (goto-char (point-min))
+        (forward-line (1- saved-line))
+        (set-window-point win (point))))
+    (unless no-show
+      (message "t: rescan complete."))))
 
 (defun t--register-package (name host repo rev subdir use-package-form &optional deps dep-of dep-specs)
   (let* ((existing (t--registry-find name))
