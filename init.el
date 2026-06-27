@@ -2766,7 +2766,7 @@ words of the candidate, respectively."
 
 ;;; hackernews
 (t-package hnreader gh "thanhvg/emacs-hnreader" "a56f67a" nil
-  :deps ((request gh "tkf/emacs-request" "6f419b5")
+  :deps ((request gh "tkf/emacs-request" "c22e3c2")
 	       (promise gh "chuntaro/emacs-promise" "cec51fe"))
   :commands (hnreader-news))
 
