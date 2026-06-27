@@ -3488,12 +3488,22 @@ With prefix ARG, insert the result inline instead. =>."
     (keymap-set evil-normal-state-map "z o" #'kirigami-open-fold)
     (keymap-set evil-normal-state-map "z r" #'kirigami-open-folds)
     (keymap-set evil-normal-state-map "z m" #'kirigami-close-folds))
+  ;; double click on a heading toggles its fold. `kirigami-toggle-fold' handles
+  ;; any backend kirigami drives (outline, org, treesit-fold, hideshow, ...).
+  (defun t/fold-double-click (event)
+    "Toggle the fold at the clicked heading."
+    (interactive "e")
+    (mouse-set-point event)
+    (call-interactively #'kirigami-toggle-fold))
+  (defun t/fold-bind-mouse (map)
+    "Bind double click folding in keymap MAP."
+    (define-key map [double-mouse-1] #'t/fold-double-click))
   (after! outline
-    (define-key outline-minor-mode-map [double-mouse-1]
-                (defun t/fold-double-click (event)
-                  (interactive "e")
-                  (mouse-set-point event)
-                  (call-interactively #'kirigami-toggle-fold)))))
+    (t/fold-bind-mouse outline-minor-mode-map))
+  (after! org
+    (t/fold-bind-mouse org-mode-map))
+  (after! treesit-fold
+    (t/fold-bind-mouse treesit-fold-mode-map)))
 
 ;;; support local only config
 (require 'private-init (expand-file-name "private-init.el") t)
