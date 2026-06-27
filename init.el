@@ -2227,7 +2227,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (add-hook 'persp-mode-hook #'t/sync-persp-face)
 
 ;;; perspectives
-(t-package perspective gh "nex3/perspective-el" "64ef5ea" nil
+(t-package perspective gh "nex3/perspective-el" "af96b2c" nil
   :init
   (setq persp-state-default-file
 	      (expand-file-name "perspective-state.el" user-emacs-directory)
