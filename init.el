@@ -2937,13 +2937,13 @@ words of the candidate, respectively."
 ;;; pomodoro
 (t-package org-pomodoro gh "marcinkoziej/org-pomodoro" "3f5bcfb8" nil
   :commands (org-pomodoro)
-  :deps ((alert gh "jwiegley/alert" "79f6936a")
+  :deps ((alert gh "jwiegley/alert" "31fc568")
          (cl-lib sav "emacs/elpa.git" "85aeefd")))
 
 ;;; alerts
 (t-package org-alert gh "spegoraro/org-alert" "0bc04ce" nil
   :commands (org-alert-enable org-alert-disable org-alert-deadlines)
-  :deps ((alert gh "jwiegley/alert" "79f6936a")
+  :deps ((alert gh "jwiegley/alert" "31fc568")
 	       (cl-lib sav "emacs/elpa.git" "85aeefd"))
   :init
   (setq alert-default-style (if is-mac 'osx-notifier 'libnotify))
