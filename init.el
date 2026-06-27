@@ -418,7 +418,15 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
                   (insert-text-button
                    "bump"
                    'action (let ((pkg name) (sha latest))
-                             (lambda (_btn) (t-bump-package pkg sha)))
+                             (lambda (_btn)
+                               ;; Move to the start of this row first so the
+                               ;; cursor position remembered across the rescan
+                               ;; redraw is the line start, not the bump button.
+                               (forward-line 0)
+                               (when (get-buffer-window (current-buffer))
+                                 (set-window-point
+                                  (get-buffer-window (current-buffer)) (point)))
+                               (t-bump-package pkg sha)))
                    'follow-link t
                    'help-echo (format "Update init.el references to %s and rescan" latest)))))
               (insert "\n"))))
