@@ -1815,7 +1815,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package evil-cleverparens gh "emacs-evil/evil-cleverparens" "4c413a1" nil
   :deps ((evil gh "emacs-evil/evil" "729d9a5")
          (paredit gh "emacsmirror/paredit" "af07577")
-         (dash gh "magnars/dash.el" "d3a84021")
+         (dash gh "magnars/dash.el" "d3a8402")
          (smartparens gh "Fuco1/smartparens" "82d2cf0"))
   :hook ((emacs-lisp-mode . evil-cleverparens-mode)
          (emacs-lisp-mode . enable-paredit-mode)))
@@ -2020,7 +2020,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; dired subtree
 (t-package dired-subtree gh "Fuco1/dired-hacks" "de9336f" nil
-  :deps ((dash gh "magnars/dash.el" "d3a84021"))
+  :deps ((dash gh "magnars/dash.el" "d3a8402"))
   :commands (dired-subtree-toggle dired-subtree--dired-line-is-directory-or-link-p))
 
 ;;; direnv
@@ -2600,7 +2600,7 @@ words of the candidate, respectively."
 ;;; emojis :rocket:
 (t-package emojify gh "iqbalansari/emacs-emojify" "1b72641" nil
   :commands (global-emojify-mode)
-  :deps ((dash gh "magnars/dash.el" "d3a84021")
+  :deps ((dash gh "magnars/dash.el" "d3a8402")
          (ht gh "Wilfred/ht.el" "1c49aad")))
 
 ;;; apps
@@ -3384,7 +3384,7 @@ With prefix ARG, insert the result inline instead. =>."
 ;;; browse pr's
 (t-package f gh "rejeep/f.el" "931b6d0" nil)
 (t-package browse-at-remote gh "rmuslimov/browse-at-remote" "38e5ffd" nil
-  :deps ((dash gh "magnars/dash.el" "d3a84021")
+  :deps ((dash gh "magnars/dash.el" "d3a8402")
          (f gh "rejeep/f.el" "931b6d0")
          (s gh "magnars/s.el" "dda84d3")
          (cl-lib sav "emacs/elpa.git" "790948a"))
