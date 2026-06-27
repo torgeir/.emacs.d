@@ -1432,7 +1432,7 @@ When 'quit' is set, quits window when any other key is pressed."
 	           magit-commit-create
 	           magit-commit-amend
 	           magit-commit-instant-fixup)
-  :deps ((compat   gh "emacs-compat/compat" "38df650")
+  :deps ((compat   gh "emacs-compat/compat" "a0d6465")
 	       (cond-let gh "tarsius/cond-let" "8bf87d4")
 	       (llama    gh "tarsius/llama" "d430d48")
 	       (with-editor gh "magit/with-editor" "64211dc")
@@ -2580,7 +2580,7 @@ words of the candidate, respectively."
 ;;; embark
 (t-package embark gh "oantolin/embark" "e023888" nil
   :commands (embark-act)
-  :deps ((compat gh "emacs-compat/compat" "38df650"))
+  :deps ((compat gh "emacs-compat/compat" "a0d6465"))
   :init
   (progn
     ;; recenter after skipping with gj in embark export
@@ -2846,7 +2846,7 @@ words of the candidate, respectively."
          (cl-lib sav "emacs/elpa.git" "85aeefd")))
 
 ;;; alerts
-(t-package org-alert gh "spegoraro/org-alert" "0bc04cea" nil
+(t-package org-alert gh "spegoraro/org-alert" "0bc04ce" nil
   :commands (org-alert-enable org-alert-disable org-alert-deadlines)
   :deps ((alert gh "jwiegley/alert" "79f6936a")
 	       (cl-lib sav "emacs/elpa.git" "85aeefd"))
