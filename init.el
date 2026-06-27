@@ -3454,7 +3454,7 @@ With prefix ARG, insert the result inline instead. =>."
    ))
 
 ;;; fold: outline-indent
-(t-package outline-indent gh "jamescherti/outline-indent.el" "996f9cd" nil
+(t-package outline-indent gh "jamescherti/outline-indent.el" "aede1b0" nil
   :init
   (setq outline-indent-ellipsis "..."
         outline-minor-mode-use-buttons nil)
