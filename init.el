@@ -2684,7 +2684,7 @@ words of the candidate, respectively."
 (advice-add 'nano-install-theme :after #'t/refresh-vterm-bgs)
 
 ;;; git gutter
-(t-package diff-hl gh "dgutov/diff-hl" "bb9af85" nil
+(t-package diff-hl gh "dgutov/diff-hl" "2d7d071" nil
   :deps ((cl-lib sav "emacs/elpa.git" "85aeefd"))
   :init
   (setq diff-hl-show-staged-changes nil)
