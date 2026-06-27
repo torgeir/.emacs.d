@@ -3437,7 +3437,7 @@ With prefix ARG, insert the result inline instead. =>."
                    "show diff between the buffer and its file"))
 
 ;;; fold: treesit-fold
-(t-package treesit-fold gh "emacs-tree-sitter/treesit-fold" "e6b215b" nil
+(t-package treesit-fold gh "emacs-tree-sitter/treesit-fold" "cc1003b" nil
   :hook
   ((kotlin-ts-mode     . treesit-fold-mode)
    (typescript-ts-mode . treesit-fold-mode)
