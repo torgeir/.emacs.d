@@ -1924,7 +1924,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (set-face-attribute 'anzu-mode-line-no-match nil :foreground (plist-get t-colors :head)))
 
 ;;; evil-surround
-(t-package evil-surround gh "emacs-evil/evil-surround" "da05c60" nil
+(t-package evil-surround gh "emacs-evil/evil-surround" "e654837" nil
   :hook (after-init . global-evil-surround-mode)
   :config
   (after! evil
