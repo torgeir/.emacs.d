@@ -762,20 +762,43 @@ to LATEST so a following rescan reflects the new pinned rev."
          (setcar (nthcdr 3 dep-spec) latest))))
    t-package-meta))
 
+(defun t--emacs-repo-clean-p ()
+  "Return non-nil when the `user-emacs-directory' git work tree is clean."
+  (let ((default-directory (expand-file-name user-emacs-directory)))
+    (with-temp-buffer
+      (and (= 0 (process-file "git" nil t nil "status" "--porcelain"))
+           (= 0 (buffer-size))))))
+
+(defun t--emacs-repo-commit (message file)
+  "Stage FILE and commit it in `user-emacs-directory' with MESSAGE.
+Return non-nil on success."
+  (let ((default-directory (expand-file-name user-emacs-directory)))
+    (and (= 0 (process-file "git" nil nil nil "add" "--" file))
+         (= 0 (process-file "git" nil nil nil "commit" "-m" message "--" file)))))
+
 (defun t-bump-package (name latest)
   "Bump NAME to the LATEST sha: rewrite every reference to its repo in
 init.el (top-level declaration and `:deps' entries alike), save the
-buffer, update in-memory state, and rescan."
+buffer, update in-memory state, commit the change, and rescan.
+Refuses to run unless the `user-emacs-directory' git work tree is clean."
   (let* ((meta (gethash name t-package-meta))
          (repo (plist-get meta :repo)))
-    (if (not repo)
-        (message "t: no repo known for %s, cannot bump." name)
+    (cond
+     ((not repo)
+      (message "t: no repo known for %s, cannot bump." name))
+     ((not (t--emacs-repo-clean-p))
+      (message "t: %s has uncommitted changes; commit or stash before bumping."
+               (abbreviate-file-name (expand-file-name user-emacs-directory))))
+     (t
       (let ((n (t--bump-rev-in-file repo latest)))
         (t--bump-update-memory name latest)
         (remhash name t-package-latest)
-        (message "t: bumped %s to %s (%d reference%s updated)."
-                 name latest n (if (= n 1) "" "s"))
-        (t-rescan-packages)))))
+        (if (t--emacs-repo-commit (format "bump %s to %s" name latest) "init.el")
+            (message "t: bumped %s to %s (%d reference%s updated) and committed."
+                     name latest n (if (= n 1) "" "s"))
+          (message "t: bumped %s to %s (%d reference%s updated); commit failed."
+                   name latest n (if (= n 1) "" "s")))
+        (t-rescan-packages))))))
 
 (defun t-install-queued-packages ()
   (interactive)
