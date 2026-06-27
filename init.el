@@ -273,7 +273,7 @@ Each plist has :name :name-text :host :repo :rev :status :meta."
         (insert "-- t packages --\n\n")
         (insert-text-button
          "install queued"
-         'action (lambda (_btn) (t-install-queued-packages))
+         'action (lambda (_btn) (t-install-queued-packages t))
          'follow-link t
          'help-echo "Install queued packages")
         (insert " ")
@@ -828,8 +828,13 @@ Refuses to run unless the `user-emacs-directory' git work tree is clean."
                    name latest n (if (= n 1) "" "s")))
         (t-rescan-packages))))))
 
-(defun t-install-queued-packages ()
-  (interactive)
+(defun t-install-queued-packages (&optional force-show)
+  "Install queued packages.
+When FORCE-SHOW is non-nil (user-initiated via the button or `M-x'),
+always (re)surface the status + log windows even if nothing is queued.
+On the silent startup-hook path (FORCE-SHOW nil) the windows only appear
+when there is actually something to install."
+  (interactive (list t))
   (when (and t-package-in-progress
              (= (t--active-count) 0)
              (not (t--any-processes-running)))
@@ -839,9 +844,8 @@ Refuses to run unless the `user-emacs-directory' git work tree is clean."
     (when (and (null t-package-queue)
                t-package-registry)
       (t-rescan-packages t))
-    ;; Always (re)surface the status + log windows when invoked, so they reappear
-    ;; even if the user closed them and regardless of whether anything is queued.
-    (t--display-status-and-log-buffers-exclusive)
+    (when (or force-show t-package-queue)
+      (t--display-status-and-log-buffers-exclusive))
     (if t-package-queue
         (let* ((names (mapcar (lambda (spec) (plist-get spec :name))
                               t-package-queue))
