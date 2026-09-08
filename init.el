@@ -1861,7 +1861,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; evil
 ;; Must be set before loading evil or evil-collection.
 (setq evil-want-keybinding nil)
-(t-package evil gh "emacs-evil/evil" "3b678a2" nil
+(t-package evil gh "emacs-evil/evil" "6a3e1dd" nil
   :init
   (setq evil-want-integration t
 	      evil-want-keybinding nil
@@ -1929,7 +1929,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; evil-collection
 (t-package evil-collection gh "emacs-evil/evil-collection" "1621831" nil
   :deps ((annalist gh "noctuid/annalist.el" "f83019d")
-         (evil gh "emacs-evil/evil" "3b678a2"))
+         (evil gh "emacs-evil/evil" "6a3e1dd"))
   :init
   (setq evil-collection-setup-minibuffer t
         ;; Don't use zz and zq for org src editing
@@ -1955,7 +1955,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; evil-escape
 (t-package evil-escape gh "syl20bnr/evil-escape" "f4e9116" nil
-  :deps ((evil gh "emacs-evil/evil" "3b678a2"))
+  :deps ((evil gh "emacs-evil/evil" "6a3e1dd"))
   :init
   (setq evil-escape-key-sequence (kbd "jk"))
   :config
@@ -1968,13 +1968,13 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; evil-commentary
 (t-package evil-commentary gh "linktohack/evil-commentary" "c5945f2" nil
-  :deps ((evil gh "emacs-evil/evil" "3b678a2"))
+  :deps ((evil gh "emacs-evil/evil" "6a3e1dd"))
   :config
   (evil-commentary-mode))
 
 ;;; evil-cleverparens
 (t-package evil-cleverparens gh "emacs-evil/evil-cleverparens" "4c413a1" nil
-  :deps ((evil gh "emacs-evil/evil" "3b678a2")
+  :deps ((evil gh "emacs-evil/evil" "6a3e1dd")
          (paredit gh "emacsmirror/paredit" "af07577")
          (dash gh "magnars/dash.el" "d746dd9")
          (smartparens gh "Fuco1/smartparens" "82d2cf0"))
@@ -1983,7 +1983,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; evil-goggles
 (t-package evil-goggles gh "edkolev/evil-goggles" "34ca276" nil
-  :deps ((evil gh "emacs-evil/evil" "3b678a2"))
+  :deps ((evil gh "emacs-evil/evil" "6a3e1dd"))
   :hook ((after-init . evil-goggles-mode)
          (after-init . evil-goggles-use-magit-faces)))
 
