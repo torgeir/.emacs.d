@@ -2721,7 +2721,7 @@ words of the candidate, respectively."
 (set-face-attribute 'next-error nil :background (plist-get t-colors :head))
 
 ;;; smooth scroll, even over images
-(t-package ultra-scroll gh "jdtsmith/ultra-scroll" "5be267d" nil
+(t-package ultra-scroll gh "jdtsmith/ultra-scroll" "8aa8e74" nil
   :config
   (ultra-scroll-mode 1))
 
