@@ -2685,7 +2685,7 @@ words of the candidate, respectively."
   (marginalia-mode 1))
 
 ;;; embark
-(t-package embark gh "oantolin/embark" "350ca86" nil
+(t-package embark gh "oantolin/embark" "87e5382" nil
   :commands (embark-act)
   :deps ((compat gh "emacs-compat/compat" "3e24d97"))
   :init
