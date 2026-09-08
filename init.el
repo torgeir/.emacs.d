@@ -1526,7 +1526,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (keymap-set t-leader-map "n w" #'widen)
 
 ;;; magit
-(t-package magit gh "magit/magit" "fb2c5ce" nil
+(t-package magit gh "magit/magit" "9cb07d8" nil
   :commands (magit-log
 	           magit-status
 	           magit-file-stage
