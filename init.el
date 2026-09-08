@@ -1536,7 +1536,7 @@ When 'quit' is set, quits window when any other key is pressed."
 	           magit-commit-create
 	           magit-commit-amend
 	           magit-commit-instant-fixup)
-  :deps ((compat   gh "emacs-compat/compat" "a0d6465")
+  :deps ((compat   gh "emacs-compat/compat" "3e24d97")
 	       (cond-let gh "tarsius/cond-let" "21b9e98")
 	       (llama    gh "tarsius/llama" "4d40240")
 	       (with-editor gh "magit/with-editor" "36c3461")
@@ -2687,7 +2687,7 @@ words of the candidate, respectively."
 ;;; embark
 (t-package embark gh "oantolin/embark" "350ca86" nil
   :commands (embark-act)
-  :deps ((compat gh "emacs-compat/compat" "a0d6465"))
+  :deps ((compat gh "emacs-compat/compat" "3e24d97"))
   :init
   (progn
     ;; recenter after skipping with gj in embark export
