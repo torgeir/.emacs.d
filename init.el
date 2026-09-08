@@ -2488,7 +2488,7 @@ When 'quit' is set, quits window when any other key is pressed."
   )
 
 ;;; vertico
-(t-package vertico gh "minad/vertico" "6028bd3" nil
+(t-package vertico gh "minad/vertico" "8581ed1" nil
   :custom
   ;; (vertico-scroll-margin 0) ;; Different scroll margin
   ;; (vertico-count 20) ;; Show more candidates
