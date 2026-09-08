@@ -351,6 +351,17 @@ with a pastel background + darker same-hue foreground."
                (unless (and (eq win (or (minibuffer-selected-window) (selected-window)))
                             (not (s-starts-with-p ":" (buffer-name (window-buffer win)))))
                  'none)))))
+
+(defvar t-header-line-full-path t
+  "When non-nil, show the buffer's full file path in the header line
+instead of just the file name.")
+
+(defun t/toggle-header-full-path ()
+  "Toggle showing the buffer's full file path in the header line."
+  (interactive)
+  (setq t-header-line-full-path (not t-header-line-full-path))
+  (force-mode-line-update))
+
 (setq-default mode-line-format
               '(" " (:eval (persp-mode-line))
                 ;; more items
@@ -394,7 +405,10 @@ with a pastel background + darker same-hue foreground."
                    (propertize (car prefix) 'face (cdr prefix))
                    (propertize " " 'face (cdr prefix) 'display '(raise +0.25))
                    (propertize (format-mode-line (if (window-dedicated-p) " !" "")) 'face `(:foreground ,(plist-get t-colors :hl)))
-                   (propertize (format-mode-line " %b ") 'face 'nano-strong)
+                   (propertize (format " %s " (if (and t-header-line-full-path buffer-file-name)
+                                                  buffer-file-name
+                                                (format-mode-line "%b")))
+                               'face 'nano-strong)
                    (when mode (propertize mode 'face `(:foreground ,(plist-get t-colors :hl))))
                    (when (and is-main-window (boundp 't-idle-highlight-mode) t-idle-highlight-mode) " 🔦")
                    (propertize " " 'display `(space :align-to (- right ,(+ (length coords)
