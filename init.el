@@ -2458,7 +2458,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (setq xref-search-program 'ripgrep)
 
 ;;; corfu
-(t-package corfu gh "minad/corfu" "4a9c67d" nil
+(t-package corfu gh "minad/corfu" "5869254" nil
   :init
   (when (require 'corfu-echo) (corfu-echo-mode))
   (when (require 'corfu-info))
