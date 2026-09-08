@@ -3677,7 +3677,7 @@ With prefix ARG, insert the result inline instead. =>."
     (t/osascript-activate "IntelliJ IDEA")))
 
 ;;; indent-bars
-(t-package indent-bars gh "jdtsmith/indent-bars" "f95fee1" nil
+(t-package indent-bars gh "jdtsmith/indent-bars" "7733b4b" nil
   :config
   (keymap-set t-leader-map "t g" #'indent-bars-mode))
 (defun t/jira-insert ()
