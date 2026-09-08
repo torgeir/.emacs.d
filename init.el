@@ -1668,7 +1668,7 @@ When 'quit' is set, quits window when any other key is pressed."
 
 ;;; avy
 (t-package avy gh "abo-abo/avy" "933d1f3" nil
-  :deps ((cl-lib sav "emacs/elpa.git" "85aeefd"))
+  :deps ((cl-lib sav "emacs/elpa.git" "826eda9"))
   :commands (avy-goto-char-2
 	           avy-goto-line
 	           avy-move-line
@@ -2759,7 +2759,7 @@ words of the candidate, respectively."
 
 ;;; git gutter
 (t-package diff-hl gh "dgutov/diff-hl" "2d7d071" nil
-  :deps ((cl-lib sav "emacs/elpa.git" "85aeefd"))
+  :deps ((cl-lib sav "emacs/elpa.git" "826eda9"))
   :init
   (setq diff-hl-show-staged-changes nil)
   :config
@@ -2975,13 +2975,13 @@ words of the candidate, respectively."
 (t-package org-pomodoro gh "marcinkoziej/org-pomodoro" "3f5bcfb" nil
   :commands (org-pomodoro)
   :deps ((alert gh "jwiegley/alert" "31fc568")
-         (cl-lib sav "emacs/elpa.git" "85aeefd")))
+         (cl-lib sav "emacs/elpa.git" "826eda9")))
 
 ;;; alerts
 (t-package org-alert gh "spegoraro/org-alert" "0bc04ce" nil
   :commands (org-alert-enable org-alert-disable org-alert-deadlines)
   :deps ((alert gh "jwiegley/alert" "31fc568")
-	       (cl-lib sav "emacs/elpa.git" "85aeefd"))
+	       (cl-lib sav "emacs/elpa.git" "826eda9"))
   :init
   (setq alert-default-style (if is-mac 'osx-notifier 'libnotify))
   (setq org-alert-interval (* 5 60)
@@ -3604,7 +3604,7 @@ With prefix ARG, insert the result inline instead. =>."
   :deps ((dash gh "magnars/dash.el" "d3a8402")
          (f gh "rejeep/f.el" "931b6d0")
          (s gh "magnars/s.el" "7393fa6")
-         (cl-lib sav "emacs/elpa.git" "85aeefd"))
+         (cl-lib sav "emacs/elpa.git" "826eda9"))
   :init
   (keymap-set t-leader-g-map "o o" #'browse-at-remote)
   :config
