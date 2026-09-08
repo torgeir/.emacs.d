@@ -2680,7 +2680,7 @@ words of the candidate, respectively."
     (require 'consult-imenu)))
 
 ;;; marginalia
-(t-package marginalia gh "minad/marginalia" "feb66c0" nil
+(t-package marginalia gh "minad/marginalia" "c5d0139" nil
   :config
   (marginalia-mode 1))
 
