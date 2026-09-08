@@ -2699,7 +2699,7 @@ words of the candidate, respectively."
 (evil-define-key 'normal grep-mode-map (kbd "gk") #'previous-error-no-select)
 
 ;;; pulsar
-(t-package pulsar gh "protesilaos/pulsar" "2155112" nil
+(t-package pulsar gh "protesilaos/pulsar" "b82c595" nil
   :commands (pulsar-pulse-line pulsar-pulse-region)
   :init
   (dolist (fn '(comint-next-prompt
