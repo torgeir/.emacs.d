@@ -3525,7 +3525,7 @@ With prefix ARG, insert the result inline instead. =>."
    (yaml-ts-mode-hook   . outline-indent-minor-mode)))
 
 ;;; fold: kirigami
-(t-package kirigami gh "jamescherti/kirigami.el" "948cccf" nil
+(t-package kirigami gh "jamescherti/kirigami.el" "64af455" nil
   :commands (kirigami-toggle-fold
              kirigami-open-fold-rec
              kirigami-open-fold
