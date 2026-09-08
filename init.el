@@ -3165,13 +3165,16 @@ With no active region, exports the whole buffer."
   (evil-set-register ?c [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?\\ ?\( ?\[ ?A ?- ?Z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?_ ?\\ ?l ?\\ ?2 ?/ ?g])
   (evil-set-register ?s [?: ?s ?/ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?_ ?\\ ?\( ?\[ ?a ?- ?z ?0 ?- ?9 ?\] ?\\ ?\) ?/ ?\\ ?1 ?\\ ?u ?\\ ?2 ?/ ?g]))
 
+;;; goto next error/flymake
+(keymap-set t-leader-map "e l" #'flymake-show-buffer-diagnostics)
+(keymap-set t-leader-map "e n" #'flymake-goto-next-error)
+(keymap-set t-leader-map "e p" #'flymake-goto-prev-error)
+(after! flymake
+  (evil-define-key 'normal flymake-diagnostics-buffer-mode-map (kbd "gj") #'next-error-this-buffer-no-select)
+  (evil-define-key 'normal flymake-diagnostics-buffer-mode-map (kbd "gk") #'previous-error-this-buffer-no-select))
+
 ;;; -- stuff not brought over --
 ;;; org mode + heading functions + eldoc ping
-;;; deno
-;;; goto next error/flymake
-;; spc t e l - errors list
-;; spc t e n - errors next
-;; spc t e p - errors next
 
 ;;; snippets
 (use-package abbrev
