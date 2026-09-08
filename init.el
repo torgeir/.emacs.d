@@ -1039,9 +1039,20 @@ when there is actually something to install."
                   (evil-mode 1))
 		            (message "Ready, go.")))))
 
+;;; state dir
+(defvar t-state-dir (expand-file-name "state" user-emacs-directory))
+(make-directory t-state-dir t)
+
 ;;; custom
-(setq custom-file "~/.emacs.d/state/custom.el")
+(setq custom-file (expand-file-name "custom.el" t-state-dir))
 (load custom-file)
+
+(setq tramp-persistency-file-name (expand-file-name "tramp" t-state-dir)
+      recentf-save-file (expand-file-name "recentf" t-state-dir)
+      project-list-file (expand-file-name "projects" t-state-dir)
+      ielm-history-file-name (expand-file-name "ielm-history.eld" t-state-dir)
+      bookmark-default-file (expand-file-name "bookmarks" t-state-dir)
+      abbrev-file-name (expand-file-name "abbrev_defs" t-state-dir))
 
 ;;; server
 (require 'server)
@@ -2241,7 +2252,7 @@ When 'quit' is set, quits window when any other key is pressed."
 (t-package perspective gh "nex3/perspective-el" "62e6f6d" nil
   :init
   (setq persp-state-default-file
-	      (expand-file-name "perspective-state.el" user-emacs-directory)
+	      (expand-file-name "perspective-state.el" t-state-dir)
 	      persp-mode-prefix-key nil
 	      persp-suppress-no-prefix-key-warning t
 	      persp-show-modestring t)
@@ -2421,7 +2432,8 @@ When 'quit' is set, quits window when any other key is pressed."
   (add-hook 'chatgpt-shell-mode-hook
 	          (defun t/gpt-shell-hook ()
 	            (setq chatgpt-shell-system-prompt "KEEP IT BRIEF, DONT MAKE STUFF UP, NO LISTS, SINGLE EXAMPLES ONLY")))
-  (setq chatgpt-shell-model-version "gpt-5.2"
+  (setq shell-maker-root-path t-state-dir
+        chatgpt-shell-model-version "gpt-5.2"
         chatgpt-shell-anthropic-key
 	      (lambda ()
 	        (t/read-first-secret :host "anthropic.com"))
@@ -2512,6 +2524,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; minibuffer history vertico
 (use-package savehist
   :init
+  (setq savehist-file (expand-file-name "history" t-state-dir))
   ;; Persist minibuffer history for Vertico and other completions.
   (savehist-mode)
   ;; also persist the kill ring so clipboard history survives Emacs restarts.
