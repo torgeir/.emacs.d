@@ -1537,7 +1537,7 @@ When 'quit' is set, quits window when any other key is pressed."
 	           magit-commit-amend
 	           magit-commit-instant-fixup)
   :deps ((compat   gh "emacs-compat/compat" "3e24d97")
-	       (cond-let gh "tarsius/cond-let" "21b9e98")
+	       (cond-let gh "tarsius/cond-let" "3b88187")
 	       (llama    gh "tarsius/llama" "4d40240")
 	       (with-editor gh "magit/with-editor" "5021ef6")
 	       (transient gh "magit/transient" "0cacc84"))
