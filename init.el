@@ -1856,7 +1856,7 @@ When 'quit' is set, quits window when any other key is pressed."
   (setq evil-undo-system 'undo-fu))
 
 ;;; undo tree
-(t-package vundo gh "casouri/vundo" "e0af8c5" nil)
+(t-package vundo gh "casouri/vundo" "04caf7e" nil)
 
 ;;; evil
 ;; Must be set before loading evil or evil-collection.
