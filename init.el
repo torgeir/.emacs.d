@@ -3362,7 +3362,7 @@ With prefix ARG, insert the result inline instead. =>."
   (advice-add 'kotlin-ts-mode :after #'t/fix-kotlin-ts-null-literal))
 
 ;;; lang: markdown
-(t-package markdown-mode gh "jrblevin/markdown-mode" "1f72cef" nil
+(t-package markdown-mode gh "jrblevin/markdown-mode" "76cb4ff" nil
   :commands markdown-mode
   :mode (("\\.md\\'" . markdown-mode))
   :hook ((markdown-mode-hook . outline-minor-mode))
