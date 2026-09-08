@@ -2781,7 +2781,7 @@ words of the candidate, respectively."
 (keymap-set t-leader-map "r r" 't/read)
 
 ;;; hackernews
-(t-package hnreader gh "thanhvg/emacs-hnreader" "a56f67a" nil
+(t-package hnreader gh "thanhvg/emacs-hnreader" "3a1ad5f" nil
   :deps ((request gh "tkf/emacs-request" "c22e3c2")
 	       (promise gh "chuntaro/emacs-promise" "cec51fe"))
   :commands (hnreader-news))
