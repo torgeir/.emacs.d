@@ -3756,6 +3756,7 @@ With prefix ARG, insert the result inline instead. =>."
             (lambda (item)
               (let ((section (plist-get item :section)))
                 (pcase section
+                  ("deno" '(:enable t :lint t :unstable t))
                   ("typescript"
                    `(:inlayHints (:parameterNames (:enabled "all" :suppressWhenArgumentMatchesName t)
                                                   :parameterTypes (:enabled t)
