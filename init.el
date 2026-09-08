@@ -2263,8 +2263,8 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; theme: nano
 (load-file (expand-file-name "~/.emacs.d/nano.el"))
 
-;;; which-key
-(t-package which-key sav "emacs/elpa.git" "85aeefd" nil
+;;; which-key, built since 30.1
+(use-package which-key
   :init
   (which-key-mode))
 
