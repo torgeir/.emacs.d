@@ -2830,7 +2830,7 @@ words of the candidate, respectively."
                             :javascript (list :inlayHints inlay-hints)))))))
 
 ;;; apheleia
-(t-package apheleia gh "radian-software/apheleia" "14a0bb4" nil
+(t-package apheleia gh "radian-software/apheleia" "d97806b" nil
   :config
   (apheleia-global-mode +1))
 
