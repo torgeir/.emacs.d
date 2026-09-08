@@ -2670,6 +2670,7 @@ words of the candidate, respectively."
 	           consult-git-grep
 	           consult-grep
 	           consult-find
+	           consult-fd
 	           consult-man
 	           consult-completion-in-region)
   :config
