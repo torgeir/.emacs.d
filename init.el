@@ -2583,7 +2583,7 @@ When 'quit' is set, quits window when any other key is pressed."
   )
 
 ;;; orderless
-(t-package orderless gh "oantolin/orderless" "09c90d9" nil
+(t-package orderless gh "oantolin/orderless" "51f677f" nil
   :custom
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch))
