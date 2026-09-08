@@ -2702,18 +2702,23 @@ words of the candidate, respectively."
 (t-package pulsar gh "protesilaos/pulsar" "b82c595" nil
   :commands (pulsar-pulse-line pulsar-pulse-region)
   :init
-  (dolist (fn '(comint-next-prompt
-		            comint-previous-prompt))
-    (advice-add (quote fn) :after (cmd! (pulsar-pulse-line))))
+  (defun t/pulsar-pulse-after (&rest fns)
+    (dolist (fn fns) (advice-add fn :after (lambda (&rest _args) (pulsar-pulse-line)))))
+  (t/pulsar-pulse-after 'comint-next-prompt 'comint-previous-prompt)
   (after! evil
-    (dolist (fn '(evil-window-right
-		              evil-window-bottom
-		              evil-window-left
-		              evil-window-up))
-      (advice-add (quote fn) :after (cmd! (pulsar-pulse-line)))))
+    (t/pulsar-pulse-after 'evil-window-right 'evil-window-bottom 'evil-window-left 'evil-window-up))
+  (after! avy
+    (t/pulsar-pulse-after 'avy-goto-line 'avy-goto-char-2 'avy-goto-word-or-subword-1 'avy-move-line))
   :config
+  (set-face-attribute 'pulsar-generic nil :background (plist-get t-colors :head))
   (setq pulsar-pulse-on-window-change t)
   (pulsar-global-mode 1))
+
+;; pulse with uniform colors
+(with-eval-after-load 'pulse
+  (set-face-attribute 'pulse-highlight-start-face nil :background (plist-get t-colors :head))
+  (set-face-attribute 'pulse-highlight-face nil :background (plist-get t-colors :head)))
+(set-face-attribute 'next-error nil :background (plist-get t-colors :head))
 
 ;;; smooth scroll, even over images
 (t-package ultra-scroll gh "jdtsmith/ultra-scroll" "5be267d" nil
