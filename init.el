@@ -2662,7 +2662,7 @@ words of the candidate, respectively."
   )
 
 ;;; consult
-(t-package consult gh "minad/consult" "540ad1e" nil
+(t-package consult gh "minad/consult" "1b217ca" nil
   :commands (consult-buffer
 	           consult-line
 	           consult-line-multi
