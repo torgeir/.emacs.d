@@ -2738,8 +2738,12 @@ words of the candidate, respectively."
   (interactive)
   (let* ((bg (face-background 'nano-default))
          (ml-width (or (plist-get spacious-padding-widths :mode-line-width) 6)))
+    ;; spacious-padding styles `header-line-inactive' on its own, deriving
+    ;; its box color from `shadow' instead of matching the background like
+    ;; `header-line' — without this it leaves a visible box around every
+    ;; non-selected window.
     (dolist (face '(mode-line mode-line-active mode-line-inactive
-                              header-line header-line-inactive))
+                              header-line header-line-active header-line-inactive))
       (when (facep face)
         (set-face-attribute face nil
                             :box `(:line-width ,ml-width :color ,bg :style nil)
