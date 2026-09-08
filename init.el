@@ -1539,7 +1539,7 @@ When 'quit' is set, quits window when any other key is pressed."
   :deps ((compat   gh "emacs-compat/compat" "3e24d97")
 	       (cond-let gh "tarsius/cond-let" "21b9e98")
 	       (llama    gh "tarsius/llama" "4d40240")
-	       (with-editor gh "magit/with-editor" "36c3461")
+	       (with-editor gh "magit/with-editor" "5021ef6")
 	       (transient gh "magit/transient" "9d103f3"))
   :init
   (setq-default magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1)
