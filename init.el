@@ -2187,7 +2187,7 @@ When 'quit' is set, quits window when any other key is pressed."
   :commands (dired-subtree-toggle dired-subtree--dired-line-is-directory-or-link-p))
 
 ;;; direnv
-(t-package direnv gh "wbolster/emacs-direnv" "c0bf3b8" nil
+(t-package direnv gh "wbolster/emacs-direnv" "c1f38f7" nil
   :hook ((prog-mode-hook . direnv-mode)))
 
 ;;; .env files
