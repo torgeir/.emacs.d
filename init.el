@@ -1137,7 +1137,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;(t-package sleek-modeline gh "abidanBrito/sleek-modeline" "e3e2e4a" nil :hook after-init-hook)
 
 ;;; s.el
-(t-package s gh "magnars/s.el" "7393fa6" nil)
+(t-package s gh "magnars/s.el" "d7c04b8" nil)
 
 ;;; git project root
 (defun t/project-root ()
@@ -3603,7 +3603,7 @@ With prefix ARG, insert the result inline instead. =>."
 (t-package browse-at-remote gh "rmuslimov/browse-at-remote" "38e5ffd" nil
   :deps ((dash gh "magnars/dash.el" "d746dd9")
          (f gh "rejeep/f.el" "931b6d0")
-         (s gh "magnars/s.el" "7393fa6")
+         (s gh "magnars/s.el" "d7c04b8")
          (cl-lib sav "emacs/elpa.git" "826eda9"))
   :init
   (keymap-set t-leader-g-map "o o" #'browse-at-remote)
