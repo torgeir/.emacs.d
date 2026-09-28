@@ -1184,7 +1184,7 @@ Prefix arg will force eww."
   (let* ((path (s-replace (t/project-root) "" (or (buffer-file-name) "")))
          (path (s-split "/" path))
          (path (remove "" path)))
-    (let* ((sidebar (concat ":" (replace-regexp-in-string (expand-file-name "~") "~" (t/project-root)))))
+    (let* ((sidebar (concat ":" (t/project-root))))
       (if (get-buffer sidebar)
           (pop-to-buffer sidebar)
         (t-toggle-sidebar)))

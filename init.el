@@ -2718,12 +2718,13 @@ words of the candidate, respectively."
 (t-package spacious-padding gh "protesilaos/spacious-padding" "0fdbfdb" nil
   :config
   (setq spacious-padding-widths
-        '( :internal-border-width 32
+        '( :internal-border-width 16
            :header-line-width 4
            :mode-line-width 6
            :right-divider-width 30
            :scroll-bar-width 8
            :fringe-width 8))
+  ;; (spacious-padding-modify-frame-parameters)
   :hook (after-init . spacious-padding-mode))
 
 (defun t/spacious-padding-restore-header-line (&rest _)
@@ -2799,7 +2800,25 @@ words of the candidate, respectively."
 (after! eglot
   (setq eglot-connect-timeout (* 60 20)
         ;; don't block while waiting, defaults to 3
-        eglot-sync-connect nil))
+        eglot-sync-connect nil)
+  ;; typescript-language-server (unlike deno, see below) reads tsserver's
+  ;; native flat preference names for inlay hints, not vscode's nested ones.
+  ;; eglot-workspace-configuration is defvar-local, so it must be set with
+  ;; setq-default here or it only becomes buffer-local in whatever buffer
+  ;; happens to be current while init.el loads.
+  (setq-default eglot-workspace-configuration
+                (lambda (server)
+                  (unless (cl-typep server 'eglot-deno)
+                    (let ((inlay-hints '(:includeInlayParameterNameHints "all"
+                                                                         :includeInlayParameterNameHintsWhenArgumentMatchesName :json-false
+                                                                         :includeInlayFunctionParameterTypeHints t
+                                                                         :includeInlayVariableTypeHints t
+                                                                         :includeInlayVariableTypeHintsWhenTypeMatchesName :json-false
+                                                                         :includeInlayPropertyDeclarationTypeHints t
+                                                                         :includeInlayFunctionLikeReturnTypeHints t
+                                                                         :includeInlayEnumMemberValueHints t)))
+                      (list :typescript (list :inlayHints inlay-hints)
+                            :javascript (list :inlayHints inlay-hints)))))))
 
 ;;; apheleia
 (t-package apheleia gh "radian-software/apheleia" "14a0bb4" nil
@@ -3349,13 +3368,19 @@ With prefix ARG, insert the result inline instead. =>."
 (use-package typescript-ts-mode
   :mode "\\.ts\\'"
   :init
-  (add-to-list 'major-mode-remap-alist '(typescript-mode . typescript-ts-mode)))
+  (progn
+    (add-to-list 'major-mode-remap-alist '(typescript-mode . typescript-ts-mode))
+    (after! evil
+      (evil-define-key 'normal typescript-ts-map (kbd "M-RET") 'eglot-code-actions))))
 
 ;;; tree-sitter: tsx
 (use-package tsx-ts-mode
   :mode "\\.tsx\\'"
   :init
-  (add-to-list 'major-mode-remap-alist '(js-jsx-mode . tsx-ts-mode)))
+  (progn
+    (add-to-list 'major-mode-remap-alist '(js-jsx-mode . tsx-ts-mode))
+    (after! evil
+      (evil-define-key 'normal tsx-ts-mode-map (kbd "M-RET") 'eglot-code-actions))))
 
 ;;; tree-sitter: js
 (use-package js-ts-mode
@@ -3687,6 +3712,7 @@ With prefix ARG, insert the result inline instead. =>."
   (pushnew! tree-sitter-major-mode-language-alist '(deno-tsx-ts-mode . tsx)))
 
 (after! eglot
+  (keymap-set t-leader-map "e h" 'eglot-inlay-hints-mode)
   (defclass eglot-deno (eglot-lsp-server) () :documentation "A custom class for deno lsp.")
   (cl-defmethod eglot-initialization-options ((server eglot-deno))
     "Passes through required deno initialization options"
@@ -3738,6 +3764,11 @@ With prefix ARG, insert the result inline instead. =>."
 (after! emmet-mode
   (add-to-list 'emmet-jsx-major-modes 'deno-ts-mode)
   (add-to-list 'emmet-jsx-major-modes 'deno-tsx-ts-mode))
+
+;; none of these auto-start eglot on their own; connect explicitly.
+(dolist (hook '(typescript-ts-mode-hook tsx-ts-mode-hook
+                                        deno-ts-mode-hook deno-tsx-ts-mode-hook))
+  (add-hook hook #'eglot-ensure))
 
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . t/deno-or-ts))
 (add-to-list 'auto-mode-alist '("\\.tsx\\'" . t/deno-or-ts))
