@@ -2899,13 +2899,16 @@ words of the candidate, respectively."
     (evil-define-key '(normal motion visual) org-mode-map (kbd "zn") #'org-narrow-to-subtree)
     (evil-define-key '(normal motion visual) org-mode-map (kbd "zN") #'widen))
   (after! (evil org-agenda)
-    (evil-define-key 'motion org-agenda-keymap (kbd "H") #'org-agenda-earlier)
-    (evil-define-key 'motion org-agenda-keymap (kbd "L") #'org-agenda-later)
-    (evil-define-key 'motion org-agenda-keymap (kbd "l") #'org-agenda-log-mode)
-    (evil-define-key 'motion org-agenda-keymap (kbd "d") #'org-agenda-day-view)
-    (evil-define-key 'motion org-agenda-keymap (kbd "w") #'org-agenda-week-view)
-    (evil-define-key 'motion org-agenda-keymap (kbd "y") #'org-agenda-year-view)
-    (evil-define-key 'motion org-agenda-keymap (kbd "m") #'org-agenda-month-view))
+    (evil-define-key '(normal motion) org-agenda-keymap (kbd "RET") #'org-agenda-show)
+    (evil-define-key '(normal motion) org-agenda-keymap (kbd "H") #'org-agenda-earlier)
+    (evil-define-key '(normal motion) org-agenda-keymap (kbd "L") #'org-agenda-later)
+    (evil-define-key '(normal motion) org-agenda-keymap (kbd "l") #'org-agenda-log-mode)
+    (evil-define-key '(normal motion) org-agenda-keymap (kbd "d") #'org-agenda-day-view)
+    (evil-define-key '(normal motion) org-agenda-keymap (kbd "w") #'org-agenda-week-view)
+    (evil-define-key '(normal motion) org-agenda-keymap (kbd "y") #'org-agenda-year-view)
+    (evil-define-key '(normal motion) org-agenda-keymap (kbd "m") #'org-agenda-month-view)
+    (evil-define-key '(normal motion visual) org-agenda-keymap (kbd "r") #'org-agenda-redo)
+    (evil-define-key '(normal motion visual) org-agenda-keymap (kbd "s-s") #'org-save-all-org-buffers))
   ;; colors and heights
   (defun t/set-org-faces ()
     (interactive)
@@ -3321,19 +3324,34 @@ With prefix ARG, insert the result inline instead. =>."
   :mode (("\\.kts?\\'" . kotlin-ts-mode))
   :config
   (defun t/fix-kotlin-ts-null-literal ()
+    "fix kotlin-ts-mode string/constant queries for tree-sitter-kotlin 0.24.6 node renames"
+    ;; Grammar 0.24.6 renamed interpolation delimiter node types from named
+    ;; (interpolation_{identifier,expression}_{start,end}) to anonymous ("$"/"${"/"}").
+    ;; The string feature query errors on those missing types, killing all highlighting.
     (when (derived-mode-p 'kotlin-ts-mode)
-      (let ((fixed (treesit-font-lock-rules
-                    :language 'kotlin
-                    :feature 'constant
-                    :override t
-                    '(["null" (boolean_literal)] @font-lock-constant-face
-                      ((simple_identifier) @font-lock-constant-face
-                       (:match "^[A-Z_][A-Z_0-9]*$" @font-lock-constant-face))))))
+      (setq-local kotlin-ts-mode--string-node-child-no-fontify
+                  '("interpolated_expression" "interpolated_identifier" "$" "${" "}"))
+      (let ((fixed-string
+             (treesit-font-lock-rules
+              :language 'kotlin
+              :feature 'string
+              '((character_literal) @font-lock-string-face
+                (string_literal) @kotlin-ts-mode--fontify-string
+                (string_literal ["$" "${" "}"] @font-lock-builtin-face))))
+            (fixed-constant
+             (treesit-font-lock-rules
+              :language 'kotlin
+              :feature 'constant
+              :override t
+              '(["null" (boolean_literal)] @font-lock-constant-face
+                ((simple_identifier) @font-lock-constant-face
+                 (:match "^[A-Z_][A-Z_0-9]*$" @font-lock-constant-face))))))
         (setq-local treesit-font-lock-settings
                     (mapcar (lambda (entry)
-                              (if (eq (nth 2 entry) 'constant)
-                                  (car fixed)
-                                entry))
+                              (cond
+                               ((eq (nth 2 entry) 'string)   (car fixed-string))
+                               ((eq (nth 2 entry) 'constant) (car fixed-constant))
+                               (t entry)))
                             treesit-font-lock-settings))
         (treesit-font-lock-recompute-features))))
   (advice-add 'kotlin-ts-mode :after #'t/fix-kotlin-ts-null-literal))
@@ -3873,3 +3891,24 @@ With prefix ARG, insert the result inline instead. =>."
              :categoryunicode-name)))
      (list (completing-read "Unicode: " table nil t))))
   (insert-char (gethash name (ucs-names))))
+
+(defun t/va ()
+  (interactive)
+  (let ((op (if (t/prefix-arg-universal?) 'identity 'insert)))
+    (insert
+     (with-current-buffer (find-file-noselect (t/org-file "da.org.gpg"))
+       (goto-char (point-min))
+       (let ((case-fold-search t) found)
+         (when (re-search-forward "^\\* Tasks\\b" nil t)
+           (org-back-to-heading)
+           (org-map-entries
+            (lambda ()
+              (let ((heading (org-get-heading t t t t)))
+                (when (string-match "va-[0-9]+" heading)
+                  (setq found (substring-no-properties (match-string 0 heading))))))
+            nil (quote tree)))
+         found)))))
+
+(provide 'init)
+
+;;; init.el ends here
