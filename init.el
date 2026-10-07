@@ -3,6 +3,9 @@
 
 (message "Yo.")
 
+;;; support local only config
+(load (expand-file-name "private-init.el") t)
+
 (defvar t-colors '(:hl "#f5b" :done "#445" :head "#5bf"))
 
 ;;; fix temp dir missing when nix-shell emacs
@@ -1037,7 +1040,7 @@ when there is actually something to install."
 		            (message "Ready, go.")))))
 
 ;;; custom
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file "~/.emacs.d/state/custom.el")
 (load custom-file)
 
 ;;; server
@@ -2066,6 +2069,8 @@ When 'quit' is set, quits window when any other key is pressed."
 
 (defun t-toggle-sidebar ()
   (interactive)
+  (unless (featurep 'dired-subtree)
+    (require 'dired-subtree))
   (let* ((sidebar-project (t/project-root))
          (sidebar-name (concat t-sidebar-buffer-prefix sidebar-project))
          (sidebar-buffer (get-buffer sidebar-name)))
@@ -2729,16 +2734,15 @@ words of the candidate, respectively."
 
 (defun t/spacious-padding-restore-header-line (&rest _)
   "Re-apply nano face styling after spacious-padding resets it."
-  (let ((bg (face-background 'default))
-        (ml-width (or (plist-get spacious-padding-widths :mode-line-width) 6)))
-    (set-face-attribute 'header-line nil
-                        :background 'unspecified
-                        :underline nil
-                        :box `(:line-width 1 :color ,(face-background 'nano-default))
-                        :inherit 'nano-subtle)
-    (dolist (face '(mode-line mode-line-active mode-line-inactive))
-      (set-face-attribute face nil
-                          :box `(:line-width ,ml-width :color ,bg :style nil)))
+  (interactive)
+  (let* ((bg (face-background 'nano-default))
+         (ml-width (or (plist-get spacious-padding-widths :mode-line-width) 6)))
+    (dolist (face '(mode-line mode-line-active mode-line-inactive
+                              header-line header-line-inactive))
+      (when (facep face)
+        (set-face-attribute face nil
+                            :box `(:line-width ,ml-width :color ,bg :style nil)
+                            :inherit 'nano-subtle)))
     (set-fringe-bitmap-face 'left-curly-arrow  'nano-truncation)
     (set-fringe-bitmap-face 'right-curly-arrow 'nano-truncation)))
 
@@ -2832,7 +2836,7 @@ words of the candidate, respectively."
          )
   :init
   (defun t/org-file (&optional file)
-    (concat (expand-file-name "~/Dropbox/org") "/" file))
+    (concat (expand-file-name (or (and (boundp 't-org-file-path) t-org-file-path) "~/Dropbox/org")) "/" file))
   (add-hook 'org-mode-hook (defun t/load-babel-extensions ()
                              (unless (featurep 'ob-dot) (require 'ob-dot))))
   (setq org-directory (t/org-file)
@@ -2841,13 +2845,13 @@ words of the candidate, respectively."
 	      org-archive-location "%s_archive.gpg::" ; so files are encrypted automatically
 	      org-attach-directory (t/org-file "attachments/")
         org-tags-column -55
-	      org-id-method 'ts  ; 'uuid is default
-	      org-special-ctrl-k t     ; don't clear tags, etc
-	      org-special-ctrl-a/e t   ; don't move past ellipsis on c-e
-	      org-log-done 'time       ; log when todos are completed
-	      org-log-redeadline 'time ; log when deadline changes
-	      org-log-reschedule 'time ; log when schedule changes
-	      org-reverse-note-order t ; newest notes first
+	      org-id-method 'ts               ; 'uuid is default
+	      org-special-ctrl-k t            ; don't clear tags, etc
+	      org-special-ctrl-a/e t          ; don't move past ellipsis on c-e
+	      org-log-done 'time              ; log when todos are completed
+	      org-log-redeadline 'time        ; log when deadline changes
+	      org-log-reschedule 'time        ; log when schedule changes
+	      org-reverse-note-order t        ; newest notes first
         org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "NEXT(n)" "|" "DONE(d)" "CANCELLED(c)"))
 	      org-default-notes-file (t/org-file "tasks.org")
         org-capture-templates
@@ -3529,9 +3533,6 @@ With prefix ARG, insert the result inline instead. =>."
     (t/fold-bind-mouse org-mode-map))
   (after! treesit-fold
     (t/fold-bind-mouse treesit-fold-mode-map)))
-
-;;; support local only config
-(require 'private-init (expand-file-name "private-init.el") t)
 
 ;;; modeline: time
 (setq display-time-format " %H:%M"

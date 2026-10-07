@@ -14,7 +14,7 @@
 ;; --- Frame / windows layout & behavior --------------------------------------
 (setq default-frame-alist
       '(;;(height . 44) (width  . 81)
-        ;; (left-fringe . 0) (right-fringe . 0)
+        (left-fringe . 0) (right-fringe . 0)
         (internal-border-width . 32) (vertical-scroll-bars . nil)
         (bottom-divider-width . 32) (right-divider-width . 32)
         (undecorated-round . t)))
@@ -101,15 +101,17 @@
   (set-face-attribute 'header-line nil
                       :background 'unspecified
                       :underline nil
-                      :box nil
+                      :box `(:line-width 1 :color ,(face-background 'nano-default))
                       :inherit 'nano-subtle)
   (let ((bg (face-background 'default)))
     (dolist (face '(mode-line mode-line-active mode-line-inactive))
       (set-face-attribute face nil
-                          :background bg :foreground (face-foreground 'nano-faded)
+                          :background bg
+                          :foreground (face-foreground 'nano-faded)
                           :underline nil :overline nil
-                          :height 1
-                          :box `(:line-width 5 :color ,bg)))
+                          :height 'unspecified
+                          :box  'unspecified)))
+  (let ((bg (face-background 'default)))
     (set-face-attribute 'fringe nil :background bg)
     (set-face-attribute 'fringe nil :background bg :height 1.0 :box `(:line-width 1 :color ,bg)))
   (set-face-attribute 'nano-truncation nil
@@ -339,10 +341,20 @@ with a pastel background + darker same-hue foreground."
 (if (eq 'light (frame-parameter nil 'background-mode)) (nano-dark) (nano-dark))
 
 ;; --- Header & mode lines ----------------------------------------------------
+(add-hook 'window-state-change-functions
+          (defun t/update-mode-lines (&optional frame)
+            "Hide mode-line in some buffers."
+            (interactive)
+            (dolist (win (window-list frame 'no-minibuf))
+              (set-window-parameter
+               win 'mode-line-format
+               (unless (and (eq win (or (minibuffer-selected-window) (selected-window)))
+                            (not (s-starts-with-p ":" (buffer-name (window-buffer win)))))
+                 'none)))))
 (setq-default mode-line-format
-              '(" ")
-              ;;'(" " (:eval (when (mode-line-window-selected-p) (persp-mode-line))))
-              )
+              '(" " (:eval (persp-mode-line))
+                ;; more items
+                ))
 (setq-default header-line-format
               '(:eval
                 (let* ((prefix (cond (buffer-read-only     '("RO" . nano-default-i))
