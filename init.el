@@ -2771,6 +2771,18 @@ words of the candidate, respectively."
 (autoload 'consult-hunks-staged "consult-hunks" "Browse the staged hunks of the project." t)
 (autoload 'consult-hunks-staged-current-buffer "consult-hunks" "Browse the staged hunks of the current buffer." t)
 
+;;; nxml-eldoc, show the path to the xml element at point in eldoc
+(add-to-list 'load-path (expand-file-name "site-lisp/nxml-eldoc" user-emacs-directory))
+(autoload 'nxml-eldoc-mode "nxml-eldoc" "Show the path to the XML element point is in in the eldoc echo area." t)
+(autoload 'nxml-eldoc-path "nxml-eldoc" "Show the path to the XML element point is in, and copy it." t)
+(add-hook 'nxml-mode-hook #'nxml-eldoc-mode)
+
+;;; json-path-eldoc, show the path to the json value at point in eldoc
+(add-to-list 'load-path (expand-file-name "site-lisp/json-path-eldoc" user-emacs-directory))
+(autoload 'json-path-eldoc-mode "json-path-eldoc" "Show the path to the JSON value point is in in the eldoc echo area." t)
+(autoload 'json-path-eldoc-path "json-path-eldoc" "Show the path to the JSON value point is in, and copy it." t)
+(add-hook 'json-ts-mode-hook #'json-path-eldoc-mode)
+
 ;;; marginalia
 (t-package marginalia gh "minad/marginalia" "c5d0139" nil
   :config
@@ -4170,25 +4182,6 @@ the current buffer."
   (interactive)
   (let ((comint-buffer-maximum-size 0))
     (comint-truncate-buffer)))
-
-;;; t-defuns :: show the XML element path at point
-(defun t/find-xml-path ()
-  "Display the hierarchy of XML elements the point is on as a path."
-  (interactive)
-  (let ((path nil))
-    (save-excursion
-      (save-restriction
-        (widen)
-        (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
-                    (condition-case nil
-                        (progn
-                          (nxml-backward-up-element) ; always returns nil
-                          t)
-                      (error nil)))
-          (setq path (cons (xmltok-start-tag-local-name) path)))
-        (if (called-interactively-p 'interactive)
-            (message "/%s" (mapconcat 'identity path "/"))
-          (format "/%s" (mapconcat 'identity path "/")))))))
 
 ;;; t-defuns :: ISO 8601 UTC timestamp, inserts it with c-u
 (defun t/isodate ()
