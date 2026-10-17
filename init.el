@@ -3971,6 +3971,8 @@ With prefix ARG, insert the result inline instead. =>."
 (defun t/dired-filter (glob)
   "Show only folders under the current dir leading to files matching GLOB."
   (interactive "sFile glob: ")
+  (unless (featurep 'dired-subtree) (require 'dired-subtree))
+  (unless (featurep 'dired-hacks-utils) (require 'dired-hacks-utils))
   (let* ((root (file-name-as-directory (expand-file-name default-directory)))
          (files (mapcar (lambda (f) (expand-file-name f root))
                         (process-lines-ignore-status "rg" "--files" "--glob" glob)))
