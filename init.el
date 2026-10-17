@@ -2235,7 +2235,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; theme synced persp-face
 (defun t/sync-persp-face (&optional frame)
   "Make selected workspace font fit the theme."
-  (when (facep 'persp-selected-face)
+  (when (and (facep 'persp-selected-face) (facep 'header-line-face))
     (with-selected-frame (or frame (selected-frame))
       (set-face-attribute 'persp-selected-face nil
 			                    :inherit 'header-line
@@ -2801,8 +2801,33 @@ words of the candidate, respectively."
 ;;; hackernews
 (t-package hnreader gh "thanhvg/emacs-hnreader" "3a1ad5f" nil
   :deps ((request gh "tkf/emacs-request" "c22e3c2")
-	       (promise gh "chuntaro/emacs-promise" "cec51fe"))
-  :commands (hnreader-news))
+         (promise gh "chuntaro/emacs-promise" "cec51fe"))
+  :commands (hnreader-news)
+  :config
+  (defun t/hn-hl-quotes (&optional &rest args)
+    "Highlight from a line starting with \">\"up to the next blank line."
+    (interactive)
+    (unless (derived-mode-p 'org-mode) (user-error "Not in org-mode"))
+    (setq-local font-lock-multiline t)
+    (font-lock-add-keywords
+     nil
+     `(((lambda (limit)
+          (when (re-search-forward "^>" limit t)
+            (let* ((beg (match-beginning 0))
+                   (end (or (save-excursion
+                              (goto-char beg)
+                              (when (re-search-forward "\n[ \t]*\n" nil t)
+                                (match-beginning 0)))
+                            (point-max))))
+              (set-match-data (list beg end))
+              (put-text-property beg end 'font-lock-multiline t)
+              (goto-char end)
+              t)))
+        0 (if (facep 'nano-salient) 'nano-salient 'shadow) prepend))
+     'append)
+    (font-lock-flush))
+  (advice-add 'hnreader--print-comments :after (defun t/hn-hl-quotes-later (&optional &rest args)
+                                                 (run-at-time "5 sec" nil 't/hn-hl-quotes))))
 
 ;;; eww browser
 (use-package eww
@@ -3935,6 +3960,42 @@ With prefix ARG, insert the result inline instead. =>."
                   (setq found (substring-no-properties (match-string 0 heading))))))
             nil (quote tree)))
          found)))))
+;;; filter dired by glob
+(defun t/dired-filter (glob)
+  "Show only folders under the current dir leading to files matching GLOB."
+  (interactive "sFile glob: ")
+  (let* ((root (file-name-as-directory (expand-file-name default-directory)))
+         (files (mapcar (lambda (f) (expand-file-name f root))
+                        (process-lines-ignore-status "rg" "--files" "--glob" glob)))
+         (keep (make-hash-table :test #'equal))
+         (dirs '())
+         (was-dedicated (window-dedicated-p)))
+    (when was-dedicated (t/toggle-dedicated-window))
+    ;; Keep every match plus each ancestor dir up to ROOT.
+    (dolist (f files)
+      (puthash f t keep)
+      (let ((d (file-name-directory f)))
+        (while (and (string-prefix-p root d) (not (string= d root)))
+          (let ((dn (directory-file-name d)))
+            (unless (gethash dn keep)
+              (puthash dn t keep)
+              (push dn dirs))
+            (setq d (file-name-directory dn))))))
+    (dired root)
+    (revert-buffer)
+    ;; Parents sort before children, so each dir line exists when reached.
+    (dolist (d (sort dirs #'string<))
+      (when (dired-utils-goto-line d)
+        (dired-subtree-insert)))
+    (dired-unmark-all-marks)
+    (dired-mark-if (let ((f (dired-get-filename nil t)))
+                     (and f (not (gethash f keep))))
+                   "unmatched")
+    (dired-do-kill-lines)
+    (dired-subtree--cleanup-overlays)
+    (goto-char (point-min))
+    ;;(when was-dedicated (t/toggle-dedicated-window))
+    (message "%d matches" (length files))))
 
 (provide 'init)
 
