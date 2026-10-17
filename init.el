@@ -2227,7 +2227,7 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; theme synced persp-face
 (defun t/sync-persp-face (&optional frame)
   "Make selected workspace font fit the theme."
-  (when (and (facep 'persp-selected-face) (facep 'header-line-face))
+  (when (and (facep 'persp-selected-face) (facep 'header-line))
     (with-selected-frame (or frame (selected-frame))
       (set-face-attribute 'persp-selected-face nil
 			                    :inherit 'header-line
