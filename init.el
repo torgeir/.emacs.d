@@ -1578,6 +1578,10 @@ When 'quit' is set, quits window when any other key is pressed."
 ;; hunk binds
 (keymap-set t-leader-g-map "h" (t/micro-state
 				                        nil
+				                        "h" 'consult-hunks
+				                        "H" 'consult-hunks-staged
+				                        "b" 'consult-hunks-current-buffer
+				                        "B" 'consult-hunks-staged-current-buffer
 				                        "a" 'magit-commit-amend
 				                        "c" 'magit-commit-create
 				                        "f" 'magit-commit-instant-fixup
@@ -2552,6 +2556,12 @@ When 'quit' is set, quits window when any other key is pressed."
   (keymap-set vertico-map "M-?" #'minibuffer-completion-help)
   (keymap-set vertico-map "M-<return>" #'vertico-exit-input)
   (keymap-set vertico-map "M-TAB" #'minibuffer-complete)
+  ;; evil binds C-k to `kill-line' in insert state, which wins over
+  ;; `vertico-map', so bind through evil to navigate with C-j/C-k too
+  (after! evil
+    (evil-define-key '(insert normal) vertico-map
+      (kbd "C-j") #'vertico-next
+      (kbd "C-k") #'vertico-previous))
   (keymap-set global-map "C-<SPC>" #'completion-at-point)
   (keymap-set global-map "C-<tab>" #'completion-at-point)
   (keymap-set global-map "C-TAB" #'completion-at-point)
@@ -2739,6 +2749,13 @@ words of the candidate, respectively."
 (add-to-list 'load-path (expand-file-name "site-lisp/consult-lines" user-emacs-directory))
 (autoload 'consult-lines "consult-lines" "Complete the current line by lines found in the project." t)
 (keymap-set t-leader-map "c l" #'consult-lines)
+
+;;; consult-hunks, browse, stage, unstage and kill git hunks
+(add-to-list 'load-path (expand-file-name "site-lisp/consult-hunks" user-emacs-directory))
+(autoload 'consult-hunks "consult-hunks" "Browse the unstaged hunks of the project." t)
+(autoload 'consult-hunks-current-buffer "consult-hunks" "Browse the unstaged hunks of the current buffer." t)
+(autoload 'consult-hunks-staged "consult-hunks" "Browse the staged hunks of the project." t)
+(autoload 'consult-hunks-staged-current-buffer "consult-hunks" "Browse the staged hunks of the current buffer." t)
 
 ;;; marginalia
 (t-package marginalia gh "minad/marginalia" "c5d0139" nil
