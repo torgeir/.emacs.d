@@ -2764,14 +2764,16 @@ words of the candidate, respectively."
         (set-face-attribute face nil
                             :box `(:line-width ,ml-width :color ,bg :style nil)
                             :inherit 'nano-subtle)))
-    ;; mode line pads with its own background, so the bar fills the box height
-    (dolist (face '(mode-line mode-line-active mode-line-inactive))
-      (when (facep face)
-        (set-face-attribute face nil
-                            :inherit 'nano-subtle
-                            :box `(:line-width ,ml-width
-                                   :color ,(face-background 'nano-subtle nil t)
-                                   :style nil))))
+    ;; `nano-install-theme' gives the mode line an explicit background, which
+    ;; wins over `:inherit nano-subtle' — clear it so the subtle background
+    ;; shows, and color the box to match so the padding is part of the bar.
+    (let ((subtle (or (face-background 'nano-subtle nil t) bg)))
+      (dolist (face '(mode-line mode-line-active mode-line-inactive))
+        (when (facep face)
+          (set-face-attribute face nil
+                              :background 'unspecified
+                              :inherit 'nano-subtle
+                              :box `(:line-width ,ml-width :color ,subtle :style nil)))))
     (set-fringe-bitmap-face 'left-curly-arrow  'nano-truncation)
     (set-fringe-bitmap-face 'right-curly-arrow 'nano-truncation)))
 
