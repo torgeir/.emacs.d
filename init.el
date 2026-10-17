@@ -4178,11 +4178,6 @@ Example: 2010-11-29T23:23:35-08:00"
    (shell-command-to-string
     "osascript -l JavaScript -e 'Application(\"Google Chrome\").windows.at(0).activeTab.url()'")))
 
-;;; t-defuns :: open current elfeed entry in eww
-(defun t/open-elfeed-in-eww ()
-  (interactive)
-  (eww (elfeed-entry-link elfeed-show-entry)))
-
 ;;; t-defuns :: diary sexp: is DATE the last weekday of the month?
 (defun t/last-weekday-of-month-p ()
   (let* ((day-of-week (calendar-day-of-week date))
