@@ -3238,113 +3238,6 @@ With no active region, exports the whole buffer."
                 (or (expand-abbrev)
                     (indent-for-tab-command)))))
 
-;;; t/defuns
-(defun t/browse-git-repo ()
-  "Browse git repo from ~/.gitrepos."
-  (interactive)
-  (thread-last
-    (shell-command-to-string (format "cat %s/.gitrepos" (expand-file-name "~")))
-    (string-trim-right)
-    (split-string)
-    (funcall (lambda (repos) (completing-read "Open repo: " repos nil t)))
-    (funcall (lambda (repo) (format "https://github.com/%s/%s" repo (if (t/prefix-arg-universal?) "pulls" ""))))
-    (browse-url)))
-
-(defun t/diary-last-day-of-month (date)
-  "Return `t` if DATE is the last day of the month.
-
-  ORG-MODE:  * My Task
-  SCHEDULED: <%%(diary-last-day-of-month date)>
-  DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
-
-  See also:  (setq org-agenda-include-diary t)
-  \(diary-last-day-of-month '(2 28 2017))"
-
-  (require 'org-clock)
-  (= (calendar-extract-day date)
-     (calendar-last-day-of-month (calendar-extract-month date)
-                                 (calendar-extract-year date))))
-
-(defun t/diary-last-day-of-week ()
-  "Return `t` if DATE is the last day of the week."
-  (require 'org-clock)
-  (= 5 ; friday
-     (org-day-of-week (calendar-extract-day date)
-                      (calendar-extract-month date)
-                      (calendar-extract-year date))))
-
-(defun t/gh-to-package (url)
-  "Convert provided `url' to a package installation declaration, and insert it."
-  (interactive (list (read-string "GitHub commit url: " (thing-at-point 'url))))
-  (unless (string-match "github\\.com/\\([^/]+\\)/\\([^/]+\\)/commit/\\([0-9a-f]+\\)" url) (user-error "Bad URL"))
-  (insert
-   (format "(t-package %s gh %S %S nil)"
-           (match-string 2 url)
-           (concat (match-string 1 url) "/" (match-string 2 url))
-           (substring (match-string 3 url) 0 7))))
-
-(defun t/exec-path-from-shell ()
-  "Import env vars from a login zsh and update `exec-path'."
-  (interactive)
-  (let ((lines (split-string (shell-command-to-string "zsh -lic 'env'") "\n" t)))
-    (dolist (line lines)
-      (when (string-match "\\`\\([^=]+\\)=\\(.*\\)\\'" line)
-        (setenv (match-string 1 line) (match-string 2 line)))))
-  (when-let ((path (getenv "PATH")))
-    (setq exec-path (split-string path path-separator t))))
-
-(defun t/conventional-commit-msg ()
-  "https://www.conventionalcommits.org/en/v1.0.0/"
-  (interactive)
-  (with-current-buffer "COMMIT_EDITMSG"
-    (when (and
-           (file-exists-p (concat (t/project-root) "/products")) ;; repo contains ./products
-           (looking-at "^$")) ;; empty first line
-      (let ((type (completing-read "Type: " (s-split "|" "build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"))))
-        (insert (format "%s: " type))
-        (when-let ((paths (t/shell-command-to-string
-                           (format "fd build.gradle.kts %s \
-                                 | xargs dirname \
-                                 | tr '/' '\n' \
-                                 | sort -u \
-                                 | grep -v '^$'"
-                                   (t/project-root))))
-                   (module (completing-read "Module: " (s-split "\n" paths))))
-          (backward-char 2)
-          (insert (format "(%s)" module))
-          (end-of-line))
-        (when-let* ((branch (t/shell-command-to-string "git branch --show-current"))
-                    (_ (string-match "VA-\\([0-9]+\\)" branch))
-                    (va (match-string 1 branch)))
-          (insert (format "\n\nVA-%s" va))
-          (previous-line 2)
-          (end-of-line))))))
-
-(add-hook
- 'git-commit-setup-hook
- (defun t/insert-conventional-commit-msg ()
-   (run-with-timer "0sec" nil 't/conventional-commit-msg)))
-
-;; elisp eval in overlay
-(defun t/eval-last-sexp-overlay (arg)
-  "Eval last sexp and show result inline as overlay.
-With prefix ARG, insert the result inline instead. =>."
-  (interactive "P")
-  (let ((arrow " ; => "))
-    (if arg
-        (let ((value (elisp--eval-last-sexp nil)))
-          (insert arrow (format "%S" value)))
-      (let* ((value (elisp--eval-last-sexp nil))
-             (str (concat arrow (format "%S" value)))
-             (ov (make-overlay (point) (point))))
-        (when (bound-and-true-p t/eval-last-sexp-overlay--ov)
-          (delete-overlay t/eval-last-sexp-overlay--ov))
-        (setq-local t/eval-last-sexp-overlay--ov ov)
-        (overlay-put ov 'after-string
-                     (propertize str 'face 'font-lock-comment-face))
-        (run-with-timer 6 nil (lambda (o) (delete-overlay o)) ov)))))
-(global-set-key (kbd "C-x C-e") #'t/eval-last-sexp-overlay)
-
 ;;; sudo edit
 (defun t/sudo-edit (&optional arg)
   "Edit currently visited file as root."
@@ -4824,6 +4717,119 @@ Falls back to dark when nothing expresses a preference, as `nano.el' does."
         (if (file-exists-p (expand-file-name file current-dir))
             (expand-file-name file current-dir)
           nil)))))
+
+;;; t/defuns :: pick a repo from ~/.gitrepos and open it on github
+(defun t/browse-git-repo ()
+  "Browse git repo from ~/.gitrepos."
+  (interactive)
+  (thread-last
+    (shell-command-to-string (format "cat %s/.gitrepos" (expand-file-name "~")))
+    (string-trim-right)
+    (split-string)
+    (funcall (lambda (repos) (completing-read "Open repo: " repos nil t)))
+    (funcall (lambda (repo) (format "https://github.com/%s/%s" repo (if (t/prefix-arg-universal?) "pulls" ""))))
+    (browse-url)))
+
+;;; t/defuns :: diary sexp: is DATE the last day of the month
+(defun t/diary-last-day-of-month (date)
+  "Return `t` if DATE is the last day of the month.
+
+  ORG-MODE:  * My Task
+  SCHEDULED: <%%(diary-last-day-of-month date)>
+  DIARY:  %%(diary-last-day-of-month date) Last Day of the Month
+
+  See also:  (setq org-agenda-include-diary t)
+  \(diary-last-day-of-month '(2 28 2017))"
+
+  (require 'org-clock)
+  (= (calendar-extract-day date)
+     (calendar-last-day-of-month (calendar-extract-month date)
+                                 (calendar-extract-year date))))
+
+;;; t/defuns :: diary sexp: is DATE a friday
+(defun t/diary-last-day-of-week ()
+  "Return `t` if DATE is the last day of the week."
+  (require 'org-clock)
+  (= 5 ; friday
+     (org-day-of-week (calendar-extract-day date)
+                      (calendar-extract-month date)
+                      (calendar-extract-year date))))
+
+;;; t/defuns :: turn a github commit url into a t-package entry
+(defun t/gh-to-package (url)
+  "Convert provided `url' to a package installation declaration, and insert it."
+  (interactive (list (read-string "GitHub commit url: " (thing-at-point 'url))))
+  (unless (string-match "github\\.com/\\([^/]+\\)/\\([^/]+\\)/commit/\\([0-9a-f]+\\)" url) (user-error "Bad URL"))
+  (insert
+   (format "(t-package %s gh %S %S nil)"
+           (match-string 2 url)
+           (concat (match-string 1 url) "/" (match-string 2 url))
+           (substring (match-string 3 url) 0 7))))
+
+;;; t/defuns :: import env vars from a login zsh, update exec-path
+(defun t/exec-path-from-shell ()
+  "Import env vars from a login zsh and update `exec-path'."
+  (interactive)
+  (let ((lines (split-string (shell-command-to-string "zsh -lic 'env'") "\n" t)))
+    (dolist (line lines)
+      (when (string-match "\\`\\([^=]+\\)=\\(.*\\)\\'" line)
+        (setenv (match-string 1 line) (match-string 2 line)))))
+  (when-let ((path (getenv "PATH")))
+    (setq exec-path (split-string path path-separator t))))
+
+;;; t/defuns :: prefill COMMIT_EDITMSG in conventional-commit form
+(defun t/conventional-commit-msg ()
+  "https://www.conventionalcommits.org/en/v1.0.0/"
+  (interactive)
+  (with-current-buffer "COMMIT_EDITMSG"
+    (when (and
+           (file-exists-p (concat (t/project-root) "/products")) ;; repo contains ./products
+           (looking-at "^$")) ;; empty first line
+      (let ((type (completing-read "Type: " (s-split "|" "build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test"))))
+        (insert (format "%s: " type))
+        (when-let ((paths (t/shell-command-to-string
+                           (format "fd build.gradle.kts %s \
+                                 | xargs dirname \
+                                 | tr '/' '\n' \
+                                 | sort -u \
+                                 | grep -v '^$'"
+                                   (t/project-root))))
+                   (module (completing-read "Module: " (s-split "\n" paths))))
+          (backward-char 2)
+          (insert (format "(%s)" module))
+          (end-of-line))
+        (when-let* ((branch (t/shell-command-to-string "git branch --show-current"))
+                    (_ (string-match "VA-\\([0-9]+\\)" branch))
+                    (va (match-string 1 branch)))
+          (insert (format "\n\nVA-%s" va))
+          (previous-line 2)
+          (end-of-line))))))
+
+(add-hook
+ 'git-commit-setup-hook
+ (defun t/insert-conventional-commit-msg ()
+   (run-with-timer "0sec" nil 't/conventional-commit-msg)))
+
+;; elisp eval in overlay
+;;; t/defuns :: eval last sexp, show the result inline as an overlay
+(defun t/eval-last-sexp-overlay (arg)
+  "Eval last sexp and show result inline as overlay.
+With prefix ARG, insert the result inline instead. =>."
+  (interactive "P")
+  (let ((arrow " ; => "))
+    (if arg
+        (let ((value (elisp--eval-last-sexp nil)))
+          (insert arrow (format "%S" value)))
+      (let* ((value (elisp--eval-last-sexp nil))
+             (str (concat arrow (format "%S" value)))
+             (ov (make-overlay (point) (point))))
+        (when (bound-and-true-p t/eval-last-sexp-overlay--ov)
+          (delete-overlay t/eval-last-sexp-overlay--ov))
+        (setq-local t/eval-last-sexp-overlay--ov ov)
+        (overlay-put ov 'after-string
+                     (propertize str 'face 'font-lock-comment-face))
+        (run-with-timer 6 nil (lambda (o) (delete-overlay o)) ov)))))
+(global-set-key (kbd "C-x C-e") #'t/eval-last-sexp-overlay)
 
 (provide 'init)
 
