@@ -4612,16 +4612,6 @@ itself does not kill the loop partway through."
     (insert-file-contents file)
     (t/trim-final-newline (buffer-string))))
 
-;;; t-defuns :: mark buffer as 'real' for Doom
-(defun t/mark-real-buffer ()
-  (interactive)
-  (doom-set-buffer-real (current-buffer) t))
-
-;;; t-defuns :: mark buffer as not 'real' for Doom
-(defun t/mark-unreal-buffer ()
-  (interactive)
-  (doom-set-buffer-real (current-buffer) nil))
-
 ;;; t-defuns :: toggle cursor visibility in this window
 (defun t/toggle-window-cursor ()
   "Toggle cursor visibility in the window of the current buffer."
