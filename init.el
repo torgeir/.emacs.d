@@ -3925,7 +3925,7 @@ With no active region, exports the whole buffer."
             (just-one-space)))
       (move-to-column pos))))
 
-;;; t-defuns :: copy text to the system clipboard (pbcopy/wl-copy/xclip)
+;;; t-defuns :: copy text to the system clipboard
 (defun t/copy-to-clipboard (text &optional push)
   "Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses builtin pbcopy."
   (let* ((process-connection-type nil)
@@ -4101,7 +4101,7 @@ the current buffer."
             (message "/%s" (mapconcat 'identity path "/"))
           (format "/%s" (mapconcat 'identity path "/")))))))
 
-;;; isodate :: ISO 8601 UTC timestamp, inserts it with c-u
+;;; t-defuns :: ISO 8601 UTC timestamp, inserts it with c-u
 (defun t/isodate ()
   "Return iso date time string, insert it if c-u is given."
   (interactive)
@@ -4248,7 +4248,7 @@ Example: 2010-11-29T23:23:35-08:00"
         (setq pos (match-end 0)))
       matches)))
 
-;;; t-defuns :: collect regex matches from a file under ~/.emacs.d
+;;; t-defuns :: collect regex matches from a file in the emacs dir
 (defun t/re-seq-in-file (regex file)
   "Collect REGEX matches in FILE, resolved against `user-emacs-directory'."
   (t/re-seq regex (t/read-file (expand-file-name file user-emacs-directory))))
@@ -4298,7 +4298,7 @@ itself does not kill the loop partway through."
             ((symbolp s) (makunbound s))
             (t (message "Can't unbind %s, not a fboundp or symbolp" s))))))
 
-;;; t-defuns :: clone a GitHub repo into ~/Projects
+;;; t-defuns :: clone a GitHub repo into your projects dir
 (defun t/clone (repo)
   "Clone a github REPO to `~/Projects/<repo-name>'."
   (interactive "sClone repository: ")
@@ -4362,7 +4362,7 @@ itself does not kill the loop partway through."
   (add-hook 'window-configuration-change-hook 't/update-margins nil t)
   (add-hook 'buffer-list-update-hook 't/update-margins nil t))
 
-;;; t-defuns :: apply *t-window-margins* to current window
+;;; t-defuns :: apply the stored margins to the current window
 (defun t/update-margins ()
   "Set left and right margins for the current window."
   (set-window-margins nil (car *t-window-margins*) (cadr *t-window-margins*)))
@@ -4379,7 +4379,7 @@ itself does not kill the loop partway through."
   "Return word under cursor."
   (thing-at-point 'word t))
 
-;;; t-defuns :: show/copy your public IP by scraping DuckDuckGo
+;;; t-defuns :: show and copy your public IP
 (defun t/ip ()
   (interactive)
   (let ((ip (-> "curl -s 'https://duckduckgo.com/?q=whats+my+ip&ia=answer' | grep -oE 'Your IP address is [^ ]+ ' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+'" shell-command-to-string s-trim)))
@@ -4473,35 +4473,35 @@ itself does not kill the loop partway through."
     (message "height: %s" h)
     h))
 
-;;; t-defuns :: shrink frame horizontally by 10 cols
+;;; t-defuns :: shrink the frame horizontally
 (defun t/decrease-frame-width ()
   "Decrease Emacs frame size horizontally."
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-width frame (- (frame-width frame) 10))))
 
-;;; t-defuns :: grow frame horizontally by 10 cols
+;;; t-defuns :: grow the frame horizontally
 (defun t/increase-frame-width ()
   "Increase Emacs frame size horizontally."
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-width frame (+ (frame-width frame) 10))))
 
-;;; t-defuns :: shrink frame vertically by 10 rows
+;;; t-defuns :: shrink the frame vertically
 (defun t/decrease-frame-height ()
   "Decrease Emacs frame size vertically."
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-height frame (- (frame-height frame) 10))))
 
-;;; t-defuns :: grow frame vertically by 10 rows
+;;; t-defuns :: grow the frame vertically
 (defun t/increase-frame-height ()
   "Increase Emacs frame size vertically."
   (interactive)
   (let ((frame (selected-frame)))
     (set-frame-height frame (+ (frame-height frame) 10))))
 
-;;; t-defuns :: nudge frame right 40px
+;;; t-defuns :: nudge the frame right
 (defun t/move-frame-right ()
   "Move Emacs frame right."
   (interactive)
@@ -4509,7 +4509,7 @@ itself does not kill the loop partway through."
          (left (frame-parameter frame 'left)))
     (set-frame-parameter frame 'left (+ left 40))))
 
-;;; t-defuns :: nudge frame left 40px
+;;; t-defuns :: nudge the frame left
 (defun t/move-frame-left ()
   "Move Emacs frame left."
   (interactive)
@@ -4517,7 +4517,7 @@ itself does not kill the loop partway through."
          (left (frame-parameter frame 'left)))
     (set-frame-parameter frame 'left (- left 40))))
 
-;;; t-defuns :: nudge frame up 40px
+;;; t-defuns :: nudge the frame up
 (defun t/move-frame-up ()
   "Move Emacs frame up."
   (interactive)
@@ -4525,7 +4525,7 @@ itself does not kill the loop partway through."
          (top (frame-parameter frame 'top)))
     (set-frame-parameter frame 'top (- top 40))))
 
-;;; t-defuns :: nudge frame down 40px
+;;; t-defuns :: nudge the frame down
 (defun t/move-frame-down ()
   "Move Emacs frame down."
   (interactive)
@@ -4556,13 +4556,13 @@ itself does not kill the loop partway through."
     (set-window-parameter (selected-window) 'no-delete-other-windows dedicated)
     (message (if dedicated "Window dedicated." "Window not dedicated."))))
 
-;;; t-defuns :: run `make` in a prompted directory
+;;; t-defuns :: compile in a prompted directory
 (defun t/compile (dir)
   (interactive "DCompile in directory: ")
   (let ((default-directory (expand-file-name dir)))
     (compile "make")))
 
-;;; t-defuns :: run `gw build` at project root
+;;; t-defuns :: gradle build at the project root
 (defun t/gradle-build ()
   (interactive)
   (let ((default-directory (t/project-root)))
@@ -4570,7 +4570,7 @@ itself does not kill the loop partway through."
                  "gw clean build"
                "gw build"))))
 
-;;; t-defuns :: run `gw detekt --auto-correct`
+;;; t-defuns :: gradle detekt with auto-correct
 (defun t/gradle-detekt-auto-correct ()
   (interactive)
   (let ((default-directory (t/project-root)))
@@ -4629,7 +4629,7 @@ itself does not kill the loop partway through."
   (internal-show-cursor (get-buffer-window (current-buffer))
                         (not (internal-show-cursor-p))))
 
-;;; t-defuns :: commit + push ~/Projects/posts
+;;; t-defuns :: commit and push the blog repo
 (defun t/deploy-torgeir.dev ()
   (interactive)
   (let ((b "*t-deploy-torgeir_dev*"))
@@ -4648,7 +4648,7 @@ itself does not kill the loop partway through."
         (with-current-buffer b (kill-buffer))
         (message "Cancelled.")))))
 
-;;; t-defuns :: speak TEXT with the macOS say command
+;;; t-defuns :: speak a string aloud (macOS)
 (defun t/say (text)
   "Speak TEXT using macos 'say' command."
   (if is-mac
@@ -4656,7 +4656,7 @@ itself does not kill the loop partway through."
                              (shell-quote-argument text)))
     (error "'say' command not found")))
 
-;;; t-defuns :: speak the region via macOS `say`
+;;; t-defuns :: speak the region aloud (macOS)
 (defun t/speak-region (beg end)
   "Speak selected text using macos 'say' command."
   (interactive "r")
@@ -4718,7 +4718,7 @@ Falls back to dark when nothing expresses a preference, as `nano.el' does."
             (expand-file-name file current-dir)
           nil)))))
 
-;;; t/defuns :: pick a repo from ~/.gitrepos and open it on github
+;;; t-defuns :: pick a repo from your gitrepos list, open it on github
 (defun t/browse-git-repo ()
   "Browse git repo from ~/.gitrepos."
   (interactive)
@@ -4730,7 +4730,7 @@ Falls back to dark when nothing expresses a preference, as `nano.el' does."
     (funcall (lambda (repo) (format "https://github.com/%s/%s" repo (if (t/prefix-arg-universal?) "pulls" ""))))
     (browse-url)))
 
-;;; t/defuns :: diary sexp: is DATE the last day of the month
+;;; t-defuns :: diary sexp: is DATE the last day of the month
 (defun t/diary-last-day-of-month (date)
   "Return `t` if DATE is the last day of the month.
 
@@ -4746,7 +4746,7 @@ Falls back to dark when nothing expresses a preference, as `nano.el' does."
      (calendar-last-day-of-month (calendar-extract-month date)
                                  (calendar-extract-year date))))
 
-;;; t/defuns :: diary sexp: is DATE a friday
+;;; t-defuns :: diary sexp: is DATE a friday
 (defun t/diary-last-day-of-week ()
   "Return `t` if DATE is the last day of the week."
   (require 'org-clock)
@@ -4755,7 +4755,7 @@ Falls back to dark when nothing expresses a preference, as `nano.el' does."
                       (calendar-extract-month date)
                       (calendar-extract-year date))))
 
-;;; t/defuns :: turn a github commit url into a t-package entry
+;;; t-defuns :: turn a github commit url into a t-package entry
 (defun t/gh-to-package (url)
   "Convert provided `url' to a package installation declaration, and insert it."
   (interactive (list (read-string "GitHub commit url: " (thing-at-point 'url))))
@@ -4766,7 +4766,7 @@ Falls back to dark when nothing expresses a preference, as `nano.el' does."
            (concat (match-string 1 url) "/" (match-string 2 url))
            (substring (match-string 3 url) 0 7))))
 
-;;; t/defuns :: import env vars from a login zsh, update exec-path
+;;; t-defuns :: import env vars from a login zsh, update exec-path
 (defun t/exec-path-from-shell ()
   "Import env vars from a login zsh and update `exec-path'."
   (interactive)
@@ -4777,7 +4777,7 @@ Falls back to dark when nothing expresses a preference, as `nano.el' does."
   (when-let ((path (getenv "PATH")))
     (setq exec-path (split-string path path-separator t))))
 
-;;; t/defuns :: prefill COMMIT_EDITMSG in conventional-commit form
+;;; t-defuns :: prefill the commit message in conventional-commit form
 (defun t/conventional-commit-msg ()
   "https://www.conventionalcommits.org/en/v1.0.0/"
   (interactive)
@@ -4811,7 +4811,7 @@ Falls back to dark when nothing expresses a preference, as `nano.el' does."
    (run-with-timer "0sec" nil 't/conventional-commit-msg)))
 
 ;; elisp eval in overlay
-;;; t/defuns :: eval last sexp, show the result inline as an overlay
+;;; t-defuns :: eval last sexp, show the result inline as an overlay
 (defun t/eval-last-sexp-overlay (arg)
   "Eval last sexp and show result inline as overlay.
 With prefix ARG, insert the result inline instead. =>."
