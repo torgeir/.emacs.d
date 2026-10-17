@@ -2541,14 +2541,21 @@ When 'quit' is set, quits window when any other key is pressed."
 (setq-default truncate-lines t
               ;;truncate-partial-width-windows nil
               )
+
+;; Pay for wrap prefixes only in buffers that actually soft-wrap.
+(add-hook 'visual-line-mode-hook
+          (defun t/visual-wrap-with-visual-line ()
+            (visual-wrap-prefix-mode (if visual-line-mode 1 -1))))
 ;;; emacs
 (use-package emacs
   :hook (
          (after-init . t/exec-path-from-shell)
          ;; enable arrow at end of line when wrapping
 	       ;; (after-init . global-visual-line-mode)
-	       ;; indent soft wraps
-	       (after-init . global-visual-wrap-prefix-mode)
+	       ;; indent soft wraps -- enabled per-buffer from `visual-line-mode'
+	       ;; below, not globally: it registers a `jit-lock' function that runs
+	       ;; on every edit, costing ~100ms/edit even though `truncate-lines'
+	       ;; is t by default and nothing ever wraps.
          ;; open .gz files automatically
          (after-init . auto-compression-mode)
 	       ;; always revert
