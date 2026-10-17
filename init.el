@@ -2102,18 +2102,62 @@ When 'quit' is set, quits window when any other key is pressed."
 
 (defvar-local t/dired-icons-timer nil)
 
+;; git-ignored entries are dimmed so they stand out from tracked ones.
+(defface t/dired-git-ignored '((t :inherit nano-faded))
+  "Face for git-ignored files and directories in dired listings.")
+
+(advice-add 'nano-install-theme :after
+            (defun t/set-dired-git-ignored-face ()
+              "Dim the git-ignored face a step below `nano-faded'."
+              (require 'color)
+              (set-face-attribute
+               't/dired-git-ignored nil
+			         :foreground (color-darken-name
+                            (face-foreground 'nano-faded nil t) 25))))
+
+(defun t/dired-git-ignored-table (files)
+  "Return a hash table of the absolute FILES that git ignores."
+  (let* ((ignored (make-hash-table :test #'equal))
+         (root (locate-dominating-file default-directory ".git"))
+         ;; a single path outside the repo aborts the whole batch with exit
+         ;; 128, and `..' is one of those as soon as H unhides entries.
+         (files (when root
+                  (seq-filter (lambda (file)
+                                (file-in-directory-p (expand-file-name file) root))
+                              files))))
+    (when (and files (executable-find "git"))
+      (with-temp-buffer
+        (dolist (file files) (insert file "\0"))
+        ;; exit 0 means at least one path matched an ignore rule, 1 means none.
+        (when (eq 0 (call-process-region (point-min) (point-max) "git" t t nil
+                                         "check-ignore" "-z" "--stdin"))
+          (dolist (file (split-string (buffer-string) "\0" t))
+            (puthash file t ignored)))))
+    ignored))
+
 (defun t/dired-icons-do ()
   (remove-overlays (point-min) (point-max) 't/dired-icon t)
-  (save-excursion
-    (goto-char (point-min))
-    (while (not (eobp))
-      (when-let* ((file (dired-get-filename nil t))
-                  (pos  (dired-move-to-filename)))
-        (let ((ov (make-overlay pos pos)))
+  (let (entries)
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (eobp))
+        (when-let* ((file (dired-get-filename nil t))
+                    (pos  (dired-move-to-filename)))
+          (push (list pos (line-end-position) file) entries))
+        (forward-line 1)))
+    (let ((ignored (t/dired-git-ignored-table (mapcar #'caddr entries))))
+      (pcase-dolist (`(,pos ,eol ,file) entries)
+        (let* ((ignored? (gethash file ignored))
+               (ov (make-overlay pos pos)))
           (overlay-put ov 't/dired-icon t)
           (overlay-put ov 'before-string
-                       (propertize (concat (t/dired-icon file) " ") 'face 'nano-faded))))
-      (forward-line 1))))
+                       (propertize (concat (t/dired-icon file) " ")
+                                   'face (if ignored? 't/dired-git-ignored 'nano-faded)))
+          (when ignored?
+            ;; dim the name itself, overriding dired's own fontification.
+            (let ((ov (make-overlay pos eol)))
+              (overlay-put ov 't/dired-icon t)
+              (overlay-put ov 'face 't/dired-git-ignored))))))))
 
 (defun t/dired-add-icons ()
   "Debounce icon redraws so rapid hook calls coalesce into one scan."
