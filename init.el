@@ -2735,6 +2735,11 @@ words of the candidate, respectively."
     (require 'consult-info)
     (require 'consult-imenu)))
 
+;;; consult-lines, complete the current line by lines in the project
+(add-to-list 'load-path (expand-file-name "site-lisp/consult-lines" user-emacs-directory))
+(autoload 'consult-lines "consult-lines" "Complete the current line by lines found in the project." t)
+(keymap-set t-leader-map "c l" #'consult-lines)
+
 ;;; marginalia
 (t-package marginalia gh "minad/marginalia" "c5d0139" nil
   :config
