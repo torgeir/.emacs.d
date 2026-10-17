@@ -2227,10 +2227,10 @@ When 'quit' is set, quits window when any other key is pressed."
 ;;; theme synced persp-face
 (defun t/sync-persp-face (&optional frame)
   "Make selected workspace font fit the theme."
-  (when (and (facep 'persp-selected-face) (facep 'header-line))
+  (when (facep 'persp-selected-face)
     (with-selected-frame (or frame (selected-frame))
       (set-face-attribute 'persp-selected-face nil
-			                    :inherit 'header-line
+			                    :inherit 'unspecified
 			                    :foreground (plist-get t-colors :hl)
 			                    :background 'unspecified
 			                    :box nil))))
@@ -2759,12 +2759,19 @@ words of the candidate, respectively."
     ;; its box color from `shadow' instead of matching the background like
     ;; `header-line' — without this it leaves a visible box around every
     ;; non-selected window.
-    (dolist (face '(mode-line mode-line-active mode-line-inactive
-                              header-line header-line-active header-line-inactive))
+    (dolist (face '(header-line header-line-active header-line-inactive))
       (when (facep face)
         (set-face-attribute face nil
                             :box `(:line-width ,ml-width :color ,bg :style nil)
                             :inherit 'nano-subtle)))
+    ;; mode line pads with its own background, so the bar fills the box height
+    (dolist (face '(mode-line mode-line-active mode-line-inactive))
+      (when (facep face)
+        (set-face-attribute face nil
+                            :inherit 'nano-subtle
+                            :box `(:line-width ,ml-width
+                                   :color ,(face-background 'nano-subtle nil t)
+                                   :style nil))))
     (set-fringe-bitmap-face 'left-curly-arrow  'nano-truncation)
     (set-fringe-bitmap-face 'right-curly-arrow 'nano-truncation)))
 
