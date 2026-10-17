@@ -36,14 +36,6 @@
     (dolist (target (reverse target-list) form)
       (setq form `(with-eval-after-load ',target ,form)))))
 
-(defun t/isodate ()
-  "Return iso date time string, insert it if c-u is given."
-  (interactive)
-  (let ((time (format-time-string "%Y-%m-%dT%H:%M:%S.%3NZ" nil "UTC")))
-    (if (called-interactively-p 'interactive)
-        (insert time)
-      time)))
-
 ;;; modeline: string segments, reloadable
 ;; inspect mode-line-format to find extension points
 ;; add to list prevents multiple occurrences
@@ -4216,6 +4208,15 @@ the current buffer."
             (message "/%s" (mapconcat 'identity path "/"))
           (format "/%s" (mapconcat 'identity path "/")))))))
 
+;;; isodate :: ISO 8601 UTC timestamp, inserts it with c-u
+(defun t/isodate ()
+  "Return iso date time string, insert it if c-u is given."
+  (interactive)
+  (let ((time (format-time-string "%Y-%m-%dT%H:%M:%S.%3NZ" nil "UTC")))
+    (if (called-interactively-p 'interactive)
+        (insert time)
+      time)))
+
 ;;; t-defuns :: return ISO 8601 datetime with offset
 (defun t/date-time ()
   "Insert current date-time string in full ISO 8601 format.
@@ -4229,6 +4230,16 @@ Example: 2010-11-29T23:23:35-08:00"
 (defun t/date-time-for-filename ()
   "Return date-time iso 8601 string suitable for filename."
   (replace-regexp-in-string ":" "." (t/date-time)))
+
+;;; t-defuns :: return/insert today's date with a separator
+(defun t/date (&optional separator)
+  (interactive)
+  (let* ((sep (or separator "-"))
+         (date (replace-regexp-in-string
+                "-" sep (format-time-string "%Y-%m-%d" nil "UTC"))))
+    (if (called-interactively-p 'interactive)
+        (insert date)
+      date)))
 
 ;;; t-defuns :: kill buffer without any confirmation
 (defun t/volatile-kill-buffer ()
@@ -4724,16 +4735,6 @@ itself does not kill the loop partway through."
   (interactive)
   (internal-show-cursor (get-buffer-window (current-buffer))
                         (not (internal-show-cursor-p))))
-
-;;; t-defuns :: return/insert today's date with a separator
-(defun t/date (&optional separator)
-  (interactive)
-  (let* ((sep (or separator "-"))
-         (date (replace-regexp-in-string
-                "-" sep (format-time-string "%Y-%m-%d" nil "UTC"))))
-    (if (called-interactively-p 'interactive)
-        (insert date)
-      date)))
 
 ;;; t-defuns :: commit + push ~/Projects/posts
 (defun t/deploy-torgeir.dev ()
