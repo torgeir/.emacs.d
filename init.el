@@ -3353,8 +3353,6 @@ With prefix ARG, insert the result inline instead. =>."
         (run-with-timer 6 nil (lambda (o) (delete-overlay o)) ov)))))
 (global-set-key (kbd "C-x C-e") #'t/eval-last-sexp-overlay)
 
-;;; old t-defuns
-(load-file (expand-file-name "~/.emacs.d/old/t-defuns.el"))
 ;;; sudo edit
 (defun t/sudo-edit (&optional arg)
   "Edit currently visited file as root."
@@ -4005,6 +4003,826 @@ With prefix ARG, insert the result inline instead. =>."
     (goto-char (point-min))
     ;;(when was-dedicated (t/toggle-dedicated-window))
     (message "%d matches" (length files))))
+
+;;; t-defuns :: run a shell command, return output minus the trailing newline
+(defun t/shell-command-to-string (cmd)
+  "Run `CMD' as shell command, trim trailing newlines."
+  (t/trim-final-newline (shell-command-to-string cmd)))
+
+;;; t-defuns :: run a command async, call back with its output lines
+(defun t/async-shell-command (name cmd &optional fn)
+  "Execute `CMD' async, call `FN' with the result string."
+  (let*
+      ((fn fn)
+       (buf-name (format "*%s*" name))
+       (_ (when (get-buffer-create buf-name)
+            (with-current-buffer buf-name (erase-buffer))))
+       (p (start-process-shell-command name buf-name cmd)))
+    (prog1 p
+      (when fn
+        (set-process-sentinel p (lambda (process event)
+                                  (with-current-buffer buf-name
+                                    (let ((res (buffer-substring-no-properties (point-min) (point-max))))
+                                      (apply fn (list process
+                                                      event
+                                                      (split-string res "\r?\n")))))))))))
+
+;;; t-defuns :: kill the value of the CSS property on this line
+(defun t/css-kill-value ()
+  "kills the attribute of a css property."
+  (interactive)
+  (let ((pos (point)))
+    (move-beginning-of-line 1)
+    (if (search-forward-regexp ": ?")
+        (progn
+          (when (not (looking-at-p ";"))
+            (kill-word 1)
+            (just-one-space)))
+      (move-to-column pos))))
+
+;;; t-defuns :: copy text to the system clipboard (pbcopy/wl-copy/xclip)
+(defun t/copy-to-clipboard (text &optional push)
+  "Copy text to os clipboard. Cygwin uses cygutils-extra's `putclip`. Mac uses builtin pbcopy."
+  (let* ((process-connection-type nil)
+         (copy-cmd (cond (is-mac "pbcopy")
+                         ((executable-find "wl-copy") "wl-copy")
+                         ((executable-find "xclip") "xclip")
+                         (t "putclip")))
+         (proc (start-process copy-cmd "*Messages*" copy-cmd)))
+    (process-send-string proc text)
+    (process-send-eof proc))
+  text)
+
+;;; t-defuns :: hippie-expand, case-sensitive
+(defun t/hippie-expand-no-case-fold ()
+  (interactive)
+  (let ((case-fold-search nil))
+    (hippie-expand nil)))
+
+;;; t-defuns :: hippie-expand whole lines from all buffers
+(defun t/hippie-expand-lines ()
+  (interactive)
+  (let ((hippie-expand-try-functions-list '(try-expand-line-all-buffers)))
+    (end-of-line)
+    (hippie-expand nil)))
+
+;;; t-defuns :: untabify whole buffer
+(defun t/untabify-buffer ()
+  "Remove tabs in buffer."
+  (interactive)
+  (untabify (point-min) (point-max)))
+
+;;; t-defuns :: indent whole buffer
+(defun t/indent-buffer ()
+  "Correctly indent a buffer."
+  (interactive)
+  (indent-region (point-min) (point-max)))
+
+;;; t-defuns :: untabify + whitespace-cleanup + indent buffer
+(defun t/cleanup-buffer-whitespace-and-indent ()
+  "Perform a bunch of operations on the whitespace content of a buffer.
+Including indent-buffer, which should not be called automatically on save."
+  (interactive)
+  (t/untabify-buffer)
+  (when (fboundp 'whitespace-cleanup) (whitespace-cleanup))
+  (t/indent-buffer))
+
+;;; t-defuns :: replace preceding sexp with its evaluated value
+(defun t/eval-and-replace ()
+  "Evaluate and replace the preceding sexp with its value."
+  (interactive)
+  (if (and (eq major-mode 'clojure-mode)
+           (fboundp 'cider-eval-last-sexp-and-replace))
+      (cider-eval-last-sexp-and-replace)
+    (progn
+      (backward-kill-sexp)
+      (condition-case nil
+          (prin1 (eval (read (current-kill 0)))
+                 (current-buffer))
+        (error (message "Invalid expression")
+               (insert (current-kill 0)))))))
+
+;;; t-defuns :: skeleton that inserts lorem ipsum text
+;; run it with M-x lorem
+(define-skeleton lorem
+  "Insert a lorem ipsum."
+  nil
+  "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
+
+;;; t-defuns :: delete window, else frame, else hide
+(defun t/delete-window-or-frame-or-hide ()
+  "Delete selected window or frame.
+If its the last window in the frame, delete the frame. If its the last frame,
+hide it (on mac)."
+  (interactive)
+  (condition-case err
+      (delete-window)
+    (error
+     (if (length= (visible-frame-list) 1)
+         (when is-mac
+           ;; Only macOS can hide the last frame; elsewhere do nothing rather
+           ;; than killing Emacs out from under the user.
+           (ns-do-hide-emacs))
+       (condition-case errr
+           (delete-frame)
+         (error (save-buffers-kill-emacs)))))))
+
+;;; t-defuns :: copy full path of dired file or buffer
+(defun t/copy-file-full-name ()
+  "Copy the file full name into the kill ring, from the dired file at point or
+the current buffer."
+  (interactive)
+  (let ((filename (cond ((equal major-mode 'dired-mode) (dired-get-filename))
+                        (t (buffer-file-name)))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer full name '%s'" filename))))
+
+;;; t-defuns :: copy just the file name
+(defun t/copy-buffer-file-name ()
+  "Copy the current buffer file name into the kill ring."
+  (interactive)
+  (let ((filename (file-name-nondirectory (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s'" filename))))
+
+;;; t-defuns :: copy just the directory path
+(defun t/copy-buffer-file-path ()
+  "Copy the full path to the current file into the kill ring."
+  (interactive)
+  (let ((filename (file-name-directory (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file path '%s'" filename))))
+
+;;; t-defuns :: echo/return a buffer's major mode
+(defun t/buffer-mode (&optional buffer-or-string)
+  "Returns the major mode associated with a buffer."
+  (interactive)
+  (let ((mode (with-current-buffer (or buffer-or-string (current-buffer))
+                major-mode)))
+    (message "major mode: %s" mode)
+    mode))
+
+;;; t-defuns :: split right and move focus there
+(defun t/split-window-right-and-move-there-dammit ()
+  (interactive)
+  (when (bound-and-true-p centered-window-mode) (centered-window-mode -1))
+  (split-window-right)
+  (windmove-right))
+
+;;; t-defuns :: split below and move focus there
+(defun t/split-window-below-and-move-there-dammit ()
+  (interactive)
+  (when (bound-and-true-p centered-window-mode) (centered-window-mode -1))
+  (split-window-below)
+  (windmove-down))
+
+;;; t-defuns :: get a face's background colour
+(defun t/face-color-b (&optional face)
+  "Get `:background' color of `FACE'."
+  (interactive)
+  (face-attribute (or face (face-at-point)) :background))
+
+;;; t-defuns :: get a face's foreground colour
+(defun t/face-color-f (&optional face)
+  "Get `:foreground' color of `FACE'."
+  (interactive)
+  (face-attribute (or face (face-at-point)) :foreground))
+
+;;; t-defuns :: truncate a comint buffer to nothing
+(defun t/comint-clear-buffer ()
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
+
+;;; t-defuns :: show the XML element path at point
+(defun t/find-xml-path ()
+  "Display the hierarchy of XML elements the point is on as a path."
+  (interactive)
+  (let ((path nil))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (while (and (< (point-min) (point)) ;; Doesn't error if point is at beginning of buffer
+                    (condition-case nil
+                        (progn
+                          (nxml-backward-up-element) ; always returns nil
+                          t)
+                      (error nil)))
+          (setq path (cons (xmltok-start-tag-local-name) path)))
+        (if (called-interactively-p 'interactive)
+            (message "/%s" (mapconcat 'identity path "/"))
+          (format "/%s" (mapconcat 'identity path "/")))))))
+
+;;; t-defuns :: return ISO 8601 datetime with offset
+(defun t/date-time ()
+  "Insert current date-time string in full ISO 8601 format.
+Example: 2010-11-29T23:23:35-08:00"
+  (concat
+   (format-time-string "%Y-%m-%dT%T")
+   ((lambda (x) (concat (substring x 0 3) ":" (substring x 3 5)))
+    (format-time-string "%z"))))
+
+;;; t-defuns :: ISO datetime with colons as dots, safe for filenames
+(defun t/date-time-for-filename ()
+  "Return date-time iso 8601 string suitable for filename."
+  (replace-regexp-in-string ":" "." (t/date-time)))
+
+;;; t-defuns :: kill buffer without any confirmation
+(defun t/volatile-kill-buffer ()
+  "Kill current buffer unconditionally."
+  (interactive)
+  (setq-local kill-buffer-query-functions
+              (remq 'process-kill-buffer-query-function
+                    kill-buffer-query-functions))
+  (set-buffer-modified-p nil)
+  (kill-current-buffer))
+
+;;; t-defuns :: kill buffer+window without confirmation, evil-aware
+(defun t/volatile-kill-buffer-and-window ()
+  "Kill current buffer and the window unconditionally."
+  (interactive)
+  (if (or
+       (or (looking-back "\\$ " 1) ; eshell
+           (= (pos-bol) (pos-eol)))
+       (= (save-excursion (goto-char (point-max)))
+          (point)))
+      (progn
+        (setq-local kill-buffer-query-functions
+                    (remq 'process-kill-buffer-query-function
+                          kill-buffer-query-functions))
+        (set-buffer-modified-p nil)
+        (kill-buffer-and-window))
+    (progn ;;(message "her %s" (called-interactively-p))
+      (when (and
+             ;; TODO when is this
+             ;;(not (called-interactively-p))
+             (eq evil-state 'insert))
+        (delete-char 1)))))
+
+;;; t-defuns :: strip newlines from a string
+(defun t/remove-newlines (str)
+  (replace-regexp-in-string "[\r\n]+" "" str))
+
+;;; t-defuns :: grab the frontmost chrome tab's url (applescript)
+(defun t/grab-chrome-url ()
+  "Grab the frontmost url out of chrome using `org-mac-grab-link'."
+  (interactive)
+  (t/remove-newlines
+   (shell-command-to-string
+    "osascript -l JavaScript -e 'Application(\"Google Chrome\").windows.at(0).activeTab.url()'")))
+
+;;; t-defuns :: open current elfeed entry in eww
+(defun t/open-elfeed-in-eww ()
+  (interactive)
+  (eww (elfeed-entry-link elfeed-show-entry)))
+
+;;; t-defuns :: diary sexp: is DATE the last weekday of the month?
+(defun t/last-weekday-of-month-p ()
+  (let* ((day-of-week (calendar-day-of-week date))
+         (month (calendar-extract-month date))
+         (year (calendar-extract-year date))
+         (last-month-day (calendar-last-day-of-month month year))
+         (month-day (cadr date)))
+
+    (or
+     ;; it's the last day of the month & it is a weekday
+     (and (eq month-day last-month-day)
+          (memq day-of-week '(1 2 3 4 5)))
+
+     ;; it's a friday, and it's the last-but-one or last-but-two day
+     ;; of the month
+     (and (eq day-of-week 5)
+          (or (eq month-day (1- last-month-day))
+              (eq month-day (1- (1- last-month-day))))))))
+
+;;; t-defuns :: echo the face at point
+(defun t/face-at-point (pos)
+  "Echo the face at POS point."
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+
+;;; t-defuns :: run an applescript snippet, return its output
+(defun t/run-osascript (s &optional discard-output)
+  "Run applescript."
+  (let ((b-stderr "*osascript-err*")
+        (b-stdout "*osascript*"))
+    (t/kill-buffer b-stderr)
+    (t/kill-buffer b-stdout)
+    (with-current-buffer (get-buffer-create b-stdout)
+      (shell-command (format "/usr/bin/osascript -e '%s'" s) b-stdout (get-buffer-create b-stderr))
+      (buffer-string))))
+
+;;; t-defuns :: kill a buffer if it exists
+(defun t/kill-buffer (b)
+  (when (get-buffer b) (kill-buffer b)))
+
+;;; t-defuns :: bring a macOS app to the front via applescript
+(defun t/osascript-activate (app)
+  "Run applescript to activate application."
+  (t/run-osascript (format "tell application \"%s\" to activate" app) t))
+
+;;; t-defuns :: make a string read-only
+(defun t/propertize-read-only (str)
+  (propertize str
+              'read-only t
+              'front-sticky 'read-only
+              'rear-nonsticky 'read-only))
+
+;;; t-defuns :: all first-group regex matches in a string
+(defun t/re-seq (regexp string)
+  "Get a list of all REGEXP matches (from the first group) in a STRING."
+  (save-match-data
+    (let ((pos 0)
+          matches)
+      (while (string-match regexp string pos)
+        (push (match-string 1 string) matches)
+        (setq pos (match-end 0)))
+      matches)))
+
+;;; t-defuns :: collect regex matches from a file under ~/.emacs.d
+(defun t/re-seq-in-file (regex file)
+  "Collect REGEX matches in FILE, resolved against `user-emacs-directory'."
+  (t/re-seq regex (t/read-file (expand-file-name file user-emacs-directory))))
+
+;;; t-defuns :: has the buffer's process finished?
+(defun t/buffer-finished-p (b)
+  "Return non-nil value if the buffer B has an ended process."
+  (string-match-p
+   "^Process .* \\(finished\\|exited\\).*$"
+   (car (last
+         (split-string
+          (with-current-buffer b
+            (let ((len (length (buffer-string))))
+              (if (> len 0)
+                  (buffer-substring-no-properties 1 len)
+                "")))
+          "\n")))))
+
+;;; t-defuns :: kill a term buffer once its process ends
+(defun t/term-quit-if-finished (&optional else)
+  (interactive)
+  (if (t/buffer-finished-p (current-buffer))
+      (t/volatile-kill-buffer)
+    (when (functionp else)
+      (call-interactively else))))
+
+;;; t-defuns :: kill term buffer + window once process ends
+(defun t/term-kill-if-finished (&optional else)
+  (interactive)
+  (if (t/buffer-finished-p (current-buffer))
+      (t/volatile-kill-buffer-and-window)
+    (when (functionp else)
+      (call-interactively else))))
+
+;;; t-defuns :: fmakunbound/makunbound depending on symbol type
+(defun t/unbind (fn-or-s)
+  "Unbind FN-OR-S, a symbol or a list of symbols.
+Clears the function cell when there is one, otherwise the value cell.
+`t/unbind' is always unbound last, so handing it a list that contains
+itself does not kill the loop partway through."
+  (interactive "SSymbol to unbind: ")
+  (let* ((syms (if (proper-list-p fn-or-s) fn-or-s (list fn-or-s)))
+         (self (memq 't/unbind syms))
+         (syms (append (remq 't/unbind syms) (when self '(t/unbind)))))
+    (dolist (s syms)
+      (cond ((fboundp s) (fmakunbound s))
+            ((symbolp s) (makunbound s))
+            (t (message "Can't unbind %s, not a fboundp or symbolp" s))))))
+
+;;; t-defuns :: clone a GitHub repo into ~/Projects
+(defun t/clone (repo)
+  "Clone a github REPO to `~/Projects/<repo-name>'."
+  (interactive "sClone repository: ")
+  (require 'magit)
+  (when-let* ((repo-name (or (and (s-starts-with? "https://github." repo)
+                                  (replace-regexp-in-string "https://github\\.\\(?:com\\|dev\\)/\\([^/]+\\)/\\([^/]+\\)/?.*?$" "\\1/\\2" repo))
+                             (and (s-ends-with? ".git" repo)
+                                  (replace-regexp-in-string "git@github.com:\\(.+\\).git" "\\1" repo)))))
+    (let*
+        ((dir (expand-file-name (format "~/Projects/%s/" repo-name)))
+         (cmd (concat "git " "clone " (format "git@github.com:%s.git" repo-name)))
+         (msg (concat "Cloning " repo-name ".. ok.")))
+      (if (file-exists-p dir)
+          (dired dir)
+        (progn
+          (message "Cloning %s.." repo repo-name)
+          (t/shell-command-to-string (concat "mkdir -p" " " dir))
+          (t/async-shell-command (format "*git-clone %s*" repo-name)
+                                 (concat cmd " " (magit-convert-filename-for-git dir))
+                                 (lambda (&optional &rest args)
+                                   (dired dir)
+                                   (message msg)
+                                   (revert-buffer))))))))
+
+;;; t-defuns :: run a function in every window
+(defun t/in-all-windows (fn)
+  (interactive)
+  (dolist (w (window-list))
+    (with-selected-window w
+      (funcall fn w))))
+
+;;; t-defuns :: run a function in every buffer
+(defun t/in-all-buffers (fn)
+  (interactive)
+  (dolist (b (buffer-list))
+    (with-current-buffer b
+      (funcall fn b))))
+
+;;; t-defuns :: fake centering by setting a big fringe
+(defun t/centered ()
+  (interactive)
+  (if (and (boundp 'fringe-mode) fringe-mode)
+      (set-fringe-mode nil)
+    (set-fringe-mode
+     (/ (- (frame-pixel-width)
+           (* 110 (frame-char-width)))
+        2))))
+
+;;; t-defuns :: variable holding the margin pair
+(defvar *t-window-margins* '(nil nil))
+
+;;; t-defuns :: set window margins interactively
+(defun t/margin (l &optional r)
+  (interactive (list (read-string "Width: ")))
+  (let ((l (if (string= "nil" l)
+               nil
+             (string-to-number l))))
+    (setq *t-window-margins* (list l l)))
+
+  ;; Apply to new windows and buffers
+  (add-hook 'window-configuration-change-hook 't/update-margins nil t)
+  (add-hook 'buffer-list-update-hook 't/update-margins nil t))
+
+;;; t-defuns :: apply *t-window-margins* to current window
+(defun t/update-margins ()
+  "Set left and right margins for the current window."
+  (set-window-margins nil (car *t-window-margins*) (cadr *t-window-margins*)))
+
+;;; t-defuns :: toggle image loading in eww
+(defun t/eww-toggle-images ()
+  "Toggle whether images are loaded and reload the current page fro cache."
+  (interactive)
+  (eww-toggle-images)
+  (message "Images are now %s" (if shr-inhibit-images "off" "on")))
+
+;;; t-defuns :: return the word under cursor
+(defun t/word-at-point ()
+  "Return word under cursor."
+  (thing-at-point 'word t))
+
+;;; t-defuns :: show/copy your public IP by scraping DuckDuckGo
+(defun t/ip ()
+  (interactive)
+  (let ((ip (-> "curl -s 'https://duckduckgo.com/?q=whats+my+ip&ia=answer' | grep -oE 'Your IP address is [^ ]+ ' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+'" shell-command-to-string s-trim)))
+    (message ip)
+    (kill-new ip)))
+
+;;; t-defuns :: clone the repo shown in the frontmost Chrome tab
+(defun t/clone-github-repo-from-chrome ()
+  "Clones the github repo of the currently visisble chrome tab."
+  (interactive)
+  (t/clone (t/grab-chrome-url)))
+
+;;; t-defuns :: in ediff, take A then B into C
+(defun t/ediff-use-both ()
+  (interactive)
+  (ediff-copy-diff ediff-current-difference nil 'C nil
+                   (concat
+                    (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
+                    (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+
+;;; t-defuns :: find which keymaps bind a key
+(defun t/lookup-key (key)
+  "Search for KEY in all known keymaps."
+  (mapatoms
+   (lambda (ob)
+     (when (and (boundp ob) (keymapp (symbol-value ob)))
+       (when (functionp (lookup-key (symbol-value ob) key))
+         (message "%S" ob))))
+   obarray))
+
+;;; t-defuns :: find which keymaps use a key as a prefix
+(defun t/lookup-key-prefix (key)
+  "Search for KEY as prefix in all known keymaps."
+  (mapatoms
+   (lambda (ob)
+     (when (and (boundp ob) (keymapp (symbol-value ob)))
+       (when (let ((m (lookup-key (symbol-value ob) key)))
+               (and m (or (symbolp m) (keymapp m))))
+         (message "%S" ob))))
+   obarray))
+
+;;; t-defuns :: list all functions
+(defun t/fns ()
+  "List functions."
+  (let ((l))
+    (mapatoms (lambda (a)
+                (when (functionp a)
+                  (push a l))))
+    l))
+
+;;; t-defuns :: list all interactive commands
+(defun t/interactive-fns ()
+  "List interactive functions."
+  (-filter 'commandp
+           (t/fns)))
+
+;;; t-defuns :: hide cursor in this buffer
+(defun t/locally-disable-cursor ()
+  "Locally disable cursor in buffer."
+  (interactive)
+  (make-local-variable 'cursor-type)
+  (setq-local cursor-type 'nil)
+  (setq-local evil-normal-state-cursor 'nil))
+
+;;; t-defuns :: restore cursor in this buffer
+(defun t/locally-enable-cursor ()
+  "Enable locally disabled cursor in buffer."
+  (interactive)
+  (kill-local-variable 'cursor-type)
+  (setq-local evil-normal-state-cursor 'box))
+
+;;; t-defuns :: jump to a random line
+(defun t/random-line ()
+  "Goto a random line in the buffer. Useful trying out a random package."
+  (interactive)
+  (push-mark)
+  (goto-char (point-min))
+  (forward-line (random (count-lines (point-min) (point-max)))))
+
+;;; t-defuns :: echo frame width
+(defun t/frame-width ()
+  (interactive)
+  (let ((w (frame-width (selected-frame))))
+    (message "width: %s" w)
+    w))
+
+;;; t-defuns :: echo frame height
+(defun t/frame-height ()
+  (interactive)
+  (let ((h (frame-height (selected-frame))))
+    (message "height: %s" h)
+    h))
+
+;;; t-defuns :: shrink frame horizontally by 10 cols
+(defun t/decrease-frame-width ()
+  "Decrease Emacs frame size horizontally."
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-width frame (- (frame-width frame) 10))))
+
+;;; t-defuns :: grow frame horizontally by 10 cols
+(defun t/increase-frame-width ()
+  "Increase Emacs frame size horizontally."
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-width frame (+ (frame-width frame) 10))))
+
+;;; t-defuns :: shrink frame vertically by 10 rows
+(defun t/decrease-frame-height ()
+  "Decrease Emacs frame size vertically."
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-height frame (- (frame-height frame) 10))))
+
+;;; t-defuns :: grow frame vertically by 10 rows
+(defun t/increase-frame-height ()
+  "Increase Emacs frame size vertically."
+  (interactive)
+  (let ((frame (selected-frame)))
+    (set-frame-height frame (+ (frame-height frame) 10))))
+
+;;; t-defuns :: nudge frame right 40px
+(defun t/move-frame-right ()
+  "Move Emacs frame right."
+  (interactive)
+  (let* ((frame (selected-frame))
+         (left (frame-parameter frame 'left)))
+    (set-frame-parameter frame 'left (+ left 40))))
+
+;;; t-defuns :: nudge frame left 40px
+(defun t/move-frame-left ()
+  "Move Emacs frame left."
+  (interactive)
+  (let* ((frame (selected-frame))
+         (left (frame-parameter frame 'left)))
+    (set-frame-parameter frame 'left (- left 40))))
+
+;;; t-defuns :: nudge frame up 40px
+(defun t/move-frame-up ()
+  "Move Emacs frame up."
+  (interactive)
+  (let* ((frame (selected-frame))
+         (top (frame-parameter frame 'top)))
+    (set-frame-parameter frame 'top (- top 40))))
+
+;;; t-defuns :: nudge frame down 40px
+(defun t/move-frame-down ()
+  "Move Emacs frame down."
+  (interactive)
+  (let* ((frame (selected-frame))
+         (top (frame-parameter frame 'top)))
+    (set-frame-parameter frame 'top (+ top 40))))
+
+;;; t-defuns :: search cheat.sh
+(defun t/search-cheat-sh (&optional input)
+  "Search `http://cheat.sh/' for help on commands and code."
+  (interactive)
+  ;; (interactive "sCommand or Topic: ")
+  (message "this does not work any longer
+
+  curl http://cheat.sh/:list lists all commands
+
+  (eww (concat  http://cheat.sh/  input)) can show them
+  ?T&q params give text only, no twitter buttons
+  "))
+
+;;; t-defuns :: toggle whether the selected window is dedicated
+(defun t/toggle-dedicated-window (&optional &rest params)
+  (interactive)
+  (let ((dedicated (if (> (length params) 0)
+                       (car params)
+                     (not (window-dedicated-p (selected-window))))))
+    (set-window-dedicated-p (selected-window) dedicated)
+    (set-window-parameter (selected-window) 'no-delete-other-windows dedicated)
+    (message (if dedicated "Window dedicated." "Window not dedicated."))))
+
+;;; t-defuns :: run `make` in a prompted directory
+(defun t/compile (dir)
+  (interactive "DCompile in directory: ")
+  (let ((default-directory (expand-file-name dir)))
+    (compile "make")))
+
+;;; t-defuns :: run `gw build` at project root
+(defun t/gradle-build ()
+  (interactive)
+  (let ((default-directory (t/project-root)))
+    (compile (if (t/prefix-arg-universal?)
+                 "gw clean build"
+               "gw build"))))
+
+;;; t-defuns :: run `gw detekt --auto-correct`
+(defun t/gradle-detekt-auto-correct ()
+  (interactive)
+  (let ((default-directory (t/project-root)))
+    (compile "gw detekt --auto-correct")))
+
+;;; t-defuns :: show current position via an xref popup
+(defun t/where-am-i ()
+  (interactive)
+  (require 'xref)
+  (let ((l (xref-location-marker
+            (xref-make-file-location
+             (buffer-file-name)
+             (line-number-at-pos)
+             (current-column)))))
+    (xref--show-pos-in-buf l (marker-buffer l))))
+
+;;; t-defuns :: reformat buffer with xmllint
+(defun t/format-xml ()
+  "Reformat and replace buffer content using xmllint. Install on macos using `brew install libxml2`."
+  (interactive)
+  (shell-command-on-region
+   (point-min)
+   (point-max)
+   "xmllint --format -"
+   (current-buffer) t))
+
+;;; t-defuns :: drop one trailing newline from a string
+(defun t/trim-final-newline (string)
+  (let ((len (length string)))
+    (cond
+     ((and (> len 0) (eql (aref string (- len 1)) ?\n))
+      (substring string 0 (- len 1)))
+     (t string))))
+
+;;; t-defuns :: read a file into a string, trimming the final newline
+(defun t/read-file (file)
+  "File to string function"
+  (with-temp-buffer
+    (insert-file-contents file)
+    (t/trim-final-newline (buffer-string))))
+
+;;; t-defuns :: mark buffer as 'real' for Doom
+(defun t/mark-real-buffer ()
+  (interactive)
+  (doom-set-buffer-real (current-buffer) t))
+
+;;; t-defuns :: mark buffer as not 'real' for Doom
+(defun t/mark-unreal-buffer ()
+  (interactive)
+  (doom-set-buffer-real (current-buffer) nil))
+
+;;; t-defuns :: toggle cursor visibility in this window
+(defun t/toggle-window-cursor ()
+  "Toggle cursor visibility in the window of the current buffer."
+  (interactive)
+  (internal-show-cursor (get-buffer-window (current-buffer))
+                        (not (internal-show-cursor-p))))
+
+;;; t-defuns :: return/insert today's date with a separator
+(defun t/date (&optional separator)
+  (interactive)
+  (let* ((sep (or separator "-"))
+         (date (replace-regexp-in-string
+                "-" sep (format-time-string "%Y-%m-%d" nil "UTC"))))
+    (if (called-interactively-p 'interactive)
+        (insert date)
+      date)))
+
+;;; t-defuns :: commit + push ~/Projects/posts
+(defun t/deploy-torgeir.dev ()
+  (interactive)
+  (let ((b "*t-deploy-torgeir_dev*"))
+    (shell-command "cd ~/Projects/posts && git st && git df" b b)
+    (pop-to-buffer b)
+    (if (yes-or-no-p "Deploy changes?")
+        (progn
+          (shell-command
+           (concat
+            "cd ~/Projects/posts \
+  && git add . \
+  && git ci -m \"" (t/isodate) "\" \
+  && git push") b b)
+          (message "Deploy done."))
+      (progn
+        (with-current-buffer b (kill-buffer))
+        (message "Cancelled.")))))
+
+;;; t-defuns :: speak TEXT with the macOS say command
+(defun t/say (text)
+  "Speak TEXT using macos 'say' command."
+  (if is-mac
+      (shell-command (concat "say -v 'Karen' -r 250 "
+                             (shell-quote-argument text)))
+    (error "'say' command not found")))
+
+;;; t-defuns :: speak the region via macOS `say`
+(defun t/speak-region (beg end)
+  "Speak selected text using macos 'say' command."
+  (interactive "r")
+  (if is-mac
+      (shell-command-on-region beg end "say -v 'Karen' -r 250")
+    (error "'say' command not found")))
+
+;;; t-defuns :: return the current org heading text
+(defun t/org-heading ()
+  "Fetch the org heading where the point is at."
+  (interactive)
+  (car (last (butlast (org-heading-components) 1))))
+
+;;; t-defuns :: set EXPORT_FILE_NAME from the org heading
+(defun t/insert-ox-hugo-slug ()
+  "Insert a ox-hugo slug for the current org heading. Replace every
+  non-letter-and-number with -, and remove double --."
+  (interactive)
+  (org-set-property
+   "EXPORT_FILE_NAME"
+   (s-replace-regexp
+    "-+" "-"
+    (s-replace-regexp
+     "[^a-z0-9]" "-"
+     (s-replace-all '((" a " . "-"))
+                    (downcase (t/org-heading)))))))
+
+;;; t-defuns :: apply nano-dark or nano-light to match the desktop appearance
+(defun t/load-system-theme ()
+  "Apply the nano theme matching the desktop's light/dark preference.
+Falls back to dark when nothing expresses a preference, as `nano.el' does."
+  (interactive)
+  (if (if is-mac
+          (equal "true"
+                 (t/trim-final-newline
+                  (t/run-osascript
+                   "tell application \"System Events\" to get dark mode of appearance preferences")))
+        (not (string-match-p
+              "prefer-light"
+              (shell-command-to-string
+               "gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null"))))
+      (nano-dark)
+    (nano-light))
+  (t/refresh-vterm-bgs))
+
+;;; t-defuns :: search upwards from default-directory for a file, stopping at the project root
+(defun find-up (file)
+  (interactive)
+  (let* ((current-dir default-directory)
+         (project-root (t/project-root))
+         (home-dir (expand-file-name "~/")))
+    (if (file-exists-p (expand-file-name file current-dir))
+        (expand-file-name file current-dir)
+      (while (and (not (file-exists-p (expand-file-name file current-dir)))
+                  (not (equal current-dir project-root))
+                  (not (equal current-dir home-dir)))
+        (setq current-dir (file-name-directory (directory-file-name current-dir)))
+        (if (file-exists-p (expand-file-name file current-dir))
+            (expand-file-name file current-dir)
+          nil)))))
 
 (provide 'init)
 
