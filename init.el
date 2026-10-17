@@ -2728,6 +2728,10 @@ words of the candidate, respectively."
   )
 
 ;;; consult
+(defvar t-consult-preview 'center
+  "Where the line a consult preview jumps to ends up in its window.
+`center' puts it in the middle of the window, `top' at the top.")
+
 (t-package consult gh "minad/consult" "1b217ca" nil
   :commands (consult-buffer
 	           consult-line
@@ -2743,7 +2747,17 @@ words of the candidate, respectively."
   (after! consult
     (require 'consult-org)
     (require 'consult-info)
-    (require 'consult-imenu)))
+    (require 'consult-imenu)
+
+    (defun t/consult-preview-recenter ()
+      "Scroll to put the line consult jumped to where `t-consult-preview' asks."
+      (recenter (and (eq t-consult-preview 'top) 0)))
+
+    ;; consult calls `recenter' after every jump and preview, this keeps
+    ;; the call and lets `t-consult-preview' say where the line lands -
+    ;; the side by side view of consult-hunks runs the hook as well, so
+    ;; both of its windows scroll the same way
+    (setq consult-after-jump-hook (list #'t/consult-preview-recenter))))
 
 ;;; consult-lines, complete the current line by lines in the project
 (add-to-list 'load-path (expand-file-name "site-lisp/consult-lines" user-emacs-directory))
@@ -4869,6 +4883,64 @@ Falls back to dark when nothing expresses a preference, as `nano.el' does."
  'git-commit-setup-hook
  (defun t/insert-conventional-commit-msg ()
    (run-with-timer "0sec" nil 't/conventional-commit-msg)))
+
+;;; t-defuns :: list the branches of the current repository
+(defun t/git-branches ()
+  "Branches of the current repository, the current one excluded."
+  (let ((current (t/shell-command-to-string "git branch --show-current")))
+    (seq-remove (lambda (branch)
+                  (or (equal branch current)
+                      (string-suffix-p "/HEAD" branch)))
+                (split-string (t/shell-command-to-string
+                               "git for-each-ref --format='%(refname:short)' \
+                                  refs/heads refs/remotes")
+                              "\n" t))))
+
+;;; t-defuns :: apply the changes of a branch onto this one, unstaged
+(defun t/git-apply-branch-changes (branch)
+  "Apply everything BRANCH changed onto the current branch, unstaged.
+The patch is the diff from the merge base of HEAD and BRANCH to
+BRANCH, so a branch of many commits lands as one set of uncommitted
+changes and none of its history comes along.  Run it from the main
+branch to carry a branch's work over without its commits."
+  (interactive
+   (list (completing-read (format "Apply changes onto %s, from branch: "
+                                  (t/shell-command-to-string "git branch --show-current"))
+                          (t/git-branches) nil t)))
+  (let* ((default-directory (file-name-as-directory (t/project-root)))
+         (branch-arg (shell-quote-argument branch))
+         ;; stderr lands in the output of `t/shell-command-to-string', so
+         ;; drop it and let an empty result stand for the failure
+         (base (t/shell-command-to-string
+                (format "git merge-base HEAD %s 2>/dev/null" branch-arg))))
+    (when (string-empty-p (t/shell-command-to-string
+                           (format "git rev-parse --verify --quiet %s 2>/dev/null" branch-arg)))
+      (user-error "No such branch: %s" branch))
+    (when (string-empty-p base)
+      (user-error "No merge base between HEAD and %s" branch))
+    (let* ((range (format "%s %s" (shell-quote-argument base) branch-arg))
+           (files (split-string (t/shell-command-to-string
+                                 (format "git diff --name-only %s" range))
+                                "\n" t))
+           ;; --binary so images and the like survive the round trip
+           (patch (format "git diff --binary %s" range)))
+      (unless files
+        (user-error "Nothing changed on %s since the merge base" branch))
+      ;; --check first, so a patch that does not apply changes nothing
+      (let ((err (t/shell-command-to-string
+                  (format "%s | git apply --check - 2>&1" patch))))
+        (unless (string-empty-p err)
+          (user-error "Changes of %s do not apply: %s" branch err)))
+      (let ((err (t/shell-command-to-string (format "%s | git apply - 2>&1" patch))))
+        (unless (string-empty-p err)
+          (user-error "git apply: %s" err)))
+      (dolist (file files)
+        (when-let* ((buffer (find-buffer-visiting (expand-file-name file))))
+          (with-current-buffer buffer
+            (unless (buffer-modified-p)
+              (revert-buffer t t t)))))
+      (message "Applied %d file%s from %s, unstaged"
+               (length files) (if (= 1 (length files)) "" "s") branch))))
 
 ;; elisp eval in overlay
 ;;; t-defuns :: eval last sexp, show the result inline as an overlay
