@@ -24,3 +24,14 @@
 
 ;; improve throughput for subprocess i/o (lsp, ripgrep, git).
 (setq read-process-output-max (* 2 1024 1024))
+
+;; Third-party packages in elpa/ that predate Emacs 30 lack the
+;; `lexical-binding' cookie, and `load' warns once per file -- popping up
+;; *Warnings* during startup over code we do not control. Suppress just that
+;; one warning type; everything else still warns normally. Swap in
+;; `warning-suppress-log-types' instead to drop them from the log as well.
+;; Required outright rather than via `with-eval-after-load': emitting a
+;; warning is itself what loads warnings.el, so the first one would slip
+;; through before an after-load hook could run.
+(require 'warnings)
+(add-to-list 'warning-suppress-types '(files missing-lexbind-cookie))
