@@ -362,6 +362,26 @@ instead of just the file name.")
   (setq t-header-line-full-path (not t-header-line-full-path))
   (force-mode-line-update))
 
+(defvar-local t-header-line--lines nil
+  "The last line count of this buffer, and what it was taken at.
+A list of the buffer tick and the bounds the count covers, then the
+count itself.")
+
+(defun t/header-line-lines ()
+  "Return the number of lines in the buffer, narrowing included.
+The count is kept until the buffer is changed or narrowed, as the header
+line is evaluated on every redisplay and counting the lines of a large
+buffer takes long enough - a couple of milliseconds once a buffer runs
+into the hundreds of thousands of lines - to be felt when it is done
+that often."
+  (let ((state (list (buffer-chars-modified-tick) (point-min) (point-max))))
+    (if (equal (car t-header-line--lines) state)
+        (cdr t-header-line--lines)
+      ;; the line at `point-max', not the number of newlines, so that the
+      ;; line point is on never reads as past the end
+      (cdr (setq t-header-line--lines
+                 (cons state (line-number-at-pos (point-max))))))))
+
 (setq-default mode-line-format
               '(" " (:eval (persp-mode-line))
                 ;; more items
@@ -377,9 +397,24 @@ instead of just the file name.")
                                                           ((stringp mode-name) mode-name)
                                                           (t "unknown")))
                                        "")))
-                       (tasks '(t/modeline-segs))
-                       (coords (format-mode-line "%c:%l "))
+                       (coords (concat (format-mode-line "%c:%l")
+                                       (format "/%d " (t/header-line-lines))))
                        (is-main-window (mode-line-window-selected-p))
+                       ;; `t/modeline-segs' hands back a list of strings, so it
+                       ;; has to be rendered into one before it can be measured
+                       (tasks (when is-main-window (format-mode-line (t/modeline-segs))))
+                       ;; everything that sits against the right edge, built as a
+                       ;; single string so the padding in front of it can be
+                       ;; measured off the very string it pads - adding to the
+                       ;; right side then needs no counting to be kept in step
+                       (right-side (concat
+                                    tasks
+                                    (propertize (format " %s" coords) 'face 'nano-faded)
+                                    (when is-main-window
+                                      (propertize "*" 'face `(:foreground ,(plist-get t-colors :hl))))
+                                    ;; a cell of breathing room so nothing ends up
+                                    ;; flush against the window edge
+                                    " "))
                        ;; olivetti centers the body with window margins. In the
                        ;; header line, position 0 is the window's left edge (so
                        ;; we must indent past the left margin), but `right'
@@ -411,20 +446,15 @@ instead of just the file name.")
                                'face 'nano-strong)
                    (when mode (propertize mode 'face `(:foreground ,(plist-get t-colors :hl))))
                    (when (and is-main-window (boundp 't-idle-highlight-mode) t-idle-highlight-mode) " 🔦")
-                   (propertize " " 'display `(space :align-to (- right ,(+ (length coords)
-                                                                           (if is-main-window (length (eval tasks)) 0)
-                                                                           2))))
-                   `(:eval (when ,is-main-window ,tasks))
-                   (propertize (format " %s" coords) 'face 'nano-faded)
-                   (when is-main-window (propertize "*" 'face `(:foreground ,(plist-get t-colors :hl))))
+                   ;; pad out to where the right side begins, in pixels, so
+                   ;; what sits there grows leftwards from the edge on its own
+                   (propertize " " 'display `(space :align-to (- right (,(string-pixel-width right-side)))))
+                   right-side
                    (when (> rmargin 0)
-                     ;; keep one dim cell after "*" for breathing room, then fill
-                     ;; the right margin with the default background so the dim
-                     ;; header "box" stays confined to the body width
-                     (concat
-                      (propertize " " 'display '(space :width 1))
-                      (propertize " " 'display `(space :align-to (+ right ,rmargin 1))
-                                  'face `(:background ,default-bg))))
+                     ;; fill the right margin with the default background so the
+                     ;; dim header "box" stays confined to the body width
+                     (propertize " " 'display `(space :align-to (+ right ,rmargin 1))
+                                 'face `(:background ,default-bg)))
                    ))))
 
 ;; --- Minibuffer setup -------------------------------------------------------
