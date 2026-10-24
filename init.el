@@ -2953,6 +2953,8 @@ words of the candidate, respectively."
   (setq eglot-connect-timeout (* 60 20)
         ;; don't block while waiting, defaults to 3
         eglot-sync-connect nil)
+  ;; defined before use in cl-typep below, which is inlined at compile time
+  (defclass eglot-deno (eglot-lsp-server) () :documentation "A custom class for deno lsp.")
   ;; typescript-language-server (unlike deno, see below) reads tsserver's
   ;; native flat preference names for inlay hints, not vscode's nested ones.
   ;; eglot-workspace-configuration is defvar-local, so it must be set with
@@ -3776,7 +3778,6 @@ With no active region, exports the whole buffer."
 
 (after! eglot
   (keymap-set t-leader-map "e h" 'eglot-inlay-hints-mode)
-  (defclass eglot-deno (eglot-lsp-server) () :documentation "A custom class for deno lsp.")
   (cl-defmethod eglot-initialization-options ((server eglot-deno))
     "Passes through required deno initialization options"
     '(:enable t :lint t :unstable t))
