@@ -404,7 +404,13 @@ between the hunks of a file costs one call to git."
             (ignore-errors
               (let ((buffer-file-name (expand-file-name file consult-hunks--root)))
                 (delay-mode-hooks (set-auto-mode))))
-            (font-lock-mode 1)
+            ;; `font-lock-mode' refuses to turn on in a buffer named with
+            ;; a leading space, as the buffers of the view are, so it is
+            ;; turned on under a name without one
+            (let ((name (buffer-name)))
+              (rename-buffer (string-trim-left name) t)
+              (unwind-protect (font-lock-mode 1)
+                (rename-buffer name)))
             (setq buffer-read-only t)
             (set-buffer-modified-p nil))
           (push (cons key buffer) consult-hunks--blob-buffers)
