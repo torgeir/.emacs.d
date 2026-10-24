@@ -3430,7 +3430,8 @@ With no active region, exports the whole buffer."
 
 ;;; tree-sitter: ts
 (use-package typescript-ts-mode
-  :mode "\\.ts\\'"
+  :mode ("\\.ts\\'"
+         "\\.mts\\'")
   :init
   (progn
     (add-to-list 'major-mode-remap-alist '(typescript-mode . typescript-ts-mode))
@@ -3449,6 +3450,7 @@ With no active region, exports the whole buffer."
 ;;; tree-sitter: js
 (use-package js-ts-mode
   :mode (("\\.js\\'" . js-ts-mode)
+         ("\\.mjs\\'" . js-ts-mode)
          ("\\.jsx\\'" . tsx-ts-mode))
   :init
   (add-to-list 'major-mode-remap-alist '(js-mode . js-ts-mode)))
