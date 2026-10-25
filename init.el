@@ -1538,7 +1538,8 @@ When 'quit' is set, quits window when any other key is pressed."
 	           magit-commit
 	           magit-commit-create
 	           magit-commit-amend
-	           magit-commit-instant-fixup)
+	           magit-commit-instant-fixup
+	           magit-ediff-dwim)
   :deps ((compat   gh "emacs-compat/compat" "3e24d97")
 	       (cond-let gh "tarsius/cond-let" "3b88187")
 	       (llama    gh "tarsius/llama" "4d40240")
@@ -1863,7 +1864,11 @@ When 'quit' is set, quits window when any other key is pressed."
   (setq evil-undo-system 'undo-fu))
 
 ;;; undo tree
-(t-package vundo gh "casouri/vundo" "04caf7e" nil)
+(t-package vundo gh "casouri/vundo" "04caf7e" nil
+  :config
+  (autoload 'vundo-diff "vundo-diff" nil t)
+  (autoload 'vundo-diff-mark "vundo-diff" nil t)
+  (autoload 'vundo-diff-unmark "vundo-diff" nil t))
 
 ;;; evil
 ;; Must be set before loading evil or evil-collection.
@@ -2887,11 +2892,14 @@ words of the candidate, respectively."
   :init
   (setq diff-hl-show-staged-changes nil)
   :config
+  (autoload 'diff-hl-show-hunk "diff-hl-show-hunk" nil t)
+  (autoload 'diff-hl-show-hunk-next "diff-hl-show-hunk" nil t)
+  (autoload 'diff-hl-show-hunk-previous "diff-hl-show-hunk" nil t)
   (global-diff-hl-mode))
 
 ;;; emojis :rocket:
 (t-package emojify gh "iqbalansari/emacs-emojify" "1b72641" nil
-  :commands (global-emojify-mode)
+  :commands (global-emojify-mode emojify-insert-emoji)
   :deps ((dash gh "magnars/dash.el" "d746dd9")
          (ht gh "Wilfred/ht.el" "1c49aad")))
 
