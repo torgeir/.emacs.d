@@ -2742,7 +2742,9 @@ words of the candidate, respectively."
 	           consult-find
 	           consult-fd
 	           consult-man
-	           consult-completion-in-region)
+	           consult-completion-in-region
+	           consult-org-agenda
+	           consult-org-heading)
   :config
   (after! consult
     (require 'consult-org)
