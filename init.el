@@ -2744,7 +2744,11 @@ words of the candidate, respectively."
 	           consult-man
 	           consult-completion-in-region
 	           consult-org-agenda
-	           consult-org-heading)
+	           consult-org-heading
+	           consult-bookmark
+	           consult-info
+	           consult-imenu
+	           consult-buffer-other-window)
   :config
   (after! consult
     (require 'consult-org)
