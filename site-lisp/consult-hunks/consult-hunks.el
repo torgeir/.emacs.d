@@ -100,6 +100,13 @@ syntax of the file, right above the change - where you, or the AI you
 hand the file to, run into it next to what it is about."
   :type 'string)
 
+(defcustom consult-hunks-watch-interval 2
+  "Seconds between looking for changes made outside the running session.
+When the diff of the session changed, as it does when someone else
+edits the files, the session restarts on the refreshed hunks, keeping
+the selected hunk and the input.  nil turns it off."
+  :type '(choice (const :tag "Off" nil) number))
+
 (defcustom consult-hunks-split-side 'right
   "Side the new version is shown on in the side by side view."
   :type '(choice (const :tag "Right" right)
@@ -126,6 +133,9 @@ hand the file to, run into it next to what it is about."
 
 (defvar consult-hunks--entry-state nil
   "Evil state the restarted session is entered in.")
+
+(defvar consult-hunks--reloaded nil
+  "Non-nil when the session restarts because files changed outside it.")
 
 (defun consult-hunks-refresh-diff-hl ()
   "Refresh `diff-hl-mode' in the current buffer, if it is on."
@@ -548,18 +558,34 @@ failing timer, so it is shown as the message it is meant to be."
                    (user-error (message "%s" (error-message-string err))))))
   (abort-recursive-edit))
 
-(defun consult-hunks--restart-session (&optional preselect)
+(defun consult-hunks--restart-session (&optional preselect input)
   "Quit and restart the session on the refreshed hunks.
 PRESELECT is the hunk to come back to, a cons of a file and the line a
 hunk of it starts at; without one the restarted session starts at the
-first hunk.  The evil state is carried over, as staging from normal
-state would otherwise land in the insert state every new minibuffer
-starts in."
+first hunk.  INPUT is what the restarted session starts out narrowed
+by.  The evil state is carried over, as staging from normal state would
+otherwise land in the insert state every new minibuffer starts in."
   (setq consult-hunks--entry-state (bound-and-true-p evil-state))
   ;; the restart runs from a timer, where the session and its dynamic
   ;; bindings are long gone, so take the function along
   (let ((restart consult-hunks--restart))
-    (consult-hunks--quit-and-run (lambda () (funcall restart preselect)))))
+    (consult-hunks--quit-and-run (lambda () (funcall restart preselect input)))))
+
+(defun consult-hunks--watch (depth diff file)
+  "Restart the session when its diff is no longer DIFF.
+DIFF is what the session started on, of FILE when non-nil.  Runs from a
+timer inside the session, while its minibuffer at DEPTH is the one
+being read from - a note being prompted for is left alone.  The
+selected hunk and the input are taken along."
+  (when-let* (((= (minibuffer-depth) depth))
+              (window (active-minibuffer-window))
+              ((not (equal diff (ignore-errors (consult-hunks--diff file))))))
+    (with-selected-window window
+      (let ((hunk (consult-hunks--selection)))
+        (setq consult-hunks--reloaded t)
+        (consult-hunks--restart-session
+         (and hunk (consult-hunks--where hunk))
+         (minibuffer-contents-no-properties))))))
 
 (defun consult-hunks--where (hunk)
   "Return where HUNK stands in the session, to come back to it later.
@@ -829,13 +855,14 @@ Only the keys of `consult-hunks-map' are affected."
   (let ((file (or (buffer-file-name) (user-error "Buffer is not visiting a file"))))
     (file-relative-name file (consult-hunks--find-root))))
 
-(defun consult-hunks--run (staged file &optional root preselect)
+(defun consult-hunks--run (staged file &optional root preselect input)
   "Browse the hunks of the repository, staged ones when STAGED.
 Only the hunks of FILE are shown when it is non-nil.  ROOT is the
 repository root, found from `default-directory' when it is nil.
 PRESELECT is the hunk to start on, a cons of a file and the line a
-hunk of it starts at, as `consult-hunks--restart-session' hands it
-over so a session picks up where the one before it left off."
+hunk of it starts at, and INPUT what to start out narrowed by, as
+`consult-hunks--restart-session' hands them over so a session picks up
+where the one before it left off."
   (let* ((root (or root (consult-hunks--find-root)))
          (consult-hunks--root root)
          (consult-hunks--staged staged)
@@ -849,11 +876,13 @@ over so a session picks up where the one before it left off."
          ;; the restart runs from a timer, where `default-directory' is
          ;; whatever buffer happens to be current, so carry the root
          (consult-hunks--restart
-          (lambda (&optional preselect)
-            (consult-hunks--run staged file root preselect)))
-         (hunks (consult-hunks--hunks file))
+          (lambda (&optional preselect input)
+            (consult-hunks--run staged file root preselect input)))
+         (diff (consult-hunks--diff file))
+         (hunks (consult-hunks--parse diff))
          (consult-hunks--session-hunks hunks)
-         (candidates (mapcar #'consult-hunks--candidate hunks)))
+         (candidates (mapcar #'consult-hunks--candidate hunks))
+         (watch nil))
     (unless hunks
       (user-error (if staged "No staged changes" "No changes")))
     (consult-hunks--kill-blob-buffers)
@@ -861,12 +890,25 @@ over so a session picks up where the one before it left off."
         (minibuffer-with-setup-hook
             (:append (lambda ()
                        (consult-hunks--setup-keymap)
-                       (consult-hunks--select-hunk preselect hunks candidates)))
+                       (consult-hunks--select-hunk preselect hunks candidates)
+                       (when consult-hunks--reloaded
+                         (setq consult-hunks--reloaded nil)
+                         ;; shown in the minibuffer, after the input, where
+                         ;; the eyes are - the echo area is hidden by it
+                         (minibuffer-message "Files changed, reloaded %d hunks"
+                                             (length hunks)))
+                       (when consult-hunks-watch-interval
+                         (setq watch (run-with-timer
+                                      consult-hunks-watch-interval
+                                      consult-hunks-watch-interval
+                                      #'consult-hunks--watch
+                                      (minibuffer-depth) diff file)))))
           (consult--read
            candidates
            :prompt (format "%s hunks%s: "
                            (if staged "Staged" "Changed")
                            (if file (concat " in " file) ""))
+           :initial input
            :category 'consult-hunks
            :require-match t
            :sort nil
@@ -875,6 +917,7 @@ over so a session picks up where the one before it left off."
            :state (consult-hunks--state)
            :keymap consult-hunks-map
            :history 'consult-hunks--history))
+      (when watch (cancel-timer watch))
       (consult-hunks--restore-wconf)
       (consult-hunks--kill-blob-buffers))
     nil))
