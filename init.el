@@ -2733,7 +2733,7 @@ words of the candidate, respectively."
   )
 
 ;;; consult
-(defvar t-consult-preview 'center
+(defvar t-consult-preview 'top
   "Where the line a consult preview jumps to ends up in its window.
 `center' puts it in the middle of the window, `top' at the top.")
 
