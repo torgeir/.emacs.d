@@ -4,7 +4,7 @@
 (message "Yo.")
 
 ;;; support local only config
-(load (expand-file-name "private-init.el") t)
+(load (expand-file-name "~/.emacs.d/private-init.el") t)
 
 (defvar t-colors '(:hl "#f5b" :done "#445" :head "#5bf"))
 
