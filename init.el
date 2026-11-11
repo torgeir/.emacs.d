@@ -2763,7 +2763,7 @@ words of the candidate, respectively."
 
     (defun t/consult-preview-recenter ()
       "Scroll to put the line consult jumped to where `t-consult-preview' asks."
-      (recenter (and (eq t-consult-preview 'top) 0)))
+      (recenter (and (eq t-consult-preview 'top) 10)))
 
     ;; consult calls `recenter' after every jump and preview, this keeps
     ;; the call and lets `t-consult-preview' say where the line lands -
