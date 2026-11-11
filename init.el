@@ -3441,7 +3441,8 @@ With no active region, exports the whole buffer."
 
 ;;; tree-sitter: docker
 (use-package dockerfile-ts-mode
-  :mode "\\Dockerfile\\'"
+  :mode ("\\Dockerfile\\'"
+         "\\Containerfile\\'")
   :init
   (add-to-list 'major-mode-remap-alist '(dockerfile-mode . dockerfile-ts-mode)))
 
