@@ -2224,7 +2224,8 @@ When 'quit' is set, quits window when any other key is pressed."
     (kbd "TAB") #'t/dired-subtree-tab
     (kbd "<tab>") #'t/dired-subtree-tab
     (kbd "<follow-link>") nil
-    (kbd "<mouse-2>") nil ;; after hold
+    ;; after hold. nil falls through to `mouse-yank-primary', which rings the bell
+    (kbd "<mouse-2>") #'ignore
     ;; mouse always togggles folder or opens file
     (kbd "<down-mouse-1>") (cmd! (mouse-set-point last-input-event)
 				                         (let ((split-window-preferred-function nil))
