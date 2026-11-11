@@ -3325,6 +3325,7 @@ With no active region, exports the whole buffer."
 (keymap-set t-leader-map "e n" #'flymake-goto-next-error)
 (keymap-set t-leader-map "e p" #'flymake-goto-prev-error)
 (after! flymake
+  (setq flymake-show-diagnostics-at-end-of-line t)
   (evil-define-key 'normal flymake-diagnostics-buffer-mode-map (kbd "gj") #'next-error-this-buffer-no-select)
   (evil-define-key 'normal flymake-diagnostics-buffer-mode-map (kbd "gk") #'previous-error-this-buffer-no-select))
 
