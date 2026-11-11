@@ -383,6 +383,53 @@ as the session does.")
 (defvar consult-hunks--split-overlays nil
   "Overlays highlighting the hunk in the side by side view.")
 
+(defvar consult-hunks--scroll-all-was 'unset
+  "Whether `scroll-all-mode' was on before the side by side view turned it on.
+`unset' when the view has not touched it.")
+
+(defun consult-hunks--scroll-all-on ()
+  "Turn `scroll-all-mode' on, so both sides of the view scroll together."
+  (when (and (eq consult-hunks--scroll-all-was 'unset)
+             (fboundp 'scroll-all-mode))
+    (setq consult-hunks--scroll-all-was (bound-and-true-p scroll-all-mode))
+    (scroll-all-mode 1)))
+
+(defun consult-hunks--scroll-all-restore ()
+  "Put `scroll-all-mode' back the way it was before the view."
+  (unless (eq consult-hunks--scroll-all-was 'unset)
+    (unless consult-hunks--scroll-all-was
+      (scroll-all-mode -1))
+    (setq consult-hunks--scroll-all-was 'unset)))
+
+(defcustom consult-hunks-wrap-lines t
+  "Non-nil means the buffers of the side by side view wrap long lines.
+The setting is put back when the view is taken down."
+  :type 'boolean
+  :group 'consult-hunks)
+
+(defvar consult-hunks--wrapped nil
+  "List of (BUFFER LOCAL-P OLD) for buffers the view turned line wrapping on in.")
+
+(defun consult-hunks--wrap (buffer)
+  "Make BUFFER wrap long lines, remembering how it was for later."
+  (when (and consult-hunks-wrap-lines
+             (buffer-live-p buffer)
+             (not (assq buffer consult-hunks--wrapped)))
+    (with-current-buffer buffer
+      (push (list buffer (local-variable-p 'truncate-lines) truncate-lines)
+            consult-hunks--wrapped)
+      (setq-local truncate-lines nil))))
+
+(defun consult-hunks--unwrap ()
+  "Put line wrapping back the way it was in the buffers of the view."
+  (pcase-dolist (`(,buffer ,local-p ,old) consult-hunks--wrapped)
+    (when (buffer-live-p buffer)
+      (with-current-buffer buffer
+        (if local-p
+            (setq-local truncate-lines old)
+          (kill-local-variable 'truncate-lines)))))
+  (setq consult-hunks--wrapped nil))
+
 (defun consult-hunks--blob (rev file)
   "Return the contents of FILE at REV, nil when git has no such blob.
 REV is a git revision, nil stands for the index."
@@ -444,6 +491,7 @@ configuration from before the session is put back when it ends."
       consult-hunks--split
     (let ((window (consult--original-window)))
       (ignore-errors (delete-other-windows window))
+      (consult-hunks--scroll-all-on)
       (setq consult-hunks--split-built t
             consult-hunks--split
             (cons window (split-window window nil consult-hunks-split-side))))))
@@ -458,6 +506,8 @@ configuration from before the session is put back when it ends."
 The configuration from before the session is only put back once the
 minibuffer is gone, by `consult-hunks--restore-wconf'."
   (consult-hunks--hide-split)
+  (consult-hunks--scroll-all-restore)
+  (consult-hunks--unwrap)
   (let ((windows consult-hunks--split))
     (setq consult-hunks--split nil)
     (when (and (window-live-p (cdr windows))
@@ -469,6 +519,8 @@ minibuffer is gone, by `consult-hunks--restore-wconf'."
 Only for when the minibuffer is gone - the configuration was saved
 without one, and restoring it while one is up would take it along."
   (consult-hunks--hide-split)
+  (consult-hunks--scroll-all-restore)
+  (consult-hunks--unwrap)
   (setq consult-hunks--split nil)
   (when (and consult-hunks--split-built
              (window-configuration-p consult-hunks--wconf))
@@ -518,8 +570,6 @@ of the index, not of the file on disk."
          (pos (unless consult-hunks--staged
                 (consult-hunks--position hunk open))))
     (consult-hunks--show-at (car windows) old old-line)
-    (consult-hunks--highlight old old-line (alist-get 'del-len hunk)
-                              'consult-hunks-old)
     (cond
      (consult-hunks--staged
       ;; nothing of the jump state is on screen, let it put back
@@ -537,8 +587,63 @@ of the index, not of the file on disk."
       (funcall jump 'preview nil)
       (consult-hunks--show-at new-window
                               (consult-hunks--blob-buffer 'gone file) 1)))
-    (consult-hunks--highlight (window-buffer new-window) line
-                              (alist-get 'add-len hunk) 'consult-hunks-new)))
+    (consult-hunks--wrap old)
+    (consult-hunks--wrap (window-buffer new-window))
+    (consult-hunks--highlight-hunks hunk old (window-buffer new-window))))
+
+(defcustom consult-hunks-highlight-file t
+  "Non-nil means the side by side view highlights every hunk of the file.
+Nil highlights the selected hunk only.  The view still jumps to the
+selected hunk, the rest is there to read the changes in context."
+  :type 'boolean
+  :group 'consult-hunks)
+
+(defun consult-hunks--highlight-hunks (hunk old new)
+  "Highlight HUNK, and the other hunks of its file, in OLD and NEW.
+OLD and NEW are the buffers of the old and the new version."
+  (let ((file (alist-get 'file hunk)))
+    (dolist (h (if consult-hunks-highlight-file
+                   (seq-filter (lambda (h) (equal (alist-get 'file h) file))
+                               consult-hunks--session-hunks)
+                 (list hunk)))
+      (consult-hunks--highlight old (alist-get 'old-line h)
+                                (alist-get 'del-len h) 'consult-hunks-old)
+      (consult-hunks--highlight new (alist-get 'line h)
+                                (alist-get 'add-len h) 'consult-hunks-new))))
+
+;;;; Scrolling both sides together with ultra-scroll
+
+(defcustom consult-hunks-sync-scroll t
+  "Non-nil means the two sides of the side by side view scroll together.
+Only has an effect when `ultra-scroll' is in use, as `scroll-all-mode'
+does not follow its pixel scrolling."
+  :type 'boolean
+  :group 'consult-hunks)
+
+(defvar consult-hunks--syncing-scroll nil
+  "Non-nil while the other side of the view is scrolled, stops recursion.")
+
+(defun consult-hunks--sync-ultra-scroll (fn delta &rest args)
+  "Scroll the other window of the side by side view along with this one.
+Around advice for `ultra-scroll-up' and `ultra-scroll-down', FN is the
+original, DELTA the pixels it scrolls."
+  (prog1 (apply fn delta args)
+    (when (and consult-hunks-sync-scroll
+               consult-hunks--split
+               (not consult-hunks--syncing-scroll))
+      (let* ((here (selected-window))
+             (other (cond ((eq here (car consult-hunks--split))
+                           (cdr consult-hunks--split))
+                          ((eq here (cdr consult-hunks--split))
+                           (car consult-hunks--split)))))
+        (when (window-live-p other)
+          (let ((consult-hunks--syncing-scroll t))
+            (with-selected-window other
+              (apply fn delta args))))))))
+
+(with-eval-after-load 'ultra-scroll
+  (advice-add 'ultra-scroll-up :around #'consult-hunks--sync-ultra-scroll)
+  (advice-add 'ultra-scroll-down :around #'consult-hunks--sync-ultra-scroll))
 
 ;;;; Session commands
 
